@@ -6,6 +6,7 @@ headers = []
   [functions."*"]
 
 [build]
+publish = "."
 
   [build.environment]
 
