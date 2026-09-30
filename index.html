@@ -459,7 +459,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <main data-screen-label="홈 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
 
     <section class="on-photo" data-nav="dark" onTouchStart="{{ mTouchStart }}" onTouchEnd="{{ mTouchEnd }}" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><img loading="lazy" src="{{ heroBgSafe }}" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><img loading="lazy" src="{{ heroBgSafe }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:{{ heroPosM }};display:block"></div>
       <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(15,27,46,0.25) 0%, rgba(15,27,46,0.35) 40%, rgba(15,27,46,0.92) 100%)"></div>
       <div class="hero-grid {{ heroFadeCls }}" style="position:relative;z-index:1;padding:0 24px 28px">
         <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.7)">
@@ -2209,7 +2209,7 @@ const REPORTS = [
     ],
     valuation:'Historical P/E Valuation을 채택했다. Target P/E 21.92배를 적용해 목표주가 100,800원, 상승여력 87.4%, 투자의견 BUY를 제시한다.',
     members:'Research Team 3',
-    pdf:'assets/reports/26-2_inbody.pdf', pdfMeta:'PDF · 34 pages', cover:'assets/covers/26-2_inbody-top169.webp', heroCover:'assets/covers/26-2_inbody-top169.webp', heroBg:'assets/hero/inbody.webp', heroScrim:0.6, credit:'', creditHref:'' },
+    pdf:'assets/reports/26-2_inbody.pdf', pdfMeta:'PDF · 34 pages', cover:'assets/covers/26-2_inbody-top169.webp', heroCover:'assets/covers/26-2_inbody-top169.webp', heroBg:'assets/hero/inbody.webp', heroPosM:'82% 50%', heroScrim:0.6, credit:'', creditHref:'' },
   { id:'nepesark', name:'네패스아크', ticker:'330860', sector:'반도체', type:'Company Analysis', op:'BUY', tp:'40,000원', buy:'', cur:'31,550원', upside:'+26.8%', upNum:26.8, tpNum:40000, date:'2026.09.29', team:'Research Team 2', region:'Korea',
     headline:'삼성 파운드리 회복의 최대 수혜주',
     summary:'’27E 매출액 2,079억 원(YoY +49.1%), 영업이익 509억 원(YoY +64.7%)을 전망한다. ’27년은 HBM4 베이스 다이와 실리콘 커패시터 등 신규 테스트 품목의 매출 기여가 본격화되는 동시에, 갤럭시 S27 시리즈 내 엑시노스 채택 확대가 기존 AP·PMIC 테스트 물량 증가로 이어지는 시점이다.',
@@ -4037,6 +4037,7 @@ class Component extends DCLogic {
       heroBgSafe: hero.heroBg || 'assets/torm-fleet.webp',
       heroBg: hero.heroBg || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=72',
       heroScrim: hero.heroScrim || 0.58,
+      heroPosM: hero.heroPosM || '50% 50%',
       heroBgCredit: hero.heroBg ? '' : 'Photo by Maxim Hopman on Unsplash',
       heroBgCreditHref: hero.heroBg ? '' : 'https://unsplash.com/@nampoh',
       heroCover: hero.heroCover || hero.cover || '',
