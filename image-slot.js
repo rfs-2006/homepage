@@ -1095,7 +1095,10 @@
       // (Claude wrote it into the HTML) so it passes through unchanged.
       let stored = this.id ? getSlot(this.id) : this._local;
       if (stored && stored.u && !/^data:image\//i.test(stored.u)) stored = null;
-      const srcAttr = this.getAttribute('src') || '';
+      const rawSrc = this.getAttribute('src') || '';
+      // Skip unrendered template placeholders like "{{ heroBg }}" — fetching
+      // them hits the SPA fallback and downloads the whole index.html.
+      const srcAttr = rawSrc.includes('{{') ? '' : rawSrc;
       this._userUrl = (stored && stored.u) || null;
       const url = this._userUrl || srcAttr;
       // Don't clobber an in-flight reframe with a store-triggered re-render.
