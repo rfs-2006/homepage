@@ -6,7 +6,7 @@
 //   4) sitemap.xml, robots.txt
 // 공유 썸네일(assets/og/*.jpg)은 tools/build-og.js가 만든다. 있으면 og:image로 쓴다.
 //
-// 사용법: 사이트 루트에서  node tools/build-og.js && node tools/build-site.js
+// 사용법: 사이트 루트에서  node tools/build-og.js && node tools/build-site.js && node tools/build-pages.js
 
 const fs = require('fs');
 const path = require('path');
@@ -73,7 +73,7 @@ function resolveAsset(rel) {
 
 const ORG = { '@type': 'Organization', name: C.SITE_NAME, url: `${C.SITE}/` };
 const NAV = `<header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
-<nav><a href="/research/">Research</a><a href="/#about">About</a><a href="/#recruit">Recruiting</a></nav></header>`;
+<nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>`;
 const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a></footer>
 </body>
 </html>
