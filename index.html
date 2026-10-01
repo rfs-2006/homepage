@@ -401,11 +401,13 @@ input{border-radius:0;font-family:inherit}
 }
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @view-transition{navigation:auto}
-::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
-@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
+/* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
+@keyframes rfs-vt-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 /* 상단 메뉴는 전환에서 빼서 본문만 바뀌게 한다 */
 nav.nav{view-transition-name:rfs-nav}
 ::view-transition-group(rfs-nav){animation-duration:200ms}
@@ -3602,9 +3604,9 @@ class Component extends DCLogic {
     if (changed && Date.now() - (this._navAt || 0) > 600) this.withTransition(update); else update();
   }
 
-  // 화면 전환 효과: 지원 브라우저에서만 View Transitions로 감싸고, 아니면 바로 바꾼다
+  // 화면 전환 효과: 지원 브라우저에서만 View Transitions로 감싸고, 아니면 바로 바꾼다 (동작 줄이기 설정은 CSS에서 페이드만)
   withTransition(update) {
-    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) return update();
+    if (!document.startViewTransition) return update();
     document.startViewTransition(() => new Promise((res) => update(res)));
   }
 

@@ -61,11 +61,13 @@ footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @view-transition{navigation:auto}
-::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
-@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
+/* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
+@keyframes rfs-vt-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"에코프로비엠 (247540) — 양극재 미래는 고개를 들어 BM을 보라","description":"3Q22 매출액 1.6조 원(YoY +283%), 영업이익 1,409억 원(YoY +246%)으로 시장 기대치를 큰 폭으로 상회했다. 양극재 수요 증가 속 CAM5N 공장 9월 조기 가동으로 물량이 증가했고, 2분기 메탈 가격 상승에 대한 3분기 판가 인상분이 반영됐다.","datePublished":"2022-11-27","inLanguage":"ko","url":"https://caurfs.kr/research/ecopro/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"에코프로비엠","tickerSymbol":"247540"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/22-2_ecopro_bm.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"에코프로비엠","item":"https://caurfs.kr/research/ecopro/"}]}]</script>
 </head>
