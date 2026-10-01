@@ -9,9 +9,9 @@
 
   const panel = document.createElement('div');
   panel.style.cssText = 'position:fixed;right:16px;bottom:16px;z-index:2147483647;width:280px;padding:14px 16px;background:#0F1B2E;color:#fff;font:14px/1.5 sans-serif;border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.3)';
-  panel.innerHTML = '<b style="display:block;margin-bottom:6px">밸리 자동 넣기</b><div id="vf-msg">넣을 이미지를 고르세요.</div>'
-    + '<label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;opacity:.85"><input type="checkbox" id="vf-rev" checked> 거꾸로 넣기 (밸리는 새 이미지가 위에 쌓여서 켜 둠)</label>'
-    + '<div style="display:flex;gap:8px;margin-top:10px"><button id="vf-pick">이미지 고르기</button><button id="vf-stop">닫기</button></div>';
+  panel.innerHTML = '<b style="display:block;margin-bottom:6px">밸리 자동 넣기</b><div id="vf-msg">올릴 이미지를 선택합니다.</div>'
+    + '<label style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;opacity:.85"><input type="checkbox" id="vf-rev" checked> 마지막 장부터 올리기 (밸리 기본값)</label>'
+    + '<div style="display:flex;gap:8px;margin-top:10px"><button id="vf-pick">이미지 선택</button><button id="vf-stop">닫기</button></div>';
   panel.querySelectorAll('button').forEach(b => b.style.cssText = 'font:inherit;border:0;border-radius:6px;padding:6px 10px;background:#fff;color:#0F1B2E;cursor:pointer');
   document.body.appendChild(panel);
   S.panel = panel;
@@ -35,15 +35,15 @@
   };
   const afterFeed = () => {
     S.i++; S.waiting = true;
-    msg(`${S.i} / ${S.files.length} 넣는 중…`);
+    msg(`${S.files.length}장 중 ${S.i}장째 올리는 중`);
     const before = imgCount(), t0 = Date.now();
     const tick = () => {
       if (S.stop) return;
       const done = imgCount() > before;
       if (!done && Date.now() - t0 < 30000) return setTimeout(tick, 300);
-      if (!done) { msg(`${S.i}번째 이미지가 30초 안에 안 들어갔어요. 멈춥니다.`); S.running = false; restore(); return; }
+      if (!done) { msg(`${S.i}장째가 30초 안에 올라가지 않아 멈췄습니다.`); S.running = false; restore(); return; }
       S.waiting = false;
-      if (S.i >= S.files.length) { msg(`완료: ${S.files.length}장`); S.running = false; restore(); return; }
+      if (S.i >= S.files.length) { msg(`${S.files.length}장을 모두 올렸습니다.`); S.running = false; restore(); return; }
       setTimeout(() => S.btn && S.btn.click(), 600);
     };
     setTimeout(tick, 300);
@@ -90,7 +90,7 @@
       if (panel.querySelector('#vf-rev').checked) S.files.reverse();
       if (!S.files.length) return;
       S.i = 0; S.btn = null; S.running = true; S.stop = false;
-      msg(`${S.files.length}장 준비됨. 본문 맨 끝에 커서를 두고, 툴바의 이미지 버튼을 한 번 누르세요.`);
+      msg(`${S.files.length}장을 선택했습니다. 툴바의 이미지 버튼을 한 번 누르세요.`);
     };
     origClick.call(inp);
   };
