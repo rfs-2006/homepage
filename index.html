@@ -3673,14 +3673,15 @@ class Component extends DCLogic {
     const related = REPORTS.filter((r) => r.sector === active.sector && r.id !== active.id).slice(0, 3).map(vm);
     const isPh = !active.summary;
     const opc = opStyle(active.op);
-    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['AGORA','intranet']];
+    // 세 번째 값이 있으면 별도 페이지로 이동하는 링크 (Valley AI = /valley/ 변환기)
+    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['VALLEY AI','valley','/valley/'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
       : s.page === 'activity' ? 'about' : s.page;
-    const navItems = navDefs.map(([label, page]) => ({
-      label, href: '#' + page,
-      on: (e) => { e.preventDefault(); this.go(page); },
-      cls: (navActive === page ? 'on' : '') + (page === 'intranet' ? ' hide-m' : ''),
-      hideM: page === 'intranet',
+    const navItems = navDefs.map(([label, page, url]) => ({
+      label, href: url || '#' + page,
+      on: url ? () => {} : (e) => { e.preventDefault(); this.go(page); },
+      cls: (navActive === page ? 'on' : '') + (page === 'intranet' || url ? ' hide-m' : ''),
+      hideM: page === 'intranet' || !!url,
       mcolor: navActive === page ? '#203864' : '#1A1A1A' }));
     const recruiting = status === '모집 중';
     const statusText = recruiting
