@@ -33,10 +33,10 @@ a{color:inherit}
 .hero{position:relative;min-height:100svh;background:var(--deep);color:var(--on);overflow:hidden;display:flex;flex-direction:column}
 .wall{position:absolute;inset:-30% -20%;transform:rotate(-9deg);display:flex;flex-direction:column;justify-content:center;gap:16px;pointer-events:none}
 .row{overflow:visible}
-.track{display:flex;gap:16px;width:max-content;animation:slide 120s linear infinite;will-change:transform}
-.r1 .track{animation-duration:150s;animation-direction:reverse}
-.r2 .track{animation-duration:100s}
-.r3 .track{animation-duration:135s;animation-direction:reverse}
+.track{display:flex;gap:16px;width:max-content;animation:slide 60s linear infinite;will-change:transform}
+.r1 .track{animation-duration:75s;animation-direction:reverse}
+.r2 .track{animation-duration:50s}
+.r3 .track{animation-duration:68s;animation-direction:reverse}
 .track img{width:clamp(220px,21vw,340px);aspect-ratio:16/9;object-fit:cover;display:block;filter:saturate(.75)}
 @keyframes slide{to{transform:translateX(-50%)}}
 .scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(15,27,46,.96) 0%,rgba(15,27,46,.86) 42%,rgba(15,27,46,.62) 100%),linear-gradient(to bottom,rgba(15,27,46,.35) 0%,rgba(15,27,46,0) 30%,rgba(15,27,46,.9) 100%)}
@@ -47,18 +47,11 @@ a{color:inherit}
 .brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--on-m);margin-top:1px}
 .nav a.home{font-size:11px;font-weight:600;letter-spacing:.14em;text-decoration:none;color:var(--on-m);transition:color 140ms var(--ease)}
 .nav a.home:hover{color:var(--on)}
-.hero-body{position:relative;z-index:1;flex:1;display:grid;grid-template-columns:1.08fr .92fr;grid-template-areas:"text panel" "strip panel";column-gap:64px;align-content:center;align-items:center;padding-top:24px;padding-bottom:40px}
-.hero-text{grid-area:text;align-self:end}
+.hero-body{position:relative;z-index:1;flex:1;display:grid;grid-template-columns:1fr minmax(0,520px);grid-template-areas:"text panel";column-gap:64px;align-content:center;align-items:center;padding-top:24px;padding-bottom:40px}
+.hero-text{grid-area:text}
 .hero-body .panel{grid-area:panel}
-.hero-body .strip{grid-area:strip;align-self:start}
-.hero h1{margin:22px 0 0;font-family:var(--serif);font-weight:400;font-size:clamp(36px,4.6vw,60px);line-height:1.16;letter-spacing:-.03em}
-.hero .sub{margin:22px 0 0;max-width:30em;font-size:16px;line-height:1.7;color:var(--on-m)}
-.strip{display:flex;margin-top:44px;border-top:1px solid var(--on-l)}
-@media (max-width:900px){.hero-body .strip{margin-top:0}}
-.strip div{flex:1;padding:16px 18px 0 0}
-.strip div+div{padding-left:18px;border-left:1px solid var(--on-l)}
-.strip span{display:block;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--on-m)}
-.strip b{display:block;margin-top:6px;font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.02em}
+.hero h1{margin:0;font-family:var(--serif);font-weight:700;font-size:clamp(40px,5vw,64px);line-height:1.16;letter-spacing:-.03em}
+.hero .sub{margin:18px 0 0;max-width:30em;font-size:16px;line-height:1.7;color:var(--on-m)}
 
 .panel{border:1px solid var(--on-l);background:rgba(15,27,46,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .drop{display:block;padding:44px 32px 40px;cursor:pointer;border-bottom:1px solid var(--on-l);transition:background-color 200ms var(--ease)}
@@ -66,7 +59,7 @@ a{color:inherit}
 .drop.over{outline:1px solid var(--gold);outline-offset:-1px}
 .drop input{display:none}
 .drop .k{font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--on-m)}
-.drop .t{display:block;margin-top:12px;font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.25}
+.drop .t{display:block;margin-top:0;font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.25}
 .drop .d{display:block;margin-top:10px;font-size:14px;color:var(--on-m)}
 .prog{height:2px;background:var(--on-l);margin-top:28px;overflow:hidden}
 .prog i{display:block;height:100%;width:0;background:var(--gold);transition:width 300ms var(--ease)}
@@ -122,16 +115,12 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 .hero [data-reveal]{transition-delay:calc(var(--d,0) * 90ms)}
 
 @media (max-width:900px){
-  .hero-body{grid-template-columns:1fr;grid-template-areas:"text" "panel" "strip";row-gap:32px;padding-top:12px}
-  .strip{margin-top:32px}
+  .hero-body{grid-template-columns:1fr;grid-template-areas:"text" "panel";row-gap:32px;padding-top:12px}
   .valley{grid-template-columns:1fr;gap:36px;padding-top:88px;padding-bottom:88px}
   .page{grid-template-columns:1fr;gap:12px}
 }
 @media (max-width:560px){
   .wrap{padding:0 16px}
-  .strip{flex-direction:column}
-  .strip div,.strip div+div{padding:14px 0 0;border-left:0}
-  .strip div+div{border-top:1px solid var(--on-l);margin-top:14px}
   .drop{padding:32px 20px}
   .drop .t{font-size:26px}
   .opts{grid-template-columns:1fr;padding:16px 20px 20px}
@@ -140,7 +129,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   .piece img{height:170px}
 }
 @media (prefers-reduced-motion:reduce){
-  .track{animation:none}
+  .track{animation-duration:160s}
   [data-reveal]{opacity:1;transform:none;transition:none}
 }
 </style>
@@ -155,23 +144,16 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   </div>
   <div class="wrap hero-body">
     <div class="hero-text">
-      <div class="eyebrow" data-reveal style="--d:0;color:var(--on-m)"><span>Research</span><i></i><span>Valley</span></div>
-      <h1 data-reveal style="--d:1">보고서는 그대로 두고,<br><strong style="font-weight:700">밸리에 맞게 자릅니다.</strong></h1>
-      <p class="sub" data-reveal style="--d:2">R.F.S. 기업분석 보고서 PDF를 밸리 본문 폭에 맞춰 이미지로 나눕니다. 파일은 서버에 올라가지 않습니다.</p>
-    </div>
-    <div class="strip" data-reveal style="--d:3">
-      <div><span>Side notes</span><b>날개는 해당 문단 위로</b></div>
-      <div><span>Exhibits</span><b>나란한 자료는 위아래로</b></div>
-      <div><span>Cover</span><b>표지는 네 장으로</b></div>
+      <h1 data-reveal style="--d:0">Valley 변환기</h1>
+      <p class="sub" data-reveal style="--d:1">R.F.S. 보고서 PDF를 밸리용 이미지로 잘라 줍니다.</p>
     </div>
     <div class="panel" data-reveal style="--d:2">
       <label class="drop" id="drop">
-        <span class="k">PDF</span>
-        <span class="t">PDF를 놓아 주세요</span>
-        <span class="d">클릭해서 파일을 고를 수도 있습니다.</span>
+        <span class="t">PDF 올리기</span>
+        <span class="d">끌어다 놓거나 클릭하세요.</span>
         <input type="file" id="file" accept="application/pdf">
         <div class="prog"><i id="bar"></i></div>
-        <div id="status">R.F.S. 기업분석 보고서 양식에 맞춰 동작합니다.</div>
+        <div id="status"></div>
       </label>
       <div class="opts">
         <label>해상도 <select id="dpi"><option value="300" selected>300dpi</option><option value="200">200dpi</option></select></label>
@@ -188,21 +170,20 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
   <section class="wrap results" id="results">
     <div class="res-head">
       <div>
-        <div class="eyebrow dark"><span>Output</span><i></i><span id="fname" style="text-transform:none;letter-spacing:.02em"></span></div>
-        <h2>파일 이름 순서가 <strong style="font-weight:700">곧 게시 순서입니다.</strong></h2>
+        <div class="eyebrow dark"><span id="fname" style="text-transform:none;letter-spacing:.02em"></span></div>
+        <h2><strong style="font-weight:700">변환 결과</strong></h2>
         <div class="meta" id="meta"></div>
       </div>
       <button class="btn btn-navy" id="zip" disabled>DOWNLOAD ZIP</button>
     </div>
     <div id="out"></div>
-    <p class="note">투자의견과 목표주가는 밸리 오른쪽 카드에 표시되므로 표지에서 제외했습니다. 어색하게 잘린 조각은 ZIP의 <b>original</b> 폴더에 있는 페이지 원본으로 바꿔 쓰면 됩니다.</p>
+    <p class="note">파일 이름 순서대로 올리면 됩니다. 어색한 조각은 ZIP의 <b>original</b> 폴더 원본으로 바꿔 쓰세요.</p>
   </section>
 
   <section class="wrap valley" data-reveal>
     <div>
-      <div class="eyebrow dark"><span>Bookmarklet</span></div>
-      <h2>이미지 버튼은<br><strong style="font-weight:700">한 번만 누릅니다.</strong></h2>
-      <p class="lead">북마크 하나를 설치해 두면, 고른 이미지를 파일 이름 순서대로 밸리 본문에 한 장씩 올립니다.</p>
+      <h2><strong style="font-weight:700">밸리 자동 넣기</strong></h2>
+      <p class="lead">잘라낸 이미지를 밸리 본문에 순서대로 한 번에 넣습니다.</p>
       <div class="bm-row"><a class="btn btn-navy bm" id="bm" href="#" onclick="return false">밸리 자동 넣기</a><span>북마크바로 끌어다 놓아 설치합니다.</span></div>
     </div>
     <ol class="steps">
