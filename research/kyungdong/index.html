@@ -61,11 +61,13 @@ footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @view-transition{navigation:auto}
-::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
-@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
+/* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
+@keyframes rfs-vt-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"경동나비엔 (009450) — 겨울엔 경(冬) 나비엔","description":"3Q24 매출 3,237억 원(YoY +14.3%), 영업이익 368억 원(YoY +67.3%)을 기록했다. 독자적 기술 콘덴싱과 독보적 가격 경쟁력을 기반으로 난방기기의 친환경·에너지효율화 트렌드에 따른 수혜를 받을 것으로 전망된다.","datePublished":"2024-11-26","inLanguage":"ko","url":"https://caurfs.kr/research/kyungdong/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"경동나비엔","tickerSymbol":"009450"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/24-2_kyungdong.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"경동나비엔","item":"https://caurfs.kr/research/kyungdong/"}]}]</script>
 </head>

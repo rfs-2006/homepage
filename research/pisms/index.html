@@ -61,11 +61,13 @@ footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @view-transition{navigation:auto}
-::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
-@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
+/* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
+@keyframes rfs-vt-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"PI첨단소재 (178920) — 세계 1위의 PI, 땀, 눈물","description":"세계 최대 PI필름 판매량 및 생산능력으로 2014년부터 8년 연속 글로벌 PI필름 시장 1위를 지키고 있다. 2021년 말 기준 매출액 3,019억 원(YoY +15.3%), 영업이익 759억 원(YoY +26.4%)을 기록했다.","datePublished":"2022-10-02","inLanguage":"ko","url":"https://caurfs.kr/research/pisms/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"PI첨단소재","tickerSymbol":"178920"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/22-2_pi_advanced.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"PI첨단소재","item":"https://caurfs.kr/research/pisms/"}]}]</script>
 </head>

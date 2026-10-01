@@ -61,11 +61,13 @@ footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @view-transition{navigation:auto}
-::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
-::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
-@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
-@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
+/* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
+@keyframes rfs-vt-fade{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"더존비즈온 (012510) — 더 좋은 뷰죠! 더존비즈온","description":"클라우드 전환에 발맞춘 신제품 전환으로 매출구조 전환을 이끌어내고 있다. 클라우드 제품의 특성으로 비용 절감을 이뤄내고 반복매출로 업셀링의 기회를 잡았으며, AI 어시스턴트 도입으로 선순환을 만들어냈다.","datePublished":"2024-11-26","inLanguage":"ko","url":"https://caurfs.kr/research/douzone/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"더존비즈온","tickerSymbol":"012510"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/24-2_douzone.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"더존비즈온","item":"https://caurfs.kr/research/douzone/"}]}]</script>
 </head>
