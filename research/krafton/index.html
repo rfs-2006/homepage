@@ -59,6 +59,13 @@ p{margin:0 0 10px}
 .list .meta{color:var(--muted);font-size:13px;white-space:nowrap}
 footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
+/* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+@keyframes rfs-vt-out{to{opacity:0}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"크래프톤 (259960) — inZOI with PUBG!","description":"1H24 매출액 1조 3,729억 원, 영업이익 6,426억 원으로 역대 최대 반기 매출을 기록했다. 지속적인 업데이트를 통해 강력한 트래픽과 수익성 상승이 보장된 메가 IP를 보유하고 있으며, 다양한 장르의 신규 IP 출시를 앞두고 있다.","datePublished":"2024-10-02","inLanguage":"ko","url":"https://caurfs.kr/research/krafton/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"크래프톤","tickerSymbol":"259960"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/24-2_krafton.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"크래프톤","item":"https://caurfs.kr/research/krafton/"}]}]</script>
 </head>

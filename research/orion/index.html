@@ -59,6 +59,13 @@ p{margin:0 0 10px}
 .list .meta{color:var(--muted);font-size:13px;white-space:nowrap}
 footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
+/* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+@keyframes rfs-vt-out{to{opacity:0}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"오리온 (271560) — 영업이익 사냥꾼 오리온","description":"2020년 영업이익률은 약 17%로 동종업계 평균 5%대와 비교하면 경이로운 수준이다. 높은 영업이익률을 유지하는 비결은 경쟁사에 비해 매출원가를 10%p가량 절감해내는 데 있다.","datePublished":"2021-10-03","inLanguage":"ko","url":"https://caurfs.kr/research/orion/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"오리온","tickerSymbol":"271560"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/21-2_orion.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"오리온","item":"https://caurfs.kr/research/orion/"}]}]</script>
 </head>

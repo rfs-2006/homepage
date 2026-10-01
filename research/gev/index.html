@@ -59,6 +59,13 @@ p{margin:0 0 10px}
 .list .meta{color:var(--muted);font-size:13px;white-space:nowrap}
 footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}}
+/* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:rfs-vt-out 160ms cubic-bezier(.4,0,1,1) both}
+::view-transition-new(root){animation:rfs-vt-in 340ms cubic-bezier(.23,1,.32,1) 60ms both}
+@keyframes rfs-vt-out{to{opacity:0}}
+@keyframes rfs-vt-in{from{opacity:0;transform:translateY(12px)}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
 </style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"GE Vernova (GEV) — Gas, Electrification, Wind","description":"24년 1분기 매출액 72.6억 달러(YoY +6.4%)를 달성하며 분사 이후 견고한 Top-line 성장을 증명했다. 2억 9,200만 달러의 영업 적자를 기록했으나 EBITDA 흑자 전환을 시작으로 24년 실적 턴어라운드, 25년 모든 부문의 수익성 증가가 가능할 것으로 전망한다.","datePublished":"2024-05-28","inLanguage":"ko","url":"https://caurfs.kr/research/gev/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Corporation","name":"GE Vernova","tickerSymbol":"GEV"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/24-1_ge_vernova.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"GE Vernova","item":"https://caurfs.kr/research/gev/"}]}]</script>
 </head>
