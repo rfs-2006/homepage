@@ -189,7 +189,9 @@ a:hover{color:#203864}
 @keyframes boot-zoom{from{transform:scale(1.06)}to{transform:scale(1)}}
 @keyframes boot-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes boot-fill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@media (prefers-reduced-motion:reduce){.boot-img,.boot-seal,.boot-cap{animation:none}.boot-line::after{animation-duration:1ms}}
+/* 동작 줄이기 설정: 배경 확대는 빼고 로고·문구는 움직임 없이 페이드만, 선 채우기(진행 표시)는 유지 */
+@keyframes boot-fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.boot-img{animation:none}.boot-seal,.boot-cap{animation-name:boot-fade}}
 @media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:10px;letter-spacing:0.14em;line-height:1.8}}
 .page-banner{position:relative;height:280px;display:flex;align-items:flex-end;overflow:hidden}
 .page-banner h1{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 35px 40px;width:100%;box-sizing:border-box;color:#F7F6F3;font-family:'Noto Serif KR',serif;font-size:42px;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
@@ -3325,8 +3327,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const t0 = performance.now(), minHold = reduce ? 200 : 1200;
+    // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
+    const t0 = performance.now(), minHold = 1200;
     const finish = () => {
       if (this._bootFinished) return;
       this._bootFinished = true;
