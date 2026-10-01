@@ -47,6 +47,18 @@ force = true
   [redirects.headers]
 
 [[redirects]]
+from = "https://remarkable-starlight-e4bf02.netlify.app/*"
+to = "https://caurfs.kr/:splat"
+status = 301
+force = true
+
+  [redirects.query]
+
+  [redirects.conditions]
+
+  [redirects.headers]
+
+[[redirects]]
 from = "/*"
 to = "/index.html"
 status = 200
