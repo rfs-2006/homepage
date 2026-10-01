@@ -58,6 +58,7 @@ button:disabled{opacity:.4;cursor:default}
   </label>
   <label><input type="checkbox" id="stack" checked> 나란한 차트를 세로로 쌓기</label>
   <label><input type="checkbox" id="wing" checked> 날개를 본문 안 박스로 옮기기</label>
+  <label><input type="checkbox" id="cover" checked> 표지 다시 배치하기</label>
 </div>
 
 <div class="bar">
@@ -66,7 +67,7 @@ button:disabled{opacity:.4;cursor:default}
 </div>
 <div id="out"></div>
 
-<p class="tip"><b>밸리에 올릴 때</b> 파일 이름 순서(p03-1, p03-2, …)대로 이미지를 넣으면 리포트 흐름 그대로 이어집니다. 표지와 마지막 재무제표 페이지는 여백만 잘라 통째로 둡니다. 잘린 모양이 이상한 페이지가 있으면 해당 조각만 원본 PNG(같은 ZIP의 <b>original</b> 폴더)로 바꿔 넣으면 됩니다.</p>
+<p class="tip"><b>밸리에 올릴 때</b> 파일 이름 순서(p03-1, p03-2, …)대로 이미지를 넣으면 리포트 흐름 그대로 이어집니다. 표지는 배너 → Stock Data·Stock Price → 요약 → Investment Fundamentals 순서로 나눕니다(투자의견·목표가는 밸리 오른쪽 카드에 나오므로 빼고, Research Team도 뺍니다). 마지막 재무제표 페이지는 여백만 잘라 통째로 둡니다. 잘린 모양이 이상한 페이지가 있으면 해당 조각만 원본 PNG(같은 ZIP의 <b>original</b> 폴더)로 바꿔 넣으면 됩니다.</p>
 </main>
 <div id="zoom"><img alt=""></div>
 
@@ -310,9 +311,70 @@ function figurePieces(img, f, opt) {
   return [cut(img, r, P)];
 }
 
+// ---------- 표지 ----------
+// 표지: 회색 배너 아래 왼쪽(요약, Investment Fundamentals)과 오른쪽(투자의견 박스, Stock Data,
+// Stock Price, Research Team) 두 칸. 밸리 오른쪽 카드에 투자의견·목표가가 이미 나오므로
+// 배너 → Stock Data·Stock Price 나란히 → 요약 → Investment Fundamentals 순서로 만든다.
+function isCover(img) {
+  // 머리글 없이 위쪽 25% 안에 페이지 폭 전체를 채우는 두꺼운 배너가 있다
+  const x0 = Math.round(.03 * img.w), x1 = Math.round(.97 * img.w); let run = 0;
+  for (let y = 0; y < .25 * img.h; y++) {
+    if (rowFrac(img, y, x0, x1) > .9) { if (++run > .04 * img.h) return true; } else run = 0;
+  }
+  return false;
+}
+function coverPieces(img) {
+  const u = img.w / 827, P = Math.round(13 * u), W = img.w;
+  const x0 = Math.round(.03 * W), x1 = Math.round(.97 * W);
+  // 배너 끝: 배너 안 흰 글씨 때문에 끊긴 구간은 이어 붙인다(간격 5% 미만)
+  let run = 0, bannerEnd = -1;
+  for (let y = 0; y < .3 * img.h; y++) {
+    if (rowFrac(img, y, x0, x1) > .9) { run++; if (bannerEnd >= 0 || run > .04 * img.h) bannerEnd = y + 1; }
+    else { run = 0; if (bannerEnd >= 0 && y - bannerEnd > .05 * img.h) break; }
+  }
+  if (bannerEnd < 0) return null;
+  // 맨 아래 회색 띠(전체 폭)와 빈 줄은 범위에서 뺀다
+  let H = img.h;
+  while (H > bannerEnd && (rowFrac(img, H - 1, x0, x1) > .9 || !rowHas(img, H - 1, 0, W))) H--;
+  // 왼쪽·오른쪽 칸 사이 빈 세로줄
+  let gx = -1;
+  for (let x = Math.round(.64 * W); x < Math.round(.72 * W); x++) if (!colHas(img, x, bannerEnd + 1, H)) { gx = x; break; }
+  if (gx < 0) return null;
+  // 왼쪽 칸에서 가장 긴 빈칸 = 요약과 Investment Fundamentals 사이
+  const L = rowGroups(img, { x0: 0, x1: gx, y0: bannerEnd + 1, y1: H }, 30 * u);
+  let split = -1, best = 0;
+  for (let i = 1; i < L.length; i++) if (L[i][0] - L[i - 1][1] > best) { best = L[i][0] - L[i - 1][1]; split = L[i][0] - Math.round(4 * u); }
+  if (split < 0) return null;
+  // 오른쪽 위: 남색 투자의견 박스를 건너뛰고, 남은 내용을 가장 긴 빈칸에서 Stock Data / Stock Price로 나눈다
+  let top = bannerEnd + 1;
+  const navy = (yy) => { let n = 0; for (let x = gx; x < W; x++) { const p = (yy * W + x) * 4, d = img.data; if (d[p + 2] > d[p] + 30 && d[p] < 90) n++; } return n / (W - gx); };
+  for (let yy = top; yy < split; yy++) if (navy(yy) > .5) top = yy + 1;
+  // 박스 테두리처럼 박스에 바로 붙어 있는 줄도 건너뛴다
+  if (top > bannerEnd + 1) while (top < split && rowHas(img, top, gx, W)) top++;
+  const R = rowGroups(img, { x0: gx, x1: W, y0: top, y1: split }, 4 * u);
+  const out = [cut(img, { x0: 0, x1: W, y0: 0, y1: bannerEnd + Math.round(2 * u) }, P)];
+  if (R.length > 1) {
+    let k = 1, g = 0;
+    for (let i = 1; i < R.length; i++) if (R[i][0] - R[i - 1][1] > g) { g = R[i][0] - R[i - 1][1]; k = i; }
+    const a = bbox(img, { x0: gx, x1: W, y0: R[0][0], y1: R[k - 1][1] }), b = bbox(img, { x0: gx, x1: W, y0: R[k][0], y1: R[R.length - 1][1] });
+    if (a && b) {
+      const A = canvasOf(img, a), B = canvasOf(img, b), gap = Math.round(40 * u);
+      const row = blank(A.width + B.width + gap, Math.max(A.height, B.height));
+      row.getContext('2d').drawImage(A, 0, 0); row.getContext('2d').drawImage(B, A.width + gap, 0);
+      out.push(pad(row, P));
+    }
+  }
+  out.push(cut(img, { x0: 0, x1: gx, y0: bannerEnd + 1, y1: split }, P));
+  out.push(cut(img, { x0: 0, x1: gx, y0: split, y1: H }, P));
+  return out.filter(Boolean);
+}
+
 function processPage(img, opt) {
   const u = img.w / 827, P = Math.round(13 * u);
-  if (!hasHeader(img)) return [cut(img, { x0: 0, x1: img.w, y0: 0, y1: img.h }, P)].filter(Boolean);
+  if (!hasHeader(img)) {
+    const c = opt.cover && isCover(img) ? coverPieces(img) : null;
+    return c && c.length ? c : [cut(img, { x0: 0, x1: img.w, y0: 0, y1: img.h }, P)].filter(Boolean);
+  }
   whiten(img, 0, Math.round(.075 * img.h)); whiten(img, Math.round(.925 * img.h), img.h);
   const figs = findFigures(img), out = []; let y = 0;
   for (const f of figs) {
@@ -327,7 +389,7 @@ function processPage(img, opt) {
 const toBlob = (c) => new Promise(r => c.toBlob(r, 'image/png'));
 
 async function run(file) {
-  const opt = { stack: $('stack').checked, wing: $('wing').checked, dpi: +$('dpi').value };
+  const opt = { stack: $('stack').checked, wing: $('wing').checked, cover: $('cover').checked, dpi: +$('dpi').value };
   results = []; $('out').innerHTML = ''; $('zip').disabled = true;
   const base = file.name.replace(/\.pdf$/i, '');
   const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
