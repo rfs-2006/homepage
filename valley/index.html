@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>밸리 이미지 변환기 | R.F.S.</title>
+<meta name="description" content="R.F.S. 리포트 PDF를 밸리(valley.town) 본문에 넣기 좋은 고화질 이미지 조각으로 잘라주는 도구. 파일은 브라우저 안에서만 처리됩니다.">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{--bg:#F7F6F3;--ink:#1A1A1A;--navy:#203864;--deep:#0F1B2E;--line:rgba(26,26,26,.14);--muted:rgba(26,26,26,.62);--card:#fff}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
+main{max-width:960px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:26px;margin:0 0 6px;color:var(--deep)}
+.lead{color:var(--muted);margin:0 0 28px;font-size:15px}
+.drop{display:block;border:1.5px dashed rgba(32,56,100,.4);border-radius:12px;background:var(--card);padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--navy);background:#F1F4F9}
+.drop b{display:block;font-size:17px;color:var(--navy);margin-bottom:4px}
+.drop span{color:var(--muted);font-size:14px}
+.drop input{display:none}
+.opts{display:flex;flex-wrap:wrap;gap:10px 24px;margin:18px 0 0;font-size:14px}
+.opts label{display:flex;align-items:center;gap:6px;cursor:pointer}
+.opts select{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff}
+.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 12px}
+#status{font-size:14px;color:var(--muted)}
+button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 16px;background:var(--navy);color:#fff;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+.page{margin:28px 0 0}
+.page h2{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 8px;border-top:1px solid var(--line);padding-top:12px}
+.pieces{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.piece{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px}
+.piece img{width:100%;height:220px;object-fit:contain;object-position:top;background:#fff;cursor:zoom-in}
+.piece a{font-size:12px;color:var(--navy);text-decoration:none}
+.piece a:hover{text-decoration:underline}
+.tip{margin-top:36px;font-size:13px;color:var(--muted);line-height:1.8}
+.tip b{color:var(--ink)}
+#zoom{position:fixed;inset:0;background:rgba(15,27,46,.85);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px;z-index:9}
+#zoom img{max-width:min(840px,100%);background:#fff}
+</style>
+</head>
+<body>
+<main>
+<h1>밸리 이미지 변환기</h1>
+<p class="lead">R.F.S. 리포트 PDF를 넣으면 밸리 본문 폭에서 크게 보이도록 잘라 줍니다. 날개(왼쪽 설명)는 해당 문단 위 박스로 옮기고, 나란히 놓인 차트 두 개는 세로로 쌓아 한 장으로 만듭니다. 파일은 서버로 올라가지 않고 이 브라우저 안에서만 처리됩니다.</p>
+
+<label class="drop" id="drop">
+  <b>PDF 파일을 끌어다 놓거나 클릭해서 선택</b>
+  <span>R.F.S. 기업분석 리포트 양식 기준</span>
+  <input type="file" id="file" accept="application/pdf">
+</label>
+
+<div class="opts">
+  <label>해상도
+    <select id="dpi"><option value="300" selected>300dpi (권장)</option><option value="200">200dpi (가벼움)</option></select>
+  </label>
+  <label><input type="checkbox" id="stack" checked> 나란한 차트를 세로로 쌓기</label>
+  <label><input type="checkbox" id="wing" checked> 날개를 본문 안 박스로 옮기기</label>
+</div>
+
+<div class="bar">
+  <div id="status">파일을 기다리는 중</div>
+  <button id="zip" disabled>ZIP으로 전체 다운로드</button>
+</div>
+<div id="out"></div>
+
+<p class="tip"><b>밸리에 올릴 때</b> 파일 이름 순서(p03-1, p03-2, …)대로 이미지를 넣으면 리포트 흐름 그대로 이어집니다. 표지와 마지막 재무제표 페이지는 여백만 잘라 통째로 둡니다. 잘린 모양이 이상한 페이지가 있으면 해당 조각만 원본 PNG(같은 ZIP의 <b>original</b> 폴더)로 바꿔 넣으면 됩니다.</p>
+</main>
+<div id="zoom"><img alt=""></div>
+
+<script type="module">
+import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
+
+const TINT = [243, 245, 249], NAVY = [31, 56, 100];
+const DARK = 235; // 이 값보다 어두운 픽셀을 내용으로 본다
+
+const $ = (id) => document.getElementById(id);
+let results = []; // {name, blob}
+
+// ---------- 픽셀 도우미 ----------
+// 페이지 하나를 {w,h,data,dark}로 들고 다닌다. dark는 1바이트 마스크.
+function makeImg(w, h, data) {
+  const dark = new Uint8Array(w * h);
+  for (let i = 0, p = 0; i < dark.length; i++, p += 4)
+    dark[i] = (data[p] < DARK || data[p + 1] < DARK || data[p + 2] < DARK) ? 1 : 0;
+  return { w, h, data, dark };
+}
+function whiten(img, y0, y1) {
+  for (let y = Math.max(0, y0); y < Math.min(img.h, y1); y++) {
+    img.data.fill(255, y * img.w * 4, (y + 1) * img.w * 4);
+    img.dark.fill(0, y * img.w, (y + 1) * img.w);
+  }
+}
+const rowHas = (img, y, x0, x1) => { const o = y * img.w; for (let x = x0; x < x1; x++) if (img.dark[o + x]) return true; return false; };
+const colHas = (img, x, y0, y1) => { for (let y = y0; y < y1; y++) if (img.dark[y * img.w + x]) return true; return false; };
+function rowFrac(img, y, x0, x1) { let n = 0; const o = y * img.w; for (let x = x0; x < x1; x++) n += img.dark[o + x]; return n / (x1 - x0); }
+
+// 사각형 영역 안 실제 내용의 경계
+function bbox(img, r) {
+  let x0 = r.x1, x1 = r.x0, y0 = r.y1, y1 = r.y0;
+  for (let y = r.y0; y < r.y1; y++) {
+    const o = y * img.w;
+    for (let x = r.x0; x < r.x1; x++) if (img.dark[o + x]) {
+      if (x < x0) x0 = x; if (x >= x1) x1 = x + 1; if (y < y0) y0 = y; if (y >= y1) y1 = y + 1;
+    }
+  }
+  return x1 > x0 ? { x0, y0, x1, y1 } : null;
+}
+// 행 단위로 내용 덩어리를 묶는다 (gap보다 긴 빈 줄이 나오면 끊음)
+function rowGroups(img, r, gap) {
+  const out = []; let s = -1, last = -1;
+  for (let y = r.y0; y < r.y1; y++) {
+    if (!rowHas(img, y, r.x0, r.x1)) continue;
+    if (s < 0) s = y; else if (y - last > gap) { out.push([s, last + 1]); s = y; }
+    last = y;
+  }
+  if (s >= 0) out.push([s, last + 1]);
+  return out;
+}
+
+// ---------- 캔버스 조각 ----------
+function canvasOf(img, r) {
+  const c = document.createElement('canvas'); c.width = r.x1 - r.x0; c.height = r.y1 - r.y0;
+  const id = c.getContext('2d').createImageData(c.width, c.height);
+  for (let y = 0; y < c.height; y++) {
+    const s = ((r.y0 + y) * img.w + r.x0) * 4;
+    id.data.set(img.data.subarray(s, s + c.width * 4), y * c.width * 4);
+  }
+  c.getContext('2d').putImageData(id, 0, 0); return c;
+}
+function blank(w, h, rgb = [255, 255, 255]) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d'); g.fillStyle = `rgb(${rgb})`; g.fillRect(0, 0, w, h); return c;
+}
+function pad(c, p) { const o = blank(c.width + 2 * p, c.height + 2 * p); o.getContext('2d').drawImage(c, p, p); return o; }
+function stackV(list, gap) {
+  const w = Math.max(...list.map(c => c.width));
+  const o = blank(w, list.reduce((a, c) => a + c.height, 0) + gap * (list.length - 1));
+  let y = 0; for (const c of list) { o.getContext('2d').drawImage(c, 0, y); y += c.height + gap; } return o;
+}
+function tintWhite(c) {
+  const g = c.getContext('2d'), id = g.getImageData(0, 0, c.width, c.height), d = id.data;
+  for (let p = 0; p < d.length; p += 4)
+    if (d[p] >= DARK && d[p + 1] >= DARK && d[p + 2] >= DARK) { d[p] = TINT[0]; d[p + 1] = TINT[1]; d[p + 2] = TINT[2]; }
+  g.putImageData(id, 0, 0); return c;
+}
+// 내용 경계로 자르고 여백 p를 두른 캔버스
+function cut(img, r, p) { const b = bbox(img, r); return b ? pad(canvasOf(img, b), p) : null; }
+
+// ---------- 레이아웃 분석 ----------
+// R.F.S. 리포트 양식: 머리글(종목명 | Equity Research)·바닥글(페이지 번호),
+// 왼쪽 약 27% 폭의 날개, 자료(차트·표)는 제목 아래·출처 위 전체 폭 가로줄로 감싸져 있다.
+function hasHeader(img) {
+  const { w, h } = img, y0 = Math.round(.035 * h), y1 = Math.round(.062 * h), y2 = Math.round(.085 * h);
+  let L = false, R = false;
+  for (let y = y0; y < y1; y++) { L ||= rowHas(img, y, 0, Math.round(.12 * w)); R ||= rowHas(img, y, Math.round(.75 * w), w); }
+  for (let y = y1; y < y2; y++) if (rowHas(img, y, 0, w)) return false;
+  return L && R;
+}
+
+// 전체 폭 가로줄(연속된 행은 하나로)
+function fullLines(img) {
+  const x0 = Math.round(.03 * img.w), x1 = Math.round(.97 * img.w), out = [];
+  for (let y = 0; y < img.h; y++) {
+    if (rowFrac(img, y, x0, x1) <= .9) continue;
+    const l = out[out.length - 1];
+    if (l && y - l[1] <= 3) l[1] = y + 1; else out.push([y, y + 1]);
+  }
+  return out;
+}
+// 줄 바로 위/아래(거리 lim 안)에 있는 글자 덩어리 [y0,y1]
+function textAbove(img, y, lim) {
+  let e = y - 1; while (e > 0 && y - e < lim && !rowHas(img, e, 0, img.w)) e--;
+  if (y - e >= lim || e <= 0) return null;
+  let s = e; while (s > 0 && rowHas(img, s - 1, 0, img.w)) s--; return [s, e + 1];
+}
+function textBelow(img, y, lim) {
+  let s = y; while (s < img.h && s - y < lim && !rowHas(img, s, 0, img.w)) s++;
+  if (s - y >= lim || s >= img.h) return null;
+  let e = s; while (e < img.h && rowHas(img, e, 0, img.w)) e++; return [s, e];
+}
+const leftmost = (img, g) => { const b = bbox(img, { x0: 0, x1: img.w, y0: g[0], y1: g[1] }); return b ? b.x0 : img.w; };
+
+// 자료(차트·표) 영역 찾기: 제목 + 윗줄 ~ 아랫줄 + 출처
+// 출처는 본문·표 글자(높이 12u 이상)보다 확연히 작은 글씨(약 8u)라 높이로 구분한다.
+function findFigures(img) {
+  const u = img.w / 827, lines = fullLines(img), figs = [];
+  let open = null;
+  for (const [a, b] of lines) {
+    if (!open) {
+      const t = textAbove(img, a, 8 * u);
+      if (t && t[1] - t[0] < 20 * u && leftmost(img, t) < .1 * img.w) open = { y0: t[0], title: t, lineY: [[a, b]] };
+      continue;
+    }
+    open.lineY.push([a, b]);
+    const s = textBelow(img, b, 8 * u);
+    if (!s || s[1] - s[0] > 10 * u || leftmost(img, s) > .1 * img.w) continue;
+    figs.push({ y0: open.y0, y1: s[1], title: open.title, lines: open.lineY }); open = null;
+  }
+  return figs;
+}
+
+// 나란한 두 자료 사이의 세로 빈칸 (가로줄은 무시). 제목이 양쪽에 다 있을 때만 나눈다.
+function splitColumn(img, f) {
+  const skip = new Uint8Array(img.h);
+  for (const [a, b] of f.lines) for (let y = a; y < b; y++) skip[y] = 1;
+  const mid = img.w / 2; let best = -1;
+  for (let x = Math.round(.44 * img.w); x < Math.round(.56 * img.w); x++) {
+    let empty = true;
+    for (let y = f.y0; y < f.y1; y++) if (!skip[y] && img.dark[y * img.w + x]) { empty = false; break; }
+    if (empty && (best < 0 || Math.abs(x - mid) < Math.abs(best - mid))) best = x;
+  }
+  if (best < 0) return -1;
+  const t = { y0: f.title[0], y1: f.title[1] };
+  return bbox(img, { ...t, x0: 0, x1: best }) && bbox(img, { ...t, x0: best, x1: img.w }) ? best : -1;
+}
+
+// 날개/본문 사이 빈 세로줄
+function gutter(img, r) {
+  const want = Math.round(.272 * img.w); let best = -1;
+  for (let x = Math.round(.255 * img.w); x < Math.round(.285 * img.w); x++)
+    if (!colHas(img, x, r.y0, r.y1) && (best < 0 || Math.abs(x - want) < Math.abs(best - want))) best = x;
+  return best;
+}
+
+// 같은 문단에 붙는 날개 메모들을 본문 폭 박스 하나로
+function wingBox(img, x0, x1, ranges, BW, u) {
+  const subs = ranges.flatMap(([s, e]) => rowGroups(img, { x0, x1, y0: s, y1: e }, 30 * u))
+    .map(([a, b]) => { const bb = bbox(img, { x0, x1, y0: a, y1: b }); return bb && canvasOf(img, bb); }).filter(Boolean);
+  if (!subs.length) return null;
+  const gx = Math.round(27 * u), padX = Math.round(23 * u), padY = Math.round(12 * u);
+  let inner;
+  const tw = subs.reduce((a, c) => a + c.width, 0) + gx * (subs.length - 1);
+  if (tw <= BW - 2 * padX) {
+    const H = Math.max(...subs.map(c => c.height)); inner = blank(tw, H); let x = 0;
+    for (const c of subs) { inner.getContext('2d').drawImage(c, x, (H - c.height) >> 1); x += c.width + gx; }
+  } else {
+    const W = Math.max(...subs.map(c => c.width)); inner = blank(W, subs.reduce((a, c) => a + c.height, 0) + 10 * u * (subs.length - 1)); let y = 0;
+    for (const c of subs) { inner.getContext('2d').drawImage(c, (W - c.width) >> 1, y); y += c.height + 10 * u; }
+  }
+  tintWhite(inner);
+  const box = blank(BW, inner.height + 2 * padY, TINT), g = box.getContext('2d');
+  g.fillStyle = `rgb(${NAVY})`; g.fillRect(0, 0, Math.max(3, Math.round(3 * u)), box.height);
+  g.drawImage(inner, padX, padY); return box;
+}
+
+// 본문 + 날개 영역
+function textRegion(img, r, opt) {
+  const u = img.w / 827, P = Math.round(13 * u);
+  const gx = gutter(img, r);
+  if (!opt.wing || gx < 0) return [cut(img, { x0: 0, x1: img.w, ...r }, P)].filter(Boolean);
+  const W = { x0: 0, x1: gx, y0: r.y0, y1: r.y1 }, B = { x0: gx, x1: img.w, y0: r.y0, y1: r.y1 };
+  const bb = bbox(img, B);
+  if (!bb) return [cut(img, { x0: 0, x1: img.w, ...r }, P)].filter(Boolean);
+  // 본문 폭은 페이지마다 같게 둬서 짧은 조각이 밸리에서 과하게 커지지 않게 한다
+  B.x0 = Math.min(bb.x0, gx + Math.round(.008 * img.w)); B.x1 = Math.max(bb.x1, Math.round(.93 * img.w)); const BW = B.x1 - B.x0;
+  // 날개 메모마다 붙을 문단의 시작을 찾는다: 위로 올라가며 줄 간격(약 9u)보다 긴 빈칸(문단 사이)을 찾는다
+  const anchors = [];
+  for (const [s, e] of rowGroups(img, W, 30 * u)) {
+    let c = r.y0, run = 0;
+    for (let y = s; y > r.y0; y--) {
+      if (rowHas(img, y, B.x0, B.x1)) { if (run >= 14 * u) { c = y + (run >> 1); break; } run = 0; }
+      else run++;
+    }
+    const last = anchors[anchors.length - 1];
+    if (last && last.c === c) last.ranges.push([s, e]); else anchors.push({ c, ranges: [[s, e]] });
+  }
+  const parts = []; let prev = r.y0;
+  for (const { c, ranges } of anchors) {
+    if (c > prev && bbox(img, { ...B, y0: prev, y1: c })) parts.push(canvasOf(img, { ...B, y0: prev, y1: c }));
+    const box = wingBox(img, W.x0, W.x1, ranges, BW, u);
+    if (box) parts.push(box);
+    prev = Math.max(prev, c);
+  }
+  if (bbox(img, { ...B, y0: prev, y1: r.y1 })) parts.push(canvasOf(img, { ...B, y0: prev, y1: r.y1 }));
+  // 본문 조각들 위아래 여백 정리 후 하나로 잇기
+  const tidy = parts.map(c => trimCanvas(c)).filter(Boolean);
+  return tidy.length ? [pad(stackV(tidy, Math.round(10 * u)), P)] : [];
+}
+function trimCanvas(c) {
+  const id = c.getContext('2d').getImageData(0, 0, c.width, c.height);
+  const im = makeImg(c.width, c.height, id.data);
+  // 날개 박스(연회색)는 통째로 남긴다
+  const b = bbox(im, { x0: 0, x1: c.width, y0: 0, y1: c.height });
+  if (!b) return null;
+  if (id.data[0] === TINT[0] && id.data[1] === TINT[1] && id.data[2] === TINT[2]) return c;
+  return canvasOf(im, { x0: 0, x1: c.width, y0: b.y0, y1: b.y1 });
+}
+
+function figurePieces(img, f, opt) {
+  const u = img.w / 827, P = Math.round(13 * u);
+  const r = { x0: 0, x1: img.w, y0: f.y0, y1: f.y1 };
+  const sx = opt.stack ? splitColumn(img, f) : -1;
+  if (sx >= 0) {
+    const L = cut(img, { ...r, x1: sx }, P), R = cut(img, { ...r, x0: sx }, P);
+    return [stackV([L, R].filter(Boolean), Math.round(13 * u))];
+  }
+  // 표가 가로줄보다 좁으면 내용 폭에 맞춰 오른쪽을 잘라 크게 보이게 한다
+  let x1 = 0;
+  const skip = new Uint8Array(img.h);
+  for (const [a, b] of f.lines) for (let y = a; y < b; y++) skip[y] = 1;
+  for (let y = f.y0; y < f.y1; y++) {
+    if (skip[y]) continue;
+    for (let x = img.w - 1; x > x1; x--) if (img.dark[y * img.w + x]) { x1 = x + 1; break; }
+  }
+  if (x1 > 0 && x1 < .85 * img.w) r.x1 = Math.min(img.w, x1 + Math.round(4 * u));
+  return [cut(img, r, P)];
+}
+
+function processPage(img, opt) {
+  const u = img.w / 827, P = Math.round(13 * u);
+  if (!hasHeader(img)) return [cut(img, { x0: 0, x1: img.w, y0: 0, y1: img.h }, P)].filter(Boolean);
+  whiten(img, 0, Math.round(.075 * img.h)); whiten(img, Math.round(.925 * img.h), img.h);
+  const figs = findFigures(img), out = []; let y = 0;
+  for (const f of figs) {
+    if (f.y0 > y) out.push(...textRegion(img, { y0: y, y1: f.y0 }, opt));
+    out.push(...figurePieces(img, f, opt)); y = f.y1;
+  }
+  if (y < img.h) out.push(...textRegion(img, { y0: y, y1: img.h }, opt));
+  return out.filter(Boolean);
+}
+
+// ---------- 실행 ----------
+const toBlob = (c) => new Promise(r => c.toBlob(r, 'image/png'));
+
+async function run(file) {
+  const opt = { stack: $('stack').checked, wing: $('wing').checked, dpi: +$('dpi').value };
+  results = []; $('out').innerHTML = ''; $('zip').disabled = true;
+  const base = file.name.replace(/\.pdf$/i, '');
+  const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+  for (let n = 1; n <= pdf.numPages; n++) {
+    $('status').textContent = `${n} / ${pdf.numPages} 페이지 처리 중…`;
+    const page = await pdf.getPage(n), vp = page.getViewport({ scale: opt.dpi / 72 });
+    const c = blank(Math.round(vp.width), Math.round(vp.height));
+    await page.render({ canvasContext: c.getContext('2d'), viewport: vp, background: 'white' }).promise;
+    const nn = String(n).padStart(2, '0');
+    results.push({ name: `original/p${nn}.png`, blob: await toBlob(c) });
+    const id = c.getContext('2d').getImageData(0, 0, c.width, c.height);
+    const pieces = processPage(makeImg(c.width, c.height, id.data), opt);
+    const sec = document.createElement('section'); sec.className = 'page';
+    sec.innerHTML = `<h2>${n}페이지 · ${pieces.length}장</h2><div class="pieces"></div>`;
+    $('out').appendChild(sec);
+    for (let k = 0; k < pieces.length; k++) {
+      const name = `p${nn}-${k + 1}.png`, blob = await toBlob(pieces[k]), url = URL.createObjectURL(blob);
+      results.push({ name, blob });
+      const d = document.createElement('div'); d.className = 'piece';
+      d.innerHTML = `<img src="${url}" alt="${name}"><a href="${url}" download="${base}_${name}">${name} 저장</a>`;
+      sec.querySelector('.pieces').appendChild(d);
+    }
+    page.cleanup();
+  }
+  const count = results.filter(r => !r.name.startsWith('original/')).length;
+  $('status').textContent = `완료: ${pdf.numPages}페이지 → ${count}장`;
+  $('zip').disabled = false; $('zip').dataset.base = base;
+}
+
+$('file').addEventListener('change', (e) => e.target.files[0] && run(e.target.files[0]).catch(err => { $('status').textContent = '오류: ' + err.message; console.error(err); }));
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) run(f).catch(err => { $('status').textContent = '오류: ' + err.message; }); });
+$('zip').addEventListener('click', async () => {
+  const z = new JSZip(); for (const r of results) z.file(r.name, r.blob);
+  const blob = await z.generateAsync({ type: 'blob' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${$('zip').dataset.base}_valley.zip`; a.click();
+});
+$('out').addEventListener('click', (e) => { if (e.target.tagName === 'IMG') { $('zoom').querySelector('img').src = e.target.src; $('zoom').style.display = 'flex'; } });
+$('zoom').addEventListener('click', () => { $('zoom').style.display = 'none'; });
+window.__valley = { run, results: () => results };
+</script>
+</body>
+</html>
