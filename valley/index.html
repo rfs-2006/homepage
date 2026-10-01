@@ -6,69 +6,214 @@
 <meta name="description" content="R.F.S. 리포트 PDF를 밸리(valley.town) 본문에 넣기 좋은 고화질 이미지 조각으로 잘라주는 도구. 파일은 브라우저 안에서만 처리됩니다.">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0F1B2E">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-:root{--bg:#F7F6F3;--ink:#1A1A1A;--navy:#203864;--deep:#0F1B2E;--line:rgba(26,26,26,.14);--muted:rgba(26,26,26,.62);--card:#fff}
+:root{--bg:#F7F6F3;--ink:#1A1A1A;--navy:#203864;--deep:#0F1B2E;--gold:#e0a63c;--line:rgba(26,26,26,.14);--muted:rgba(26,26,26,.62);--on:#F7F6F3;--on-m:rgba(247,246,243,.68);--on-l:rgba(247,246,243,.3);--ease:cubic-bezier(0.23,1,0.32,1);--serif:'Noto Serif KR',serif}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6}
-main{max-width:960px;margin:0 auto;padding:40px 16px 80px}
-h1{font-size:26px;margin:0 0 6px;color:var(--deep)}
-.lead{color:var(--muted);margin:0 0 28px;font-size:15px}
-.drop{display:block;border:1.5px dashed rgba(32,56,100,.4);border-radius:12px;background:var(--card);padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
-.drop:hover,.drop.over{border-color:var(--navy);background:#F1F4F9}
-.drop b{display:block;font-size:17px;color:var(--navy);margin-bottom:4px}
-.drop span{color:var(--muted);font-size:14px}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.6;word-break:keep-all}
+a{color:inherit}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 24px}
+.eyebrow{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+.eyebrow i{width:20px;height:1px;background:currentColor;opacity:.5}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:1px solid;border-radius:0;padding:15px 28px;font:600 12px/1 'Pretendard Variable',sans-serif;letter-spacing:.16em;cursor:pointer;text-decoration:none;transition:background-color 140ms var(--ease),color 140ms var(--ease),border-color 140ms var(--ease),transform 140ms var(--ease)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.35;cursor:default}
+.btn-light{background:var(--on);color:var(--deep);border-color:var(--on)}
+.btn-light:hover:not(:disabled){background:transparent;color:var(--on)}
+.btn-navy{background:var(--navy);color:var(--on);border-color:var(--navy)}
+.btn-navy:hover:not(:disabled){background:transparent;color:var(--navy)}
+
+/* 히어로: 리포트 표지들이 비스듬히 흘러가는 배경 */
+.hero{position:relative;min-height:100svh;background:var(--deep);color:var(--on);overflow:hidden;display:flex;flex-direction:column}
+.wall{position:absolute;inset:-30% -20%;transform:rotate(-9deg);display:flex;flex-direction:column;justify-content:center;gap:16px;pointer-events:none}
+.row{overflow:visible}
+.track{display:flex;gap:16px;width:max-content;animation:slide 120s linear infinite;will-change:transform}
+.r1 .track{animation-duration:150s;animation-direction:reverse}
+.r2 .track{animation-duration:100s}
+.r3 .track{animation-duration:135s;animation-direction:reverse}
+.track img{width:clamp(220px,21vw,340px);aspect-ratio:16/9;object-fit:cover;display:block;filter:saturate(.75)}
+@keyframes slide{to{transform:translateX(-50%)}}
+.scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(15,27,46,.96) 0%,rgba(15,27,46,.86) 42%,rgba(15,27,46,.62) 100%),linear-gradient(to bottom,rgba(15,27,46,.35) 0%,rgba(15,27,46,0) 30%,rgba(15,27,46,.9) 100%)}
+.nav{position:relative;z-index:2;height:72px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:34px;height:34px}
+.brand b{font-family:var(--serif);font-size:18px;letter-spacing:.02em}
+.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--on-m);margin-top:1px}
+.nav a.home{font-size:11px;font-weight:600;letter-spacing:.14em;text-decoration:none;color:var(--on-m);transition:color 140ms var(--ease)}
+.nav a.home:hover{color:var(--on)}
+.hero-body{position:relative;z-index:1;flex:1;display:grid;grid-template-columns:1.08fr .92fr;grid-template-areas:"text panel" "strip panel";column-gap:64px;align-content:center;align-items:center;padding-top:24px;padding-bottom:40px}
+.hero-text{grid-area:text;align-self:end}
+.hero-body .panel{grid-area:panel}
+.hero-body .strip{grid-area:strip;align-self:start}
+.hero h1{margin:22px 0 0;font-family:var(--serif);font-weight:700;font-size:clamp(36px,4.6vw,60px);line-height:1.16;letter-spacing:-.03em}
+.hero .sub{margin:22px 0 0;max-width:30em;font-size:16px;line-height:1.7;color:var(--on-m)}
+.strip{display:flex;margin-top:44px;border-top:1px solid var(--on-l)}
+@media (max-width:900px){.hero-body .strip{margin-top:0}}
+.strip div{flex:1;padding:16px 18px 0 0}
+.strip div+div{padding-left:18px;border-left:1px solid var(--on-l)}
+.strip span{display:block;font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--on-m)}
+.strip b{display:block;margin-top:6px;font-family:var(--serif);font-size:16px;font-weight:700;letter-spacing:-.02em}
+
+.panel{border:1px solid var(--on-l);background:rgba(15,27,46,.55);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.drop{display:block;padding:44px 32px 40px;cursor:pointer;border-bottom:1px solid var(--on-l);transition:background-color 200ms var(--ease)}
+.drop:hover,.drop.over{background:rgba(247,246,243,.06)}
+.drop.over{outline:1px solid var(--gold);outline-offset:-1px}
 .drop input{display:none}
-.opts{display:flex;flex-wrap:wrap;gap:10px 24px;margin:18px 0 0;font-size:14px}
-.opts label{display:flex;align-items:center;gap:6px;cursor:pointer}
-.opts select{font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:#fff}
-.bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 12px}
-#status{font-size:14px;color:var(--muted)}
-button{font:inherit;font-weight:600;border:0;border-radius:8px;padding:10px 16px;background:var(--navy);color:#fff;cursor:pointer}
-button:disabled{opacity:.4;cursor:default}
-.page{margin:28px 0 0}
-.page h2{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 8px;border-top:1px solid var(--line);padding-top:12px}
-.pieces{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.piece{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px}
-.piece img{width:100%;height:220px;object-fit:contain;object-position:top;background:#fff;cursor:zoom-in}
-.piece a{font-size:12px;color:var(--navy);text-decoration:none}
-.piece a:hover{text-decoration:underline}
-.tip{margin-top:36px;font-size:13px;color:var(--muted);line-height:1.8}
-.tip b{color:var(--ink)}
-#zoom{position:fixed;inset:0;background:rgba(15,27,46,.85);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:24px 16px;z-index:9}
+.drop .k{font-size:10px;font-weight:600;letter-spacing:.14em;color:var(--on-m)}
+.drop .t{display:block;margin-top:12px;font-family:var(--serif);font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.25}
+.drop .d{display:block;margin-top:10px;font-size:14px;color:var(--on-m)}
+.prog{height:2px;background:var(--on-l);margin-top:28px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--gold);transition:width 300ms var(--ease)}
+#status{margin-top:10px;font-size:13px;color:var(--on-m);font-variant-numeric:tabular-nums;min-height:1.6em}
+.opts{padding:18px 32px 22px;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;font-size:13px;color:var(--on-m)}
+.opts label{display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none}
+.opts input[type=checkbox]{appearance:none;-webkit-appearance:none;width:14px;height:14px;margin:0;border:1px solid var(--on-m);display:grid;place-content:center;flex:none;transition:background-color 140ms var(--ease),border-color 140ms var(--ease)}
+.opts input[type=checkbox]:checked{background:var(--gold);border-color:var(--gold)}
+.opts input[type=checkbox]:checked::after{content:"";width:6px;height:3px;border:solid var(--deep);border-width:0 0 1.5px 1.5px;transform:rotate(-45deg) translate(1px,-1px)}
+.opts select{font:inherit;color:var(--on);background:transparent;border:0;border-bottom:1px solid var(--on-l);padding:2px 18px 2px 0;border-radius:0;cursor:pointer}
+.opts select option{color:var(--ink)}
+.panel-foot{padding:0 32px 28px;display:none}
+.panel-foot.show{display:block}
+.panel-foot .btn{width:100%}
+
+/* 결과 */
+.results{display:none;padding-top:96px;padding-bottom:40px}
+.results.show{display:block}
+.res-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.res-head h2,.valley h2{margin:12px 0 0;font-family:var(--serif);font-size:clamp(28px,3.2vw,40px);font-weight:700;letter-spacing:-.03em;line-height:1.2;color:var(--deep)}
+.res-head .meta{margin-top:8px;font-size:14px;color:var(--muted)}
+.res-head .meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+.eyebrow.dark{color:var(--navy)}
+.page{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:24px 0;border-bottom:1px solid var(--line)}
+.page h3{margin:0;font-family:var(--serif);font-size:22px;font-weight:700;color:var(--deep);letter-spacing:-.02em}
+.page h3 small{display:block;margin-top:4px;font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:500;color:var(--muted);letter-spacing:0}
+.pieces{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.piece{display:flex;flex-direction:column;gap:8px}
+.piece img{width:100%;height:180px;object-fit:contain;object-position:top;background:#fff;border:1px solid var(--line);cursor:zoom-in;transition:border-color 140ms var(--ease),transform 200ms var(--ease)}
+.piece img:hover{border-color:var(--navy)}
+.piece a{font-size:12px;color:var(--muted);text-decoration:none;font-variant-numeric:tabular-nums}
+.piece a:hover{color:var(--navy)}
+.note{margin:28px 0 0;max-width:56em;font-size:13px;line-height:1.8;color:var(--muted)}
+.note b{color:var(--ink)}
+
+/* 밸리에 넣기 */
+.valley{padding-top:120px;padding-bottom:120px;display:grid;grid-template-columns:.9fr 1.1fr;gap:72px;align-items:start}
+.valley p.lead{margin:20px 0 0;font-size:15px;line-height:1.8;color:var(--muted);max-width:28em}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s;border-top:1px solid var(--line)}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;padding:18px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.7}
+.steps li::before{content:counter(s);font-family:var(--serif);font-size:20px;font-weight:700;color:var(--navy);line-height:1.3}
+.steps b{font-weight:600}
+.bm-row{display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:32px}
+.bm-row span{font-size:13px;color:var(--muted)}
+.bm{cursor:grab}
+footer{background:var(--deep);color:var(--on-m);font-size:12px;letter-spacing:.02em}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding-top:28px;padding-bottom:28px}
+#zoom{position:fixed;inset:0;background:rgba(15,27,46,.9);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:32px 16px;z-index:9;cursor:zoom-out}
 #zoom img{max-width:min(840px,100%);background:#fff}
+
+[data-reveal]{opacity:0;transform:translateY(24px);transition:opacity 700ms var(--ease),transform 700ms var(--ease)}
+[data-reveal].in{opacity:1;transform:none}
+.hero [data-reveal]{transition-delay:calc(var(--d,0) * 90ms)}
+
+@media (max-width:900px){
+  .hero-body{grid-template-columns:1fr;grid-template-areas:"text" "panel" "strip";row-gap:32px;padding-top:12px}
+  .strip{margin-top:32px}
+  .valley{grid-template-columns:1fr;gap:36px;padding-top:88px;padding-bottom:88px}
+  .page{grid-template-columns:1fr;gap:12px}
+}
+@media (max-width:560px){
+  .wrap{padding:0 16px}
+  .strip{flex-direction:column}
+  .strip div,.strip div+div{padding:14px 0 0;border-left:0}
+  .strip div+div{border-top:1px solid var(--on-l);margin-top:14px}
+  .drop{padding:32px 20px}
+  .drop .t{font-size:26px}
+  .opts{grid-template-columns:1fr;padding:16px 20px 20px}
+  .panel-foot{padding:0 20px 22px}
+  .pieces{grid-template-columns:repeat(2,1fr)}
+  .piece img{height:170px}
+}
+@media (prefers-reduced-motion:reduce){
+  .track{animation:none}
+  [data-reveal]{opacity:1;transform:none;transition:none}
+}
 </style>
 </head>
 <body>
+<section class="hero">
+  <div class="wall" aria-hidden="true"><div class="row r0"><div class="track"><img src="/assets/covers/26-2_nepes_ark-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_korean_air-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_inbody-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_sanil-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_fadu-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_jeju_semi-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_kcc-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_nepes_ark-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_korean_air-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_inbody-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_sanil-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_fadu-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_jeju_semi-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_kcc-top169.webp" alt="" loading="eager" decoding="async"></div></div><div class="row r1"><div class="track"><img src="/assets/covers/26-1_livsmed-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_oci-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_rfhic-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_samsung_ena-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_st_pharm-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_taekwang-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_ttwo-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_livsmed-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_oci-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_rfhic-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_samsung_ena-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_st_pharm-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_taekwang-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_ttwo-top169.webp" alt="" loading="eager" decoding="async"></div></div><div class="row r2"><div class="track"><img src="/assets/covers/26-2_sanil-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_fadu-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_jeju_semi-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_kcc-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_livsmed-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_oci-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_rfhic-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_sanil-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_fadu-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_jeju_semi-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_kcc-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_livsmed-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_oci-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_rfhic-top169.webp" alt="" loading="eager" decoding="async"></div></div><div class="row r3"><div class="track"><img src="/assets/covers/26-1_samsung_ena-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_st_pharm-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_taekwang-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_ttwo-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_nepes_ark-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_korean_air-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_inbody-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_samsung_ena-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_st_pharm-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_taekwang-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-1_ttwo-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_nepes_ark-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_korean_air-top169.webp" alt="" loading="eager" decoding="async"><img src="/assets/covers/26-2_inbody-top169.webp" alt="" loading="eager" decoding="async"></div></div></div>
+  <div class="scrim"></div>
+  <div class="wrap nav">
+    <a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>Rising Financial Stars</small></span></a>
+    <a class="home" href="/">홈으로</a>
+  </div>
+  <div class="wrap hero-body">
+    <div class="hero-text">
+      <div class="eyebrow" data-reveal style="--d:0;color:var(--on-m)"><span>Valley converter</span><i></i><span>R.F.S. Research</span></div>
+      <h1 data-reveal style="--d:1">리포트 한 편을,<br>밸리 한 편으로.</h1>
+      <p class="sub" data-reveal style="--d:2">PDF를 넣으면 밸리 본문 폭에서 크게 읽히도록 잘라 드립니다. 파일은 이 브라우저 밖으로 나가지 않습니다.</p>
+    </div>
+    <div class="strip" data-reveal style="--d:3">
+      <div><span>WING</span><b>날개는 문단 위 박스로</b></div>
+      <div><span>CHARTS</span><b>나란한 차트는 세로로</b></div>
+      <div><span>COVER</span><b>표지는 네 장으로</b></div>
+    </div>
+    <div class="panel" data-reveal style="--d:2">
+      <label class="drop" id="drop">
+        <span class="k">PDF</span>
+        <span class="t">여기에 끌어다 놓기</span>
+        <span class="d">또는 눌러서 리포트 파일 선택</span>
+        <input type="file" id="file" accept="application/pdf">
+        <div class="prog"><i id="bar"></i></div>
+        <div id="status">R.F.S. 기업분석 리포트 양식 기준</div>
+      </label>
+      <div class="opts">
+        <label>해상도 <select id="dpi"><option value="300" selected>300dpi 권장</option><option value="200">200dpi 가볍게</option></select></label>
+        <label><input type="checkbox" id="cover" checked> 표지 다시 배치</label>
+        <label><input type="checkbox" id="wing" checked> 날개를 본문 박스로</label>
+        <label><input type="checkbox" id="stack" checked> 나란한 차트 세로로</label>
+      </div>
+      <div class="panel-foot" id="panelFoot"><button class="btn btn-light" id="zip2">ZIP으로 전부 받기</button></div>
+    </div>
+  </div>
+</section>
+
 <main>
-<h1>밸리 이미지 변환기</h1>
-<p class="lead">R.F.S. 리포트 PDF를 넣으면 밸리 본문 폭에서 크게 보이도록 잘라 줍니다. 날개(왼쪽 설명)는 해당 문단 위 박스로 옮기고, 나란히 놓인 차트 두 개는 세로로 쌓아 한 장으로 만듭니다. 파일은 서버로 올라가지 않고 이 브라우저 안에서만 처리됩니다.</p>
+  <section class="wrap results" id="results">
+    <div class="res-head">
+      <div>
+        <div class="eyebrow dark"><span>Output</span><i></i><span id="fname" style="text-transform:none;letter-spacing:.02em"></span></div>
+        <h2>잘라낸 이미지</h2>
+        <div class="meta" id="meta"></div>
+      </div>
+      <button class="btn btn-navy" id="zip" disabled>ZIP으로 전부 받기</button>
+    </div>
+    <div id="out"></div>
+    <p class="note"><b>밸리에 올릴 때</b> 파일 이름 순서(p01-1, p01-2, …)대로 넣으면 리포트 흐름이 그대로 이어집니다. 투자의견·목표가는 밸리 오른쪽 카드에 나오므로 표지에서 뺐습니다. 모양이 어색한 조각은 ZIP 안 <b>original</b> 폴더의 페이지 원본으로 바꿔 넣으면 됩니다.</p>
+  </section>
 
-<label class="drop" id="drop">
-  <b>PDF 파일을 끌어다 놓거나 클릭해서 선택</b>
-  <span>R.F.S. 기업분석 리포트 양식 기준</span>
-  <input type="file" id="file" accept="application/pdf">
-</label>
-
-<div class="opts">
-  <label>해상도
-    <select id="dpi"><option value="300" selected>300dpi (권장)</option><option value="200">200dpi (가벼움)</option></select>
-  </label>
-  <label><input type="checkbox" id="stack" checked> 나란한 차트를 세로로 쌓기</label>
-  <label><input type="checkbox" id="wing" checked> 날개를 본문 안 박스로 옮기기</label>
-  <label><input type="checkbox" id="cover" checked> 표지 다시 배치하기</label>
-</div>
-
-<div class="bar">
-  <div id="status">파일을 기다리는 중</div>
-  <button id="zip" disabled>ZIP으로 전체 다운로드</button>
-</div>
-<div id="out"></div>
-
-<p class="tip"><b>밸리에 올릴 때</b> 파일 이름 순서(p03-1, p03-2, …)대로 이미지를 넣으면 리포트 흐름 그대로 이어집니다. 표지는 배너 → Stock Data·Stock Price → 요약 → Investment Fundamentals 순서로 나눕니다(투자의견·목표가는 밸리 오른쪽 카드에 나오므로 빼고, Research Team도 뺍니다). 마지막 재무제표 페이지는 여백만 잘라 통째로 둡니다. 잘린 모양이 이상한 페이지가 있으면 해당 조각만 원본 PNG(같은 ZIP의 <b>original</b> 폴더)로 바꿔 넣으면 됩니다.</p>
+  <section class="wrap valley" data-reveal>
+    <div>
+      <div class="eyebrow dark"><span>Valley</span><i></i><span>Bookmarklet</span></div>
+      <h2>밸리에 자동으로 넣기</h2>
+      <p class="lead">이미지를 한 장씩 올릴 필요 없이, 이미지 버튼을 한 번만 누르면 나머지는 순서대로 들어갑니다. 밸리 화면에서는 아직 시험 중인 기능입니다.</p>
+      <div class="bm-row"><a class="btn btn-navy bm" id="bm" href="#" onclick="return false">밸리 자동 넣기</a><span>이 버튼을 북마크바로 끌어다 놓으세요</span></div>
+    </div>
+    <ol class="steps">
+      <li><span>밸리 글쓰기 화면에서 이미지를 넣을 위치에 <b>커서</b>를 둡니다.</span></li>
+      <li><span>북마크바의 <b>밸리 자동 넣기</b>를 누르고, 작은 창에서 받은 PNG를 전부 고릅니다.</span></li>
+      <li><span>툴바의 <b>이미지 버튼을 한 번만</b> 누릅니다. 한 장씩 자동으로 올라가고, 다 끝나면 파일 이름 순서대로 놓입니다.</span></li>
+    </ol>
+  </section>
 </main>
+
+<footer><div class="wrap"><span>R.F.S. 중앙대학교 가치투자학회</span><span>Rising Financial Stars · Chung-Ang University</span></div></footer>
 <div id="zoom"><img alt=""></div>
 
 <script type="module">
@@ -390,11 +535,15 @@ const toBlob = (c) => new Promise(r => c.toBlob(r, 'image/png'));
 
 async function run(file) {
   const opt = { stack: $('stack').checked, wing: $('wing').checked, cover: $('cover').checked, dpi: +$('dpi').value };
-  results = []; $('out').innerHTML = ''; $('zip').disabled = true;
+  results = []; $('out').innerHTML = ''; $('zip').disabled = true; $('zip2').disabled = true;
+  $('panelFoot').classList.remove('show'); $('bar').style.width = '0';
   const base = file.name.replace(/\.pdf$/i, '');
+  $('fname').textContent = file.name;
   const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+  $('results').classList.add('show');
+  let count = 0;
   for (let n = 1; n <= pdf.numPages; n++) {
-    $('status').textContent = `${n} / ${pdf.numPages} 페이지 처리 중…`;
+    $('status').textContent = `${n} / ${pdf.numPages} 페이지 자르는 중`;
     const page = await pdf.getPage(n), vp = page.getViewport({ scale: opt.dpi / 72 });
     const c = blank(Math.round(vp.width), Math.round(vp.height));
     await page.render({ canvasContext: c.getContext('2d'), viewport: vp, background: 'white' }).promise;
@@ -403,20 +552,23 @@ async function run(file) {
     const id = c.getContext('2d').getImageData(0, 0, c.width, c.height);
     const pieces = processPage(makeImg(c.width, c.height, id.data), opt);
     const sec = document.createElement('section'); sec.className = 'page';
-    sec.innerHTML = `<h2>${n}페이지 · ${pieces.length}장</h2><div class="pieces"></div>`;
+    sec.innerHTML = `<h3>p${nn}<small>${pieces.length}장</small></h3><div class="pieces"></div>`;
     $('out').appendChild(sec);
     for (let k = 0; k < pieces.length; k++) {
       const name = `p${nn}-${k + 1}.png`, blob = await toBlob(pieces[k]), url = URL.createObjectURL(blob);
-      results.push({ name, blob });
+      results.push({ name, blob }); count++;
       const d = document.createElement('div'); d.className = 'piece';
       d.innerHTML = `<img src="${url}" alt="${name}"><a href="${url}" download="${base}_${name}">${name} 저장</a>`;
       sec.querySelector('.pieces').appendChild(d);
     }
+    $('meta').innerHTML = `<b>${n}</b> / ${pdf.numPages}페이지 · <b>${count}</b>장`;
+    $('bar').style.width = (n / pdf.numPages * 100) + '%';
     page.cleanup();
   }
-  const count = results.filter(r => !r.name.startsWith('original/')).length;
-  $('status').textContent = `완료: ${pdf.numPages}페이지 → ${count}장`;
-  $('zip').disabled = false; $('zip').dataset.base = base;
+  $('status').textContent = `완료: ${pdf.numPages}페이지에서 ${count}장`;
+  $('meta').innerHTML = `${pdf.numPages}페이지에서 <b>${count}</b>장을 잘랐습니다`;
+  $('zip').disabled = false; $('zip2').disabled = false; $('zip').dataset.base = base;
+  $('panelFoot').classList.add('show');
 }
 
 $('file').addEventListener('change', (e) => e.target.files[0] && run(e.target.files[0]).catch(err => { $('status').textContent = '오류: ' + err.message; console.error(err); }));
@@ -424,14 +576,28 @@ const drop = $('drop');
 ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('over'); }));
 ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove('over'); }));
 drop.addEventListener('drop', (e) => { const f = e.dataTransfer.files[0]; if (f) run(f).catch(err => { $('status').textContent = '오류: ' + err.message; }); });
-$('zip').addEventListener('click', async () => {
+async function downloadZip() {
   const z = new JSZip(); for (const r of results) z.file(r.name, r.blob);
   const blob = await z.generateAsync({ type: 'blob' });
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `${$('zip').dataset.base}_valley.zip`; a.click();
-});
+}
+$('zip').addEventListener('click', downloadZip);
+$('zip2').addEventListener('click', downloadZip);
 $('out').addEventListener('click', (e) => { if (e.target.tagName === 'IMG') { $('zoom').querySelector('img').src = e.target.src; $('zoom').style.display = 'flex'; } });
 $('zoom').addEventListener('click', () => { $('zoom').style.display = 'none'; });
 window.__valley = { run, results: () => results };
+
+// 북마클릿: autofill.js의 주석 줄을 빼고 javascript: 링크로 만든다
+fetch('autofill.js').then(r => r.text()).then(src => {
+  const code = src.split('\n').filter(l => !/^\s*\/\//.test(l)).join('\n').trim();
+  $('bm').href = 'javascript:' + encodeURIComponent(code);
+  $('bm').removeAttribute('onclick');
+  $('bm').addEventListener('click', (e) => { e.preventDefault(); alert('클릭하지 말고 북마크바로 끌어다 놓으세요. 그다음 밸리 글쓰기 화면에서 누르면 됩니다.'); });
+}).catch(() => {});
+
+// 스크롤하면 부드럽게 나타나기
+const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
 </script>
 </body>
 </html>
