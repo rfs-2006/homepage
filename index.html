@@ -99,15 +99,17 @@ a:hover{color:#203864}
 .tickmask:hover .ticktrack{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.ticktrack{animation:none}}
 .netmask{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.nettrack{display:flex;align-items:center;width:max-content;animation:tick 80s linear infinite;will-change:transform}
+.nettrack{display:flex;align-items:center;width:max-content;animation:tick3 80s linear infinite;will-change:transform}
+@keyframes tick3{from{transform:translateX(0)}to{transform:translateX(-33.3333%)}}
 .netrows:hover .nettrack{animation-play-state:paused}
-.netlogo{flex:none;display:flex;align-items:center;justify-content:center;height:var(--nh,72px);padding:0 clamp(22px,2.6vw,42px)}
-.netlogo img{display:block;width:auto;opacity:0.62;transition:opacity 160ms ease}
+.netlogo{flex:none;display:flex;align-items:center;justify-content:center;height:clamp(64px,10.4vh,96px);padding:0 clamp(26px,3vw,54px)}
+.netlogo img{display:block;width:auto;height:var(--h);opacity:0.82;transition:opacity 160ms ease}
 .netlogo:hover img{opacity:1}
+.nettitle{font-size:clamp(48px,6.2vw,96px) !important;letter-spacing:-0.035em;line-height:1.05}
 .netcats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:clamp(26px,4.4vh,52px) auto 0;padding-top:18px;border-top:1px solid rgba(247,246,243,0.16);max-width:860px;font-size:13px;color:rgba(247,246,243,0.62)}
 .netcats b{color:#F7F6F3;font-weight:700;font-variant-numeric:tabular-nums;margin-left:6px}
 @media (prefers-reduced-motion:reduce){.nettrack{animation:none}.netmask{overflow-x:auto}}
-@media (max-width:768px){.netlogo{--nh:52px;padding:0 18px}.netcats{font-size:12px;gap:6px 14px}}
+@media (max-width:768px){.netlogo{height:52px;padding:0 16px}.netlogo img{height:calc(var(--h) * 0.6)}.netcats{font-size:12px;gap:6px 14px}}
 .donutsvg .seg{transition:stroke-dasharray 700ms cubic-bezier(0.215,0.61,0.355,1),stroke-width 160ms ease,opacity 160ms ease}
 @media (prefers-reduced-motion:reduce){.donutsvg .seg{transition:none}}
 @media (max-width:768px){.legstrip{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:12px 16px !important;justify-items:start}}
@@ -569,15 +571,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
     <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
       <div style="padding:0 24px">
-        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Where Alumni Work</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">선배들이 <strong>증명</strong>한 자리</h2>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.72)">{{ netCount }}개 기관에서 R.F.S. 알럼나이가 일하고 있습니다</p>
+        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.72)">증권·은행·자산운용부터 대기업·공공기관까지, <strong style="color:#F7F6F3">{{ netCount }}개 기관</strong></p>
       </div>
       <div style="margin-top:30px">
-        <div class="netrows" style="display:grid;gap:clamp(8px,2vh,22px)">
+        <div class="netrows" style="display:grid;gap:0">
           <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
             <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="height:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
             </div></div>
           </sc-for>
         </div>
@@ -912,15 +914,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
       <div class="secpad" style="position:relative;z-index:1;width:100%">
         <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Where Alumni Work</p>
-          <h2 class="sec-title" style="color:#F7F6F3;font-weight:500">선배들이 <strong>증명</strong>한 자리</h2>
-          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">{{ netCount }}개 기관에서 R.F.S. 알럼나이가 일하고 있습니다</p>
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
+          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">증권·은행·자산운용부터 대기업·공공기관까지, <strong style="color:#F7F6F3">{{ netCount }}개 기관</strong></p>
         </div></div>
-        <div class="rv rv-up" style="margin-top:clamp(30px,5.4vh,68px)">
-        <div class="netrows" style="display:grid;gap:clamp(8px,2vh,22px)">
+        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
+        <div class="netrows" style="display:grid;gap:0">
           <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
             <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="height:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
             </div></div>
           </sc-for>
         </div>
@@ -3372,17 +3374,17 @@ const NETWORK = [
   { n:'지멘스 헬시니어스', f:'siemens-hc', r:2, a:4.22 },
   { n:'아시아나IDT', f:'asiana-idt', r:2, a:3.84 },
   { n:'풀무원', f:'pulmuone', r:2, a:2.98 },
-  { n:'매일', f:'maeil', r:2, a:2.24 },
+  { n:'매일', f:'maeil', r:2, a:3.27 },
   { n:'현대리바트', f:'livart', r:2, a:5.41 },
   { n:'BGF리테일', f:'bgf', r:2, a:5.23 }];
 // 알럼나이 명부 기준 재직 기관 수 (분야별)
 const NET_CATS = [{ label:'증권', n:25 }, { label:'은행', n:11 }, { label:'자산운용', n:16 }, { label:'보험·캐피탈', n:16 }, { label:'회계·법률·평가', n:9 }, { label:'기업', n:42 }, { label:'공공', n:10 }];
-const netRows = () => [0, 1, 2].map((r) => {
-  const items = NETWORK.filter((x) => x.r === r).map((x) => {
-    const hpx = Math.round(Math.min(44, Math.max(18, 30 / Math.sqrt(x.a / 3))));
+const netRows = () => [0, 1, 2, 3, 4].map((r) => {
+  const items = NETWORK.filter((x, i) => i % 5 === r).map((x) => {
+    const hpx = Math.round(Math.min(64, Math.max(26, 44 / Math.sqrt(x.a / 3))));
     return { name: x.n, src: 'assets/network/' + x.f + '.webp', hpx: hpx + 'px', h: hpx, w: Math.round(hpx * x.a) };
   });
-  return { items: items.concat(items), dur: Math.round(items.length * 3.2) + 's', dir: r % 2 ? 'reverse' : 'normal' };
+  return { items: items.concat(items, items), dur: Math.round(items.length * (4.6 + r * 0.7)) + 's', dir: r % 2 ? 'reverse' : 'normal' };
 });
 const BOX = 480, CEN = 240;
 const slices = (hover, on, drawn) => {
