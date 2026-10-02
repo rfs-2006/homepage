@@ -111,7 +111,7 @@ a:hover{color:#203864}
 .netcats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:clamp(26px,4.4vh,52px) auto 0;padding-top:18px;border-top:1px solid rgba(247,246,243,0.16);max-width:860px;font-size:13px;color:rgba(247,246,243,0.62)}
 .netcats .nettot{color:#F7F6F3}
 .netcats b{color:#F7F6F3;font-weight:700;font-variant-numeric:tabular-nums;margin-left:6px}
-@media (prefers-reduced-motion:reduce){.nettrack{animation:none}.netmask{overflow-x:auto}}
+
 @media (max-width:768px){.netlogo{height:52px;padding:0 16px}.netlogo img{height:calc(var(--h) * 0.6)}.netcats{font-size:12px;gap:6px 14px}}
 .donutsvg .seg{transition:stroke-dasharray 700ms cubic-bezier(0.215,0.61,0.355,1),stroke-width 160ms ease,opacity 160ms ease}
 @media (prefers-reduced-motion:reduce){.donutsvg .seg{transition:none}}
@@ -3325,7 +3325,7 @@ const NETWORK = [
   { n:'LS ELECTRIC', f:'lselectric', r:0, a:6.23 },
   { n:'GS건설', f:'gs', r:0, a:1.94 },
   { n:'두산건설', f:'doosan', r:0, a:6.91 },
-  { n:'미래에셋', f:'mirae', r:1, a:4.22 },
+  { n:'미래에셋증권', f:'mirae', r:1, a:4.22 },
   { n:'NH-Amundi자산운용', f:'nh-amundi', r:1, a:6.67 },
   { n:'삼성증권', f:'samsung-sec', r:1, a:3.44 },
   { n:'한국투자증권', f:'koreainv', r:1, a:7.31 },
@@ -3345,11 +3345,12 @@ const NETWORK = [
   { n:'키움증권', f:'kiwoom', r:2, a:3.21 },
   { n:'메리츠', f:'meritz', r:2, a:3.44 },
   { n:'타임폴리오자산운용', f:'timefolio', r:2, a:5.47 },
+  { n:'미래에셋자산운용', f:'mirae-am', r:2, a:3.16 },
   { n:'하나금융', f:'hana', r:2, a:4.88 },
-  { n:'삼성전자', f:'samsung', r:2, a:6.4 },
   { n:'하나은행', f:'hanabank', r:2, a:3.71 },
   { n:'신영증권', f:'shinyoung', r:2, a:4.18 },
   { n:'iM에셋자산운용', f:'imam', r:2, a:19.2 },
+  { n:'삼성전자', f:'samsung', r:2, a:6.4 },
   { n:'신용보증기금', f:'kodit', r:2, a:6.65 },
   { n:'SK증권', f:'sk', r:2, a:1.27 },
   { n:'한양증권', f:'hanyang', r:2, a:6.24 },
