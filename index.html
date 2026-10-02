@@ -98,6 +98,19 @@ a:hover{color:#203864}
 .ticktrack{animation:tick 60s linear infinite;will-change:transform}
 .tickmask:hover .ticktrack{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.ticktrack{animation:none}}
+.netmask{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.nettrack{display:flex;align-items:center;width:max-content;animation:tick3 80s linear infinite;will-change:transform}
+@keyframes tick3{from{transform:translateX(0)}to{transform:translateX(-33.3333%)}}
+.netrows:hover .nettrack{animation-play-state:paused}
+.netlogo{flex:none;display:flex;align-items:center;justify-content:center;height:clamp(64px,10.4vh,96px);padding:0 clamp(26px,3vw,54px)}
+.netlogo img{display:block;width:auto;height:var(--h);opacity:0.82;transition:opacity 160ms ease}
+.netlogo:hover img{opacity:1}
+.nettitle{font-size:clamp(48px,6.2vw,96px) !important;letter-spacing:-0.035em;line-height:1.05}
+.netcats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:clamp(26px,4.4vh,52px) auto 0;padding-top:18px;border-top:1px solid rgba(247,246,243,0.16);max-width:860px;font-size:13px;color:rgba(247,246,243,0.62)}
+.netcats .nettot{color:#F7F6F3}
+.netcats b{color:#F7F6F3;font-weight:700;font-variant-numeric:tabular-nums;margin-left:6px}
+@media (prefers-reduced-motion:reduce){.nettrack{animation:none}.netmask{overflow-x:auto}}
+@media (max-width:768px){.netlogo{height:52px;padding:0 16px}.netlogo img{height:calc(var(--h) * 0.6)}.netcats{font-size:12px;gap:6px 14px}}
 .donutsvg .seg{transition:stroke-dasharray 700ms cubic-bezier(0.215,0.61,0.355,1),stroke-width 160ms ease,opacity 160ms ease}
 @media (prefers-reduced-motion:reduce){.donutsvg .seg{transition:none}}
 @media (max-width:768px){.legstrip{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:12px 16px !important;justify-items:start}}
@@ -557,6 +570,23 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
     </section>
 
+    <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
+      <div style="padding:0 24px">
+        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
+      </div>
+      <div style="margin-top:30px">
+        <div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:0 24px"><div class="netcats"><span class="nettot">전체<b>{{ netCount }}</b></span><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
+    </section>
+
     <section id="home-research" data-nav="light" style="background:#FFFFFF;padding:64px 24px 60px">
       <div style="display:flex;align-items:baseline;justify-content:space-between">
         <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">Coverage</h2>
@@ -878,6 +908,25 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
           <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
         </div>
+      </div>
+    </section>
+
+    <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
+      <div class="secpad" style="position:relative;z-index:1;width:100%">
+        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
+        </div></div>
+        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
+        <div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div>
+        </div>
+        <div class="wrap"><div class="netcats"><span class="nettot">전체<b>{{ netCount }}</b></span><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
       </div>
     </section>
 
@@ -3254,6 +3303,102 @@ const CHART = [
   { label:'회계법인·컨설팅', pct:6, color:'#c9c3b4', ink:'#111c2e' },
   { label:'대기업', pct:27, color:'#6f6a5f', ink:'#F7F6F3' },
   { label:'공공기관', pct:5, color:'#454239', ink:'#F7F6F3' }];
+// 알럼나이 재직 기관 로고 (assets/network/*.webp, 흰색 단색). r: 줄 번호(0이 맨 위, 위로 갈수록 프레스티지 높은 순). 줄마다 앞쪽(첫 화면)은 증권·운용·LP·금융사, 은행·기업은 뒤쪽, a: 가로/세로 비율
+const NETWORK = [
+  { n:'한양증권', f:'hanyang', r:0, a:6.24 },
+  { n:'국민연금공단', f:'nps', r:0, a:4.05 },
+  { n:'J.P. Morgan', f:'jpmorgan', r:0, a:4.85 },
+  { n:'삼일PwC', f:'pwc', r:0, a:2.06 },
+  { n:'한국증권금융', f:'ksfc', r:0, a:3.59 },
+  { n:'코스콤', f:'koscom', r:0, a:5.05 },
+  { n:'삼정KPMG', f:'kpmg', r:0, a:2.5 },
+  { n:'EY한영', f:'ey', r:0, a:0.99 },
+  { n:'삼성전자', f:'samsung', r:0, a:6.4 },
+  { n:'현대자동차', f:'hyundai', r:0, a:7.67 },
+  { n:'SK증권', f:'sk', r:0, a:1.27 },
+  { n:'LG전자', f:'lg', r:0, a:2.27 },
+  { n:'메리츠', f:'meritz', r:1, a:3.44 },
+  { n:'신한자산운용', f:'shinhan-am', r:1, a:11.21 },
+  { n:'미래에셋', f:'mirae', r:1, a:4.22 },
+  { n:'한국투자증권', f:'koreainv', r:1, a:7.31 },
+  { n:'대신증권', f:'daishin', r:1, a:2.46 },
+  { n:'한국기업평가', f:'korearatings', r:1, a:1.33 },
+  { n:'삼성생명', f:'samsunglife', r:1, a:5.66 },
+  { n:'삼성화재', f:'samsungfire', r:1, a:16.13 },
+  { n:'법무법인 율촌', f:'yulchon', r:1, a:3.4 },
+  { n:'신한은행', f:'shinhan', r:1, a:3.44 },
+  { n:'하나금융', f:'hana', r:1, a:4.88 },
+  { n:'한화', f:'hanwha', r:1, a:1.53 },
+  { n:'토스', f:'toss', r:1, a:3.26 },
+  { n:'브이아이자산운용', f:'vi', r:2, a:1.16 },
+  { n:'신영증권', f:'shinyoung', r:2, a:4.18 },
+  { n:'삼성증권', f:'samsung-sec', r:2, a:3.44 },
+  { n:'타이거자산운용', f:'tiger', r:2, a:3.68 },
+  { n:'iM에셋자산운용', f:'imam', r:2, a:19.2 },
+  { n:'신용보증기금', f:'kodit', r:2, a:6.65 },
+  { n:'한국무역보험공사', f:'ksure', r:2, a:10.67 },
+  { n:'교보', f:'kyobo', r:2, a:2.01 },
+  { n:'AIA생명', f:'aia', r:2, a:2.59 },
+  { n:'DB', f:'db', r:2, a:1.78 },
+  { n:'KB손해보험', f:'kbins', r:2, a:7.5 },
+  { n:'현대해상', f:'hi', r:2, a:4.78 },
+  { n:'우리은행', f:'woori', r:2, a:6.41 },
+  { n:'하나은행', f:'hanabank', r:2, a:3.71 },
+  { n:'IBK기업은행', f:'ibk', r:2, a:4.62 },
+  { n:'롯데', f:'lotte', r:2, a:5.16 },
+  { n:'넥슨', f:'nexon', r:2, a:3.27 },
+  { n:'KT', f:'kt', r:2, a:1.23 },
+  { n:'유진투자증권', f:'eugene', r:3, a:4.12 },
+  { n:'NH-Amundi자산운용', f:'nh-amundi', r:3, a:6.67 },
+  { n:'KB금융', f:'kb', r:3, a:3.05 },
+  { n:'키움증권', f:'kiwoom', r:3, a:3.21 },
+  { n:'KIS자산평가', f:'kispricing', r:3, a:4.36 },
+  { n:'SGI서울보증', f:'sgi', r:3, a:4.97 },
+  { n:'금융결제원', f:'kftc', r:3, a:3.59 },
+  { n:'iM증권', f:'imsec', r:3, a:10.33 },
+  { n:'NH농협은행', f:'nhbank', r:3, a:6.81 },
+  { n:'SC제일은행', f:'sc', r:3, a:2.55 },
+  { n:'HD현대중공업', f:'hdhhi', r:3, a:6.0 },
+  { n:'삼성전기', f:'semco', r:3, a:4.71 },
+  { n:'아모레퍼시픽', f:'amore', r:3, a:10.0 },
+  { n:'LG유플러스', f:'lguplus', r:3, a:3.63 },
+  { n:'보쉬', f:'bosch', r:3, a:4.48 },
+  { n:'로레알', f:'loreal', r:3, a:5.52 },
+  { n:'지멘스 헬시니어스', f:'siemens-hc', r:3, a:4.22 },
+  { n:'한화큐셀', f:'qcells', r:3, a:4.23 },
+  { n:'유안타증권', f:'yuanta', r:4, a:5.1 },
+  { n:'마스턴투자운용', f:'mastern', r:4, a:3.69 },
+  { n:'KDB산업은행', f:'kdb', r:4, a:2.4 },
+  { n:'LS증권', f:'ls', r:4, a:2.22 },
+  { n:'흥국증권', f:'heungkuk', r:4, a:4.6 },
+  { n:'금융보안원', f:'fsec', r:4, a:3.23 },
+  { n:'한국전력공사', f:'kepco', r:4, a:5.08 },
+  { n:'한국수력원자력', f:'khnp', r:4, a:4.85 },
+  { n:'현대글로비스', f:'glovis', r:4, a:4.41 },
+  { n:'현대로템', f:'rotem', r:4, a:2.95 },
+  { n:'현대위아', f:'wia', r:4, a:2.77 },
+  { n:'LS ELECTRIC', f:'lselectric', r:4, a:6.23 },
+  { n:'LS전선', f:'lscable', r:4, a:5.47 },
+  { n:'LX인터내셔널', f:'lx', r:4, a:2.86 },
+  { n:'GS건설', f:'gs', r:4, a:1.94 },
+  { n:'두산건설', f:'doosan', r:4, a:6.91 },
+  { n:'KCC', f:'kcc', r:4, a:1.81 },
+  { n:'오리온', f:'orion', r:4, a:4.58 },
+  { n:'태광산업', f:'taekwang', r:4, a:4.94 },
+  { n:'한글과컴퓨터', f:'hancom', r:4, a:3.17 },
+  { n:'GS SHOP', f:'gsshop', r:4, a:5.4 },
+  { n:'농협', f:'nonghyup', r:4, a:3.11 },
+  { n:'MG새마을금고', f:'mg', r:4, a:4.45 },
+  { n:'국민건강보험공단', f:'nhis', r:4, a:2.96 }];
+// 알럼나이 명부 기준 재직 기관 수 (분야별)
+const NET_CATS = [{ label:'증권', n:25 }, { label:'은행', n:11 }, { label:'자산운용', n:16 }, { label:'보험·캐피탈', n:16 }, { label:'회계·법률·평가', n:9 }, { label:'기업', n:42 }, { label:'공공', n:10 }];
+const netRows = () => [0, 1, 2, 3, 4].map((r) => {
+  const items = NETWORK.filter((x) => x.r === r).map((x) => {
+    const hpx = Math.round(Math.min(64, Math.max(26, 44 / Math.sqrt(x.a / 3))));
+    return { name: x.n, src: 'assets/network/' + x.f + '.webp', hpx: hpx + 'px', h: hpx, w: Math.round(hpx * x.a) };
+  });
+  return { items: items.concat(items, items), dur: Math.round(items.length * (4.6 + r * 0.7)) + 's', dir: r % 2 ? 'reverse' : 'normal' };
+});
 const BOX = 480, CEN = 240;
 const slices = (hover, on, drawn) => {
   const total = CHART.reduce((a, b) => a + b.pct, 0);
@@ -3878,6 +4023,9 @@ class Component extends DCLogic {
         { n:'02', t:'1차 기업보고서', d:'20p · 세미나 발표' },
         { n:'03', t:'2차 기업보고서', d:'20p · SOHKA 학술제 출전' },
         { n:'04', t:'3차 기업보고서', d:'20p · 세미나 발표와 피드백' }],
+      netRows: netRows(),
+      netCount: NET_CATS.reduce((a, c) => a + c.n, 0),
+      netCats: NET_CATS,
       mAlumniTop: CHART.filter((c) => ['증권사','대기업','은행'].indexOf(c.label) >= 0).sort((a, b) => b.pct - a.pct).map((c) => ({ label: c.label, pct: c.pct + '%', w: Math.round(c.pct / 29 * 100) + '%', color: c.color })),
       isHome: s.page==='home', isResearch: s.page==='research', isReport: s.page==='report', isAbout: s.page==='about', isPeople: s.page==='people', isActivity: s.page==='activity', isRecruit: s.page==='recruit', isIntranet: s.page==='intranet',
       aboutHeroStats: [
@@ -4083,6 +4231,7 @@ class Component extends DCLogic {
         { label:'about', href:'#home-intro', id:'home-intro' },
         { label:'process', href:'#home-process', id:'home-process' },
         { label:'alumni', href:'#home-alumni', id:'home-alumni' },
+        { label:'network', href:'#home-network', id:'home-network' },
         { label:'coverage', href:'#home-research', id:'home-research' },
         { label:'recruiting', href:'#home-recruit', id:'home-recruit' }
       ].map((h) => ({ ...h, cls: s.activeSec === h.id ? 'active' : '' })),
