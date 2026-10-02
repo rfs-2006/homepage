@@ -98,6 +98,16 @@ a:hover{color:#203864}
 .ticktrack{animation:tick 60s linear infinite;will-change:transform}
 .tickmask:hover .ticktrack{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.ticktrack{animation:none}}
+.netmask{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+.nettrack{display:flex;align-items:center;width:max-content;animation:tick 80s linear infinite;will-change:transform}
+.netrows:hover .nettrack{animation-play-state:paused}
+.netlogo{flex:none;display:flex;align-items:center;justify-content:center;height:var(--nh,72px);padding:0 clamp(22px,2.6vw,42px)}
+.netlogo img{display:block;width:auto;opacity:0.62;transition:opacity 160ms ease}
+.netlogo:hover img{opacity:1}
+.netcats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:clamp(26px,4.4vh,52px) auto 0;padding-top:18px;border-top:1px solid rgba(247,246,243,0.16);max-width:860px;font-size:13px;color:rgba(247,246,243,0.62)}
+.netcats b{color:#F7F6F3;font-weight:700;font-variant-numeric:tabular-nums;margin-left:6px}
+@media (prefers-reduced-motion:reduce){.nettrack{animation:none}.netmask{overflow-x:auto}}
+@media (max-width:768px){.netlogo{--nh:52px;padding:0 18px}.netcats{font-size:12px;gap:6px 14px}}
 .donutsvg .seg{transition:stroke-dasharray 700ms cubic-bezier(0.215,0.61,0.355,1),stroke-width 160ms ease,opacity 160ms ease}
 @media (prefers-reduced-motion:reduce){.donutsvg .seg{transition:none}}
 @media (max-width:768px){.legstrip{display:grid !important;grid-template-columns:repeat(2,1fr) !important;gap:12px 16px !important;justify-items:start}}
@@ -557,6 +567,24 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
     </section>
 
+    <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
+      <div style="padding:0 24px">
+        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Where Alumni Work</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">선배들이 <strong>증명</strong>한 자리</h2>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.72)">{{ netCount }}개 기관에서 R.F.S. 알럼나이가 일하고 있습니다</p>
+      </div>
+      <div style="margin-top:30px">
+        <div class="netrows" style="display:grid;gap:clamp(8px,2vh,22px)">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="height:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:0 24px"><div class="netcats"><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
+    </section>
+
     <section id="home-research" data-nav="light" style="background:#FFFFFF;padding:64px 24px 60px">
       <div style="display:flex;align-items:baseline;justify-content:space-between">
         <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">Coverage</h2>
@@ -878,6 +906,26 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
           <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
         </div>
+      </div>
+    </section>
+
+    <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
+      <div class="secpad" style="position:relative;z-index:1;width:100%">
+        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Where Alumni Work</p>
+          <h2 class="sec-title" style="color:#F7F6F3;font-weight:500">선배들이 <strong>증명</strong>한 자리</h2>
+          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">{{ netCount }}개 기관에서 R.F.S. 알럼나이가 일하고 있습니다</p>
+        </div></div>
+        <div class="rv rv-up" style="margin-top:clamp(30px,5.4vh,68px)">
+        <div class="netrows" style="display:grid;gap:clamp(8px,2vh,22px)">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="height:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div>
+        </div>
+        <div class="wrap"><div class="netcats"><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
       </div>
     </section>
 
@@ -3254,6 +3302,88 @@ const CHART = [
   { label:'회계법인·컨설팅', pct:6, color:'#c9c3b4', ink:'#111c2e' },
   { label:'대기업', pct:27, color:'#6f6a5f', ink:'#F7F6F3' },
   { label:'공공기관', pct:5, color:'#454239', ink:'#F7F6F3' }];
+// 알럼나이 재직 기관 로고 (assets/network/*.webp, 흰색 단색). r: 줄 번호, a: 가로/세로 비율
+const NETWORK = [
+  { n:'삼성증권', f:'samsung-sec', r:0, a:3.44 },
+  { n:'미래에셋', f:'mirae', r:0, a:4.22 },
+  { n:'한국투자증권', f:'koreainv', r:0, a:7.31 },
+  { n:'KB금융', f:'kb', r:0, a:3.05 },
+  { n:'하나금융', f:'hana', r:0, a:4.88 },
+  { n:'메리츠', f:'meritz', r:0, a:3.44 },
+  { n:'유안타증권', f:'yuanta', r:0, a:5.1 },
+  { n:'신영증권', f:'shinyoung', r:0, a:4.18 },
+  { n:'LS증권', f:'ls', r:0, a:2.22 },
+  { n:'DB', f:'db', r:0, a:1.78 },
+  { n:'J.P. Morgan', f:'jpmorgan', r:0, a:4.85 },
+  { n:'흥국증권', f:'heungkuk', r:0, a:4.6 },
+  { n:'한화', f:'hanwha', r:0, a:1.53 },
+  { n:'SK증권', f:'sk', r:0, a:1.27 },
+  { n:'NH-Amundi자산운용', f:'nh-amundi', r:0, a:6.67 },
+  { n:'브이아이자산운용', f:'vi', r:0, a:1.16 },
+  { n:'신한자산운용', f:'shinhan-am', r:0, a:11.21 },
+  { n:'신한은행', f:'shinhan', r:1, a:3.44 },
+  { n:'IBK기업은행', f:'ibk', r:1, a:4.62 },
+  { n:'우리은행', f:'woori', r:1, a:6.41 },
+  { n:'하나은행', f:'hanabank', r:1, a:3.71 },
+  { n:'NH농협은행', f:'nhbank', r:1, a:6.81 },
+  { n:'KDB산업은행', f:'kdb', r:1, a:2.4 },
+  { n:'SC제일은행', f:'sc', r:1, a:2.55 },
+  { n:'농협', f:'nonghyup', r:1, a:3.11 },
+  { n:'MG새마을금고', f:'mg', r:1, a:4.45 },
+  { n:'삼성생명', f:'samsunglife', r:1, a:5.66 },
+  { n:'교보', f:'kyobo', r:1, a:2.01 },
+  { n:'KB손해보험', f:'kbins', r:1, a:7.5 },
+  { n:'현대해상', f:'hi', r:1, a:4.78 },
+  { n:'AIA생명', f:'aia', r:1, a:2.59 },
+  { n:'삼일PwC', f:'pwc', r:1, a:2.06 },
+  { n:'삼정KPMG', f:'kpmg', r:1, a:2.5 },
+  { n:'EY한영', f:'ey', r:1, a:0.99 },
+  { n:'한국전력공사', f:'kepco', r:1, a:5.08 },
+  { n:'한국수력원자력', f:'khnp', r:1, a:4.85 },
+  { n:'국민건강보험공단', f:'nhis', r:1, a:2.96 },
+  { n:'코스콤', f:'koscom', r:1, a:5.05 },
+  { n:'한국장학재단', f:'kosaf', r:1, a:5.08 },
+  { n:'삼성전자', f:'samsung', r:2, a:6.4 },
+  { n:'삼성전기', f:'semco', r:2, a:4.71 },
+  { n:'현대자동차', f:'hyundai', r:2, a:7.67 },
+  { n:'LG전자', f:'lg', r:2, a:2.27 },
+  { n:'현대글로비스', f:'glovis', r:2, a:4.41 },
+  { n:'현대위아', f:'wia', r:2, a:2.77 },
+  { n:'현대로템', f:'rotem', r:2, a:2.95 },
+  { n:'HD현대중공업', f:'hdhhi', r:2, a:6.0 },
+  { n:'아모레퍼시픽', f:'amore', r:2, a:10.0 },
+  { n:'LS ELECTRIC', f:'lselectric', r:2, a:6.23 },
+  { n:'LS전선', f:'lscable', r:2, a:5.47 },
+  { n:'롯데', f:'lotte', r:2, a:5.16 },
+  { n:'오리온', f:'orion', r:2, a:4.58 },
+  { n:'태광산업', f:'taekwang', r:2, a:4.94 },
+  { n:'KCC', f:'kcc', r:2, a:1.81 },
+  { n:'GS건설', f:'gs', r:2, a:1.94 },
+  { n:'두산건설', f:'doosan', r:2, a:6.91 },
+  { n:'LG유플러스', f:'lguplus', r:2, a:3.63 },
+  { n:'LG헬로비전', f:'lghello', r:2, a:6.73 },
+  { n:'KT', f:'kt', r:2, a:1.23 },
+  { n:'넥슨', f:'nexon', r:2, a:3.27 },
+  { n:'토스', f:'toss', r:2, a:3.26 },
+  { n:'한글과컴퓨터', f:'hancom', r:2, a:3.17 },
+  { n:'LX인터내셔널', f:'lx', r:2, a:2.86 },
+  { n:'GS SHOP', f:'gsshop', r:2, a:5.4 },
+  { n:'한화큐셀', f:'qcells', r:2, a:4.23 },
+  { n:'지멘스 헬시니어스', f:'siemens-hc', r:2, a:4.22 },
+  { n:'아시아나IDT', f:'asiana-idt', r:2, a:3.84 },
+  { n:'풀무원', f:'pulmuone', r:2, a:2.98 },
+  { n:'매일', f:'maeil', r:2, a:2.24 },
+  { n:'현대리바트', f:'livart', r:2, a:5.41 },
+  { n:'BGF리테일', f:'bgf', r:2, a:5.23 }];
+// 알럼나이 명부 기준 재직 기관 수 (분야별)
+const NET_CATS = [{ label:'증권', n:25 }, { label:'은행', n:11 }, { label:'자산운용', n:16 }, { label:'보험·캐피탈', n:16 }, { label:'회계·법률·평가', n:9 }, { label:'기업', n:42 }, { label:'공공', n:10 }];
+const netRows = () => [0, 1, 2].map((r) => {
+  const items = NETWORK.filter((x) => x.r === r).map((x) => {
+    const hpx = Math.round(Math.min(44, Math.max(18, 30 / Math.sqrt(x.a / 3))));
+    return { name: x.n, src: 'assets/network/' + x.f + '.webp', hpx: hpx + 'px', h: hpx, w: Math.round(hpx * x.a) };
+  });
+  return { items: items.concat(items), dur: Math.round(items.length * 3.2) + 's', dir: r % 2 ? 'reverse' : 'normal' };
+});
 const BOX = 480, CEN = 240;
 const slices = (hover, on, drawn) => {
   const total = CHART.reduce((a, b) => a + b.pct, 0);
@@ -3878,6 +4008,9 @@ class Component extends DCLogic {
         { n:'02', t:'1차 기업보고서', d:'20p · 세미나 발표' },
         { n:'03', t:'2차 기업보고서', d:'20p · SOHKA 학술제 출전' },
         { n:'04', t:'3차 기업보고서', d:'20p · 세미나 발표와 피드백' }],
+      netRows: netRows(),
+      netCount: NET_CATS.reduce((a, c) => a + c.n, 0),
+      netCats: NET_CATS,
       mAlumniTop: CHART.filter((c) => ['증권사','대기업','은행'].indexOf(c.label) >= 0).sort((a, b) => b.pct - a.pct).map((c) => ({ label: c.label, pct: c.pct + '%', w: Math.round(c.pct / 29 * 100) + '%', color: c.color })),
       isHome: s.page==='home', isResearch: s.page==='research', isReport: s.page==='report', isAbout: s.page==='about', isPeople: s.page==='people', isActivity: s.page==='activity', isRecruit: s.page==='recruit', isIntranet: s.page==='intranet',
       aboutHeroStats: [
@@ -4083,6 +4216,7 @@ class Component extends DCLogic {
         { label:'about', href:'#home-intro', id:'home-intro' },
         { label:'process', href:'#home-process', id:'home-process' },
         { label:'alumni', href:'#home-alumni', id:'home-alumni' },
+        { label:'network', href:'#home-network', id:'home-network' },
         { label:'coverage', href:'#home-research', id:'home-research' },
         { label:'recruiting', href:'#home-recruit', id:'home-recruit' }
       ].map((h) => ({ ...h, cls: s.activeSec === h.id ? 'active' : '' })),
