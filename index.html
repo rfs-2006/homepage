@@ -107,6 +107,7 @@ a:hover{color:#203864}
 .netlogo:hover img{opacity:1}
 .nettitle{font-size:clamp(48px,6.2vw,96px) !important;letter-spacing:-0.035em;line-height:1.05}
 .netcats{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 22px;margin:clamp(26px,4.4vh,52px) auto 0;padding-top:18px;border-top:1px solid rgba(247,246,243,0.16);max-width:860px;font-size:13px;color:rgba(247,246,243,0.62)}
+.netcats .nettot{color:#F7F6F3}
 .netcats b{color:#F7F6F3;font-weight:700;font-variant-numeric:tabular-nums;margin-left:6px}
 @media (prefers-reduced-motion:reduce){.nettrack{animation:none}.netmask{overflow-x:auto}}
 @media (max-width:768px){.netlogo{height:52px;padding:0 16px}.netlogo img{height:calc(var(--h) * 0.6)}.netcats{font-size:12px;gap:6px 14px}}
@@ -573,7 +574,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div style="padding:0 24px">
         <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
         <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.72)">증권·은행·자산운용부터 대기업·공공기관까지, <strong style="color:#F7F6F3">{{ netCount }}개 기관</strong></p>
       </div>
       <div style="margin-top:30px">
         <div class="netrows" style="display:grid;gap:0">
@@ -584,7 +584,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           </sc-for>
         </div>
       </div>
-      <div style="padding:0 24px"><div class="netcats"><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
+      <div style="padding:0 24px"><div class="netcats"><span class="nettot">전체<b>{{ netCount }}</b></span><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
     </section>
 
     <section id="home-research" data-nav="light" style="background:#FFFFFF;padding:64px 24px 60px">
@@ -916,7 +916,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
           <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
           <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
-          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">증권·은행·자산운용부터 대기업·공공기관까지, <strong style="color:#F7F6F3">{{ netCount }}개 기관</strong></p>
         </div></div>
         <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
         <div class="netrows" style="display:grid;gap:0">
@@ -927,7 +926,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           </sc-for>
         </div>
         </div>
-        <div class="wrap"><div class="netcats"><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
+        <div class="wrap"><div class="netcats"><span class="nettot">전체<b>{{ netCount }}</b></span><sc-for list="{{ netCats }}" as="c" hint-placeholder-count="7"><span>{{ c.label }}<b>{{ c.n }}</b></span></sc-for></div></div>
       </div>
     </section>
 
@@ -3304,83 +3303,76 @@ const CHART = [
   { label:'회계법인·컨설팅', pct:6, color:'#c9c3b4', ink:'#111c2e' },
   { label:'대기업', pct:27, color:'#6f6a5f', ink:'#F7F6F3' },
   { label:'공공기관', pct:5, color:'#454239', ink:'#F7F6F3' }];
-// 알럼나이 재직 기관 로고 (assets/network/*.webp, 흰색 단색). r: 줄 번호, a: 가로/세로 비율
+// 알럼나이 재직 기관 로고 (assets/network/*.webp, 흰색 단색). r: 줄 번호(0이 맨 위, 위로 갈수록 프레스티지 높은 순), a: 가로/세로 비율
 const NETWORK = [
+  { n:'J.P. Morgan', f:'jpmorgan', r:0, a:4.85 },
   { n:'삼성증권', f:'samsung-sec', r:0, a:3.44 },
   { n:'미래에셋', f:'mirae', r:0, a:4.22 },
   { n:'한국투자증권', f:'koreainv', r:0, a:7.31 },
   { n:'KB금융', f:'kb', r:0, a:3.05 },
+  { n:'신한은행', f:'shinhan', r:0, a:3.44 },
   { n:'하나금융', f:'hana', r:0, a:4.88 },
   { n:'메리츠', f:'meritz', r:0, a:3.44 },
-  { n:'유안타증권', f:'yuanta', r:0, a:5.1 },
-  { n:'신영증권', f:'shinyoung', r:0, a:4.18 },
-  { n:'LS증권', f:'ls', r:0, a:2.22 },
-  { n:'DB', f:'db', r:0, a:1.78 },
-  { n:'J.P. Morgan', f:'jpmorgan', r:0, a:4.85 },
-  { n:'흥국증권', f:'heungkuk', r:0, a:4.6 },
-  { n:'한화', f:'hanwha', r:0, a:1.53 },
-  { n:'SK증권', f:'sk', r:0, a:1.27 },
-  { n:'NH-Amundi자산운용', f:'nh-amundi', r:0, a:6.67 },
-  { n:'브이아이자산운용', f:'vi', r:0, a:1.16 },
-  { n:'신한자산운용', f:'shinhan-am', r:0, a:11.21 },
-  { n:'신한은행', f:'shinhan', r:1, a:3.44 },
-  { n:'IBK기업은행', f:'ibk', r:1, a:4.62 },
+  { n:'KDB산업은행', f:'kdb', r:0, a:2.4 },
+  { n:'삼일PwC', f:'pwc', r:0, a:2.06 },
+  { n:'삼정KPMG', f:'kpmg', r:0, a:2.5 },
+  { n:'EY한영', f:'ey', r:0, a:0.99 },
+  { n:'SC제일은행', f:'sc', r:0, a:2.55 },
+  { n:'삼성전자', f:'samsung', r:1, a:6.4 },
+  { n:'현대자동차', f:'hyundai', r:1, a:7.67 },
+  { n:'SK증권', f:'sk', r:1, a:1.27 },
+  { n:'LG전자', f:'lg', r:1, a:2.27 },
+  { n:'한화', f:'hanwha', r:1, a:1.53 },
+  { n:'롯데', f:'lotte', r:1, a:5.16 },
+  { n:'삼성생명', f:'samsunglife', r:1, a:5.66 },
   { n:'우리은행', f:'woori', r:1, a:6.41 },
   { n:'하나은행', f:'hanabank', r:1, a:3.71 },
+  { n:'IBK기업은행', f:'ibk', r:1, a:4.62 },
   { n:'NH농협은행', f:'nhbank', r:1, a:6.81 },
-  { n:'KDB산업은행', f:'kdb', r:1, a:2.4 },
-  { n:'SC제일은행', f:'sc', r:1, a:2.55 },
-  { n:'농협', f:'nonghyup', r:1, a:3.11 },
-  { n:'MG새마을금고', f:'mg', r:1, a:4.45 },
-  { n:'삼성생명', f:'samsunglife', r:1, a:5.66 },
   { n:'교보', f:'kyobo', r:1, a:2.01 },
-  { n:'KB손해보험', f:'kbins', r:1, a:7.5 },
-  { n:'현대해상', f:'hi', r:1, a:4.78 },
   { n:'AIA생명', f:'aia', r:1, a:2.59 },
-  { n:'삼일PwC', f:'pwc', r:1, a:2.06 },
-  { n:'삼정KPMG', f:'kpmg', r:1, a:2.5 },
-  { n:'EY한영', f:'ey', r:1, a:0.99 },
-  { n:'한국전력공사', f:'kepco', r:1, a:5.08 },
-  { n:'한국수력원자력', f:'khnp', r:1, a:4.85 },
-  { n:'국민건강보험공단', f:'nhis', r:1, a:2.96 },
-  { n:'코스콤', f:'koscom', r:1, a:5.05 },
-  { n:'한국장학재단', f:'kosaf', r:1, a:5.08 },
-  { n:'삼성전자', f:'samsung', r:2, a:6.4 },
-  { n:'삼성전기', f:'semco', r:2, a:4.71 },
-  { n:'현대자동차', f:'hyundai', r:2, a:7.67 },
-  { n:'LG전자', f:'lg', r:2, a:2.27 },
-  { n:'현대글로비스', f:'glovis', r:2, a:4.41 },
-  { n:'현대위아', f:'wia', r:2, a:2.77 },
-  { n:'현대로템', f:'rotem', r:2, a:2.95 },
-  { n:'HD현대중공업', f:'hdhhi', r:2, a:6.0 },
-  { n:'아모레퍼시픽', f:'amore', r:2, a:10.0 },
-  { n:'LS ELECTRIC', f:'lselectric', r:2, a:6.23 },
-  { n:'LS전선', f:'lscable', r:2, a:5.47 },
-  { n:'롯데', f:'lotte', r:2, a:5.16 },
-  { n:'오리온', f:'orion', r:2, a:4.58 },
-  { n:'태광산업', f:'taekwang', r:2, a:4.94 },
-  { n:'KCC', f:'kcc', r:2, a:1.81 },
-  { n:'GS건설', f:'gs', r:2, a:1.94 },
-  { n:'두산건설', f:'doosan', r:2, a:6.91 },
-  { n:'LG유플러스', f:'lguplus', r:2, a:3.63 },
-  { n:'LG헬로비전', f:'lghello', r:2, a:6.73 },
-  { n:'KT', f:'kt', r:2, a:1.23 },
-  { n:'넥슨', f:'nexon', r:2, a:3.27 },
+  { n:'DB', f:'db', r:1, a:1.78 },
   { n:'토스', f:'toss', r:2, a:3.26 },
-  { n:'한글과컴퓨터', f:'hancom', r:2, a:3.17 },
+  { n:'넥슨', f:'nexon', r:2, a:3.27 },
+  { n:'KT', f:'kt', r:2, a:1.23 },
+  { n:'HD현대중공업', f:'hdhhi', r:2, a:6.0 },
+  { n:'삼성전기', f:'semco', r:2, a:4.71 },
+  { n:'현대글로비스', f:'glovis', r:2, a:4.41 },
+  { n:'LG유플러스', f:'lguplus', r:2, a:3.63 },
+  { n:'아모레퍼시픽', f:'amore', r:2, a:10.0 },
   { n:'LX인터내셔널', f:'lx', r:2, a:2.86 },
-  { n:'GS SHOP', f:'gsshop', r:2, a:5.4 },
+  { n:'GS건설', f:'gs', r:2, a:1.94 },
   { n:'한화큐셀', f:'qcells', r:2, a:4.23 },
   { n:'지멘스 헬시니어스', f:'siemens-hc', r:2, a:4.22 },
-  { n:'아시아나IDT', f:'asiana-idt', r:2, a:3.84 },
-  { n:'풀무원', f:'pulmuone', r:2, a:2.98 },
-  { n:'매일', f:'maeil', r:2, a:3.27 },
-  { n:'현대리바트', f:'livart', r:2, a:5.41 },
-  { n:'BGF리테일', f:'bgf', r:2, a:5.23 }];
+  { n:'한국전력공사', f:'kepco', r:2, a:5.08 },
+  { n:'한국수력원자력', f:'khnp', r:2, a:4.85 },
+  { n:'유안타증권', f:'yuanta', r:3, a:5.1 },
+  { n:'신영증권', f:'shinyoung', r:3, a:4.18 },
+  { n:'LS증권', f:'ls', r:3, a:2.22 },
+  { n:'흥국증권', f:'heungkuk', r:3, a:4.6 },
+  { n:'NH-Amundi자산운용', f:'nh-amundi', r:3, a:6.67 },
+  { n:'신한자산운용', f:'shinhan-am', r:3, a:11.21 },
+  { n:'브이아이자산운용', f:'vi', r:3, a:1.16 },
+  { n:'KB손해보험', f:'kbins', r:3, a:7.5 },
+  { n:'현대해상', f:'hi', r:3, a:4.78 },
+  { n:'농협', f:'nonghyup', r:3, a:3.11 },
+  { n:'현대로템', f:'rotem', r:3, a:2.95 },
+  { n:'현대위아', f:'wia', r:3, a:2.77 },
+  { n:'LS ELECTRIC', f:'lselectric', r:3, a:6.23 },
+  { n:'LS전선', f:'lscable', r:3, a:5.47 },
+  { n:'두산건설', f:'doosan', r:4, a:6.91 },
+  { n:'KCC', f:'kcc', r:4, a:1.81 },
+  { n:'오리온', f:'orion', r:4, a:4.58 },
+  { n:'태광산업', f:'taekwang', r:4, a:4.94 },
+  { n:'한글과컴퓨터', f:'hancom', r:4, a:3.17 },
+  { n:'GS SHOP', f:'gsshop', r:4, a:5.4 },
+  { n:'MG새마을금고', f:'mg', r:4, a:4.45 },
+  { n:'국민건강보험공단', f:'nhis', r:4, a:2.96 },
+  { n:'코스콤', f:'koscom', r:4, a:5.05 }];
 // 알럼나이 명부 기준 재직 기관 수 (분야별)
 const NET_CATS = [{ label:'증권', n:25 }, { label:'은행', n:11 }, { label:'자산운용', n:16 }, { label:'보험·캐피탈', n:16 }, { label:'회계·법률·평가', n:9 }, { label:'기업', n:42 }, { label:'공공', n:10 }];
 const netRows = () => [0, 1, 2, 3, 4].map((r) => {
-  const items = NETWORK.filter((x, i) => i % 5 === r).map((x) => {
+  const items = NETWORK.filter((x) => x.r === r).map((x) => {
     const hpx = Math.round(Math.min(64, Math.max(26, 44 / Math.sqrt(x.a / 3))));
     return { name: x.n, src: 'assets/network/' + x.f + '.webp', hpx: hpx + 'px', h: hpx, w: Math.round(hpx * x.a) };
   });
