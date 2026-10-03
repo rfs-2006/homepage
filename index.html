@@ -576,7 +576,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
       <div style="margin-top:30px">
         <div class="netwall"><div class="netrows" style="display:grid;gap:0">
-          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+          <sc-for list="{{ mNetRows }}" as="row" hint-placeholder-count="3">
             <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
               <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
             </div></div>
@@ -3389,8 +3389,10 @@ const NETWORK = [
   { n:'한화큐셀', f:'qcells', r:4, a:4.23 },
   { n:'KCC', f:'kcc', r:4, a:1.81 },
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
-const netRows = () => [0, 1, 2, 3, 4].map((r) => {
-  const items = NETWORK.filter((x) => x.r === r).map((x) => {
+// lead: 이 줄에서 맨 앞으로 올릴 로고(모바일은 화면이 좁아 첫 줄에 J.P.Morgan·PwC부터)
+const netRows = (lead = []) => [0, 1, 2, 3, 4].map((r) => {
+  const row = NETWORK.filter((x) => x.r === r);
+  const items = row.filter((x) => lead.indexOf(x.f) >= 0).sort((a, b) => lead.indexOf(a.f) - lead.indexOf(b.f)).concat(row.filter((x) => lead.indexOf(x.f) < 0)).map((x) => {
     const hpx = Math.round(Math.min(64, Math.max(26, 44 / Math.sqrt(x.a / 3))));
     return { name: x.n, src: 'assets/network/' + x.f + '.webp', hpx: hpx + 'px', h: hpx, w: Math.round(hpx * x.a) };
   });
@@ -4021,6 +4023,7 @@ class Component extends DCLogic {
         { n:'03', t:'2차 기업보고서', d:'20p · SOHKA 학술제 출전' },
         { n:'04', t:'3차 기업보고서', d:'20p · 세미나 발표와 피드백' }],
       netRows: netRows(),
+      mNetRows: netRows(['jpmorgan', 'pwc']),
       mAlumniTop: CHART.filter((c) => ['증권사','대기업','은행'].indexOf(c.label) >= 0).sort((a, b) => b.pct - a.pct).map((c) => ({ label: c.label, pct: c.pct + '%', w: Math.round(c.pct / 29 * 100) + '%', color: c.color })),
       isHome: s.page==='home', isResearch: s.page==='research', isReport: s.page==='report', isAbout: s.page==='about', isPeople: s.page==='people', isActivity: s.page==='activity', isRecruit: s.page==='recruit', isIntranet: s.page==='intranet',
       aboutHeroStats: [
