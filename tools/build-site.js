@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // 정적 페이지·SEO 생성기. index.html의 REPORTS 배열 하나를 원천으로 아래를 다시 쓴다.
-//   1) research/<id>/index.html  리포트 개별 페이지 (없으면 새로 만든다)
+//   1) research/<id>/index.html  리포트 개별 페이지 (없으면 새로 만든다). 브라우저에서는 research/spa.js가
+//      메인 앱의 리포트 화면으로 바꿔 띄우고, 이 HTML은 검색엔진용으로 남는다
 //   2) research/index.html       전체 목록
 //   3) 루트 index.html의 <meta name="keywords"> 한 줄 (나머지는 건드리지 않음)
 //   4) sitemap.xml, robots.txt
@@ -181,6 +182,7 @@ function reportPage(r, sorted, seoOpts) {
   const rel = related(r, sorted).map((x) => `<li><a href="/research/${x.id}/"><span>${esc(`${x.name} (${x.ticker}) — ${x.headline}`)}</span><span class="meta">${esc(`${x.sector} · ${x.date}`)}</span></a></li>`).join('');
   return docStart(reportSeo(r, seoOpts)) +
 `<script type="application/ld+json">${json(ld)}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
