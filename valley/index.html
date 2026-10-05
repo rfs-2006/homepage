@@ -112,7 +112,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;
 #zoom{position:fixed;inset:0;background:rgba(15,27,46,.9);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:32px 16px;z-index:9;cursor:zoom-out}
 #zoom img{max-width:min(840px,100%);background:#fff}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
-@view-transition{navigation:auto}
+@media (min-width:1025px){@view-transition{navigation:auto}}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
 ::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
