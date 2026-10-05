@@ -361,7 +361,7 @@ input{border-radius:0;font-family:inherit}
 .rpt-paper .rpt-head{margin:0 20px !important;padding:22px 20px 24px !important}.rpt-seal{display:none}
 .rpt-paper .rpt-name{font-size:32px !important}.rpt-paper .rpt-name span{font-size:22px !important}
 .rpt-paper .detail-grid{padding:28px 20px 40px !important}.rpt-paper .detail-side{order:-1}
-.rfeat{grid-template-columns:repeat(2,minmax(0,1fr)) !important}.rcov{grid-template-columns:1fr !important;gap:32px !important}.rcov-side{position:static !important}
+.rfeat{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 .col-t{display:none}
 }
 @media (max-width:768px){
@@ -1019,7 +1019,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <p class="sec-label" style="color:rgba(247,246,243,0.65);margin:0">Latest · {{ latestTerm }}</p>
           <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(247,246,243,0.65)">전체 보기 ↓</a>
         </div>
-        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;position:relative;z-index:2">
+        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start;position:relative;z-index:2">
           <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
             <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 14px 34px rgba(15,27,46,0.14)">
               <div style="display:flex;justify-content:space-between;padding:12px 16px 8px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
@@ -1027,8 +1027,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                 <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
                 <div style="margin-top:6px;font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:14px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
               </div>
-              <div style="padding:14px 16px 0;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#203864;line-height:1.4;min-height:58px">{{ r.headline }}</div>
-              <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:12px 16px 0;padding:10px 0 14px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
+              <div style="padding:12px 16px 0;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
+              <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 16px 0;padding:9px 0 13px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
                 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
                 <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:15px">{{ r.tp }}</b></span>
                 <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
@@ -1037,29 +1037,21 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           </sc-for>
         </div>
 
-        <div id="coverage" class="rcov" style="display:grid;grid-template-columns:230px minmax(0,1fr);gap:56px;padding:96px 0 120px;scroll-margin-top:80px">
-          <aside class="rcov-side" style="position:sticky;top:96px;align-self:start">
-            <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
-            <div style="margin:28px 0 8px;font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">TERM</div>
-            <sc-for list="{{ termItems }}" as="t" hint-placeholder-count="8">
-              <a href="#coverage" onClick="{{ t.on }}" style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;color:{{ t.color }};font-weight:{{ t.weight }};font-variant-numeric:tabular-nums"><span>{{ t.label }}</span><span>{{ t.count }}</span></a>
-            </sc-for>
-            <div style="margin:26px 0 10px;font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">SECTOR</div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px">
-              <sc-for list="{{ sectorChips }}" as="c" hint-placeholder-count="8">
-                <a href="#coverage" onClick="{{ c.on }}" style="font-size:12.5px;padding:6px 10px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</a>
-              </sc-for>
-            </div>
-            <div style="margin:26px 0 10px;font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">FILTER</div>
-            <div style="display:grid;gap:8px">
-              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-            </div>
-          </aside>
+        <div id="coverage" class="rcov" style="padding:88px 0 120px;scroll-margin-top:80px">
           <div class="covtbl" style="min-width:0">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
-              <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Coverage</h2>
-              <span style="font-size:13px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }} reports</span>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+              <div>
+                <p class="sec-label" style="margin:0">Coverage</p>
+                <h2 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
+              </div>
+              <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
+              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <span style="margin-left:auto;font-size:13px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }} reports</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
               <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
@@ -1241,17 +1233,18 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">About R.F.S.</h1>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">R.F.S.</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">About R.F.S.</h1>
         
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ aboutHeroStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
@@ -1406,14 +1399,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:56vh;display:flex;align-items:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="research-mid" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Maxim Hopman on Unsplash" credit-href="https://unsplash.com/@nampoh"></image-slot></div>
-      <div class="scrim" style="opacity:0.84"></div>
-      <div class="wrap rv rv-up" style="position:relative;z-index:1;width:100%;padding:clamp(72px,10vh,120px) 35px">
-        <p class="sec-label">Portfolio</p>
-        <p style="margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.4vw,36px);font-weight:600;line-height:1.5;letter-spacing:-0.02em;color:#F7F6F3;max-width:26em">우수 투자제안서 종목은 RFS 펀드 포트폴리오에 편입되어 운용됩니다.</p>
-      </div>
-    </section>
 
   </main>
   </sc-if>
@@ -1508,13 +1493,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </div>
     </section>
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:56px 24px">
-      <div style="position:absolute;inset:0;background:#0F1B2E"></div>
-      <div style="position:relative;z-index:1">
-        <p class="sec-label">Portfolio</p>
-        <p style="margin:14px 0 0;font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;line-height:1.5;letter-spacing:-0.02em;color:#F7F6F3">우수 투자제안서 종목은 RFS 펀드 포트폴리오에 편입되어 운용됩니다.</p>
-      </div>
-    </section>
   </main>
   </sc-if>
   </sc-if>
@@ -1522,16 +1500,17 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="구성원">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">Our People</h1>
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">R.F.S. People</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Our People</h1>
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ peopleStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
@@ -1741,12 +1720,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isRecruit }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리크루팅">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="recruit-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <p class="sec-label rv rv-up">{{ recruitEyebrow }}</p>
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">Recruiting</h1>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p class="rv rv-up" style="margin:clamp(20px,3vh,32px) 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
         </sc-if>
@@ -1758,11 +1737,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <button class="btn btn-photo" onClick="{{ scrollToNotify }}">GET NOTIFIED</button>
           </sc-if>
         </div>
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ recruitStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.3vw,36px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
