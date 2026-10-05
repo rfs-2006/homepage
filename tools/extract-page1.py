@@ -39,6 +39,9 @@ def extract(path):
     if not big:
         return None
     start = max(big, key=lambda l: l['size'])['y1']
+    # 회사명 띠의 이름 줄 ('RFHIC (218410.KQ)')
+    top = [l for l in lines if l['size'] >= 26]
+    extract.name = re.sub(r'\s+', ' ', max(top, key=lambda l: l['size'])['text']).strip() if top else None
     end = next((l['y'] for l in lines if l['y'] > start and ('Investment Fundamentals' in l['text'] or 'Research Team' in l['text'] and l['size'] < 10)), 1e9)
     body = [l for l in lines if start <= l['y'] < end and 8.4 <= l['size'] < 15]
     if not body:
@@ -91,18 +94,83 @@ def extract(path):
         sections.append(cur)
     return sections
 
+def fundamentals(path):
+    """1페이지 아래 Investment Fundamentals 표: {unit, cols:[연도], rows:[[항목, 값...]]}"""
+    page = pymupdf.open(path)[0]
+    W = page.rect.width
+    ws = page.get_text('words')
+    st = [w for w in ws if w[4].startswith('Fundamentals')]
+    if not st:
+        return None
+    # 옛 양식은 표가 오른쪽 단에 있다
+    ws = [w for w in ws if w[0] >= st[0][0] - 60] if st[0][0] > W / 2 else [w for w in ws if w[0] < 0.66 * W]
+    lines = []   # y가 4pt 안쪽이면 같은 줄
+    for w in sorted((w for w in ws if w[1] >= st[0][1] - 2), key=lambda w: (w[1], w[0])):
+        if lines and abs(w[1] - lines[-1]['y']) < 4:
+            lines[-1]['w'].append(w)
+        else:
+            lines.append({'y': w[1], 'w': [w]})
+    yr = re.compile(r"(19|20)\d\d\d?(\(?[AEFP]\)?)?|\dQ\d\d[AEF]?|\d\d[AEF]|[AEF]")
+    hi = next((i for i, l in enumerate(lines) if sum(bool(yr.fullmatch(w[4])) and len(w[4]) > 1 for w in l['w']) >= 2), None)
+    if hi is None:
+        return None
+    hw = sorted([w for w in lines[hi]['w'] if yr.fullmatch(w[4])], key=lambda w: w[0])
+    left = hw[0][0] - 12
+    # 본문 줄: 표가 끝나는 곳(빈 줄, 이메일, 팀 명단)까지
+    body = []
+    for l in lines[hi + 1:]:
+        lab = ' '.join(w[4] for w in sorted(l['w']) if w[2] <= left + 6)
+        if not [w for w in l['w'] if w[2] > left + 6] or '@' in ' '.join(w[4] for w in l['w']) or re.match(r'(Research|RFS|R\.F\.S|팀장|팀원)', lab):
+            break
+        body.append((lab, [w for w in l['w'] if w[2] > left + 6]))
+    # 열 위치: 값 칸의 가운데 x를 모아 묶는다 (머리줄이 빠진 열도 잡힌다)
+    xs = sorted([(w[0] + w[2]) / 2 for _, vs in body for w in vs] + [(w[0] + w[2]) / 2 for w in hw])
+    cl = []
+    for x in xs:
+        if cl and x - sum(cl[-1]) / len(cl[-1]) < 16: cl[-1].append(x)
+        else: cl.append([x])
+    cx = [sum(c) / len(c) for c in cl if len(c) >= 3]
+    near = lambda x: min(range(len(cx)), key=lambda i: abs(x - cx[i]))
+    cols = [''] * len(cx)
+    for w in hw:
+        i = near((w[0] + w[2]) / 2); cols[i] = (cols[i] + w[4]) if re.fullmatch('[AEF]', w[4]) else (cols[i] + ' ' + w[4]).strip()
+    cols = [re.sub(r'^((?:19|20)\d\d)\d', r'\1', c) for c in cols]   # '20190' 같은 오타는 앞 네 자리만
+    rows = []
+    for lab, vs in body:
+        vals = [''] * len(cx)
+        for w in vs:
+            i = near((w[0] + w[2]) / 2); vals[i] = (vals[i] + ' ' + w[4]).strip()
+        if not lab and rows:          # 따로 잡힌 값은 윗줄 빈칸에 채운다
+            for i, v in enumerate(vals):
+                if v and not rows[-1][i + 1]: rows[-1][i + 1] = v
+            continue
+        rows.append([lab] + vals)
+    if len(rows) < 3 or not all(cols):
+        return None
+    unit = ' '.join(w[4] for l in lines[:hi] for w in sorted(l['w']) if w[0] > left)
+    m = re.search(r'\(.*\)', unit)
+    return {'unit': m.group(0) if m else '', 'cols': cols, 'rows': rows}
+
 def main():
-    out, miss = {}, []
+    out, miss, names, fund = {}, [], {}, {}
     for rid, pdf in load_reports():
         p = os.path.join(ROOT, pdf)
+        extract.name = None
         sec = extract(p) if os.path.exists(p) else None
+        if extract.name:
+            names[rid] = extract.name
+        f = fundamentals(p) if os.path.exists(p) else None
+        if f:
+            fund[rid] = f
         if sec and sum(len(x['t']) for s in sec for ps in s['ps'] for x in ps) > 150:
             out[rid] = sec
         else:
             miss.append(rid)
+    out['_names'] = names   # 리포트 화면 회사명 띠에 PDF 표기 그대로 쓴다
+    out['_fund'] = fund     # Investment Fundamentals 표
     with open(os.path.join(ROOT, 'assets', 'reports', 'page1.json'), 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, separators=(',', ':'))
-    print(f'{len(out)}건 추출, 실패 {len(miss)}건: {", ".join(miss)}')
+    print(f'표 {len(fund)}건, {len(out) - 2}건 추출, 실패 {len(miss)}건: {", ".join(miss)}')
 
 if __name__ == '__main__':
     main()
