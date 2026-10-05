@@ -362,6 +362,7 @@ input{border-radius:0;font-family:inherit}
 .rpt-paper .rpt-name{font-size:32px !important}.rpt-paper .rpt-name span{font-size:22px !important}
 .rpt-paper .detail-grid{padding:28px 20px 40px !important;grid-template-rows:auto !important}.rpt-paper .detail-grid>*{grid-column:1 !important;grid-row:auto !important}.rpt-paper .detail-side{order:-1}.rpt-paper .rpt-meta{order:2}
 .rpt-paper .detail-grid p{text-align:left !important}
+.rpt-fact{padding:8px 16px !important}.rpt-fact b{font-size:16px !important}
 .rfeat{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 .col-t{display:none}
 }
@@ -1189,9 +1190,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <aside class="detail-side" style="grid-column:2;grid-row:1;align-self:start">
             <div style="background:#203864;color:#F7F6F3">
               <sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4">
-                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid rgba(247,246,243,0.22);font-size:13px">
+                <div class="rpt-fact" style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid rgba(247,246,243,0.22);font-size:13px">
                   <span>{{ f.label }}</span>
-                  <b style="font-family:'Noto Serif KR',serif;font-size:20px;font-variant-numeric:tabular-nums">{{ f.value }}</b>
+                  <b style="font-family:'Noto Serif KR',serif;font-size:19px;font-variant-numeric:tabular-nums">{{ f.value }}</b>
                 </div>
               </sc-for>
             </div>
