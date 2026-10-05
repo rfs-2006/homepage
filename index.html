@@ -1965,6 +1965,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div style="display:flex;align-items:center;gap:18px;font-size:13px;color:rgba(26,26,26,0.65)">
           <span>{{ intraUser }}</span>
           <a href="#" onClick="{{ editMe }}" style="font-size:12px;color:rgba(247,246,243,0.6)">변경</a>
+          <a href="/valley/" title="리포트 PDF를 밸리용 이미지로 잘라 주는 도구" style="font-size:11px;font-weight:600;letter-spacing:0.12em;color:rgba(247,246,243,0.6);text-decoration:none">VALLEY AI ↗</a>
           <a href="{{ cafeUrl }}" target="_blank" rel="noopener" class="btn btn-outline" style="padding:9px 14px;font-size:11px">CAFE</a>
           <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
         </div>
@@ -3445,7 +3446,7 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 class Component extends DCLogic {
-  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'42기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:42, intraData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -3850,8 +3851,8 @@ class Component extends DCLogic {
     const related = REPORTS.filter((r) => r.sector === active.sector && r.id !== active.id).slice(0, 3).map(vm);
     const isPh = !active.summary;
     const opc = opStyle(active.op);
-    // 세 번째 값이 있으면 별도 페이지로 이동하는 링크 (Valley AI = /valley/ 변환기)
-    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['VALLEY AI','valley','/valley/'], ['AGORA','intranet']];
+    // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
+    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
       : s.page === 'activity' ? 'about' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
@@ -3888,9 +3889,10 @@ class Component extends DCLogic {
 
     const iq = (s.intraQ || '').trim();
     const allNames = [];
-    Object.keys(ROSTER).forEach((k) => ROSTER[k].forEach((n) => allNames.push({ name: n, cohort: (parseInt(k, 10) + 1) + '기' })));
+    Object.keys(ROSTER).forEach((k) => ROSTER[k].forEach((n) => allNames.push({ name: n, cohort: parseInt(k, 10) + '기' })));
     const alumniHits = iq ? allNames.filter((p) => p.name.indexOf(iq) >= 0).slice(0, 60) : [];
-    const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10) + 1).sort((a, b) => b - a);
+    // ROSTER·COHORTS의 키는 기수 그대로다 (42 = 42기)
+    const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
       isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed,
@@ -4014,8 +4016,8 @@ class Component extends DCLogic {
 
       intraOfficers: ID.OFFICERS,
       intraCohorts: cohortNums.map((n) => ({ label: n + '기', on: (e) => { e.preventDefault(); this.setState({ intraCohort: n }); }, bg: s.intraCohort === n ? '#203864' : 'transparent', color: s.intraCohort === n ? '#F7F6F3' : 'rgba(26,26,26,0.65)' })),
-      intraCohortLabel: s.intraCohort + '기', intraCohortCount: (ROSTER[s.intraCohort - 1] || []).length + '명',
-      intraCohortNames: (ROSTER[s.intraCohort - 1] || []).map((n) => ({ name: n })),
+      intraCohortLabel: s.intraCohort + '기', intraCohortCount: (ROSTER[s.intraCohort] || []).length + '명',
+      intraCohortNames: (ROSTER[s.intraCohort] || []).map((n) => ({ name: n })),
       intraQ: s.intraQ, onIntraQ: (e) => this.setState({ intraQ: e.target.value }),
       alumniHits, hasAlumniHits: alumniHits.length > 0, noAlumniHits: !!iq && alumniHits.length === 0, alumniHitCount: alumniHits.length + '명',
       alumniTotal: allNames.length + '명',
@@ -4124,11 +4126,11 @@ class Component extends DCLogic {
       q: s.q, onQuery: (e) => this.setState({ q: e.target.value, page1: 1 }),
       gridReports: byDate.filter((r) => !q || (r.name + ' ' + r.ticker + ' ' + r.sector + ' ' + r.headline).toLowerCase().includes(q)).map(cardVm),
       prevReport: prevNext.prev, nextReport: prevNext.next, hasPrev: !!prevNext.prev, hasNext: !!prevNext.next,
-      cohortCount: (ROSTER[parseInt(s.cohort, 10) - 1] || []).length + '명',
-      cohortNames: (ROSTER[parseInt(s.cohort, 10) - 1] || []).join(' · '),
+      cohortCount: (ROSTER[parseInt(s.cohort, 10)] || []).length + '명',
+      cohortNames: (ROSTER[parseInt(s.cohort, 10)] || []).join(' · '),
       cohorts: cohortDefs.map((c) => {
         const n = parseInt(c, 10);
-        return { label: c, cls: s.cohort === c ? 'on' : '', count: (COHORTS[n - 1] || 0) + '명',
+        return { label: c, cls: s.cohort === c ? 'on' : '', count: (COHORTS[n] || 0) + '명',
           color: s.cohort === c ? '#F7F6F3' : 'rgba(26,26,26,0.65)',
           bg: s.cohort === c ? '#203864' : 'transparent',
           weight: s.cohort === c ? '700' : '400',
