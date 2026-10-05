@@ -1233,17 +1233,18 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">About R.F.S.</h1>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">R.F.S.</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">About R.F.S.</h1>
         
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ aboutHeroStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
@@ -1398,14 +1399,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:56vh;display:flex;align-items:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="research-mid" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Maxim Hopman on Unsplash" credit-href="https://unsplash.com/@nampoh"></image-slot></div>
-      <div class="scrim" style="opacity:0.84"></div>
-      <div class="wrap rv rv-up" style="position:relative;z-index:1;width:100%;padding:clamp(72px,10vh,120px) 35px">
-        <p class="sec-label">Portfolio</p>
-        <p style="margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.4vw,36px);font-weight:600;line-height:1.5;letter-spacing:-0.02em;color:#F7F6F3;max-width:26em">우수 투자제안서 종목은 RFS 펀드 포트폴리오에 편입되어 운용됩니다.</p>
-      </div>
-    </section>
 
   </main>
   </sc-if>
@@ -1500,13 +1493,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </div>
     </section>
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:56px 24px">
-      <div style="position:absolute;inset:0;background:#0F1B2E"></div>
-      <div style="position:relative;z-index:1">
-        <p class="sec-label">Portfolio</p>
-        <p style="margin:14px 0 0;font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;line-height:1.5;letter-spacing:-0.02em;color:#F7F6F3">우수 투자제안서 종목은 RFS 펀드 포트폴리오에 편입되어 운용됩니다.</p>
-      </div>
-    </section>
   </main>
   </sc-if>
   </sc-if>
@@ -1514,16 +1500,17 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="구성원">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">Our People</h1>
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">R.F.S. People</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Our People</h1>
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ peopleStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
@@ -1733,12 +1720,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isRecruit }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리크루팅">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:88vh;display:flex;align-items:flex-end">
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="recruit-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:150px 35px clamp(36px,5vh,56px)">
-        <p class="sec-label rv rv-up">{{ recruitEyebrow }}</p>
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,6.4vw,96px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:0">Recruiting</h1>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
+        <p class="sec-label rv rv-up" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
+        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p class="rv rv-up" style="margin:clamp(20px,3vh,32px) 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
         </sc-if>
@@ -1750,11 +1737,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <button class="btn btn-photo" onClick="{{ scrollToNotify }}">GET NOTIFIED</button>
           </sc-if>
         </div>
-        <div class="statrow rv rv-up" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(40px,7vh,84px)">
+        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
           <sc-for list="{{ recruitStats }}" as="a" hint-placeholder-count="4">
-            <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-              <div style="font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.3vw,36px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
             </div>
           </sc-for>
         </div>
