@@ -309,14 +309,28 @@ function fullLines(img) {
 }
 // 줄 바로 위/아래(거리 lim 안)에 있는 글자 덩어리 [y0,y1]
 function textAbove(img, y, lim) {
-  let e = y - 1; while (e > 0 && y - e < lim && !rowHas(img, e, 0, img.w)) e--;
-  if (y - e >= lim || e <= 0) return null;
-  let s = e; while (s > 0 && rowHas(img, s - 1, 0, img.w)) s--; return [s, e + 1];
+  // 가로줄 바로 위의 얇은 줄(이중선, 낮은 해상도의 선 잔상)은 건너뛰고 그 위 글자를 찾는다
+  const u = img.w / 827; let from = y;
+  for (let k = 0; k < 4; k++) {
+    let e = from - 1; while (e > 0 && from - e < lim && !rowHas(img, e, 0, img.w)) e--;
+    if (from - e >= lim || e <= 0) return null;
+    let s = e; while (s > 0 && rowHas(img, s - 1, 0, img.w)) s--;
+    if (e + 1 - s >= 2 * u) return [s, e + 1];
+    from = s;
+  }
+  return null;
 }
 function textBelow(img, y, lim) {
-  let s = y; while (s < img.h && s - y < lim && !rowHas(img, s, 0, img.w)) s++;
-  if (s - y >= lim || s >= img.h) return null;
-  let e = s; while (e < img.h && rowHas(img, e, 0, img.w)) e++; return [s, e];
+  // 가로줄 바로 밑의 얇은 줄(겹쳐 그은 줄, 낮은 해상도의 선 잔상)은 건너뛰고 그 아래 글자를 찾는다
+  const u = img.w / 827; let from = y;
+  for (let k = 0; k < 4; k++) {
+    let s = from; while (s < img.h && s - from < lim && !rowHas(img, s, 0, img.w)) s++;
+    if (s - from >= lim || s >= img.h) return null;
+    let e = s; while (e < img.h && rowHas(img, e, 0, img.w)) e++;
+    if (e - s >= 2 * u) return [s, e];
+    from = e;
+  }
+  return null;
 }
 const leftmost = (img, g) => { const b = bbox(img, { x0: 0, x1: img.w, y0: g[0], y1: g[1] }); return b ? b.x0 : img.w; };
 
@@ -336,6 +350,11 @@ function findFigures(img) {
     // 출처 글씨는 높이 3~10u. 그보다 얇으면 겹쳐 그은 가로줄이라 출처로 보지 않는다
     if (!s || s[1] - s[0] > 10 * u || s[1] - s[0] < 3 * u || leftmost(img, s) > .1 * img.w) continue;
     figs.push({ y0: open.y0, y1: s[1], title: open.title, lines: open.lineY }); open = null;
+  }
+  // 출처를 끝내 못 찾은 자료도 버리지 않고 마지막 가로줄에서 닫는다 (페이지가 통째로 나가는 것 방지)
+  if (open && open.lineY.length >= 2) {
+    const last = open.lineY[open.lineY.length - 1];
+    figs.push({ y0: open.y0, y1: last[1] + Math.round(2 * u), title: open.title, lines: open.lineY });
   }
   return figs;
 }
@@ -602,7 +621,7 @@ $('zip').addEventListener('click', downloadZip);
 $('zip2').addEventListener('click', downloadZip);
 $('out').addEventListener('click', (e) => { if (e.target.tagName === 'IMG') { $('zoom').querySelector('img').src = e.target.src; $('zoom').style.display = 'flex'; } });
 $('zoom').addEventListener('click', () => { $('zoom').style.display = 'none'; });
-window.__valley = { run, results: () => results };
+window.__valley = { run, results: () => results, processPage, makeImg };
 
 // 북마클릿: autofill.js의 주석 줄을 빼고 javascript: 링크로 만든다
 fetch('autofill.js').then(r => r.text()).then(src => {
