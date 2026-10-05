@@ -361,6 +361,7 @@ input{border-radius:0;font-family:inherit}
 .rpt-paper .rpt-head{margin:0 20px !important;padding:22px 20px 24px !important}.rpt-seal{display:none}
 .rpt-paper .rpt-name{font-size:32px !important}.rpt-paper .rpt-name span{font-size:22px !important}
 .rpt-paper .detail-grid{padding:28px 20px 40px !important;grid-template-rows:auto !important}.rpt-paper .detail-grid>*{grid-column:1 !important;grid-row:auto !important}.rpt-paper .detail-side{order:-1}.rpt-paper .rpt-meta{order:2}
+.rpt-paper .detail-grid p{text-align:left !important}
 .rfeat{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 .col-t{display:none}
 }
@@ -1146,7 +1147,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <main class="rpt" data-screen-label="리포트 상세" style="position:relative">
     <!-- 위쪽 남색 띠 (사진 없이 모든 리포트 공통). 메뉴는 이 띠 위에서 밝은 글씨 -->
     <div data-nav="dark" class="rpt-band" style="position:absolute;top:0;left:0;right:0;height:440px;background:#0F1B2E"></div>
-    <div class="wrap rpt-in" style="position:relative;padding:104px 35px 96px">
+    <div class="wrap rpt-in" style="position:relative;max-width:1080px;padding:104px 35px 96px">
       <a href="#research" onClick="{{ goResearch }}" style="font-size:13px;color:rgba(247,246,243,0.65)">← Research</a>
       <article class="rpt-paper" style="background:#FFFFFF;margin-top:22px;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(15,27,46,0.22)">
         <div class="rpt-top" style="display:flex;justify-content:space-between;gap:16px;padding:22px 48px 12px;font-size:13px;color:rgba(26,26,26,0.6)">
@@ -1166,19 +1167,19 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
               <sc-for list="{{ rP1 }}" as="sec" hint-placeholder-count="4">
                 <sc-if value="{{ sec.hasH }}" hint-placeholder-val="{{ true }}"><div style="margin:28px 0 8px;font-weight:700;font-size:17px;line-height:1.5;color:#1A1A1A">{{ sec.h }}</div></sc-if>
-                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82)"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
+                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
               </sc-for>
             </sc-if>
             <sc-if value="{{ rNoP1 }}" hint-placeholder-val="{{ true }}">
             <div style="margin:26px 0 8px;font-weight:700;font-size:17px">Summary</div>
-            <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82)">{{ rSummary }}</p>
+            <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ rSummary }}</p>
             <sc-for list="{{ rPointsNote }}" as="p" hint-placeholder-count="2">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px;line-height:1.5">{{ p.label }}</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82)">{{ p.body }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ p.body }}</p>
             </sc-for>
             <sc-if value="{{ rHasValuation }}" hint-placeholder-val="{{ false }}">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px">[Valuation]</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82)">{{ rValuation }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ rValuation }}</p>
             </sc-if>
             </sc-if>
             <sc-if value="{{ rIsPlaceholder }}" hint-placeholder-val="{{ false }}">
