@@ -39,6 +39,9 @@ def extract(path):
     if not big:
         return None
     start = max(big, key=lambda l: l['size'])['y1']
+    # 회사명 띠의 이름 줄 ('RFHIC (218410.KQ)')
+    top = [l for l in lines if l['size'] >= 26]
+    extract.name = re.sub(r'\s+', ' ', max(top, key=lambda l: l['size'])['text']).strip() if top else None
     end = next((l['y'] for l in lines if l['y'] > start and ('Investment Fundamentals' in l['text'] or 'Research Team' in l['text'] and l['size'] < 10)), 1e9)
     body = [l for l in lines if start <= l['y'] < end and 8.4 <= l['size'] < 15]
     if not body:
@@ -92,17 +95,21 @@ def extract(path):
     return sections
 
 def main():
-    out, miss = {}, []
+    out, miss, names = {}, [], {}
     for rid, pdf in load_reports():
         p = os.path.join(ROOT, pdf)
+        extract.name = None
         sec = extract(p) if os.path.exists(p) else None
+        if extract.name:
+            names[rid] = extract.name
         if sec and sum(len(x['t']) for s in sec for ps in s['ps'] for x in ps) > 150:
             out[rid] = sec
         else:
             miss.append(rid)
+    out['_names'] = names   # 리포트 화면 회사명 띠에 PDF 표기 그대로 쓴다
     with open(os.path.join(ROOT, 'assets', 'reports', 'page1.json'), 'w', encoding='utf-8') as f:
         json.dump(out, f, ensure_ascii=False, separators=(',', ':'))
-    print(f'{len(out)}건 추출, 실패 {len(miss)}건: {", ".join(miss)}')
+    print(f'{len(out) - 1}건 추출, 실패 {len(miss)}건: {", ".join(miss)}')
 
 if __name__ == '__main__':
     main()
