@@ -427,6 +427,10 @@ input{border-radius:0;font-family:inherit}
 .press:active{transform:none}
 .mmenu{transform:none}
 }
+/* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py */
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @media (min-width:1025px){@view-transition{navigation:auto}}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
@@ -1171,7 +1175,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <div data-nav="dark" class="rpt-band" style="position:absolute;top:0;left:0;right:0;height:440px;background:#0F1B2E"></div>
     <div class="wrap rpt-in" style="position:relative;max-width:1080px;padding:104px 35px 96px">
       <a href="#research" onClick="{{ goResearch }}" style="font-size:13px;color:rgba(247,246,243,0.65)">← Research</a>
-      <article class="rpt-paper" style="background:#FFFFFF;margin-top:22px;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(15,27,46,0.22)">
+      <article class="rpt-paper" style="font-family:'RFS Report Dotum','Pretendard',sans-serif;background:#FFFFFF;margin-top:22px;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(15,27,46,0.22)">
         <div class="rpt-top" style="display:flex;justify-content:space-between;gap:16px;padding:22px 48px 12px;font-size:13px;color:rgba(26,26,26,0.6)">
           <span><b style="color:#1A1A1A;font-weight:600;font-variant-numeric:tabular-nums">{{ rDate }}</b> &nbsp;|&nbsp; {{ rType }}</span>
           <span class="rpt-team">R.F.S. Research · {{ rTeamName }}</span>
@@ -1179,29 +1183,29 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div class="rpt-head" style="background:#0F1B2E;color:#F7F6F3;margin:0 48px;padding:30px 36px 32px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
           <div>
             <div style="font-size:13px;color:rgba(247,246,243,0.75)">| {{ rSector }} |</div>
-            <h1 class="rpt-name" style="color:#F7F6F3;margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;letter-spacing:-0.02em;line-height:1.12">{{ rNameOnly }} <span style="font-weight:400;font-size:30px;color:rgba(247,246,243,0.7)">({{ rTicker }})</span></h1>
+            <h1 class="rpt-name" style="color:#F7F6F3;margin:10px 0 0;font-family:'RFS Report Dotum',sans-serif;font-size:44px;font-weight:700;letter-spacing:-0.02em;line-height:1.12">{{ rNameOnly }} <span style="font-weight:400;font-size:30px;color:rgba(247,246,243,0.7)">({{ rTicker }})</span></h1>
           </div>
           <img class="rpt-seal" src="assets/rfs-seal-light-256.png" alt="" style="width:64px;height:auto;opacity:0.9">
         </div>
         <div class="detail-grid" style="display:grid;grid-template-columns:minmax(0,1fr) 300px;grid-template-rows:auto 1fr;column-gap:48px;row-gap:26px;padding:40px 48px 56px">
           <div style="grid-column:1;grid-row:1 / span 2;min-width:0">
-            <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;color:#203864;letter-spacing:-0.025em;line-height:1.3;padding-bottom:16px;border-bottom:1.5px solid #203864">{{ rHeadline }}</h2>
+            <h2 style="margin:0;font-family:'RFS Report Dotum',sans-serif;font-size:32px;font-weight:700;color:#203864;letter-spacing:-0.025em;line-height:1.3;padding-bottom:16px;border-bottom:1.5px solid #203864">{{ rHeadline }}</h2>
             <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
               <sc-for list="{{ rP1 }}" as="sec" hint-placeholder-count="4">
                 <sc-if value="{{ sec.hasH }}" hint-placeholder-val="{{ true }}"><div style="margin:28px 0 8px;font-weight:700;font-size:17px;line-height:1.5;color:#1A1A1A">{{ sec.h }}</div></sc-if>
-                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
+                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.9);text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
               </sc-for>
             </sc-if>
             <sc-if value="{{ rNoP1 }}" hint-placeholder-val="{{ true }}">
             <div style="margin:26px 0 8px;font-weight:700;font-size:17px">Summary</div>
-            <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ rSummary }}</p>
+            <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.9);text-align:justify">{{ rSummary }}</p>
             <sc-for list="{{ rPointsNote }}" as="p" hint-placeholder-count="2">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px;line-height:1.5">{{ p.label }}</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ p.body }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.9);text-align:justify">{{ p.body }}</p>
             </sc-for>
             <sc-if value="{{ rHasValuation }}" hint-placeholder-val="{{ false }}">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px">[Valuation]</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ rValuation }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.9);text-align:justify">{{ rValuation }}</p>
             </sc-if>
             </sc-if>
             <sc-if value="{{ rIsPlaceholder }}" hint-placeholder-val="{{ false }}">
@@ -1213,7 +1217,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4">
                 <div class="rpt-fact" style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 20px;border-bottom:1px solid rgba(247,246,243,0.22);font-size:13px">
                   <span>{{ f.label }}</span>
-                  <b style="font-family:'Noto Serif KR',serif;font-size:19px;font-variant-numeric:tabular-nums">{{ f.value }}</b>
+                  <b style="font-family:'RFS Report Dotum',sans-serif;font-size:19px;font-variant-numeric:tabular-nums">{{ f.value }}</b>
                 </div>
               </sc-for>
             </div>
@@ -1236,7 +1240,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </article>
       <section style="margin-top:72px">
-        <h2 style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:0 0 16px">Related Reports</h2>
+        <h2 style="font-family:'RFS Report Dotum',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:0 0 16px">Related Reports</h2>
         <div style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A">
           <sc-for list="{{ rRelated }}" as="r" hint-placeholder-count="3">
             <div onClick="{{ r.open }}" class="rowh" style="display:flex;justify-content:space-between;gap:16px;padding:14px 4px;border-bottom:1px solid #D0CECE;cursor:pointer">
@@ -4147,7 +4151,7 @@ class Component extends DCLogic {
       rHasP1: !!(s.p1 && s.p1[active.id]), rNoP1: !(s.p1 && s.p1[active.id]),
       rP1: ((s.p1 && s.p1[active.id]) || []).map((sec, si) => ({ hasH: !!sec.h, h: sec.h || '',
         ps: sec.ps.map((p, pi) => ({ mt: (!sec.h && si === 0 && pi === 0) ? '26px' : (pi === 0 ? '0' : '12px'),
-          segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '400', c: g.b ? '#1A1A1A' : 'inherit' })) })) })),
+          segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '300', c: g.b ? '#1A1A1A' : 'inherit' })) })) })),
       rDate: active.date, rType: active.type, rSector: active.sector, rNameOnly: active.name, rTicker: active.ticker,
       // PDF 표지처럼 '[Investment Point 1] 제목' 형식
       rPointsNote: (active.points || []).map((p, i) => ({ label: '[Investment Point ' + (i + 1) + '] ' + String(p.title || '').replace(/^투자\s?포인트\s*\d+\s*[.:]\s*/, ''), body: p.body })),
