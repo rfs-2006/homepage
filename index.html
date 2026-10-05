@@ -3492,6 +3492,9 @@ class Component extends DCLogic {
     idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
+    // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
+    this._onPop = () => { if (location.pathname !== '/') this.applyHash(); };
+    window.addEventListener('popstate', this._onPop);
     const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
@@ -3602,7 +3605,7 @@ class Component extends DCLogic {
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
   }
 
-  componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); this._navIo && this._navIo.disconnect(); this._onResize && window.removeEventListener('resize', this._onResize); this._secIo && this._secIo.disconnect(); this._rvIo && this._rvIo.disconnect(); this._onScroll && window.removeEventListener('scroll', this._onScroll); this._cntIo && this._cntIo.disconnect(); this._mch && this.sb && this.sb.removeChannel(this._mch); this._onWheel && window.removeEventListener('wheel', this._onWheel); this._onResize && window.removeEventListener('resize', this._onResize); this._glideRaf && cancelAnimationFrame(this._glideRaf); this._settle && clearTimeout(this._settle); }
+  componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('popstate', this._onPop); this._navIo && this._navIo.disconnect(); this._onResize && window.removeEventListener('resize', this._onResize); this._secIo && this._secIo.disconnect(); this._rvIo && this._rvIo.disconnect(); this._onScroll && window.removeEventListener('scroll', this._onScroll); this._cntIo && this._cntIo.disconnect(); this._mch && this.sb && this.sb.removeChannel(this._mch); this._onWheel && window.removeEventListener('wheel', this._onWheel); this._onResize && window.removeEventListener('resize', this._onResize); this._glideRaf && cancelAnimationFrame(this._glideRaf); this._settle && clearTimeout(this._settle); }
 
   snapTargets() {
     const list = [...document.querySelectorAll('section[data-snap]')].map((n) => n.offsetTop);
@@ -3739,7 +3742,9 @@ class Component extends DCLogic {
   }
 
   applyHash() {
-    const h = (location.hash || '#home').slice(1);
+    // 리포트 개별 주소(/research/<id>/)로 들어온 경우 해시 없이도 그 리포트 화면을 연다
+    const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
+    const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t) this.setState({ intraTab: t }); }
@@ -3758,7 +3763,9 @@ class Component extends DCLogic {
 
   go(page, id) {
     this._navAt = Date.now();
-    location.hash = page === 'report' ? 'research/' + (id || this.state.reportId) : page;
+    const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page;
+    // 리포트 개별 주소에서 다른 화면으로 갈 때는 주소를 메인(/#...)으로 바꾼다
+    if (location.pathname !== '/') history.pushState(null, '', '/#' + nh); else location.hash = nh;
     this.withTransition((done) => this.setState({ page, reportId: id || this.state.reportId, menuOpen:false }, () => { window.scrollTo(0, 0); this.setupReveal(); this.observeSentinel(); done && done(); }));
   }
 
