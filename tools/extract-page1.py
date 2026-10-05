@@ -61,7 +61,8 @@ def extract(path):
         para = []
     for l in body:
         spans = [s for s in l['spans'] if s['text'].strip()]
-        heading = all(is_bold(s) for s in spans) and l['size'] >= 10.5
+        # 소제목: 줄 전체가 굵고 큰 글씨. '4Q25 Review: 동사는…'처럼 큰 머리말 뒤에 본문 크기 글씨가 이어지면 문단으로 본다
+        heading = all(is_bold(s) and s['size'] >= 10.5 for s in spans)
         gap = (l['y'] - prev['y1']) if prev else 0
         if heading:
             flush_para()

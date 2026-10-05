@@ -362,6 +362,7 @@ input{border-radius:0;font-family:inherit}
 .rpt-paper .rpt-name{font-size:32px !important}.rpt-paper .rpt-name span{font-size:22px !important}
 .rpt-paper .detail-grid{padding:28px 20px 40px !important;grid-template-rows:auto !important}.rpt-paper .detail-grid>*{grid-column:1 !important;grid-row:auto !important}.rpt-paper .detail-side{order:-1}.rpt-paper .rpt-meta{order:2}
 .rpt-paper .detail-grid p{text-align:left !important}
+.mfeat::-webkit-scrollbar{display:none}.pager a,.pager span{white-space:nowrap}.mhome .pager{gap:0}.mhome .pager a{min-width:30px}.mselects select{min-width:0;width:100%}
 .rpt-fact{padding:8px 16px !important}.rpt-fact b{font-size:16px !important}
 .rfeat{grid-template-columns:repeat(2,minmax(0,1fr)) !important}
 .col-t{display:none}
@@ -1084,56 +1085,76 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:62svh;display:flex;align-items:flex-end;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-research-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1200&q=70" credit="Photo by Maxim Hopman on Unsplash" credit-href="https://unsplash.com/@nampoh"></image-slot></div>
-      <div class="scrim" style="opacity:0.8"></div>
-      <div style="position:relative;z-index:1;padding:0 24px 40px;width:100%">
-        <h1 style="margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Research</h1>
-      </div>
-    </section>
-
-    <section data-nav="light" style="background:#FFFFFF;padding:52px 24px 48px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;padding-bottom:36px;border-bottom:1px solid #D0CECE">
-        <sc-for list="{{ researchStats }}" as="a" hint-placeholder-count="3">
-          <div>
-            <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#0F1B2E;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,26,26,0.5);margin-top:8px">{{ a.key }}</div>
-          </div>
-        </sc-for>
-      </div>
-      <p class="sec-label" style="margin-top:40px">Latest report</p>
-      <a href="{{ latestHref }}" onClick="{{ latestOpen }}" style="display:block;margin-top:16px;text-decoration:none;color:inherit">
-        <div style="aspect-ratio:16/9;border:1px solid #D0CECE;overflow:hidden;background:#EFEDE8">
-          <image-slot id="m-latest-cover" shape="rect" fit="cover" src="{{ latestCover }}" placeholder="리포트 표지"></image-slot>
+    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div style="position:relative;z-index:1;padding:116px 22px 44px">
+        <h1 style="margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(40px,12vw,54px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3">Research</h1>
+        <div style="display:flex;flex-wrap:wrap;gap:18px 30px;margin-top:26px">
+          <sc-for list="{{ researchStats }}" as="a" hint-placeholder-count="4">
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
+              <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:7px">{{ a.key }}</div>
+            </div>
+          </sc-for>
         </div>
-        <div style="font-size:13px;font-weight:600;letter-spacing:0.03em;color:rgba(26,26,26,0.6);margin-top:18px">{{ latestName }}</div>
-        <h2 style="margin:8px 0 0;font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;line-height:1.24;color:#0F1B2E">{{ latestHeadline }}</h2>
-        <div style="display:inline-block;margin-top:16px;padding:7px 12px;background:#203864;color:#F7F6F3;font-size:11px;font-weight:600;letter-spacing:0.1em">{{ latestOp }}</div>
-      </a>
+      </div>
     </section>
 
-
-    <section data-nav="light" style="background:#F7F6F3;padding:56px 24px 64px">
-      <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">Reports</h2>
-      <input class="mfilter" type="search" placeholder="종목명 · 티커 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:20px;padding:13px 15px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
-      <div style="display:flex;gap:10px;margin-top:10px">
-        <select value="{{ fSector }}" onChange="{{ onSector }}" style="flex:1;min-width:0;padding:12px 10px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:13px;color:#1A1A1A">
-          <sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="8"><option value="{{ o }}">{{ o }}</option></sc-for>
-        </select>
-        <select value="{{ fYear }}" onChange="{{ onYear }}" style="flex:1;min-width:0;padding:12px 10px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:13px;color:#1A1A1A">
-          <sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="8"><option value="{{ o }}">{{ o }}</option></sc-for>
-        </select>
+    <section data-nav="light" style="background:#F7F6F3;padding:40px 0 0">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:0 22px 14px">
+        <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
+        <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
       </div>
-      <div style="margin-top:26px;border-top:1px solid #1A1A1A">
-        <sc-for list="{{ filteredReports }}" as="r" hint-placeholder-count="10">
-          <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:16px 0;border-bottom:1px solid #D0CECE;text-decoration:none;color:inherit">
-            <div style="font-weight:700;font-size:15px">{{ r.name }}</div>
-            <div style="font-size:15px;font-weight:700;color:#203864;font-variant-numeric:tabular-nums;text-align:right">{{ r.upside }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.6)">{{ r.sector }} · {{ r.term }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.6);text-align:right;font-variant-numeric:tabular-nums">{{ r.tp }}</div>
+      <div class="mfeat" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 22px 26px;scroll-padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none">
+        <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
+          <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="flex:0 0 78%;scroll-snap-align:start;display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 12px 28px rgba(15,27,46,0.14)">
+            <div style="display:flex;justify-content:space-between;padding:11px 14px 7px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
+            <div style="background:#0F1B2E;color:#F7F6F3;margin:0 14px;padding:12px 14px 14px">
+              <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
+              <div style="margin-top:5px;font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:13px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
+            </div>
+            <div style="padding:11px 14px 0;font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
+            <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 14px 0;padding:9px 0 12px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
+              <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:14px">{{ r.tp }}</b></span>
+              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
+            </div>
           </a>
         </sc-for>
       </div>
+    </section>
+
+    <section id="coverage" data-nav="light" style="background:#F7F6F3;padding:36px 22px 64px;scroll-margin-top:64px">
+      <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
+      <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
+      <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }}&nbsp;reports</div>
+      <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
+        <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
+        <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
+          <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:block;padding:15px 0;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+              <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:11px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
+              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
+            </div>
+            <div style="margin-top:4px;font-size:13px;color:rgba(26,26,26,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.headline }}</div>
+            <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">
+              <span style="font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+              <span>{{ r.sector }}</span><span>{{ r.term }}</span>
+              <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
+            </div>
+          </a>
+        </sc-for>
+      </sc-for>
+      <sc-if value="{{ covEmpty }}" hint-placeholder-val="{{ false }}">
+        <p style="padding:24px 0;font-size:14px;color:rgba(26,26,26,0.6)">조건에 맞는 리포트가 없습니다.</p>
+      </sc-if>
       <sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
         <div class="pager" style="margin-top:26px">
           <sc-for list="{{ pagerItems }}" as="p" hint-placeholder-count="5"><a onClick="{{ p.on }}" class="{{ p.cls }}">{{ p.label }}</a></sc-for>
@@ -1168,19 +1189,19 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
               <sc-for list="{{ rP1 }}" as="sec" hint-placeholder-count="4">
                 <sc-if value="{{ sec.hasH }}" hint-placeholder-val="{{ true }}"><div style="margin:28px 0 8px;font-weight:700;font-size:17px;line-height:1.5;color:#1A1A1A">{{ sec.h }}</div></sc-if>
-                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
+                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}">{{ g.t }}</span></sc-for></p></sc-for>
               </sc-for>
             </sc-if>
             <sc-if value="{{ rNoP1 }}" hint-placeholder-val="{{ true }}">
             <div style="margin:26px 0 8px;font-weight:700;font-size:17px">Summary</div>
-            <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ rSummary }}</p>
+            <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ rSummary }}</p>
             <sc-for list="{{ rPointsNote }}" as="p" hint-placeholder-count="2">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px;line-height:1.5">{{ p.label }}</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ p.body }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ p.body }}</p>
             </sc-for>
             <sc-if value="{{ rHasValuation }}" hint-placeholder-val="{{ false }}">
               <div style="margin:26px 0 8px;font-weight:700;font-size:17px">[Valuation]</div>
-              <p style="margin:0;font-size:15.5px;line-height:1.85;color:rgba(26,26,26,0.82);text-align:justify">{{ rValuation }}</p>
+              <p style="margin:0;font-size:15.5px;line-height:1.7;color:rgba(26,26,26,0.82);text-align:justify">{{ rValuation }}</p>
             </sc-if>
             </sc-if>
             <sc-if value="{{ rIsPlaceholder }}" hint-placeholder-val="{{ false }}">
