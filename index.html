@@ -1961,7 +1961,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <div style="display:flex;align-items:center;gap:18px;font-size:13px;color:rgba(26,26,26,0.65)">
           <span>{{ intraUser }}</span>
           <a href="#" onClick="{{ editMe }}" style="font-size:12px;color:rgba(247,246,243,0.6)">변경</a>
-          <a href="/valley/" title="리포트 PDF를 밸리용 이미지로 잘라 주는 도구" style="font-size:11px;font-weight:600;letter-spacing:0.12em;color:rgba(247,246,243,0.6);text-decoration:none">VALLEY AI ↗</a>
           <a href="{{ cafeUrl }}" target="_blank" rel="noopener" class="btn btn-outline" style="padding:9px 14px;font-size:11px">CAFE</a>
           <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
         </div>
@@ -2007,8 +2006,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <div class="intra-card" style="padding-bottom:20px">
                 <div class="rule"><div class="hd">이번 학기 일정</div></div>
                 <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="8">
-                  <div style="display:grid;grid-template-columns:96px minmax(0,1fr);gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
-                    <span style="font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ d.date }}</span>
+                  <div style="display:grid;grid-template-columns:124px minmax(0,1fr);gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
+                    <span style="font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums;white-space:nowrap">{{ d.date }} <span style="font-family:inherit;font-weight:500;color:rgba(247,246,243,0.65)">{{ d.dowLabel }}</span></span>
                     <span style="font-size:13px;color:rgba(247,246,243,0.85)">{{ d.title }}</span>
                   </div>
                 </sc-for>
@@ -4012,7 +4011,7 @@ class Component extends DCLogic {
       goDirectory: setTab('directory'), goSchedule: setTab('schedule'),
       intraNotices: ID.NOTICES.map((n) => ({ ...n, href: n.href || '#intranet/notice' })),
       intraNoticeTop: ID.NOTICES.slice(0, 5).map((n) => ({ ...n, href: n.href || '#intranet/notice' })),
-      intraSchedule: ID.SCHEDULE.map((d) => ({ ...d, meta: [d.dow, d.where].filter(Boolean).join(' · ') })),
+      intraSchedule: ID.SCHEDULE.map((d) => { const dow = /^\d{4}\.\d{2}\.\d{2}$/.test(d.date || '') ? '일월화수목금토'[new Date(d.date.replace(/\./g, '-') + 'T00:00:00').getDay()] : (d.dow || ''); return { ...d, dow, dowLabel: dow ? '(' + dow + ')' : '', meta: [dow, d.where].filter(Boolean).join(' · ') }; }),
       intraScheduleNext: (() => { const t = new Date().toISOString().slice(0,10).replace(/-/g,'.'); const up = ID.SCHEDULE.filter((d) => d.date >= t); return (up.length ? up : ID.SCHEDULE.slice(-4)).slice(0, 4).map((d) => ({ ...d, sub: d.where || d.note ? '· ' + (d.where || d.note) : '' })); })(),
       intraNext: ID.SCHEDULE[0] || { title: '', date: '', where: '', note: '' },
 
