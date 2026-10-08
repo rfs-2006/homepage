@@ -1,0 +1,38 @@
+name: RFM 순위 수집
+
+# 평일 09:30, 12:00, 15:31 KST (cron은 UTC 기준)
+on:
+  schedule:
+    - cron: '30 0 * * 1-5'
+    - cron: '0 3 * * 1-5'
+    - cron: '31 6 * * 1-5'
+  workflow_dispatch:
+
+concurrency:
+  group: rfm
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        working-directory: tools/rfm
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Collect
+        working-directory: tools/rfm
+        env:
+          TF_EMAIL: ${{ secrets.TF_EMAIL }}
+          TF_PASSWORD: ${{ secrets.TF_PASSWORD }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          RFM_MEMBERS: ${{ secrets.RFM_MEMBERS }}
+        run: node collect.mjs
