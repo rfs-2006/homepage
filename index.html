@@ -694,6 +694,8 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 
 /* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
 .pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
+.pg-hero.pg-full{min-height:100vh !important}
+@media (max-width:860px){.pg-hero.pg-full{min-height:100svh !important}}
 .pg-hero .pg-hero-in{text-align:center;padding:130px 35px 80px !important}
 .pg-hero .pg-eyebrow{justify-content:center}
 .pg-hero .pg-hero-in>div[style*="flex"]{justify-content:center !important}
@@ -1528,7 +1530,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개" class="pgx">
-    <section data-snap="" class="on-photo pg-hero pg-big" data-nav="dark">
+    <section data-snap="" class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
@@ -1899,7 +1901,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="소개 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:30% 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
