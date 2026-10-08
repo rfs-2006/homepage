@@ -643,7 +643,7 @@ nav.nav{view-transition-name:rfs-nav}
 .pres-in{display:grid;grid-template-columns:220px minmax(0,1fr);gap:64px;align-items:center;padding:96px 35px}
 .pres-in img{display:block;width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:2px solid rgba(143,170,220,0.5);box-shadow:0 0 0 8px rgba(143,170,220,0.08)}
 .pres .sec-label{color:#8FAADC;margin:0}
-.pres blockquote{margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.3vw,32px);font-weight:700;line-height:1.55;letter-spacing:-0.025em;color:#F7F6F3;word-break:keep-all}
+.pres blockquote{margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(28px,3.4vw,48px);font-weight:700;line-height:1.55;letter-spacing:-0.025em;color:#F7F6F3;word-break:keep-all}
 .pres blockquote em{font-style:normal;color:#8FAADC}
 .pres .pb{margin:22px 0 0;font-size:16px;line-height:1.7;color:rgba(247,246,243,0.72);word-break:keep-all}
 .pres .ps{margin:26px 0 0;font-size:13px;color:rgba(247,246,243,0.55)}
@@ -651,7 +651,7 @@ nav.nav{view-transition-name:rfs-nav}
 @media (max-width:860px){
   .pres-in{grid-template-columns:1fr;gap:24px;padding:56px 24px}
   .pres-in img{width:96px;height:96px}
-  .pres blockquote{font-size:20px}
+  .pres blockquote{font-size:26px}
   .pres .pb{font-size:14.5px}
 }
 
@@ -2018,8 +2018,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <img src="assets/officers/president.webp" alt="회장 김민석" loading="lazy">
         <div class="pq">
           <p class="sec-label">From the President</p>
-          <blockquote>미스프라이싱을 찾는 건 검색이 아니라 해석입니다.<br>시장이 모르는 걸 말하는 사람은 원래 그 자리에서 외롭습니다.<br><em>까이는 걸 두려워하지 맙시다.</em></blockquote>
-          <p class="pb">몇 등을 했는지보다, 얼마나 정직하게 리서치했는지로 기억되는 학회이고 싶습니다.</p>
+          <blockquote>우선 시장의 합의를 의심하겠습니다.</blockquote>
           <p class="ps"><b>김민석</b> 43기 회장</p>
         </div>
       </div>
@@ -2135,8 +2134,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <img src="assets/officers/president.webp" alt="회장 김민석" loading="lazy">
         <div class="pq">
           <p class="sec-label">From the President</p>
-          <blockquote>미스프라이싱을 찾는 건 검색이 아니라 해석입니다.<br>시장이 모르는 걸 말하는 사람은 원래 그 자리에서 외롭습니다.<br><em>까이는 걸 두려워하지 맙시다.</em></blockquote>
-          <p class="pb">몇 등을 했는지보다, 얼마나 정직하게 리서치했는지로 기억되는 학회이고 싶습니다.</p>
+          <blockquote>우선 시장의 합의를 의심하겠습니다.</blockquote>
           <p class="ps"><b>김민석</b> 43기 회장</p>
         </div>
       </div>
@@ -4496,7 +4494,7 @@ class Component extends DCLogic {
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
         meta: [h.code, sectorOf(h), h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
-        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
         px: live ? won(h.cur) : '', avgL: live ? '평균 ' + won(h.avg) : '', ev: live ? won(h.evlt) : '', qtyL: live ? Number(h.qty).toLocaleString('ko-KR') + '주' : '',
         hasRep: !!r, repLabel: r ? '리포트 ' + r.op + (r.tp ? ' · TP ' + r.tp : '') + ' · ' + (r.date || '').slice(2, 7) : '', repHref: r ? '#research/' + r.id : '#',
         repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
@@ -4718,7 +4716,7 @@ class Component extends DCLogic {
           name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '') + (h.since ? ' · ' + h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''),
           w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: live ? won(h.evlt) + '원' : '',
           avg: live ? won(h.avg) : '', cur: live ? won(h.cur) : '',
-          ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+          ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
           dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
         };
       }),
@@ -4837,7 +4835,7 @@ class Component extends DCLogic {
           idx: i, no: i + 1, cls: 'rfmlane' + (i < 3 ? ' top' : '') + (m.nick === mine ? ' me' : ''),
           label: nm(m), sub: real(m) ? m.nick : '',
           meta: '전체 ' + (m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-') + (m.rankChg > 0 ? ' ▲' + m.rankChg : m.rankChg < 0 ? ' ▼' + -m.rankChg : '') + ' · ' + (m.count ? m.count + '종목' : '현금'),
-          ret: pct(r), retColor: col(r), day: d === null ? '' : '오늘 ' + pct(d), dayColor: d === null ? flat : col(d),
+          ret: pct(r), retColor: col(r), day: d === null ? '' : 'Today ' + pct(d), dayColor: d === null ? flat : col(d),
           x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl, to: r >= 0 ? 'left' : 'right',
           gap: above ? '위와 ' + pp(ret(above) - r) : '', hasGap: !!above,
         };
