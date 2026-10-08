@@ -12,7 +12,7 @@
   --t1:112px;--t2:40px;--t3:26px;--t4:19px;--t5:15px;--t6:13px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);font-size:var(--t5);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;background:#EEEDE8 url("assets/grain.png");background-size:160px}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);font-size:var(--t5);line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;background:#EEEDE8 url("/assets/grain.png");background-size:160px}
 .num,table,.periods,svg text{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
 .up{color:var(--up)}.down{color:var(--down)}.flat{color:var(--gray)}
 .sep{color:#B0B8C1;font-weight:400;margin:0 .45em}
@@ -206,12 +206,21 @@ tbody tr:hover .wbar,tbody tr.on .wbar{background:#8FAADC}
 #s-sum .cmp .nm{color:#fff}#s-sum .cmp .nm.sub{color:#9AA6B8}
 .periods>div.ch{background:var(--chl) !important}
 .legend i.k{border-top-color:var(--k)!important}.legend i.q{border-top-color:var(--q)!important}
+.mbtn{display:none;background:none;border:0;padding:10px;margin-right:-10px;cursor:pointer}
+.mbtn i{display:block;width:22px;height:2px;background:currentColor;margin:5px 0;transition:transform .25s}
+@media (max-width:860px){
+  .mbtn{display:block;color:inherit}
+  body.mopen .menu{display:flex;flex-direction:column;gap:0;position:fixed;top:64px;left:0;right:0;background:#fff;padding:8px 20px 16px;box-shadow:0 12px 24px rgba(0,0,0,.08)}
+  body.mopen .menu a{color:#191F28;padding:13px 0;margin:0;height:auto;line-height:1.4;border-bottom:1px solid var(--line);font-size:14px}body.mopen .menu a::after{display:none}body.mopen .menu a.on{color:var(--navy);font-weight:700}
+  body.mopen .mbtn i:first-child{transform:translateY(3.5px) rotate(45deg)}body.mopen .mbtn i:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+}
 </style>
 </head>
 <body>
 <header class="nav" id="topnav">
-  <a class="brand" href="/#home"><img class="seal-l" src="assets/rfs-seal-light-256.png" alt=""><img class="seal-n" src="assets/rfs-seal-navy.png" alt="R.F.S."><span class="nm"><b>R.F.S.</b><span>중앙대학교 가치투자학회</span></span></a>
-  <nav class="menu"><a href="/#research">RESEARCH</a><a href="/#fund" class="on">FUND</a><a href="/#about">ABOUT</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#rfm">RFM</a><a href="/#intranet">AGORA</a></nav>
+  <a class="brand" href="/#home"><img class="seal-l" src="/assets/rfs-seal-light-256.png" alt=""><img class="seal-n" src="/assets/rfs-seal-navy.png" alt="R.F.S."><span class="nm"><b>R.F.S.</b><span>중앙대학교 가치투자학회</span></span></a>
+  <button class="mbtn" aria-label="메뉴" onclick="document.body.classList.toggle('mopen')"><i></i><i></i></button>
+  <nav class="menu"><a href="/#research">RESEARCH</a><a href="/fund/" class="on">FUND</a><a href="/#about">ABOUT</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#rfm">RFM</a><a href="/#intranet">AGORA</a></nav>
 </header>
 
 <section class="hero" id="hero">
