@@ -4576,7 +4576,7 @@ class Component extends DCLogic {
     el.classList.toggle('mv', el.classList.contains('on'));
     el.classList.add('on');
     el.querySelector('.fd-cross').style.left = x;
-    [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); });
+    [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); d.style.visibility = a[i] ? 'visible' : 'hidden'; });
     const tip = el.querySelector('.fd-tip');
     tip.innerHTML = '<b>' + C.d[i].replace(/-/g, '.') + '</b><span><i style="background:#8FAADC"></i>AMT Fund<em>' + pc(C.fs[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.7)"></i>KOSPI<em>' + pc(C.ks[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.35)"></i>KOSDAQ<em>' + pc(C.qs[i]) + '</em></span>';
     tip.style.left = x; tip.style.transform = i / (n - 1) > 0.6 ? 'translateX(calc(-100% - 14px))' : 'translateX(14px)';
@@ -4585,7 +4585,8 @@ class Component extends DCLogic {
   // 기간별 수익률 표: history [날짜, 기준가, KOSPI, KOSDAQ]
   fundPerf(F, pct, col) {
     const s = this.state;
-    const H = (F.history || []).filter((h) => h[1]);
+    const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
+    const H = (F.history || []).filter((h) => h[1] && wkd(h[0]));
     if (H.length < 2) return { fdPerRows: [], fdPerAsOf: '' };
     const last = H[H.length - 1];
     const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H[0][0] <= d ? H.filter((h) => h[0] <= d).pop() : null; };
@@ -4617,7 +4618,8 @@ class Component extends DCLogic {
     const maxW = Math.max(10, ...hs.map((h) => h.weight || 0));
     const best = live ? hs.filter((h) => h.dayPl !== null && h.dayPl !== undefined).sort((a, b) => b.dayPl - a.dayPl)[0] : hs.filter((h) => h.day !== null && h.day !== undefined).sort((a, b) => b.day - a.day)[0];
     // 기준가 추이: history = [날짜, 기준가, KOSPI, KOSDAQ] → 첫날 1,000으로 맞춰 세 선
-    const HA = (F.history || []).filter((h) => h[1]);
+    const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
+    const HA = (F.history || []).filter((h) => h[1] && wkd(h[0]));
     const RANGES = { '1w': 7, '1m': 30, '3m': 91 };
     const rk = s.fdRange && RANGES[s.fdRange] ? s.fdRange : 'all';
     let H = HA;
