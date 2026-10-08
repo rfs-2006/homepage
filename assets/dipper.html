@@ -23,7 +23,7 @@ a{color:inherit;text-decoration:none}
 /* ---------- photo layer ---------- */
 .photo{position:absolute;inset:-24px;will-change:transform}
 .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 38%;display:block;
-  filter:brightness(.74) saturate(.8) contrast(1.05);opacity:0;transition:opacity 1.1s ease}
+  filter:brightness(.74) saturate(.8) contrast(1.05);opacity:0;transition:opacity .5s ease}
 .photo.flip img{transform:scaleX(-1)}
 .ready .photo img{opacity:1}
 .wash{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(15,27,46,.55) 0%,rgba(20,38,72,.38) 55%,rgba(11,21,36,.7) 100%);mix-blend-mode:multiply}
@@ -46,7 +46,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .seg{stroke:#dfe7ff;stroke-width:.9;stroke-opacity:.30;stroke-linecap:round;fill:none;
   stroke-dasharray:1;stroke-dashoffset:1;
   transition:stroke-opacity .5s var(--ease), stroke-width .5s var(--ease)}
-.seg.drawn{stroke-dashoffset:0;transition:stroke-dashoffset .55s cubic-bezier(.6,0,.2,1), stroke-opacity .5s var(--ease), stroke-width .5s var(--ease)}
+.seg.drawn{stroke-dashoffset:0;transition:stroke-dashoffset .35s cubic-bezier(.6,0,.2,1), stroke-opacity .5s var(--ease), stroke-width .5s var(--ease)}
 .seg.hi1{stroke-opacity:.92;stroke-width:1.15}
 .seg.hi2{stroke-opacity:.55}
 .seg.hi3{stroke-opacity:.40}
@@ -185,10 +185,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;transition:letter-spacing 1.4s var(--ease);--a:.3}
 .motto.on{pointer-events:auto}
 .motto .ch{display:inline-block;opacity:0;filter:blur(5px);transform:translateY(4px);color:rgba(223,230,245,var(--a));
-  transition:opacity 1.4s ease calc(var(--i)*80ms), filter 1.4s ease calc(var(--i)*80ms), transform 1.4s var(--ease) calc(var(--i)*80ms), color .5s ease, text-shadow .7s ease}
+  transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color .5s ease, text-shadow .7s ease}
 .motto .sp{display:inline-block;width:.9em}
 .motto.on .ch{opacity:1;filter:none;transform:none}
-.motto.live .ch{animation:glint 9s ease-in-out calc(1.2s + var(--i)*90ms) infinite}
+.motto.live .ch{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
 @keyframes glint{0%,5%,100%{color:rgba(223,230,245,var(--a));text-shadow:none}
   2.2%{color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5)}}
 .motto.on:hover{letter-spacing:.7em}
@@ -234,7 +234,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   /* ---- real positions (J2000 RA/Dec, degrees) ---- */
   const STARS = [
     {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:'RESEARCH',   ko:'기업 분석 리포트',      href:'/#research', lab:'r'},
-    {id:'merak',  name:'Merak',  bayer:'β UMa', ra:165.460, de:56.383, mag:2.37, tint:'236,242,255', menu:'FUND',       ko:'AMT 펀드 운용',         href:'/fund/',     lab:'r'},
+    {id:'merak',  name:'Merak',  bayer:'β UMa', ra:165.460, de:56.383, mag:2.37, tint:'236,242,255', menu:'FUND',       ko:'AMT 펀드 운용',         href:'/#fund',     lab:'r'},
     {id:'phecda', name:'Phecda', bayer:'γ UMa', ra:178.457, de:53.695, mag:2.44, tint:'236,242,255', menu:'AGORA',      ko:'학회원 공간',           href:'/#intranet',    lab:'b'},
     {id:'megrez', name:'Megrez', bayer:'δ UMa', ra:183.857, de:57.033, mag:3.31, tint:'240,244,255', menu:'PEOPLE',     ko:'임원진 · 동문',          href:'/#people',   lab:'bl'},
     {id:'alioth', name:'Alioth', bayer:'ε UMa', ra:193.507, de:55.960, mag:1.77, tint:'236,242,255', menu:'RECRUITING', ko:'신입 모집',             href:'/#recruit',  lab:'b'},
@@ -406,19 +406,19 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       const el = byId[id].el; el.classList.add('lit','igniting');
       if (id==='mizar') setTimeout(()=>alcor.classList.add('lit'), 250);
       setTimeout(()=>el.classList.remove('igniting'), 1000);
-    }, 450 + i*180));
+    }, 60 + i*55));
     const order = [['alkaid','mizar'],['mizar','alioth'],['alioth','megrez'],['phecda','megrez'],['merak','phecda'],['dubhe','merak'],['megrez','dubhe']];
     order.forEach(([a,b],i) => setTimeout(() => {                   // 1.25–2.0s lines draw
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
-    }, 1250 + i*110));
-    setTimeout(() => copy.classList.add('on'), 2300);
-    setTimeout(() => copy.classList.add('live'), 2300 + 3200);
-    setTimeout(() => window.__done = true, 3400);
+    }, 380 + i*45));
+    setTimeout(() => copy.classList.add('on'), 750);
+    setTimeout(() => copy.classList.add('live'), 750 + 1600);
+    setTimeout(() => window.__done = true, 1500);
   };
   let seen = false, loaded = false, started = false;
   const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
   if (img.complete && img.naturalWidth) loaded = true; else { img.addEventListener('load', () => { loaded = true; start(); }, {once:true}); img.addEventListener('error', () => { loaded = true; start(); }, {once:true}); }
-  new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { seen = true; start(); } }, {threshold:.35}).observe(sky);
+  new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { seen = true; start(); } }, {threshold:.1}).observe(sky);
   start();
 })();
 (() => {
