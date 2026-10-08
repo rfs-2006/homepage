@@ -469,7 +469,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip{display:inline-block;padding:6px 10px;border:1px solid #D0CECE;font-size:13px;margin:0 6px 6px 0;background:#FFFFFF}
 .name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
-@media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}}
+@media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:20px minmax(0,1fr) 58px 72px !important;gap:10px !important}}
 </style>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
@@ -2192,6 +2192,49 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </sc-if>
           </sc-if>
 
+          <sc-if value="{{ isIntraRfm }}" hint-placeholder-val="{{ false }}">
+            <div class="intra-card navy" style="background:#203864;border-color:#203864;color:#F7F6F3;padding:30px 32px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px">
+                <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.6)">{{ rfmContest }} · 타임폴리오</div>
+                <div style="font-size:12px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ rfmAsOf }}</div>
+              </div>
+              <div class="fundstat" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:22px">
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmAvgColor }}">{{ rfmAvg }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">학회원 평균 수익률</div></div>
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1">{{ rfmTop }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">학회 1위 · {{ rfmTopRet }}</div></div>
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ rfmCount }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">참가 학회원 · {{ rfmTotal }}</div></div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
+              <div style="font-size:15px;font-weight:700;color:#F7F6F3">학회원 순위</div>
+              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · 기준가 1,000 출발</span>
+            </div>
+            <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:28px 0;font-size:14px;color:rgba(247,246,243,0.6)">아직 수집된 순위가 없습니다. 평일 16시, 20시에 갱신됩니다.</div>
+            </sc-if>
+            <sc-for list="{{ rfmRows }}" as="r" hint-placeholder-count="8">
+              <div class="rfmrow" style="display:grid;grid-template-columns:28px minmax(0,1fr) 120px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
+                <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:rgba(247,246,243,0.55);font-variant-numeric:tabular-nums">{{ r.no }}</div>
+                <div style="min-width:0">
+                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.nick }}</span></div>
+                  <div style="height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="height:3px;background:{{ r.barColor }};width:{{ r.bar }}"></div></div>
+                  <div style="font-size:12px;color:rgba(247,246,243,0.45);margin-top:6px;font-variant-numeric:tabular-nums">기준가 {{ r.nav }} · {{ r.hold }}</div>
+                </div>
+                <div class="rfmrank" style="text-align:right;font-variant-numeric:tabular-nums">
+                  <div style="font-size:14px;font-weight:600;color:#F7F6F3">{{ r.rank }}</div>
+                  <div style="font-size:12px;margin-top:4px;color:{{ r.moveColor }}">{{ r.move }}</div>
+                </div>
+                <div style="text-align:right;font-variant-numeric:tabular-nums">
+                  <div style="font-size:15px;font-weight:700;color:{{ r.retColor }}">{{ r.ret }}</div>
+                  <div style="font-size:12px;margin-top:4px;color:{{ r.dayColor }}">{{ r.day }}</div>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:18px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.45)">순위표에서 찾지 못한 별칭: {{ rfmMissing }}</div>
+            </sc-if>
+            <div style="margin-top:22px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.4)">타임폴리오 동의 하에 학회 내부에만 공개합니다. 외부 공유를 삼가 주세요.</div>
+          </sc-if>
+
 
             </div>
           
@@ -3441,7 +3484,7 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 class Component extends DCLogic {
-  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'42기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:42, intraData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'42기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:42, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -3497,7 +3540,7 @@ class Component extends DCLogic {
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
       this.sb = window.supabase.createClient(SB_URL, SB_KEY);
-      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else this.setState({ intraData: null }); });
+      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else this.setState({ intraData: null, rfmData: null }); });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -3674,6 +3717,45 @@ class Component extends DCLogic {
     if (!this.sb) return;
     this.sb.from('intranet_content').select('data').eq('id', 'main').maybeSingle()
       .then(({ data }) => { if (data && data.data) this.setState({ intraData: data.data }); });
+    // RFM 순위는 GitHub Actions(tools/rfm)가 하루 1~2회 갱신한다
+    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
+      .then(({ data }) => { if (data && data.data) this.setState({ rfmData: data.data }); });
+  }
+
+  // RFM: 기준가 1,000에서 출발하므로 수익률 = 기준가 / 1000 - 1
+  rfmProps(RF) {
+    const ms = (RF && RF.members) || [];
+    const on = ms.filter((m) => m.found && m.nav).sort((a, b) => b.nav - a.nav);
+    const pct = (v, d = 2) => (v > 0 ? '+' : '') + v.toFixed(d) + '%';
+    const up = '#E8837B', dn = '#8FAADC', flat = 'rgba(247,246,243,0.45)';
+    const ret = (m) => (m.nav / 1000 - 1) * 100;
+    const maxAbs = Math.max(1, ...on.map((m) => Math.abs(ret(m))));
+    const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
+    const top = on[0];
+    return {
+      hasRfm: on.length > 0, noRfm: on.length === 0,
+      rfmContest: (RF && RF.contest) || 'RFM', rfmAsOf: RF && RF.asOf ? RF.asOf + ' 기준' : '',
+      rfmAvg: on.length ? pct(avg) : '-', rfmAvgColor: avg > 0 ? up : avg < 0 ? dn : '#F7F6F3',
+      rfmTop: top ? top.name : '-', rfmTopRet: top ? pct(ret(top)) + ' · 전체 ' + top.rank + '위' : '',
+      rfmCount: on.length + '명', rfmTotal: RF && RF.total ? '전체 참가자 ' + Number(RF.total).toLocaleString('ko-KR') + '명' : '',
+      rfmRows: on.map((m, i) => {
+        const r = ret(m);
+        const day = m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null;
+        return {
+          no: i + 1, name: m.name, nick: m.nick,
+          rank: m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-',
+          move: m.rankChg > 0 ? '▲' + m.rankChg : m.rankChg < 0 ? '▼' + -m.rankChg : '–',
+          moveColor: m.rankChg > 0 ? up : m.rankChg < 0 ? dn : flat,
+          ret: pct(r), retColor: r > 0 ? up : r < 0 ? dn : '#F7F6F3',
+          day: day === null ? '' : '오늘 ' + pct(day), dayColor: day > 0 ? up : day < 0 ? dn : flat,
+          nav: m.nav.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+          hold: (m.count ? m.count + '종목' : '현금') + (m.weight !== null && m.weight !== undefined ? ' · 편입 ' + m.weight.toFixed(1) + '%' : ''),
+          bar: (Math.abs(r) / maxAbs * 100).toFixed(1) + '%', barColor: r >= 0 ? up : dn,
+        };
+      }),
+      rfmMissing: ms.filter((m) => !m.found).map((m) => m.name + '(' + m.nick + ')').join(', '),
+      hasRfmMissing: ms.some((m) => !m.found),
+    };
   }
 
   loadAgora() {
@@ -3894,7 +3976,7 @@ class Component extends DCLogic {
     const alumniHits = iq ? allNames.filter((p) => p.name.indexOf(iq) >= 0).slice(0, 60) : [];
     // ROSTER·COHORTS의 키는 기수 그대로다 (42 = 42기)
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
-    const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
+    const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'rfm' ? 'Road to Fund Manager' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
       isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed,
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
@@ -3963,6 +4045,7 @@ class Component extends DCLogic {
       fundSince: FD.since, fundBench: FD.bench, fundAum: FD.aum,
       fundPos: FD.positions.map((p) => ({ ...p, w: p.weight.toFixed(1) + '%', bar: (p.weight * 2.6).toFixed(0) + 'px', tick: p.ticker || '—', retColor: p.ret ? (p.up ? '#0F5132' : '#842029') : 'rgba(26,26,26,0.4)', retText: p.ret || '—' })),
       fundNotes: FD.notes, hasFundNotes: FD.notes.length > 0,
+      ...this.rfmProps(s.rfmData),
       stopProp: (e) => e.stopPropagation(),
       intraUser: s.user ? this.who() : '미리보기',
       editMe: (e) => { e.preventDefault(); const m = this.me(); try { localStorage.removeItem('rfs_me'); } catch (x) {} this.setState({ me: null, nmName: m.name, nmCohort: m.cohort }); },
@@ -3977,9 +4060,9 @@ class Component extends DCLogic {
         this.saveMe(nm, s.nmCohort);
       },
       intraTitle, intraTab: tab,
-      isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
+      isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraRfm: tab === 'rfm', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), railItem('fund', 'RFS 펀드')],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), railItem('fund', 'RFS 펀드'), railItem('rfm', 'RFM 순위')],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
