@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>R.F.S.</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&display=swap">
 <style>
 :root{
   --ink:#f4f6fb; --ink2:#c9cfdb; --ink3:#8e97a8;
@@ -179,6 +180,17 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   .credit{right:16px;left:16px;bottom:8px;font-size:9px}
   .copy p{font-size:12.5px}
 }
+
+/* motto */
+.motto{position:absolute;z-index:4;pointer-events:none;opacity:0;transition:opacity 1.6s ease, transform 1.6s var(--ease);text-shadow:0 1px 14px rgba(0,0,0,.6)}
+.motto.on{opacity:1}
+.motto.a{left:0;right:0;bottom:11vh;text-align:center;font-size:12px;font-weight:600;letter-spacing:.62em;color:rgba(233,237,246,.72);padding-left:.62em;transform:translateY(6px)}
+.motto.a.on{transform:none}
+.motto.b{left:0;right:0;top:17vh;text-align:center;font-family:var(--serif);font-weight:400;font-size:clamp(28px,3.2vw,50px);letter-spacing:.01em;color:#eef1f7;transform:translateY(8px)}
+.motto.b i{font-style:italic}
+.motto.b small{display:block;margin-top:14px;font-family:var(--sans);font-size:11px;font-weight:600;letter-spacing:.5em;color:rgba(200,210,228,.6)}
+.motto.b.on{transform:none}
+@media (max-width:760px){.motto.a{bottom:7vh;font-size:10px;letter-spacing:.42em}.motto.b{top:11vh;font-size:26px}}
 </style>
 </head>
 <body>
@@ -196,6 +208,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
 
 
+  <div class="motto" id="motto"></div>
   <div class="credit" id="credit"></div>
 </main>
 
@@ -366,7 +379,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   if (!STATIC) requestAnimationFrame(tick);
 
   /* ---- reveal: photo → stars ignite (Alkaid → Dubhe) → lines → Polaris guide ---- */
-  const copy = {classList:{add(){}}}, hint = copy;
+  const motto = document.getElementById('motto'), MV = q.get('m') === 'b' ? 'b' : 'a';
+  motto.classList.add(MV);
+  motto.innerHTML = MV === 'b' ? '<i>Rising Financial Stars</i><small>R.F.S. · SINCE 2006</small>' : 'RISING FINANCIAL STARS';
+  const copy = motto, hint = {classList:{add(){}}};
   function finalState(){
     sky.classList.add('ready');
     STARS.forEach(s => s.el.classList.add('lit')); alcor.classList.add('lit'); pol.classList.add('lit');
@@ -385,6 +401,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     order.forEach(([a,b],i) => setTimeout(() => {                   // 1.25–2.0s lines draw
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
     }, 1250 + i*110));
+    setTimeout(() => copy.classList.add('on'), 2100);
     setTimeout(() => window.__done = true, 3400);
   };
   let seen = false, loaded = false, started = false;
