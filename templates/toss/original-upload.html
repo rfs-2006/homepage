@@ -1,0 +1,1475 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R.F.S. 펀드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css">
+<style>
+:root{
+  --navy:#16295E;
+  --ink:#191F28;
+  --gray:#6B7684;
+  --line:#E5E8EB;
+  --soft:#F2F4F6;
+  --up:#E42939;
+  --down:#1B64DA;
+  --bg:#FFFFFF;
+  /* 글자 크기 6단계 */
+  --t1:120px; --t2:48px; --t3:28px; --t4:20px; --t5:15px; --t6:13px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg)}
+body{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  color:var(--ink);font-size:var(--t5);line-height:1.6;
+  -webkit-font-smoothing:antialiased;word-break:keep-all;
+}
+.num,table,.periods,svg text{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.up{color:var(--up)} .down{color:var(--down)} .flat{color:var(--gray)}
+.wrap{width:1120px;margin:0 auto}
+.sep{color:#B0B8C1;font-weight:400;margin:0 .45em}
+
+/* 상단 메뉴 */
+header{height:72px;border-bottom:1px solid var(--line);background:#fff}
+header .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
+.brand img{width:36px;height:36px}
+.brand b{font-size:var(--t5);font-weight:800;letter-spacing:0.02em;color:var(--navy)}
+.brand span{font-size:var(--t6);color:var(--gray);font-weight:500;display:block;line-height:1.3}
+nav{display:flex;gap:34px}
+nav a{font-size:var(--t6);font-weight:600;letter-spacing:0.06em;color:var(--gray);text-decoration:none}
+nav a.on{color:var(--navy)}
+nav a.on::after{content:"";display:block;height:2px;background:var(--navy);margin-top:4px}
+
+/* 섹션 공통 */
+section{padding:68px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:0}
+.eyebrow{font-size:var(--t5);font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;justify-content:space-between}
+.eyebrow span{color:var(--gray);font-weight:500}
+h2{font-size:var(--t2);font-weight:700;letter-spacing:-0.03em;line-height:1.25;color:var(--ink)}
+h2 .sep{margin:0 .3em}
+.foot{font-size:var(--t6);color:var(--gray);margin-top:14px}
+
+/* 1. 첫 화면 */
+.hero{padding:60px 0 72px}
+.hero .label{font-size:var(--t4);font-weight:600;color:var(--gray)}
+.nav-row{display:flex;align-items:baseline;gap:28px;margin-top:2px}
+.bignum{font-size:var(--t1);font-weight:700;letter-spacing:-0.035em;line-height:1.05;color:var(--ink)}
+.dayc{font-size:var(--t4);font-weight:600;color:var(--gray)}
+.dayc b{font-weight:700;margin-left:8px}
+.hero h1{font-size:var(--t3);font-weight:700;letter-spacing:-0.02em;line-height:1.4;margin-top:36px;color:var(--ink)}
+.hero h1 .k{font-weight:600;margin-right:2px}
+.hero h1 .sep{margin:0 .55em}
+
+.cmp{margin-top:32px;display:grid;grid-template-columns:120px 1fr;column-gap:0;row-gap:12px;align-items:center}
+.cmp .nm{font-size:var(--t5);font-weight:700;color:var(--ink)}
+.cmp .nm.sub{color:var(--gray);font-weight:500}
+.cmp .ex{text-align:right;font-size:var(--t5);font-weight:600}
+.cmp .exh{text-align:right;font-size:var(--t6);font-weight:600;color:var(--gray)}
+.track{position:relative;height:32px}
+.track .zero{position:absolute;top:-6px;bottom:-6px;width:1px;background:var(--ink)}
+.track .bar{position:absolute;top:0;height:32px}
+.track .val{position:absolute;top:0;line-height:32px;font-size:var(--t4);font-weight:700;white-space:nowrap}
+
+/* 2. 추이 차트 */
+.chart-box{margin-top:40px}
+.legend{display:flex;gap:28px;font-size:var(--t6);color:var(--gray);margin-bottom:12px}
+.legend i{display:inline-block;width:20px;height:0;border-top:3px solid var(--navy);vertical-align:middle;margin-right:8px}
+.legend i.k{border-top:2px solid #8B95A1}
+.legend i.q{border-top:2px dashed #B0B8C1}
+svg text{font-family:inherit}
+
+/* 3. 기간별 */
+.periods{margin-top:40px;display:grid;grid-template-columns:150px repeat(5,1fr);border-top:2px solid var(--ink)}
+.periods > div{padding:0 20px 0 0;height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:flex-end}
+.periods > div.h{font-size:var(--t6);font-weight:600;color:var(--gray);height:58px;flex-direction:column;align-items:flex-end;justify-content:center;line-height:1.4}
+.periods > div.h span{font-weight:500}
+.periods > div.rl{justify-content:flex-start;font-weight:700}
+.periods > div.rl.sub{color:var(--gray);font-weight:500}
+.periods .amt{font-size:var(--t3);font-weight:700;letter-spacing:-0.02em;height:68px}
+.periods > div.rl.main{height:68px}
+.periods .ix{font-size:var(--t5);font-weight:600}
+.periods .xs{font-size:var(--t5);font-weight:700}
+.periods > div.top{border-top:1px solid var(--ink)}
+.periods > div.hl{background:var(--soft)}
+
+/* 4. 포트폴리오 */
+.facts{display:grid;grid-template-columns:repeat(4,1fr);margin-top:40px;border-top:1px solid var(--line)}
+.facts > div{padding:20px 24px 0 0}
+.facts .k{font-size:var(--t6);font-weight:600;color:var(--gray)}
+.facts .v{font-size:var(--t3);font-weight:700;letter-spacing:-0.02em;margin-top:4px;line-height:1.3}
+.facts .s{font-size:var(--t6);color:var(--gray);margin-top:2px}
+.alloc{margin-top:48px}
+.alloc .row-label{font-size:var(--t6);font-weight:600;color:var(--gray);margin-bottom:8px}
+.stack{display:flex;height:48px;gap:2px}
+.stack .seg{background:var(--navy);min-width:2px}
+.stack .seg.cash{background:#C9CED6}
+.stack.thin{height:16px}
+.stack.thin .seg{background:#4A5A86}
+.stack.thin .seg.cash{background:#C9CED6}
+.seglabels{display:flex;gap:2px;margin-top:10px}
+.seglabels > div{min-width:2px;overflow:visible;position:relative}
+.seglabels .in{font-size:var(--t6);line-height:1.45;white-space:nowrap;color:var(--ink)}
+.seglabels .in b{display:block;font-weight:600}
+.seglabels .in span{color:var(--gray)}
+.sector-labels{display:flex;gap:2px;margin-bottom:8px}
+.sector-labels > div{font-size:var(--t6);font-weight:600;color:var(--ink);white-space:nowrap}
+.sector-labels > div span{color:var(--gray);font-weight:500;margin-left:6px}
+
+/* 5. 종목 표 */
+h3{font-size:var(--t3);font-weight:700;letter-spacing:-0.02em;line-height:1.4;margin-top:64px}
+h3 .sep{margin:0 .4em}
+table{width:100%;border-collapse:collapse;margin-top:28px}
+th{font-size:var(--t6);font-weight:600;color:var(--gray);text-align:right;padding:12px 0 12px 16px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line);white-space:nowrap}
+td{font-size:var(--t5);text-align:right;padding:11px 0 11px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;padding-left:0}
+th:nth-child(2),td:nth-child(2){text-align:left}
+td .nm{font-weight:700}
+td .cd{font-size:var(--t6);color:var(--gray);margin-left:8px}
+td.sec{color:var(--gray)}
+td.ret{font-weight:700}
+tr.cash td{color:var(--gray)}
+tr.total td{font-weight:700;border-bottom:2px solid var(--ink)}
+.wbar{display:inline-block;height:6px;background:var(--navy);vertical-align:middle;margin-right:10px}
+
+footer{padding:36px 0 52px;border-top:1px solid var(--line)}
+footer p{font-size:var(--t6);color:var(--gray);line-height:1.8}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a class="brand" href="#"><img src="../rfs-seal-navy.png" alt="R.F.S. 로고"><div><b>R.F.S.</b><span>중앙대학교 가치투자학회</span></div></a>
+    <nav>
+      <a href="#">RESEARCH</a><a href="#" class="on">FUND</a><a href="#">ABOUT</a><a href="#">PEOPLE</a><a href="#">RECRUITING</a><a href="#">RFM</a><a href="#">AGORA</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- 1. 기준가 + BM -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="eyebrow" id="asof"></div>
+      <div class="label">AMT 펀드 기준가</div>
+      <div class="nav-row"><div class="bignum num" id="nav"></div><div class="dayc num" id="navDay"></div></div>
+      <h1 class="num" id="heroLine"></h1>
+      <div class="cmp num" id="cmp"></div>
+      <p class="foot" id="cmpNote"></p>
+    </div>
+  </section>
+
+  <!-- 2. 기간별 -->
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">기간 수익률<span id="periodSub"></span></div>
+      <h2 class="num" id="periodH"></h2>
+      <div class="periods" id="periods"></div>
+      <p class="foot" id="periodNote"></p>
+    </div>
+  </section>
+
+  <!-- 3. 추이 -->
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">기준가 추이<span id="trendSub"></span></div>
+      <h2 class="num" id="trendH"></h2>
+      <div class="chart-box">
+        <div class="legend"><span><i></i>AMT</span><span><i class="k"></i>KOSPI</span><span><i class="q"></i>KOSDAQ</span></div>
+        <svg id="chart" width="1120" height="330" viewBox="0 0 1120 330"></svg>
+        <p class="foot" id="chartNote"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 포트폴리오 -->
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">포트폴리오<span id="allocSub"></span></div>
+      <h2 class="num" id="allocH"></h2>
+      <div class="facts" id="facts"></div>
+      <div class="alloc">
+        <div class="row-label">업종</div>
+        <div class="sector-labels" id="secLabels"></div>
+        <div class="stack thin" id="secBar"></div>
+        <div class="row-label" style="margin-top:24px">종목</div>
+        <div class="stack" id="stockBar"></div>
+        <div class="seglabels" id="stockLabels"></div>
+        <p class="foot" id="allocNote"></p>
+      </div>
+      <h3 class="num" id="tableH"></h3>
+      <table>
+        <thead><tr><th>종목</th><th>업종</th><th>비중</th><th>현재가</th><th>평균단가</th><th>수량</th><th>평가금액</th><th>평가손익</th><th>수익률</th><th>전일 대비</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p id="footNote"></p>
+    <p>R.F.S. 중앙대학교 가치투자학회 · 학회 내부 운용 기록이며 투자 권유가 아닙니다.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+ "bm": {
+  "kospi": {
+   "day": -2.62,
+   "now": 6625.93,
+   "ret": 14.399740327456744
+  },
+  "kosdaq": {
+   "day": -0.69,
+   "now": 892.27,
+   "ret": -21.572470774369346
+  }
+ },
+ "pl": 295562,
+ "day": 0.6913432320255541,
+ "nav": 1865.58,
+ "ret": 86.55789999999999,
+ "asOf": "2026-10-08 23:16:55",
+ "cash": 385537,
+ "plRet": 6.03,
+ "since": {
+  "103590": "2026-10-08",
+  "222800": "2026-10-08",
+  "353200": "2026-10-08",
+  "007660": "2026-10-08",
+  "007810": "2026-10-08",
+  "009150": "2026-10-08",
+  "033790": "2026-10-08",
+  "039030": "2026-10-08",
+  "058470": "2026-10-08",
+  "064290": "2026-10-08"
+ },
+ "start": "2026-03-01",
+ "stock": 5211200,
+ "total": 5596737,
+ "history": [
+  [
+   "2026-03-04",
+   1000,
+   5093.54,
+   978.44
+  ],
+  [
+   "2026-03-05",
+   1000,
+   5583.9,
+   1116.41
+  ],
+  [
+   "2026-03-06",
+   1669.91,
+   5584.87,
+   1154.67
+  ],
+  [
+   "2026-03-09",
+   1677.95,
+   5251.87,
+   1102.28
+  ],
+  [
+   "2026-03-10",
+   413.22,
+   5532.59,
+   1137.68
+  ],
+  [
+   "2026-03-11",
+   555.21,
+   5609.95,
+   1136.83
+  ],
+  [
+   "2026-03-12",
+   823.7,
+   5583.25,
+   1148.4
+  ],
+  [
+   "2026-03-13",
+   1133.31,
+   5487.24,
+   1152.96
+  ],
+  [
+   "2026-03-16",
+   1260.8,
+   5549.85,
+   1138.29
+  ],
+  [
+   "2026-03-17",
+   1279.17,
+   5640.48,
+   1136.94
+  ],
+  [
+   "2026-03-18",
+   1389.81,
+   5925.03,
+   1164.38
+  ],
+  [
+   "2026-03-19",
+   1356.05,
+   5763.22,
+   1143.48
+  ],
+  [
+   "2026-03-20",
+   1353.91,
+   5781.2,
+   1161.52
+  ],
+  [
+   "2026-03-23",
+   1207.24,
+   5405.75,
+   1096.89
+  ],
+  [
+   "2026-03-24",
+   1226.2,
+   5553.92,
+   1121.44
+  ],
+  [
+   "2026-03-25",
+   1230.59,
+   5642.21,
+   1159.55
+  ],
+  [
+   "2026-03-26",
+   1096.3,
+   5460.46,
+   1136.64
+  ],
+  [
+   "2026-03-27",
+   1092.6,
+   5438.87,
+   1141.51
+  ],
+  [
+   "2026-03-30",
+   1129.85,
+   5277.3,
+   1107.05
+  ],
+  [
+   "2026-03-31",
+   1064.29,
+   5052.46,
+   1052.39
+  ],
+  [
+   "2026-04-01",
+   1128.53,
+   5478.7,
+   1116.18
+  ],
+  [
+   "2026-04-02",
+   1508.25,
+   5234.05,
+   1056.34
+  ],
+  [
+   "2026-04-03",
+   1549.3,
+   5377.3,
+   1063.75
+  ],
+  [
+   "2026-04-06",
+   1514.23,
+   5450.33,
+   1047.37
+  ],
+  [
+   "2026-04-07",
+   1504.82,
+   5494.78,
+   1036.73
+  ],
+  [
+   "2026-04-08",
+   1708.03,
+   5872.34,
+   1089.85
+  ],
+  [
+   "2026-04-09",
+   1754.04,
+   5778.01,
+   1076
+  ],
+  [
+   "2026-04-10",
+   1841.51,
+   5858.87,
+   1093.63
+  ],
+  [
+   "2026-04-13",
+   1862.43,
+   5808.62,
+   1099.84
+  ],
+  [
+   "2026-04-14",
+   1838.58,
+   5967.75,
+   1121.88
+  ],
+  [
+   "2026-04-15",
+   1775.03,
+   6091.39,
+   1152.43
+  ],
+  [
+   "2026-04-16",
+   1643.42,
+   6226.05,
+   1162.97
+  ],
+  [
+   "2026-04-17",
+   1766.53,
+   6191.92,
+   1170.04
+  ],
+  [
+   "2026-04-20",
+   1782.39,
+   6219.09,
+   1174.85
+  ],
+  [
+   "2026-04-21",
+   1864.59,
+   6388.47,
+   1179.03
+  ],
+  [
+   "2026-04-22",
+   1924.55,
+   6417.93,
+   1181.12
+  ],
+  [
+   "2026-04-23",
+   1921.68,
+   6475.81,
+   1174.31
+  ],
+  [
+   "2026-04-24",
+   1995.57,
+   6475.63,
+   1203.84
+  ],
+  [
+   "2026-04-27",
+   2045.12,
+   6615.03,
+   1226.18
+  ],
+  [
+   "2026-04-28",
+   2025.7,
+   6641.02,
+   1215.58
+  ],
+  [
+   "2026-04-29",
+   2044.65,
+   6690.9,
+   1220.26
+  ],
+  [
+   "2026-04-30",
+   1925.87,
+   6598.87,
+   1192.35
+  ],
+  [
+   "2026-05-04",
+   1946.26,
+   6936.99,
+   1213.74
+  ],
+  [
+   "2026-05-06",
+   1899.44,
+   7384.56,
+   1210.17
+  ],
+  [
+   "2026-05-07",
+   1873.27,
+   7490.05,
+   1199.18
+  ],
+  [
+   "2026-05-08",
+   1888.11,
+   7498,
+   1207.72
+  ],
+  [
+   "2026-05-11",
+   1799.42,
+   7822.24,
+   1207.34
+  ],
+  [
+   "2026-05-12",
+   1720.83,
+   7643.15,
+   1179.29
+  ],
+  [
+   "2026-05-13",
+   1848.43,
+   7844.01,
+   1176.93
+  ],
+  [
+   "2026-05-14",
+   1851.77,
+   7981.41,
+   1191.09
+  ],
+  [
+   "2026-05-15",
+   1615.73,
+   7493.18,
+   1129.82
+  ],
+  [
+   "2026-05-18",
+   1604.29,
+   7516.04,
+   1111.09
+  ],
+  [
+   "2026-05-19",
+   1600.93,
+   7271.66,
+   1084.36
+  ],
+  [
+   "2026-05-20",
+   1583.74,
+   7208.95,
+   1056.07
+  ],
+  [
+   "2026-05-21",
+   1718.92,
+   7815.59,
+   1105.97
+  ],
+  [
+   "2026-05-22",
+   1994.9,
+   7847.71,
+   1161.13
+  ],
+  [
+   "2026-05-26",
+   2105.27,
+   8047.51,
+   1172.52
+  ],
+  [
+   "2026-05-27",
+   2189.59,
+   8228.7,
+   1133.13
+  ],
+  [
+   "2026-05-28",
+   2015.74,
+   8185.29,
+   1104.36
+  ],
+  [
+   "2026-05-29",
+   2304.16,
+   8476.15,
+   1074.8
+  ],
+  [
+   "2026-06-01",
+   2301.69,
+   8788.38,
+   1050.03
+  ],
+  [
+   "2026-06-02",
+   2234.64,
+   8801.49,
+   1026.03
+  ],
+  [
+   "2026-06-04",
+   2038.13,
+   8639.41,
+   1049.73
+  ],
+  [
+   "2026-06-05",
+   1943.95,
+   8160.59,
+   1002.44
+  ],
+  [
+   "2026-06-08",
+   1729.92,
+   7484.41,
+   911.39
+  ],
+  [
+   "2026-06-09",
+   1866.32,
+   8096.93,
+   967.81
+  ],
+  [
+   "2026-06-10",
+   1083.67,
+   7730.82,
+   951.63
+  ],
+  [
+   "2026-06-11",
+   1192.76,
+   7763.95,
+   996.93
+  ],
+  [
+   "2026-06-12",
+   1238.32,
+   8123.62,
+   1029.05
+  ],
+  [
+   "2026-06-15",
+   1298.37,
+   8545.98,
+   1034.03
+  ],
+  [
+   "2026-06-16",
+   1335.46,
+   8726.6,
+   1018.68
+  ],
+  [
+   "2026-06-17",
+   1382.2,
+   8864.24,
+   1031.96
+  ],
+  [
+   "2026-06-18",
+   1458.03,
+   9063.84,
+   1000.93
+  ],
+  [
+   "2026-06-19",
+   1390.34,
+   9052.42,
+   966.59
+  ],
+  [
+   "2026-06-22",
+   1441.23,
+   9114.55,
+   968.4
+  ],
+  [
+   "2026-06-23",
+   1262.28,
+   8203.84,
+   891.52
+  ],
+  [
+   "2026-06-24",
+   1311.18,
+   8471.02,
+   909.31
+  ],
+  [
+   "2026-06-25",
+   1447.22,
+   8930.3,
+   887.81
+  ],
+  [
+   "2026-06-26",
+   1340.78,
+   8411.21,
+   851.37
+  ],
+  [
+   "2026-06-29",
+   1303.86,
+   8394.65,
+   920.57
+  ],
+  [
+   "2026-06-30",
+   1325.81,
+   8476.48,
+   916.18
+  ],
+  [
+   "2026-07-01",
+   1269.93,
+   8303.41,
+   929.35
+  ],
+  [
+   "2026-07-02",
+   1107.95,
+   7648.09,
+   866.72
+  ],
+  [
+   "2026-07-03",
+   2208.82,
+   8088.34,
+   868.41
+  ],
+  [
+   "2026-07-06",
+   2201.33,
+   8051.33,
+   847.07
+  ],
+  [
+   "2026-07-07",
+   2102.88,
+   7656.31,
+   831.23
+  ],
+  [
+   "2026-07-08",
+   2018.23,
+   7246.79,
+   785
+  ],
+  [
+   "2026-07-09",
+   2056.89,
+   7291.91,
+   794
+  ],
+  [
+   "2026-07-10",
+   2075.85,
+   7475.94,
+   837.43
+  ],
+  [
+   "2026-07-13",
+   1874.41,
+   6806.93,
+   799.36
+  ],
+  [
+   "2026-07-14",
+   1922.48,
+   6856.83,
+   783.98
+  ],
+  [
+   "2026-07-15",
+   2028.08,
+   7284.41,
+   829.43
+  ],
+  [
+   "2026-07-16",
+   1874.91,
+   6820.6,
+   791.84
+  ],
+  [
+   "2026-07-20",
+   1816.04,
+   6516.27,
+   749.64
+  ],
+  [
+   "2026-07-21",
+   1883.24,
+   6747.95,
+   753.34
+  ],
+  [
+   "2026-07-22",
+   1875.43,
+   6797.7,
+   751.09
+  ],
+  [
+   "2026-07-23",
+   1931.48,
+   7096.89,
+   790.28
+  ],
+  [
+   "2026-07-24",
+   1823.78,
+   6690.62,
+   748.22
+  ],
+  [
+   "2026-07-27",
+   1851.72,
+   6755.75,
+   764.86
+  ],
+  [
+   "2026-07-28",
+   1694.73,
+   6023.66,
+   705.85
+  ],
+  [
+   "2026-07-29",
+   1624.33,
+   5663.24,
+   662.68
+  ],
+  [
+   "2026-07-30",
+   1570.12,
+   5593.56,
+   644.78
+  ],
+  [
+   "2026-07-31",
+   1795.11,
+   6595.45,
+   719.76
+  ],
+  [
+   "2026-08-03",
+   1717.31,
+   6257.45,
+   737.35
+  ],
+  [
+   "2026-08-04",
+   1742.04,
+   6358.95,
+   780.72
+  ],
+  [
+   "2026-08-05",
+   1766.14,
+   6598.26,
+   799.59
+  ],
+  [
+   "2026-08-06",
+   1737.53,
+   6296.38,
+   801.67
+  ],
+  [
+   "2026-08-07",
+   1696.7,
+   6258.77,
+   798.81
+  ],
+  [
+   "2026-08-10",
+   1753.62,
+   6299.66,
+   854.47
+  ],
+  [
+   "2026-08-11",
+   1780.52,
+   6345.53,
+   857.84
+  ],
+  [
+   "2026-08-12",
+   2050.08,
+   6579.04,
+   858.91
+  ],
+  [
+   "2026-08-13",
+   2040.64,
+   6813.34,
+   861.37
+  ],
+  [
+   "2026-08-14",
+   2040.18,
+   6977.94,
+   864.65
+  ],
+  [
+   "2026-08-18",
+   2009.15,
+   6869.83,
+   834.2
+  ],
+  [
+   "2026-08-19",
+   1948.07,
+   6471.17,
+   824.46
+  ],
+  [
+   "2026-08-20",
+   1955.65,
+   6852.58,
+   840.89
+  ],
+  [
+   "2026-08-21",
+   1866.67,
+   6912.95,
+   801.94
+  ],
+  [
+   "2026-08-24",
+   1888.59,
+   6696.96,
+   813.33
+  ],
+  [
+   "2026-08-25",
+   1889.17,
+   6742.74,
+   827.15
+  ],
+  [
+   "2026-08-26",
+   1892.62,
+   6808.21,
+   826.87
+  ],
+  [
+   "2026-08-27",
+   1885.35,
+   6912.37,
+   837.65
+  ],
+  [
+   "2026-08-28",
+   1921.73,
+   6788.88,
+   838.41
+  ],
+  [
+   "2026-08-31",
+   1940.36,
+   6820.02,
+   834.29
+  ],
+  [
+   "2026-09-01",
+   1883.4,
+   6835.8,
+   821.25
+  ],
+  [
+   "2026-09-02",
+   1857.17,
+   6562.72,
+   803.98
+  ],
+  [
+   "2026-09-03",
+   1839.97,
+   6579.48,
+   790.21
+  ],
+  [
+   "2026-09-04",
+   1870.22,
+   6687.21,
+   813.5
+  ],
+  [
+   "2026-09-07",
+   1871.03,
+   6995.39,
+   822.19
+  ],
+  [
+   "2026-09-08",
+   1855.76,
+   6954.52,
+   811.88
+  ],
+  [
+   "2026-09-09",
+   1871.4,
+   7051.64,
+   830.37
+  ],
+  [
+   "2026-09-10",
+   1845.62,
+   7033.92,
+   836.92
+  ],
+  [
+   "2026-09-11",
+   1821.6,
+   6909.91,
+   820.64
+  ],
+  [
+   "2026-09-14",
+   1775.63,
+   6684.37,
+   806.79
+  ],
+  [
+   "2026-09-15",
+   1783.08,
+   6627.26,
+   812.41
+  ],
+  [
+   "2026-09-16",
+   1794.31,
+   6717.97,
+   815.98
+  ],
+  [
+   "2026-09-17",
+   1789.93,
+   6715.41,
+   822.18
+  ],
+  [
+   "2026-09-18",
+   1822.83,
+   6894.23,
+   827.12
+  ],
+  [
+   "2026-09-21",
+   1822.92,
+   7007.72,
+   836.27
+  ],
+  [
+   "2026-09-22",
+   1759,
+   7017.91,
+   834.38
+  ],
+  [
+   "2026-09-23",
+   1753.9,
+   7080.92,
+   844.48
+  ],
+  [
+   "2026-09-28",
+   1699.15,
+   6889.74,
+   846.58
+  ],
+  [
+   "2026-09-29",
+   1725.48,
+   6870.81,
+   849.8
+  ],
+  [
+   "2026-09-30",
+   1718.3,
+   6838.04,
+   855.91
+  ],
+  [
+   "2026-10-01",
+   1803.75,
+   6971.35,
+   894.29
+  ],
+  [
+   "2026-10-02",
+   1828.27,
+   7003.74,
+   893.29
+  ],
+  [
+   "2026-10-06",
+   1907.41,
+   6941.39,
+   919.92
+  ],
+  [
+   "2026-10-07",
+   1852.77,
+   6803.9,
+   898.43
+  ],
+  [
+   "2026-10-08",
+   1865.58,
+   6625.93,
+   892.27
+  ]
+ ],
+ "baseDate": "2026-03-04",
+ "holdings": [
+  {
+   "pl": 65433,
+   "avg": 1490000,
+   "cur": 1559000,
+   "day": 0.8408796895213344,
+   "qty": 1,
+   "ret": 4.39,
+   "code": "009150",
+   "evlt": 1559000,
+   "name": "삼성전기",
+   "dayPl": 13000,
+   "since": "2026-10-08",
+   "weight": 27.85551652686199
+  },
+  {
+   "pl": 144224,
+   "avg": 128400,
+   "cur": 157600,
+   "day": -0.06341154090044876,
+   "qty": 5,
+   "ret": 22.46,
+   "code": "353200",
+   "evlt": 788000,
+   "name": "대덕전자",
+   "dayPl": -500,
+   "since": "2026-10-08",
+   "weight": 14.079632471563341
+  },
+  {
+   "pl": 31860,
+   "avg": 56922,
+   "cur": 60600,
+   "day": 0,
+   "qty": 9,
+   "ret": 6.22,
+   "code": "064290",
+   "evlt": 545400,
+   "name": "인텍플러스",
+   "dayPl": 0,
+   "since": "2026-10-08",
+   "weight": 9.744963895927217
+  },
+  {
+   "pl": -26188,
+   "avg": 544000,
+   "cur": 519000,
+   "day": -0.9541984732824416,
+   "qty": 1,
+   "ret": -4.81,
+   "code": "039030",
+   "evlt": 519000,
+   "name": "이오테크닉스",
+   "dayPl": -5000,
+   "since": "2026-10-08",
+   "weight": 9.273260473022047
+  },
+  {
+   "pl": -17749,
+   "avg": 130633,
+   "cur": 125000,
+   "day": -0.3984063745019917,
+   "qty": 3,
+   "ret": -4.53,
+   "code": "007660",
+   "evlt": 375000,
+   "name": "이수페타시스",
+   "dayPl": -1500,
+   "since": "2026-10-08",
+   "weight": 6.700332711721132
+  },
+  {
+   "pl": -3202,
+   "avg": 88400,
+   "cur": 87800,
+   "day": -0.11376564277588708,
+   "qty": 4,
+   "ret": -0.91,
+   "code": "058470",
+   "evlt": 351200,
+   "name": "리노공업",
+   "dayPl": -400,
+   "since": "2026-10-08",
+   "weight": 6.275084928950565
+  },
+  {
+   "pl": 40028,
+   "avg": 150300,
+   "cur": 170700,
+   "day": -1.215277777777779,
+   "qty": 2,
+   "ret": 13.32,
+   "code": "222800",
+   "evlt": 341400,
+   "name": "심텍",
+   "dayPl": -4200,
+   "since": "2026-10-08",
+   "weight": 6.09998290075092
+  },
+  {
+   "pl": -19746,
+   "avg": 86750,
+   "cur": 82000,
+   "day": 0.7371007371007376,
+   "qty": 4,
+   "ret": -5.69,
+   "code": "103590",
+   "evlt": 328000,
+   "name": "일진전기",
+   "dayPl": 2400,
+   "since": "2026-10-08",
+   "weight": 5.860557678518751
+  },
+  {
+   "pl": 40490,
+   "avg": 9450,
+   "cur": 11500,
+   "day": -0.6908462867012077,
+   "qty": 20,
+   "ret": 21.42,
+   "code": "033790",
+   "evlt": 230000,
+   "name": "피노",
+   "dayPl": -1600,
+   "since": "2026-10-08",
+   "weight": 4.1095373965222946
+  },
+  {
+   "pl": 40412,
+   "avg": 66700,
+   "cur": 87100,
+   "day": -1.1350737797956922,
+   "qty": 2,
+   "ret": 30.29,
+   "code": "007810",
+   "evlt": 174200,
+   "name": "코리아써키트",
+   "dayPl": -2000,
+   "since": "2026-10-08",
+   "weight": 3.11252788901819
+  }
+ ],
+ "baseTotal": 3000000,
+ "cashWeight": 6.888603127143549,
+ "backfilledFrom": "2026-03-01/3"
+};
+
+const SECTOR = {"009150":"전자부품","353200":"PCB·기판","064290":"반도체 장비·부품","039030":"반도체 장비·부품","007660":"PCB·기판","058470":"반도체 장비·부품","222800":"PCB·기판","103590":"전력기기","033790":"2차전지 소재","007810":"PCB·기판"};
+
+const $ = id => document.getElementById(id);
+const pd = s => { const [y,m,d] = s.slice(0,10).split('-').map(Number); return new Date(y, m-1, d); };
+const ymd = dt => dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+const dot = dt => `${dt.getFullYear()}.${String(dt.getMonth()+1).padStart(2,'0')}.${String(dt.getDate()).padStart(2,'0')}`;
+const mdd = s => s.slice(5).replace('-','.');
+const f2 = v => v.toLocaleString('ko-KR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const f0 = v => Math.round(v).toLocaleString('ko-KR');
+const sg = v => v>0?'+':v<0?'−':'';
+const pct = v => sg(v)+Math.abs(v).toFixed(2)+'%';
+const pp = v => sg(v)+Math.abs(v).toFixed(2)+'%p';
+const won = v => sg(v)+f0(Math.abs(v));
+const cls = v => v>0.0001?'up':v<-0.0001?'down':'flat';
+const span = (v,f=pct) => `<span class="${cls(v)}">${f(v)}</span>`;
+const SEP = '<span class="sep">·</span>';
+
+const H = DATA.history;
+const last = H[H.length-1];
+const lastD = pd(last[0]);
+const K = DATA.bm.kospi.ret, Q = DATA.bm.kosdaq.ret, R = DATA.ret;
+
+// 1. 첫 화면
+$('asof').innerHTML = `${dot(lastD)} 종가 기준<span>설정 ${dot(pd(DATA.start))}</span>`;
+$('nav').textContent = f2(DATA.nav);
+$('navDay').innerHTML = `전일 대비<b class="${cls(DATA.day)}">${pct(DATA.day)}</b>`;
+$('heroLine').innerHTML = `<span class="k">설정 이후</span> ${span(R)}${SEP}<span class="k">KOSPI 대비</span> ${span(R-K,pp)}${SEP}<span class="k">KOSDAQ 대비</span> ${span(R-Q,pp)}`;
+
+(function(){
+  const rows = [['AMT',R,true,null],['KOSPI',K,false,R-K],['KOSDAQ',Q,false,R-Q]];
+  const minV = Math.min(0,...rows.map(r=>r[1])), maxV = Math.max(...rows.map(r=>r[1]));
+  const usable = 0.78, sp = maxV-minV;
+  const zeroPct = (-minV/sp)*usable*100;
+  const scale = usable*100/sp;
+  let html = '';
+  rows.forEach(([n,v,main,ex])=>{
+    const w = Math.abs(v)*scale;
+    const left = v>=0 ? zeroPct : zeroPct - w;
+    const fill = main ? 'var(--navy)' : '#B0B8C1';
+    const valPos = `left:calc(${v>=0?zeroPct+w:zeroPct}% + 14px)`;
+    html += `<div class="nm ${main?'':'sub'}">${n}</div>
+      <div class="track"><div class="bar" style="left:${left}%;width:${w}%;background:${fill}"></div>
+      <div class="zero" style="left:${zeroPct}%"></div>
+      <div class="val ${cls(v)}" style="${valPos}">${pct(v)}</div></div>`;
+  });
+  $('cmp').innerHTML = html;
+  $('cmpNote').textContent = `설정 이후 ${mdd(DATA.start)}–${mdd(last[0])} 누적. 초과수익은 단순 차.`;
+})();
+
+// 2. 기간별
+function baseAt(target){
+  const ts = ymd(target); let row = null;
+  for(const r of H){ if(r[0] <= ts) row = r; else break; }
+  return row;
+}
+const periods = [
+  ['1주','1W', new Date(lastD.getFullYear(), lastD.getMonth(), lastD.getDate()-7)],
+  ['1개월','1M', new Date(lastD.getFullYear(), lastD.getMonth()-1, lastD.getDate())],
+  ['3개월','3M', new Date(lastD.getFullYear(), lastD.getMonth()-3, lastD.getDate())],
+  ['6개월','6M', new Date(lastD.getFullYear(), lastD.getMonth()-6, lastD.getDate())],
+].map(([n,s,d])=>{ const b = baseAt(d); return {n,s, from:b[0], a:(last[1]/b[1]-1)*100, k:(last[2]/b[2]-1)*100, q:(last[3]/b[3]-1)*100}; });
+periods.push({n:'설정 이후',s:'SI', from:DATA.start, a:R, k:K, q:Q});
+$('periodH').innerHTML = periods.slice(0,3).map(p=>`${p.s} ${span(p.a)}`).join(SEP);
+const beatK = periods.filter(p=>p.a>p.k).length, beatQ = periods.filter(p=>p.a>p.q).length;
+$('periodSub').textContent = `KOSPI 상회 ${beatK}/5 구간 · KOSDAQ 상회 ${beatQ}/5 구간`;
+(function(){
+  const hl = p => p.n==='설정 이후'?'hl':'';
+  let h = `<div class="h" style="align-items:flex-start">구간</div>` + periods.map(p=>`<div class="h ${hl(p)}">${p.n}<span>${mdd(p.from)}–</span></div>`).join('');
+  h += `<div class="rl main">AMT</div>` + periods.map(p=>`<div class="amt ${cls(p.a)} ${hl(p)}">${pct(p.a)}</div>`).join('');
+  h += `<div class="rl sub">KOSPI</div>` + periods.map(p=>`<div class="ix ${cls(p.k)} ${hl(p)}">${pct(p.k)}</div>`).join('');
+  h += `<div class="rl sub">KOSDAQ</div>` + periods.map(p=>`<div class="ix ${cls(p.q)} ${hl(p)}">${pct(p.q)}</div>`).join('');
+  h += `<div class="rl top">초과 vs KOSPI</div>` + periods.map(p=>`<div class="xs top ${cls(p.a-p.k)} ${hl(p)}">${pp(p.a-p.k)}</div>`).join('');
+  h += `<div class="rl">초과 vs KOSDAQ</div>` + periods.map(p=>`<div class="xs ${cls(p.a-p.q)} ${hl(p)}">${pp(p.a-p.q)}</div>`).join('');
+  $('periods').innerHTML = h;
+  $('periodNote').textContent = `종가 기준, 기준일이 휴장이면 직전 거래일. 설정 이후 지수는 ${mdd(DATA.start)} 기준.`;
+})();
+
+// 3. 추이
+const n0 = H[0];
+const norm = (row,i) => row[i]/n0[i]*1000;
+const kEnd = norm(last,2), qEnd = norm(last,3);
+$('trendH').innerHTML = `${f2(n0[1]).replace('.00','')} → ${f2(DATA.nav)}${SEP}${H.length}거래일`;
+$('trendSub').textContent = `${dot(pd(n0[0]))} – ${dot(lastD)} · 일별`;
+(function(){
+  const svg = $('chart');
+  const W=1120, Ht=330, L=56, Rr=128, T=14, B=38;
+  const t0 = pd(H[0][0]).getTime(), t1 = lastD.getTime();
+  const x = t => L + (t - t0)/(t1 - t0)*(W-L-Rr);
+  let ymax = 0, ymin = Infinity;
+  H.forEach(r=>{ [r[1],norm(r,2),norm(r,3)].forEach(v=>{ymax=Math.max(ymax,v);ymin=Math.min(ymin,v);}); });
+  const yTop = Math.ceil(ymax/500)*500, yBot = Math.max(0, Math.floor(ymin/500)*500);
+  const y = v => T + (yTop - v)/(yTop - yBot)*(Ht-T-B);
+  let g = '';
+  for(let v=yBot; v<=yTop; v+=500){
+    const isBase = v===1000;
+    g += `<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="${isBase?'#8B95A1':'#E5E8EB'}" stroke-width="1" ${isBase?'stroke-dasharray="4 4"':''}/>`;
+    g += `<text x="${L-12}" y="${y(v)+4}" text-anchor="end" font-size="13" fill="#6B7684">${v.toLocaleString('ko-KR')}</text>`;
+  }
+  const d0 = pd(H[0][0]);
+  for(let m = new Date(d0.getFullYear(), d0.getMonth()+1, 1); m.getTime()<=t1; m = new Date(m.getFullYear(), m.getMonth()+1, 1)){
+    const xx = x(m.getTime());
+    g += `<line x1="${xx}" x2="${xx}" y1="${Ht-B}" y2="${Ht-B+6}" stroke="#191F28"/>`;
+    g += `<text x="${xx}" y="${Ht-B+24}" text-anchor="middle" font-size="13" fill="#6B7684">${m.getMonth()+1}월</text>`;
+  }
+  g += `<line x1="${L}" x2="${W-Rr}" y1="${Ht-B}" y2="${Ht-B}" stroke="#191F28"/>`;
+  const path = i => H.map((r,k)=>`${k?'L':'M'}${x(pd(r[0]).getTime()).toFixed(1)},${y(i===1?r[1]:norm(r,i)).toFixed(1)}`).join('');
+  g += `<path d="${path(3)}" fill="none" stroke="#B0B8C1" stroke-width="2" stroke-dasharray="5 4"/>`;
+  g += `<path d="${path(2)}" fill="none" stroke="#8B95A1" stroke-width="2"/>`;
+  g += `<path d="${path(1)}" fill="none" stroke="#16295E" stroke-width="3" stroke-linejoin="round"/>`;
+  const ends = [
+    {v:last[1], t:'AMT', c:'#16295E', w:700},
+    {v:kEnd, t:'KOSPI', c:'#6B7684', w:600},
+    {v:qEnd, t:'KOSDAQ', c:'#6B7684', w:600},
+  ].map(e=>({...e, yy:y(e.v)})).sort((a,b)=>a.yy-b.yy);
+  for(let i=1;i<ends.length;i++) if(ends[i].yy-ends[i-1].yy<36) ends[i].yy = ends[i-1].yy+36;
+  const ex = x(t1);
+  ends.forEach(e=>{
+    g += `<circle cx="${ex}" cy="${y(e.v)}" r="${e.t==='AMT'?5:4}" fill="${e.c}"/>`;
+    g += `<text x="${ex+14}" y="${e.yy-2}" font-size="13" font-weight="${e.w}" fill="${e.c}">${e.t}</text>`;
+    g += `<text x="${ex+14}" y="${e.yy+15}" font-size="13" fill="#191F28">${f2(e.v)}</text>`;
+  });
+  svg.innerHTML = g;
+  const kChart = (kEnd/1000-1)*100;
+  const idxNote = Math.abs(kChart - K) > 0.05 ? `지수선은 ${Number(n0[0].slice(5,7))}/${Number(n0[0].slice(8,10))} 종가=1,000 기준` : '';
+  $('chartNote').textContent = [idxNote, '3·6·7월 일부 일자 기준가는 데이터 보정 구간'].filter(Boolean).join(' · ');
+})();
+
+// 4. 포트폴리오
+const hold = DATA.holdings.map(h=>({...h, sector:SECTOR[h.code]}));
+const stockW = 100 - DATA.cashWeight;
+const secW = {};
+hold.forEach(h=>{ secW[h.sector] = (secW[h.sector]||0) + h.weight; });
+const secs = Object.entries(secW).sort((a,b)=>b[1]-a[1]);
+const ordered = [];
+secs.forEach(([s])=> hold.filter(h=>h.sector===s).sort((a,b)=>b.weight-a.weight).forEach(h=>ordered.push(h)));
+const byW = [...hold].sort((a,b)=>b.weight-a.weight);
+const top3 = byW.slice(0,3);
+const top3W = top3.reduce((s,h)=>s+h.weight,0);
+const plSum = hold.reduce((s,h)=>s+h.pl,0);
+const dayPlSum = hold.reduce((s,h)=>s+h.dayPl,0);
+const ups = hold.filter(h=>h.ret>0).length;
+
+$('allocH').innerHTML = `${hold.length}종목${SEP}주식 ${stockW.toFixed(1)}%${SEP}현금 ${DATA.cashWeight.toFixed(1)}%`;
+$('allocSub').textContent = `${dot(lastD)} 종가 평가`;
+$('facts').innerHTML = `
+  <div><div class="k">순자산</div><div class="v">${f0(DATA.total)}원</div><div class="s">주식 ${f0(DATA.stock)} · 현금 ${f0(DATA.cash)}</div></div>
+  <div><div class="k">평가손익 합계</div><div class="v ${cls(plSum)}">${won(plSum)}원</div><div class="s">매입가 대비 ${pct(DATA.plRet)}</div></div>
+  <div><div class="k">상위 3종목 비중</div><div class="v">${top3W.toFixed(1)}%</div><div class="s">${top3.map(h=>h.name).join(' · ')}</div></div>
+  <div><div class="k">최대 업종 비중</div><div class="v">${secs[0][1].toFixed(1)}%</div><div class="s">${secs[0][0]} · 전체 ${secs.length}개 업종</div></div>`;
+(function(){
+  const segs = ordered.map(h=>({w:h.weight, lab:h.name, cash:false})).concat([{w:DATA.cashWeight, lab:'현금', cash:true}]);
+  $('stockBar').innerHTML = segs.map(s=>`<div class="seg ${s.cash?'cash':''}" style="flex:${s.w} 1 0"></div>`).join('');
+  $('stockLabels').innerHTML = segs.map(s=>{
+    const show = s.w >= 5.5 || s.cash;
+    return `<div style="flex:${s.w} 1 0">${show?`<div class="in"><b>${s.lab}</b><span class="num">${s.w.toFixed(1)}%</span></div>`:''}</div>`;
+  }).join('');
+  const ss = secs.map(([s,w])=>({s,w})).concat([{s:'현금',w:DATA.cashWeight,cash:true}]);
+  $('secBar').innerHTML = ss.map(s=>`<div class="seg ${s.cash?'cash':''}" style="flex:${s.w} 1 0"></div>`).join('');
+  $('secLabels').innerHTML = ss.map(s=>`<div style="flex:${s.w} 1 0">${s.w>=8?`${s.s}<span class="num">${s.w.toFixed(1)}%</span>`:''}</div>`).join('');
+  const small = segs.filter(s=>!(s.w>=5.5||s.cash));
+  const smallSec = ss.filter(s=>s.w<8);
+  $('allocNote').textContent = `미표기 — 업종: ${smallSec.map(s=>`${s.s} ${s.w.toFixed(1)}%`).join(', ')} / 종목: ${small.map(s=>`${s.lab} ${s.w.toFixed(1)}%`).join(', ')}`;
+})();
+
+// 5. 표
+(function(){
+  $('tableH').innerHTML = `평가손익 ${span(plSum,won)}원${SEP}수익 ${ups}/${hold.length}종목${SEP}전일 손익 ${span(dayPlSum,won)}원`;
+  const maxW = byW[0].weight;
+  let rows = byW.map(h=>`<tr>
+    <td><span class="nm">${h.name}</span><span class="cd">${h.code}</span></td>
+    <td class="sec">${h.sector}</td>
+    <td><span class="wbar" style="width:${(h.weight/maxW*56).toFixed(1)}px"></span>${h.weight.toFixed(1)}%</td>
+    <td>${f0(h.cur)}</td><td>${f0(h.avg)}</td><td>${h.qty}</td><td>${f0(h.evlt)}</td>
+    <td class="${cls(h.pl)}">${won(h.pl)}</td>
+    <td class="ret ${cls(h.ret)}">${pct(h.ret)}</td>
+    <td class="${cls(h.day)}">${pct(h.day)}</td></tr>`).join('');
+  rows += `<tr class="cash"><td><span class="nm">현금</span></td><td class="sec">—</td><td><span class="wbar" style="width:${(DATA.cashWeight/maxW*56).toFixed(1)}px;background:#C9CED6"></span>${DATA.cashWeight.toFixed(1)}%</td><td>—</td><td>—</td><td>—</td><td>${f0(DATA.cash)}</td><td>—</td><td>—</td><td>—</td></tr>`;
+  rows += `<tr class="total"><td>합계</td><td></td><td>100.0%</td><td></td><td></td><td></td><td>${f0(DATA.total)}</td><td class="${cls(plSum)}">${won(plSum)}</td><td class="${cls(DATA.plRet)}">${pct(DATA.plRet)}</td><td></td></tr>`;
+  $('tbody').innerHTML = rows;
+})();
+
+$('footNote').textContent = `데이터 ${DATA.asOf.slice(0,16)} 갱신 · 설정 ${DATA.start} · 기준가 첫 기록 ${H[0][0]} · 단위 원.`;
+</script>
+</body>
+</html>
