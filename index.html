@@ -457,6 +457,7 @@ nav.nav{view-transition-name:rfs-nav}
 .rfm-head em{font-style:normal;color:#8FAADC}
 .rfm-dek{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:16px;font-size:14px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums}
 .rfm-dek b{font-weight:700;margin-left:4px}
+.rfm-beat{color:#F7F6F3}
 .rfm-body{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:40px;margin-top:40px}
 .rfm-axis{position:relative;height:26px;margin-left:calc(44px + 168px + 16px);margin-right:calc(96px + 16px)}
 .rfm-axis span{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#8FAADC;white-space:nowrap}
@@ -2025,7 +2026,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
       <h1 class="rfm-head"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</h1>
       <div class="rfm-dek">
-        <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="4"><span>{{ d.k }} <b style="color:{{ d.c }}">{{ d.v }}</b></span></sc-for>
+        <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="4"><span>{{ d.k }} <b style="color:{{ d.c }}">{{ d.v }}</b></span></sc-for><span class="rfm-beat">{{ rfmBeatLine }}</span>
       </div>
       <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
         <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
@@ -3912,8 +3913,8 @@ class Component extends DCLogic {
         { k: '학회 평균', v: pct(avg), c: col(avg) },
         { k: 'KOSPI', v: kospi !== null ? pct(kospi) : '-', c: kospi !== null ? col(kospi) : flat },
         { k: 'KOSDAQ', v: kosdaq !== null ? pct(kosdaq) : '-', c: kosdaq !== null ? col(kosdaq) : flat },
-        { k: 'KOSPI 초과', v: kospi !== null ? on.filter((m) => ret(m) > kospi).length + ' / ' + on.length : '-', c: '#F7F6F3' },
       ],
+      rfmBeatLine: kospi !== null && on.length ? on.length + '명 중 ' + on.filter((m) => ret(m) > kospi).length + '명이 KOSPI를 앞서고 있습니다.' : '',
       rfmAxis: [kospi !== null ? { x: x(kospi), t: 'KOSPI' } : null, cut !== null ? { x: x(cut), t: '50위' } : null].filter(Boolean),
       rfmZero: x(0), rfmKx: kospi !== null ? x(kospi) : '-10%', rfmCx: cut !== null ? x(cut) : '-10%',
       rfmCount: on.length,
