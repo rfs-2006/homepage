@@ -30,7 +30,7 @@ node tools/build-pages.js  # /about/, /recruiting/ 생성 + 사이트맵에 추�
 
 - **`vba/`** 리포트 워드 템플릿의 매크로 약 2,460줄. 서식 적용, 표·요약박스 삽입, 티커로 주가 차트 그리기(네이버 금융·Yahoo Finance·Stooq), 글꼴·크기 규격 점검
 - **`installer/`** 템플릿을 팀원 PC에 깔아 주는 설치 프로그램의 빌드 스크립트. PowerShell + WPF로 설치 창을 그리고, ps2exe로 `.exe`를 만듭니다
-- **`video/`** 템플릿 사용법 영상(약 2분 45초). 워드 화면을 녹화하지 않고 HTML/CSS/JS로 다시 그린 뒤 Hyperframes로 프레임 단위 렌더합니다. 효과음도 샘플 없이 코드로 합성합니다(`tools/sfx.py`)
+- **`video/`** 템플릿 사용법 영상(약 2분 45초, [YouTube](https://www.youtube.com/watch?v=Wo8Tk_wrGWc)). 워드 화면을 녹화하지 않고 HTML/CSS/JS로 다시 그린 뒤 Hyperframes로 프레임 단위 렌더합니다. 효과음도 샘플 없이 코드로 합성합니다(`tools/sfx.py`)
 
 ## 배포
 
