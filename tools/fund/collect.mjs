@@ -79,7 +79,10 @@ async function indexRet(code, start) {
     if (start && !idxBase[code]) {
       const xml = await (await fetch(`https://fchart.stock.naver.com/sise.nhn?symbol=${code}&timeframe=day&count=500&requestType=0`)).text();
       const lim = start.replace(/-/g, '');
-      for (const m of xml.matchAll(/data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([\d.]+)\|/g)) if (m[1] >= lim) { idxBase[code] = parseFloat(m[2]); break; }
+      for (const m of xml.matchAll(/data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([\d.]+)\|/g)) {
+        if (BASE ? m[1] < lim : m[1] >= lim) idxBase[code] = parseFloat(m[2]);
+        if (!BASE && m[1] >= lim) break;
+      }
     }
     const j = await (await fetch(`https://m.stock.naver.com/api/index/${code}/basic`)).json();
     const now = n(j.closePrice), day = n(j.fluctuationsRatio);
@@ -195,17 +198,22 @@ async function backfill() {
   }).filter((r) => /^\d{8}$/.test(r.d) && r.v > 0 && r.d >= s0 && r.d < e0).sort((a, b) => (a.d < b.d ? -1 : 1));
   if (!rows.length) { console.log('backfill: no daily asset rows'); return; }
   const [kc, qc] = await Promise.all([indexCloses('KOSPI'), indexCloses('KOSDAQ')]).catch(() => [{}, {}]);
-  const base = rows[0].v;
+  // 시작 금액(FUND_BASE)이 있으면 시작일 직전을 1,000으로, 없으면 첫 기록일 총자산을 1,000으로
+  const base = BASE || rows[0].v;
   const fmt = (d) => d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8);
   const history = rows.map((r) => [fmt(r.d), +(r.v / base * 1000).toFixed(2), kc[r.d] || null, qc[r.d] || null]);
-  prev = { ...(prev || {}), baseTotal: base, baseDate: fmt(rows[0].d), history, backfilledFrom: START };
+  if (BASE) {
+    const before = Object.keys(kc).filter((d) => d < s0).sort().pop();
+    if (before) history.unshift([fmt(before), 1000, kc[before] || null, qc[before] || null]);
+  }
+  prev = { ...(prev || {}), baseTotal: base, baseDate: BASE ? START : fmt(rows[0].d), history, backfilledFrom: START };
   console.log(`backfill: ${history.length} days from ${history[0][0]}`);
 }
 
 // ---------- 실행 ----------
 if (!DRY) prev = await loadPrev().catch(() => null);
-// 시작일이 있는데 기록이 그보다 늦게 시작하면 지난 기록을 채운다 (시작 금액을 직접 넣은 경우는 제외)
-if (START && !BASE && !(prev && prev.backfilledFrom === START)) {
+// 시작일이 있으면 한 번, 시작일부터 어제까지 지난 기록을 채운다
+if (START && !(prev && prev.backfilledFrom === START)) {
   await backfill().catch((e) => console.error('backfill failed: ' + e.message));
 }
 if (ONCE || DRY) { round.publish = ONCE; await round(); process.exit(0); }
