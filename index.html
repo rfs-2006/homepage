@@ -4040,8 +4040,8 @@ class Component extends DCLogic {
     const navItems = navDefs.map(([label, page, url]) => ({
       label, href: url || '#' + page,
       on: url ? () => {} : (e) => { e.preventDefault(); this.go(page); },
-      cls: (navActive === page ? 'on' : '') + (page === 'intranet' || url ? ' hide-m' : ''),
-      hideM: page === 'intranet' || !!url,
+      cls: (navActive === page ? 'on' : '') + (url ? ' hide-m' : ''),
+      hideM: !!url,
       mcolor: navActive === page ? '#203864' : '#1A1A1A' }));
     const recruiting = status === '모집 중';
     const statusText = recruiting
