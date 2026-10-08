@@ -1,6 +1,6 @@
 name: RFM 순위 수집
 
-# 평일 장중(08:55~15:40 KST)에는 한 번 로그인해 두고 1분마다 갱신한다.
+# 평일 장중(08:55~15:40 KST)에는 한 번 로그인해 두고 15초마다 갱신한다.
 # 작업 하나의 한도가 6시간이라 오후에 이어받는 실행을 하나 더 두고, 장 마감 뒤 확정치를 한 번 더 받는다.
 # (cron은 UTC 기준, GitHub 사정으로 몇 분 늦게 시작될 수 있음)
 on:
@@ -39,5 +39,5 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           RFM_MEMBERS: ${{ secrets.RFM_MEMBERS }}
           RFM_UNTIL: '15:40'
-          RFM_EVERY: '60'
+          RFM_EVERY: '15'
         run: node collect.mjs
