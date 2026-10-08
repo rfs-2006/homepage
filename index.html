@@ -2215,7 +2215,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <div class="rfmrow" style="display:grid;grid-template-columns:28px minmax(0,1fr) 120px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
                 <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:rgba(247,246,243,0.55);font-variant-numeric:tabular-nums">{{ r.no }}</div>
                 <div style="min-width:0">
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.nick }}</span></div>
+                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.label }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.sub }}</span></div>
                   <div style="height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="height:3px;background:{{ r.barColor }};width:{{ r.bar }}"></div></div>
                   <div style="font-size:12px;color:rgba(247,246,243,0.45);margin-top:6px;font-variant-numeric:tabular-nums">기준가 {{ r.nav }} · {{ r.hold }}</div>
                 </div>
@@ -2232,7 +2232,16 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
               <div style="margin-top:18px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.45)">순위표에서 찾지 못한 별칭: {{ rfmMissing }}</div>
             </sc-if>
-            <div style="margin-top:22px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.4)">타임폴리오 동의 하에 학회 내부에만 공개합니다. 외부 공유를 삼가 주세요.</div>
+            <div style="margin-top:22px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.4)">타임폴리오 동의 하에 학회 내부에만 공개합니다. 외부 공유를 삼가 주세요. <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></div>
+            <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:12px">
+                <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
+                <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
+                  <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
+                  <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
+                </div>
+              </div>
+            </sc-if>
           </sc-if>
 
 
@@ -3730,8 +3739,18 @@ class Component extends DCLogic {
   }
 
   // RFM: 기준가 1,000에서 출발하므로 수익률 = 기준가 / 1000 - 1
+  // 실명은 서버에 두지 않고, 회장 브라우저(localStorage)에만 별칭→실명 목록을 저장해 그 기기에서만 보이게 한다
+  rfmNames() {
+    try { return JSON.parse(localStorage.getItem('rfs_rfm_names') || '{}') || {}; } catch (e) { return {}; }
+  }
+
   rfmProps(RF) {
+    const s = this.state;
     const ms = (RF && RF.members) || [];
+    const key = (n) => String(n || '').replace(/\s+/g, '').toLowerCase();
+    const names = this.rfmNames();
+    const real = (m) => names[key(m.nick)] || '';
+    const hasNames = Object.keys(names).length > 0;
     const on = ms.filter((m) => m.found && m.nav).sort((a, b) => b.nav - a.nav);
     const pct = (v, d = 2) => (v > 0 ? '+' : '') + v.toFixed(d) + '%';
     const up = '#E8837B', dn = '#8FAADC', flat = 'rgba(247,246,243,0.45)';
@@ -3743,13 +3762,13 @@ class Component extends DCLogic {
       hasRfm: on.length > 0, noRfm: on.length === 0,
       rfmContest: (RF && RF.contest) || 'RFM', rfmAsOf: RF && RF.asOf ? RF.asOf + ' 기준' : '',
       rfmAvg: on.length ? pct(avg) : '-', rfmAvgColor: avg > 0 ? up : avg < 0 ? dn : '#F7F6F3',
-      rfmTop: top ? top.name : '-', rfmTopRet: top ? pct(ret(top)) + ' · 전체 ' + top.rank + '위' : '',
+      rfmTop: top ? (real(top) || top.nick) : '-', rfmTopRet: top ? pct(ret(top)) + ' · 전체 ' + top.rank + '위' : '',
       rfmCount: on.length + '명', rfmTotal: RF && RF.total ? '전체 참가자 ' + Number(RF.total).toLocaleString('ko-KR') + '명' : '',
       rfmRows: on.map((m, i) => {
         const r = ret(m);
         const day = m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null;
         return {
-          no: i + 1, name: m.name, nick: m.nick,
+          no: i + 1, label: real(m) || m.nick, sub: real(m) ? m.nick : '',
           rank: m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-',
           move: m.rankChg > 0 ? '▲' + m.rankChg : m.rankChg < 0 ? '▼' + -m.rankChg : '–',
           moveColor: m.rankChg > 0 ? up : m.rankChg < 0 ? dn : flat,
@@ -3760,7 +3779,18 @@ class Component extends DCLogic {
           bar: (Math.abs(r) / maxAbs * 100).toFixed(1) + '%', barColor: r >= 0 ? up : dn,
         };
       }),
-      rfmMissing: ms.filter((m) => !m.found).map((m) => m.name + '(' + m.nick + ')').join(', '),
+      rfmMissing: ms.filter((m) => !m.found).map((m) => (real(m) ? real(m) + '(' + m.nick + ')' : m.nick)).join(', '),
+      rfmHasNames: hasNames, rfmNameOpen: !!s.rfmNameOpen, rfmNameText: s.rfmNameText || '',
+      rfmNameToggle: (e) => { e.preventDefault(); this.setState({ rfmNameOpen: !s.rfmNameOpen }); },
+      onRfmNameText: (e) => this.setState({ rfmNameText: e.target.value }),
+      rfmNameSave: (e) => {
+        e.preventDefault();
+        const map = {};
+        (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { const p = l.split(/[,\t:]/).map((x) => x.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
+        try { localStorage.setItem('rfs_rfm_names', JSON.stringify(map)); } catch (x) {}
+        this.setState({ rfmNameOpen: false, rfmNameText: '' });
+      },
+      rfmNameClear: (e) => { e.preventDefault(); try { localStorage.removeItem('rfs_rfm_names'); } catch (x) {} this.setState({ rfmNameOpen: false }); },
       hasRfmMissing: ms.some((m) => !m.found),
     };
   }

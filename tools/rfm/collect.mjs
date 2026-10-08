@@ -24,10 +24,11 @@ if (!CSV_FILE) { need('TF_EMAIL', TF_EMAIL); need('TF_PASSWORD', TF_PASSWORD); }
 if (!DRY) need('SUPABASE_SERVICE_ROLE_KEY', SB_KEY);
 
 const norm = (s) => String(s || '').replace(/\s+/g, '').toLowerCase();
+// 실명은 Supabase에 올리지 않는다. 한 줄이 "이름,별칭"이면 별칭만, 별칭만 있어도 된다.
 const members = RFM_MEMBERS.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
-  const [name, ...rest] = l.split(/[,\t:]/);
-  return { name: name.trim(), nick: rest.join(',').trim() };
-}).filter((m) => m.name && m.nick);
+  const parts = l.split(/[,\t:]/).map((x) => x.trim());
+  return { nick: parts.length > 1 ? parts.slice(1).join(',') : parts[0] };
+}).filter((m) => m.nick);
 
 // ---------- CSV ----------
 function decode(buf) {
@@ -282,12 +283,12 @@ async function publish(got) {
   const series = sameContest && prev.series ? prev.series : {};
   const out = members.map((m) => {
     const r = byNick.get(norm(m.nick));
-    if (!r) return { name: m.name, nick: m.nick, found: false };
+    if (!r) return { nick: m.nick, found: false };
     const key = norm(m.nick);
     const s = (series[key] || []).filter((p) => p[0] !== today);
     s.push([today, r.nav, r.rank]);
     series[key] = s.slice(-120);
-    return { name: m.name, nick: r.nick, found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
+    return { nick: r.nick, found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
   });
   const data = {
     contest: got.contest || (prev && prev.contest) || '',
