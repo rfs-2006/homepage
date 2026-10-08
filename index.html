@@ -557,6 +557,8 @@ nav.nav{view-transition-name:rfs-nav}
 @media (max-width:860px){.fd-hov{height:200px}.fd-tip{min-width:150px;font-size:11px}}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
+.fdpage{isolation:isolate}
+.fdpage::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -2335,9 +2337,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
+  <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
-      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1776695965745-e8bcedaaa8e0?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by ruedi häberli on Unsplash" credit-href="https://unsplash.com/@ruehab" style="--slot-position:center 62%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
@@ -4849,8 +4851,7 @@ class Component extends DCLogic {
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t) this.setState({ intraTab: t }); }
-    else if (h === 'fund') { location.replace('/fund/'); return; }
-    else if (['home','research','about','people','activity','recruit','rfm'].includes(h)) page = h;
+    else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;
@@ -4865,7 +4866,6 @@ class Component extends DCLogic {
   }
 
   go(page, id) {
-    if (page === 'fund') { location.href = '/fund/'; return; }
     this._navAt = Date.now();
     const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page;
     // 리포트 개별 주소에서 다른 화면으로 갈 때는 주소를 메인(/#...)으로 바꾼다
@@ -5106,7 +5106,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '/fund/', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
