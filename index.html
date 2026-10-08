@@ -335,9 +335,11 @@ input{border-radius:0;font-family:inherit}
 .cardlink{transition:color 120ms ease}
 .darklink{transition:color 120ms ease}
 .btn-paperfill{transition:background-color 120ms ease}
-.mmenu{position:absolute;top:72px;left:0;right:0;background:rgba(15,27,46,0.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid rgba(247,246,243,0.25);z-index:40;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity 200ms cubic-bezier(0.23,1,0.32,1),transform 200ms cubic-bezier(0.23,1,0.32,1)}
+.mmenu{position:absolute;top:72px;left:0;right:0;background:#0F1B2E;box-shadow:0 18px 40px rgba(0,0,0,0.35);border-bottom:1px solid rgba(247,246,243,0.25);z-index:40;opacity:0;transform:translateY(-8px);pointer-events:none;transition:opacity 200ms cubic-bezier(0.23,1,0.32,1),transform 200ms cubic-bezier(0.23,1,0.32,1)}
 .mmenu a{color:#F7F6F3 !important}
 .mmenu a.on{color:#8FAADC !important}
+html.nav-solid .nav .mmenu a,html .nav .mmenu a{color:#F7F6F3 !important}
+html.nav-solid .nav .mmenu a.on,html .nav .mmenu a.on{color:#8FAADC !important}
 .mmenu.open{opacity:1;transform:none;pointer-events:auto;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1),transform 260ms cubic-bezier(0.23,1,0.32,1)}
 .faqbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows 220ms cubic-bezier(0.23,1,0.32,1)}
 .faqbody.open{grid-template-rows:1fr}
@@ -455,6 +457,29 @@ nav.nav{view-transition-name:rfs-nav}
 .cur-sec .rv.cur-bg.is-in~.cur-tw2{animation-duration:6.2s;animation-delay:3s}
 @keyframes curTw{0%,100%{opacity:1}50%{opacity:.25}}
 @media (prefers-reduced-motion:reduce){.rv.cur-bg{transition:none;transform:none !important;opacity:1;filter:brightness(.62)}.cur-tw{animation:none !important}}
+
+/* 모바일: 기간별 수익률을 기간 × 지수로 세워서 한 화면에 */
+.fd-rtm{display:none}
+@media (max-width:768px){
+  .fd-rtw{display:none}
+  .fd-rtm{display:block;margin-top:18px;border:1px solid rgba(143,170,220,0.16);font-variant-numeric:tabular-nums}
+  .fd-rtm>div{display:grid;grid-template-columns:58px repeat(3,minmax(0,1fr)) minmax(0,1.25fr)}
+  .fd-rtm>div>*{padding:13px 10px 13px 4px;text-align:right;font-size:12px;white-space:nowrap}
+  .fd-rtm>div>*:first-child{text-align:left;padding-left:12px;color:rgba(247,246,243,0.8);font-weight:500}
+  .fd-rtm .rh{background:rgba(143,170,220,0.08)}
+  .fd-rtm .rh>*{font-size:11px;color:#8FAADC;padding:11px 6px}
+  .fd-rtm .rh>*:first-child{color:#8FAADC}
+  .fd-rtm .rr{border-top:1px solid rgba(247,246,243,0.07)}
+  .fd-rtm .rr b{font-weight:600}
+  .fd-rtm .rr.fund{background:rgba(143,170,220,0.06)}
+  .fd-kc>div:last-of-type:nth-of-type(odd){grid-column:1/-1}
+}
+
+@media (max-width:768px){
+  .fd-row .nm .rp{white-space:normal;line-height:1.5}
+  main.pgx.mhome .story>section{margin:0 !important;width:auto !important;max-width:none !important}
+  main.pgx.mhome .story .sec-label{color:rgba(247,246,243,0.72) !important}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
@@ -1917,7 +1942,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section data-tab="process" class="on-photo" data-nav="dark" style="position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden">
+    <section data-tab="process" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
       <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
       <div class="scrim" style="opacity:0.82"></div>
       <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%">
@@ -1969,9 +1994,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    </div>
-
-
     <section data-tab="history" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:64px 24px 56px">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-history-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
       <div class="scrim" style="opacity:0.86"></div>
@@ -1991,6 +2013,24 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </div>
     </section>
+
+    <section data-tab="calendar" class="on-photo cur-sec" data-nav="dark" style="position:relative;overflow:hidden;background:#060B16;padding:64px 24px 56px">
+      <div class="rv cur-bg" aria-hidden="true"></div><div class="cur-tw" aria-hidden="true"></div><div class="cur-tw cur-tw2" aria-hidden="true"></div>
+      <div class="scrim" style="opacity:0.35"></div>
+      <div style="position:relative;z-index:1">
+        <p class="sec-label" style="margin:0">Curriculum</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">학기 중에는 국내를, 방학에는 <strong>세계를 분석합니다.</strong></h2>
+        <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
+          <sc-for list="{{ rhythmYear }}" as="p" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:56px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
+              <div style="font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:rgba(247,246,243,0.65);padding-top:3px;line-height:1.35">{{ p.name }}</div>
+              <div><div style="font-size:13px;font-weight:600;letter-spacing:0.06em;color:rgba(247,246,243,0.6)">{{ p.months }}</div><div style="font-size:14px;color:#F7F6F3;margin-top:5px;line-height:1.65">{{ p.items }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+    </div>
 
     <section data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
       <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#0F1B2E">5개 학회 연합 학술제</h2>
@@ -2014,22 +2054,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <div style="font-size:13px;color:rgba(26,26,26,0.7);margin-top:5px;line-height:1.65">{{ p.desc }}</div>
           </div>
         </sc-for>
-      </div>
-    </section>
-    <section data-tab="calendar" class="on-photo cur-sec" data-nav="dark" style="position:relative;overflow:hidden;background:#060B16;padding:64px 24px 56px">
-      <div class="rv cur-bg" aria-hidden="true"></div><div class="cur-tw" aria-hidden="true"></div><div class="cur-tw cur-tw2" aria-hidden="true"></div>
-      <div class="scrim" style="opacity:0.35"></div>
-      <div style="position:relative;z-index:1">
-        <p class="sec-label" style="margin:0">Curriculum</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">학기 중에는 국내를, 방학에는 <strong>세계를 분석합니다.</strong></h2>
-        <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
-          <sc-for list="{{ rhythmYear }}" as="p" hint-placeholder-count="4">
-            <div style="display:grid;grid-template-columns:56px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
-              <div style="font-family:'Noto Serif KR',serif;font-size:13px;font-weight:700;color:rgba(247,246,243,0.65);padding-top:3px;line-height:1.35">{{ p.name }}</div>
-              <div><div style="font-size:13px;font-weight:600;letter-spacing:0.06em;color:rgba(247,246,243,0.6)">{{ p.months }}</div><div style="font-size:14px;color:#F7F6F3;margin-top:5px;line-height:1.65">{{ p.items }}</div></div>
-            </div>
-          </sc-for>
-        </div>
       </div>
     </section>
   </main>
@@ -2466,6 +2490,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="rh"><span>구분</span><span>1주(%)</span><span>1개월(%)</span><span>3개월(%)</span><span>6개월(%)</span><span>1년(%)</span><span>설정 이후(%)</span></div>
           <sc-for list="{{ fdPerRows }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c1 }}">{{ q.v1 }}</b><b style="color:{{ q.c2 }}">{{ q.v2 }}</b><b style="color:{{ q.c3 }}">{{ q.v3 }}</b><b style="color:{{ q.c4 }}">{{ q.v4 }}</b><b style="color:{{ q.c5 }}">{{ q.v5 }}</b><b style="color:{{ q.c6 }}">{{ q.v6 }}</b></div></sc-for>
         </div></div>
+        <div class="fd-rtm">
+          <div class="rh"><span>기간</span><span>AMT</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
+          <sc-for list="{{ fdPerCols }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.a.c }}">{{ q.a.v }}</b><b style="color:{{ q.b.c }}">{{ q.b.v }}</b><b style="color:{{ q.q.c }}">{{ q.q.v }}</b><b style="color:{{ q.e.c }}">{{ q.e.v }}</b></div></sc-for>
+        </div>
       </section>
 
 
@@ -4562,7 +4590,7 @@ class Component extends DCLogic {
     const s = this.state;
     const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
     const H = (F.history || []).filter((h) => h[1] && wkd(h[0]));
-    if (H.length < 2) return { fdPerRows: [], fdPerAsOf: '' };
+    if (H.length < 2) return { fdPerRows: [], fdPerCols: [], fdPerAsOf: '' };
     const last = H[H.length - 1];
     const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H[0][0] <= d ? H.filter((h) => h[0] <= d).pop() : null; };
     const refs = [back(7), back(30), back(91), back(182), back(365), H[0]];
@@ -4570,7 +4598,11 @@ class Component extends DCLogic {
     const fmt = (v, p) => (v === null ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + (p || ''));
     const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.35)' : col(v); }); return o; };
     const f = refs.map((x) => r(1, x)), kp = refs.map((x) => r(2, x)), kq = refs.map((x) => r(3, x));
+    const ex = f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i]));
+    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.35)' : col(v) });
+    const fdPerCols = ['1주', '1개월', '3개월', '6개월', '1년', '설정 이후'].map((k, i) => ({ k, a: cell(f[i]), b: cell(kp[i]), q: cell(kq[i]), e: cell(ex[i], '%p'), cls: 'rr' + (i === 5 ? ' fund' : '') })).filter((x, i) => i === 5 || f[i] !== null);
     return {
+      fdPerCols,
       fdPerRows: [mk('AMT Fund', f, 'fund'), mk('KOSPI', kp), mk('KOSDAQ', kq), mk('KOSPI 대비', f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i])), 'ex', '%p')],
       fdPerAsOf: last[0].replace(/-/g, '.') + ' 기준 · 설정일 ' + (F.start || H[0][0]).replace(/-/g, '.'),
     };
@@ -4782,7 +4814,7 @@ class Component extends DCLogic {
         const mx = Math.max(1, ...cnt);
         const kb = kospi === null ? -1 : edges.findIndex((e, j) => kospi >= e && kospi < edges[j + 1]);
         return {
-          rfmDist: labs.map((t, j) => ({ t, n: cnt[j] + '명', h: (cnt[j] ? Math.max(4, cnt[j] / mx * 72) : 1) + '%', bg: j < 3 ? 'linear-gradient(180deg,#F0A9A2,#C9665E)' : 'linear-gradient(180deg,#9FDDB8,#3E9E68)', cls: j === kb ? 'k' : '' })),
+          rfmDist: labs.map((t, j) => ({ t, n: cnt[j] + '명', h: (cnt[j] ? Math.max(4, cnt[j] / mx * 72) : 1) + '%', bg: j < 3 ? 'linear-gradient(180deg,#A9C6FF,#4A7FD9)' : 'linear-gradient(180deg,#F7A8AE,#D9505B)', cls: j === kb ? 'k' : '' })),
           rfmDistCap: '참가 ' + on.length + '명',
           rfmDistFoot: '단위 % · 설정 이후 수익률' + (kospi !== null ? ' · 테두리는 KOSPI ' + pct(kospi) + ' 구간' : ''),
         };
