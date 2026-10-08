@@ -185,9 +185,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;transition:letter-spacing 1.4s var(--ease);--a:.3}
 .motto.on{pointer-events:auto}
 .motto .ch{display:inline-block;opacity:0;filter:blur(5px);transform:translateY(4px);color:rgba(223,230,245,var(--a));
-  transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color .5s ease, text-shadow .7s ease}
+  transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color 1.6s ease, text-shadow 1.6s ease}
 .motto .sp{display:inline-block;width:.9em}
 .motto.on .ch{opacity:1;filter:none;transform:none}
+.motto.solo .ch{color:rgba(240,244,252,.88);text-shadow:0 0 10px rgba(190,210,255,.45);transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color 1.6s ease, text-shadow 1.6s ease}
 .motto.live .ch{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
 @keyframes glint{0%,5%,100%{color:rgba(223,230,245,var(--a));text-shadow:none}
   2.2%{color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5)}}
@@ -197,7 +198,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .sky.shine .star.lit .glow{transform:translate(-50%,-50%) scale(1.35);opacity:1}
 .sky.shine .star.lit .spk.h{transform:translate(-50%,-50%) scaleX(1.6)}
 .sky.shine .star.lit .spk.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(1.6)}
-@media (max-width:760px){.motto{bottom:9vh;font-size:11px;letter-spacing:.5em;padding-left:.5em;--a:.24}}
+@media (max-width:760px){.motto{bottom:auto;top:12vh;font-size:11.5px;letter-spacing:.5em;padding-left:.5em;--a:.5}}
 </style>
 </head>
 <body>
@@ -406,14 +407,15 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       const el = byId[id].el; el.classList.add('lit','igniting');
       if (id==='mizar') setTimeout(()=>alcor.classList.add('lit'), 250);
       setTimeout(()=>el.classList.remove('igniting'), 1000);
-    }, 650 + i*55));
+    }, 1500 + i*75));
     const order = [['alkaid','mizar'],['mizar','alioth'],['alioth','megrez'],['phecda','megrez'],['merak','phecda'],['dubhe','merak'],['megrez','dubhe']];
     order.forEach(([a,b],i) => setTimeout(() => {                   // 1.25–2.0s lines draw
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
-    }, 980 + i*45));
-    setTimeout(() => copy.classList.add('on'), 80);
-    setTimeout(() => copy.classList.add('live'), 2600);
-    setTimeout(() => window.__done = true, 1700);
+    }, 2050 + i*60));
+    copy.classList.add('solo'); setTimeout(() => copy.classList.add('on'), 80);
+    setTimeout(() => copy.classList.remove('solo'), 1700);
+    setTimeout(() => copy.classList.add('live'), 4200);
+    setTimeout(() => window.__done = true, 2600);
   };
   let seen = false, loaded = false, started = false;
   const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
