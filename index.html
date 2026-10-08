@@ -455,7 +455,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.42);margin-top:4px}
 .fd-h{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:56px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);color:#F7F6F3}
 .fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.42)}
-.fd-chart{display:block;width:100%;height:260px;margin-top:18px}
+.fd-chart{display:block;width:100%;height:280px;margin-top:28px}
 .fd-legend{display:flex;gap:18px;font-size:12px;color:rgba(247,246,243,0.68);margin-top:10px}.fd-legend i{display:inline-block;width:14px;height:2px;vertical-align:4px;margin-right:6px}
 .fd-attr{display:flex;height:34px;margin-top:18px;gap:2px}
 .fd-attr div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
@@ -470,13 +470,29 @@ nav.nav{view-transition-name:rfs-nav}
 @keyframes fdFu0{0%{background:rgba(95,196,138,0.22)}}@keyframes fdFu1{0%{background:rgba(95,196,138,0.22)}}
 @keyframes fdFd0{0%{background:rgba(232,131,123,0.22)}}@keyframes fdFd1{0%{background:rgba(232,131,123,0.22)}}
 @media (max-width:760px){
-  .fdpage .wrap{padding:28px 16px 80px !important}
   .fd-kpis{grid-template-columns:repeat(2,1fr)}.fd-kpis b{font-size:22px}
   .fd-chart{height:200px}
   .fd-hold{grid-template-columns:minmax(0,1fr) 90px;grid-template-rows:auto auto;gap:6px 12px}
   .fd-hold .wbar{grid-column:1/3;grid-row:2;height:18px}.fd-hold .c3,.fd-hold .c4{display:none}
   .fd-attr div{font-size:10px}
 }
+
+.pg-hero{position:relative;overflow:hidden}
+.pg-bg{position:absolute;inset:0;background:#0F1B2E}
+.pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
+.pg-eyebrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.pg-eyebrow span{text-transform:none;letter-spacing:0.06em}
+.pg-title{font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0}
+.pg-lede{font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.3vw,32px);font-weight:400;letter-spacing:-0.02em;line-height:1.3;color:#F7F6F3;margin:22px 0 0;max-width:none !important}
+.pg-lede em{font-style:normal;font-weight:700;color:#B7C9EA}
+.pg-stats{display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:34px}
+.pg-stats .sv{display:block;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
+.pg-stats .sk{display:block;font-style:normal;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px}
+.pg-note{margin:28px 0 0;font-size:15px;line-height:1.6;color:rgba(247,246,243,0.8);max-width:none !important}
+.fd-wrap,.rfm-wrap{padding:96px 35px 110px}
+.fd-sub{margin:10px 0 0;font-size:13px;color:rgba(247,246,243,0.5);font-variant-numeric:tabular-nums}
+.fd-sec{margin-top:88px}
+@media (max-width:760px){.pg-hero-in{padding:112px 20px 52px}.pg-stats{gap:18px 28px}.pg-stats .sv{font-size:24px}.fd-wrap,.rfm-wrap{padding:64px 16px 80px !important}.pg-lede{font-size:22px}}
 .rfmpage{--rH:64px}
 .rfm-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums;flex-wrap:wrap}
 .rfm-live{display:inline-flex;align-items:center;gap:6px;color:#5FC48A;font-weight:600;letter-spacing:0.06em}
@@ -487,7 +503,7 @@ nav.nav{view-transition-name:rfs-nav}
 .rfm-dek{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:16px;font-size:14px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums}
 .rfm-dek b{font-weight:700;margin-left:4px}
 .rfm-beat{color:#F7F6F3}
-.rfm-body{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:40px;margin-top:40px}
+.rfm-body{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:40px;margin-top:36px}
 .rfm-axis{position:relative;height:26px;margin-left:calc(44px + 168px + 16px);margin-right:calc(96px + 16px)}
 .rfm-axis span{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#8FAADC;white-space:nowrap}
 .rfm-race{position:relative}
@@ -528,7 +544,7 @@ nav.nav{view-transition-name:rfs-nav}
 .rfm-feed li b{color:#F7F6F3;margin-right:4px}
 @media (max-width:860px){
   .rfmpage{--rH:70px}
-  .rfmpage .wrap{padding:28px 16px 140px !important}
+  .rfmpage .rfm-wrap{padding-bottom:140px !important}
   .rfm-body{grid-template-columns:1fr;gap:0;margin-top:28px}
   .rfm-axis{margin:0 0 0 40px}
   .rfmlane{grid-template-columns:30px minmax(0,1fr) 80px;grid-template-rows:auto 14px;gap:2px 10px;align-content:center}
@@ -2045,26 +2061,33 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#111c2e;min-height:100vh;color:#F7F6F3">
-    <div data-nav="light" style="height:72px"></div>
-    <div class="wrap" style="padding:36px 35px 110px">
-      <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-        <p class="rfm-meta">RFS 펀드</p>
-        <h1 class="rfm-head" style="max-width:none">운용 현황을 준비하고 있습니다</h1>
-        <p class="rfm-dek">장 마감 후 첫 기록이 올라오면 여기에 표시됩니다.</p>
-      </sc-if>
-      <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-      <div class="rfm-meta">
-        <sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if>
-        <span>{{ fdMeta }}</span>
+  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#111c2e;color:#F7F6F3">
+    <section class="on-photo pg-hero" data-nav="dark">
+      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock" style="--slot-position:center 45%"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap pg-hero-in">
+        <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
+          <p class="sec-label">RFS Fund</p>
+          <h1 class="pg-title">RFS Fund</h1>
+          <p class="pg-lede">운용 현황을 준비하고 있습니다. 장 마감 후 첫 기록이 올라오면 여기에 표시됩니다.</p>
+        </sc-if>
+        <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
+          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>{{ fdMeta }}</span></p>
+          <h1 class="pg-title">RFS Fund</h1>
+          <p class="pg-lede">RFS 펀드 <span style="color:{{ fdHeadColor }}">{{ fdHeadRet }}</span>{{ fdHeadRest }}</p>
+          <div class="pg-stats">
+            <sc-for list="{{ fdKpis }}" as="k" hint-placeholder-count="5"><div><b class="sv" style="color:{{ k.c }}">{{ k.v }}</b><em class="sk">{{ k.k }}</em></div></sc-for>
+          </div>
+          <p class="pg-note">{{ fdDek }}</p>
+        </sc-if>
       </div>
-      <h1 class="rfm-head" style="max-width:none">RFS 펀드 <span style="color:{{ fdHeadColor }}">{{ fdHeadRet }}</span>{{ fdHeadRest }}</h1>
-      <p class="rfm-dek"><span class="rfm-beat" style="color:rgba(247,246,243,0.7)">{{ fdDek }}</span></p>
-      <div class="fd-kpis">
-        <sc-for list="{{ fdKpis }}" as="k" hint-placeholder-count="5"><div><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><em class="kk">{{ k.k }}</em></div></sc-for>
-      </div>
-
-      <h2 class="fd-h">기준가 추이 <small>RFS 펀드 · KOSPI · KOSDAQ, 첫 기록일 = 1,000</small></h2>
+    </section>
+    <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
+    <section class="on-photo" data-nav="dark" style="background:#111c2e">
+    <div class="wrap fd-wrap">
+      <p class="sec-label">Performance</p>
+      <h2 class="sec-title">기준가 추이</h2>
+      <p class="fd-sub">RFS 펀드 · KOSPI · KOSDAQ, 첫 기록일 = 1,000</p>
       <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
         <svg class="fd-chart" viewBox="0 0 1000 250" preserveAspectRatio="none">
           <line x1="0" x2="1000" y1="{{ fdBaseY }}" y2="{{ fdBaseY }}" stroke="rgba(247,246,243,0.15)" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
@@ -2077,12 +2100,19 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p style="margin-top:16px;font-size:13px;color:rgba(247,246,243,0.45)">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
 
       <sc-if value="{{ fdHasContrib }}" hint-placeholder-val="{{ false }}">
-        <h2 class="fd-h">오늘 수익 기여 <small>{{ fdContribSum }}</small></h2>
+        <div class="fd-sec"><p class="sec-label">Today</p>
+        <h2 class="sec-title">오늘 수익 기여</h2>
+        <p class="fd-sub">{{ fdContribSum }}</p></div>
         <div class="fd-attr"><sc-for list="{{ fdContrib }}" as="c" hint-placeholder-count="5"><div style="flex-grow:{{ c.grow }};background:{{ c.bg }}">{{ c.label }}</div></sc-for></div>
         <div class="fd-attrcap"><span>깎아먹은 종목</span><span>벌어준 종목</span></div>
       </sc-if>
 
-      <h2 class="fd-h">보유 종목 <small>{{ fdHoldCap }}</small></h2>
+    </div></section>
+    <section class="on-photo" data-nav="dark" style="background:#0F1B2E">
+    <div class="wrap fd-wrap">
+      <p class="sec-label">Portfolio</p>
+      <h2 class="sec-title">보유 종목</h2>
+      <p class="fd-sub" style="margin-bottom:18px">{{ fdHoldCap }}</p>
       <sc-for list="{{ fdHolds }}" as="h" hint-placeholder-count="6">
         <div class="fd-hold" style="animation-name:{{ h.fl }}">
           <div class="nm"><b>{{ h.name }}</b><small>{{ h.meta }}</small></div>
@@ -2093,24 +2123,31 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </sc-for>
       <p style="margin-top:40px;font-size:12px;color:rgba(247,246,243,0.42)">{{ fdNote }}</p>
-      </sc-if>
     </div>
+    </section>
+    </sc-if>
   </main>
   </sc-if>
 
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage" style="position:relative;background:#111c2e;min-height:100vh;color:#F7F6F3">
-    <div data-nav="light" style="height:72px"></div>
-    <div class="wrap" style="padding:36px 35px 120px">
-      <div class="rfm-meta">
-        <sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if>
-        <sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="color:rgba(247,246,243,0.5);font-weight:600">장 마감</span></sc-if>
-        <span>{{ rfmMeta }}</span>
+  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage" style="position:relative;background:#111c2e;color:#F7F6F3">
+    <section class="on-photo pg-hero" data-nav="dark">
+      <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster" style="--slot-position:center 55%"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap pg-hero-in">
+        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>{{ rfmMeta }}</span></p>
+        <h1 class="pg-title">Road to Fund Manager</h1>
+        <p class="pg-lede"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</p>
+        <div class="pg-stats">
+          <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="3"><div><b class="sv" style="color:{{ d.c }}">{{ d.v }}</b><em class="sk">{{ d.k }}</em></div></sc-for>
+        </div>
+        <p class="pg-note">{{ rfmBeatLine }}</p>
       </div>
-      <h1 class="rfm-head"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</h1>
-      <div class="rfm-dek">
-        <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="4"><span>{{ d.k }} <b style="color:{{ d.c }}">{{ d.v }}</b></span></sc-for><span class="rfm-beat">{{ rfmBeatLine }}</span>
-      </div>
+    </section>
+    <section class="on-photo" data-nav="dark" style="background:#111c2e">
+    <div class="wrap rfm-wrap">
+      <p class="sec-label">Live Ranking</p>
+      <h2 class="sec-title">학회원 순위</h2>
       <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
         <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
       </sc-if>
@@ -2173,6 +2210,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
       </sc-if>
     </div>
+    </section>
   </main>
   </sc-if>
 
