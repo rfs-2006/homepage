@@ -626,6 +626,26 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* FUND 시안: 박스 줄이고 섹션마다 구조 다르게 */
+.fdpage .fd-card.fd-open{background:transparent;border:0;border-top:1px solid rgba(247,246,243,0.14);padding:48px 0 12px;margin-top:48px}
+.fdpage .fd-card.fd-open:first-child{margin-top:24px}
+.fdpage .fd-mgr.fd-open{grid-template-columns:150px minmax(0,1fr);gap:48px;border-bottom:1px solid rgba(247,246,243,0.14);padding:44px 0}
+.fdpage .fd-mgr.fd-open .pm img{width:120px;height:120px}
+.fdpage .fd-mgr.fd-open .ps{border-left:0;padding-left:0}
+.fdpage .fd-mgr.fd-open .hl{font-size:30px;margin-top:12px}
+.fdpage .fd-mgr.fd-open .fd-ct{font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#8FAADC;text-transform:uppercase}
+.fdpage .fd-open .fd-pt,.fdpage .fd-open .fd-rtw{border-color:rgba(247,246,243,0.12)}
+.fd-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;margin-top:20px}
+.fd-two>sc-if{display:contents}
+.fd-two>.fd-card,.fd-two>sc-if>.fd-card{margin-top:0}
+.fd-two .fd-bars{height:220px}
+@media (max-width:860px){
+  .fdpage .fd-card.fd-open{padding:32px 0 8px;margin-top:32px}
+  .fdpage .fd-mgr.fd-open{grid-template-columns:1fr;gap:18px;padding:28px 0}
+  .fdpage .fd-mgr.fd-open .hl{font-size:21px}
+  .fd-two{grid-template-columns:1fr}
+}
+
 /* 히어로 지난 뒤 상단 메뉴 배경 + 고정 탭을 메뉴 바로 아래에 */
 .nav-solid .nav{background:rgba(247,246,243,0.97) !important;border-bottom-color:transparent !important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .nav-solid.nav-dark .nav{background:rgba(15,27,46,0.97) !important}
@@ -2477,7 +2497,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
 
-      <section class="fd-card fd-mgr" id="fd-strat">
+      <section class="fd-card fd-mgr fd-open" id="fd-strat">
         <div class="pm">
           <img src="assets/officers/am.webp" alt="운용팀장 박정훈" loading="lazy">
           <div class="pn"><b>박정훈</b><small>41기</small></div>
@@ -2496,7 +2516,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
       </div>
 
-      <section class="fd-card" id="fd-perf">
+      <section class="fd-card fd-open" id="fd-perf">
         <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
         <div class="fd-tabs" style="margin-top:22px"><sc-for list="{{ fdTabs }}" as="t" hint-placeholder-count="4"><a href="#" class="{{ t.cls }}" onClick="{{ t.on }}">{{ t.t }}</a></sc-for></div>
         <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
@@ -2518,7 +2538,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p class="fd-cap">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
       </section>
 
-      <section class="fd-card" id="fd-period">
+      <section class="fd-card fd-open" id="fd-period">
         <h2 class="fd-ct">기간별 수익률</h2>
         <div class="fd-rtw"><div class="fd-rt">
           <div class="rh"><span>구분</span><span>1주(%)</span><span>1개월(%)</span><span>3개월(%)</span><span>6개월(%)</span><span>1년(%)</span><span>설정 이후(%)</span></div>
@@ -2542,12 +2562,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </section>
 
-      <section class="fd-card">
-        <h2 class="fd-ct">업종별 비중</h2>
-        <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
-      </section>
 
-      <section class="fd-card" id="fd-hold">
+      <section class="fd-card fd-open" id="fd-hold">
         <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2></div>
         <div class="fd-list">
           <div class="fd-lh"><span></span><span>종목</span><span class="r c3">현재가</span><span class="r c3">평가금액</span><span class="r">비중</span><span class="r">수익률</span></div>
@@ -2563,6 +2579,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </section>
 
+      <div class="fd-two">
+      <section class="fd-card">
+        <h2 class="fd-ct">업종별 비중</h2>
+        <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
+      </section>
       <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-attr">
         <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2></div>
@@ -2574,6 +2595,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           </div>
       </section>
       </sc-if>
+      </div>
 
       <p class="fd-disc">{{ fdNote }}</p>
     </div>
