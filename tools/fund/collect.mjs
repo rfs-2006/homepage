@@ -173,6 +173,8 @@ async function round() {
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
 }
 
+const BF_KEY = START + '/2'; // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
+
 // ---------- 지난 기록 채우기 (일별 추정예탁자산, kt00002) ----------
 // FUND_START부터 어제까지 날짜별 총자산으로 기준가를 거꾸로 만든다. 첫날 총자산 = 1,000 (입출금이 있으면 FUND_FLOWS 필요)
 async function indexCloses(code) {
@@ -201,8 +203,14 @@ async function backfill() {
     const k = Object.keys(it).find((x) => /prsm_dpst_aset/.test(x)) || Object.keys(it).find((x) => /aset/.test(x));
     return { d, v: k ? n(it[k]) : 0 };
   }).filter((r) => /^\d{8}$/.test(r.d) && r.v > 0 && r.d >= s0 && r.d < e0).sort((a, b) => (a.d < b.d ? -1 : 1));
+  console.log(`backfill: kt00002 ${items.length} rows, ${rows.length} usable from ${rows[0] ? rows[0].d : '-'}`);
   if (!rows.length) { console.log('backfill: no daily asset rows'); return; }
   const [kc, qc] = await Promise.all([indexCloses('KOSPI'), indexCloses('KOSDAQ')]).catch(() => [{}, {}]);
+  // 주말·휴장일은 빼고 거래일만 (지수 종가가 있는 날, 지수를 못 받으면 평일)
+  const hasIdx = Object.keys(kc).length > 0;
+  const trading = (d) => (hasIdx ? !!kc[d] : ![0, 6].includes(new Date(+d.slice(0, 4), +d.slice(4, 6) - 1, +d.slice(6, 8)).getDay()));
+  for (let i = rows.length - 1; i >= 0; i--) if (!trading(rows[i].d)) rows.splice(i, 1);
+  if (!rows.length) { console.log('backfill: no trading-day rows'); return; }
   // 시작 금액(FUND_BASE)이 있으면 시작일 직전을 1,000으로, 없으면 첫 기록일 총자산을 1,000으로
   const base = BASE || rows[0].v;
   const fmt = (d) => d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8);
@@ -211,14 +219,14 @@ async function backfill() {
     const before = Object.keys(kc).filter((d) => d < s0).sort().pop();
     if (before) history.unshift([fmt(before), 1000, kc[before] || null, qc[before] || null]);
   }
-  prev = { ...(prev || {}), baseTotal: base, baseDate: BASE ? START : fmt(rows[0].d), history, backfilledFrom: START };
+  prev = { ...(prev || {}), baseTotal: base, baseDate: BASE ? START : fmt(rows[0].d), history, backfilledFrom: BF_KEY };
   console.log(`backfill: ${history.length} days from ${history[0][0]}`);
 }
 
 // ---------- 실행 ----------
 if (!DRY) prev = await loadPrev().catch(() => null);
 // 시작일이 있으면 한 번, 시작일부터 어제까지 지난 기록을 채운다
-if (START && !(prev && prev.backfilledFrom === START)) {
+if (START && !(prev && prev.backfilledFrom === BF_KEY)) {
   await backfill().catch((e) => console.error('backfill failed: ' + e.message));
 }
 if (ONCE || DRY) { round.publish = ONCE; await round(); process.exit(0); }
