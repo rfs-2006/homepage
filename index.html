@@ -458,7 +458,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-chart{display:block;width:100%;height:280px;margin-top:28px}
 .fd-legend{display:flex;gap:18px;font-size:12px;color:rgba(247,246,243,0.68);margin-top:10px}.fd-legend i{display:inline-block;width:14px;height:2px;vertical-align:4px;margin-right:6px}
 .fd-attr{display:flex;height:34px;margin-top:18px;gap:2px}
-.fd-attr div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
+.fd-attr div{display:flex;align-items:center;justify-content:center;flex-basis:0;min-width:2px;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
 .fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.42);margin-top:8px}
 .fd-hold{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;align-items:center;padding:14px 0;border-top:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
 .fd-hold:first-of-type{border-top:0}
@@ -477,6 +477,213 @@ nav.nav{view-transition-name:rfs-nav}
   .fd-attr div{font-size:10px}
 }
 
+
+.fd-wrap{padding:64px 35px 72px !important}
+
+.fd-lh{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;padding:0 0 10px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-lh .r{text-align:right}
+.fd-mh{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;padding:12px 0 8px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);border-bottom:1px solid rgba(247,246,243,0.12)}
+.fd-mh .r{text-align:right}
+.fd-pt{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
+.fd-pr{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:12px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.10);font-size:15px;font-variant-numeric:tabular-nums;color:rgba(247,246,243,0.8)}
+.fd-pr>*:not(:first-child){text-align:right}
+.fd-pr b{font-weight:700}
+.fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);padding:12px 0 8px}
+.fd-h3{font-size:17px;font-weight:700;color:#F7F6F3;margin:0}
+@media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:10px}}
+
+/* 펀드·RFM 표 색과 등장 효과 */
+.fd-t{font-family:'Noto Serif KR',serif;font-weight:700 !important;letter-spacing:-0.03em !important}
+.fd-list{background:linear-gradient(180deg,rgba(143,170,220,0.06),rgba(143,170,220,0.015));border:1px solid rgba(143,170,220,0.16);padding:6px 20px 4px}
+.fd-lh{color:#8FAADC !important;border-bottom-color:rgba(143,170,220,0.35) !important;padding-top:12px !important}
+.fd-row{transition:background .2s ease}
+.fd-row:hover{background:rgba(143,170,220,0.07)}
+.fd-row:last-child{border-bottom:0}
+.fd-row .wt{position:relative}
+.fd-row .wt .wb{display:block;height:3px;margin-top:6px;background:rgba(247,246,243,0.08);border-radius:2px;overflow:hidden}
+.fd-row .wt .wb i{display:block;height:100%;border-radius:2px}
+.fd-movers{background:rgba(247,246,243,0.02);border:1px solid rgba(247,246,243,0.08) !important;padding:0 20px}
+.fd-mh{color:#8FAADC !important}
+.fd-mv:last-child{border-bottom:0}
+.fd-mv:hover{background:rgba(143,170,220,0.05)}
+.fd-mv .mb .f{border-radius:2px}
+.fd-pt{border:1px solid rgba(143,170,220,0.16) !important;background:rgba(143,170,220,0.03)}
+.fd-pr{padding:14px 20px !important}
+.fd-pr.hd{background:rgba(143,170,220,0.08);color:#8FAADC !important}
+.fd-pr>*:nth-child(2){position:relative}
+.fd-pr:not(.hd)>*:nth-child(2){color:#F7F6F3}
+.fd-pr .ex{justify-self:end;padding:3px 8px;border-radius:3px}
+.fd-pr:last-child{border-bottom:0}
+@media (max-width:560px){.fd-pr{grid-template-columns:58px repeat(3,minmax(0,1fr));padding:12px 12px !important;font-size:13px}.fd-pr>*:nth-child(4){display:none}.fd-pr .ex{padding:2px 6px}}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:360deg}
+@keyframes pgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fdUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fdFade{from{opacity:0}to{opacity:1}}
+@keyframes fdGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fdSweep{from{--sweep:0deg}to{--sweep:360deg}}
+@keyframes fdDraw{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes fdPop{from{transform:scale(0)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+  .pg-hero-in>*>*,.pg-hero-in>*{animation:pgIn .9s cubic-bezier(.2,.8,.2,1) both}
+  .pg-hero-in .pg-title{animation-delay:.08s}.pg-hero-in .pg-lede{animation-delay:.18s}.pg-hero-in .pg-stats{animation-delay:.28s}.pg-hero-in .fd-chips,.pg-hero-in .pg-note{animation-delay:.38s}
+  .fd-donut{-webkit-mask:conic-gradient(#000 var(--sweep),transparent 0);mask:conic-gradient(#000 var(--sweep),transparent 0)}
+  @supports (animation-timeline: view()){
+    .fd-t,.fd-cap,.fd-head{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+    .fd-row,.fd-mv,.fd-pr,.fd-lh,.fd-mh{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
+    .fd-mv .mb .f,.fd-row .wt .wb i{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 35%}
+    .fd-donut{animation:fdSweep linear both;animation-timeline:view();animation-range:entry 10% cover 45%}
+    .fd-plot .fd-chart{animation:fdDraw linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
+    .fd-ends .el,.fd-ya .yl{animation:fdFade linear both;animation-timeline:view();animation-range:entry 40% cover 50%}
+    .rfmlane .nm,.rfmlane .rt,.rfmlane .rk{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
+    .rfmlane .tail{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 40%}
+    .rfmlane .run{animation:fdPop linear both;animation-timeline:view();animation-range:entry 50% cover 45%}
+    .rfm-mine,.rfm-feed{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+  }
+  @supports not (animation-timeline: view()){
+    .fd-donut{animation:fdSweep 1.4s cubic-bezier(.3,.7,.2,1) .2s both}
+    .fd-plot .fd-chart{animation:fdDraw 1.6s cubic-bezier(.3,.7,.2,1) .3s both}
+  }
+}
+@media (max-width:860px){.fd-list,.fd-movers{padding-left:12px;padding-right:12px}.fd-pr{padding:12px 10px !important}}
+
+.fd-meta{margin:22px 0 0;font-size:12.5px;color:rgba(247,246,243,0.65);letter-spacing:0.02em;max-width:none !important}
+.fd-tabs{display:flex;gap:4px;margin-top:12px}
+.fd-tabs a{font-size:12px;padding:6px 12px;border:1px solid rgba(247,246,243,0.18);color:rgba(247,246,243,0.65);transition:all .2s ease}
+.fd-tabs a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.6)}
+.fd-tabs a.on{background:#8FAADC;border-color:#8FAADC;color:#0F1B2E;font-weight:600}
+.fd-pr:not(.hd){cursor:pointer;transition:background .2s ease}
+.fd-pr:not(.hd):hover{background:rgba(143,170,220,0.07)}
+.fd-pr.on{background:rgba(143,170,220,0.12);box-shadow:inset 3px 0 0 #8FAADC}
+.fd-hov{position:absolute;left:0;right:0;top:0;height:280px;cursor:crosshair;touch-action:pan-y}
+.fd-cross{position:absolute;top:0;bottom:0;width:1px;background:rgba(247,246,243,0.35);opacity:0;transition:opacity .15s}
+.fd-dot{position:absolute;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;border:2px solid #111c2e;opacity:0;transition:opacity .15s}
+.fd-dot.f{background:#8FAADC}.fd-dot.k{background:rgba(247,246,243,0.8)}.fd-dot.q{background:rgba(247,246,243,0.45)}
+.fd-tip{position:absolute;top:12px;min-width:170px;padding:10px 12px;background:rgba(10,18,32,0.94);border:1px solid rgba(143,170,220,0.35);font-size:12px;font-variant-numeric:tabular-nums;opacity:0;transition:opacity .15s;pointer-events:none}
+.fd-tip b{display:block;font-size:12px;color:#8FAADC;margin-bottom:6px}
+.fd-tip span{display:flex;align-items:center;gap:6px;color:rgba(247,246,243,0.75);line-height:1.8}
+.fd-tip span i{display:inline-block;width:8px;height:2px}
+.fd-tip span em{font-style:normal;margin-left:auto;padding-left:14px;color:#F7F6F3;font-weight:600}
+.fd-hov.on .fd-cross,.fd-hov.on .fd-dot,.fd-hov.on .fd-tip{opacity:1}
+.fd-row{cursor:default}
+.fd-row.hi{background:rgba(143,170,220,0.10)}
+.fd-donut>div b{transition:opacity .2s}
+.fd-donut{cursor:pointer}
+@media (max-width:860px){.fd-hov{height:200px}.fd-tip{min-width:150px;font-size:11px}}
+
+.fdpage .pg-hero-in{padding-bottom:56px}
+.fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:34px}
+.fd-kc>div{background:rgba(15,27,46,0.72);border:1px solid rgba(247,246,243,0.14);padding:18px 18px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.fd-kc .kk{display:block;font-style:normal;font-size:12px;color:rgba(247,246,243,0.62)}
+.fd-kc .kv{display:block;font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-top:14px;font-variant-numeric:tabular-nums}
+.fd-kc .ks{display:block;font-size:12px;margin-top:6px;min-height:16px;font-variant-numeric:tabular-nums}
+.fd-asof,.fd-foot{display:flex;align-items:center;gap:8px;margin:16px 0 0;font-size:12px;color:rgba(247,246,243,0.55);max-width:none !important}
+.fd-asof i,.fd-foot i{display:inline-block;width:12px;height:12px;border:1.5px solid currentColor;border-radius:50%;position:relative}
+.fd-asof i::after,.fd-foot i::after{content:'';position:absolute;left:4px;top:1.5px;width:1.5px;height:4px;background:currentColor;box-shadow:1.5px 3px 0 -0.2px currentColor}
+.fd-nav{position:sticky;top:64px;z-index:20;background:rgba(15,27,46,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(247,246,243,0.1)}
+.fd-nav .wrap{display:flex;gap:6px;padding:12px 35px}
+.fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:13px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
+.fd-nav a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.5)}
+.fd-body{padding:28px 35px 90px}
+.fd-card{background:#15233B;border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
+.fd-ch{display:flex;justify-content:space-between;align-items:baseline;gap:12px 28px;flex-wrap:wrap}
+.fd-ct{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;margin:0;color:#F7F6F3}
+.fd-card .fd-pt{margin-top:22px}
+.fd-card .fd-cw{margin-top:22px}
+.fd-ac{display:flex;justify-content:center;padding:34px 0 26px;background:rgba(247,246,243,0.03);margin-top:22px}
+.fd-ac .fd-donut{position:relative;top:0;width:280px;height:280px}
+.fd-ac .fd-donut>div{inset:30px;background:#15233B}
+.fd-ac .fd-donut b{font-family:'Pretendard Variable',sans-serif;font-size:34px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.fd-ac .fd-donut em{font-size:14px;margin-top:6px;color:rgba(247,246,243,0.65)}
+.fd-lg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:40px;margin-top:22px}
+.fd-li{display:flex;align-items:center;gap:10px;padding:13px 4px;border-bottom:1px solid rgba(247,246,243,0.08);font-size:14px;cursor:pointer;transition:background .2s}
+.fd-li i{width:10px;height:10px;border-radius:50%;flex:none}
+.fd-li span{flex:1;color:rgba(247,246,243,0.85)}
+.fd-li b{font-weight:600;font-variant-numeric:tabular-nums}
+.fd-li:hover,.fd-li.on{background:rgba(143,170,220,0.08)}
+.fd-bars{display:flex;align-items:flex-end;justify-content:space-around;gap:16px;height:240px;margin-top:22px;padding:0 10px;border-bottom:1px solid rgba(247,246,243,0.15);background:repeating-linear-gradient(to top,transparent 0,transparent 59px,rgba(247,246,243,0.06) 59px,rgba(247,246,243,0.06) 60px)}
+.fd-bars>div{flex:1;max-width:88px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.fd-bars .bl{font-size:13px;font-weight:600;color:#F7F6F3;text-align:center;margin-bottom:8px;white-space:nowrap}
+.fd-bars .bl em{display:block;font-style:normal;font-size:11px;font-weight:400;color:rgba(247,246,243,0.55);margin-top:2px;font-variant-numeric:tabular-nums}
+.fd-bars>div>i{display:block;width:56px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#B7C9EA,#6F8FC9);transform-origin:bottom}
+.fd-card .fd-list{margin-top:18px;background:transparent;border:0;padding:0}
+.fd-row .dt{width:24px !important;height:24px !important;border-radius:50%;display:flex !important;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700}
+.fd-row{grid-template-columns:24px minmax(0,1fr) 150px 72px 88px !important}
+.fd-lh{grid-template-columns:24px minmax(0,1fr) 150px 72px 88px !important}
+.fd-card .fd-movers{margin-top:18px}
+.fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
+@media (max-width:860px){
+  .fd-kc{grid-template-columns:repeat(2,1fr)}.fd-kc>div:last-child{grid-column:1/3}.fd-kc .kv{font-size:22px}
+  .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px}.fd-nav a{font-size:12px;padding:8px 0}
+  .fd-body{padding:16px 12px 64px}.fd-card{padding:24px 16px 20px}
+  .fd-lg{grid-template-columns:1fr 1fr;column-gap:16px}.fd-ac .fd-donut{width:220px;height:220px}.fd-ac .fd-donut b{font-size:26px}
+  .fd-bars{height:200px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px}
+  .fd-row,.fd-lh{grid-template-columns:24px minmax(0,1fr) 56px 76px !important}
+}
+@media (prefers-reduced-motion:no-preference){@supports (animation-timeline: view()){
+  .fd-card{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
+  .fd-bars>div>i{animation:fdRise linear both;animation-timeline:view();animation-range:entry 40% cover 40%}
+  .fd-li{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
+}}
+@keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.fd-cap{margin:12px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.62);max-width:none !important}
+.fd-port{display:grid;grid-template-columns:260px minmax(0,1fr);gap:56px;align-items:start;margin-top:36px}
+.fd-donut{width:260px;height:260px;border-radius:50%;position:relative;position:sticky;top:110px}
+.fd-donut>div{position:absolute;inset:44px;border-radius:50%;background:#111c2e;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fd-donut b{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.02em}
+.fd-donut em{font-style:normal;font-size:12px;color:rgba(247,246,243,0.6);margin-top:6px}
+.fd-row{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums}
+.fd-lh{border-bottom:1px solid rgba(247,246,243,0.3)}
+.fd-row .dt{display:block;width:12px;height:12px;border-radius:50%}
+.fd-row .nm b{display:block;font-size:17px;font-weight:700;color:#F7F6F3;letter-spacing:-0.01em}
+.fd-row .nm small{display:block;font-size:12px;color:rgba(247,246,243,0.55);margin-top:4px}
+.fd-row .nm .rp{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#8FAADC;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:13px;font-weight:600;color:rgba(247,246,243,0.85)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
+.fd-row .wt{text-align:right;font-size:17px;font-weight:700;color:#F7F6F3}
+.fd-row .rt{text-align:right}.fd-row .rt b{display:block;font-size:15px;font-weight:700}.fd-row .rt small{display:block;font-size:11.5px;margin-top:3px}
+.fd-movers{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
+.fd-mh{border-top:0}
+.fd-mv{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-variant-numeric:tabular-nums}
+.fd-mv .mn{font-size:15px;font-weight:600;color:#F7F6F3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-mv .mb{position:relative;height:14px}
+.fd-mv .mb .z{position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:rgba(247,246,243,0.3)}
+.fd-mv .mb .f{position:absolute;top:0;bottom:0}
+.fd-mv .mp{text-align:right;font-size:14px;font-weight:700}
+.fd-mv .ma{text-align:right;font-style:normal;font-size:12.5px;color:rgba(247,246,243,0.6)}
+@media (max-width:860px){
+  .fd-port{grid-template-columns:1fr;gap:28px}.fd-donut{position:relative;top:0;margin:0 auto;width:220px;height:220px}.fd-donut>div{inset:38px}
+  .fd-row{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-row .px{display:none}.fd-row .nm b{font-size:16px}
+  .fd-mv{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mv .ma{display:none}.fd-mv .mn{font-size:13px}
+}
+
+.fd-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap}
+.fd-head .fd-sub{margin:0}
+.fd-sec{margin-top:64px}
+.fd-alloc{margin-top:34px;max-width:880px}
+.fd-alloc .bar{display:flex;height:26px;gap:2px}
+.fd-alloc .bar i{display:flex;align-items:center;flex-basis:0;padding:0 8px;font-style:normal;font-size:11px;font-weight:600;color:#0F1B2E;white-space:nowrap;overflow:hidden;min-width:3px}
+.fd-alloc .lg{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:12px;color:rgba(247,246,243,0.75)}
+.fd-alloc .lg i{display:inline-block;width:8px;height:8px;margin-right:6px;vertical-align:0}
+.fd-alloc .lg b{font-weight:600;color:#F7F6F3;margin-left:2px;font-variant-numeric:tabular-nums}
+.fd-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.fd-chips>div{display:flex;align-items:baseline;gap:8px;padding:9px 14px;border:1px solid rgba(247,246,243,0.22);background:rgba(15,27,46,0.45);font-variant-numeric:tabular-nums}
+.fd-chips .ck{font-style:normal;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.6)}
+.fd-chips .cn{font-size:14px;font-weight:600;color:#F7F6F3}
+.fd-chips .cv{font-size:14px;font-weight:700}
+.fd-cw{display:grid;grid-template-columns:48px minmax(0,1fr) 128px;margin-top:28px}
+.fd-ya,.fd-ends{position:relative;height:280px}
+.fd-ya .yl{font-style:normal;position:absolute;right:10px;transform:translateY(-50%);font-size:11px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums}
+.fd-ends .el{font-style:normal;position:absolute;left:12px;transform:translateY(-50%);font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.fd-plot{position:relative}
+.fd-grid{position:absolute;left:0;right:0;top:0;height:280px;pointer-events:none}
+.fd-grid i{position:absolute;left:0;right:0;height:1px;background:rgba(247,246,243,0.08)}
+.fd-plot .fd-chart{margin-top:0 !important;height:280px !important}
+.fd-xa{position:relative;height:22px;margin-top:6px}
+.fd-xa .xl{font-style:normal;position:absolute;top:0;font-size:11px;color:rgba(247,246,243,0.45);white-space:nowrap}
+.fd-th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-th .r{text-align:right}
+.fd-hold .nm b{font-size:17px !important;font-weight:700 !important;color:#F7F6F3;letter-spacing:-0.01em}
+.fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
+@media (max-width:760px){.fd-wrap{padding:48px 16px 56px !important}.fd-cw{grid-template-columns:36px minmax(0,1fr) 0}.fd-ends{display:none}.fd-ya,.fd-grid,.fd-plot .fd-chart{height:200px !important}.fd-th{display:none}.fd-chips>div{padding:8px 10px}.fd-alloc .bar i{font-size:0;padding:0}.fd-attr div{flex-basis:0}.fd-chips .cn,.fd-chips .cv{font-size:13px}}
 .pg-hero{position:relative;overflow:hidden}
 .pg-bg{position:absolute;inset:0;background:#0F1B2E}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -485,6 +692,7 @@ nav.nav{view-transition-name:rfs-nav}
 .pg-title{font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0}
 .pg-lede{font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.3vw,32px);font-weight:400;letter-spacing:-0.02em;line-height:1.3;color:#F7F6F3;margin:22px 0 0;max-width:none !important}
 .pg-lede em{font-style:normal;font-weight:700;color:#B7C9EA}
+.pg-lede b{font-weight:700}
 .pg-stats{display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:34px}
 .pg-stats .sv{display:block;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums}
 .pg-stats .sk{display:block;font-style:normal;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px}
@@ -505,7 +713,7 @@ nav.nav{view-transition-name:rfs-nav}
 .rfm-beat{color:#F7F6F3}
 .rfm-body{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:40px;margin-top:36px}
 .rfm-axis{position:relative;height:26px;margin-left:calc(44px + 168px + 16px);margin-right:calc(96px + 16px)}
-.rfm-axis span{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#8FAADC;white-space:nowrap}
+.rfm-axis .al{font-style:normal;position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#8FAADC;white-space:nowrap}
 .rfm-race{position:relative}
 .rfmlane{position:absolute;left:0;right:0;top:0;height:var(--rH);display:grid;grid-template-columns:44px 168px minmax(0,1fr) 96px;gap:16px;align-items:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .rfmlane.me{background:rgba(143,170,220,0.10)}
@@ -553,14 +761,43 @@ nav.nav{view-transition-name:rfs-nav}
   .rfmlane .nm small{display:none}
   .rfmlane .rt b{font-size:16px}
   .rfmlane .gap{right:0;bottom:-6px}
-  .rfm-side{position:fixed;left:0;right:0;bottom:0;top:auto;background:#0c1524;border-top:1px solid #8FAADC;padding:0 16px;z-index:40}
-  .rfm-mine{border-top:0;padding:10px 0 12px;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center}
-  .rfm-pick{grid-column:1/3;margin-bottom:6px}
-  .rfm-mine .big{font-size:28px;margin:0}
-  .rfm-mine p{margin:0;font-size:12px;line-height:1.55}
-  .rfm-feed{display:none}
 }
 @media (prefers-reduced-motion:reduce){.rfmlane,.rfmlane .run,.rfmlane .tail{transition:none}.rfm-live i{animation:none}}
+
+/* RFM: 펀드 페이지와 같은 카드 구성 */
+.rfm-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.rfm-grid>.fd-card{margin-top:20px}
+.rfm-grid .rfm-side{position:sticky;top:140px;align-self:start}
+.rfm-board{margin-top:26px}
+.fd-legend i.dash{height:0;border-top:1px dashed #8FAADC}
+.rfmpage .rfmlane .gap{background:#15233B}
+.rfmpage .rfm-mine{border-top:1px solid rgba(247,246,243,0.08);padding:28px 26px 24px}
+.rfmpage .rfm-feed{margin-top:20px;padding:28px 26px 20px}
+.rfmpage .rfm-side .fd-ct{font-size:20px}
+.rfmpage .rfm-pick{margin-top:16px;padding:10px 12px;border:1px solid rgba(143,170,220,0.35);background:rgba(143,170,220,0.06);color:#F7F6F3;font-size:13px;letter-spacing:0}
+.rfmpage .rfm-mine .big{margin-top:20px}
+.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.45);margin:14px 0 0}
+.rfm-mt{margin-top:16px;border-top:1px solid rgba(247,246,243,0.12)}
+.rfm-mt>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-size:13px;font-variant-numeric:tabular-nums}
+.rfm-mt>div:last-child{border-bottom:0}
+.rfm-mt span{color:rgba(247,246,243,0.6)}
+.rfm-mt b{font-weight:700;color:#F7F6F3;text-align:right}
+.rfmpage .rfm-feed ol{margin-top:12px}
+.rfmpage .rfm-feed li{border-bottom:1px solid rgba(247,246,243,0.07)}
+.rfmpage .rfm-feed li:last-child{border-bottom:0}
+.rfm-bars>div.k>i{box-shadow:0 0 0 2px #8FAADC}
+.rfm-bars>div.k .bl{color:#8FAADC}
+.fd-pr.rfm-pr{grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr))}
+.fd-pr.rfm-pr.me{background:rgba(143,170,220,0.10)}
+.rfmpage .pg-note{margin-top:14px}
+@media (max-width:860px){
+  .rfm-grid{grid-template-columns:1fr;gap:0}
+  .rfm-grid .rfm-side{position:static}
+  .rfmpage .rfm-mine,.rfmpage .rfm-feed{padding:24px 16px 20px}
+  .rfmpage .rfm-feed li:nth-child(n+6){display:none}
+  .fd-pr.rfm-pr{grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(0,1fr)) !important}
+  .rfm-bars .bl{font-size:10.5px !important}
+}
 
 .intra-rail a.on{color:#F7F6F3;font-weight:700}
 .intra-rail .sec{color:rgba(247,246,243,0.4) !important}
@@ -2061,101 +2298,135 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#111c2e;color:#F7F6F3">
+  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock" style="--slot-position:center 45%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <p class="sec-label">RFS Fund</p>
           <h1 class="pg-title">RFS Fund</h1>
-          <p class="pg-lede">운용 현황을 준비하고 있습니다. 장 마감 후 첫 기록이 올라오면 여기에 표시됩니다.</p>
+          <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>{{ fdMeta }}</span></p>
+          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>R.F.S. Asset Management Team · 국내주식 · 액티브</span></p>
           <h1 class="pg-title">RFS Fund</h1>
-          <p class="pg-lede">RFS 펀드 <span style="color:{{ fdHeadColor }}">{{ fdHeadRet }}</span>{{ fdHeadRest }}</p>
-          <div class="pg-stats">
-            <sc-for list="{{ fdKpis }}" as="k" hint-placeholder-count="5"><div><b class="sv" style="color:{{ k.c }}">{{ k.v }}</b><em class="sk">{{ k.k }}</em></div></sc-for>
+          <div class="fd-kc">
+            <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
           </div>
-          <p class="pg-note">{{ fdDek }}</p>
+          <p class="fd-asof"><i></i>{{ fdAsOfLine }}</p>
         </sc-if>
       </div>
     </section>
     <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-    <section class="on-photo" data-nav="dark" style="background:#111c2e">
-    <div class="wrap fd-wrap">
-      <p class="sec-label">Performance</p>
-      <h2 class="sec-title">기준가 추이</h2>
-      <p class="fd-sub">RFS 펀드 · KOSPI · KOSDAQ, 첫 기록일 = 1,000</p>
-      <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
-        <svg class="fd-chart" viewBox="0 0 1000 250" preserveAspectRatio="none">
-          <line x1="0" x2="1000" y1="{{ fdBaseY }}" y2="{{ fdBaseY }}" stroke="rgba(247,246,243,0.15)" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
-          <polyline points="{{ fdPtsQ }}" fill="none" stroke="rgba(247,246,243,0.25)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
-          <polyline points="{{ fdPtsK }}" fill="none" stroke="rgba(247,246,243,0.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
-          <polyline points="{{ fdPtsF }}" fill="none" stroke="#8FAADC" stroke-width="2.5" vector-effect="non-scaling-stroke"></polyline>
-        </svg>
-        <div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.5)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.25)"></i>KOSDAQ</span></div>
-      </sc-if>
-      <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p style="margin-top:16px;font-size:13px;color:rgba(247,246,243,0.45)">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
+    <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
+    <div class="wrap fd-body">
 
-      <sc-if value="{{ fdHasContrib }}" hint-placeholder-val="{{ false }}">
-        <div class="fd-sec"><p class="sec-label">Today</p>
-        <h2 class="sec-title">오늘 수익 기여</h2>
-        <p class="fd-sub">{{ fdContribSum }}</p></div>
-        <div class="fd-attr"><sc-for list="{{ fdContrib }}" as="c" hint-placeholder-count="5"><div style="flex-grow:{{ c.grow }};background:{{ c.bg }}">{{ c.label }}</div></sc-for></div>
-        <div class="fd-attrcap"><span>깎아먹은 종목</span><span>벌어준 종목</span></div>
-      </sc-if>
-
-    </div></section>
-    <section class="on-photo" data-nav="dark" style="background:#0F1B2E">
-    <div class="wrap fd-wrap">
-      <p class="sec-label">Portfolio</p>
-      <h2 class="sec-title">보유 종목</h2>
-      <p class="fd-sub" style="margin-bottom:18px">{{ fdHoldCap }}</p>
-      <sc-for list="{{ fdHolds }}" as="h" hint-placeholder-count="6">
-        <div class="fd-hold" style="animation-name:{{ h.fl }}">
-          <div class="nm"><b>{{ h.name }}</b><small>{{ h.meta }}</small></div>
-          <div class="wbar"><i style="width:{{ h.wbar }}"></i><b class="wv">{{ h.w }}</b><em class="we">{{ h.evlt }}</em></div>
-          <div class="r c3"><small>{{ h.avg }}</small><b>{{ h.cur }}</b></div>
-          <div class="r"><b style="color:{{ h.retColor }}">{{ h.ret }}</b><small style="color:{{ h.dayColor }}">{{ h.day }}</small></div>
-          <div class="r c4"><b style="color:{{ h.dayPlColor }}">{{ h.dayPl }}</b></div>
+      <section class="fd-card" id="fd-perf">
+        <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
+      <div class="fd-pt">
+        <div class="fd-pr hd"><span>기간</span><span>RFS 펀드</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
+        <sc-for list="{{ fdPeriods }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}" onClick="{{ q.on }}"><span>{{ q.k }}</span><b style="color:{{ q.fc }}">{{ q.f }}</b><span>{{ q.kp }}</span><span>{{ q.kq }}</span><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
+      </div>
+        <div class="fd-tabs" style="margin-top:28px"><sc-for list="{{ fdTabs }}" as="t" hint-placeholder-count="4"><a href="#" class="{{ t.cls }}" onClick="{{ t.on }}">{{ t.t }}</a></sc-for></div>
+        <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
+        <div class="fd-cw">
+          <div class="fd-ya"><sc-for list="{{ fdTicks }}" as="t" hint-placeholder-count="4"><em class="yl" style="top:{{ t.y }}">{{ t.t }}</em></sc-for></div>
+          <div class="fd-plot">
+            <div class="fd-grid"><sc-for list="{{ fdTicks }}" as="t" hint-placeholder-count="4"><i style="top:{{ t.y }}"></i></sc-for></div>
+            <svg class="fd-chart" viewBox="0 0 1000 250" preserveAspectRatio="none">
+              <polyline points="{{ fdPtsQ }}" fill="none" stroke="rgba(247,246,243,0.3)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
+              <polyline points="{{ fdPtsK }}" fill="none" stroke="rgba(247,246,243,0.6)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
+              <polyline points="{{ fdPtsF }}" fill="none" stroke="#8FAADC" stroke-width="2.5" vector-effect="non-scaling-stroke"></polyline>
+            </svg>
+            <div class="fd-hov" onMouseMove="{{ fdMove }}" onTouchStart="{{ fdMove }}" onTouchMove="{{ fdMove }}" onMouseLeave="{{ fdLeave }}"><i class="fd-cross"></i><i class="fd-dot f"></i><i class="fd-dot k"></i><i class="fd-dot q"></i><div class="fd-tip"></div></div>
+            <div class="fd-xa"><sc-for list="{{ fdXs }}" as="x" hint-placeholder-count="3"><em class="xl" style="left:{{ x.x }};transform:{{ x.al }}">{{ x.t }}</em></sc-for></div>
+          </div>
+          <div class="fd-ends"><sc-for list="{{ fdEnds }}" as="e" hint-placeholder-count="3"><em class="el" style="top:{{ e.y }};color:{{ e.c }}">{{ e.t }}</em></sc-for></div>
         </div>
-      </sc-for>
-      <p style="margin-top:40px;font-size:12px;color:rgba(247,246,243,0.42)">{{ fdNote }}</p>
+        </sc-if>
+        <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p class="fd-cap">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
+        <p class="fd-foot"><i></i>{{ fdRangeCap }}</p>
+      </section>
+
+      <section class="fd-card" id="fd-alloc">
+        <h2 class="fd-ct">자산구성현황</h2>
+        <div class="fd-ac">
+          <div class="fd-donut" style="background:{{ fdDonut }}" onMouseMove="{{ fdDonutMove }}" onMouseLeave="{{ fdDonutLeave }}"><div><b>{{ fdCenterV }}</b><em>{{ fdCenterK }}</em></div></div>
+        </div>
+        <div class="fd-lg"><sc-for list="{{ fdLegend }}" as="l" hint-placeholder-count="8"><div class="{{ l.cls }}" onMouseEnter="{{ l.enter }}" onMouseLeave="{{ l.leave }}"><i style="background:{{ l.c }}"></i><span>{{ l.t }}</span><b>{{ l.w }}</b></div></sc-for></div>
+        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
+      </section>
+
+      <section class="fd-card">
+        <h2 class="fd-ct">업종별 비중</h2>
+        <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
+        <p class="fd-foot"><i></i>업종은 R.F.S. 리포트 기준, 리포트가 없는 종목은 미분류 · 주식 내 비중</p>
+      </section>
+
+      <section class="fd-card" id="fd-hold">
+        <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2><span class="fd-sub">{{ fdPortCap }}</span></div>
+        <div class="fd-list">
+          <div class="fd-lh"><span></span><span>종목</span><span class="r c3">평균단가 → 현재가</span><span class="r">비중</span><span class="r">수익률</span></div>
+          <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
+            <div class="{{ r.cls }}" onMouseEnter="{{ r.enter }}" onMouseLeave="{{ r.leave }}">
+              <i class="dt" style="background:{{ r.badge }};color:{{ r.badgeC }}">{{ r.rank }}</i>
+              <div class="nm"><b>{{ r.name }}</b><small>{{ r.meta }}</small><sc-if value="{{ r.hasRep }}" hint-placeholder-val="{{ false }}"><a class="rp" href="{{ r.repHref }}" onClick="{{ r.repOn }}">{{ r.repLabel }} →</a></sc-if></div>
+              <div class="px"><b>{{ r.px }}</b><small>{{ r.amt }}</small></div>
+              <div class="wt">{{ r.w }}<i class="wb"><i style="width:{{ r.wbar }};background:{{ r.dot }}"></i></i></div>
+              <div class="rt"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
+            </div>
+          </sc-for>
+        </div>
+        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
+      </section>
+
+      <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
+      <section class="fd-card" id="fd-attr">
+        <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2><span class="fd-sub">{{ fdTodayCap }}</span></div>
+          <div class="fd-movers">
+            <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">손익</span></div>
+            <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
+              <div class="fd-mv"><b class="mn">{{ m.name }}</b><div class="mb"><i class="z"></i><i class="f" style="left:{{ m.l }};width:{{ m.w }};background:{{ m.c }};transform-origin:{{ m.o }}"></i></div><b class="mp" style="color:{{ m.c }}">{{ m.pp }}</b><em class="ma">{{ m.amt }}</em></div>
+            </sc-for>
+          </div>
+      </section>
+      </sc-if>
+
+      <p class="fd-disc">{{ fdNote }}</p>
     </div>
-    </section>
     </sc-if>
   </main>
   </sc-if>
 
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage" style="position:relative;background:#111c2e;color:#F7F6F3">
+  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>{{ rfmMeta }}</span></p>
+        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>Timefolio · 모의투자 대회 · 학회 순위</span></p>
         <h1 class="pg-title">Road to Fund Manager</h1>
-        <p class="pg-lede"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</p>
-        <div class="pg-stats">
-          <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="3"><div><b class="sv" style="color:{{ d.c }}">{{ d.v }}</b><em class="sk">{{ d.k }}</em></div></sc-for>
-        </div>
         <p class="pg-note">{{ rfmBeatLine }}</p>
+        <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
+        <div class="fd-kc">
+          <sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
+        </div>
+        </sc-if>
+        <p class="fd-asof"><i></i>{{ rfmMeta }}</p>
       </div>
     </section>
-    <section class="on-photo" data-nav="dark" style="background:#111c2e">
-    <div class="wrap rfm-wrap">
-      <p class="sec-label">Live Ranking</p>
-      <h2 class="sec-title">학회원 순위</h2>
-      <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-        <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
-      </sc-if>
-      <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
-      <div class="rfm-body">
-        <div>
+    <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">수집된 데이터가 없습니다.</p></section></div>
+    </sc-if>
+    <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
+    <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
+    <div class="wrap fd-body">
+      <div class="rfm-grid">
+      <section class="fd-card" id="rfm-rank">
+        <div class="fd-ch"><h2 class="fd-ct">학회 순위</h2><div class="fd-legend"><span><i style="background:rgba(247,246,243,0.4)"></i>0%</span><span><i style="background:#8FAADC"></i>KOSPI</span><span><i class="dash"></i>전체 50위</span></div></div>
+        <div class="rfm-board">
           <div class="rfm-axis">
-            <sc-for list="{{ rfmAxis }}" as="a" hint-placeholder-count="2"><span style="left:{{ a.x }}">{{ a.t }}</span></sc-for>
+            <sc-for list="{{ rfmAxis }}" as="a" hint-placeholder-count="2"><em class="al" style="left:{{ a.x }}">{{ a.t }}</em></sc-for>
           </div>
           <div class="rfm-race" style="height:calc(var(--rH) * {{ rfmCount }})">
             <sc-for list="{{ rfmLanes }}" as="r" hint-placeholder-count="8">
@@ -2166,7 +2437,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                   <i class="vl" style="left:{{ rfmZero }};background:rgba(247,246,243,0.18)"></i>
                   <i class="vl" style="left:{{ rfmKx }};background:#8FAADC;opacity:0.5"></i>
                   <i class="vl" style="left:{{ rfmCx }};border-left:1px dashed #8FAADC;opacity:0.55"></i>
-                  <i class="tail" style="left:{{ r.tailL }};width:{{ r.tailW }};background:{{ r.dot }}"></i>
+                  <i class="tail" style="left:{{ r.tailL }};width:{{ r.tailW }};background:{{ r.dot }};transform-origin:{{ r.to }}"></i>
                   <i class="run" style="left:{{ r.x }};background:{{ r.dot }}"></i>
                 </div>
                 <div class="rt" style="animation-name:{{ r.fl }}"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
@@ -2177,40 +2448,57 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
             <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
-          <p style="margin-top:14px;font-size:12px;color:rgba(247,246,243,0.4)">학회 내부 공개. 외부 공유 금지. <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
-          <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
-            <div style="margin-top:12px;max-width:520px">
-              <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
-              <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
-                <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
-                <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
-              </div>
-            </div>
-          </sc-if>
         </div>
-        <aside class="rfm-side">
-          <div class="rfm-mine">
-            <select class="rfm-pick" value="{{ rfmMineNick }}" onChange="{{ onRfmPick }}">
-              <sc-for list="{{ rfmPick }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
-            </select>
-            <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
-              <div class="big">{{ rfmMineRank }}<small>{{ rfmMineOf }}</small></div>
-              <p>{{ rfmMineUp }}<br>{{ rfmMineDn }}<br><span style="color:#8FAADC">{{ rfmMine50 }}</span></p>
-            </sc-if>
-            <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}"><p class="hint">별칭을 고르면 내 순위와 앞뒤 차이가 여기 고정됩니다.</p></sc-if>
-          </div>
-          <div class="rfm-feed">
-            <h3>실시간 변동</h3>
-            <sc-if value="{{ noRfmFeed }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:rgba(247,246,243,0.45);margin-top:10px">아직 변동 없음</p></sc-if>
-            <ol>
-              <sc-for list="{{ rfmFeed }}" as="e" hint-placeholder-count="0"><li><time>{{ e.t }}</time><b>{{ e.who }}</b> {{ e.text }}</li></sc-for>
-            </ol>
-          </div>
-        </aside>
+        <p class="fd-foot"><i></i>{{ rfmFoot }}</p>
+      </section>
+      <div class="rfm-side">
+        <section class="fd-card rfm-mine" id="rfm-me">
+          <div class="fd-ch"><h2 class="fd-ct">내 순위</h2></div>
+          <select class="rfm-pick" value="{{ rfmMineNick }}" onChange="{{ onRfmPick }}">
+            <sc-for list="{{ rfmPick }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
+          </select>
+          <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
+            <div class="big">{{ rfmMineRank }}<small>{{ rfmMineOf }}</small></div>
+            <div class="rfm-mt"><sc-for list="{{ rfmMineRows }}" as="m" hint-placeholder-count="4"><div><span>{{ m.k }}</span><b style="color:{{ m.c }}">{{ m.v }}</b></div></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}"><p class="hint">별칭 선택 시 순위·격차 표시</p></sc-if>
+        </section>
+        <section class="fd-card rfm-feed" id="rfm-feed">
+          <div class="fd-ch"><h2 class="fd-ct">순위 변동</h2></div>
+          <sc-if value="{{ noRfmFeed }}" hint-placeholder-val="{{ false }}"><p class="hint">변동 없음</p></sc-if>
+          <ol>
+            <sc-for list="{{ rfmFeed }}" as="e" hint-placeholder-count="0"><li><time>{{ e.t }}</time><b>{{ e.who }}</b> {{ e.text }}</li></sc-for>
+          </ol>
+        </section>
       </div>
+      </div>
+
+      <section class="fd-card" id="rfm-dist">
+        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2><span class="fd-sub">{{ rfmDistCap }}</span></div>
+        <div class="fd-bars rfm-bars"><sc-for list="{{ rfmDist }}" as="b" hint-placeholder-count="6"><div class="{{ b.cls }}"><span class="bl">{{ b.n }}<em>{{ b.t }}</em></span><i style="height:{{ b.h }};background:{{ b.bg }}"></i></div></sc-for></div>
+        <p class="fd-foot"><i></i>{{ rfmDistFoot }}</p>
+      </section>
+
+      <section class="fd-card" id="rfm-bm">
+        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2><span class="fd-sub">대회 시작일 이후</span></div>
+        <div class="fd-pt">
+          <div class="fd-pr hd rfm-pr"><span>구분</span><span>수익률</span><span>KOSPI 대비</span></div>
+          <sc-for list="{{ rfmBmRows }}" as="q" hint-placeholder-count="5"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c }}">{{ q.v }}</b><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
+        </div>
+      </section>
+
+      <p class="fd-disc">학회 내부 공개 · 외부 공유 금지 · 자료: 타임폴리오 RFM 순위표 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+      <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;max-width:520px">
+          <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
+          <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
+            <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
+            <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
+          </div>
+        </div>
       </sc-if>
     </div>
-    </section>
+    </sc-if>
   </main>
   </sc-if>
 
@@ -4013,6 +4301,106 @@ class Component extends DCLogic {
     try { return JSON.parse(localStorage.getItem('rfs_rfm_names') || '{}') || {}; } catch (e) { return {}; }
   }
 
+  // 보유 종목 원형 차트·목록, 오늘 움직인 종목 (학회 리포트가 있으면 연결)
+  fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn) {
+    const rep = {}; REPORTS.forEach((r) => { if (r.ticker && !rep[r.ticker]) rep[r.ticker] = r; });
+    const hi = this.state.fdHi === undefined ? null : this.state.fdHi;
+    let acc = 0; const stops = []; const segs = [];
+    hs.forEach((h, i) => { const w = h.weight || 0; const c = shades[i % shades.length] + (hi !== null && hi !== i ? '40' : ''); stops.push(c + ' ' + acc.toFixed(2) + '% ' + (acc + w).toFixed(2) + '%'); segs.push([acc, acc + w]); acc += w; });
+    if (cw > 0) { stops.push((hi !== null && hi !== hs.length ? 'rgba(247,246,243,0.07) ' : 'rgba(247,246,243,0.22) ') + acc.toFixed(2) + '% 100%'); segs.push([acc, 100]); }
+    this._fdSegs = segs;
+    const hh = hi !== null ? (hi < hs.length ? hs[hi] : { name: '현금', weight: cw }) : null;
+    const rows = hs.map((h, i) => {
+      const r = rep[h.code];
+      return {
+        cls: 'fd-row' + (hi === i ? ' hi' : ''), enter: () => this.setState({ fdHi: i }), leave: () => this.setState({ fdHi: null }),
+        rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : i === 2 ? '#F7F6F3' : 'rgba(247,246,243,0.7)',
+        dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
+        meta: [h.code, r && r.sector, h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
+        w: (h.weight || 0).toFixed(1) + '%',
+        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+        px: live ? won(h.avg) + ' → ' + won(h.cur) : '', amt: live ? won(h.evlt) + '원 · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '',
+        hasRep: !!r, repLabel: r ? '리포트 ' + r.op + (r.tp ? ' · TP ' + r.tp : '') + ' · ' + (r.date || '').slice(2, 7) : '', repHref: r ? '#research/' + r.id : '#',
+        repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
+      };
+    });
+    if (cw > 0) rows.push({ rank: '', badge: 'rgba(247,246,243,0.18)', badgeC: '#F7F6F3', cls: 'fd-row' + (hi === hs.length ? ' hi' : ''), enter: () => this.setState({ fdHi: hs.length }), leave: () => this.setState({ fdHi: null }), wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', amt: live ? won(live.cash) + '원' : '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
+    // 오늘 기여: 학회원은 원 단위 손익/전일 총자산, 외부는 비중×등락
+    const mv = hs.map((h) => {
+      const c = live ? (h.dayPl !== null && h.dayPl !== undefined && prevTotal ? h.dayPl / prevTotal * 100 : null) : (h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
+      return { h, c };
+    }).filter((x) => x.c !== null).sort((a, b) => b.c - a.c);
+    const mx = Math.max(0.01, ...mv.map((x) => Math.abs(x.c)));
+    const sec = {}; hs.forEach((h) => { const r = rep[h.code]; const k = (r && r.sector) || '미분류'; sec[k] = (sec[k] || 0) + (h.weight || 0); });
+    const stockW = hs.reduce((a, h) => a + (h.weight || 0), 0) || 1;
+    const secs = Object.entries(sec).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const secMax = Math.max(...secs.map((x) => x[1]), 1);
+    const legend = hs.map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(2) + '%', i })).concat(cw > 0 ? [{ c: 'rgba(247,246,243,0.3)', t: '현금', w: cw.toFixed(2) + '%', i: hs.length }] : []);
+    return {
+      fdLegend: legend.map((l) => ({ ...l, cls: 'fd-li' + (hi === l.i ? ' on' : ''), enter: () => this.setState({ fdHi: l.i }), leave: () => this.setState({ fdHi: null }) })),
+      fdCenterV: hh ? (hh.weight || 0).toFixed(2) + '%' : (100 - cw).toFixed(2) + '%',
+      fdCenterK: hh ? hh.name : '주식',
+      fdSectors: secs.map(([t, w]) => ({ t, w: (w / stockW * 100).toFixed(2) + '%', h: (w / secMax * 72).toFixed(1) + '%' })),
+      fdDonut: 'conic-gradient(' + stops.join(',') + ')',
+      fdCount: hh ? hh.name : hs.length + '종목', fdCashLine: hh ? (hh.weight || 0).toFixed(1) + '%' + (hh.ret !== undefined ? ' · ' + pct(hh.ret) : '') : '현금 ' + cw.toFixed(1) + '%',
+      fdDonutMove: (e) => {
+        const rc = e.currentTarget.getBoundingClientRect(); const dx = e.clientX - rc.left - rc.width / 2, dy = e.clientY - rc.top - rc.height / 2;
+        const r = Math.hypot(dx, dy); if (r < rc.width * 0.33 || r > rc.width / 2) { if (this.state.fdHi !== null) this.setState({ fdHi: null }); return; }
+        const pctA = ((Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360) / 3.6;
+        const k = (this._fdSegs || []).findIndex(([a, b]) => pctA >= a && pctA < b);
+        if (k !== this.state.fdHi) this.setState({ fdHi: k < 0 ? null : k });
+      },
+      fdDonutLeave: () => this.setState({ fdHi: null }),
+      fdRows: rows,
+      fdMovers: mv.map((x) => ({
+        name: x.h.name, pp: (x.c > 0 ? '+' : x.c < 0 ? '−' : '') + Math.abs(x.c).toFixed(2) + '%p',
+        amt: live && x.h.dayPl !== null && x.h.dayPl !== undefined ? (x.h.dayPl >= 0 ? '+' : '−') + won(x.h.dayPl) + '원' : pct(x.h.day),
+        c: x.c >= 0 ? up : dn, l: (x.c >= 0 ? 50 : 50 - Math.abs(x.c) / mx * 50).toFixed(2) + '%', w: (Math.abs(x.c) / mx * 50).toFixed(2) + '%', o: x.c >= 0 ? 'left' : 'right',
+      })),
+      hasMovers: mv.length > 0,
+      fdAsOfShort: (F.asOf || '').slice(5, 10).replace('-', '/'),
+      fdPortCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · ' + hs.length + '종목 · 상위 3종목 ' + hs.slice(0, 3).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '% · 현금 ' + cw.toFixed(1) + '%',
+      fdTodayCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · 펀드 ' + pct(F.day) + (live && prevTotal ? ' · ' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원' : '') + (live ? '' : ' · 비중 × 일간 등락률'),
+      fdPerfCap: '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ',
+      fdPeriods: this.fundPeriods(F, pct, col),
+    };
+  }
+
+  // 그래프 위 마우스·터치: 세로선과 날짜별 값 (상태를 바꾸지 않고 DOM만 갱신)
+  fdHover(e) {
+    const C = this._fdChart; const el = e.currentTarget; if (!C || !el) return;
+    const pt = e.touches && e.touches[0] ? e.touches[0] : e;
+    const rc = el.getBoundingClientRect(); const n = C.d.length;
+    const i = Math.max(0, Math.min(n - 1, Math.round((pt.clientX - rc.left) / rc.width * (n - 1))));
+    const x = (i / (n - 1) * 100).toFixed(2) + '%';
+    const yp = (v) => (v ? (+C.y(v) / 250 * 100).toFixed(2) + '%' : '-50%');
+    const pc = (v) => (v ? ((v / 1000 - 1) * 100 >= 0 ? '+' : '−') + Math.abs((v / 1000 - 1) * 100).toFixed(2) + '%' : '-');
+    el.classList.add('on');
+    el.querySelector('.fd-cross').style.left = x;
+    [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); });
+    const tip = el.querySelector('.fd-tip');
+    tip.innerHTML = '<b>' + C.d[i].replace(/-/g, '.') + '</b><span><i style="background:#8FAADC"></i>RFS 펀드<em>' + pc(C.fs[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.7)"></i>KOSPI<em>' + pc(C.ks[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.35)"></i>KOSDAQ<em>' + pc(C.qs[i]) + '</em></span>';
+    tip.style.left = x; tip.style.transform = i / (n - 1) > 0.6 ? 'translateX(calc(-100% - 14px))' : 'translateX(14px)';
+  }
+
+  // 기간 수익률: history [날짜, 기준가, KOSPI, KOSDAQ]에서 1주·1개월·3개월·설정 이후
+  fundPeriods(F, pct, col) {
+    const H = (F.history || []).filter((h) => h[1]);
+    if (H.length < 2) return [];
+    const last = H[H.length - 1];
+    const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H.filter((h) => h[0] <= d).pop(); };
+    const r = (a, b) => (a && b ? (a / b - 1) * 100 : null);
+    const row = (k, ref) => {
+      if (!ref || ref === last) return null;
+      const f = r(last[1], ref[1]), kp = r(last[2], ref[2]), kq = r(last[3], ref[3]);
+      const ex = f !== null && kp !== null ? f - kp : null;
+      return { k, f: pct(f), fc: col(f), kp: pct(kp), kq: pct(kq), ex: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', ec: col(ex), eb: ex > 0 ? 'rgba(95,196,138,0.14)' : ex < 0 ? 'rgba(232,131,123,0.14)' : 'transparent' };
+    };
+    const s0 = this.state.fdRange || 'all';
+    return [['1w', row('1주', back(7))], ['1m', row('1개월', back(30))], ['3m', row('3개월', back(91))], ['all', row('설정 이후', H[0])]]
+      .filter(([, r0]) => r0).map(([k, r0]) => ({ ...r0, cls: 'fd-pr' + (k === s0 ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ fdRange: k }); } }));
+  }
+
   fundProps(authed) {
     const s = this.state;
     const live = authed && s.fundLive ? s.fundLive : null;
@@ -4030,15 +4418,39 @@ class Component extends DCLogic {
     const maxW = Math.max(10, ...hs.map((h) => h.weight || 0));
     const best = live ? hs.filter((h) => h.dayPl !== null && h.dayPl !== undefined).sort((a, b) => b.dayPl - a.dayPl)[0] : hs.filter((h) => h.day !== null && h.day !== undefined).sort((a, b) => b.day - a.day)[0];
     // 기준가 추이: history = [날짜, 기준가, KOSPI, KOSDAQ] → 첫날 1,000으로 맞춰 세 선
-    const H = (F.history || []).filter((h) => h[1]);
-    let chart = { f: '', k: '', q: '', base: '125', has: false };
+    const HA = (F.history || []).filter((h) => h[1]);
+    const RANGES = { '1w': 7, '1m': 30, '3m': 91 };
+    const rk = s.fdRange && RANGES[s.fdRange] ? s.fdRange : 'all';
+    let H = HA;
+    if (rk !== 'all' && HA.length) {
+      const t = new Date(HA[HA.length - 1][0]); t.setDate(t.getDate() - RANGES[rk]); const cut = t.toISOString().slice(0, 10);
+      const i0 = Math.max(0, HA.findIndex((h) => h[0] >= cut) - 1);
+      H = HA.slice(i0);
+    }
+    let chart = { f: '', k: '', q: '', base: '125', has: false, ticks: [], xs: [], ends: [] };
     if (H.length >= 2) {
       const k0 = (H.find((h) => h[2]) || [])[2], q0 = (H.find((h) => h[3]) || [])[3];
-      const fs = H.map((h) => h[1]), ks = H.map((h) => (k0 && h[2] ? h[2] / k0 * 1000 : null)), qs = H.map((h) => (q0 && h[3] ? h[3] / q0 * 1000 : null));
+      const fs = H.map((h) => h[1] / H[0][1] * 1000), ks = H.map((h) => (k0 && h[2] ? h[2] / k0 * 1000 : null)), qs = H.map((h) => (q0 && h[3] ? h[3] / q0 * 1000 : null));
       const all = fs.concat(ks, qs).filter((v) => v), lo = Math.min(...all, 1000) * 0.995, hi = Math.max(...all, 1000) * 1.005;
       const y = (v) => (245 - (v - lo) / (hi - lo) * 235).toFixed(1);
       const pts = (a) => a.map((v, i) => (v ? (i / (a.length - 1) * 1000).toFixed(1) + ',' + y(v) : null)).filter(Boolean).join(' ');
       chart = { f: pts(fs), k: pts(ks), q: pts(qs), base: y(1000), has: true };
+      this._fdChart = { d: H.map((h) => h[0]), fs, ks, qs, y };
+      const yp = (v) => (+y(v) / 250 * 100).toFixed(2) + '%';
+      const pLo = (lo / 1000 - 1) * 100, pHi = (hi / 1000 - 1) * 100;
+      const step = [1, 2, 5, 10, 20, 50].find((st) => (pHi - pLo) / st <= 5) || 100;
+      const ticks = []; for (let t = Math.ceil(pLo / step) * step; t <= pHi; t += step) ticks.push({ y: yp(1000 * (1 + t / 100)), t: (t > 0 ? '+' : t < 0 ? '−' : '') + Math.abs(t) + '%' });
+      const md = (d) => +d.slice(5, 7) + '/' + +d.slice(8, 10);
+      const xi = [0, Math.floor((H.length - 1) / 2), H.length - 1].filter((v, i, a) => a.indexOf(v) === i);
+      const ends = [
+        { v: fs[fs.length - 1], n: 'RFS', c: '#8FAADC' },
+        { v: ks[ks.length - 1], n: 'KOSPI', c: 'rgba(247,246,243,0.75)' },
+        { v: qs[qs.length - 1], n: 'KOSDAQ', c: 'rgba(247,246,243,0.5)' },
+      ].filter((e) => e.v).map((e) => ({ ...e, yy: +y(e.v) / 250 * 100 })).sort((a, b) => a.yy - b.yy);
+      for (let i = 1; i < ends.length; i++) if (ends[i].yy - ends[i - 1].yy < 9) ends[i].yy = ends[i - 1].yy + 9;
+      chart.ticks = ticks;
+      chart.xs = xi.map((i) => ({ x: (i / (H.length - 1) * 100).toFixed(2) + '%', t: md(H[i][0]), al: i === 0 ? 'translateX(0)' : i === H.length - 1 ? 'translateX(-100%)' : 'translateX(-50%)' }));
+      chart.ends = ends.map((e) => ({ y: e.yy.toFixed(2) + '%', t: e.n + ' ' + pct((e.v / 1000 - 1) * 100), c: e.c }));
     }
     // 오늘 수익 기여 (학회원): 종목별 오늘 손익 / 전일 총자산
     const prevTotal = live && live.day !== null && live.day !== undefined ? live.total / (1 + live.day / 100) : null;
@@ -4046,20 +4458,60 @@ class Component extends DCLogic {
     const ctot = contrib.reduce((a, x) => a + Math.abs(x.c), 0) || 1;
     const prevMap = {}; ((s.fundLivePrev && s.fundLivePrev.holdings) || []).forEach((h) => { prevMap[h.code] = h.cur; });
     const tick = this._fundTick || 0;
+    const shades = ['#8FAADC', '#3E5F9E', '#C3D3EE', '#6F8FC9', '#2C4A82', '#A9BEE6', '#5577B5', '#DCE6F6', '#4A6AA6', '#7E9BD2'];
+    const cw = F.cashWeight || 0;
+    const alloc = hs.map((h, i) => ({ grow: (h.weight || 0).toFixed(2), bg: shades[i % shades.length], tc: '#0F1B2E', label: (h.weight || 0) >= 7 ? h.name : '' }))
+      .concat(cw > 0 ? [{ grow: cw.toFixed(2), bg: 'rgba(247,246,243,0.16)', tc: '#F7F6F3', label: cw >= 7 ? '현금' : '' }] : []);
+    const byDay = hs.filter((h) => (live ? h.dayPl !== null && h.dayPl !== undefined : h.day !== null && h.day !== undefined));
+    const key = (h) => (live ? h.dayPl : h.day);
+    const top = byDay.slice().sort((a, b) => key(b) - key(a))[0], bot = byDay.slice().sort((a, b) => key(a) - key(b))[0];
+    const fmtK = (h) => (live ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) + '원' : pct(h.day));
+    const sd = F.start ? F.start : '';
     return {
       fdHas: true, fdNone: false, fdLive: !!live, fdPublic: !live,
+      fdStartDate: (F.start || '').replace(/-/g, '.'),
+      fdAsOfLine: (live ? (F.asOf || '').slice(0, 16).replace(/-/g, '.') : (F.asOf || '').replace(/-/g, '.') + ' 장 마감') + ' 기준 · 설정일 ' + (F.start || '').replace(/-/g, '.') + ' · 벤치마크 KOSPI',
+      fdCards: (() => {
+        const H2 = (F.history || []).filter((h) => h[1]);
+        const last = H2[H2.length - 1];
+        const ref = (days) => { if (!last) return null; const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H2.filter((h) => h[0] <= d).pop(); };
+        const m1 = ref(30), r1 = m1 && m1 !== last ? (last[1] / m1[1] - 1) * 100 : null;
+        const chg = F.nav && F.day !== null && F.day !== undefined ? F.nav - F.nav / (1 + F.day / 100) : null;
+        const ex = kospi !== null && kospi !== undefined ? F.ret - kospi : null;
+        return [
+          { k: '기준가 (전일대비)', v: F.nav ? Number(F.nav).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-', c: '#F7F6F3', s: chg === null ? '' : (chg >= 0 ? '+' : '−') + Math.abs(chg).toFixed(2) + ' (' + pct(F.day) + ')', sc: col(F.day) },
+          { k: '수익률 (설정 이후)', v: pct(F.ret), c: col(F.ret), s: '', sc: '' },
+          { k: '수익률 (1개월)', v: r1 === null ? '-' : pct(r1), c: col(r1), s: '', sc: '' },
+          { k: 'KOSPI 대비 (설정 이후)', v: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', c: col(ex), s: 'KOSPI ' + pct(kospi), sc: 'rgba(247,246,243,0.55)' },
+          { k: '보유 종목', v: hs.length + '종목', c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
+        ];
+      })(),
+      fdNav: [['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
+      fdAlloc: alloc,
+      fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
+      fdChips: [
+        { k: '일간', v: pct(F.day), c: col(F.day), n: '' },
+        top && key(top) > 0 ? { k: '상위 기여', n: top.name, v: fmtK(top), c: up } : null,
+        bot && key(bot) < 0 ? { k: '하위 기여', n: bot.name, v: fmtK(bot), c: dn } : null,
+      ].filter(Boolean),
+      fdTicks: chart.ticks, fdXs: chart.xs, fdEnds: chart.ends,
+      fdTabs: [['1w', '1주'], ['1m', '1개월'], ['3m', '3개월'], ['all', '설정 이후']].filter(([k]) => k === 'all' || (HA.length && (new Date(HA[HA.length - 1][0]) - new Date(HA[0][0])) / 864e5 > RANGES[k] * 0.6)).map(([k, t]) => ({ t, cls: k === rk ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ fdRange: k }); } })),
+      fdRangeCap: rk === 'all' ? '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ' : (H[0] ? H[0][0].replace(/-/g, '.') : '') + ' = 0% · 벤치마크 KOSPI, KOSDAQ',
+      fdMove: (e) => this.fdHover(e), fdLeave: (e) => { const r = e.currentTarget; r.classList.remove('on'); },
+      ...this.fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn),
       fdLiveDot: !!live && open, fdClosed: !(live && open),
       fdMeta: live ? 'RFS 펀드 · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'RFS 펀드 · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
       fdHeadRet: pct(F.ret), fdHeadColor: col(F.ret),
       fdHeadRest: gap === null ? '' : ', KOSPI보다 ' + Math.abs(gap).toFixed(2) + '%p ' + (gap >= 0 ? '앞서' : '뒤처져'),
       fdDek: (F.day !== null && F.day !== undefined ? '오늘 ' + pct(F.day) + '. ' : '') + (best ? best.name + (live ? '이 오늘 가장 많이 벌었고, ' : '이 오늘 가장 많이 올랐고, ') : '') + hs.length + '개 종목과 현금 ' + (F.cashWeight || 0).toFixed(1) + '%로 운용 중입니다.',
       fdKpis: [
-        { v: F.nav ? Number(F.nav).toFixed(2) : '-', k: '기준가', c: '#F7F6F3' },
-        { v: pct(F.ret), k: (F.start ? F.start.slice(2).replace(/-/g, '.') + ' 이후' : '설정 이후'), c: col(F.ret) },
-        { v: pct(F.day), k: '오늘', c: col(F.day) },
+        { v: F.nav ? Number(F.nav).toFixed(2) : '-', k: '기준가격' + (F.nav && F.day !== null && F.day !== undefined ? '  ' + (F.day >= 0 ? '▲ ' : '▼ ') + Math.abs(F.nav - F.nav / (1 + F.day / 100)).toFixed(2) : ''), c: '#F7F6F3' },
+        { v: pct(F.ret), k: '설정 이후', c: col(F.ret) },
+        { v: pct(F.day), k: '일간', c: col(F.day) },
         { v: pct(kospi), k: 'KOSPI 동기간', c: col(kospi) },
         { v: pct(kosdaq), k: 'KOSDAQ 동기간', c: col(kosdaq) },
-      ].concat(live ? [{ v: won(live.total) + '원', k: '운용 규모', c: '#F7F6F3' }] : []),
+      ].concat(live ? [{ v: won(live.total) + '원', k: '순자산', c: '#F7F6F3' }] : []),
       fdChartHas: chart.has, fdChartNone: !chart.has, fdPtsF: chart.f, fdPtsK: chart.k, fdPtsQ: chart.q, fdBaseY: chart.base,
       fdContrib: contrib.map((x) => ({ grow: (Math.abs(x.c) / ctot * 100).toFixed(2), bg: x.c >= 0 ? up : dn, label: Math.abs(x.c) / ctot > 0.08 ? x.nm + ' ' + (x.c > 0 ? '+' : '−') + Math.abs(x.c).toFixed(2) + '%p' : '' })),
       fdHasContrib: contrib.length > 0,
@@ -4069,14 +4521,14 @@ class Component extends DCLogic {
         const pc = prevMap[h.code];
         const fl = live && pc !== undefined && pc !== h.cur ? (h.cur > pc ? 'fdFu' : 'fdFd') + (tick % 2) : 'none';
         return {
-          name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : ''),
+          name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '') + (h.since ? ' · ' + h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''),
           w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: live ? won(h.evlt) + '원' : '',
           avg: live ? won(h.avg) : '', cur: live ? won(h.cur) : '',
           ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
           dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
         };
       }),
-      fdNote: live ? '운용 계좌를 키움증권 API로 조회해 장중 15초마다 갱신합니다. 투자 권유가 아닙니다.' : '장 마감 기준으로 하루 한 번 갱신합니다. 학회원은 로그인하면 실시간으로 볼 수 있습니다. 투자 권유가 아닙니다.',
+      fdNote: live ? '자료: 키움증권 운용 계좌 · 장중 15초 갱신 · 투자 권유 아님' : '자료: 키움증권 운용 계좌 · 장 마감 기준 일 1회 갱신 (학회원 로그인 시 실시간) · 투자 권유 아님',
     };
   }
 
@@ -4102,6 +4554,7 @@ class Component extends DCLogic {
     const lo = Math.min(...vals) - 2, hi = Math.max(...vals) + 2;
     const x = (v) => ((v - lo) / (hi - lo) * 100).toFixed(2) + '%';
     const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
+    const srt = on.map(ret).sort((a, b) => a - b), med = srt.length ? (srt.length % 2 ? srt[(srt.length - 1) / 2] : (srt[srt.length / 2 - 1] + srt[srt.length / 2]) / 2) : 0;
     const prevRet = {}; ((s.rfmPrevData && s.rfmPrevData.members) || []).forEach((m) => { if (m.nav) prevRet[m.nick] = ret(m); });
     const tick = this._rfmTick || 0;
     const dayOf = (m) => (m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null);
@@ -4115,7 +4568,7 @@ class Component extends DCLogic {
     return {
       hasRfm: on.length > 0, noRfm: on.length === 0,
       rfmLive: live, rfmClosed: !live,
-      rfmMeta: ((RF && RF.contest) || 'RFM') + ' · 타임폴리오 · ' + (RF && RF.asOf ? RF.asOf.slice(5, 16).replace('-', '/') + ' 기준' : ''),
+      rfmMeta: [RF && RF.asOf ? RF.asOf.slice(0, 16).replace(/-/g, '.').replace('T', ' ') + ' 기준' : '', (RF && RF.contest) || '', on.length ? '참가 ' + on.length + '명' : '', '벤치마크 KOSPI'].filter(Boolean).join(' · '),
       rfmHeadLead: a1 ? nm(a1) : '',
       rfmHeadRest: !a1 ? '' : !a2 ? ' 단독 참가' : gap12 > 5 ? ' 독주, 2위와 ' + pp(gap12) + ' 차' : (' · ' + nm(a2) + ', ' + pp(gap12) + ' 차 접전'),
       rfmDek: [
@@ -4123,6 +4576,58 @@ class Component extends DCLogic {
         { k: 'KOSPI', v: kospi !== null ? pct(kospi) : '-', c: kospi !== null ? col(kospi) : flat },
         { k: 'KOSDAQ', v: kosdaq !== null ? pct(kosdaq) : '-', c: kosdaq !== null ? col(kosdaq) : flat },
       ],
+      rfmCards: (() => {
+        if (!a1) return [];
+        const beat = kospi !== null ? on.filter((m) => ret(m) > kospi).length : null;
+        const in50 = on.filter((m) => m.rank && m.rank <= 50).length;
+        const ex = kospi !== null ? avg - kospi : null;
+        return [
+          { k: '학회 1위', v: nm(a1), c: '#F7F6F3', s: pct(ret(a1)), sc: col(ret(a1)) },
+          { k: '학회 평균 수익률', v: pct(avg), c: col(avg), s: '중앙값 ' + pct(med), sc: 'rgba(247,246,243,0.6)' },
+          { k: 'KOSPI 대비 (평균)', v: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), c: ex === null ? flat : col(ex), s: kospi !== null ? 'KOSPI ' + pct(kospi) : '', sc: 'rgba(247,246,243,0.6)' },
+          { k: 'KOSPI 초과', v: beat === null ? '-' : beat + '명', c: '#F7F6F3', s: beat === null ? '' : '참가 ' + on.length + '명 중 ' + Math.round(beat / on.length * 100) + '%', sc: 'rgba(247,246,243,0.6)' },
+          { k: '전체 50위 이내', v: in50 + '명', c: '#F7F6F3', s: cut !== null ? '50위 컷 ' + pct(cut) : '', sc: 'rgba(247,246,243,0.6)' },
+        ];
+      })(),
+      rfmNav: [['rfm-rank', '순위'], ['rfm-me', '내 순위'], ['rfm-dist', '분포'], ['rfm-bm', '벤치마크']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      rfmFoot: '학회 내 순위 · 이름 아래 전체 순위 · 장중 15초 갱신',
+      rfmMineRows: !me ? [] : [
+        { k: '수익률', v: pct(ret(me)), c: col(ret(me)) },
+        { k: '전체 순위', v: me.rank ? Number(me.rank).toLocaleString('ko-KR') + '위' + (me.rankChg > 0 ? ' ▲' + me.rankChg : me.rankChg < 0 ? ' ▼' + -me.rankChg : '') : '-', c: '#F7F6F3' },
+        mi > 0 ? { k: '위 ' + nm(order[mi - 1]), v: '−' + pp(ret(order[mi - 1]) - ret(me)), c: dn } : { k: '학회 1위', v: '-', c: '#F7F6F3' },
+        mi < order.length - 1 ? { k: '아래 ' + nm(order[mi + 1]), v: '+' + pp(ret(me) - ret(order[mi + 1])), c: up } : null,
+        kospi !== null ? { k: 'KOSPI 대비', v: (ret(me) >= kospi ? '+' : '−') + pp(ret(me) - kospi), c: col(ret(me) - kospi) } : null,
+        cut !== null ? { k: '전체 50위 컷', v: ret(me) >= cut ? '통과' : '−' + pp(cut - ret(me)), c: ret(me) >= cut ? up : dn } : null,
+      ].filter(Boolean),
+      ...(() => {
+        const edges = [-Infinity, -10, -5, 0, 5, 10, 20, Infinity];
+        const labs = ['<−10', '−10~−5', '−5~0', '0~5', '5~10', '10~20', '20+'];
+        const cnt = labs.map((_, j) => on.filter((m) => ret(m) >= edges[j] && ret(m) < edges[j + 1]).length);
+        const mx = Math.max(1, ...cnt);
+        const kb = kospi === null ? -1 : edges.findIndex((e, j) => kospi >= e && kospi < edges[j + 1]);
+        return {
+          rfmDist: labs.map((t, j) => ({ t, n: cnt[j] + '명', h: (cnt[j] ? Math.max(4, cnt[j] / mx * 72) : 1) + '%', bg: j < 3 ? 'linear-gradient(180deg,#F0A9A2,#C9665E)' : 'linear-gradient(180deg,#9FDDB8,#3E9E68)', cls: j === kb ? 'k' : '' })),
+          rfmDistCap: '참가 ' + on.length + '명',
+          rfmDistFoot: '단위 % · 설정 이후 수익률' + (kospi !== null ? ' · 테두리는 KOSPI ' + pct(kospi) + ' 구간' : ''),
+        };
+      })(),
+      rfmBmRows: (() => {
+        const row = (k, v, cls) => {
+          const ex = kospi === null || v === null ? null : v - kospi;
+          return { k, v: v === null ? '-' : pct(v), c: v === null ? flat : col(v), ex: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), ec: ex === null ? flat : col(ex), eb: ex === null ? 'transparent' : ex >= 0 ? 'rgba(95,196,138,0.12)' : 'rgba(232,131,123,0.12)', cls: 'fd-pr rfm-pr' + (cls ? ' ' + cls : '') };
+        };
+        const top10 = order.slice(0, 10);
+        return [
+          a1 ? row('학회 1위', ret(a1)) : null,
+          top10.length > 1 ? row('학회 상위 ' + top10.length + '명 평균', top10.reduce((x, m) => x + ret(m), 0) / top10.length) : null,
+          row('학회 평균', avg),
+          row('학회 중앙값', med),
+          me ? row('내 수익률', ret(me), 'me') : null,
+          cut !== null ? row('전체 50위 컷', cut) : null,
+          row('KOSDAQ', kosdaq),
+          { ...row('KOSPI', kospi), ex: '-', ec: flat, eb: 'transparent' },
+        ].filter(Boolean);
+      })(),
       rfmBeatLine: kospi !== null && on.length ? on.length + '명 중 ' + on.filter((m) => ret(m) > kospi).length + '명이 KOSPI를 앞서고 있습니다.' : '',
       rfmAxis: [kospi !== null ? { x: x(kospi), t: 'KOSPI' } : null, cut !== null ? { x: x(cut), t: '50위' } : null].filter(Boolean),
       rfmZero: x(0), rfmKx: kospi !== null ? x(kospi) : '-10%', rfmCx: cut !== null ? x(cut) : '-10%',
@@ -4139,7 +4644,7 @@ class Component extends DCLogic {
           label: nm(m), sub: real(m) ? m.nick : '',
           meta: '전체 ' + (m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-') + (m.rankChg > 0 ? ' ▲' + m.rankChg : m.rankChg < 0 ? ' ▼' + -m.rankChg : '') + ' · ' + (m.count ? m.count + '종목' : '현금'),
           ret: pct(r), retColor: col(r), day: d === null ? '' : '오늘 ' + pct(d), dayColor: d === null ? flat : col(d),
-          x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl,
+          x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl, to: r >= 0 ? 'left' : 'right',
           gap: above ? '위와 ' + pp(ret(above) - r) : '', hasGap: !!above,
         };
       }),
