@@ -1,0 +1,309 @@
+<template>
+  <div data-hf-id="hf-f82z" id="cover" data-composition-id="cover" data-width="1920" data-height="1080">
+    <style>
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Light.ttf") format("truetype"); font-weight: 300; font-display: block; }
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Medium.ttf") format("truetype"); font-weight: 500; font-display: block; }
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+
+      #cover { width: 100%; height: 100%; position: relative; clip-path: inset(404px 0 0 0);
+        -webkit-mask-image: linear-gradient(90deg, transparent 560px, #000 604px); mask-image: linear-gradient(90deg, transparent 560px, #000 604px); }
+      #cover .tag { position: absolute; opacity: 0; font-size: 6.6px; font-weight: 700; color: #fff; padding: 1.6px 5px; border-radius: 2px; white-space: nowrap; letter-spacing: 0.02em; }
+      #cover .tag.auto { background: #2f5597; }
+      #cover .tag.man { background: #c55a11; }
+      #cover .mbox { position: absolute; opacity: 0; border: 1.2px dashed #c55a11; border-radius: 2px; }
+      #cover .abox { position: absolute; opacity: 0; border: 1.2px solid rgba(47,85,151,0.75); border-radius: 2px; background: rgba(143,170,220,0.12); }
+      #cover .z { transform: translateZ(0); backface-visibility: hidden; }
+
+      #pagesWrap { position: absolute; left: 600px; top: 520px; width: 1480px; height: 1018px; transform-origin: left top; }
+      #cover .sheet { position: absolute; top: 0; width: 720px; height: 1018px; background: #fbfaf8;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.28), 0 6px 14px rgba(0,0,0,0.22), 0 28px 60px rgba(0,0,0,0.38), 0 60px 120px rgba(4,10,22,0.45); overflow: hidden; font-family: "KPW", sans-serif; color: #1a1a1a; }
+      #p1 { left: 0; }
+      #p2 { left: 760px; opacity: 0; }
+      #cover .abs { position: absolute; white-space: nowrap; }
+
+      #hdr1  { left: 21.8px;  top: 24.2px;  font-size: 12px;   color: #6e6e6e; font-weight: 500; }
+      #banner{ left: 16.8px;  top: 45.1px;  width: 685.6px; height: 139.8px; background: #6f706f; transform-origin: left center; }
+      #sect  { left: 31.8px;  top: 94px; font-size: 13.4px; line-height: 1.2; color: #ffffff; font-weight: 500; }
+      #nameL { clip-path: inset(0 100% 0 0); left: 35.1px;  top: 118.9px; line-height: 1.08; font-size: 41.9px; color: #f2f2f2; font-weight: 700; letter-spacing: -0.01em; }
+      #sealC { left: 564.2px; top: 57px;    width: 130.8px; height: 49.2px; display: flex; align-items: center; gap: 9px; }
+      #sealC img { width: 44px; height: 44px; }
+      #sealC .wm  { font-size: 17px; font-weight: 700; color: #ffffff; letter-spacing: 0.06em; line-height: 1.1; }
+      #sealC .wm small { display: block; font-size: 7.4px; font-weight: 500; letter-spacing: 0.02em; }
+
+      #title { left: 31.6px; top: 200px; font-size: 26.6px; color: #002060; font-weight: 700; }
+      #tRule { left: 31.6px; top: 240px; width: 440px; height: 1px; background: #002060; transform-origin: left center; }
+      #prev  { left: 31.6px; top: 250px; width: 450px; }
+      #cover .pvA { font-size: 14.5px; font-weight: 700; margin-top: 15.6px; }
+      #cover .pvB { font-size: 11.9px; font-weight: 400; margin-top: 4px; color: #2b2b2b; }
+      #cover .pvA.first { margin-top: 0; }
+
+      #box { left: 514.1px; top: 209.2px; width: 176.8px; }
+      #cover .bxr { height: 30.1px; background: #001f5f; display: flex; align-items: center;
+        border-bottom: 1px solid rgba(255,255,255,0.28); }
+      #cover .bxr:last-child { border-bottom: 0; }
+      #cover .bxr .k { width: 88.4px; padding-left: 9px; font-size: 9.7px; color: #fff; font-weight: 500; }
+      #cover .bxr .v { width: 88.4px; text-align: center; padding-right: 4px; font-size: 14.5px; color: #fff; font-weight: 700; }
+
+      #sdT { left: 503.1px; top: 336px; font-size: 10.9px; font-weight: 700; }
+      #sdR { left: 503.1px; top: 352px; width: 199px; height: 1px; background: #444; }
+      #sd  { left: 503.1px; top: 355px; width: 199px; }
+      #cover .sdr { display: flex; justify-content: space-between; font-size: 8.6px; line-height: 13.8px; font-weight: 500; }
+      #cover .sdr.shade { background: #ececec; }
+
+      #spT { left: 503.1px; top: 521px; font-size: 10.9px; font-weight: 700; }
+      #spR { left: 503.1px; top: 537px; width: 199px; height: 1px; background: #444; }
+      #spAx { left: 486px; width: 30px; text-align: right; top: 541px; font-size: 6.1px; color: #2b2b2b; }
+      #spAx div { height: 50px; }
+      #spB { left: 520px; top: 545px; width: 182px; height: 108px; }
+      #spB svg { width: 100%; height: 100%; }
+      #spB path { fill: none; stroke: #16305c; stroke-width: 1.3; }
+      #spXl { left: 520px; top: 655px; width: 182px; display: flex; justify-content: space-between; font-size: 6.1px; color: #2b2b2b; }
+
+      #fxT { left: 30.9px; top: 783px; font-size: 10.9px; font-weight: 700; }
+      #fxU { left: 425.3px; top: 789px; font-size: 7.1px; font-weight: 500; }
+      #fx  { left: 30.9px; top: 800px; width: 438px; }
+      #cover table { width: 100%; border-collapse: collapse; font-size: 9.6px; }
+      #cover thead td { background: #ececec; font-weight: 500; padding: 3px 6px; text-align: center; }
+      #cover tbody td { padding: 3.6px 6px; text-align: center; font-weight: 500; border-bottom: 1px solid #e3e3e3; }
+
+      #rtT { left: 499.2px; top: 782px; font-size: 10.9px; font-weight: 700; }
+      #rtR { left: 499.2px; top: 798px; width: 203px; height: 1px; background: #444; }
+      #rt  { left: 499.2px; top: 803px; width: 203px; font-size: 8.4px; font-weight: 500; }
+      #cover .rtr { display: flex; line-height: 25.6px; }
+      #cover .rtr .a { width: 44px; }
+      #cover .rtr .b { width: 96px; }
+      #cover .rtr .c { color: #0563c1; }
+
+      #p2 .h2l { position: absolute; left: 31.6px; top: 26px; font-size: 11.5px; font-weight: 700; color: #1f3864; }
+      #p2 .h2r { position: absolute; right: 31.6px; top: 26px; font-size: 11.5px; font-weight: 700; color: #1f3864; }
+      #p2 .h2u { position: absolute; left: 31.6px; right: 31.6px; top: 46px; height: 1px; background: #c9cedb; }
+      #p2 .f2  { position: absolute; right: 31.6px; bottom: 26px; font-size: 11px; font-weight: 500; color: #6e6e6e; }
+      #p2 .ghost { position: absolute; left: 31.6px; background: #eceef2; height: 7px; }
+
+      /* [데이터 > 주가 차트] 가 채우는 값 — 3막 전까지는 비어 있다 */
+      #cover .av { opacity: 0; color: #2f5597; }
+      #cover .bxr .v .av { color: #b4c7e7; }
+
+      #links { position: absolute; inset: 0; pointer-events: none; }
+      #links path { fill: none; stroke: #2f5597; stroke-width: 2.4; }
+    </style>
+
+    <div data-hf-id="hf-xt3z" id="pagesWrap">
+      <div data-hf-id="hf-ei4i" class="sheet" id="p1">
+        <div data-hf-id="hf-onwv" class="abs z" id="hdr1">2026.09.24│Company Analysis</div>
+        <div data-hf-id="hf-ofs8" class="abs" id="banner"></div>
+        <div data-hf-id="hf-afij" class="abs z" id="sect">│ 반도체 │</div>
+        <div data-hf-id="hf-0n0y" class="abs z" id="nameL">삼성전자(005930.KS)</div>
+        <div data-hf-id="hf-cnfo" class="abs" id="sealC">
+          <img data-hf-id="hf-ms4c" src="assets/img/rfs-seal.png" alt="">
+          <div data-hf-id="hf-vz0v" class="wm z">R.F.S<small data-hf-id="hf-far0">Rising Financial Stars</small></div>
+        </div>
+
+        <div data-hf-id="hf-sj6z" class="abs z" id="title">메모리 업사이클의 한가운데</div>
+        <div data-hf-id="hf-g8is" class="abs" id="tRule"></div>
+        <div data-hf-id="hf-dith" class="abs" id="prev">
+          <div data-hf-id="hf-dr01" class="pvA first z">Preview:</div>
+          <div data-hf-id="hf-a6x1" class="pvA z">[Investment Point 1]</div>
+          <div data-hf-id="hf-29i1" class="pvB z">HBM 증설로 ’27년까지 출하 증가</div>
+          <div data-hf-id="hf-71f2" class="pvA z">[Investment Point 2]</div>
+          <div data-hf-id="hf-88qt" class="pvB z">파운드리 가동률 회복, ’27 믹스 개선</div>
+          <div data-hf-id="hf-1d8v" class="pvA z">[Investment Strategy]</div>
+          <div data-hf-id="hf-ek7x" class="pvB z">업사이클 구간 ’27까지 분할 매수</div>
+          <div data-hf-id="hf-law8" class="pvA z">[Valuation]</div>
+          <div data-hf-id="hf-yy12" class="pvB z">’27E PER 12.4배, 과거 평균 대비 할인</div>
+        </div>
+
+        <div data-hf-id="hf-26hp" class="abs" id="box">
+          <div data-hf-id="hf-m8z4" class="bxr"><div data-hf-id="hf-btsp" class="k z">투자의견</div><div data-hf-id="hf-oz4k" class="v z">BUY</div></div>
+          <div data-hf-id="hf-eabs" class="bxr"><div data-hf-id="hf-5quw" class="k z">목표주가</div><div data-hf-id="hf-vtud" class="v z">340,000</div></div>
+          <div data-hf-id="hf-d3ep" class="bxr"><div data-hf-id="hf-2pro" class="k z">현재주가(09.23)</div><div data-hf-id="hf-w7hg" class="v z"><span data-hf-id="hf-x2sr" class="av">286,500</span></div></div>
+          <div data-hf-id="hf-dhpq" class="bxr"><div data-hf-id="hf-r2yw" class="k z">상승여력</div><div data-hf-id="hf-t0i4" class="v z">+18.7 %</div></div>
+        </div>
+
+        <div data-hf-id="hf-qk6t" class="abs z" id="sdT">Stock Data</div>
+        <div data-hf-id="hf-q6pr" class="abs" id="sdR"></div>
+        <div data-hf-id="hf-bgtz" class="abs" id="sd">
+          <div data-hf-id="hf-f6h3" class="sdr z"><span data-hf-id="hf-r3qi">KOSPI(09.23)</span><span data-hf-id="hf-kzji" class="av">7,080.92</span></div>
+          <div data-hf-id="hf-1dwn" class="sdr z"><span data-hf-id="hf-e5y9">KOSDAQ(09.23)</span><span data-hf-id="hf-v9w2" class="av">844.48</span></div>
+          <div data-hf-id="hf-0zlm" class="sdr z"><span data-hf-id="hf-tqa3">시가총액</span><span data-hf-id="hf-595r" class="av">1,710,342 억</span></div>
+          <div data-hf-id="hf-0lal" class="sdr z"><span data-hf-id="hf-cily">발행주식수(주)</span><span data-hf-id="hf-uj1s" class="av">5,969,782,550</span></div>
+          <div data-hf-id="hf-3dfs" class="sdr z"><span data-hf-id="hf-3s6w">52주 최고/최저가(원)</span><span data-hf-id="hf-zuur" class="av">362,500 / 76,500</span></div>
+          <div data-hf-id="hf-2z4r" class="sdr z"><span data-hf-id="hf-smq3">배당수익률(%)</span><span data-hf-id="hf-v3ur" class="av">0.50</span></div>
+          <div data-hf-id="hf-2ktq" class="sdr z"><span data-hf-id="hf-5y9d">주요주주(%)</span><span data-hf-id="hf-yfts">21.2</span></div>
+          <div data-hf-id="hf-26ip" class="sdr z"><span data-hf-id="hf-ef1v">자사주</span><span data-hf-id="hf-hs2t">0.0</span></div>
+          <div data-hf-id="hf-l6uc" class="sdr shade z"><span data-hf-id="hf-e2tx">주가상승률(%)</span><span data-hf-id="hf-m970" class="av">+11.5 · +53.8 · +280.0</span></div>
+        </div>
+
+        <div data-hf-id="hf-o45i" class="abs z" id="spT">Stock Price</div>
+        <div data-hf-id="hf-kvwj" class="abs" id="spR"></div>
+        <div data-hf-id="hf-qbm6" class="abs z" id="spAx"><div data-hf-id="hf-ipk0">400,000</div><div data-hf-id="hf-se0q">200,000</div><div data-hf-id="hf-pchc">0</div></div>
+        <div data-hf-id="hf-zt3n" class="abs" id="spB">
+          <svg data-hf-id="hf-46yz" viewBox="0 0 182 108" preserveAspectRatio="none"><g id="spAxes" fill="none" stroke="#595959" stroke-width="0.7" vector-effect="non-scaling-stroke"><line x1="0.4" y1="0" x2="0.4" y2="99" vector-effect="non-scaling-stroke"/><line x1="0" y1="99" x2="182" y2="99" vector-effect="non-scaling-stroke"/><line x1="0.4" y1="0.4" x2="3.4" y2="0.4" vector-effect="non-scaling-stroke"/><line x1="0.4" y1="49.5" x2="3.4" y2="49.5" vector-effect="non-scaling-stroke"/><line x1="8" y1="99" x2="8" y2="96" vector-effect="non-scaling-stroke"/><line x1="64" y1="99" x2="64" y2="96" vector-effect="non-scaling-stroke"/><line x1="119" y1="99" x2="119" y2="96" vector-effect="non-scaling-stroke"/><line x1="174" y1="99" x2="174" y2="96" vector-effect="non-scaling-stroke"/></g>
+            <path data-hf-id="hf-7izp" id="spPath" d="M 2.0 85.3 L 3.4 84.8 L 4.8 84.5 L 6.3 83.2 L 7.7 82.9 L 9.1 83.4 L 10.5 82.9 L 12.0 80.9 L 13.4 81.6 L 14.8 80.1 L 16.2 80.0 L 17.7 79.8 L 19.1 79.8 L 20.5 79.6 L 21.9 78.5 L 23.4 76.8 L 24.8 79.4 L 26.2 80.0 L 27.6 78.6 L 29.1 78.8 L 30.5 79.4 L 31.9 80.4 L 33.3 80.8 L 34.8 79.7 L 36.2 78.6 L 37.6 79.3 L 39.0 78.4 L 40.4 77.4 L 41.9 77.4 L 43.3 77.7 L 44.7 78.3 L 46.1 77.6 L 47.6 78.0 L 49.0 76.7 L 50.4 75.3 L 51.8 74.6 L 53.3 70.2 L 54.7 69.5 L 56.1 69.9 L 57.5 70.3 L 59.0 68.7 L 60.4 67.4 L 61.8 67.4 L 63.2 66.7 L 64.7 64.9 L 66.1 64.6 L 67.5 67.2 L 68.9 62.6 L 70.4 65.1 L 71.8 63.4 L 73.2 60.2 L 74.6 57.5 L 76.0 56.7 L 77.5 54.1 L 78.9 51.0 L 80.3 61.8 L 81.7 57.9 L 83.2 58.0 L 84.6 58.0 L 86.0 57.8 L 87.4 52.9 L 88.9 55.1 L 90.3 57.5 L 91.7 59.9 L 93.1 60.8 L 94.6 57.5 L 96.0 58.4 L 97.4 55.9 L 98.8 54.0 L 100.3 54.8 L 101.7 52.3 L 103.1 51.1 L 104.5 50.3 L 106.0 49.0 L 107.4 49.0 L 108.8 48.6 L 110.2 47.0 L 111.6 37.5 L 113.1 34.1 L 114.5 34.4 L 115.9 37.7 L 117.3 36.5 L 118.8 30.6 L 120.2 30.7 L 121.6 30.6 L 123.0 18.5 L 124.5 17.9 L 125.9 31.6 L 127.3 29.9 L 128.7 25.0 L 130.2 20.0 L 131.6 15.2 L 133.0 17.4 L 134.4 20.6 L 135.9 20.8 L 137.3 22.2 L 138.7 33.9 L 140.1 26.1 L 141.6 36.0 L 143.0 34.2 L 144.4 39.6 L 145.8 41.5 L 147.2 40.5 L 148.7 37.8 L 150.1 41.8 L 151.5 52.9 L 152.9 39.7 L 154.4 45.2 L 155.8 47.5 L 157.2 47.7 L 158.6 41.4 L 160.1 36.7 L 161.5 43.4 L 162.9 35.0 L 164.3 41.0 L 165.8 38.8 L 167.2 40.3 L 168.6 42.6 L 170.0 41.4 L 171.5 38.0 L 172.9 38.1 L 174.3 43.1 L 175.7 41.9 L 177.2 40.3 L 178.6 36.0 L 180.0 33.8" />
+          </svg>
+        </div>
+        <div data-hf-id="hf-yyd1" class="abs z" id="spXl"><span data-hf-id="hf-fshr">Sep-25</span><span data-hf-id="hf-4ebt">Jan-26</span><span data-hf-id="hf-icg1">May-26</span><span data-hf-id="hf-fe6q">Sep-26</span></div>
+
+        <div data-hf-id="hf-xvg1" class="abs z" id="fxT">Investment Fundamentals</div>
+        <div data-hf-id="hf-ighv" class="abs z" id="fxU">(십억 원, 원, %, 배)</div>
+        <div data-hf-id="hf-m2yk" class="abs" id="fx">
+          <table data-hf-id="hf-2j5r">
+            <thead data-hf-id="hf-zd89"><tr data-hf-id="hf-p3r7"><td data-hf-id="hf-oj0r">FYE Dec</td><td data-hf-id="hf-ys4o">2024A</td><td data-hf-id="hf-9xnp">2025A</td><td data-hf-id="hf-l36q">2026E</td><td data-hf-id="hf-w8pr">2027E</td></tr></thead>
+            <tbody data-hf-id="hf-bsvf">
+              <tr data-hf-id="hf-ddj7"><td data-hf-id="hf-bz6c">매출액</td><td data-hf-id="hf-qp7w">412</td><td data-hf-id="hf-cgut">468</td><td data-hf-id="hf-sb6h">561</td><td data-hf-id="hf-upgv">642</td></tr>
+              <tr data-hf-id="hf-cz86"><td data-hf-id="hf-ssdk">영업이익</td><td data-hf-id="hf-r6vr">28</td><td data-hf-id="hf-b89i">41</td><td data-hf-id="hf-vije">67</td><td data-hf-id="hf-fhxl">84</td></tr>
+              <tr data-hf-id="hf-ckx5"><td data-hf-id="hf-m2gr">당기순이익</td><td data-hf-id="hf-tkpx">22</td><td data-hf-id="hf-tzz7">33</td><td data-hf-id="hf-9nzn">51</td><td data-hf-id="hf-vwuf">64</td></tr>
+              <tr data-hf-id="hf-c6m4"><td data-hf-id="hf-yxzt">EPS</td><td data-hf-id="hf-acj2">612</td><td data-hf-id="hf-8zqg">904</td><td data-hf-id="hf-7lth">1,410</td><td data-hf-id="hf-44h8">1,772</td></tr>
+              <tr data-hf-id="hf-bsb3"><td data-hf-id="hf-49j8">PER</td><td data-hf-id="hf-qdjh">21.9</td><td data-hf-id="hf-tl7y">14.8</td><td data-hf-id="hf-b001">9.5</td><td data-hf-id="hf-54ii">7.6</td></tr>
+              <tr data-hf-id="hf-be02"><td data-hf-id="hf-lhxb">PBR</td><td data-hf-id="hf-r9d2">1.4</td><td data-hf-id="hf-qgr0">1.2</td><td data-hf-id="hf-po4y">1.0</td><td data-hf-id="hf-tbj2">0.9</td></tr>
+              <tr data-hf-id="hf-azp1"><td data-hf-id="hf-bdt1">OPM</td><td data-hf-id="hf-790n">6.8</td><td data-hf-id="hf-wzgp">8.8</td><td data-hf-id="hf-2dpi">11.9</td><td data-hf-id="hf-kvgo">13.1</td></tr>
+              <tr data-hf-id="hf-ale0"><td data-hf-id="hf-hjwx">ROE</td><td data-hf-id="hf-c0oz">6.4</td><td data-hf-id="hf-xdrq">8.9</td><td data-hf-id="hf-95u6">12.6</td><td data-hf-id="hf-xka8">14.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+
+        <div class="abox" id="tkBox" style="left:30px; top:114px; width:392px; height:54px; border-color:#cfe0ff; background:rgba(207,224,255,0.12)"></div>
+        <div class="abox" id="sdA" style="left:500px; top:353px; width:205px; height:86px"></div>
+        <div class="abox" id="sdA2" style="left:500px; top:465px; width:205px; height:16px"></div>
+        <div class="tag auto" id="sdAt" style="left:452px; top:356px">자동</div>
+        <div class="mbox" id="sdM" style="left:500px; top:437px; width:205px; height:29px"></div>
+        <div class="tag man" id="sdMt" style="left:437px; top:444px">직접 입력</div>
+        <div class="tag auto" id="spAt" style="left:452px; top:548px">자동</div>
+        <div class="abox" id="bxA" style="left:511px; top:268px; width:183px; height:32px"></div>
+        <div class="tag auto" id="bxAt" style="left:463px; top:277px">자동</div>
+        <div class="mbox" id="bxM1" style="left:511px; top:206px; width:183px; height:63px"></div>
+        <div class="mbox" id="bxM2" style="left:511px; top:299px; width:183px; height:33px"></div>
+        <div class="tag man" id="bxMt" style="left:448px; top:231px">직접 입력</div>
+        <div data-hf-id="hf-lodx" class="abs z" id="rtT">Research Team 3</div>
+        <div data-hf-id="hf-gwme" class="abs" id="rtR"></div>
+        <div data-hf-id="hf-hjsc" class="abs" id="rt">
+          <div data-hf-id="hf-869a" class="rtr z"><span data-hf-id="hf-dkt1" class="a">팀장</span><span data-hf-id="hf-p3iz" class="b">43기 김민석</span><span data-hf-id="hf-qa48" class="c">이메일</span></div>
+          <div data-hf-id="hf-jvzm" class="rtr z"><span data-hf-id="hf-6zty" class="a">팀원</span><span data-hf-id="hf-b1j1" class="b">44기 이름</span><span data-hf-id="hf-wdcg" class="c">이메일</span></div>
+          <div data-hf-id="hf-kaan" class="rtr z"><span data-hf-id="hf-ms12" class="a"></span><span data-hf-id="hf-4yvl" class="b">44기 이름</span><span data-hf-id="hf-v6fd" class="c">이메일</span></div>
+          <div data-hf-id="hf-kolo" class="rtr z"><span data-hf-id="hf-j562" class="a"></span><span data-hf-id="hf-rl2a" class="b">45기 이름</span><span data-hf-id="hf-vkqe" class="c">이메일</span></div>
+          <div data-hf-id="hf-l2wp" class="rtr z"><span data-hf-id="hf-jjh3" class="a"></span><span data-hf-id="hf-hxs6" class="b">45기 이름</span><span data-hf-id="hf-udtb" class="c">이메일</span></div>
+        </div>
+      </div>
+
+      <div data-hf-id="hf-8cep" class="sheet" id="p2">
+        <div data-hf-id="hf-m1b7" class="h2l z" id="p2h">│ 삼성전자(005930.KS) │</div>
+        <div data-hf-id="hf-kky2" class="h2r z">Equity Research</div>
+        <div data-hf-id="hf-fapf" class="h2u"></div>
+        <div data-hf-id="hf-kj49" class="ghost" style="top:120px; width:560px"></div>
+        <div data-hf-id="hf-5nhk" class="ghost" style="top:140px; width:620px"></div>
+        <div data-hf-id="hf-1uzc" class="ghost" style="top:160px; width:590px"></div>
+        <div data-hf-id="hf-9dzy" class="ghost" style="top:200px; width:300px"></div>
+        <div data-hf-id="hf-y9fn" class="ghost" style="top:240px; width:640px"></div>
+        <div data-hf-id="hf-ib26" class="ghost" style="top:260px; width:610px"></div>
+        <div data-hf-id="hf-hr5h" class="ghost" style="top:300px; width:656px; height:150px"></div>
+        <div data-hf-id="hf-xs6k" class="ghost" style="top:490px; width:600px"></div>
+        <div data-hf-id="hf-060j" class="ghost" style="top:510px; width:640px"></div>
+        <div data-hf-id="hf-5j8l" class="f2 z" id="p2f">R.F.S. Research Team 3 &#160;Ⅰ&#160; 1</div>
+      </div>
+
+      <svg data-hf-id="hf-v58l" id="links" viewBox="0 0 1480 1018">
+        <path data-hf-id="hf-e7vs" id="lk1" d="M 300 150 C 480 90, 660 44, 792 40" />
+        <path data-hf-id="hf-63u1" id="lk2" d="M 592 792 C 820 800, 1080 990, 1290 986" />
+      </svg>
+    </div>
+
+    <script>
+      (function () {
+        const root = document.getElementById("cover");
+        const one = function (s) { return root.querySelector(s); };
+        const q = function (s) { return root.querySelectorAll(s); };
+
+        ["#lk1", "#lk2"].forEach(function (id) {
+          const p = one(id), L = p.getTotalLength();
+          p.style.strokeDasharray = L; p.style.strokeDashoffset = L;
+        });
+
+        const tl = gsap.timeline({ paused: true });
+
+        tl.fromTo(one("#pagesWrap"), { y: 80, opacity: 0 }, { y: 0, opacity: 1, duration: 0.95, ease: "power3.out" }, 0);
+
+        // 회색 배너가 펼쳐지고 인장이 붙는다 — 표지의 얼굴
+        tl.fromTo(one("#banner"), { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.out" }, 0.91);
+        tl.fromTo(one("#sect"), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.4 }, 1.62);
+        tl.set(one("#nameL"), { opacity: 1 }, 0);
+        tl.fromTo(one("#nameL"), { clipPath: "inset(0 100% 0 0)" },
+          { clipPath: "inset(0 0% 0 0)", duration: 1.15, ease: "steps(18)" }, 1.89);
+        tl.fromTo(one("#sealC"), { opacity: 0 }, { opacity: 1, duration: 0.45 }, 2.27);
+
+        tl.fromTo(one("#title"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 2.67);
+        tl.fromTo(one("#tRule"), { scaleX: 0 }, { scaleX: 1, duration: 0.55, ease: "power2.inOut" }, 2.93);
+        tl.fromTo(q("#prev > div"), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.3, stagger: 0.1 }, 3.25);
+
+        tl.fromTo(q("#box .bxr"), { opacity: 0, x: 12 }, { opacity: 1, x: 0, duration: 0.36, ease: "power2.out", stagger: 0.14 }, 4.55);
+
+        tl.fromTo([one("#sdT"), one("#sdR")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 5.35);
+        tl.fromTo(q("#sd .sdr"), { opacity: 0 }, { opacity: 1, duration: 0.22, stagger: 0.05 }, 5.55);
+        tl.fromTo([one("#spT"), one("#spR"), one("#spAx"), one("#spXl"), one("#spAxes")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 6.1);
+
+        const sp = one("#spPath"), SL = sp.getTotalLength();
+        sp.style.strokeDasharray = SL; sp.style.strokeDashoffset = SL;
+
+        tl.fromTo([one("#fxT"), one("#fxU"), one("#fx")], { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.08 }, 9.46);
+        tl.fromTo([one("#rtT"), one("#rtR"), one("#rt")], { opacity: 0 }, { opacity: 1, duration: 0.4, stagger: 0.08 }, 9.97);
+
+        // 카메라가 빠지고 다음 장이 들어온다
+        tl.to(one("#pagesWrap"), { scale: 0.52, x: -25, duration: 1.35, ease: "power3.inOut" }, 8.45);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.608, ease: "power2.in" }, 8.450);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.743, ease: "power2.out" }, 9.057);
+        tl.fromTo(one("#p2"), { opacity: 0, x: 40 }, { opacity: 1, x: 0, duration: 0.8, ease: "power2.out" }, 9.36);
+
+        // 종목명이 다음 장의 머리글·바닥글로 뻗는다
+        tl.to(one("#lk1"), { strokeDashoffset: 0, duration: 0.8, ease: "power2.inOut" }, 10.53);
+        tl.fromTo(one("#p2h"), { opacity: 0 }, { opacity: 1, duration: 0.35 }, 11.38);
+        tl.to(one("#lk2"), { strokeDashoffset: 0, duration: 0.95, ease: "power2.inOut" }, 11.18);
+        tl.fromTo(one("#p2f"), { opacity: 0 }, { opacity: 1, duration: 0.35 }, 12.22);
+        tl.to(q("#links path"), { opacity: 0, duration: 0.6, ease: "power1.out" }, 13.4);
+
+
+        // ── 3막 · [데이터 > 주가 차트] (전역 22~34초) ──
+        // 1) 2쪽이 물러나고 카메라가 1쪽 전체로 돌아온다
+        tl.to(one("#p2"), { opacity: 0, x: 40, duration: 0.7, ease: "power2.in" }, 13.3);
+
+        // 2) 누르기 직전 — 표지 티커에 다가간다
+        tl.to(one("#pagesWrap"), { scale: 2.3, x: 125.6, y: -101.6, duration: 1.1, ease: "power3.inOut" }, 13.6);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.495, ease: "power2.in" }, 13.600);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.605, ease: "power2.out" }, 14.095);
+        tl.fromTo(one("#nameL"), { color: "#f2f2f2" },
+          { color: "#cfe0ff", duration: 0.35, yoyo: true, repeat: 1, immediateRender: false }, 15);
+        tl.fromTo(one("#tkBox"), { opacity: 0 }, { opacity: 1, duration: 0.2, yoyo: true, repeat: 1, repeatDelay: 0.3 }, 15);
+
+        // 3) 티커를 읽어 Stock Data 로 — 채워지는 칸과 직접 칠 칸
+        tl.to(one("#pagesWrap"), { scale: 2.9, x: -1095.8, y: -964.0, duration: 1.0, ease: "power3.inOut" }, 16.062);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.450, ease: "power2.in" }, 16.062);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.550, ease: "power2.out" }, 16.512);
+        tl.to(q("#sd .av"), { opacity: 1, duration: 0.24, ease: "power1.out", stagger: 0.12 }, 17.477);
+        tl.fromTo([one("#sdA"), one("#sdA2"), one("#sdAt")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 18.892);
+        tl.fromTo([one("#sdM"), one("#sdMt")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 19.335);
+
+        // 4) 아래로 — Stock Price 가 그려진다
+        tl.to(one("#pagesWrap"), { scale: 2.9, x: -1090.0, y: -1509.2, duration: 0.8, ease: "power3.inOut" }, 20.308);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.360, ease: "power2.in" }, 20.308);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.440, ease: "power2.out" }, 20.668);
+        tl.to(sp, { strokeDashoffset: 0, duration: 1.1, ease: "power1.inOut" }, 21.015);
+        tl.fromTo(one("#spAt"), { opacity: 0 }, { opacity: 1, duration: 0.3 }, 22.254);
+
+        // 5) 위로 — 남색 박스: 현재주가만 자동, 나머지는 직접
+        tl.to(one("#pagesWrap"), { scale: 2.9, x: -1095.8, y: -558.0, duration: 0.7, ease: "power3.inOut" }, 22.696);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.315, ease: "power2.in" }, 22.696);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.385, ease: "power2.out" }, 23.011);
+        tl.to(q("#box .av"), { opacity: 1, duration: 0.3, ease: "power1.out" }, 23.669);
+        tl.fromTo([one("#bxA"), one("#bxAt")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 23.935);
+        tl.fromTo([one("#bxM1"), one("#bxM2"), one("#bxMt")], { opacity: 0 }, { opacity: 1, duration: 0.3 }, 24.288);
+
+        // 6) 완성된 표지 전체 — 표시는 남겨 둔다
+        tl.to(one("#pagesWrap"), { scale: 1, x: 0, y: 0, duration: 0.8, ease: "power3.inOut" }, 24.996);
+        tl.to(one("#pagesWrap"), { filter: "blur(0.3px)", duration: 0.360, ease: "power2.in" }, 24.996);
+        tl.to(one("#pagesWrap"), { filter: "blur(0px)", duration: 0.440, ease: "power2.out" }, 25.356);
+        tl.to(one("#pagesWrap"), { opacity: 0, y: 40, duration: 0.5, ease: "power2.in" }, 26.55);
+
+        window.__timelines["cover"] = tl;
+      })();
+    </script>
+  </div>
+</template>

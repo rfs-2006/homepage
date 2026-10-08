@@ -1,0 +1,678 @@
+<template>
+  <div data-hf-id="hf-3wq7" id="chrome" data-composition-id="chrome" data-width="1920" data-height="1080">
+    <style>
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Regular.woff2") format("woff2"); font-weight: 400; font-display: block; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Medium.woff2") format("woff2"); font-weight: 500; font-display: block; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "SourceSerif4"; src: url("assets/fonts/SourceSerif4-SemiBold.woff2") format("woff2"); font-weight: 600; font-display: block; }
+      @font-face { font-family: "SourceSerif4"; src: url("assets/fonts/SourceSerif4-latin-300-normal.woff2") format("woff2"); font-weight: 300; font-display: block; }
+      @font-face { font-family: "NotoSerifKR"; src: url("assets/fonts/NotoSerifKR-Bold.woff2") format("woff2"); font-weight: 700; font-display: block; }
+
+      #chrome { width: 100%; height: 100%; position: relative;
+        font-family: "Pretendard", sans-serif; -webkit-font-smoothing: antialiased; }
+      #chrome .z { transform: translateZ(0); backface-visibility: hidden; }
+
+      #chrome #sealWrap { position: absolute; left: 810px; top: 390px; width: 300px; height: 300px; }
+      #chrome #seal { width: 100%; height: 100%; object-fit: contain; }
+      #chrome #ring { position: absolute; left: -20px; top: -20px; width: 340px; height: 340px; }
+      #chrome #ring { display: none; }
+      #chrome #ring circle { fill: none; stroke: #8faadc; stroke-width: 1.4; }
+
+      #chrome #mark { position: absolute; left: 232px; top: 88px; transform-origin: 0 0; }
+      /* 인트로 — caurfs.kr 과 같은 문법: 도시 사진 위 남색, 가운데 큰 인장, 굵은 세리프, 아래 가는 선 + 자간 넓은 대문자 */
+      #chrome #introTitle { position: absolute; left: 0; right: 0; top: 648px; text-align: center; opacity: 0; }
+      #chrome #introTitle .t { font-family: "NotoSerifKR", serif; font-weight: 700; font-size: 58px; color: #f7f6f3; letter-spacing: -0.025em; line-height: 1.1; }
+      #chrome #introTitle .l { margin-top: 16px; font-size: 14px; font-weight: 500; color: rgba(247,246,243,0.78); letter-spacing: 0.32em; }
+      #chrome #credit { position: absolute; left: 0; right: 0; top: 790px; text-align: center; opacity: 0; }
+      #chrome #credit .by { font-size: 12px; font-weight: 600; color: #8faadc; letter-spacing: 0.34em; }
+      #chrome #credit .who { margin-top: 12px; display: flex; justify-content: center; align-items: baseline; gap: 14px; }
+      #chrome #credit .role { font-size: 18px; font-weight: 400; color: rgba(247,246,243,0.78); letter-spacing: 0.02em; }
+      #chrome #credit .nm { font-size: 26px; font-weight: 600; color: #f7f6f3; letter-spacing: 0.06em; }
+      #chrome #introCap { position: absolute; left: 0; right: 0; top: 944px; text-align: center; opacity: 0; }
+      #chrome #introCap .ln { width: 600px; height: 1px; margin: 0 auto 16px; background: rgba(247,246,243,0.7); transform-origin: center; }
+      #chrome #introCap .tx { font-size: 17px; font-weight: 500; color: rgba(247,246,243,0.82); letter-spacing: 0.16em; }
+      #chrome #markName { font-family: "NotoSerifKR", serif; font-weight: 700; font-size: 36px; color: #f7f6f3; letter-spacing: -0.02em; line-height: 1; }
+      #chrome #markSub { margin-top: 10px; font-weight: 500; font-size: 12px; color: rgba(247,246,243,0.72); letter-spacing: 0.24em; text-transform: uppercase; }
+
+      /* ── 리본 : 실제 워드 구조, 색만 브랜드 ── */
+      #chrome #ribbon { position: absolute; left: 24px; top: 206px; width: 1872px; }
+      #chrome #tabRow { height: 44px; display: flex; align-items: flex-end; gap: 26px; padding-left: 20px; }
+      #chrome .tab { font-size: 17px; font-weight: 500; color: rgba(247,246,243,0.52); letter-spacing: 0.02em; padding-bottom: 8px; position: relative; }
+      #chrome .tab.on { color: #f7f6f3; font-weight: 600; }
+      #chrome .tab.on::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: #8faadc; }
+      #chrome #hairline { height: 2px; width: 100%; background: linear-gradient(90deg, #8faadc 0%, rgba(143,170,220,0.22) 100%); transform-origin: left center; }
+
+      #chrome #groups { display: flex; height: 150px; }
+      #chrome .group { position: relative; background: #203864; height: 100%;
+        display: flex; flex-direction: column; align-items: center;
+        padding: 12px 8px 0; transform-origin: center center; }
+      #chrome .group + .group { border-left: 1px solid rgba(143,170,220,0.22); }
+      #chrome .group .focusbar { display: none; }
+      #chrome #slider { position: absolute; left: 0; top: 46px; width: 100px; height: 3px; background: #8faadc; opacity: 0;
+        transform-origin: left center; box-shadow: 0 0 10px rgba(143,170,220,0.8); z-index: 3; pointer-events: none; }
+      #chrome .group .focusbar { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: #8faadc; transform-origin: center; }
+
+      #chrome .gbody { flex: 1; display: flex; align-items: flex-start; justify-content: center; gap: 8px; opacity: 0; }
+      #chrome .col { display: flex; }
+      #chrome .col.sm { flex-direction: column; gap: 4px; }
+      #chrome .col.lg { flex-direction: row; gap: 6px; }
+
+      /* 작은 버튼 : 아이콘 + 오른쪽 라벨 */
+      #chrome .sbtn { position: relative; display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 4px; border-radius: 5px; }
+      #chrome .sbtn img { width: 20px; height: 20px; display: block; }
+      #chrome .sbtn span { font-size: 12px; font-weight: 400; color: rgba(247,246,243,0.62); white-space: nowrap; }
+
+      /* 큰 버튼 : 아이콘 위, 라벨 아래 */
+      #chrome .lbtn { position: relative; width: 62px; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 3px 0; border-radius: 6px; }
+      #chrome .lbtn img { width: 30px; height: 30px; display: block; }
+      #chrome .lbtn span { font-size: 12px; font-weight: 400; line-height: 1.28; word-break: keep-all; color: rgba(247,246,243,0.62); text-align: center; }
+      #chrome .lbtn.caret span::after { content: " ▾"; font-size: 10px; opacity: 0.8; }
+
+      #chrome .rip { position: absolute; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(207,224,255,0.75) 0%, rgba(143,170,220,0.35) 55%, rgba(143,170,220,0) 72%);
+        opacity: 0; pointer-events: none; transform: scale(0); }
+      #chrome .ring { position: absolute; left: -7px; right: -7px; top: -5px; bottom: -5px;
+        border: 2.5px solid #8faadc; border-radius: 9px; opacity: 0; pointer-events: none; }
+
+      /* 돋보기 — 리본 그룹을 종이 옆으로 크게 뽑아온다 */
+      #chrome .zpanel { position: absolute; left: 140px; top: 768px; transform-origin: top left;
+        opacity: 0; filter: drop-shadow(0 16px 38px rgba(0,0,0,0.5)); }
+      #chrome .zpanel .group { border-left: 0; }
+
+      #chrome .zmenu { position: absolute; transform-origin: top left; opacity: 0;
+        background: #1b3054; border: 1px solid rgba(143,170,220,0.5); border-radius: 6px;
+        padding: 8px 0; filter: drop-shadow(0 16px 36px rgba(0,0,0,0.6)); }
+      #chrome .zmenu .mi { display: flex; align-items: center; gap: 12px; padding: 9px 18px; white-space: nowrap; }
+      #chrome .zmenu .mi img { width: 26px; height: 26px; display: block; }
+      #chrome .zmenu .mi span { font-size: 21px; font-weight: 400; color: rgba(247,246,243,0.95); }
+      #chrome .zmenu .mi .mring { position: absolute; left: 6px; right: 6px; height: 40px; margin-top: -7px;
+        border: 2px solid #8faadc; border-radius: 5px; opacity: 0; pointer-events: none; }
+      #chrome .zglow { position: absolute; left: -3px; right: -3px; top: -3px; bottom: -3px;
+        border: 2px solid #8faadc; border-radius: 4px; opacity: 0; pointer-events: none; }
+      #chrome #cursor { position: absolute; left: 0; top: 0; width: 26px; height: 30px; opacity: 0; pointer-events: none; z-index: 30;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55)); }
+      #chrome #sweep { position: absolute; left: 0; top: 206px; width: 260px; height: 196px; opacity: 0; pointer-events: none;
+        background: linear-gradient(100deg, rgba(247,246,243,0) 0%, rgba(247,246,243,0.16) 50%, rgba(247,246,243,0) 100%); }
+
+      #chrome #conn rect.glow { fill: rgba(143,170,220,0.10); stroke: #8faadc; stroke-width: 2; opacity: 0;
+        filter: drop-shadow(0 0 10px rgba(143,170,220,0.85)); }
+      #chrome #conn .lead { fill: none; stroke: rgba(143,170,220,0.6); stroke-width: 1; opacity: 0; }
+      #chrome #conn .leadfill { fill: rgba(143,170,220,0.05); stroke: none; opacity: 0; }
+      #chrome #conn { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; pointer-events: none; }
+      #chrome #conn path { fill: none; stroke: #8faadc; stroke-width: 2.6; stroke-linecap: round; opacity: 0; }
+      #chrome #conn circle { fill: #8faadc; opacity: 0; }
+
+      #chrome .g-label { font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+        color: #8faadc; white-space: nowrap; padding: 4px 0 8px; opacity: 0; }
+    </style>
+
+    <div id="introTitle"><div class="t z">Equity Research Template</div></div>
+    <div id="credit"><div class="by z">PRESENTED BY</div><div class="who"><span class="role z">R.F.S. 43대 회장</span><span class="nm z">김민석</span></div></div>
+    <div id="introCap"><div class="ln"></div><div class="tx z">RISING FINANCIAL STARS · CHUNG-ANG UNIVERSITY</div></div>
+    <div data-hf-id="hf-tn5q" id="mark">
+      <div data-hf-id="hf-ppsf" id="markName" class="z">R.F.S.</div>
+      <div data-hf-id="hf-18fh" id="markSub" class="z">Equity Research Template</div>
+    </div>
+
+    <div data-hf-id="hf-wbnp" id="ribbon">
+      <div data-hf-id="hf-zxla" id="tabRow">
+        <div data-hf-id="hf-8hwn" class="tab z">파일</div>
+        <div data-hf-id="hf-jb71" class="tab z">홈</div>
+        <div data-hf-id="hf-e6df" class="tab on z">RFS</div>
+        <div data-hf-id="hf-dmu9" class="tab z">삽입</div>
+        <div data-hf-id="hf-erah" class="tab z">디자인</div>
+        <div data-hf-id="hf-h2yy" class="tab z">레이아웃</div>
+        <div data-hf-id="hf-vc7r" class="tab z">참조</div>
+        <div data-hf-id="hf-788f" class="tab z">검토</div>
+        <div data-hf-id="hf-hkh7" class="tab z">보기</div>
+      </div>
+      <div data-hf-id="hf-u7t3" id="hairline"></div>
+      <div data-hf-id="hf-psid" id="groups"></div>
+      <div id="slider"></div>
+    </div>
+
+    <svg data-hf-id="hf-mo4e" id="conn" viewBox="0 0 1920 1080" />
+    <div data-hf-id="hf-1yur" id="sweep"></div>
+    <svg data-hf-id="hf-dfqs" id="cursor" viewBox="0 0 26 30"><path data-hf-id="hf-ak5a" d="M2 2 L2 24 L8 18.5 L12.5 28 L16.5 26.2 L12 17 L20 17 Z" fill="#f7f6f3" stroke="#0f1b2e" stroke-width="1.6" stroke-linejoin="round" /></svg>
+
+    <div data-hf-id="hf-8oou" id="sealWrap">
+      <svg data-hf-id="hf-yp0p" id="ring" viewBox="0 0 340 340"><circle data-hf-id="hf-g7y8" cx="170" cy="170" r="163" /></svg>
+      <img data-hf-id="hf-opo2" id="seal" src="assets/img/rfs-seal.png" alt="R.F.S.">
+    </div>
+
+    <script>
+
+      (function () {
+        // 실제 RFS 리본 그대로 — 그룹 순서·열 구성·버튼 라벨·아이콘
+        const S = function (icon, label) { return { icon: icon, label: label }; };
+        const GROUPS = [
+          { name: "제목", basis: 86, cols: [
+            { size: "sm", items: [S("FontSizeIncrease","대제목"), S("FontColorPicker","중제목"), S("FontSizeDecrease","소제목")] } ] },
+          { name: "문단", basis: 174, cols: [
+            { size: "sm", items: [S("AlignJustify","본문"), S("BulletsGallery","글머리 ①"), S("ShadingColorPicker","요약박스")] },
+            { size: "lg", items: [S("TextBoxInsert","사이드노트")] } ] },
+          { name: "자료 틀", basis: 214, cols: [
+            { size: "lg", items: [S("ChartInsert","1단 틀"), S("TableDrawTable","2단 틀"), S("ColumnsDialog","3단 틀")] } ] },
+          { name: "강조", basis: 116, cols: [
+            { size: "sm", items: [S("Bold","강조"), S("FontColorPicker","빨강 강조"), S("FormatPainter","첫문장 볼드")] } ] },
+          { name: "차트·표", basis: 214, cols: [
+            { size: "lg", items: [S("ChartStylesGallery","차트 양식"), S("PasteExcelTableSourceFormatting","엑셀 표"), S("ChartFormatDataSeries","추정치 구분")] } ] },
+          { name: "주석", basis: 270, cols: [
+            { size: "sm", items: [S("TextBoxInsert","빨간 글"), S("ShapesInsertGallery","화살표"), S("ShapeRectangle","강조 상자")] },
+            { size: "sm", items: [S("SizeToFit","폭 맞추기"), S("ShapeRectangle","점선 상자"), S("ShapeOval","점선 원")] },
+            { size: "lg", items: [{ icon: "ShapesInsertGallery", label: "더보기", caret: true }] } ] },
+          { name: "데이터", basis: 214, cols: [
+            { size: "lg", items: [S("ChartInsert","주가 차트"), S("ChartTypeLineInsertGallery","주가 비교"), S("TextBoxInsert","모델 값")] } ] },
+          { name: "글꼴", basis: 216, cols: [
+            { size: "sm", items: [S("FontDialog","코펍 볼드"), S("FontDialog","코펍 미디움"), S("FontDialog","코펍 라이트")] },
+            { size: "sm", items: [S("FontDialog","윤고딕 540")] } ] },
+          { name: "마무리", basis: 282, cols: [
+            { size: "lg", items: [S("Refresh","필드 갱신"), S("SpellingAndGrammar","양식 점검"), S("ReviewTrackChanges","내용 점검"), S("FileSaveAsPdfOrXps","PDF 내보내기")] } ] },
+          { name: "설정", basis: 78, cols: [
+            { size: "lg", items: [{ icon: "QuickPartsInsertGallery", label: "설치", caret: true }] } ] },
+        ];
+
+        const root = document.getElementById("chrome");
+        const groupsEl = root.querySelector("#groups");
+        const total = GROUPS.reduce(function (s, g) { return s + g.basis; }, 0);
+
+        // 그룹의 전역 기하 — 리본은 left 0 / top 206, 탭 44 + 선 2 = 그룹 상단 252, 높이 150
+        const GEOM = {};
+        var _cum = 0;
+        GROUPS.forEach(function (g) {
+          var w = (g.basis / total) * 1872;
+          GEOM[g.name] = { x: 24 + _cum, y: 252, w: w, h: 150 };
+          _cum += w;
+        });
+
+        GROUPS.forEach(function (g) {
+          const cell = document.createElement("div");
+          cell.className = "group";
+          cell.dataset.group = g.name;
+          cell.style.flex = "0 0 " + ((g.basis / total) * 100).toFixed(4) + "%";
+
+          const fb = document.createElement("div");
+          fb.className = "focusbar";
+          cell.appendChild(fb);
+
+          const body = document.createElement("div");
+          body.className = "gbody";
+
+          g.cols.forEach(function (c) {
+            const col = document.createElement("div");
+            col.className = "col " + c.size;
+            c.items.forEach(function (it) {
+              const b = document.createElement("div");
+              b.className = (c.size === "sm" ? "sbtn" : "lbtn") + (it.caret ? " caret" : "");
+              b.dataset.btn = it.label;
+              const img = document.createElement("img");
+              img.src = "assets/icons/" + it.icon + ".png";
+              img.alt = "";
+              const sp = document.createElement("span");
+              sp.className = "z";
+              sp.textContent = it.label;
+              const rg = document.createElement("div");
+              rg.className = "ring";
+              b.appendChild(img);
+              b.appendChild(sp);
+              b.appendChild(rg);
+              col.appendChild(b);
+            });
+            body.appendChild(col);
+          });
+
+          const lab = document.createElement("div");
+          lab.className = "g-label z";
+          lab.textContent = g.name;
+
+          cell.appendChild(body);
+          cell.appendChild(lab);
+          groupsEl.appendChild(cell);
+        });
+
+        const q = function (s) { return root.querySelectorAll(s); };
+        const one = function (s) { return root.querySelector(s); };
+        const C = 2 * Math.PI * 163;
+        const ring = one("#ring circle");
+        ring.style.strokeDasharray = C;
+
+        const tl = gsap.timeline({ paused: true });
+
+        // ── 1막 · 인트로 ──
+        // 1) 도시 위로 인장이 떠오르고 테두리가 그려진다 (배경 사진은 index.html)
+        tl.fromTo(one("#sealWrap"), { opacity: 0, x: 0, y: -96, scale: 0.8 },
+          { opacity: 1, scale: 0.9, duration: 1.8, ease: "power3.out" }, 0.5);
+        tl.fromTo(ring, { strokeDashoffset: C }, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 0.8);
+        // 2) 아래 가는 선과 학회 이름 — 사이트 첫 화면 그대로
+        tl.fromTo(one("#introCap"), { opacity: 0 }, { opacity: 1, duration: 0.01 }, 1.1);
+        tl.fromTo(one("#introCap .ln"), { scaleX: 0 }, { scaleX: 1, duration: 1.3, ease: "power3.inOut" }, 1.1);
+        tl.fromTo(one("#introCap .tx"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 1.7);
+        // 3) 제목
+        tl.fromTo(one("#introTitle"), { opacity: 0 }, { opacity: 1, duration: 0.01 }, 2.1);
+        tl.fromTo(one("#introTitle .t"), { opacity: 0, y: 16, filter: "blur(10px)" },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.2, ease: "power3.out" }, 2.1);
+        // 4) 만든 사람
+        tl.fromTo(one("#credit"), { opacity: 0 }, { opacity: 1, duration: 0.01 }, 3.2);
+        tl.fromTo(one("#credit .by"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 3.2);
+        tl.fromTo(one("#credit .who"), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }, 3.45);
+        tl.to([one("#introTitle"), one("#credit"), one("#introCap"), one("#ring")], { opacity: 0, duration: 0.55, ease: "power1.in" }, 4.9);
+        // 5) 인장만 좌상단으로, 워드마크는 그 옆에서 켜진다
+        tl.to(one("#sealWrap"), { x: -788, y: -424, scale: 0.2133, duration: 1.3, ease: "power3.inOut" }, 5.2);
+        tl.fromTo(one("#mark"), { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" }, 6.1);
+        // 6) 리본 — 선이 먼저 그어지고, 판이 가운데부터 올라온다
+        tl.fromTo(one("#hairline"), { scaleX: 0 }, { scaleX: 1, duration: 1.0, ease: "power2.inOut" }, 6);
+        tl.fromTo(q(".group"), { y: 34, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.75, ease: "power3.out", stagger: { each: 0.075, from: "center" } }, 6.3);
+        tl.fromTo(q(".gbody"), { opacity: 0 }, { opacity: 0.55, duration: 0.4, ease: "power1.out", stagger: { each: 0.075, from: "center" } }, 6.8);
+        tl.fromTo(q(".g-label"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power1.out", stagger: { each: 0.075, from: "center" } }, 6.8);
+        tl.fromTo(q(".tab"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.05 }, 7.2);
+        tl.fromTo(one("#sweep"), { x: -280, opacity: 0 }, { x: 1940, opacity: 1, duration: 1.2, ease: "power1.inOut", immediateRender: false }, 7.6);
+        tl.to(one("#sweep"), { opacity: 0, duration: 0.25 }, 8.65);
+        // 7) 그룹이 왼쪽부터 차례로 켜진다
+        tl.fromTo(q(".gbody"), { opacity: 0.55 },
+          { opacity: 1, duration: 0.45, ease: "power1.out", stagger: { each: 0.2 }, immediateRender: false }, 8.1);
+        tl.fromTo(q(".sbtn span, .lbtn span"), { color: "rgba(247,246,243,0.62)" },
+          { color: "rgba(247,246,243,0.92)", duration: 0.45, ease: "power1.out", stagger: { each: 0.025 }, immediateRender: false }, 8.16);
+        // 7) 2막으로 — 리본은 위로 붙고 한 톤 가라앉는다
+        tl.to(one("#ribbon"), { y: -40, duration: 0.9, ease: "power2.inOut" }, 12.1);
+        tl.to(one("#mark"), { y: -18, opacity: 0.85, duration: 0.9, ease: "power2.inOut" }, 12.1);
+        tl.to(one("#sealWrap"), { opacity: 0.85, duration: 0.9, ease: "power2.inOut" }, 12.1);
+
+
+        // ── 막마다 리본을 짚는 헬퍼 ──
+        // 원래 타임라인 기준 시각 → 새 시각 (인트로·표지 +6.6초, 주가 비교 입력창 이후 +4.2초)
+        // 급한 구간을 늘린 시간축 (tools/warp.py 와 같은 표)
+        const WBP = [[0, 0], [28, 28], [34.5, 39.5], [56, 61], [61.5, 67.875], [65, 71.375], [70, 77.375], [84.2, 91.575], [96.4, 106.825], [110.2, 120.625], [116, 128.165]];
+        function WARP(t) { for (let i = 1; i < WBP.length; i++) { if (t <= WBP[i][0]) { const a = WBP[i - 1], b = WBP[i]; return a[1] + (t - a[0]) * (b[1] - a[1]) / (b[0] - a[0]); } } const l = WBP[WBP.length - 1]; return l[1] + (t - l[0]); }
+        const WBP2 = [[0, 0], [130.2, 130.2], [133.3, 135.47]];
+        function WARP2(t) { for (let i = 1; i < WBP2.length; i++) { if (t <= WBP2[i][0]) { const a = WBP2[i - 1], b = WBP2[i]; return a[1] + (t - a[0]) * (b[1] - a[1]) / (b[0] - a[0]); } } const l = WBP2[WBP2.length - 1]; return l[1] + (t - l[0]); }
+        function SH(t) { return WARP2(WARP(t + 8.1 + (t >= 92.0 ? 4.2 : 0))); }
+        const NS = "http://www.w3.org/2000/svg";
+        const conn = one("#conn");
+        const RIBBON_SHIFT = -40;
+        const PX = 140, PY = 768;
+        // 좁은 그룹은 크게, 넓은 그룹은 화면에 맞게 — 패널 폭 300~440px 목표
+        function panelScale(w) { return Math.max(1.55, Math.min(2.0, 300 / w, 420 / w)); }
+        const zoomBtn = {};
+
+        const G = function (name) { return root.querySelector('[data-group="' + name + '"]'); };
+        // 시각 t 에 열려 있는 돋보기 패널의 버튼, 없으면 리본 버튼
+        const B = function (label, t) {
+          const hit = (zoomBtn[label] || []).filter(function (z) { return t != null && t >= z.a && t <= z.b; })[0];
+          return hit ? hit.el : root.querySelector('#ribbon [data-btn="' + label + '"]');
+        };
+
+        function layoutBox(el, stopAt) {
+          let x = 0, y = 0, n = el;
+          while (n && n !== stopAt) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+          return { x: x, y: y, w: el.offsetWidth, h: el.offsetHeight };
+        }
+        function btnBox(el) {
+          const panel = el.closest(".zpanel");
+          if (panel) {
+            const ps = parseFloat(panel.dataset.ps || "1.55");
+            const r = layoutBox(el, panel);
+            return { x: PX + r.x * ps, y: PY + r.y * ps, w: r.w * ps, h: r.h * ps };
+          }
+          const cell = el.closest(".group");
+          const gm = cell ? GEOM[cell.dataset.group] : null;
+          const r = layoutBox(el, cell);
+          if (gm) return { x: gm.x + r.x, y: gm.y + r.y + RIBBON_SHIFT, w: r.w, h: r.h };
+          const a = layoutBox(el, null);
+          return { x: a.x, y: a.y + RIBBON_SHIFT, w: a.w, h: a.h };
+        }
+
+        const FOC = [];
+        function focusOn(names, t) {
+          t = SH(t);
+          FOC.push({ t: t, on: true, name: names[0] });
+          names.forEach(function (n) {
+            const g = G(n);
+            tl.to(g, { backgroundColor: "#2a4677", duration: 0.45, ease: "power2.out" }, t);
+            tl.fromTo(g.querySelector(".focusbar"), { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.out", immediateRender: false }, t);
+            tl.to(g.querySelector(".g-label"), { color: "#f7f6f3", duration: 0.45, ease: "power2.out" }, t);
+          });
+        }
+        function focusOff(names, t) {
+          t = SH(t);
+          FOC.push({ t: t, on: false });
+          tl.to(cursor, { opacity: 0, duration: 0.3 }, t);
+          names.forEach(function (n) {
+            const g = G(n);
+            tl.to(g, { backgroundColor: "#203864", duration: 0.4, ease: "power2.inOut" }, t);
+            tl.to(g.querySelector(".focusbar"), { scaleX: 0, duration: 0.4, ease: "power2.inOut" }, t);
+            tl.to(g.querySelector(".g-label"), { color: "#8faadc", duration: 0.4, ease: "power2.inOut" }, t);
+          });
+        }
+
+        // 그룹을 돋보기로 뽑아온다 — 원본이 한 번 번쩍한 뒤 들려 올라온다
+        function zoomGroup(name, tIn, tOut) {
+          tIn = SH(tIn); tOut = SH(tOut);
+          const g = G(name);
+          const gm = GEOM[name];
+          const PS = panelScale(gm.w);
+          const panel = document.createElement("div");
+          panel.className = "zpanel";
+          panel.dataset.ps = PS;
+          const glow = document.createElement("div");
+          glow.className = "zglow";
+          const clone = g.cloneNode(true);
+          clone.style.width = gm.w.toFixed(2) + "px";
+          clone.style.height = "auto";
+          clone.style.paddingBottom = "10px";
+          clone.style.flex = "none";
+          clone.style.boxSizing = "border-box";
+          clone.style.transform = "none";
+          clone.style.opacity = "1";
+          clone.style.backgroundColor = "#2a4677";
+          clone.querySelectorAll(".gbody, .g-label").forEach(function (el) { el.style.transform = "none"; el.style.opacity = "1"; });
+          const cl = clone.querySelector(".g-label"); if (cl) cl.style.color = "#f7f6f3";
+          const fb = clone.querySelector(".focusbar"); if (fb) fb.style.transform = "scaleX(1)";
+          clone.querySelectorAll("[data-btn]").forEach(function (el) {
+            el.style.transform = "none"; el.style.backgroundColor = "rgba(27,63,122,0)";
+            const sp = el.querySelector("span"); if (sp) sp.style.color = "rgba(247,246,243,0.95)";
+          });
+          clone.querySelectorAll(".ring").forEach(function (el) { el.style.transform = "none"; el.style.opacity = "0"; });
+          panel.appendChild(glow);
+          panel.appendChild(clone);
+          root.appendChild(panel);
+          clone.querySelectorAll("[data-btn]").forEach(function (b) { (zoomBtn[b.dataset.btn] = zoomBtn[b.dataset.btn] || []).push({ el: b, a: tIn, b: tOut + 0.4 }); });
+
+          const dx = gm.x - PX, dy = (gm.y + RIBBON_SHIFT) - PY;
+          // 어디서 가져왔는지 — 그룹 아래 모서리에서 패널 위 모서리로 투영선
+          const gy = gm.y + RIBBON_SHIFT + gm.h, pw = gm.w * PS;
+          const pts = [[gm.x, gy, PX, PY], [gm.x + gm.w, gy, PX + pw, PY]];
+          const poly = document.createElementNS(NS, "polygon");
+          poly.setAttribute("class", "leadfill");
+          poly.setAttribute("points", gm.x + "," + gy + " " + (gm.x + gm.w) + "," + gy + " " + (PX + pw) + "," + PY + " " + PX + "," + PY);
+          conn.appendChild(poly);
+          const leads = pts.map(function (q4) {
+            const ln = document.createElementNS(NS, "path");
+            ln.setAttribute("class", "lead");
+            ln.setAttribute("pathLength", "1");
+            ln.setAttribute("d", "M " + q4[0] + " " + q4[1] + " L " + q4[2] + " " + q4[3]);
+            ln.style.strokeDasharray = "1"; ln.style.strokeDashoffset = "1";
+            conn.appendChild(ln);
+            return ln;
+          });
+          tl.to(leads, { opacity: 1, duration: 0.1 }, tIn + 0.05);
+          tl.fromTo(leads, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.7, ease: "power2.out", immediateRender: false }, tIn + 0.05);
+          tl.fromTo(poly, { opacity: 0 }, { opacity: 1, duration: 0.5, immediateRender: false }, tIn + 0.35);
+          tl.to(leads.concat([poly]), { opacity: 0, duration: 0.4, ease: "power1.in" }, tIn + 0.9);
+          // 1) 원본 그룹이 한 번 번쩍한다
+          tl.fromTo(g, { filter: "brightness(1)" }, { filter: "brightness(1.6)", duration: 0.18, yoyo: true, repeat: 1, immediateRender: false }, tIn);
+          // 2) 패널이 들려 올라오며 커진다 (살짝 넘어갔다 제자리)
+          // 패널은 제자리에서 열린다 — 출처는 투영선이 보여 준다
+          tl.fromTo(panel, { opacity: 0, x: 0, y: 0, scale: PS * 0.9, filter: "blur(6px) drop-shadow(0 16px 38px rgba(0,0,0,0.5))" },
+            { opacity: 1, scale: PS * 1.03, filter: "blur(0px) drop-shadow(0 16px 38px rgba(0,0,0,0.5))", duration: 0.6, ease: "power3.out", immediateRender: false }, tIn + 0.3);
+          tl.to(panel, { scale: PS, duration: 0.32, ease: "power2.inOut" }, tIn + 0.9);
+          // 3) 테두리 빛이 한 번 훑고 사라진다
+          tl.fromTo(glow, { opacity: 0 }, { opacity: 1, duration: 0.22, immediateRender: false }, tIn + 0.55);
+          tl.to(glow, { opacity: 0, duration: 0.7, ease: "power2.out" }, tIn + 0.85);
+          // 4) 제자리에서 접힌다 — 화면을 가로질러 날아가지 않는다
+          tl.to(panel, { opacity: 0, scale: PS * 0.94, filter: "blur(4px) drop-shadow(0 16px 38px rgba(0,0,0,0.5))", duration: 0.38, ease: "power2.in" }, tOut);
+          tl.to(one("#cursor"), { opacity: 0, duration: 0.25 }, tOut);
+        }
+
+        const cursor = one("#cursor");
+        function press(label, t, hold) {
+          t = SH(t);
+          hold = hold || 0.85;
+          const b = B(label, t);
+          if (!b) return;
+          const rg = b.querySelector(".ring");
+          // 커서가 버튼으로 간다 (좌표는 재생 시점에 계산 — 글꼴 로딩 뒤 폭에 맞음)
+          tl.to(cursor, { opacity: 1, duration: 0.18 }, t - 0.55);
+          tl.to(cursor, { x: function () { const bb = btnBox(b); return bb.x + bb.w * 0.56; },
+                          y: function () { const bb = btnBox(b); return bb.y + bb.h * 0.62; },
+                          duration: 0.5, ease: "power2.inOut" }, t - 0.55);
+          // ① 올라감 — 커서가 닿는 순간 버튼이 먼저 밝아진다
+          tl.fromTo(b, { backgroundColor: "rgba(143,170,220,0)" },
+            { backgroundColor: "rgba(143,170,220,0.18)", duration: 0.15, ease: "power1.out", immediateRender: false }, t - 0.2);
+          // ② 누름 — 커서와 버튼이 함께 눌리고, 누른 자리에서 파동이 번진다
+          tl.to(cursor, { scale: 0.8, duration: 0.08, ease: "power2.in" }, t);
+          tl.to(cursor, { scale: 1, duration: 0.18, ease: "back.out(2.5)" }, t + 0.1);
+          tl.to(b, { backgroundColor: "rgba(27,63,122,1)", duration: 0.08, ease: "power2.out" }, t);
+          tl.to(b, { scale: 0.92, duration: 0.08, ease: "power2.in" }, t);
+          const rip = document.createElement("span");
+          rip.className = "rip";
+          b.appendChild(rip);
+          tl.set(rip, { left: function () { return b.offsetWidth * 0.56; }, top: function () { return b.offsetHeight * 0.62; } }, t - 0.01);
+          tl.fromTo(rip, { scale: 0, opacity: 0.9 }, { scale: 2.6, opacity: 0, duration: 0.55, ease: "power2.out", immediateRender: false }, t);
+          if (rg) {
+            tl.fromTo(rg, { opacity: 0, scale: 0.85 }, { opacity: 0.7, duration: 0.1, ease: "power2.out", immediateRender: false }, t + 0.04);
+            tl.to(rg, { opacity: 0, scale: 1.35, duration: 0.5, ease: "power2.out" }, t + 0.14);
+          }
+          // ③ 뗌 — 살짝 튀어 올랐다 제자리, 누른 색은 빠지고 올라간 상태로
+          tl.to(b, { scale: 1.03, duration: 0.14, ease: "power2.out" }, t + 0.1);
+          tl.to(b, { scale: 1, duration: 0.22, ease: "power2.inOut" }, t + 0.24);
+          tl.to(b, { backgroundColor: "rgba(143,170,220,0.18)", duration: 0.3, ease: "power1.inOut" }, t + Math.min(0.45, hold * 0.5));
+          // 커서가 떠나면 원래대로
+          tl.to(b, { backgroundColor: "rgba(143,170,220,0)", duration: 0.35, ease: "power2.inOut" }, t + hold);
+        }
+
+        // 메뉴 버튼의 드롭다운
+        function dropdown(hostLabel, items, tOpen, tClose) {
+          tOpen = SH(tOpen); tClose = SH(tClose);
+          const host = B(hostLabel, tOpen);
+          if (!host) return;
+          const hb = btnBox(host);
+          const menu = document.createElement("div");
+          menu.className = "zmenu";
+          // 버튼 오른쪽으로 펼친다 — 패널 라벨을 덮지 않는다
+          menu.style.left = (hb.x + hb.w + 14) + "px";
+          menu.style.top = (hb.y - 4) + "px";
+          items.forEach(function (it) {
+            const row = document.createElement("div");
+            row.className = "mi"; row.dataset.mi = it.label;
+            const im = document.createElement("img"); im.src = "assets/icons/" + it.icon + ".png"; im.alt = "";
+            const sp = document.createElement("span"); sp.className = "z"; sp.textContent = it.label;
+            const rg = document.createElement("div"); rg.className = "mring";
+            row.appendChild(im); row.appendChild(sp); row.appendChild(rg);
+            menu.appendChild(row);
+          });
+          root.appendChild(menu);
+          // 문서 쪽으로 넘치면 버튼 왼쪽으로 편다
+          if (hb.x + hb.w + 14 + menu.offsetWidth > 585) menu.style.left = (hb.x - menu.offsetWidth - 14) + "px";
+          tl.fromTo(menu, { opacity: 0, y: -12, scaleY: 0.85 },
+            { opacity: 1, y: 0, scaleY: 1, duration: 0.3, ease: "power3.out", immediateRender: false }, tOpen);
+          tl.to(menu, { opacity: 0, y: -10, duration: 0.3, ease: "power2.in" }, tClose);
+          items.forEach(function (it, i) {
+            const rg = menu.querySelector('[data-mi="' + it.label + '"] .mring');
+            const t = tOpen + 0.5 + i * 0.6;
+            tl.fromTo(rg, { opacity: 0 }, { opacity: 1, duration: 0.16, immediateRender: false }, t);
+            tl.to(rg, { opacity: 0, duration: 0.28 }, t + 0.4);
+          });
+        }
+
+        // ══════════ 막 진행 — 리본 왼쪽에서 오른쪽 순서 ══════════
+
+        // 3막 · 데이터 > 주가 차트 (표지를 채우므로 먼저)
+        focusOn(["데이터"], 18.6);
+        press("주가 차트", 19.8);
+        focusOff(["데이터"], 26.2);
+
+        // 4막 · 제목
+        focusOn(["제목"], 27.0);
+        zoomGroup("제목", 27.1, 35.5);
+        press("대제목", 28.4);
+        press("중제목", 30.6);
+        press("소제목", 32.4);
+        focusOff(["제목"], 35.6);
+
+        // 5막 · 문단
+        focusOn(["문단"], 36.0);
+        zoomGroup("문단", 36.1, 46.5);
+        press("본문", 37.4);
+        press("글머리 ①", 39.2);
+        press("요약박스", 41.0);
+        press("사이드노트", 42.8);
+        focusOff(["문단"], 46.8);
+
+        // 6막 · 자료 틀
+        focusOn(["자료 틀"], 47.0);
+        zoomGroup("자료 틀", 47.1, 55.5);
+        press("1단 틀", 48.4);
+        press("2단 틀", 49.9);
+        press("3단 틀", 51.4);
+        focusOff(["자료 틀"], 55.8);
+
+        // 7막 · 강조
+        focusOn(["강조"], 56.0);
+        zoomGroup("강조", 56.1, 63.5);
+        press("강조", 57.4);
+        press("빨강 강조", 59.0);
+        press("첫문장 볼드", 60.6);
+        focusOff(["강조"], 63.8);
+
+        // 8막 · 차트·표
+        focusOn(["차트·표"], 64.0);
+        zoomGroup("차트·표", 64.1, 74.5);
+        press("차트 양식", 66.4);
+        press("엑셀 표", 68.4);
+        press("추정치 구분", 70.4);
+        focusOff(["차트·표"], 74.8);
+
+        // 9막 · 주석
+        focusOn(["주석"], 75.0);
+        zoomGroup("주석", 75.1, 88.5);
+        press("빨간 글", 76.6);
+        press("화살표", 78.2);
+        press("강조 상자", 79.8);
+        press("폭 맞추기", 81.4);
+        press("점선 상자", 82.8);
+        press("점선 원", 84.2);
+        press("더보기", 85.6, 2.8);
+        dropdown("더보기", [
+          { icon: "ShapesInsertGallery", label: "점선 화살표" },
+          { icon: "ShapesInsertGallery", label: "이벤트 선" },
+          { icon: "ShadingColorPicker",  label: "구간 음영" },
+          { icon: "TextBoxInsert",       label: "남색 메모" },
+        ], 85.8, 88.2);
+        focusOff(["주석"], 88.8);
+
+        // 10막 · 데이터 (주가 비교 · 모델 값)
+        focusOn(["데이터"], 89.0);
+        zoomGroup("데이터", 89.1, 96.5);
+        press("주가 비교", 90.4);
+        press("모델 값", 93.2);
+        focusOff(["데이터"], 96.8);
+
+        // 11막 · 글꼴
+        focusOn(["글꼴"], 97.0);
+        zoomGroup("글꼴", 97.1, 104.5);
+        press("코펍 볼드", 98.4);
+        press("코펍 미디움", 99.8);
+        press("코펍 라이트", 101.2);
+        press("윤고딕 540", 102.6);
+        focusOff(["글꼴"], 104.8);
+
+        // 12막 · 마무리 — 대제목을 하나 더 넣고 목차가 갱신되는 걸 본다
+        focusOn(["제목"], 105.0);
+        press("대제목", 105.9);
+        focusOff(["제목"], 107.4);
+        focusOn(["마무리"], 107.6);
+        zoomGroup("마무리", 107.7, 130.0);
+        press("필드 갱신", 109.0);
+        press("양식 점검", 115.6);
+        press("내용 점검", 119.8);
+        press("PDF 내보내기", 123.2);
+        focusOff(["마무리"], 130.3);
+
+        // 14막 · 엔딩
+        tl.to(one("#ribbon"), { y: -320, opacity: 0, duration: 1.1, ease: "power2.inOut" }, 157.835);
+        tl.to(one("#mark"), { opacity: 0, duration: 0.8, ease: "power2.inOut" }, 157.835);
+        tl.to(q(".tab"), { opacity: 0, duration: 0.5 }, 157.835);
+        tl.to(one("#sealWrap"), { opacity: 0, duration: 0.45, ease: "power1.in" }, 157.835);
+        tl.set(one("#sealWrap"), { x: 0, y: -96, scale: 0.82 }, 158.435);
+        tl.to(one("#sealWrap"), { opacity: 1, scale: 0.9, duration: 1.8, ease: "power3.out" }, 158.635);
+
+        // ── 버튼 → 결과물 연결선 ──
+        // ex, ey = 페이지 CSS 좌표를 해당 막의 카메라로 환산한 전역 좌표
+        // 강조 막대 하나가 그룹에서 그룹으로 옮겨 간다 (잠깐 비는 사이에는 사라지지 않는다)
+        (function () {
+          const sl = one("#slider");
+          FOC.sort(function (a, b) { return a.t - b.t; });
+          let shown = false;
+          FOC.forEach(function (f, i) {
+            if (f.on) {
+              const gm = GEOM[f.name];
+              const x = gm.x - 24, sx = gm.w / 100;
+              if (!shown) {
+                tl.set(sl, { x: x, scaleX: sx }, f.t);
+                tl.to(sl, { opacity: 1, duration: 0.35, ease: "power1.out" }, f.t);
+              } else {
+                tl.to(sl, { x: x, scaleX: sx, duration: 0.6, ease: "power3.inOut" }, f.t);
+              }
+              shown = true;
+            } else {
+              const nx = FOC[i + 1];
+              if (nx && nx.on && nx.t - f.t < 1.2) return;
+              tl.to(sl, { opacity: 0, duration: 0.35, ease: "power1.in" }, f.t);
+              shown = false;
+            }
+          });
+        })();
+
+        const CONN = [
+        ];
+
+        function pathFor(b, L) {
+          const bb = btnBox(b);
+          const sx = bb.x + bb.w / 2;
+          const sy = bb.y + bb.h + 6;
+          const cx1 = sx + (L.ex - sx) * 0.52;
+          const cx2 = L.ex - 150;
+          return "M " + sx.toFixed(1) + " " + sy.toFixed(1) +
+                 " C " + cx1.toFixed(1) + " " + sy.toFixed(1) +
+                 ", " + cx2.toFixed(1) + " " + L.ey.toFixed(1) +
+                 ", " + L.ex.toFixed(1) + " " + L.ey.toFixed(1);
+        }
+
+        const drawn = [];
+        CONN.forEach(function (L) {
+          const T = (L.at != null) ? L.at : SH(L.t);
+          const b = B(L.btn, T);
+          if (!b) return;
+          if (L.r) {
+            // 후반부 — 선 대신 결과물 자리가 버튼과 함께 반짝인다
+            const rr = document.createElementNS(NS, "rect");
+            rr.setAttribute("class", "glow");
+            rr.setAttribute("x", L.r[0]); rr.setAttribute("y", L.r[1]);
+            rr.setAttribute("width", L.r[2]); rr.setAttribute("height", L.r[3]);
+            rr.setAttribute("rx", "6");
+            conn.appendChild(rr);
+            tl.fromTo(rr, { opacity: 0 }, { opacity: 1, duration: 0.16, ease: "power2.out", immediateRender: false }, T);
+            tl.to(rr, { opacity: 0.35, duration: 0.22, yoyo: true, repeat: 1, ease: "power1.inOut" }, T + 0.2);
+            tl.to(rr, { opacity: 0, duration: 0.45, ease: "power1.out" }, T + (L.out || 1.1));
+            return;
+          }
+          const p = document.createElementNS(NS, "path");
+          p.setAttribute("pathLength", "1");
+          p.setAttribute("d", pathFor(b, L));
+          p.style.strokeDasharray = "1";
+          p.style.strokeDashoffset = "1";
+          conn.appendChild(p);
+          const dot = document.createElementNS(NS, "circle");
+          dot.setAttribute("cx", L.ex); dot.setAttribute("cy", L.ey); dot.setAttribute("r", "4.5");
+          conn.appendChild(dot);
+          drawn.push({ b: b, p: p, L: L });
+          tl.to(p, { opacity: 1, duration: 0.08 }, T);
+          tl.fromTo(p, { strokeDashoffset: 1 },
+            { strokeDashoffset: 0, duration: 0.45, ease: "power2.inOut", immediateRender: false }, T);
+          tl.fromTo(dot, { opacity: 0, scale: 0.4 },
+            { opacity: 1, scale: 1, duration: 0.22, ease: "back.out(3)", immediateRender: false }, T + 0.38);
+          tl.to([p, dot], { opacity: 0, duration: 0.3, ease: "power1.out" }, T + L.out);
+        });
+
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(function () {
+            drawn.forEach(function (d) { d.p.setAttribute("d", pathFor(d.b, d.L)); });
+          });
+        }
+
+        window.__timelines["chrome"] = tl;
+      })();
+</script>
+  </div>
+</template>

@@ -1,0 +1,38 @@
+# 빌드 결과물
+*.exe
+installer/RFS_Template_Setup.bat
+installer/RFS_Template_Setup.zip
+installer/rfs.ico
+dist/
+build/
+
+# 라이선스상 재배포 불가 글꼴
+installer/fonts/
+installer/ui-fonts/
+video/assets/fonts/KoPubWorld*
+video/assets/fonts/YoonGothic*
+*.ttf
+*.otf
+*.ttc
+
+# 생성물 (tools/sfx.py로 다시 만듦)
+video/assets/sfx.wav
+video/renders/
+video/snapshots/
+*.mp4
+
+# 환경·캐시
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+.env
+.env.*
+
+# 워드 임시 파일, 로컬 설정
+~$*
+.claude/
+
+# Microsoft Office 아이콘(imageMso)은 재배포하지 않음. video/README 참고
+video/assets/icons/
+video/assets/icons_32/

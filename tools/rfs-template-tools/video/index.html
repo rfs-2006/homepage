@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Regular.woff2") format("woff2"); font-weight: 400; font-display: block; }
+      @font-face { font-family: "Pretendard"; src: url("assets/fonts/Pretendard-Medium.woff2") format("woff2"); font-weight: 500; font-display: block; }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #0f1b2e; }
+
+      #root { width: 100%; height: 100%; position: relative;
+        font-family: "Pretendard", sans-serif; -webkit-font-smoothing: antialiased; }
+
+      .bg { position: absolute; inset: 0; background: #0f1b2e; }
+      .grain { position: absolute; inset: 0; opacity: 0.035; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"); background-size: 240px 240px; }
+      #blackout { position: absolute; inset: 0; background: #000; opacity: 0; z-index: 40; }
+      #endCap { position: absolute; left: 0; right: 0; top: 944px; text-align: center; opacity: 0; z-index: 5; }
+      #endCap .ln { width: 600px; height: 1px; margin: 0 auto 16px; background: rgba(247,246,243,0.7); transform-origin: center; }
+      #endCap .tx { font-size: 17px; font-weight: 500; color: rgba(247,246,243,0.82); letter-spacing: 0.16em; }
+      /* 1단계 · 깊이와 빛 — 배경에 아주 느리게 흐르는 빛, 문서 장면의 비네트 */
+      #amb { position: absolute; left: -25%; top: -35%; width: 85%; height: 120%; pointer-events: none;
+        background: radial-gradient(closest-side, rgba(58,98,168,0.20), rgba(58,98,168,0.07) 55%, rgba(58,98,168,0) 100%); }
+      #vig2 { position: absolute; inset: 0; z-index: 3; pointer-events: none; opacity: 0;
+        background: radial-gradient(ellipse 72% 78% at 62% 58%, rgba(8,14,26,0) 52%, rgba(8,14,26,0.34) 82%, rgba(8,14,26,0.62) 100%); }
+      #hero { position: absolute; inset: 0; opacity: 0; overflow: hidden; }
+      #hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform-origin: 50% 45%; }
+      #hero .scrim { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,34,62,0.62) 0%, rgba(15,27,46,0.74) 100%); }
+      .vignette { position: absolute; inset: 0;
+        background: radial-gradient(120% 90% at 50% 30%, rgba(32,56,100,0.38) 0%, rgba(15,27,46,0) 62%); }
+
+      .scene { position: absolute; inset: 0; }
+      #sceneCover { z-index: 1; }
+      #sceneBody { z-index: 2; }
+      #sceneChrome { z-index: 4; }
+      #topfade { position: absolute; left: 0; right: 0; top: 402px; height: 56px; z-index: 3; pointer-events: none; opacity: 0;
+        background: linear-gradient(180deg, #0f1b2e 0%, rgba(15,27,46,0) 100%); }
+      .cap { z-index: 5; }
+
+      .cap { position: absolute; font-weight: 400; color: rgba(247,246,243,0.88);
+        letter-spacing: -0.01em; opacity: 0; word-break: keep-all; }
+      .cap span { display: inline-block; transform: translateZ(0); backface-visibility: hidden; }
+      #cap1 { left: 0; right: 0; top: 706px; text-align: center; font-size: 34px; }
+      .capL { left: 140px; width: 430px; top: 552px; font-size: 29px; line-height: 1.5; }
+      .capL .lead { display: block; font-size: 13px; font-weight: 500; letter-spacing: 0.30em; color: #8faadc; margin-bottom: 16px; }
+      .capL .sub { display: block; margin-top: 14px; font-size: 19px; color: rgba(247,246,243,0.66); line-height: 1.55; }
+      .capL .ln { display: block; }
+
+      /* PDF 파일명 */
+      /* 엔딩 */
+      .end { position: absolute; left: 0; right: 0; text-align: center; opacity: 0; color: #f7f6f3; z-index: 5; }
+      #endMsg  { top: 650px; font-size: 44px; font-weight: 500; letter-spacing: -0.015em; }
+      #endWho  { top: 728px; font-size: 19px; font-weight: 400; color: rgba(247,246,243,0.78); letter-spacing: 0.02em; }
+      #endSite { top: 1000px; font-size: 14px; font-weight: 500; color: #8faadc; letter-spacing: 0.3em; }
+
+      /* 주가 비교 입력창 */
+      .dlg { position: absolute; left: 1440px; width: 440px; top: 470px; opacity: 0; z-index: 6;
+        background: #f3f3f3; border: 1px solid #9aa3b5; border-radius: 6px; overflow: hidden;
+        box-shadow: 0 24px 60px rgba(0,0,0,0.55); font-family: "Pretendard", sans-serif; transform-origin: 50% 40%; }
+      .dlg .tb { background: #ffffff; padding: 10px 16px; font-size: 14px; font-weight: 500; color: #1a1a1a; border-bottom: 1px solid #ddd; }
+      .dlg .bd { padding: 16px 18px 18px; }
+      .dlg .msg { font-size: 14px; color: #1a1a1a; line-height: 1.55; margin-bottom: 12px; white-space: pre-line; }
+      .dlg .in { background: #fff; border: 1px solid #2f5597; padding: 8px 10px; font-size: 16px; color: #1a1a1a; height: 38px;
+        white-space: nowrap; overflow: hidden; }
+      .dlg .in span { display: inline-block; white-space: nowrap; vertical-align: top; }
+      .dlg .in .dv { background: #cfe0ff; }
+      .dlg .btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+      .dlg .bt { padding: 6px 20px; font-size: 14px; border: 1px solid #adadad; background: #e5e5e5; color: #1a1a1a; border-radius: 3px; }
+      .dlg .bt.ok { border-color: #2f5597; }
+      .dlg .row { display: flex; gap: 14px; align-items: flex-start; }
+      .dlg .ico { flex: none; width: 30px; height: 30px; border-radius: 50%; background: #2f5597; color: #fff; font-size: 18px; font-weight: 500;
+        display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+      /* PDF 뷰어 */
+      #pdfBg { position: absolute; left: 690px; top: 430px; width: 540px; height: 650px; background: #525659; z-index: 1; opacity: 0; }
+      #pdfBar { position: absolute; left: 690px; top: 430px; width: 540px; height: 40px; background: #323639; z-index: 5; opacity: 0;
+        display: flex; align-items: center; gap: 10px; padding: 0 14px; font-size: 13px; color: #f1f1f1; white-space: nowrap; overflow: hidden; }
+      #pdfBar .pg { margin-left: auto; color: #bdbdbd; font-size: 12px; }
+      .capL .sw { position: relative; height: 150px; }
+      .capL .v { position: absolute; left: 0; top: 0; width: 100%; opacity: 0; }
+      .capL .v .tt { display: block; }
+      /* 워드 파일 화면 — 파일 › 새로 만들기 › 개인 › RFS_Report */
+      #bs { position: absolute; left: 24px; top: 166px; width: 1872px; height: 874px; opacity: 0; z-index: 6; display: flex;
+        background: #f7f6f3; box-shadow: 0 30px 80px rgba(0,0,0,0.5); font-family: "Pretendard", sans-serif; overflow: hidden; }
+      #bs .side { width: 290px; background: #203864; padding-top: 26px; flex: none; }
+      #bs .side .back { font-size: 26px; color: #f7f6f3; padding: 6px 34px 22px; }
+      #bs .side .it { font-size: 19px; color: rgba(247,246,243,0.92); padding: 13px 34px; }
+      #bs .side .gap { height: 1px; background: rgba(247,246,243,0.2); margin: 14px 26px; }
+      #bs .main { position: relative; flex: 1; padding: 44px 64px; }
+      #bs .h { position: absolute; left: 64px; top: 40px; font-size: 38px; font-weight: 500; color: #1a1a1a; }
+      #bs .tabs { position: absolute; left: 64px; top: 118px; display: flex; gap: 40px; font-size: 19px; font-weight: 500; color: #666; }
+      #bs .tabs .tb { padding-bottom: 8px; }
+      #bs #bsU { position: absolute; left: 0; bottom: 0; height: 3px; width: 64px; background: #203864; transform-origin: 0 0; }
+      #bs .grid { position: absolute; left: 64px; top: 190px; display: flex; gap: 40px; }
+      #bs .th { width: 196px; text-align: center; }
+      #bs .th .pg { height: 254px; background: #fff; border: 1px solid #d4d4d4; box-shadow: 0 2px 8px rgba(0,0,0,0.08); position: relative; overflow: hidden; }
+      #bs .th .nm { margin-top: 12px; font-size: 16px; color: #1a1a1a; }
+      #bs .ln { position: absolute; left: 18px; height: 5px; background: #e6e6e6; }
+      #bs .rfs .bn { position: absolute; left: 8px; right: 8px; top: 16px; height: 46px; background: #6f706f; }
+      #bs .rfs .tt { position: absolute; left: 14px; top: 34px; width: 90px; height: 9px; background: #f2f2f2; }
+      #bs .rfs .bx { position: absolute; right: 12px; top: 74px; width: 54px; height: 44px; background: #001f5f; }
+      #bs .rfs .t2 { position: absolute; left: 14px; top: 74px; width: 100px; height: 6px; background: #002060; }
+      #cur0 { position: absolute; left: 0; top: 0; width: 26px; height: 30px; opacity: 0; z-index: 7; pointer-events: none; }
+      .capL .lead .num { display: inline-block; overflow: hidden; height: 1.25em; vertical-align: top; }
+      .capL .lead .nr { display: inline-block; }
+      /* 진행 표시 — 10단계 중 지금 어디인지 */
+      #prog { position: absolute; left: 140px; top: 522px; display: flex; gap: 6px; opacity: 0; z-index: 5; }
+      #prog i { display: block; width: 30px; height: 2px; background: rgba(143,170,220,0.22); position: relative; overflow: hidden; }
+      #prog i b { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; background: #8faadc; transform: scaleX(0); transform-origin: left center; }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-eg64" id="root" data-composition-id="main" data-start="0" data-duration="165.435" data-width="1920" data-height="1080">
+      <div data-hf-id="hf-m7dd" class="bg"></div>
+      <div data-hf-id="hf-q7bi" class="vignette"></div>
+      <div id="amb"></div>
+      <div class="grain"></div>
+      <div id="vig2"></div>
+      <div id="hero"><img id="heroImg" src="assets/img/city.jpg" alt=""><div class="scrim"></div></div>
+      <div data-hf-id="hf-ij40" id="topfade"></div>
+
+      <div data-hf-id="hf-gkic" id="sceneChrome" class="scene clip" data-composition-id="chrome" data-start="0" data-duration="165.435" data-track-index="0" data-composition-src="compositions/chrome.html"></div>
+      <div data-hf-id="hf-148c" id="sceneCover" class="scene clip" data-composition-id="cover" data-start="13" data-duration="27.1" data-track-index="1" data-composition-src="compositions/cover.html"></div>
+      <div data-hf-id="hf-7lii" id="sceneBody" class="scene clip" data-composition-id="bodyp" data-start="39.9" data-duration="125.535" data-track-index="1" data-composition-src="compositions/body.html"></div>
+
+      <div class="dlg clip" id="cmp1" data-start="109.175" data-duration="2.45" data-track-index="3">
+        <div class="tb">RFS 주가 비교</div>
+        <div class="bd"><div class="msg">비교할 티커를 쉼표로 (첫 번째가 기준). 예: 089030.KQ, 000660.KS, 005930.KS, MU</div>
+          <div class="in"><span id="cmp1_d"><span>005930.KS</span></span><span id="cmp1_t">, 000660.KS</span></div>
+          <div class="btns"><div class="bt ok" id="cmp1_ok">확인</div><div class="bt">취소</div></div></div>
+      </div>
+      <div class="dlg clip" id="cmp2" data-start="111.425" data-duration="1.1" data-track-index="3">
+        <div class="tb">RFS 주가 비교</div>
+        <div class="bd"><div class="msg">시작일. 예: 2024-12-01</div>
+          <div class="in"><span id="cmp2_d"><span>2025-09-25</span></span></div>
+          <div class="btns"><div class="bt ok" id="cmp2_ok">확인</div><div class="bt">취소</div></div></div>
+      </div>
+      <div class="dlg clip" id="cmp3" data-start="112.325" data-duration="1.1" data-track-index="3">
+        <div class="tb">RFS 주가 비교</div>
+        <div class="bd"><div class="msg">1 = 시작일 100으로 정규화 (축 하나, 여러 종목 비교)
+2 = 실제 주가 (원화 왼쪽 축, 달러 오른쪽 축)</div>
+          <div class="in"><span id="cmp3_d"><span>1</span></span></div>
+          <div class="btns"><div class="bt ok" id="cmp3_ok">확인</div><div class="bt">취소</div></div></div>
+      </div>
+      <div class="dlg clip" id="chkF" style="top:470px" data-start="143.185" data-duration="2.55" data-track-index="3">
+        <div class="tb">RFS 양식 점검</div>
+        <div class="bd"><div class="row"><div class="ico">i</div><div class="msg">스타일 없는 본문 문단(노랑): 1
+장 번호 필드 없는 대제목(분홍): 0
+허용 글꼴 외 단어(청록): 1
+페이지에 걸친 자료 틀(보라): 0
+
+고친 뒤 다시 '양식 점검'을 누르면 표시가 지워집니다.</div></div>
+          <div class="btns"><div class="bt ok" id="chkF_ok">확인</div></div></div>
+      </div>
+      <div class="dlg clip" id="chkC" style="top:470px" data-start="147.385" data-duration="2.25" data-track-index="3">
+        <div class="tb">RFS 내용 점검</div>
+        <div class="bd"><div class="row"><div class="ico">i</div><div class="msg">빈칸(노랑): 9
+표지 값과 다른 숫자(연두): 0
+표기 규칙(청록): 0
+
+형광펜은 표시만 합니다. 고친 뒤 다시 누르면 지워집니다.</div></div>
+          <div class="btns"><div class="bt ok" id="chkC_ok">확인</div></div></div>
+      </div>
+      <div class="dlg clip" id="pdf1" data-start="150.085" data-duration="2" data-track-index="3">
+        <div class="tb">RFS PDF 내보내기</div>
+        <div class="bd"><div class="msg">학기 표기 (예: 26-1)</div>
+          <div class="in"><span id="pdf1_d"><span class="dv">26-1</span></span><span id="pdf1_t">26-2</span></div>
+          <div class="btns"><div class="bt ok" id="pdf1_ok">확인</div><div class="bt">취소</div></div></div>
+      </div>
+      <div class="dlg clip" id="pdf2" data-start="151.885" data-duration="1.2" data-track-index="3">
+        <div class="tb">RFS PDF 내보내기</div>
+        <div class="bd"><div class="msg">밸류에이션 방식 (예: PER, EVEBITDA, DCF)</div>
+          <div class="in"><span id="pdf2_d"><span>PER</span></span></div>
+          <div class="btns"><div class="bt ok" id="pdf2_ok">확인</div><div class="bt">취소</div></div></div>
+      </div>
+      <div id="pdfBg" class="clip" data-start="152.835" data-duration="4.4" data-track-index="3"></div>
+      <div id="pdfBar" class="clip" data-start="152.835" data-duration="4.4" data-track-index="3"><span>[26-2]_삼성전자_Research_Team_3_PER_260925.pdf</span><span class="pg">1 / 2</span></div>
+      <div class="dlg clip" id="pdfOk" style="top:520px" data-start="154.385" data-duration="2.25" data-track-index="3">
+        <div class="tb">RFS</div>
+        <div class="bd"><div class="row"><div class="ico">i</div><div class="msg">PDF 저장: [26-2]_삼성전자_Research_Team_3_PER_260925.pdf
+C:\Users\RFS\Documents\</div></div>
+          <div class="btns"><div class="bt ok" id="pdfOk_ok">확인</div></div></div>
+      </div>
+      <audio id="sfx" src="assets/sfx.wav" data-start="0" data-duration="165.435" data-track-index="4" data-volume="1" data-fade-out="1.1"></audio>
+      <svg id="cur0" viewBox="0 0 26 30"><path d="M2 2 L2 24 L8 18.5 L12.5 28 L16.5 26.2 L12 17 L20 17 Z" fill="#f7f6f3" stroke="#0f1b2e" stroke-width="1.6" stroke-linejoin="round" /></svg>
+      <div id="bs" class="clip" data-start="8.6" data-duration="3.6" data-track-index="3">
+        <div class="side"><div class="back">←</div><div class="it" id="bsHome">홈</div><div class="it" id="bsNew">새로 만들기</div><div class="it">열기</div><div class="gap"></div><div class="it">정보</div><div class="it">저장</div><div class="it">다른 이름으로 저장</div><div class="it">인쇄</div><div class="it">내보내기</div><div class="it">닫기</div></div>
+        <div class="main">
+          <div class="h" id="bsH1">홈</div><div class="h" id="bsH2" style="opacity:0">새로 만들기</div>
+          <div class="tabs" id="bsTabs" style="opacity:0"><span class="tb" id="bsT1">Office</span><span class="tb" id="bsT2">개인</span><i id="bsU"></i></div>
+          <div class="grid" id="gOff" style="opacity:0">
+            <div class="th"><div class="pg"></div><div class="nm">새 문서</div></div>
+            <div class="th"><div class="pg"><i class="ln" style="top:40px; width:150px"></i><i class="ln" style="top:60px; width:120px"></i><i class="ln" style="top:90px; width:150px"></i><i class="ln" style="top:104px; width:140px"></i></div><div class="nm">보고서</div></div>
+            <div class="th"><div class="pg"><i class="ln" style="top:40px; width:90px"></i><i class="ln" style="top:120px; width:150px"></i><i class="ln" style="top:134px; width:140px"></i><i class="ln" style="top:148px; width:150px"></i></div><div class="nm">편지</div></div>
+          </div>
+          <div class="grid" id="gPer" style="opacity:0">
+            <div class="th" id="bsRfs"><div class="pg rfs"><i class="bn"></i><i class="tt"></i><i class="t2"></i><i class="bx"></i><i class="ln" style="top:92px; width:80px"></i><i class="ln" style="top:130px; width:90px"></i><i class="ln" style="top:144px; width:80px"></i><i class="ln" style="top:158px; width:90px"></i></div><div class="nm">RFS_Report</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="cap capL clip" id="s2a" data-start="14.46" data-duration="7.72" data-track-index="2">
+        <span class="lead">표지</span><div class="sw"><div class="v" id="s2av0"><span class="tt">표지</span><span class="sub"><span class="ln">종목명 · 티커 · 섹터 · 투자의견 · 목표주가 — 수기 입력</span></span></div></div></div>
+      <div class="cap capL clip" id="s2b" data-start="23.56" data-duration="3.74" data-track-index="2">
+        <span class="lead">표지</span><div class="sw"><div class="v" id="s2bv0"><span class="tt">머리글 · 바닥글</span><span class="sub"><span class="ln">종목명 · 팀명 — 자동 삽입</span></span></div></div></div>
+      <div id="prog" class="clip" data-start="27.7" data-duration="129.635" data-track-index="2"><i><b id="pg01"></b></i><i><b id="pg02"></b></i><i><b id="pg03"></b></i><i><b id="pg04"></b></i><i><b id="pg05"></b></i><i><b id="pg06"></b></i><i><b id="pg07"></b></i><i><b id="pg08"></b></i><i><b id="pg09"></b></i><i><b id="pg10"></b></i></div>
+      <div class="cap capL clip" id="s01" data-start="27.8" data-duration="12.2" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr01">01</span></span></span><div class="sw"><div class="v" id="s01v0"><span class="tt">[데이터 &gt; 주가 차트]</span><span class="sub"><span class="ln">주가 · Stock Data — API 연동, 자동 삽입</span><span class="ln">투자의견 · 목표주가 · 상승여력 · 주요주주 — 수기 입력</span></span></div></div></div>
+      <div class="cap capL clip" id="s02" data-start="40.7" data-duration="8.2" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr02">02</span></span></span><div class="sw"><div class="v" id="s02v0"><span class="tt">[제목 &gt; 대제목]</span><span class="sub"><span class="ln">검정 22pt · KoPub Medium · Ⅰ. 자동 번호</span></span></div><div class="v" id="s02v1"><span class="tt">[제목 &gt; 중제목]</span><span class="sub"><span class="ln">남색 12pt · KoPub Bold</span></span></div><div class="v" id="s02v2"><span class="tt">[제목 &gt; 소제목]</span><span class="sub"><span class="ln">파랑 10pt · KoPub Bold</span></span></div></div></div>
+      <div class="cap capL clip" id="s03" data-start="49.7" data-duration="10.2" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr03">03</span></span></span><div class="sw"><div class="v" id="s03v0"><span class="tt">[문단 &gt; 본문]</span><span class="sub"><span class="ln">검정 10pt · KoPub Light · 장평 98%</span></span></div><div class="v" id="s03v1"><span class="tt">[문단 &gt; 글머리 ①]</span><span class="sub"><span class="ln">본문 + ① ② ③ 번호</span></span></div><div class="v" id="s03v2"><span class="tt">[문단 &gt; 요약박스]</span><span class="sub"><span class="ln">본문 + 회색 음영 (#D0CECE)</span></span></div><div class="v" id="s03v3"><span class="tt">[문단 &gt; 사이드노트]</span><span class="sub"><span class="ln">검정 10pt · KoPub Bold · 왼쪽 여백 5.5cm</span></span></div></div></div>
+      <div class="cap capL clip" id="s04" data-start="60.7" data-duration="9.575" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr04">04</span></span></span><div class="sw"><div class="v" id="s04v0"><span class="tt">[자료 틀 &gt; 1단 틀]</span><span class="sub"><span class="ln">폭 20.1cm · 자료 번호 자동</span></span></div><div class="v" id="s04v1"><span class="tt">[자료 틀 &gt; 2단 틀]</span><span class="sub"><span class="ln">폭 10.05cm × 2 · 자료 번호 자동</span></span></div><div class="v" id="s04v2"><span class="tt">[자료 틀 &gt; 3단 틀]</span><span class="sub"><span class="ln">폭 6.7cm × 3 · 자료 번호 자동</span></span></div></div></div>
+      <div class="cap capL clip" id="s05" data-start="71.075" data-duration="8.2" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr05">05</span></span></span><div class="sw"><div class="v" id="s05v0"><span class="tt">[강조 &gt; 강조]</span><span class="sub"><span class="ln">선택 글자 → KoPub Bold</span></span></div><div class="v" id="s05v1"><span class="tt">[강조 &gt; 빨강 강조]</span><span class="sub"><span class="ln">선택 글자 → 빨강 (#C00000) · KoPub Bold</span></span></div><div class="v" id="s05v2"><span class="tt">[강조 &gt; 첫문장 볼드]</span><span class="sub"><span class="ln">문서 전체 본문 첫 문장 → KoPub Bold</span></span></div></div></div>
+      <div class="cap capL clip" id="s06" data-start="80.075" data-duration="10.2" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr06">06</span></span></span><div class="sw"><div class="v" id="s06v0"><span class="tt">[차트·표 &gt; 차트 양식]</span><span class="sub"><span class="ln">선 1.75pt · 축 0.25pt · 범례 위 · 코펍 7pt</span></span></div><div class="v" id="s06v1"><span class="tt">[차트·표 &gt; 엑셀 표]</span><span class="sub"><span class="ln">머리글 흰색 7.5pt · 남색 바탕</span><span class="ln">본문 7.5pt · 숫자 오른쪽 정렬</span></span></div><div class="v" id="s06v2"><span class="tt">[차트·표 &gt; 추정치 구분]</span><span class="sub"><span class="ln">E 항목 (2026E …) → 점선 · 연한 색</span></span></div></div></div>
+      <div class="cap capL clip" id="s07" data-start="91.075" data-duration="16.25" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr07">07</span></span></span><div class="sw"><div class="v" id="s07v0"><span class="tt">[주석 &gt; 빨간 글]</span><span class="sub"><span class="ln">빨강 7pt · KoPub Bold</span></span></div><div class="v" id="s07v1"><span class="tt">[주석 &gt; 화살표]</span><span class="sub"><span class="ln">빨강 0.75pt</span></span></div><div class="v" id="s07v2"><span class="tt">[주석 &gt; 강조 상자]</span><span class="sub"><span class="ln">빨강 · 투명도 90%</span></span></div><div class="v" id="s07v3"><span class="tt">[주석 &gt; 폭 맞추기]</span><span class="sub"><span class="ln">차트 → 칸 폭 (20.1 / 10.05 / 6.7cm)</span></span></div><div class="v" id="s07v4"><span class="tt">[주석 &gt; 점선 상자]</span><span class="sub"><span class="ln">빨강 점선 1.25pt · 채움 없음</span></span></div><div class="v" id="s07v5"><span class="tt">[주석 &gt; 점선 원]</span><span class="sub"><span class="ln">빨강 점선 1.25pt</span></span></div><div class="v" id="s07v6"><span class="tt">[주석 &gt; 더보기]</span><span class="sub"><span class="ln">구간 음영: 연파랑 · 투명도 50%</span><span class="ln">남색 메모: 남색 6pt · Bold</span></span></div></div></div>
+      <div class="cap capL clip" id="s08" data-start="108.125" data-duration="11.4" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr08">08</span></span></span><div class="sw"><div class="v" id="s08v0"><span class="tt">[데이터 &gt; 주가 비교]</span><span class="sub"><span class="ln">티커 · 시작일 입력 → 시작일 = 100 비교 차트</span><span class="ln">API 연동</span></span></div><div class="v" id="s08v1"><span class="tt">[데이터 &gt; 모델 값]</span><span class="sub"><span class="ln">엑셀 모델 값 → 본문 연결 숫자</span></span></div></div></div>
+      <div class="cap capL clip" id="s09" data-start="120.325" data-duration="8.84" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr09">09</span></span></span><div class="sw"><div class="v" id="s09v0"><span class="tt">[글꼴 &gt; 코펍 볼드]</span><span class="sub"><span class="ln">KoPubWorld돋움체 Bold</span></span></div><div class="v" id="s09v1"><span class="tt">[글꼴 &gt; 코펍 미디움]</span><span class="sub"><span class="ln">KoPubWorld돋움체 Medium (표)</span></span></div><div class="v" id="s09v2"><span class="tt">[글꼴 &gt; 코펍 라이트]</span><span class="sub"><span class="ln">KoPubWorld돋움체 Light (본문)</span></span></div><div class="v" id="s09v3"><span class="tt">[글꼴 &gt; 윤고딕 540]</span><span class="sub"><span class="ln">Yoon 윤고딕 540 (자료 캡션 9pt)</span></span></div></div></div>
+      <div class="cap capL clip" id="s10" data-start="130.165" data-duration="26.97" data-track-index="2">
+        <span class="lead">STEP <span class="num"><span class="nr" id="nr10">10</span></span></span><div class="sw"><div class="v" id="s10v0"><span class="tt">[마무리 &gt; 필드 갱신]</span><span class="sub"><span class="ln">목차 · 자료 번호 · 장 번호 · 쪽 번호 갱신</span></span></div><div class="v" id="s10v1"><span class="tt">[마무리 &gt; 양식 점검]</span><span class="sub"><span class="ln">노랑: 스타일 없는 문단</span><span class="ln">분홍: 번호 없는 대제목</span><span class="ln">청록: 허용 외 글꼴</span></span></div><div class="v" id="s10v2"><span class="tt">[마무리 &gt; 내용 점검]</span><span class="sub"><span class="ln">노랑: 빈 캡션 · 출처</span><span class="ln">연두: 표지와 다른 숫자</span><span class="ln">청록: 표기 규칙</span></span></div><div class="v" id="s10v3"><span class="tt">[마무리 &gt; PDF 내보내기]</span><span class="sub"><span class="ln">[학기]_회사_Research_Team_N_밸류_YYMMDD.pdf</span></span></div></div></div>
+      <div data-hf-id="hf-iwke" class="end clip" id="endMsg" data-start="159.235" data-duration="6.2" data-track-index="2">좋은 리포트 기대하겠습니다.</div>
+      <div data-hf-id="hf-r0st" class="end clip" id="endWho" data-start="159.835" data-duration="5.6" data-track-index="2">R.F.S. 43대 회장 김민석</div>
+      <div id="endCap" class="clip" data-start="159.635" data-duration="5.8" data-track-index="2"><div class="ln"></div><div class="tx">RISING FINANCIAL STARS · CHUNG-ANG UNIVERSITY</div></div>
+      <div id="blackout" class="clip" data-start="164.235" data-duration="1.2" data-track-index="5"></div>
+      <div data-hf-id="hf-ltez" class="end clip" id="endSite" data-start="160.235" data-duration="5.2" data-track-index="2">CAURFS.KR</div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      function cap(id, tIn, tOut) {
+        tl.fromTo(id, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }, tIn);
+        tl.to(id, { opacity: 0, y: -10, duration: 0.45, ease: "power1.in" }, tOut);
+      }
+
+
+      // 시작 — 커서가 워드 '파일' 탭을 눌러 새로 만들기 › 개인 › RFS_Report 로 들어간다 (좌표는 재생 시점에 읽는다)
+      function at(sel, fx, fy) { if (Array.isArray(sel)) return sel; const el = document.querySelector(sel); if (!el) return [960, 540]; const r = el.getBoundingClientRect(); const R = document.getElementById("root").getBoundingClientRect(); const k = R.width / 1920; return [(r.left - R.left) / k + r.width / k * fx, (r.top - R.top) / k + r.height / k * fy]; }
+      function go(sel, t, fx, fy) {
+        tl.to("#cur0", { x: function () { return at(sel, fx || 0.5, fy || 0.6)[0]; }, y: function () { return at(sel, fx || 0.5, fy || 0.6)[1]; }, duration: 0.42, ease: "power2.inOut" }, t - 0.46);
+        tl.to("#cur0", { scale: 0.82, duration: 0.08, yoyo: true, repeat: 1 }, t);
+      }
+      tl.fromTo("#cur0", { opacity: 0, x: 900, y: 700 }, { opacity: 1, duration: 0.2 }, 8.2);
+      go([60, 238], 8.75);   // 리본의 '파일' 탭 (리본은 다른 컴포지션이라 좌표 고정)
+      tl.fromTo("#bs", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out" }, 8.8);
+      go("#bsNew", 9.55, 0.3);
+      tl.to("#bsNew", { backgroundColor: "rgba(247,246,243,0.16)", duration: 0.15 }, 9.55);
+      tl.to("#bsH1", { opacity: 0, duration: 0.12 }, 9.6);
+      tl.to(["#bsH2", "#bsTabs", "#gOff"], { opacity: 1, duration: 0.3 }, 9.65);
+      go("#bsT2", 10.35);
+      tl.to("#bsU", { x: function () { return document.getElementById("bsT2").offsetLeft; }, scaleX: 0.7, duration: 0.25, ease: "power2.out" }, 10.35);
+      tl.to("#bsT2", { color: "#203864", duration: 0.15 }, 10.35);
+      tl.to("#gOff", { opacity: 0, duration: 0.15 }, 10.4);
+      tl.fromTo("#gPer", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.3 }, 10.5);
+      go("#bsRfs .pg", 11.2);
+      tl.to("#bsRfs .pg", { borderColor: "#203864", boxShadow: "0 0 0 3px rgba(32,56,100,0.35)", duration: 0.15 }, 10.9);
+      tl.to("#bsRfs .pg", { scale: 0.96, duration: 0.08, yoyo: true, repeat: 1 }, 11.2);
+      tl.to("#cur0", { opacity: 0, duration: 0.25 }, 11.5);
+      tl.to("#bs", { opacity: 0, scale: 0.985, duration: 0.4, ease: "power2.in" }, 11.6);
+
+      cap("#s2a", 14.56, 21.58);  tl.set("#s2av0", { opacity: 1 }, 14.51);
+      cap("#s2b", 23.66, 26.7);  tl.set("#s2bv0", { opacity: 1 }, 23.61);
+      cap("#s01", 27.9, 39.323);  tl.set("#s01v0", { opacity: 1 }, 27.85);
+      cap("#s02", 40.8, 48.3);  tl.set("#s02v0", { opacity: 1 }, 40.75);
+      tl.to("#s02v0", { opacity: 0, y: -6, duration: 0.22 }, 43.15);  tl.fromTo("#s02v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 43.27);
+      tl.to("#s02v1", { opacity: 0, y: -6, duration: 0.22 }, 44.95);  tl.fromTo("#s02v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 45.07);
+      cap("#s03", 49.8, 59.3);  tl.set("#s03v0", { opacity: 1 }, 49.75);
+      tl.to("#s03v0", { opacity: 0, y: -6, duration: 0.22 }, 51.75);  tl.fromTo("#s03v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 51.87);
+      tl.to("#s03v1", { opacity: 0, y: -6, duration: 0.22 }, 53.55);  tl.fromTo("#s03v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 53.67);
+      tl.to("#s03v2", { opacity: 0, y: -6, duration: 0.22 }, 55.35);  tl.fromTo("#s03v3", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 55.47);
+      cap("#s04", 60.8, 69.675);  tl.set("#s04v0", { opacity: 1 }, 60.75);
+      tl.to("#s04v0", { opacity: 0, y: -6, duration: 0.22 }, 62.812);  tl.fromTo("#s04v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 62.962);
+      tl.to("#s04v1", { opacity: 0, y: -6, duration: 0.22 }, 64.688);  tl.fromTo("#s04v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 64.838);
+      cap("#s05", 71.175, 78.675);  tl.set("#s05v0", { opacity: 1 }, 71.125);
+      tl.to("#s05v0", { opacity: 0, y: -6, duration: 0.22 }, 73.235);  tl.fromTo("#s05v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 73.379);
+      tl.to("#s05v1", { opacity: 0, y: -6, duration: 0.22 }, 75.155);  tl.fromTo("#s05v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 75.299);
+      cap("#s06", 80.175, 89.675);  tl.set("#s06v0", { opacity: 1 }, 80.125);
+      tl.to("#s06v0", { opacity: 0, y: -6, duration: 0.22 }, 83.325);  tl.fromTo("#s06v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 83.445);
+      tl.to("#s06v1", { opacity: 0, y: -6, duration: 0.22 }, 85.325);  tl.fromTo("#s06v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 85.445);
+      cap("#s07", 91.175, 106.7);  tl.set("#s07v0", { opacity: 1 }, 91.125);
+      tl.to("#s07v0", { opacity: 0, y: -6, duration: 0.22 }, 93.513);  tl.fromTo("#s07v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 93.663);
+      tl.to("#s07v1", { opacity: 0, y: -6, duration: 0.22 }, 95.512);  tl.fromTo("#s07v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 95.662);
+      tl.to("#s07v2", { opacity: 0, y: -6, duration: 0.22 }, 97.513);  tl.fromTo("#s07v3", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 97.662);
+      tl.to("#s07v3", { opacity: 0, y: -6, duration: 0.22 }, 99.262);  tl.fromTo("#s07v4", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 99.412);
+      tl.to("#s07v4", { opacity: 0, y: -6, duration: 0.22 }, 101.013);  tl.fromTo("#s07v5", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 101.163);
+      tl.to("#s07v5", { opacity: 0, y: -6, duration: 0.22 }, 102.763);  tl.fromTo("#s07v6", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 102.912);
+      cap("#s08", 108.225, 118.925);  tl.set("#s08v0", { opacity: 1 }, 108.175);
+      tl.to("#s08v0", { opacity: 0, y: -6, duration: 0.22 }, 115.375);  tl.fromTo("#s08v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 115.495);
+      cap("#s09", 120.425, 128.565);  tl.set("#s09v0", { opacity: 1 }, 120.375);
+      tl.to("#s09v0", { opacity: 0, y: -6, duration: 0.22 }, 122.38);  tl.fromTo("#s09v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 122.536);
+      tl.to("#s09v1", { opacity: 0, y: -6, duration: 0.22 }, 124.2);  tl.fromTo("#s09v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 124.356);
+      tl.to("#s09v2", { opacity: 0, y: -6, duration: 0.22 }, 126.02);  tl.fromTo("#s09v3", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 126.176);
+      cap("#s10", 130.31, 156.535);  tl.set("#s10v0", { opacity: 1 }, 130.226);
+      tl.to("#s10v0", { opacity: 0, y: -6, duration: 0.22 }, 141.685);  tl.fromTo("#s10v1", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 141.805);
+      tl.to("#s10v1", { opacity: 0, y: -6, duration: 0.22 }, 145.885);  tl.fromTo("#s10v2", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 146.005);
+      tl.to("#s10v2", { opacity: 0, y: -6, duration: 0.22 }, 149.285);  tl.fromTo("#s10v3", { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 149.405);
+
+      // 엔딩 — 인트로와 같은 도시 사진 위에서 닫는다
+      tl.fromTo("#hero", { opacity: 0 }, { opacity: 1, duration: 1.6, ease: "power1.inOut", immediateRender: false }, 157.935);
+      tl.fromTo("#heroImg", { scale: 1.1 }, { scale: 1.03, duration: 7.5, ease: "none", immediateRender: false }, 157.935);
+      tl.fromTo("#endMsg",  { opacity: 0, y: 14, filter: "blur(8px)" }, { opacity: 1, y: 0, filter: "blur(0px)", duration: 1.1, ease: "power3.out" }, 159.535);
+      tl.fromTo("#endCap", { opacity: 0 }, { opacity: 1, duration: 0.01 }, 159.735);
+      tl.fromTo("#endCap .ln", { scaleX: 0 }, { scaleX: 1, duration: 1.3, ease: "power3.inOut" }, 159.735);
+      tl.fromTo("#endCap .tx", { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 160.335);
+      tl.fromTo("#blackout", { opacity: 0 }, { opacity: 1, duration: 1.1, ease: "power1.in" }, 164.335);
+      tl.fromTo("#endWho",  { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 160.135);
+      tl.fromTo("#endSite", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, 160.735);
+
+      // 주가 비교 — 입력창 세 개 (티커 → 시작일 → 방식)
+      tl.fromTo("#cmp1", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 109.225);
+      tl.fromTo("#cmp1_t", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "steps(11)" }, 109.825);
+      tl.fromTo("#cmp1_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 110.755);
+      tl.to("#cmp1_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 110.975);
+      tl.to("#cmp1_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 111.055);
+      tl.to("#cmp1", { opacity: 0, scale: 0.97, duration: 0.18 }, 111.325);
+      tl.fromTo("#cmp2", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 111.475);
+      tl.fromTo("#cmp2_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 111.655);
+      tl.to("#cmp2_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 111.875);
+      tl.to("#cmp2_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 111.955);
+      tl.to("#cmp2", { opacity: 0, scale: 0.97, duration: 0.18 }, 112.225);
+      tl.fromTo("#cmp3", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 112.375);
+      tl.fromTo("#cmp3_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 112.555);
+      tl.to("#cmp3_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 112.775);
+      tl.to("#cmp3_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 112.855);
+      tl.to("#cmp3", { opacity: 0, scale: 0.97, duration: 0.18 }, 113.125);
+      // 양식 점검 · 내용 점검 — 형광펜을 칠하고 요약 창
+      tl.fromTo("#chkF", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 143.235);
+      tl.fromTo("#chkF_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 144.865);
+      tl.to("#chkF_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 145.085);
+      tl.to("#chkF_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 145.165);
+      tl.to("#chkF", { opacity: 0, scale: 0.97, duration: 0.18 }, 145.435);
+      tl.fromTo("#chkC", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 147.435);
+      tl.fromTo("#chkC_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 148.765);
+      tl.to("#chkC_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 148.985);
+      tl.to("#chkC_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 149.065);
+      tl.to("#chkC", { opacity: 0, scale: 0.97, duration: 0.18 }, 149.335);
+      // PDF 내보내기 — 학기 → 밸류 → (필드 갱신) → PDF 가 열리고 → 저장 알림
+      tl.fromTo("#pdf1", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 150.135);
+      tl.set("#pdf1_d", { display: "none" }, 150.685);
+      tl.fromTo("#pdf1_t", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.45, ease: "steps(4)" }, 150.685);
+      tl.fromTo("#pdf1_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 151.215);
+      tl.to("#pdf1_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 151.435);
+      tl.to("#pdf1_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 151.515);
+      tl.to("#pdf1", { opacity: 0, scale: 0.97, duration: 0.18 }, 151.785);
+      tl.fromTo("#pdf2", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 151.935);
+      tl.fromTo("#pdf2_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 152.215);
+      tl.to("#pdf2_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 152.435);
+      tl.to("#pdf2_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 152.515);
+      tl.to("#pdf2", { opacity: 0, scale: 0.97, duration: 0.18 }, 152.785);
+      tl.fromTo(["#pdfBg", "#pdfBar"], { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 153.135);
+      tl.to(["#pdfBg", "#pdfBar"], { opacity: 0, duration: 0.45, ease: "power1.in" }, 156.735);
+      tl.fromTo("#pdfOk", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power2.out" }, 154.435);
+      tl.fromTo("#pdfOk_ok", { backgroundColor: "#e5e5e5" }, { backgroundColor: "#d7e3fb", duration: 0.12, immediateRender: false }, 155.765);
+      tl.to("#pdfOk_ok", { backgroundColor: "#b9cdf5", scale: 0.93, duration: 0.07 }, 155.985);
+      tl.to("#pdfOk_ok", { backgroundColor: "#d7e3fb", scale: 1, duration: 0.16, ease: "back.out(2)" }, 156.065);
+      tl.to("#pdfOk", { opacity: 0, scale: 0.97, duration: 0.18 }, 156.335);
+
+      // 인트로 배경 — 학회 사이트 첫 화면의 도시 사진
+      tl.fromTo("#hero", { opacity: 0 }, { opacity: 1, duration: 1.6, ease: "power1.out" }, 0.1);
+      tl.fromTo("#heroImg", { scale: 1.14 }, { scale: 1.04, duration: 6.2, ease: "none" }, 0);
+      tl.to("#hero", { opacity: 0, duration: 1.2, ease: "power1.inOut" }, 5.4);
+
+      // 1단계 · 깊이와 빛
+      tl.fromTo("#amb", { x: 0, y: 0 }, { x: 980, y: 260, duration: 163, ease: "sine.inOut" }, 0);
+      tl.to("#vig2", { opacity: 1, duration: 1.6, ease: "power1.inOut" }, 12.6);
+      tl.to("#vig2", { opacity: 0, duration: 1.2, ease: "power1.inOut" }, 145.37);
+
+      // 4단계 · 글자 — 진행 표시와 STEP 숫자 롤링
+      tl.fromTo("#prog", { opacity: 0 }, { opacity: 1, duration: 0.6, ease: "power1.out" }, 27.8);
+      tl.to("#prog", { opacity: 0, duration: 0.5, ease: "power1.in" }, 156.535);
+      tl.fromTo("#pg01", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 27.95);
+      tl.fromTo("#nr01", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 28.02);
+      tl.fromTo("#pg02", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 40.85);
+      tl.fromTo("#nr02", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 40.92);
+      tl.to("#pg01", { opacity: 0.55, duration: 0.4 }, 40.85);
+      tl.fromTo("#pg03", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 49.85);
+      tl.fromTo("#nr03", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 49.92);
+      tl.to("#pg02", { opacity: 0.55, duration: 0.4 }, 49.85);
+      tl.fromTo("#pg04", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 60.85);
+      tl.fromTo("#nr04", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 60.92);
+      tl.to("#pg03", { opacity: 0.55, duration: 0.4 }, 60.85);
+      tl.fromTo("#pg05", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 71.225);
+      tl.fromTo("#nr05", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 71.295);
+      tl.to("#pg04", { opacity: 0.55, duration: 0.4 }, 71.225);
+      tl.fromTo("#pg06", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 80.225);
+      tl.fromTo("#nr06", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 80.295);
+      tl.to("#pg05", { opacity: 0.55, duration: 0.4 }, 80.225);
+      tl.fromTo("#pg07", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 91.225);
+      tl.fromTo("#nr07", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 91.295);
+      tl.to("#pg06", { opacity: 0.55, duration: 0.4 }, 91.225);
+      tl.fromTo("#pg08", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 108.275);
+      tl.fromTo("#nr08", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 108.345);
+      tl.to("#pg07", { opacity: 0.55, duration: 0.4 }, 108.275);
+      tl.fromTo("#pg09", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 120.475);
+      tl.fromTo("#nr09", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 120.545);
+      tl.to("#pg08", { opacity: 0.55, duration: 0.4 }, 120.475);
+      tl.fromTo("#pg10", { scaleX: 0 }, { scaleX: 1, duration: 0.7, ease: "power3.inOut", immediateRender: false }, 130.395);
+      tl.fromTo("#nr10", { yPercent: 110 }, { yPercent: 0, duration: 0.55, ease: "power3.out", immediateRender: false }, 130.514);
+      tl.to("#pg09", { opacity: 0.55, duration: 0.4 }, 130.395);
+
+      tl.to("#topfade", { opacity: 1, duration: 0.6 }, 12.9);   // 리본이 붙은 뒤에만 그림자
+      tl.to("#topfade", { opacity: 0, duration: 0.8 }, 157.735);  // 리본이 빠지면 그림자도
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

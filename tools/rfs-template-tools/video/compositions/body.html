@@ -1,0 +1,502 @@
+<template>
+  <div data-hf-id="hf-69bb" id="bodyp" data-composition-id="bodyp" data-width="1920" data-height="1080">
+    <style>
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Light.ttf") format("truetype"); font-weight: 300; font-display: block; }
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Medium.ttf") format("truetype"); font-weight: 500; font-display: block; }
+      @font-face { font-family: "KPW"; src: url("assets/fonts/KoPubWorld Dotum Bold.ttf") format("truetype"); font-weight: 700; font-display: block; }
+      @font-face { font-family: "YoonGo"; src: url("assets/fonts/YoonGothic540.ttf") format("truetype"); font-weight: 500; font-display: block; }
+
+      #bodyp { width: 100%; height: 100%; position: relative; clip-path: inset(404px 0 0 0);
+        -webkit-mask-image: linear-gradient(90deg, transparent 560px, #000 604px); mask-image: linear-gradient(90deg, transparent 560px, #000 604px); }
+      #bodyp .z { transform: translateZ(0); backface-visibility: hidden; }
+
+      #bWrap { position: absolute; left: 600px; top: 520px; width: 720px; height: 1200px; transform-origin: center top; opacity: 0; }
+      #bodyp .sheet { position: absolute; left: 0; width: 720px; background: #fbfaf8;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.28), 0 6px 14px rgba(0,0,0,0.22), 0 28px 60px rgba(0,0,0,0.38), 0 60px 120px rgba(4,10,22,0.45); overflow: hidden; font-family: "KPW", sans-serif; color: #1a1a1a; }
+      #tocPage { top: -1078px; height: 1018px; opacity: 0; }
+      #bPage   { top: 0; height: 1200px; }
+
+      #bodyp .hd { position: absolute; left: 19.6px; right: 19.6px; top: 34px; font-size: 13.2px;
+        color: #1f3864; font-weight: 700; display: flex; justify-content: space-between; }
+      #bodyp .hdr { position: absolute; left: 19.6px; right: 19.6px; top: 55px; height: 1px; background: #c9cedb; transform-origin: left center; }
+      #bodyp .ft { position: absolute; right: 18.6px; font-size: 12px; color: #595959; font-weight: 500; }
+      #bf { top: 1150px; }  #tf { top: 962px; }
+
+      #tocT { position: absolute; left: 0; right: 0; top: 124px; text-align: center; font-size: 17px; font-weight: 700; color: #203864; letter-spacing: 0.08em; }
+      #tocL { position: absolute; left: 137px; right: 137px; top: 172px; }
+      #bodyp .tr { display: flex; align-items: baseline; font-size: 14.5px; font-weight: 700; color: #203864; line-height: 28px; }
+      #bodyp .tr .dots { flex: 1; border-bottom: 2px dotted #b8bfcc; margin: 0 8px 5px; }
+      #bodyp .tr.sub { font-size: 13.4px; font-weight: 300; color: #1a1a1a; padding-left: 24px; }
+      #bodyp .tr.new { opacity: 0; }
+
+      #h1  { position: absolute; left: 205.8px; right: 21.9px; top: 96px; font-size: 26.6px; font-weight: 500; }
+      #h1 .num, #h1b .num { color: #1a1a1a; }
+      #sumbox { position: absolute; left: 204.1px; top: 160px; width: 466.4px; height: 19.4px; background: #d0cece; transform-origin: left center; }
+      #sum { position: absolute; left: 205.8px; top: 159.6px; width: 460px; font-size: 11.9px; font-weight: 300; line-height: 19.4px; }
+      #h2  { position: absolute; left: 205.8px; top: 185px; font-size: 14.3px; color: #203864; font-weight: 700; }
+      #h3  { position: absolute; left: 205.8px; top: 214px; font-size: 11.9px; color: #2f5597; font-weight: 700; }
+      #bodytxt { position: absolute; left: 205.8px; top: 238px; width: 466px; font-size: 11.9px; line-height: 19.4px; }
+      #bodytxt p { margin-bottom: 8px; font-weight: 300; }
+      #blist { position: absolute; left: 205.8px; top: 302px; width: 466px; font-size: 11.9px; line-height: 19.4px; font-weight: 300; opacity: 0; }
+      #side { position: absolute; left: 21.9px; top: 235px; width: 155px; text-align: right;
+        font-size: 11.9px; font-weight: 700; line-height: 19.4px; }
+      #h1b { position: absolute; left: 205.8px; right: 21.9px; top: 930px; font-size: 26.6px; font-weight: 500; opacity: 0; }
+      #h2b { position: absolute; left: 205.8px; top: 984px; font-size: 14.3px; color: #203864; font-weight: 700; opacity: 0; }
+      #h3b { position: absolute; left: 205.8px; top: 1012px; font-size: 11.9px; color: #2f5597; font-weight: 700; opacity: 0; }
+
+      #bodyp .fg { position: absolute; left: 21.9px; right: 18.6px; display: flex; gap: 0; opacity: 0; }
+      #bodyp .col1 > .fcap, #bodyp .col1 > .area, #bodyp .col1 > .src { margin: 0 3.5px; }
+      #bodyp .col1:first-child > .fcap, #bodyp .col1:first-child > .area, #bodyp .col1:first-child > .src { margin-left: 0; }
+      #bodyp .col1:last-child > .fcap, #bodyp .col1:last-child > .area, #bodyp .col1:last-child > .src { margin-right: 0; }
+      #chWrap { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 0 0; }
+      #chSel { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; border: 1px solid #8c8c8c; }
+      #chSel i { position: absolute; width: 5px; height: 5px; background: #fff; border: 1px solid #6b6b6b; }
+      #chDim { position: absolute; left: 0; right: 0; bottom: -1px; height: 12px; opacity: 0; display: flex; align-items: center; }
+      #chDim .ar { flex: 1; height: 1px; background: #2f5597; position: relative; }
+      #chDim .lb { padding: 0 6px; font-size: 7.5px; font-weight: 700; color: #2f5597; background: #fbfaf8; }
+      #bodyp .col1 { flex: 1; min-width: 0; }
+      #bodyp .fcap { display: flex; justify-content: space-between; font-size: 10.9px; font-weight: 500; }
+      #bodyp .fcap .no { color: #1a1a1a; }
+      #bodyp .rule { height: 1px; background: #333; margin-top: 5px; }
+      #bodyp .area { position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+        font-size: 9.6px; color: #a6a6a6; font-weight: 300; }
+      #bodyp .srule { height: 1px; background: #999; }
+      #bodyp .src { font-size: 7.2px; font-weight: 300; margin-top: 3px; }
+      #fg1 { top: 348px; }  #fg1 .area { height: 186px; }
+      #fg2 { top: 600px; }  #fg2 .area { height: 122px; }  #fg2 .fcap { font-size: 9.6px; }
+      #fg3 { top: 790px; }  #fg3 .area { height: 100px; }  #fg3 .fcap { font-size: 8.8px; }
+
+      #bodyp .chart { position: absolute; inset: 0; opacity: 0; }
+      #bodyp .chart svg { width: 100%; height: 100%; }
+      #bodyp .ph { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+      #bodyp .chart .ln { fill: none; }
+      #chRfs .act, #chRfs .est { opacity: 0; }
+      #chRfs .est { stroke-dasharray: 5 3; }
+      #bodyp .chart .g  { stroke: #c9c9c9; stroke-width: 1; }
+      #bodyp .chart .ax { stroke: #333; stroke-width: 0.25; }
+      #chRaw text { font-size: 11px; fill: #444; font-family: sans-serif; }
+      #chRfs text { font-size: 7px; fill: #222; }
+      #chCmp text { font-size: 6px; fill: #222; }
+
+      #bodyp .xtab { position: absolute; inset: 3px 4px; opacity: 0; }
+      #bodyp .xtab table { width: 100%; height: 100%; border-collapse: collapse; font-size: 7.4px; }
+      #bodyp .xtab td { padding: 0 8px; text-align: right; border-bottom: 1px solid #e3e3e3; color: #1a1a1a; }
+      #bodyp .xtab td:first-child { text-align: left; }
+      #bodyp .xtab tr:first-child td { background: #203864; color: #f7f6f3; font-weight: 500; }
+
+      #bodyp .ann { position: absolute; opacity: 0; }
+      #annTxt { left: 21.5%; top: 18.5%; font-size: 8px; font-weight: 700; color: #c00000; white-space: nowrap; }
+      #annArrow { left: 36.8%; top: 23.5%; width: 12%; height: 13.5%; }
+      #annArrow svg { width: 100%; height: 100%; overflow: visible; }
+      #annBox { left: 76.4%; top: 21%; width: 7.4%; height: 31%; background: rgba(192,0,0,0.10); }
+      #annDash { left: 2.6%; top: 46%; width: 14.5%; height: 31%; border: 1.4px dashed #c00000; }
+      #annCircle { left: 47.3%; top: 28.6%; width: 5%; height: 18.6%; border: 1.5px dotted #c00000; border-radius: 50%; }
+      #annBand { left: 48%; top: 16%; width: 13%; height: 61%; background: rgba(180,199,231,0.5); }
+      #annNote { left: 49%; top: 17.6%; font-size: 7px; font-weight: 700; color: #203864; white-space: nowrap; }
+
+      #bodyp .hl { position: absolute; opacity: 0; }
+      #bodyp .hlY { background: rgba(255,235,59,0.55); }
+      #bodyp .hlP { background: rgba(255,105,180,0.42); }
+      #bodyp .hlT { background: rgba(64,224,208,0.45); }
+      #bodyp .hlG { background: rgba(144,238,144,0.55); }
+      #bodyp .fx { position: absolute; opacity: 0; border-radius: 3px; pointer-events: none; transform-origin: left center;
+        background: rgba(143,170,220,0.30); box-shadow: 0 0 0 1px rgba(47,85,151,0.45), 0 0 14px rgba(143,170,220,0.55); }
+    </style>
+
+    <div data-hf-id="hf-omq5" id="bWrap">
+      <div data-hf-id="hf-6xou" class="sheet" id="tocPage">
+        <div data-hf-id="hf-0hws" class="hd"><span data-hf-id="hf-q2zo" class="z">│ 삼성전자(005930.KS) │</span><span data-hf-id="hf-0ghn" class="z">Equity Research</span></div>
+        <div data-hf-id="hf-tyyu" class="hdr"></div>
+        <div data-hf-id="hf-iq48" class="z" id="tocT">CONTENTS</div>
+        <div data-hf-id="hf-h8zr" id="tocL">
+          <div data-hf-id="hf-ixqc" class="tr z"><span data-hf-id="hf-afn8">Ⅰ. 메모리 업사이클 점검</span><span data-hf-id="hf-r6mh" class="dots"></span><span data-hf-id="hf-ikog">1</span></div>
+          <div data-hf-id="hf-g1z2" class="tr sub z"><span data-hf-id="hf-5set">1. 수요 — HBM이 먼저다</span><span data-hf-id="hf-qh4t" class="dots"></span><span data-hf-id="hf-cy6g">1</span></div>
+          <div data-hf-id="hf-4q8y" class="tr sub z"><span data-hf-id="hf-4vn4">1.1 고객사 증설 일정</span><span data-hf-id="hf-ro1w" class="dots"></span><span data-hf-id="hf-br9d">1</span></div>
+          <div data-hf-id="hf-z4pl" class="tr new z" id="tocNew1"><span data-hf-id="hf-hnqr">Ⅱ. 공급 — 증설 사이클 점검</span><span data-hf-id="hf-r9qv" class="dots"></span><span data-hf-id="hf-c5ke">1</span></div>
+          <div data-hf-id="hf-st58" class="tr sub new z" id="tocNew2"><span data-hf-id="hf-cnax">2. 장비 발주는 이미 시작됐다</span><span data-hf-id="hf-sgny" class="dots"></span><span data-hf-id="hf-aynb">1</span></div>
+          <div data-hf-id="hf-tkt1" class="tr sub new z" id="tocNew3"><span data-hf-id="hf-gilm">2.1 국내 장비사 수주잔고</span><span data-hf-id="hf-s2cx" class="dots"></span><span data-hf-id="hf-bcyc">1</span></div>
+        </div>
+        <div data-hf-id="hf-o1rp" class="ft z" id="tf">R.F.S. Research Team 3 &#160;Ⅰ&#160; 1</div>
+      </div>
+
+      <div data-hf-id="hf-jopa" class="sheet" id="bPage">
+        <div data-hf-id="hf-7zik" class="hd" id="bh"><span data-hf-id="hf-l8po" class="z">│ 삼성전자(005930.KS) │</span><span data-hf-id="hf-ztq3" class="z">Equity Research</span></div>
+        <div data-hf-id="hf-is04" class="hdr" id="bhr"></div>
+
+        <div data-hf-id="hf-rvnk" class="z" id="h1"><span data-hf-id="hf-s7m1" class="num">Ⅰ.</span> 메모리 업사이클 점검</div>
+        <div data-hf-id="hf-js99" id="sumbox"></div>
+        <div data-hf-id="hf-bsqo" class="z" id="sum">HBM 수요가 먼저 움직였고, 범용 메모리가 뒤따라 오르는 구간이다.</div>
+        <div data-hf-id="hf-jejq" class="z" id="h2">1. 수요 — HBM이 먼저다</div>
+        <div data-hf-id="hf-lave" class="z" id="h3">1.1 고객사 증설 일정</div>
+
+        <div data-hf-id="hf-xbmv" id="bodytxt">
+          <p data-hf-id="hf-qli8" class="z" id="p1"><span data-hf-id="hf-trnx" id="em1">전방 고객 3곳의 증설이 ’27년 상반기에 몰려 있다.</span> <span id="wd1">장비 발주는</span> 이미 시작됐고, 가동은 <span data-hf-id="hf-9049" id="mv1">’26년 4분기</span>부터 순차적으로 이뤄진다.</p>
+          <p data-hf-id="hf-wm0j" class="z" id="p2"><span data-hf-id="hf-1srw" id="em2">범용 메모리 가격은 ’26년 2분기를 저점으로 반등했다.</span> <span data-hf-id="hf-u6z1" id="em3">재고일수는 이미 정상 구간에 들어섰다.</span></p>
+        </div>
+        <div data-hf-id="hf-3s1x" id="blist">
+          <div data-hf-id="hf-01ty" class="z">① <span id="wd2">HBM4</span> 양산 일정이 ’27년으로 당겨졌다</div>
+          <div data-hf-id="hf-bkyl" class="z">② 범용 DRAM 재고일수가 정상 구간에 진입했다</div>
+          <div data-hf-id="hf-2pbn" class="z">③ 파운드리 가동률이 회복 국면에 들어섰다</div>
+        </div>
+        <div data-hf-id="hf-d62m" class="z" id="side">사이드노트: 여백 노트<br data-hf-id="hf-x5px">(줄바꿈 Shift+Enter)</div>
+
+        <div data-hf-id="hf-r03n" class="fg" id="fg1">
+          <div data-hf-id="hf-kbwj" class="col1">
+            <div data-hf-id="hf-09qk" class="fcap z"><span data-hf-id="hf-f2o8"><span data-hf-id="hf-e0xj" class="no">[자료 1-1]</span> 매출액·영업이익 추이</span><span data-hf-id="hf-1doi">(단위: 십억 원)</span></div>
+            <div data-hf-id="hf-a46i" class="rule"></div>
+            <div data-hf-id="hf-dpwz" class="area">
+              <span data-hf-id="hf-woc7" class="ph z">차트/표 붙여넣기 (폭 20.1cm)</span>
+              <div id="chWrap"><div data-hf-id="hf-txv5" class="ann" id="annBand"></div>
+              <div data-hf-id="hf-zco7" class="chart" id="chRaw"></div>
+              <div data-hf-id="hf-t4km" class="chart" id="chRfs"></div>
+              <div data-hf-id="hf-v8b7" class="ann" id="annTxt">증설 발표 이후 기울기 전환</div>
+              <div data-hf-id="hf-tuzb" class="ann" id="annArrow"><svg viewBox="0 0 82 25" preserveAspectRatio="none"><defs><marker id="ah" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L6 3 L0 6 z" fill="#c00000" /></marker></defs><path d="M1 2 L78 22" stroke="#c00000" stroke-width="0.9" fill="none" marker-end="url(#ah)" /></svg></div>
+              <div data-hf-id="hf-8e2f" class="ann" id="annBox"></div>
+              <div data-hf-id="hf-nys8" class="ann" id="annDash"></div>
+              <div data-hf-id="hf-oogw" class="ann" id="annCircle"></div>
+              <div data-hf-id="hf-jkyl" class="ann" id="annNote">’26.11, 증설 발표</div>
+                <div id="chSel"><i style="left:-3px;top:-3px"></i><i style="right:-3px;top:-3px"></i><i style="left:-3px;bottom:-3px"></i><i style="right:-3px;bottom:-3px"></i><i style="left:50%;top:-3px;margin-left:-3px"></i><i style="left:50%;bottom:-3px;margin-left:-3px"></i><i style="left:-3px;top:50%;margin-top:-3px"></i><i style="right:-3px;top:50%;margin-top:-3px"></i></div>
+              </div>
+              <div id="chDim"><div class="ar"></div><span class="lb">20.1cm</span><div class="ar"></div></div>
+            </div>
+            <div data-hf-id="hf-vqs5" class="srule"></div><div data-hf-id="hf-01q1" class="src z">출처: 회사 자료, RFS Team 3</div>
+          </div>
+        </div>
+
+        <div data-hf-id="hf-ic7s" class="fg" id="fg2">
+          <div data-hf-id="hf-l0hv" class="col1">
+            <div data-hf-id="hf-nyw4" class="fcap z"><span data-hf-id="hf-q8ll"><span data-hf-id="hf-nhfg" class="no">[자료 1-2]</span> 실적 요약</span><span data-hf-id="hf-tn1i">(단위: 십억 원)</span></div>
+            <div data-hf-id="hf-ya9a" class="rule"></div>
+            <div data-hf-id="hf-pz9v" class="area"><span data-hf-id="hf-abud" class="ph z" id="ph2a">차트/표 붙여넣기 (폭 10.05cm)</span>
+              <div data-hf-id="hf-4i8i" class="xtab" id="xtab"><table data-hf-id="hf-2j5r">
+                <tr data-hf-id="hf-p3r7"><td data-hf-id="hf-1cil">구분</td><td data-hf-id="hf-9xnp">2025A</td><td data-hf-id="hf-l36q">2026E</td><td data-hf-id="hf-w8pr">2027E</td></tr>
+                <tr data-hf-id="hf-ddj7"><td data-hf-id="hf-bz6c">매출액</td><td data-hf-id="hf-cgut">468</td><td data-hf-id="hf-sb6h">561</td><td data-hf-id="hf-upgv">642</td></tr>
+                <tr data-hf-id="hf-cz86"><td data-hf-id="hf-ssdk">영업이익</td><td data-hf-id="hf-b89i">41</td><td data-hf-id="hf-vije">67</td><td data-hf-id="hf-fhxl">84</td></tr>
+                <tr data-hf-id="hf-ckx5"><td data-hf-id="hf-kk8r">OPM (%)</td><td data-hf-id="hf-wzgp">8.8</td><td data-hf-id="hf-2dpi">11.9</td><td data-hf-id="hf-kvgo">13.1</td></tr>
+              </table></div>
+            </div>
+            <div data-hf-id="hf-olmx" class="srule"></div><div data-hf-id="hf-csr1" class="src z">출처: 회사 자료, RFS Team 3</div>
+          </div>
+          <div data-hf-id="hf-km6u" class="col1">
+            <div data-hf-id="hf-mrz1" class="fcap z"><span data-hf-id="hf-qmh5"><span data-hf-id="hf-p94h" class="no">[자료 1-3]</span> 주가 비교 (시작일=100)</span><span data-hf-id="hf-3oig">(단위: pt)</span></div>
+            <div data-hf-id="hf-yokb" class="rule"></div>
+            <div data-hf-id="hf-pkyu" class="area"><span data-hf-id="hf-935g" class="ph z" id="ph2b">차트/표 붙여넣기 (폭 10.05cm)</span>
+              <div data-hf-id="hf-ttg1" class="chart" id="chCmp"></div>
+            </div>
+            <div data-hf-id="hf-psk0" class="srule"></div><div data-hf-id="hf-sqge" class="src z">출처: 네이버 금융, RFS Team 3</div>
+          </div>
+        </div>
+
+        <div data-hf-id="hf-j3vl" class="fg" id="fg3">
+          <div data-hf-id="hf-k7vt" class="col1"><div data-hf-id="hf-n6a2" class="fcap z"><span data-hf-id="hf-n558"><span data-hf-id="hf-ypme" class="no">[자료 1-4]</span> <span class="kw">제목 입력</span></span><span data-hf-id="hf-f0x0"><span class="kw">(단위: )</span></span></div><div data-hf-id="hf-z2vc" class="rule"></div><div data-hf-id="hf-p6nt" class="area"><span data-hf-id="hf-rob3" class="ph z">차트/표 붙여넣기 (폭 6.7cm)</span></div><div data-hf-id="hf-pe8z" class="srule"></div><div data-hf-id="hf-l6s1" class="src z"><span class="kw">출처: ,</span> RFS Team 3</div></div>
+          <div data-hf-id="hf-jtks" class="col1"><div data-hf-id="hf-p5t7" class="fcap z"><span data-hf-id="hf-n8pw"><span data-hf-id="hf-qmxf" class="no">[자료 1-5]</span> <span class="kw">제목 입력</span></span><span data-hf-id="hf-d8nw"><span class="kw">(단위: )</span></span></div><div data-hf-id="hf-waq5" class="rule"></div><div data-hf-id="hf-oscs" class="area"><span data-hf-id="hf-r5rj" class="ph z">차트/표 붙여넣기 (폭 6.7cm)</span></div><div data-hf-id="hf-nepu" class="srule"></div><div data-hf-id="hf-172d" class="src z"><span class="kw">출처: ,</span> RFS Team 3</div></div>
+          <div data-hf-id="hf-jf9r" class="col1"><div data-hf-id="hf-pk48" class="fcap z"><span data-hf-id="hf-m1st"><span data-hf-id="hf-2b14" class="no">[자료 1-6]</span> <span class="kw">제목 입력</span></span><span data-hf-id="hf-c1qt"><span class="kw">(단위: )</span></span></div><div data-hf-id="hf-wp16" class="rule"></div><div data-hf-id="hf-oe1r" class="area"><span data-hf-id="hf-qrgi" class="ph z">차트/표 붙여넣기 (폭 6.7cm)</span></div><div data-hf-id="hf-n0et" class="srule"></div><div data-hf-id="hf-2dzg" class="src z"><span class="kw">출처: ,</span> RFS Team 3</div></div>
+        </div>
+
+        <div data-hf-id="hf-wij8" class="z" id="h1b"><span data-hf-id="hf-2kj0" class="num">Ⅱ.</span> 공급 — 증설 사이클 점검</div>
+        <div data-hf-id="hf-nkj6" class="z" id="h2b">2. 장비 발주는 이미 시작됐다</div>
+        <div data-hf-id="hf-2o08" class="z" id="h3b">2.1 국내 장비사 수주잔고</div>
+
+        <div data-hf-id="hf-tov7" class="ft z" id="bf">R.F.S. Research Team 3 &#160;Ⅰ&#160; 1</div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const root = document.getElementById("bodyp");
+        const one = function (s) { return root.querySelector(s); };
+        const q = function (s) { return root.querySelectorAll(s); };
+
+        const A = [[24,112],[94,98],[164,105],[234,72],[304,83],[374,54],[444,61]];
+        const B = [[24,134],[94,127],[164,119],[234,112],[304,95],[374,88],[444,76]];
+        function pth(pts, color, w, cls) {
+          return '<path class="' + (cls || "ln") + '" stroke="' + color + '" stroke-width="' + w +
+                 '" d="M ' + pts.map(function (p) { return p[0] + " " + p[1]; }).join(" L ") + '"></path>';
+        }
+        one("#chRaw").innerHTML =
+          '<svg viewBox="0 0 470 190" preserveAspectRatio="none">' +
+          [46,76,106,136].map(function (y) { return '<line class="g" x1="24" y1="' + y + '" x2="450" y2="' + y + '"></line>'; }).join("") +
+          pth(A, "#e03131", 4) + pth(B, "#2f9e44", 4) +
+          '<rect x="150" y="16" width="14" height="4" fill="#e03131"></rect><text x="170" y="22">매출액</text>' +
+          '<rect x="250" y="16" width="14" height="4" fill="#2f9e44"></rect><text x="270" y="22">영업이익</text>' +
+          '<text x="24" y="166">2024</text><text x="150" y="166">2025</text><text x="280" y="166">2026E</text><text x="396" y="166">2027E</text></svg>';
+        one("#chRfs").innerHTML =
+          '<svg viewBox="0 0 470 190" preserveAspectRatio="none">' +
+          
+          '<line class="ax" x1="24" y1="146" x2="450" y2="146"></line><line class="ax" x1="24" y1="30" x2="24" y2="146"></line>' +
+          pth(A, "#203864", 1.75, "ln s1") + pth(B, "#d0cece", 1.75, "ln s2") +
+          pth(A.slice(0, 4), "#203864", 1.75, "ln act") + pth(B.slice(0, 4), "#d0cece", 1.75, "ln act") +
+          pth(A.slice(3), "#203864", 1.75, "ln est") + pth(B.slice(3), "#d0cece", 1.75, "ln est") +
+          '<rect x="150" y="16" width="10" height="2.5" fill="#203864"></rect><text x="165" y="20">매출액</text>' +
+          '<rect x="230" y="16" width="10" height="2.5" fill="#d0cece"></rect><text x="245" y="20">영업이익</text>' +
+          '<text x="24" y="160">2024A</text><text x="150" y="160">2025A</text><text x="280" y="160">2026E</text><text x="396" y="160">2027E</text></svg>';
+        const C1 = [[20,84],[70,76],[120,66],[170,50],[220,38],[268,24]];
+        const C2 = [[20,84],[70,82],[120,74],[170,70],[220,62],[268,56]];
+        one("#chCmp").innerHTML =
+          '<svg viewBox="0 0 290 110" preserveAspectRatio="none">' +
+          '<line class="ax" x1="20" y1="94" x2="278" y2="94"></line><line class="ax" x1="20" y1="14" x2="20" y2="94"></line>' +
+          pth(C1, "#203864", 1.75) + pth(C2, "#d0cece", 1.75) +
+          '<rect x="52" y="6" width="9" height="2" fill="#203864"></rect><text x="65" y="9">삼성전자(005930.KS)</text>' +
+          '<rect x="152" y="6" width="9" height="2" fill="#d0cece"></rect><text x="165" y="9">SK하이닉스(000660.KS)</text>' +
+          '<text x="12" y="105">Sep-25</text><text x="74" y="105">Dec-25</text><text x="136" y="105">Mar-26</text><text x="198" y="105">Jun-26</text><text x="252" y="105">Sep-26</text></svg>';
+
+        const sp1 = one("#chRfs .s1"), sp2 = one("#chRfs .s2");
+        const L1 = sp1.getTotalLength(), L2 = sp2.getTotalLength();
+        sp1.style.strokeDasharray = L1; sp1.style.strokeDashoffset = L1;
+        sp2.style.strokeDasharray = L2; sp2.style.strokeDashoffset = L2;
+
+        const tl = gsap.timeline({ paused: true });
+        const W = one("#bWrap");
+        const CAM_TXT = { scale: 1.2, x: 40, y: -26 };
+        const CAM_FIG = { scale: 1, x: 0, y: -408 };
+        const CAM_H1B = { scale: 1, x: 0, y: -760 };
+        const CAM_TOC = { scale: 1, x: 0, y: 1010 };
+        const CAM_ALL = { scale: 0.5, x: -5, y: -30 };
+        // 카메라 — 이동 뒤 다음 이동 전까지 아주 천천히 밀고 들어간다
+        const CAMS = [];
+        // 이동 중에만 살짝 흐려진다 (모션 블러) — 가운데서 가장 흐리고 도착하면 선명
+        function mb(el, t, d, amt) {
+          tl.to(el, { filter: "blur(" + amt + "px)", duration: d * 0.45, ease: "power2.in" }, t);
+          tl.to(el, { filter: "blur(0px)", duration: d * 0.55, ease: "power2.out" }, t + d * 0.45);
+        }
+        function cam(c, t, d) { d = d || 1.1; CAMS.push({ c: c, t: t, d: d }); tl.to(W, Object.assign({ duration: d, ease: "power3.inOut" }, c), t); mb(W, t, d, 0.5); }
+        function drift() {
+          CAMS.forEach(function (k, i) {
+            const end = i + 1 < CAMS.length ? CAMS[i + 1].t : 103.6;
+            const len = end - (k.t + k.d);
+            if (len < 1.5) return;
+            tl.to(W, { scale: k.c.scale * 1.035, duration: len, ease: "none" }, k.t + k.d);
+          });
+        }
+
+        // 버튼 결과 — 결과물 자리에 선택 영역처럼 빛이 얹히고, 페이지가 그쪽으로 살짝 당겨진다
+        const BP = one("#bPage");
+        const FX = [];
+        const FOCUS = [];
+        // 변형(카메라·등장 애니메이션)을 잠깐 걷어내고 원래 레이아웃 자리를 잰다 — 재는 시점과 상관없이 같은 값
+        function place(f) {
+          const saved = [];
+          function strip(el, prop, val) { saved.push([el, prop, el.style[prop]]); el.style[prop] = val; }
+          [W, f.host].forEach(function (el) { strip(el, "transform", "none"); });
+          f.els.forEach(function (el) {
+            for (let n = el; n && n !== f.host; n = n.parentElement) { strip(n, "transform", "none"); if (n.id === "chWrap") strip(n, "width", ((f.chs || 1) * 100) + "%"); }
+            if (f.fw) strip(el, "fontWeight", f.fw);
+          });
+          const pr = f.host.getBoundingClientRect();
+          let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+          f.els.forEach(function (el) {
+            // 글자가 있으면 글자 범위만 (블록 폭 전체가 아니라)
+            let r = el.getBoundingClientRect();
+            if (el.textContent.trim() && !el.querySelector("svg, table, .area")) {
+              const rg = document.createRange(); rg.selectNodeContents(el);
+              const rr = rg.getBoundingClientRect(); if (rr.width > 0) r = rr;
+            }
+            x0 = Math.min(x0, r.left); y0 = Math.min(y0, r.top); x1 = Math.max(x1, r.right); y1 = Math.max(y1, r.bottom);
+          });
+          saved.reverse().forEach(function (v) { v[0].style[v[1]] = v[2]; });
+          const P = f.pad == null ? 3 : f.pad;
+          f.box.style.left = (x0 - pr.left - P) + "px";
+          f.box.style.top = (y0 - pr.top - P) + "px";
+          f.box.style.width = (x1 - x0 + 2 * P) + "px";
+          f.box.style.height = (y1 - y0 + 2 * P) + "px";
+          f.cx = (x0 + x1) / 2 - pr.left; f.cy = (y0 + y1) / 2 - pr.top;
+        }
+        // mode "sel": 누르기 전에 선택 → 누르면 적용 → 선택 해제 / "pop": 누른 뒤 생긴 결과가 한 번 빛난다
+        function fx(sel, t, mode, opt) {
+          opt = opt || {};
+          const els = Array.prototype.slice.call(q(sel));
+          const host = opt.host ? one(opt.host) : BP;
+          const box = document.createElement("div");
+          box.className = "fx";
+          host.appendChild(box);
+          const f = { els: els, host: host, box: box, pad: opt.pad, fw: opt.fw, chs: opt.chs };
+          FX.push(f);
+          place(f);
+          if (opt.camOnly) {
+            // 빛 상자 없이 카메라만
+          } else if (mode === "sel") {
+            tl.fromTo(box, { opacity: 0, scaleX: 0 }, { opacity: 1, scaleX: 1, duration: 0.3, ease: "power2.out", immediateRender: false }, t - 0.45);
+            tl.to(box, { opacity: 0, duration: 0.45, ease: "power1.out" }, t + 0.75);
+          } else {
+            tl.fromTo(box, { opacity: 0, scaleX: 1 }, { opacity: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, t + 0.12);
+            tl.to(box, { opacity: 0.45, duration: 0.25, yoyo: true, repeat: 1, ease: "power1.inOut" }, t + 0.32);
+            tl.to(box, { opacity: 0, duration: 0.45, ease: "power1.out" }, t + 0.95);
+          }
+          if (opt.punch !== false) FOCUS.push({ t: t, f: f, fx: opt.fx, max: opt.max, slow: opt.slow });
+        }
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { FX.forEach(place); });
+        // ── 카메라: 버튼을 누르면 바뀌는 자리로 들어가고, 같은 막 안에서는 결과에서 결과로 미끄러진다 ──
+        // 화면 좌표 = 960 + (px - 360)·s + x,  520 + py·s + y   (W 의 기준점이 위 가운데)
+        function focusCam() {
+          FOCUS.sort(function (a, b) { return a.t - b.t; });
+          function baseAt(t) { let b = CAMS[0]; CAMS.forEach(function (k) { if (k.t <= t) b = k; }); return b; }
+          function camBetween(a, b) { return CAMS.some(function (k) { return k.t > a && k.t < b; }); }
+          FOCUS.forEach(function (F, i) {
+            const f = F.f, hostTop = f.host === BP ? 0 : f.host.offsetTop;
+            const FXp = F.fx || 1250, FYp = 745;
+            function sc() {
+              const w = parseFloat(f.box.style.width), h = parseFloat(f.box.style.height);
+              return Math.max(1.25, Math.min(F.max || 2.2, 980 / w, 500 / h));
+            }
+            const D = F.slow ? 1.3 : 0.7;               // 천천히 다가가야 하는 곳
+            const tIn = F.t - (F.slow ? 1.0 : 0.55);
+            tl.to(W, {
+              scale: function () { return sc(); },
+              x: function () { const k = sc(); return FXp - 960 - (f.cx - 360) * k; },
+              y: function () { const k = sc(); return FYp - 520 - (f.cy + hostTop) * k; },
+              duration: D, ease: "power2.inOut"
+            }, tIn);
+            mb(W, tIn, D, 0.35);
+            const nx = FOCUS[i + 1];
+            if (nx && nx.t - F.t <= 2.7 && !camBetween(F.t, nx.t)) return;   // 다음 결과로 바로 넘어간다
+            const b = baseAt(F.t);
+            let tOut = F.t + (F.slow ? 2.0 : 1.35);
+            const nextCam = CAMS.filter(function (k) { return k.t > F.t; })[0];
+            if (nextCam) tOut = Math.min(tOut, nextCam.t - 0.85);
+            const tb = Math.max(tOut, F.t + 0.35);
+            const DO = F.slow ? 1.2 : 0.8;
+            tl.to(W, { scale: b.c.scale, x: b.c.x, y: b.c.y, duration: DO, ease: "power2.inOut" }, tb);
+            mb(W, tb, DO, 0.35);
+          });
+        }
+
+
+        // ══ 4막 · 제목 (전역 26.8 기준, local = 전역 - 26.8) ══
+        tl.fromTo(W, { y: 520, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0);
+        tl.fromTo([one("#bh"), one("#bf")], { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.3);
+        tl.fromTo(one("#bhr"), { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "power2.inOut" }, 0.35);
+        cam(CAM_TXT, 0.45, 0.9);
+        tl.fromTo(one("#h1"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.42, ease: "power2.out" }, 1.7);
+        tl.fromTo(one("#h1 .num"), { opacity: 0, x: -14, color: "#2f5597" }, { opacity: 1, x: 0, duration: 0.45, ease: "back.out(2)" }, 2.2);
+        tl.to(one("#h1 .num"), { color: "#1a1a1a", duration: 0.7 }, 3.1);
+        tl.fromTo(one("#h2"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, 3.9);
+        tl.fromTo(one("#h3"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, 5.7);
+
+        // ══ 5막 · 문단 ══
+        tl.fromTo(one("#p1"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 10.7);
+        tl.fromTo(one("#p2"), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 11.1);
+        tl.fromTo(one("#blist"), { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power2.out" }, 12.5);
+        tl.fromTo(q("#blist div"), { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.14 }, 12.6);
+        tl.fromTo(one("#sumbox"), { scaleX: 0 }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 14.3);
+        tl.fromTo(one("#sum"), { opacity: 0 }, { opacity: 1, duration: 0.35 }, 14.6);
+        tl.fromTo(one("#side"), { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.45, ease: "power2.out" }, 16.1);
+
+        // ══ 6막 · 자료 틀 ══
+        cam(CAM_FIG, 19.8, 1.2);
+        tl.fromTo(one("#fg1"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 21.85);
+        tl.fromTo(one("#fg2"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 23.725);
+        tl.fromTo(one("#fg3"), { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 25.6);
+        tl.fromTo(q(".fcap .no"), { color: "#2f5597" }, { color: "#1a1a1a", duration: 0.8, stagger: 0.09, immediateRender: false }, 27.475);
+
+        // ══ 7막 · 강조 ══
+        cam(CAM_TXT, 30.175, 1.1);
+        tl.fromTo(one("#wd1"), { fontWeight: 300 }, { fontWeight: 700, duration: 0.25, immediateRender: false }, 32.195);
+        tl.fromTo(one("#em3"), { color: "#1a1a1a", fontWeight: 300 }, { color: "#c00000", fontWeight: 700, duration: 0.3, immediateRender: false }, 34.115);
+        tl.fromTo([one("#em1"), one("#em2")], { fontWeight: 300 }, { fontWeight: 700, duration: 0.25, immediateRender: false }, 36.035);
+
+        // 붙여넣은 차트는 칸 폭보다 좁다 — [폭 맞추기] 전까지
+        gsap.set(one("#chWrap"), { width: "74%" });
+        // ══ 8막 · 차트·표 ══
+        cam(CAM_FIG, 39.175, 1.1);
+        tl.to(one("#fg1 .ph"), { opacity: 0, duration: 0.25 }, 40.575);
+        tl.fromTo(one("#chRaw"), { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.45, ease: "power3.out" }, 40.575);
+        tl.to(one("#chRaw"), { opacity: 0, duration: 0.4, ease: "power2.inOut" }, 42.075);
+        tl.fromTo(one("#chRfs"), { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "power2.inOut" }, 42.075);
+        tl.to([sp1, sp2], { strokeDashoffset: 0, duration: 0.9, ease: "power1.inOut" }, 42.275);
+        tl.to(one("#ph2a"), { opacity: 0, duration: 0.25 }, 44.075);
+        tl.fromTo(one("#xtab"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 44.075);
+        tl.to([sp1, sp2], { opacity: 0, duration: 0.3 }, 46.075);
+        tl.to(q("#chRfs .act, #chRfs .est"), { opacity: 1, duration: 0.3 }, 46.075);
+
+        // ══ 9막 · 주석 ══
+        tl.fromTo(one("#annTxt"), { opacity: 0, x: -125.7, y: -25.1 }, { opacity: 1, duration: 0.2, immediateRender: false }, 52.425);
+        tl.to(one("#annTxt"), { x: 0, y: 0, duration: 0.6, ease: "power2.inOut" }, 52.988);
+        tl.fromTo(one("#annArrow"), { opacity: 0, x: -229.7, y: -34.4 }, { opacity: 1, duration: 0.2, immediateRender: false }, 54.425);
+        tl.to(one("#annArrow"), { x: 0, y: 0, duration: 0.6, ease: "power2.inOut" }, 54.987);
+        tl.fromTo(one("#annBox"), { opacity: 0, x: -498.8, y: -29.8 }, { opacity: 1, duration: 0.2, immediateRender: false }, 56.425);
+        tl.to(one("#annBox"), { x: 0, y: 0, duration: 0.6, ease: "power2.inOut" }, 56.987);
+        // [폭 맞추기] — 차트를 클릭(선택 핸들) → 칸 폭 20.1cm 에 맞춘다
+        tl.fromTo(one("#chSel"), { opacity: 0 }, { opacity: 1, duration: 0.15 }, 57.8);
+        tl.to(one("#chWrap"), { width: "100%", duration: 0.7, ease: "power3.inOut" }, 58.488);
+        tl.to(one("#chSel"), { opacity: 0, duration: 0.3 }, 59.675);
+        tl.fromTo(one("#chDim"), { opacity: 0 }, { opacity: 1, duration: 0.25 }, 59.3);
+        tl.to(one("#chDim"), { opacity: 0, duration: 0.4 }, 60.8);
+        tl.fromTo(one("#annDash"), { opacity: 0, x: 2.7, y: -76.3 }, { opacity: 1, duration: 0.2, immediateRender: false }, 60.175);
+        tl.to(one("#annDash"), { x: 0, y: 0, duration: 0.6, ease: "power2.inOut" }, 60.737);
+        tl.fromTo(one("#annCircle"), { opacity: 0, x: -301.0, y: -43.9 }, { opacity: 1, duration: 0.2, immediateRender: false }, 61.925);
+        tl.to(one("#annCircle"), { x: 0, y: 0, duration: 0.6, ease: "power2.inOut" }, 62.487);
+        tl.fromTo(one("#annBand"),   { opacity: 0, scaleY: 0.6 }, { opacity: 1, scaleY: 1, duration: 0.4, ease: "power2.out" }, 65.55);
+        tl.fromTo(one("#annNote"),   { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.35 }, 66.3);
+
+        // ══ 10막 · 데이터 (주가 비교 · 모델 값) ══
+        tl.to(one("#ph2b"), { opacity: 0, duration: 0.25 }, 73.425);
+        tl.fromTo(one("#chCmp"), { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 73.425);
+        cam(CAM_TXT, 74.825, 1.0);
+        tl.fromTo(one("#mv1"), { color: "#1a1a1a", fontWeight: 300 },
+          { color: "#2f5597", fontWeight: 700, duration: 0.35, immediateRender: false }, 76.225);
+
+        // ══ 11막 · 글꼴 ══
+        tl.fromTo(one("#h1"), { fontWeight: 500 }, { fontWeight: 700, duration: 0.2, immediateRender: false }, 81.635);
+        tl.fromTo(one("#h1"), { fontWeight: 700 }, { fontWeight: 500, duration: 0.2, immediateRender: false }, 83.455);
+        tl.fromTo(one("#h1"), { fontWeight: 500 }, { fontWeight: 300, duration: 0.2, immediateRender: false }, 85.275);
+        tl.to(one("#h1"), { fontWeight: 500, duration: 0.2 }, 86.445);
+        tl.fromTo(q(".fcap"), { fontFamily: '"KPW", sans-serif' }, { fontFamily: '"YoonGo", "KPW", sans-serif', duration: 0.01, immediateRender: false }, 87.095);
+        tl.fromTo(q(".fcap"), { color: "#1a1a1a" }, { color: "#2f5597", duration: 0.3, yoyo: true, repeat: 1, immediateRender: false }, 87.095);
+
+        // ══ 12막 · 마무리 ══
+        cam(CAM_H1B, 89.565, 1.1);
+        tl.fromTo(one("#h1b"), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.45, ease: "power2.out" }, 91.09);
+        tl.fromTo(one("#h1b .num"), { opacity: 0, x: -12, color: "#2f5597" }, { opacity: 1, x: 0, duration: 0.4, ease: "back.out(2)" }, 91.601);
+        tl.fromTo(one("#h2b"), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35 }, 92.62);
+        tl.fromTo(one("#h3b"), { opacity: 0, x: -8 }, { opacity: 1, x: 0, duration: 0.35 }, 93.3);
+        tl.to(one("#h1b .num"), { color: "#1a1a1a", duration: 0.6 }, 94.49);
+        // [필드 갱신] → 목차로 올라가 목차가 갱신된다
+        tl.fromTo(one("#tocPage"), { opacity: 0 }, { opacity: 1, duration: 0.4 }, 96.135);
+        cam(CAM_TOC, 96.135, 1.3);
+        tl.fromTo([one("#tocNew1"), one("#tocNew2"), one("#tocNew3")],
+          { opacity: 0, x: -10 }, { opacity: 1, x: 0, duration: 0.45, ease: "power2.out", stagger: 0.24 }, 98.335);
+        // [양식 점검] · [내용 점검]
+        cam(CAM_TXT, 100.935, 1.2);
+        tl.to(one("#tocPage"), { opacity: 0, duration: 0.45 }, 100.935);   // 목차는 볼일 끝나면 치운다
+        const HLY = "rgba(255,235,59,0.85)", HLT = "rgba(64,224,208,0.7)";
+        tl.fromTo([one("#em2"), one("#em3")], { backgroundColor: "rgba(255,235,59,0)" }, { backgroundColor: HLY, duration: 0.2, immediateRender: false }, 102.735);
+        tl.fromTo(one("#wd2"), { backgroundColor: "rgba(64,224,208,0)" }, { backgroundColor: HLT, duration: 0.2, immediateRender: false }, 102.935);
+        // [내용 점검] — 이전 표시를 지우고 빈칸을 칠한다
+        tl.to([one("#em2"), one("#em3"), one("#wd2")], { backgroundColor: "rgba(255,235,59,0)", duration: 0.2 }, 106.535);
+        cam(CAM_FIG, 106.235, 1.0);
+        tl.fromTo(q("#fg3 .kw"), { backgroundColor: "rgba(255,235,59,0)" }, { backgroundColor: HLY, duration: 0.18, stagger: 0.05, immediateRender: false }, 106.935);
+        tl.to(q("#fg3 .kw"), { backgroundColor: "rgba(255,235,59,0)", duration: 0.3 }, 109.935);
+        // [PDF 내보내기]
+        cam(CAM_ALL, 112.935, 1.2);
+
+        // ══ 13막으로 — 문서가 물러난다 ══
+        tl.to(W, { y: 460, opacity: 0, duration: 1.1, ease: "power2.in" }, 116.735);
+
+        // ══ 버튼 결과 표시 (로컬 시각) ══
+        fx("#h1", 1.6, "pop");            fx("#h2", 3.8, "pop");            fx("#h3", 5.6, "pop");
+        fx("#p1", 10.6, "pop");  fx("#p2", 11, "pop", { punch: false });      fx("#blist", 12.85, "pop");        fx("#sumbox", 14.2, "pop", { pad: 2 });
+        fx("#side", 16, "pop");
+        fx("#fg1", 21.725, "pop", { punch: 1.03 }); fx("#fg2", 23.6, "pop", { punch: 1.03 }); fx("#fg3", 25.475, "pop", { punch: 1.03 });
+        fx("#wd1", 32.075, "sel", { fw: 700 });  fx("#em3", 33.995, "sel", { fw: 700 });
+        fx("#bodytxt", 35.915, "pop", { camOnly: true, max: 1.7 });  fx("#em1", 35.915, "pop", { fw: 700, punch: false });  fx("#em2", 35.915, "pop", { fw: 700, punch: false });
+        fx("#chWrap", 41.975, "pop", { pad: 0, chs: 0.74 });  fx("#xtab", 43.975, "pop", { pad: 1 });
+        fx("#chRfs .est", 45.975, "pop", { pad: 3, chs: 0.74 });
+        fx("#annTxt", 53.55, "pop", { pad: 3, chs: 0.74 });   fx("#annArrow", 55.55, "pop", { pad: 1, chs: 0.74 });  fx("#annBox", 57.55, "pop", { pad: 1, chs: 0.74, punch: false });
+        fx("#fg1 .area", 59.175, "pop", { pad: 0 });
+        fx("#annDash", 61.3, "pop", { pad: 1 });  fx("#annCircle", 63.05, "pop", { pad: 1 });
+        fx("#annBand", 65.425, "pop", { pad: 1, punch: false });  fx("#annNote", 66.175, "pop", { pad: 3, punch: false });
+        fx("#chCmp", 73.325, "pop", { pad: 1 });
+        fx("#mv1", 76.025, "sel", { fw: 700, slow: true, max: 1.7 });
+        fx("#h1", 81.375, "sel");           fx("#h1", 83.195, "sel", { punch: false });   fx("#h1", 85.015, "sel", { punch: false });
+        fx("#fg1 .fcap", 86.835, "sel", { pad: 2, punch: 1.03 });  fx("#fg2 .col1:first-child .fcap", 86.835, "sel", { pad: 2, punch: false });
+        fx("#h1b", 90.581, "pop", { slow: true, max: 1.6 });
+        fx("#tocNew1, #tocNew2, #tocNew3", 98.835, "pop", { host: "#tocPage" });
+        fx("#p2, #blist", 102.835, "pop", { camOnly: true, fx: 1010, max: 1.9 });
+        fx("#fg3", 107.035, "pop", { camOnly: true, fx: 1010, max: 1.8 });
+        focusCam();
+
+        window.__timelines["bodyp"] = tl;
+      })();
+    </script>
+  </div>
+</template>
