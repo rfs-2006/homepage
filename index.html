@@ -212,7 +212,7 @@ a:hover{color:#203864}
 @media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:10px;letter-spacing:0.14em;line-height:1.8}}
 .page-banner{position:relative;height:280px;display:flex;align-items:flex-end;overflow:hidden}
 .page-banner h1{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 35px 40px;width:100%;box-sizing:border-box;color:#F7F6F3;font-family:'Noto Serif KR',serif;font-size:42px;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
-.wrap{max-width:1300px;margin:0 auto;padding:0 35px;box-sizing:border-box}
+.wrap{max-width:1360px;margin:0 auto;padding:0 35px;box-sizing:border-box}
 .about-nav{position:sticky;top:96px;align-self:start}
 .sec-label{font-size:13px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#203864;margin:0 0 clamp(12px,1.6vh,20px)}
 .sec-title{font-family:'Noto Serif KR',serif;font-size:clamp(29px,2.9vw,42px);font-weight:400;line-height:1.35;letter-spacing:-0.02em;color:#0F1B2E;margin:0;max-width:20em;word-break:keep-all}
@@ -626,6 +626,15 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 히어로 지난 뒤 상단 메뉴 배경 + 고정 탭을 메뉴 바로 아래에 */
+.nav-solid .nav{background:rgba(247,246,243,0.97) !important;border-bottom-color:transparent !important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.nav-solid.nav-dark .nav{background:rgba(15,27,46,0.97) !important}
+.pg-tabs,.fd-nav{top:72px !important}
+.nav-solid:not(.nav-dark) .nav a,.nav-solid:not(.nav-dark) .nav button,.nav-solid:not(.nav-dark) .nav .wordmark,.nav-solid:not(.nav-dark) .nav .wordmark-sub,.nav-solid:not(.nav-dark) .nav .wordmark-block{color:#1A1A1A !important}
+.nav-solid:not(.nav-dark) .nav button{border-color:#1A1A1A !important}
+.nav-solid:not(.nav-dark) .nav .seal-navy{display:block !important}.nav-solid:not(.nav-dark) .nav .seal-light{display:none !important}
+.nav-solid.nav-dark .nav a,.nav-solid.nav-dark .nav button,.nav-solid.nav-dark .nav .wordmark,.nav-solid.nav-dark .nav .wordmark-sub{color:#F7F6F3 !important}
+
 
 /* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
 .pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
@@ -691,13 +700,13 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
 main.pgx{background:#EEEDE8 !important}
 main.pgx>section[data-nav="light"]:not(.pres){background:transparent !important;border:0 !important;padding:10px 0 !important}
-main.pgx>section[data-nav="light"]:not(.pres)>.wrap{max-width:1230px;width:calc(100% - 70px);box-sizing:border-box;background:#FFFFFF;border:1px solid #E2E0DA;padding:56px 56px !important;margin:10px auto}
+main.pgx>section[data-nav="light"]:not(.pres)>.wrap{max-width:1290px;width:calc(100% - 70px);box-sizing:border-box;background:#FFFFFF;border:1px solid #E2E0DA;padding:56px 56px !important;margin:10px auto}
 main.pgx>section[data-nav="light"]:not(.pres):first-of-type{padding-top:20px !important}
-main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero){margin:20px auto;max-width:1230px;width:calc(100% - 70px);box-sizing:border-box}
+main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero){margin:20px auto;max-width:1290px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx>section.on-photo:not(.pg-hero)>.wrap,main.pgx>section[data-nav="dark"]:not(.pg-hero)>.wrap{padding-left:56px !important;padding-right:56px !important}
 main.pgx>section:last-of-type{margin-bottom:60px}
 main.pgx h2,main.pgx .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(26px,2.4vw,32px) !important;font-weight:700 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
-main.pgx .pres{margin:20px auto;max-width:1230px;width:calc(100% - 70px);box-sizing:border-box}
+main.pgx .pres{margin:20px auto;max-width:1290px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx .pres .pres-in{padding:64px 56px}
 @media (max-width:860px){
   .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:12px;padding:8px 0}
@@ -4204,8 +4213,18 @@ class Component extends DCLogic {
           el.setAttribute('data-fx', '1'); el.setAttribute('data-fxb', ''); io.observe(el);
         });
       };
-      scan();
-      new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
+      // 히어로를 지나면 상단 메뉴에 배경을 깔아 아래 고정 탭과 한 덩어리로 보이게
+      const solid = (on) => { const d = document.documentElement; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-72px 0px 0px 0px' });
+      const scanHero = () => {
+        const h = document.querySelector('.pg-hero');
+        if (h === this._fxHero) return;
+        if (this._fxHero) hio.unobserve(this._fxHero);
+        this._fxHero = h; solid(false);
+        if (h) hio.observe(h);
+      };
+      scan(); scanHero();
+      new MutationObserver(() => { scan(); scanHero(); }).observe(document.body, { childList: true, subtree: true });
     }
     // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
     const t0 = performance.now(), minHold = 1200;
