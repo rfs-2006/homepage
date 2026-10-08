@@ -74,11 +74,11 @@ async function balance() {
 
 // ---------- 지수 (네이버 금융 공개 시세) ----------
 const idxBase = {};
-async function indexRet(code) {
+async function indexRet(code, start) {
   try {
-    if (START && !idxBase[code]) {
+    if (start && !idxBase[code]) {
       const xml = await (await fetch(`https://fchart.stock.naver.com/sise.nhn?symbol=${code}&timeframe=day&count=500&requestType=0`)).text();
-      const lim = START.replace(/-/g, '');
+      const lim = start.replace(/-/g, '');
       for (const m of xml.matchAll(/data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([\d.]+)\|/g)) if (m[1] < lim) idxBase[code] = parseFloat(m[2]);
     }
     const j = await (await fetch(`https://m.stock.naver.com/api/index/${code}/basic`)).json();
@@ -111,7 +111,10 @@ async function round() {
   const stock = n(head.tot_evlt_amt);
   const today = ymd();
   // 기준가: 시작 금액 1,000 기준, 입출금은 그날 기준가로 좌수를 늘리거나 줄인다
-  let units = BASE ? BASE / 1000 : 0;
+  // FUND_BASE가 없으면 처음 기록한 날의 총자산을 기준가 1,000으로 잡는다 (그날부터의 성과)
+  const base = BASE || (prev && prev.baseTotal) || total;
+  const baseDate = BASE ? (START || null) : ((prev && prev.baseDate) || today);
+  let units = base / 1000;
   const hist = (prev && prev.history) || [];
   if (units) for (const f of FLOWS) {
     const ref = hist.filter((h) => h[0] < f.d).pop();
@@ -130,11 +133,11 @@ async function round() {
     };
   }).filter((h) => h.qty > 0).sort((a, b) => b.evlt - a.evlt);
   const cash = Math.max(0, total - stock);
-  const [kospi, kosdaq] = await Promise.all([indexRet('KOSPI'), indexRet('KOSDAQ')]);
+  const [kospi, kosdaq] = await Promise.all([indexRet('KOSPI', START || baseDate), indexRet('KOSDAQ', START || baseDate)]);
   const history = hist.filter((h) => h[0] !== today);
   if (nav) history.push([today, +nav.toFixed(2), kospi && kospi.now, kosdaq && kosdaq.now]);
   const data = {
-    asOf: stamp(), start: START || null,
+    asOf: stamp(), start: START || baseDate, baseTotal: base, baseDate,
     total, stock, cash, cashWeight: total ? cash / total * 100 : 0,
     nav: nav && +nav.toFixed(2), ret: nav ? nav / 1000 * 100 - 100 : n(head.tot_prft_rt),
     pl: n(head.tot_evlt_pl), plRet: n(head.tot_prft_rt),
