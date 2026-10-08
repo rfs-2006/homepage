@@ -626,6 +626,18 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 알럼나이 진출 분야 아이콘 */
+.al-ic{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:34px;max-width:760px}
+.al-ic>div{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 6px 16px;border:1px solid rgba(247,246,243,0.14);background:rgba(15,27,46,0.35);color:#F7F6F3;transition:border-color .2s,background .2s}
+.al-ic>div:hover{border-color:rgba(143,170,220,0.6);background:rgba(143,170,220,0.08)}
+.al-ic svg{width:34px;height:34px;color:#8FAADC}
+.al-ic span{font-size:13px;color:rgba(247,246,243,0.85);white-space:nowrap}
+@media (max-width:860px){.al-ic{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* 상단 사진 히어로 크게 */
+.pg-hero{min-height:84vh;display:flex;align-items:flex-end}
+.pg-hero .pg-hero-in{padding-top:150px;padding-bottom:64px}
+@media (max-width:860px){.pg-hero{min-height:82svh}.pg-hero .pg-hero-in{padding-top:112px;padding-bottom:36px}}
+
 /* 회장 인사 (PEOPLE) */
 .pres{background:#0F1B2E;color:#F7F6F3;border-top:1px solid rgba(143,170,220,0.25)}
 .pres-in{display:grid;grid-template-columns:220px minmax(0,1fr);gap:64px;align-items:center;padding:96px 35px}
@@ -1473,7 +1485,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>R.F.S. Research Team · 기업분석 리포트</span></p>
         <h1 class="pg-title">Research</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -1521,11 +1532,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <span style="margin-left:auto;font-size:13px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }} reports</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
+              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
               <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:58px minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
                 <span style="font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">{{ r.term }}</span>
-                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span><span style="display:block;margin-top:4px;font-size:13px;color:rgba(26,26,26,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.headline }}</span></span>
+                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
                 <span class="col-s" style="font-size:13px;color:rgba(26,26,26,0.6)">{{ r.sector }}</span>
                 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
@@ -1555,7 +1566,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>R.F.S. Research Team · 기업분석 리포트</span></p>
         <h1 class="pg-title">Research</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -1598,14 +1608,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }}&nbsp;reports</div>
       <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-        <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
+        <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
         <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
           <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:block;padding:15px 0;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
               <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:11px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
               <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
-            <div style="margin-top:4px;font-size:13px;color:rgba(26,26,26,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.headline }}</div>
             <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">
               <span style="font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
               <span>{{ r.sector }}</span><span>{{ r.term }}</span>
@@ -1741,7 +1750,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>Since 2006 · 중앙대학교 가치투자학회</span></p>
         <h1 class="pg-title">About R.F.S.</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -1905,7 +1913,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>Since 2006 · 중앙대학교 가치투자학회</span></p>
         <h1 class="pg-title">About<br>R.F.S.</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -1999,7 +2006,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>R.F.S. · 43기 임원진과 알럼나이</span></p>
         <h1 class="pg-title">Our People</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -2047,7 +2053,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px">
         <div class="rv rv-up">
           <h2 class="sec-title"><strong>R.F.S. Network</strong></h2>
-          <p class="sec-sub" style="max-width:52em">RFS의 Alumni는 증권사, 은행, 자산운용사, 사모펀드, 회계법인, 컨설팅 등 금융권을 중심으로 구성되어 있습니다.&nbsp;</p>
+          <div class="al-ic"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V5M5 19h14"/><path d="M8 15l3-4 3 2 4-6"/></svg><span>증권사</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l8-5 8 5"/><path d="M5 9h14M7 9v8M11 9v8M15 9v8M19 9v8M4 19h16"/></svg><span>은행</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l6 5"/></svg><span>자산운용사</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="1.5"/><path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2M4 13h16"/></svg><span>사모펀드</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 7.5h6M9 12h1M12 12h1M15 12h0M9 15.5h1M12 15.5h1M15 15.5v1"/></svg><span>회계법인</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6M10 20h4"/><path d="M12 4a5 5 0 00-3 9c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a5 5 0 00-3-9z"/></svg><span>컨설팅</span></div></div>
         </div>
         <div class="donut-wrap" onMouseLeave="{{ sliceLeave }}" style="display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center;margin-top:clamp(40px,6vh,64px)">
           <div class="rv rv-left" style="position:relative;width:100%;aspect-ratio:1/1">
@@ -2117,7 +2123,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><span>R.F.S. · 43기 임원진과 알럼나이</span></p>
         <h1 class="pg-title">Our<br>People</h1>
         <div class="fd-kc auto">
           <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
@@ -2435,7 +2440,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="fd-kc">
             <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
           </div>
-          <p class="fd-asof"><i></i>{{ fdAsOfLine }}</p>
         </sc-if>
       </div>
     </section>
@@ -2478,7 +2482,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
         </sc-if>
         <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p class="fd-cap">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
-        <p class="fd-foot"><i></i>{{ fdRangeCap }}</p>
       </section>
 
       <section class="fd-card" id="fd-period">
@@ -2487,8 +2490,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="rh"><span>구분</span><span>1주(%)</span><span>1개월(%)</span><span>3개월(%)</span><span>6개월(%)</span><span>1년(%)</span><span>설정 이후(%)</span></div>
           <sc-for list="{{ fdPerRows }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c1 }}">{{ q.v1 }}</b><b style="color:{{ q.c2 }}">{{ q.v2 }}</b><b style="color:{{ q.c3 }}">{{ q.v3 }}</b><b style="color:{{ q.c4 }}">{{ q.v4 }}</b><b style="color:{{ q.c5 }}">{{ q.v5 }}</b><b style="color:{{ q.c6 }}">{{ q.v6 }}</b></div></sc-for>
         </div></div>
-        <p class="fd-foot"><i></i>{{ fdPerAsOf }}</p>
-        <ul class="fd-notes"><li>운용 계좌 추정자산 기준 세전 수익률 (보수·세금 차감 전)</li><li>기간 시작일이 설정일보다 앞서면 표시하지 않음 (-)</li><li>KOSPI 대비는 같은 기간 펀드 수익률 − KOSPI 수익률 (%p)</li></ul>
       </section>
 
 
@@ -2505,17 +2506,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <div class="fd-lg"><sc-for list="{{ fdLegend }}" as="l" hint-placeholder-count="8"><div class="{{ l.cls }}" onMouseEnter="{{ l.enter }}" onMouseLeave="{{ l.leave }}"><i class="ch" style="background:{{ l.c }}"></i><span class="ln">{{ l.t }}</span><em class="lb"><i style="width:{{ l.bw }};background:{{ l.c }}"></i></em><b class="lw">{{ l.w }}</b></div></sc-for></div>
           </div>
         </div>
-        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
       </section>
 
       <section class="fd-card">
         <h2 class="fd-ct">업종별 비중</h2>
         <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
-        <p class="fd-foot"><i></i>주식 내 비중 · 업종은 운용팀 분류</p>
       </section>
 
       <section class="fd-card" id="fd-hold">
-        <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2><span class="fd-sub">{{ fdPortCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2></div>
         <div class="fd-list">
           <div class="fd-lh"><span></span><span>종목</span><span class="r c3">현재가</span><span class="r c3">평가금액</span><span class="r">비중</span><span class="r">수익률</span></div>
           <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
@@ -2528,12 +2527,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </div>
           </sc-for>
         </div>
-        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
       </section>
 
       <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-attr">
-        <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2><span class="fd-sub">{{ fdTodayCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2></div>
           <div class="fd-movers">
             <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">손익</span></div>
             <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
@@ -2556,13 +2554,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
-        <p class="pg-note">{{ rfmBeatLine }}</p>
         <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
         <div class="fd-kc">
           <sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
         </div>
         </sc-if>
-        <p class="fd-asof"><i></i>{{ rfmMeta }}</p>
       </div>
     </section>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
@@ -2582,7 +2578,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <sc-for list="{{ rfmLanes }}" as="r" hint-placeholder-count="8">
               <div class="{{ r.cls }}" style="transform:translateY(calc(var(--rH) * {{ r.idx }}))">
                 <div class="rk">{{ r.no }}</div>
-                <div class="nm"><div class="nn"><b>{{ r.label }}</b> <i class="ns">{{ r.sub }}</i></div><small>{{ r.meta }}</small></div>
+                <div class="nm"><div class="nn"><b>{{ r.label }}</b> <i class="ns">{{ r.sub }}</i></div></div>
                 <div class="trk">
                   <i class="vl" style="left:{{ rfmZero }};background:rgba(247,246,243,0.18)"></i>
                   <i class="vl" style="left:{{ rfmKx }};background:#8FAADC;opacity:0.5"></i>
@@ -2591,7 +2587,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                   <i class="run" style="left:{{ r.x }};background:{{ r.dot }}"></i>
                 </div>
                 <div class="rt" style="animation-name:{{ r.fl }}"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
-                <sc-if value="{{ r.hasGap }}" hint-placeholder-val="{{ true }}"><span class="gap">{{ r.gap }}</span></sc-if>
               </div>
             </sc-for>
           </div>
@@ -2599,7 +2594,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
         </div>
-        <p class="fd-foot"><i></i>{{ rfmFoot }}</p>
       </section>
       <div class="rfm-side">
         <section class="fd-card rfm-mine" id="rfm-me">
@@ -2624,13 +2618,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
 
       <section class="fd-card" id="rfm-dist">
-        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2><span class="fd-sub">{{ rfmDistCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2></div>
         <div class="fd-bars rfm-bars"><sc-for list="{{ rfmDist }}" as="b" hint-placeholder-count="6"><div class="{{ b.cls }}"><span class="bl">{{ b.n }}<em>{{ b.t }}</em></span><i style="height:{{ b.h }};background:{{ b.bg }}"></i></div></sc-for></div>
-        <p class="fd-foot"><i></i>{{ rfmDistFoot }}</p>
       </section>
 
       <section class="fd-card" id="rfm-bm">
-        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2><span class="fd-sub">대회 시작일 이후</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2></div>
         <div class="fd-pt">
           <div class="fd-pr hd rfm-pr"><span>구분</span><span>수익률</span><span>KOSPI 대비</span></div>
           <sc-for list="{{ rfmBmRows }}" as="q" hint-placeholder-count="5"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c }}">{{ q.v }}</b><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
