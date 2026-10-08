@@ -568,7 +568,7 @@ nav.nav{view-transition-name:rfs-nav}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
-.fdpage::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
+.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -4417,11 +4417,9 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    this.sb.from('public_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => {
-        if (data && data.data) return this.setRfm(data.data);
-        if (this.state.user) this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle().then(({ data: d }) => { if (d && d.data) this.setRfm(d.data); });
-      });
+    if (!this.state.user) return;
+    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -4957,7 +4955,7 @@ class Component extends DCLogic {
       this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
         .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
     }
-    if (s.page === 'rfm' && !this._rfmReq && this.sb) {
+    if (s.page === 'rfm' && s.user && !this._rfmReq && this.sb) {
       this._rfmReq = true;
       this.loadRfm();
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
@@ -5094,7 +5092,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
+      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed, fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
