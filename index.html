@@ -626,6 +626,28 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
+.pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
+.pg-hero .pg-hero-in{text-align:center;padding:130px 35px 80px !important}
+.pg-hero .pg-eyebrow{justify-content:center}
+.pg-hero .pg-hero-in>div[style*="flex"]{justify-content:center !important}
+.pg-hero .pg-hero-in p{margin-left:auto !important;margin-right:auto !important}
+.fd-kc.fd-kc-in{margin:20px 0 0;background:#15233B;backdrop-filter:none;-webkit-backdrop-filter:none}
+.kc-light{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:2px solid #203864}
+.kc-light>div{padding:22px 26px;border-left:1px solid #E2E0DA}
+.kc-light>div:first-child{border-left:0}
+.kc-light .kk{display:block;font-style:normal;font-size:12px;color:rgba(26,26,26,0.55)}
+.kc-light .kv{display:block;margin-top:12px;font-family:'Pretendard Variable',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;color:#0F1B2E;white-space:nowrap}
+.kc-light .ks{display:block;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.5);min-height:15px}
+main.pgx>section.kc-sec[data-nav="light"]:not(.pres)>.wrap{padding:0 !important}
+@media (max-width:860px){
+  .pg-hero{min-height:44svh !important}.pg-hero .pg-hero-in{padding:104px 20px 56px !important}
+  .kc-light{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kc-light>div{padding:16px;border-left:0;border-top:1px solid #E2E0DA}.kc-light>div:nth-child(-n+2){border-top:0}.kc-light>div:nth-child(even){border-left:1px solid #E2E0DA}
+  .kc-light .kv{font-size:20px}
+  main.pgx.mhome>section.kc-sec{padding:0 !important}
+}
+
 /* 임원진 카드 */
 .og-h{display:flex;align-items:center;gap:16px;margin:40px 0 22px !important;padding:0 !important;border:0 !important;font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#203864}
 .og-h::before,.og-h::after{content:'';flex:1;height:1px;background:#E2E0DA}
@@ -1548,9 +1570,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1630,9 +1649,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1811,13 +1827,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개" class="pgx">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1529016912215-a4c95c80d1dc?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Yuri Efremov on Unsplash" credit-href="https://unsplash.com/@yuriefremov" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.62"></div>
+      <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">About R.F.S.</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
@@ -1975,13 +1988,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="소개 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1529016912215-a4c95c80d1dc?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Yuri Efremov on Unsplash" credit-href="https://unsplash.com/@yuriefremov" style="--slot-position:62% 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.62"></div>
+      <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">About<br>R.F.S.</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
@@ -2073,9 +2083,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our People</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2171,9 +2178,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our<br>People</h1>
-        <div class="fd-kc auto">
-          <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2277,12 +2281,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <button class="btn btn-photo" onClick="{{ scrollToNotify }}">GET NOTIFIED</button>
           </sc-if>
         </div>
-        <div class="fd-kc auto">
-          <sc-for list="{{ recruitStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
+
+    <section data-nav="light" class="kc-sec"><div class="wrap"><div class="kc-light"><sc-for list="{{ recruitStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks">{{ k.s }}</small></div></sc-for></div></div></section>
 
     <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
       <div class="wrap secpad" style="padding:110px 35px">
@@ -2349,10 +2352,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리크루팅 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
       <div class="scrim" style="opacity:0.82"></div>
-      <div style="position:relative;z-index:1;padding:0 24px 44px;width:100%">
+      <div class="pg-hero-in">
         <p class="sec-label">{{ recruitEyebrow }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
@@ -2365,17 +2368,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <a href="#m-notify" onClick="{{ scrollToNotify }}" class="btn btn-photo" style="display:inline-block;margin-top:26px;padding:14px 24px;font-size:12px">GET NOTIFIED</a>
         </sc-if>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px 14px;margin-top:34px;padding-top:22px;border-top:1px solid rgba(247,246,243,0.35)">
-          <sc-for list="{{ recruitStats }}" as="a" hint-placeholder-count="4">
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;letter-spacing:-0.025em;line-height:1.1;color:#F7F6F3">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:7px">{{ a.key }}</div>
-            </div>
-          </sc-for>
-        </div>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
+
+    <section data-nav="light" class="kc-sec"><div class="kc-light"><sc-for list="{{ recruitStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks">{{ k.s }}</small></div></sc-for></div></section>
 
     <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
       <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">전형 일정</h2>
@@ -2465,9 +2462,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
           <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>RFS Asset Management · 국내·미국 상장주식 · 일반사모</span></p>
           <h1 class="pg-title">AMT Fund</h1>
-          <div class="fd-kc">
-            <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
-          </div>
         </sc-if>
       </div>
     </section>
@@ -2489,6 +2483,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           </ul>
         </div>
       </section>
+
+      <div class="fd-kc fd-kc-in">
+        <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
+      </div>
 
       <section class="fd-card" id="fd-perf">
         <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
@@ -2582,11 +2580,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
-        <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
-        <div class="fd-kc">
-          <sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
-        </div>
-        </sc-if>
       </div>
     </section>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
@@ -2595,6 +2588,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
+      <div class="fd-kc fd-kc-in"><sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for></div>
       <div class="rfm-grid">
       <section class="fd-card" id="rfm-rank">
         <div class="fd-ch"><h2 class="fd-ct">학회 순위</h2><div class="fd-legend"><span><i style="background:rgba(247,246,243,0.4)"></i>0%</span><span><i style="background:#8FAADC"></i>KOSPI</span><span><i class="dash"></i>전체 50위</span></div></div>
