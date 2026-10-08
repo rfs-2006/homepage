@@ -448,6 +448,75 @@ nav.nav{view-transition-name:rfs-nav}
 <style>
 .intra-rail a{display:block;padding:9px 0;font-size:13px;color:rgba(247,246,243,0.65);border-bottom:1px solid transparent;transition:color 120ms ease}
 .intra-rail a:hover{color:#F7F6F3}
+.rfmpage{--rH:64px}
+.rfm-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.rfm-live{display:inline-flex;align-items:center;gap:6px;color:#5FC48A;font-weight:600;letter-spacing:0.06em}
+.rfm-live i{width:7px;height:7px;border-radius:50%;background:#5FC48A;animation:rfmPulse 1.6s ease-in-out infinite}
+@keyframes rfmPulse{50%{opacity:0.25}}
+.rfm-head{font-family:'Noto Serif KR',serif;font-weight:700;font-size:clamp(30px,4.4vw,52px);line-height:1.08;letter-spacing:-0.035em;margin:18px 0 0;max-width:16em;color:#F7F6F3}
+.rfm-head em{font-style:normal;color:#8FAADC}
+.rfm-dek{display:flex;flex-wrap:wrap;gap:6px 22px;margin-top:16px;font-size:14px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums}
+.rfm-dek b{font-weight:700;margin-left:4px}
+.rfm-beat{color:#F7F6F3}
+.rfm-body{display:grid;grid-template-columns:minmax(0,1fr) 248px;gap:40px;margin-top:40px}
+.rfm-axis{position:relative;height:26px;margin-left:calc(44px + 168px + 16px);margin-right:calc(96px + 16px)}
+.rfm-axis span{position:absolute;bottom:6px;transform:translateX(-50%);font-size:11px;color:#8FAADC;white-space:nowrap}
+.rfm-race{position:relative}
+.rfmlane{position:absolute;left:0;right:0;top:0;height:var(--rH);display:grid;grid-template-columns:44px 168px minmax(0,1fr) 96px;gap:16px;align-items:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.rfmlane.me{background:rgba(143,170,220,0.10)}
+.rfmlane .rk{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:rgba(247,246,243,0.42);text-align:right;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.rfmlane.top .rk{color:#F7F6F3}
+.rfmlane .nm{min-width:0}
+.rfmlane .nn{font-size:15px;font-weight:600;color:#F7F6F3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rfmlane .nn b{font-weight:600}
+.rfmlane .ns{font-style:normal;font-size:11.5px;font-weight:400;color:rgba(247,246,243,0.45)}
+.rfmlane .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rfmlane .trk{position:relative;height:100%}
+.rfmlane .trk::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(247,246,243,0.10)}
+.rfmlane .vl{position:absolute;top:0;bottom:0;width:1px}
+.rfmlane .run{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;transition:left .8s cubic-bezier(.2,.8,.2,1)}
+.rfmlane .tail{position:absolute;top:50%;height:2px;margin-top:-1px;opacity:0.55;transition:left .8s cubic-bezier(.2,.8,.2,1),width .8s cubic-bezier(.2,.8,.2,1)}
+.rfmlane .rt{text-align:right;font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
+.rfmlane .rt b{display:block;font-size:18px;font-weight:700}
+.rfmlane .rt small{display:block;font-size:11.5px;margin-top:2px}
+.rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:10.5px;color:rgba(247,246,243,0.42);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
+@keyframes rfmFu0{0%{background:rgba(95,196,138,0.28)}}@keyframes rfmFu1{0%{background:rgba(95,196,138,0.28)}}
+@keyframes rfmFd0{0%{background:rgba(232,131,123,0.28)}}@keyframes rfmFd1{0%{background:rgba(232,131,123,0.28)}}
+.rfm-side{position:sticky;top:96px;align-self:start}
+.rfm-mine{padding:18px 0 20px;border-top:2px solid #8FAADC}
+.rfm-pick{width:100%;background:transparent;color:#8FAADC;border:0;font:inherit;font-size:12px;letter-spacing:0.06em;padding:0;cursor:pointer}
+.rfm-pick option{color:#111c2e}
+.rfm-mine .big{font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-top:12px}
+.rfm-mine .big small{font-family:'Pretendard Variable',sans-serif;font-size:16px;color:rgba(247,246,243,0.42);margin-left:6px;font-weight:500}
+.rfm-mine p{font-size:13px;line-height:1.75;color:rgba(247,246,243,0.75);margin:12px 0 0;font-variant-numeric:tabular-nums}
+.rfm-mine p.hint{color:rgba(247,246,243,0.45)}
+.rfm-feed{margin-top:26px}
+.rfm-feed h3{font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.45);font-weight:500;margin:0}
+.rfm-feed ol{list-style:none;margin:10px 0 0;padding:0}
+.rfm-feed li{font-size:13px;line-height:1.5;padding:8px 0;color:rgba(247,246,243,0.8)}
+.rfm-feed li:nth-child(n+4){opacity:0.55}
+.rfm-feed li time{display:block;font-size:11px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums}
+.rfm-feed li b{color:#F7F6F3;margin-right:4px}
+@media (max-width:860px){
+  .rfmpage{--rH:70px}
+  .rfmpage .wrap{padding:28px 16px 140px !important}
+  .rfm-body{grid-template-columns:1fr;gap:0;margin-top:28px}
+  .rfm-axis{margin:0 0 0 40px}
+  .rfmlane{grid-template-columns:30px minmax(0,1fr) 80px;grid-template-rows:auto 14px;gap:2px 10px;align-content:center}
+  .rfmlane .rk{font-size:20px;grid-row:1/3;align-self:center}
+  .rfmlane .trk{grid-column:2/4;grid-row:2;height:14px}
+  .rfmlane .nm small{display:none}
+  .rfmlane .rt b{font-size:16px}
+  .rfmlane .gap{right:0;bottom:-6px}
+  .rfm-side{position:fixed;left:0;right:0;bottom:0;top:auto;background:#0c1524;border-top:1px solid #8FAADC;padding:0 16px;z-index:40}
+  .rfm-mine{border-top:0;padding:10px 0 12px;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center}
+  .rfm-pick{grid-column:1/3;margin-bottom:6px}
+  .rfm-mine .big{font-size:28px;margin:0}
+  .rfm-mine p{margin:0;font-size:12px;line-height:1.55}
+  .rfm-feed{display:none}
+}
+@media (prefers-reduced-motion:reduce){.rfmlane,.rfmlane .run,.rfmlane .tail{transition:none}.rfm-live i{animation:none}}
+
 .intra-rail a.on{color:#F7F6F3;font-weight:700}
 .intra-rail .sec{color:rgba(247,246,243,0.4) !important}
 .intra-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);font-size:14px;color:rgba(247,246,243,0.85);text-decoration:none}
@@ -469,7 +538,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip{display:inline-block;padding:6px 10px;border:1px solid #D0CECE;font-size:13px;margin:0 6px 6px 0;background:#FFFFFF}
 .name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
-@media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:20px minmax(0,1fr) 58px 72px !important;gap:10px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
+@media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
 </style>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
@@ -1930,7 +1999,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.86"></div>
       <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center">
         <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:64px;height:auto;display:block;margin:0 auto">
-        <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">Agora</p>
+        <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">{{ loginLabel }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">학회원 로그인</h1>
         <p style="margin:14px 0 0;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.72)">카톡방 공지의 공통 비밀번호를 입력하세요.</p>
         <form onSubmit="{{ intraLogin }}" style="margin-top:26px;display:flex;flex-direction:column;gap:10px">
@@ -1943,6 +2012,84 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.5)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.75)">recruiting.rfs@gmail.com</a></p>
       </div>
     </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage" style="position:relative;background:#111c2e;min-height:100vh;color:#F7F6F3">
+    <div data-nav="light" style="height:72px"></div>
+    <div class="wrap" style="padding:36px 35px 120px">
+      <div class="rfm-meta">
+        <sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if>
+        <sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="color:rgba(247,246,243,0.5);font-weight:600">장 마감</span></sc-if>
+        <span>{{ rfmMeta }}</span>
+      </div>
+      <h1 class="rfm-head"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</h1>
+      <div class="rfm-dek">
+        <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="4"><span>{{ d.k }} <b style="color:{{ d.c }}">{{ d.v }}</b></span></sc-for><span class="rfm-beat">{{ rfmBeatLine }}</span>
+      </div>
+      <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
+        <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
+      </sc-if>
+      <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
+      <div class="rfm-body">
+        <div>
+          <div class="rfm-axis">
+            <sc-for list="{{ rfmAxis }}" as="a" hint-placeholder-count="2"><span style="left:{{ a.x }}">{{ a.t }}</span></sc-for>
+          </div>
+          <div class="rfm-race" style="height:calc(var(--rH) * {{ rfmCount }})">
+            <sc-for list="{{ rfmLanes }}" as="r" hint-placeholder-count="8">
+              <div class="{{ r.cls }}" style="transform:translateY(calc(var(--rH) * {{ r.idx }}))">
+                <div class="rk">{{ r.no }}</div>
+                <div class="nm"><div class="nn"><b>{{ r.label }}</b> <i class="ns">{{ r.sub }}</i></div><small>{{ r.meta }}</small></div>
+                <div class="trk">
+                  <i class="vl" style="left:{{ rfmZero }};background:rgba(247,246,243,0.18)"></i>
+                  <i class="vl" style="left:{{ rfmKx }};background:#8FAADC;opacity:0.5"></i>
+                  <i class="vl" style="left:{{ rfmCx }};border-left:1px dashed #8FAADC;opacity:0.55"></i>
+                  <i class="tail" style="left:{{ r.tailL }};width:{{ r.tailW }};background:{{ r.dot }}"></i>
+                  <i class="run" style="left:{{ r.x }};background:{{ r.dot }}"></i>
+                </div>
+                <div class="rt" style="animation-name:{{ r.fl }}"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
+                <sc-if value="{{ r.hasGap }}" hint-placeholder-val="{{ true }}"><span class="gap">{{ r.gap }}</span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
+            <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
+          </sc-if>
+          <p style="margin-top:14px;font-size:12px;color:rgba(247,246,243,0.4)">학회 내부 공개. 외부 공유 금지. <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+          <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:12px;max-width:520px">
+              <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
+              <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
+                <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
+                <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+        <aside class="rfm-side">
+          <div class="rfm-mine">
+            <select class="rfm-pick" value="{{ rfmMineNick }}" onChange="{{ onRfmPick }}">
+              <sc-for list="{{ rfmPick }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
+            </select>
+            <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
+              <div class="big">{{ rfmMineRank }}<small>{{ rfmMineOf }}</small></div>
+              <p>{{ rfmMineUp }}<br>{{ rfmMineDn }}<br><span style="color:#8FAADC">{{ rfmMine50 }}</span></p>
+            </sc-if>
+            <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}"><p class="hint">별칭을 고르면 내 순위와 앞뒤 차이가 여기 고정됩니다.</p></sc-if>
+          </div>
+          <div class="rfm-feed">
+            <h3>실시간 변동</h3>
+            <sc-if value="{{ noRfmFeed }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:rgba(247,246,243,0.45);margin-top:10px">아직 변동 없음</p></sc-if>
+            <ol>
+              <sc-for list="{{ rfmFeed }}" as="e" hint-placeholder-count="0"><li><time>{{ e.t }}</time><b>{{ e.who }}</b> {{ e.text }}</li></sc-for>
+            </ol>
+          </div>
+        </aside>
+      </div>
+      </sc-if>
+    </div>
   </main>
   </sc-if>
 
@@ -2192,79 +2339,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </sc-if>
           </sc-if>
 
-          <sc-if value="{{ isIntraRfm }}" hint-placeholder-val="{{ false }}">
-            <div class="intra-card navy" style="background:#203864;border-color:#203864;color:#F7F6F3;padding:30px 32px">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px">
-                <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.6)">{{ rfmContest }} · 타임폴리오</div>
-                <div style="font-size:12px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ rfmAsOf }}</div>
-              </div>
-              <div class="fundstat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:22px">
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmAvgColor }}">{{ rfmAvg }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">학회원 평균</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmKospiColor }}">{{ rfmKospi }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSPI 동기간</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmKosdaqColor }}">{{ rfmKosdaq }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSDAQ 동기간</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ rfmBeat }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSPI를 이긴 학회원</div></div>
-              </div>
-              <div style="margin-top:22px;padding-top:14px;border-top:1px solid rgba(247,246,243,0.18);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums">
-                <span>학회 1위 <b style="color:#F7F6F3">{{ rfmTop }}</b> · {{ rfmTopRet }}</span>
-                <span>참가 학회원 {{ rfmCount }} · {{ rfmTotal }}{{ rfmBmStart }}</span>
-              </div>
-            </div>
-            <sc-if value="{{ hasRfmToday }}" hint-placeholder-val="{{ false }}">
-              <div class="rfmtoday" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin-top:16px;background:rgba(247,246,243,0.12);border:1px solid rgba(247,246,243,0.12)">
-                <sc-for list="{{ rfmToday }}" as="t" hint-placeholder-count="3">
-                  <div style="background:#111c2e;padding:16px 18px">
-                    <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.5)">{{ t.k }}</div>
-                    <div style="font-size:16px;font-weight:700;color:#F7F6F3;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ t.v }}</div>
-                    <div style="font-size:13px;font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums;color:{{ t.c }}">{{ t.d }}</div>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
-              <div style="font-size:15px;font-weight:700;color:#F7F6F3">학회원 순위</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · <span style="display:inline-block;width:2px;height:10px;background:#F2C94C;vertical-align:-1px;margin-right:4px"></span>KOSPI 위치 · 장중 실시간</span>
-            </div>
-            <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-              <div style="padding:28px 0;font-size:14px;color:rgba(247,246,243,0.6)">아직 수집된 순위가 없습니다. 평일 장중에는 실시간(약 15초 간격)으로 갱신됩니다.</div>
-            </sc-if>
-            <sc-for list="{{ rfmRows }}" as="r" hint-placeholder-count="8">
-              <sc-if value="{{ r.line }}" hint-placeholder-val="{{ false }}">
-                <div style="display:flex;align-items:center;gap:12px;padding:16px 0 4px">
-                  <span style="flex:1;border-top:1px dashed #8FAADC;opacity:0.7"></span>
-                  <span style="font-size:11px;letter-spacing:0.06em;color:#8FAADC;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.lineText }}</span>
-                  <span style="flex:1;border-top:1px dashed #8FAADC;opacity:0.7"></span>
-                </div>
-              </sc-if>
-              <div class="rfmrow" style="display:grid;grid-template-columns:28px minmax(0,1fr) 120px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:rgba(247,246,243,0.55);font-variant-numeric:tabular-nums">{{ r.no }}</div>
-                <div style="min-width:0">
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.label }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.sub }}</span><sc-if value="{{ r.in50 }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:#111c2e;background:#8FAADC;padding:2px 6px;vertical-align:2px">포폴 공개</span></sc-if><sc-if value="{{ r.streak }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:11px;font-weight:600;color:#5FC48A;white-space:nowrap">{{ r.streak }}</span></sc-if></div>
-                  <div style="position:relative;height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="position:absolute;left:50%;top:-3px;width:1px;height:9px;background:rgba(247,246,243,0.4)"></div><div style="position:absolute;top:0;height:3px;left:{{ r.barL }};width:{{ r.barW }};background:{{ r.barColor }}"></div><sc-if value="{{ hasKospiTick }}" hint-placeholder-val="{{ false }}"><div title="KOSPI" style="position:absolute;top:-4px;left:{{ kospiTick }};width:2px;height:11px;background:#F2C94C"></div></sc-if></div>
-                  <div style="font-size:12px;color:rgba(247,246,243,0.45);margin-top:6px;font-variant-numeric:tabular-nums">기준가 {{ r.nav }} · {{ r.hold }}<sc-if value="{{ r.gap }}" hint-placeholder-val="{{ false }}"><span style="color:#8FAADC;margin-left:6px">· {{ r.gap }}</span></sc-if></div>
-                </div>
-                <div class="rfmrank" style="text-align:right;font-variant-numeric:tabular-nums">
-                  <div style="font-size:14px;font-weight:600;color:#F7F6F3">{{ r.rank }}</div>
-                  <div style="font-size:12px;margin-top:4px;color:{{ r.moveColor }}">{{ r.move }}</div>
-                </div>
-                <div style="text-align:right;font-variant-numeric:tabular-nums">
-                  <div style="font-size:15px;font-weight:700;color:{{ r.retColor }}">{{ r.ret }}</div>
-                  <div style="font-size:12px;margin-top:4px;color:{{ r.dayColor }}">{{ r.day }}</div>
-                </div>
-              </div>
-            </sc-for>
-            <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:18px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.45)">순위표에서 찾지 못한 별칭: {{ rfmMissing }}</div>
-            </sc-if>
-            <div style="margin-top:22px;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.4)">타임폴리오 동의 하에 학회 내부에만 공개합니다. 외부 공유를 삼가 주세요. <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></div>
-            <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-top:12px">
-                <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
-                <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
-                  <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
-                  <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
-                </div>
-              </div>
-            </sc-if>
           </sc-if>
 
 
@@ -3591,7 +3665,7 @@ class Component extends DCLogic {
   }
 
   pickNavMode() {
-    if (this.state.page === 'intranet') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
+    if (this.state.page === 'intranet' || this.state.page === 'rfm') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
     let mode = 'light';
     document.querySelectorAll('[data-nav]').forEach((n) => {
       const r = n.getBoundingClientRect();
@@ -3754,16 +3828,41 @@ class Component extends DCLogic {
     // 장중에는 수집기가 15초마다 저장한다. 실시간 구독으로 바로 반영하고, 구독이 안 되는 환경을 위해 15초 폴링도 둔다
     if (!this._rfmCh) {
       this._rfmCh = this.sb.channel('rfs-rfm')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.rfm' }, (p) => { if (p.new && p.new.data) this.setState({ rfmData: p.new.data }); })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.rfm' }, (p) => { if (p.new && p.new.data) this.setRfm(p.new.data); })
         .subscribe();
     }
-    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'intranet' && this.state.intraTab === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
+    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
   }
 
   loadRfm() {
     if (!this.sb) return;
     this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setState({ rfmData: data.data }); });
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
+  }
+
+  // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
+  setRfm(next) {
+    const prev = this.state.rfmData;
+    if (prev && prev.asOf === next.asOf) return;
+    const ev = [];
+    if (prev && prev.members) {
+      const ord = (d) => (d.members || []).filter((m) => m.found && m.nav).sort((a, b) => b.nav - a.nav).map((m) => m.nick);
+      const po = ord(prev), no = ord(next);
+      const pm = {}; (prev.members || []).forEach((m) => { pm[m.nick] = m; });
+      const t = (next.asOf || '').slice(11, 16);
+      no.forEach((nick, i) => {
+        const j = po.indexOf(nick);
+        if (j > i) ev.push({ t, who: nick, text: (j + 1) + '위 → ' + (i + 1) + '위, ' + no[i + 1] + ' 추월' });
+      });
+      (next.members || []).forEach((m) => {
+        const b = pm[m.nick];
+        if (!b || !m.rank || !b.rank) return;
+        if (m.rank <= 50 && b.rank > 50) ev.push({ t, who: m.nick, text: '전체 ' + m.rank + '위, 50위 안 진입' });
+        if (m.rank > 50 && b.rank <= 50) ev.push({ t, who: m.nick, text: '전체 ' + m.rank + '위, 50위 밖으로' });
+      });
+    }
+    this._rfmTick = (this._rfmTick || 0) + 1;
+    this.setState((st) => ({ rfmData: next, rfmPrevData: prev || null, rfmFeed: [...ev.reverse(), ...(st.rfmFeed || [])].slice(0, 8) }));
   }
 
   // RFM: 기준가 1,000에서 출발하므로 수익률 = 기준가 / 1000 - 1
@@ -3778,82 +3877,86 @@ class Component extends DCLogic {
     const key = (n) => String(n || '').replace(/\s+/g, '').toLowerCase();
     const names = this.rfmNames();
     const real = (m) => names[key(m.nick)] || '';
-    const hasNames = Object.keys(names).length > 0;
-    const on = ms.filter((m) => m.found && m.nav).sort((a, b) => b.nav - a.nav);
-    const pct = (v, d = 2) => (v > 0 ? '+' : '') + v.toFixed(d) + '%';
-    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
-    const ret = (m) => (m.nav / 1000 - 1) * 100;
-    const maxAbs = Math.max(1, ...on.map((m) => Math.abs(ret(m))));
-    const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
-    const top = on[0];
-    const cut = RF && RF.cut50;
-    const dayOf = (m) => (m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null);
     const nm = (m) => real(m) || m.nick;
-    const withDay = on.filter((m) => dayOf(m) !== null);
-    const best = withDay.length ? withDay.reduce((a, m) => (dayOf(m) > dayOf(a) ? m : a)) : null;
-    const worst = withDay.length ? withDay.reduce((a, m) => (dayOf(m) < dayOf(a) ? m : a)) : null;
-    const climb = on.length ? on.reduce((a, m) => ((m.rankChg || 0) > (a.rankChg || 0) ? m : a)) : null;
+    const pct = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
+    const pp = (v) => Math.abs(v).toFixed(2) + '%p';
+    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
+    const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
+    const ret = (m) => (m.nav / 1000 - 1) * 100;
+    const on = ms.filter((m) => m.found && m.nav);
+    const order = [...on].sort((a, b) => b.nav - a.nav);
+    const pos = {}; order.forEach((m, i) => { pos[m.nick] = i; });
     const bm = (RF && RF.bm) || {};
     const kospi = bm.kospi ? bm.kospi.ret : null, kosdaq = bm.kosdaq ? bm.kosdaq.ret : null;
-    const span = Math.max(maxAbs, kospi !== null ? Math.abs(kospi) : 0);
-    const pos = (v) => (50 + v / span * 50).toFixed(2) + '%';
-    // 날짜별 기록(series)으로 연속 상승일 계산
-    const streak = (m) => {
-      const sr = (RF && RF.series && RF.series[key(m.nick)]) || [];
-      let n = 0;
-      for (let i = sr.length - 1; i > 0 && sr[i][1] > sr[i - 1][1]; i--) n++;
-      return n;
-    };
-    const lineAt = on.findIndex((m) => !(m.rank && m.rank <= 50)); // 50위 밖 첫 학회원 앞에 선을 긋는다
+    const cut = RF && RF.cut50 ? (RF.cut50 / 1000 - 1) * 100 : null;
+    const vals = on.map(ret).concat([0], kospi !== null ? [kospi] : [], cut !== null ? [cut] : []);
+    const lo = Math.min(...vals) - 2, hi = Math.max(...vals) + 2;
+    const x = (v) => ((v - lo) / (hi - lo) * 100).toFixed(2) + '%';
+    const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
+    const prevRet = {}; ((s.rfmPrevData && s.rfmPrevData.members) || []).forEach((m) => { if (m.nav) prevRet[m.nick] = ret(m); });
+    const tick = this._rfmTick || 0;
+    const dayOf = (m) => (m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null);
+    // 헤드라인: 1·2위 격차로 독주/접전
+    const a1 = order[0], a2 = order[1];
+    const gap12 = a1 && a2 ? ret(a1) - ret(a2) : 0;
+    let mine = ''; try { mine = localStorage.getItem('rfs_rfm_me') || ''; } catch (e) {}
+    const mi = order.findIndex((m) => m.nick === mine), me = order[mi];
+    const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
+    const live = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     return {
       hasRfm: on.length > 0, noRfm: on.length === 0,
-      rfmContest: (RF && RF.contest) || 'RFM', rfmAsOf: RF && RF.asOf ? RF.asOf + ' 기준' : '',
-      rfmAvg: on.length ? pct(avg) : '-', rfmAvgColor: avg > 0 ? up : avg < 0 ? dn : '#F7F6F3',
-      rfmTop: top ? (real(top) || top.nick) : '-', rfmTopRet: top ? pct(ret(top)) + ' · 전체 ' + top.rank + '위' : '',
-      rfmCount: on.length + '명', rfmTotal: RF && RF.total ? '전체 참가자 ' + Number(RF.total).toLocaleString('ko-KR') + '명' : '',
-      rfmKospi: kospi !== null ? pct(kospi) : '-', rfmKospiColor: kospi > 0 ? up : kospi < 0 ? dn : '#F7F6F3',
-      rfmKosdaq: kosdaq !== null ? pct(kosdaq) : '-', rfmKosdaqColor: kosdaq > 0 ? up : kosdaq < 0 ? dn : '#F7F6F3',
-      rfmBeat: kospi !== null && on.length ? on.filter((m) => ret(m) > kospi).length + ' / ' + on.length : '-',
-      rfmBmStart: bm.start ? ' · ' + bm.start.slice(5).replace('-', '/') + ' 시작 기준' : '',
-      hasKospiTick: kospi !== null, kospiTick: kospi !== null ? pos(kospi) : '50%',
-      rfmToday: [
-        best && dayOf(best) > 0 ? { k: '오늘의 MVP', v: nm(best), d: pct(dayOf(best)), c: up } : null,
-        climb && climb.rankChg > 0 ? { k: '순위 급상승', v: nm(climb), d: '▲' + climb.rankChg.toLocaleString('ko-KR') + '계단', c: up } : null,
-        worst && dayOf(worst) < 0 ? { k: '오늘의 눈물', v: nm(worst), d: pct(dayOf(worst)), c: dn } : null,
-      ].filter(Boolean),
-      hasRfmToday: !!((best && dayOf(best) > 0) || (climb && climb.rankChg > 0) || (worst && dayOf(worst) < 0)),
-      rfmRows: on.map((m, i) => {
-        const r = ret(m);
-        const in50 = !!(m.rank && m.rank <= 50);
-        const day = m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null;
+      rfmLive: live, rfmClosed: !live,
+      rfmMeta: ((RF && RF.contest) || 'RFM') + ' · 타임폴리오 · ' + (RF && RF.asOf ? RF.asOf.slice(5, 16).replace('-', '/') + ' 기준' : ''),
+      rfmHeadLead: a1 ? nm(a1) : '',
+      rfmHeadRest: !a1 ? '' : !a2 ? ' 단독 참가' : gap12 > 5 ? ' 독주, 2위와 ' + pp(gap12) + ' 차' : (' · ' + nm(a2) + ', ' + pp(gap12) + ' 차 접전'),
+      rfmDek: [
+        { k: '학회 평균', v: pct(avg), c: col(avg) },
+        { k: 'KOSPI', v: kospi !== null ? pct(kospi) : '-', c: kospi !== null ? col(kospi) : flat },
+        { k: 'KOSDAQ', v: kosdaq !== null ? pct(kosdaq) : '-', c: kosdaq !== null ? col(kosdaq) : flat },
+      ],
+      rfmBeatLine: kospi !== null && on.length ? on.length + '명 중 ' + on.filter((m) => ret(m) > kospi).length + '명이 KOSPI를 앞서고 있습니다.' : '',
+      rfmAxis: [kospi !== null ? { x: x(kospi), t: 'KOSPI' } : null, cut !== null ? { x: x(cut), t: '50위' } : null].filter(Boolean),
+      rfmZero: x(0), rfmKx: kospi !== null ? x(kospi) : '-10%', rfmCx: cut !== null ? x(cut) : '-10%',
+      rfmCount: on.length,
+      // 레인은 명단 순서 그대로 두고 위치(translateY)만 바꿔야 순위가 바뀔 때 미끄러지듯 움직인다
+      rfmLanes: on.map((m) => {
+        const r = ret(m), i = pos[m.nick], d = dayOf(m);
+        const pr = prevRet[m.nick];
+        const fl = pr === undefined || Math.abs(pr - r) < 1e-9 ? 'none' : (r > pr ? 'rfmFu' : 'rfmFd') + (tick % 2);
+        const lo2 = Math.min(0, r), hi2 = Math.max(0, r);
+        const above = order[i - 1];
         return {
-          no: i + 1, label: real(m) || m.nick, sub: real(m) ? m.nick : '',
-          rank: m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-',
-          move: m.rankChg > 0 ? '▲' + m.rankChg : m.rankChg < 0 ? '▼' + -m.rankChg : '–',
-          moveColor: m.rankChg > 0 ? up : m.rankChg < 0 ? dn : flat,
-          ret: pct(r), retColor: r > 0 ? up : r < 0 ? dn : '#F7F6F3',
-          day: day === null ? '' : '오늘 ' + pct(day), dayColor: day > 0 ? up : day < 0 ? dn : flat,
-          nav: m.nav.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-          hold: (m.count ? m.count + '종목' : '현금') + (m.weight !== null && m.weight !== undefined ? ' · 편입 ' + m.weight.toFixed(1) + '%' : ''),
-          barL: (r >= 0 ? 50 : 50 - Math.abs(r) / span * 50).toFixed(2) + '%', barW: (Math.abs(r) / span * 50).toFixed(2) + '%',
-          streak: streak(m) >= 2 ? streak(m) + '일 연속 상승' : '', barColor: r >= 0 ? up : dn,
-          in50, gap: !in50 && cut ? '50위까지 ' + pct((cut / m.nav - 1) * 100) : '',
-          line: i === lineAt, lineText: '전체 50위 · 여기 위로 포트폴리오 공개' + (cut ? ' · 기준가 ' + cut.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
+          idx: i, no: i + 1, cls: 'rfmlane' + (i < 3 ? ' top' : '') + (m.nick === mine ? ' me' : ''),
+          label: nm(m), sub: real(m) ? m.nick : '',
+          meta: '전체 ' + (m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-') + (m.rankChg > 0 ? ' ▲' + m.rankChg : m.rankChg < 0 ? ' ▼' + -m.rankChg : '') + ' · ' + (m.count ? m.count + '종목' : '현금'),
+          ret: pct(r), retColor: col(r), day: d === null ? '' : '오늘 ' + pct(d), dayColor: d === null ? flat : col(d),
+          x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl,
+          gap: above ? '위와 ' + pp(ret(above) - r) : '', hasGap: !!above,
         };
       }),
+      rfmFeed: (s.rfmFeed || []).map((e) => ({ ...e, who: names[key(e.who)] || e.who })),
+      hasRfmFeed: (s.rfmFeed || []).length > 0, noRfmFeed: !(s.rfmFeed || []).length,
+      hasMine: !!me, noMine: !me,
+      rfmMineRank: me ? (mi + 1) + '위' : '', rfmMineOf: '/ ' + order.length,
+      rfmMineUp: me && mi > 0 ? nm(order[mi - 1]) + '까지 ' + pp(ret(order[mi - 1]) - ret(me)) : me ? '학회 1위' : '',
+      rfmMineDn: me && mi < order.length - 1 ? nm(order[mi + 1]) + '와 ' + pp(ret(me) - ret(order[mi + 1])) + ' 차' : '',
+      rfmMine50: me && cut !== null && ret(me) < cut ? '50위까지 ' + pp(cut - ret(me)) : me && me.rank && me.rank <= 50 ? '전체 50위 안' : '',
+      rfmMineName: me ? nm(me) : '', rfmMineNick: mine,
+      rfmPick: [{ v: '', t: '내 별칭 선택' }].concat([...on].sort((a, b) => nm(a).localeCompare(nm(b), 'ko')).map((m) => ({ v: m.nick, t: nm(m) }))),
+      onRfmPick: (e) => { try { localStorage.setItem('rfs_rfm_me', e.target.value); } catch (x) {} this.setState({ rfmPickAt: Date.now() }); },
       rfmMissing: ms.filter((m) => !m.found).map((m) => (real(m) ? real(m) + '(' + m.nick + ')' : m.nick)).join(', '),
-      rfmHasNames: hasNames, rfmNameOpen: !!s.rfmNameOpen, rfmNameText: s.rfmNameText || '',
+      hasRfmMissing: ms.some((m) => !m.found),
+      rfmHasNames: Object.keys(names).length > 0, rfmNameOpen: !!s.rfmNameOpen, rfmNameText: s.rfmNameText || '',
       rfmNameToggle: (e) => { e.preventDefault(); this.setState({ rfmNameOpen: !s.rfmNameOpen }); },
       onRfmNameText: (e) => this.setState({ rfmNameText: e.target.value }),
       rfmNameSave: (e) => {
         e.preventDefault();
         const map = {};
-        (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { const p = l.split(/[,\t:]/).map((x) => x.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
-        try { localStorage.setItem('rfs_rfm_names', JSON.stringify(map)); } catch (x) {}
+        (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { const p = l.split(/[,\t:]/).map((y) => y.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
+        try { localStorage.setItem('rfs_rfm_names', JSON.stringify(map)); } catch (y) {}
         this.setState({ rfmNameOpen: false, rfmNameText: '' });
       },
-      rfmNameClear: (e) => { e.preventDefault(); try { localStorage.removeItem('rfs_rfm_names'); } catch (x) {} this.setState({ rfmNameOpen: false }); },
-      hasRfmMissing: ms.some((m) => !m.found),
+      rfmNameClear: (e) => { e.preventDefault(); try { localStorage.removeItem('rfs_rfm_names'); } catch (y) {} this.setState({ rfmNameOpen: false }); },
     };
   }
 
@@ -3917,6 +4020,7 @@ class Component extends DCLogic {
       : page === 'activity' ? '활동 | 중앙대 가치투자학회 R.F.S.'
       : page === 'recruit' ? '신입 학회원 모집 | 중앙대 가치투자학회 R.F.S.'
       : page === 'intranet' ? 'Intranet | RFS'
+      : page === 'rfm' ? 'RFM 순위 | RFS'
       : 'R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회';
   }
 
@@ -3927,7 +4031,7 @@ class Component extends DCLogic {
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t) this.setState({ intraTab: t }); }
-    else if (['home','research','about','people','activity','recruit'].includes(h)) page = h;
+    else if (['home','research','about','people','activity','recruit','rfm'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;
@@ -4034,14 +4138,14 @@ class Component extends DCLogic {
     const isPh = !active.summary;
     const opc = opStyle(active.op);
     // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
-    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['AGORA','intranet']];
+    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['RFM','rfm'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
       : s.page === 'activity' ? 'about' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
       label, href: url || '#' + page,
       on: url ? () => {} : (e) => { e.preventDefault(); this.go(page); },
-      cls: (navActive === page ? 'on' : '') + (page === 'intranet' || url ? ' hide-m' : ''),
-      hideM: page === 'intranet' || !!url,
+      cls: (navActive === page ? 'on' : '') + (url ? ' hide-m' : ''),
+      hideM: !!url,
       mcolor: navActive === page ? '#203864' : '#1A1A1A' }));
     const recruiting = status === '모집 중';
     const statusText = recruiting
@@ -4075,9 +4179,10 @@ class Component extends DCLogic {
     const alumniHits = iq ? allNames.filter((p) => p.name.indexOf(iq) >= 0).slice(0, 60) : [];
     // ROSTER·COHORTS의 키는 기수 그대로다 (42 = 42기)
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
-    const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'rfm' ? 'Road to Fund Manager' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
+    const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
-      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed,
+      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed,
+      loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
       intraLogin: (e) => {
@@ -4159,9 +4264,9 @@ class Component extends DCLogic {
         this.saveMe(nm, s.nmCohort);
       },
       intraTitle, intraTab: tab,
-      isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraRfm: tab === 'rfm', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
+      isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), railItem('fund', 'RFS 펀드'), railItem('rfm', 'RFM 순위')],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), railItem('fund', 'RFS 펀드'), { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
