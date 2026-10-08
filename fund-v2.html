@@ -136,6 +136,50 @@ tr.cash td{color:var(--gray)}tr.total td{font-weight:700;border-bottom:2px solid
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}.track .bar,#chart .ln{animation:none;stroke-dashoffset:0}}
 
+
+/* ---- 다듬기 ---- */
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px}
+.eyebrow span{letter-spacing:0;text-transform:none;font-size:13px}
+h2{font-size:34px}
+.tabs a.on{color:#0F1B2E;font-weight:600;border-color:transparent transparent #203864;border-bottom-width:2px}
+.sumgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:64px;align-items:center}
+.sl .label{font-size:15px}
+.bignum{margin-top:4px}
+.dayc{margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:34px;border-top:1px solid var(--line)}
+.stats>div{padding:16px 16px 4px 0;border-right:1px solid var(--line);margin-right:16px;transition:transform .25s}
+.stats>div:last-child{border-right:0}
+.stats>div:hover{transform:translateY(-2px)}
+.stats em{display:block;font-style:normal;font-size:13px;font-weight:600;color:var(--gray)}
+.stats b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.sr{background:var(--soft);padding:28px 30px 24px}
+.sr .cmp{margin-top:14px;grid-template-columns:80px 1fr}
+.track .bar{transition:filter .2s}
+.cmp>.track:hover .bar{filter:brightness(1.25)}
+.periods>div{transition:background .15s}
+.periods>div.ch{background:#E9EEF7 !important}
+.periods>div.h.ch{color:var(--navy)}
+.facts>div{transition:background .2s}
+.facts>div:hover{background:var(--soft)}
+.stack .seg{transition:opacity .2s,filter .2s,transform .2s;cursor:pointer}
+.stack.hov .seg:not(.on){opacity:.28}
+.stack .seg.on{transform:scaleY(1.12)}
+tbody.hov tr:not(.on){opacity:.45}
+tbody tr.on{background:#EEF2F9}
+tbody tr td .wbar{transition:width .3s,background .2s}
+tbody tr:hover .wbar,tbody tr.on .wbar{background:#8FAADC}
+.tip{position:absolute;top:44px;left:0;z-index:5;min-width:180px;padding:12px 14px;background:#0F1B2E;color:#F7F6F3;font-size:12.5px;line-height:1.7;pointer-events:none;opacity:0;transform:translate(14px,6px);transition:opacity .15s,transform .2s,left .12s}
+.tip.on{opacity:1;transform:translate(14px,0)}
+.tip.flip.on{transform:translate(calc(-100% - 14px),0)}
+.tip b{display:block;font-weight:700;margin-bottom:4px}
+.tip span{display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tip span i{width:10px;height:2px;display:inline-block}
+.tip span em{font-style:normal;margin-left:auto;padding-left:14px;color:#fff;font-weight:600}
+.tip .up{color:#FF6B76}.tip .down{color:#6FA3FF}
+.tip.st{transform:translate(-50%,-100%);top:0}
+.tip.st.on{transform:translate(-50%,calc(-100% - 6px))}
+#chart .ov{cursor:crosshair}
+@media (max-width:860px){.sumgrid{grid-template-columns:1fr;gap:28px}.stats b{font-size:19px}.stats>div{padding-right:8px;margin-right:8px}.sr{padding:20px 16px}h2{font-size:24px}}
 @media (max-width:860px){
   :root{--t1:64px;--t2:28px;--t3:21px;--t4:16px}
   .nav{height:64px;padding:0 20px}.menu{display:none}.brand img{width:36px;height:36px}.brand b{font-size:17px}.brand span{font-size:10px}
@@ -165,10 +209,18 @@ tr.cash td{color:var(--gray)}tr.total td{font-weight:700;border-bottom:2px solid
 <main>
   <section class="card rv" id="s-sum">
     <div class="eyebrow" id="asof"></div>
-    <div class="label">AMT Fund 기준가</div>
-    <div class="nav-row"><div class="bignum num" id="nav"></div><div class="dayc num" id="navDay"></div></div>
-    <div class="hl1 num" id="heroLine"></div>
-    <div class="cmp num" id="cmp"></div>
+    <div class="sumgrid">
+      <div class="sl">
+        <div class="label">AMT Fund 기준가</div>
+        <div class="bignum num" id="nav"></div>
+        <div class="dayc num" id="navDay"></div>
+        <div class="stats num" id="heroStats"></div>
+      </div>
+      <div class="sr">
+        <div class="row-label">설정 이후 누적 수익률</div>
+        <div class="cmp num" id="cmp"></div>
+      </div>
+    </div>
   </section>
 
   <section class="card rv" id="s-per">
@@ -214,6 +266,8 @@ new IntersectionObserver((es) => es.forEach((e) => document.getElementById('topn
 // 카드 등장
 const rvIo = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); rvIo.unobserve(e.target); } }), { threshold: 0.08 });
 document.querySelectorAll('.rv').forEach((el) => rvIo.observe(el));
+const spy = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) document.querySelectorAll('.tabs a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + e.target.id)); }), { rootMargin: '-45% 0px -50% 0px' });
+document.querySelectorAll('.card').forEach((el) => spy.observe(el));
 
 const SB = 'https://xyewclvpshldjucryapr.supabase.co/rest/v1/public_content?id=eq.fund_live&select=data';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
@@ -244,9 +298,10 @@ const K = DATA.bm.kospi.ret, Q = DATA.bm.kosdaq.ret, R = DATA.ret;
 
 // 1. 첫 화면
 $('asof').innerHTML = `Summary<span>${dot(lastD)} 기준 · 설정 ${dot(pd(DATA.start))}</span>`;
-$('nav').textContent = f2(DATA.nav);
 $('navDay').innerHTML = `전일 대비<b class="${cls(DATA.day)}">${pct(DATA.day)}</b>`;
-$('heroLine').innerHTML = `<span class="k">설정 이후</span> ${span(R)}${SEP}<span class="k">KOSPI 대비</span> ${span(R-K,pp)}${SEP}<span class="k">KOSDAQ 대비</span> ${span(R-Q,pp)}`;
+$('heroStats').innerHTML = [['설정 이후', span(R)], ['KOSPI 대비', span(R-K,pp)], ['KOSDAQ 대비', span(R-Q,pp)]].map(([k,v])=>`<div><em>${k}</em><b>${v}</b></div>`).join('');
+// 기준가 숫자가 1,000부터 올라가며 나타남
+(function(){ const el=$('nav'), to=DATA.nav, from=1000, t0=performance.now(), d=1400; const step=(t)=>{ const k=Math.min(1,(t-t0)/d), e=1-Math.pow(1-k,3); el.textContent=f2(from+(to-from)*e); if(k<1) requestAnimationFrame(step); }; if(matchMedia('(prefers-reduced-motion: reduce)').matches) el.textContent=f2(to); else requestAnimationFrame(step); })();
 
 (function(){
   const rows = [['AMT',R,true,null],['KOSPI',K,false,R-K],['KOSDAQ',Q,false,R-Q]];
@@ -286,13 +341,16 @@ const beatK = periods.filter(p=>p.a>p.k).length, beatQ = periods.filter(p=>p.a>p
 $('periodSub').textContent = `KOSPI 상회 ${beatK}/5 구간 · KOSDAQ 상회 ${beatQ}/5 구간`;
 (function(){
   const hl = p => p.n==='설정 이후'?'hl':'';
-  let h = `<div class="h" style="align-items:flex-start">구간</div>` + periods.map(p=>`<div class="h ${hl(p)}">${p.n}<span>${mdd(p.from)}–</span></div>`).join('');
-  h += `<div class="rl main">AMT</div>` + periods.map(p=>`<div class="amt ${cls(p.a)} ${hl(p)}">${pct(p.a)}</div>`).join('');
-  h += `<div class="rl sub">KOSPI</div>` + periods.map(p=>`<div class="ix ${cls(p.k)} ${hl(p)}">${pct(p.k)}</div>`).join('');
-  h += `<div class="rl sub">KOSDAQ</div>` + periods.map(p=>`<div class="ix ${cls(p.q)} ${hl(p)}">${pct(p.q)}</div>`).join('');
-  h += `<div class="rl top">초과 vs KOSPI</div>` + periods.map(p=>`<div class="xs top ${cls(p.a-p.k)} ${hl(p)}">${pp(p.a-p.k)}</div>`).join('');
-  h += `<div class="rl">초과 vs KOSDAQ</div>` + periods.map(p=>`<div class="xs ${cls(p.a-p.q)} ${hl(p)}">${pp(p.a-p.q)}</div>`).join('');
+  let h = `<div class="h" style="align-items:flex-start">구간</div>` + periods.map((p,i)=>`<div data-c="${i}" class="h ${hl(p)}">${p.n}<span>${mdd(p.from)}–</span></div>`).join('');
+  h += `<div class="rl main">AMT</div>` + periods.map((p,i)=>`<div data-c="${i}" class="amt ${cls(p.a)} ${hl(p)}">${pct(p.a)}</div>`).join('');
+  h += `<div class="rl sub">KOSPI</div>` + periods.map((p,i)=>`<div data-c="${i}" class="ix ${cls(p.k)} ${hl(p)}">${pct(p.k)}</div>`).join('');
+  h += `<div class="rl sub">KOSDAQ</div>` + periods.map((p,i)=>`<div data-c="${i}" class="ix ${cls(p.q)} ${hl(p)}">${pct(p.q)}</div>`).join('');
+  h += `<div class="rl top">초과 vs KOSPI</div>` + periods.map((p,i)=>`<div data-c="${i}" class="xs top ${cls(p.a-p.k)} ${hl(p)}">${pp(p.a-p.k)}</div>`).join('');
+  h += `<div class="rl">초과 vs KOSDAQ</div>` + periods.map((p,i)=>`<div data-c="${i}" class="xs ${cls(p.a-p.q)} ${hl(p)}">${pp(p.a-p.q)}</div>`).join('');
   $('periods').innerHTML = h;
+  const pg=$('periods');
+  pg.addEventListener('mouseover',(e)=>{ const c=e.target.closest('[data-c]'); pg.querySelectorAll('.ch').forEach(x=>x.classList.remove('ch')); if(c) pg.querySelectorAll('[data-c="'+c.dataset.c+'"]').forEach(x=>x.classList.add('ch')); });
+  pg.addEventListener('mouseleave',()=>pg.querySelectorAll('.ch').forEach(x=>x.classList.remove('ch')));
 })();
 
 // 3. 추이
@@ -339,7 +397,25 @@ $('trendSub').textContent = `${dot(pd(n0[0]))} – ${dot(lastD)} · 일별`;
     g += `<text x="${ex+14}" y="${e.yy-2}" font-size="13" font-weight="${e.w}" fill="${e.c}">${e.t}</text>`;
     g += `<text x="${ex+14}" y="${e.yy+15}" font-size="13" fill="#191F28">${f2(e.v)}</text>`;
   });
+  g += `<g class="hv" opacity="0"><line class="vx" y1="${T}" y2="${Ht-B}" stroke="#191F28" stroke-width="1" stroke-dasharray="3 3"/><circle class="cq" r="4" fill="#B0B8C1"/><circle class="ck" r="4" fill="#8B95A1"/><circle class="ca" r="6" fill="#203864" stroke="#fff" stroke-width="2"/></g>`;
+  g += `<rect x="${L}" y="${T}" width="${W-L-Rr}" height="${Ht-T-B}" fill="transparent" class="ov"/>`;
   svg.innerHTML = g;
+  const xs = H.map(r=>x(pd(r[0]).getTime()));
+  const tip = document.createElement('div'); tip.className='tip'; svg.parentNode.style.position='relative'; svg.parentNode.appendChild(tip);
+  const hv = svg.querySelector('.hv'), ov = svg.querySelector('.ov');
+  const show = (ev) => {
+    const rc = svg.getBoundingClientRect(), sx = (ev.clientX - rc.left) * (W / rc.width);
+    let i = 0, best = 1e9; xs.forEach((xx,k)=>{ const dd=Math.abs(xx-sx); if(dd<best){best=dd;i=k;} });
+    const r = H[i], a = r[1], kv = norm(r,2), qv = norm(r,3);
+    hv.setAttribute('opacity','1');
+    hv.querySelector('.vx').setAttribute('x1',xs[i]); hv.querySelector('.vx').setAttribute('x2',xs[i]);
+    [['.ca',a],['.ck',kv],['.cq',qv]].forEach(([c,v])=>{ const el=hv.querySelector(c); el.setAttribute('cx',xs[i]); el.setAttribute('cy',y(v)); });
+    const ch = (v)=> span((v/1000-1)*100);
+    tip.innerHTML = `<b>${dot(pd(r[0]))}</b><span><i style="background:#203864"></i>AMT<em>${f2(a)}</em>${ch(a)}</span><span><i style="background:#8B95A1"></i>KOSPI<em>${f2(kv)}</em>${ch(kv)}</span><span><i style="background:#B0B8C1"></i>KOSDAQ<em>${f2(qv)}</em>${ch(qv)}</span>`;
+    const px = xs[i] / W * rc.width; tip.style.left = px + 'px'; tip.classList.add('on'); tip.classList.toggle('flip', px > rc.width * 0.62);
+  };
+  ov.addEventListener('mousemove', show); ov.addEventListener('touchmove', (e)=>show(e.touches[0]), {passive:true});
+  ov.addEventListener('mouseleave', ()=>{ hv.setAttribute('opacity','0'); tip.classList.remove('on'); });
   const kChart = (kEnd/1000-1)*100;
   // const idxNote = Math.abs(kChart - K) > 0.05 ? `지수선은 ${Number(n0[0].slice(5,7))}/${Number(n0[0].slice(8,10))} 종가=1,000 기준` : '';
 })();
@@ -367,8 +443,15 @@ $('facts').innerHTML = `
   <div><div class="k">상위 3종목 비중</div><div class="v">${top3W.toFixed(1)}%</div><div class="s">${top3.map(h=>h.name).join(' · ')}</div></div>
   <div><div class="k">최대 업종 비중</div><div class="v">${secs[0][1].toFixed(1)}%</div><div class="s">${secs[0][0]} · 전체 ${secs.length}개 업종</div></div>`;
 (function(){
-  const segs = ordered.map(h=>({w:h.weight, lab:h.name, cash:false})).concat([{w:DATA.cashWeight, lab:'현금', cash:true}]);
-  $('stockBar').innerHTML = segs.map(s=>`<div class="seg ${s.cash?'cash':''}" style="flex:${s.w} 1 0"></div>`).join('');
+  const segs = ordered.map(h=>({w:h.weight, lab:h.name, cash:false, code:h.code, ret:h.ret, sec:h.sector})).concat([{w:DATA.cashWeight, lab:'현금', cash:true, code:'cash'}]);
+  $('stockBar').innerHTML = segs.map(s=>`<div class="seg ${s.cash?'cash':''}" data-code="${s.code}" style="flex:${s.w} 1 0"></div>`).join('');
+  const sb=$('stockBar'), stip=document.createElement('div'); stip.className='tip st'; sb.parentNode.style.position='relative'; sb.parentNode.appendChild(stip);
+  const hiCode=(code)=>{ document.querySelectorAll('[data-code]').forEach(x=>x.classList.toggle('on', x.dataset.code===code)); sb.classList.toggle('hov', !!code); $('tbody').classList.toggle('hov', !!code); };
+  sb.addEventListener('mousemove',(e)=>{ const t=e.target.closest('.seg'); if(!t){return;} const sg=segs.find(x=>x.code===t.dataset.code); hiCode(sg.code);
+    const rc=sb.getBoundingClientRect(), tr=t.getBoundingClientRect();
+    stip.innerHTML = sg.cash ? `<b>현금</b><span>비중<em>${sg.w.toFixed(1)}%</em></span>` : `<b>${sg.lab}</b><span>${sg.sec}</span><span>비중<em>${sg.w.toFixed(1)}%</em></span><span>수익률<em>${span(sg.ret)}</em></span>`;
+    stip.style.left=(tr.left-rc.left+tr.width/2)+'px'; stip.style.top=(t.offsetTop-8)+'px'; stip.classList.add('on'); });
+  sb.addEventListener('mouseleave',()=>{ hiCode(null); stip.classList.remove('on'); });
   $('stockLabels').innerHTML = segs.map(s=>{
     const show = s.w >= 5.5 || s.cash;
     return `<div style="flex:${s.w} 1 0">${show?`<div class="in"><b>${s.lab}</b><span class="num">${s.w.toFixed(1)}%</span></div>`:''}</div>`;
@@ -384,7 +467,7 @@ $('facts').innerHTML = `
 (function(){
   $('tableH').innerHTML = `평가손익 ${span(plSum,won)}원${SEP}수익 ${ups}/${hold.length}종목${SEP}전일 손익 ${span(dayPlSum,won)}원`;
   const maxW = byW[0].weight;
-  let rows = byW.map(h=>`<tr>
+  let rows = byW.map(h=>`<tr data-code="${h.code}">
     <td><span class="nm">${h.name}</span><span class="cd">${h.code}</span></td>
     <td class="sec">${h.sector}</td>
     <td><span class="wbar" style="width:${(h.weight/maxW*56).toFixed(1)}px"></span>${h.weight.toFixed(1)}%</td>
@@ -392,9 +475,11 @@ $('facts').innerHTML = `
     <td class="${cls(h.pl)}">${won(h.pl)}</td>
     <td class="ret ${cls(h.ret)}">${pct(h.ret)}</td>
     <td class="${cls(h.day)}">${pct(h.day)}</td></tr>`).join('');
-  rows += `<tr class="cash"><td><span class="nm">현금</span></td><td class="sec">—</td><td><span class="wbar" style="width:${(DATA.cashWeight/maxW*56).toFixed(1)}px;background:#C9CED6"></span>${DATA.cashWeight.toFixed(1)}%</td><td>—</td><td>—</td><td>—</td><td>${f0(DATA.cash)}</td><td>—</td><td>—</td><td>—</td></tr>`;
+  rows += `<tr class="cash" data-code="cash"><td><span class="nm">현금</span></td><td class="sec">—</td><td><span class="wbar" style="width:${(DATA.cashWeight/maxW*56).toFixed(1)}px;background:#C9CED6"></span>${DATA.cashWeight.toFixed(1)}%</td><td>—</td><td>—</td><td>—</td><td>${f0(DATA.cash)}</td><td>—</td><td>—</td><td>—</td></tr>`;
   rows += `<tr class="total"><td>합계</td><td></td><td>100.0%</td><td></td><td></td><td></td><td>${f0(DATA.total)}</td><td class="${cls(plSum)}">${won(plSum)}</td><td class="${cls(DATA.plRet)}">${pct(DATA.plRet)}</td><td></td></tr>`;
   $('tbody').innerHTML = rows;
+  $('tbody').addEventListener('mouseover',(e)=>{ const tr=e.target.closest('tr[data-code]'); if(tr){ document.querySelectorAll('[data-code]').forEach(x=>x.classList.toggle('on', x.dataset.code===tr.dataset.code)); $('stockBar').classList.add('hov'); $('tbody').classList.add('hov'); } });
+  $('tbody').addEventListener('mouseleave',()=>{ document.querySelectorAll('[data-code].on').forEach(x=>x.classList.remove('on')); $('stockBar').classList.remove('hov'); $('tbody').classList.remove('hov'); });
 })();
 
 
