@@ -212,7 +212,7 @@ a:hover{color:#203864}
 @media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:10px;letter-spacing:0.14em;line-height:1.8}}
 .page-banner{position:relative;height:280px;display:flex;align-items:flex-end;overflow:hidden}
 .page-banner h1{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 35px 40px;width:100%;box-sizing:border-box;color:#F7F6F3;font-family:'Noto Serif KR',serif;font-size:42px;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
-.wrap{max-width:1380px;margin:0 auto;padding:0 35px;box-sizing:border-box}
+.wrap{max-width:1300px;margin:0 auto;padding:0 35px;box-sizing:border-box}
 .about-nav{position:sticky;top:96px;align-self:start}
 .sec-label{font-size:13px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:#203864;margin:0 0 clamp(12px,1.6vh,20px)}
 .sec-title{font-family:'Noto Serif KR',serif;font-size:clamp(29px,2.9vw,42px);font-weight:400;line-height:1.35;letter-spacing:-0.02em;color:#0F1B2E;margin:0;max-width:20em;word-break:keep-all}
@@ -626,15 +626,6 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
-/* FUND: 장식 덜어내기 (광택·그라데이션·둥근 모서리 정리) */
-.fdpage .fd-mgr .pm img{box-shadow:none;border:1px solid rgba(247,246,243,0.25)}
-.fdpage .fd-arc.on circle{filter:none}
-.fdpage .fd-bars>div>i{background:#6F8FC9 !important;border-radius:0}
-.fdpage .fd-split .bar,.fdpage .fd-split .bar i,.fdpage .fd-li .lb,.fdpage .fd-li .lb i,.fdpage .fd-row .wt .wb,.fdpage .fd-row .wt .wb i,.fdpage .fd-mv .mb .f,.fdpage .fd-pr .ex,.fdpage .fd-li .ch{border-radius:0 !important}
-.fdpage .fd-split .bar i{background:#8FAADC}
-.fdpage .fd-bars{background:none;border-bottom:1px solid rgba(247,246,243,0.2)}
-.fdpage .fd-card{border-color:rgba(247,246,243,0.06)}
-.fdpage .fd-ring .trk circle.in2{display:none}
 
 /* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
 .pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
@@ -702,13 +693,13 @@ main.fdpage:not(.rfmpage) :is(h2,h3,h4,h5,blockquote,b,strong,div,span,p,a,em,sm
 .pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
 main.pgx{background:#EEEDE8 !important}
 main.pgx>section[data-nav="light"]:not(.pres){background:transparent !important;border:0 !important;padding:10px 0 !important}
-main.pgx>section[data-nav="light"]:not(.pres)>.wrap{max-width:1310px;width:calc(100% - 70px);box-sizing:border-box;background:#FFFFFF;border:1px solid #E2E0DA;padding:56px 56px !important;margin:10px auto}
+main.pgx>section[data-nav="light"]:not(.pres)>.wrap{max-width:1230px;width:calc(100% - 70px);box-sizing:border-box;background:#FFFFFF;border:1px solid #E2E0DA;padding:56px 56px !important;margin:10px auto}
 main.pgx>section[data-nav="light"]:not(.pres):first-of-type{padding-top:20px !important}
-main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero){margin:20px auto;max-width:1310px;width:calc(100% - 70px);box-sizing:border-box}
+main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero){margin:20px auto;max-width:1230px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx>section.on-photo:not(.pg-hero)>.wrap,main.pgx>section[data-nav="dark"]:not(.pg-hero)>.wrap{padding-left:56px !important;padding-right:56px !important}
 main.pgx>section:last-of-type{margin-bottom:60px}
 main.pgx h2,main.pgx .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(26px,2.4vw,32px) !important;font-weight:700 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
-main.pgx .pres{margin:20px auto;max-width:1310px;width:calc(100% - 70px);box-sizing:border-box}
+main.pgx .pres{margin:20px auto;max-width:1230px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx .pres .pres-in{padding:64px 56px}
 @media (max-width:860px){
   .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:12px;padding:8px 0}
@@ -2470,7 +2461,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if></p>
+          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>RFS Asset Management · 국내·미국 상장주식 · 일반사모</span></p>
           <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
