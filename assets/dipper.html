@@ -181,17 +181,23 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 }
 
 /* motto */
-.motto{position:absolute;left:50%;transform:translateX(-50%);bottom:15vh;z-index:3;pointer-events:none;text-align:center;white-space:nowrap;padding-top:10px;padding-bottom:10px;cursor:default;
-  font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;padding-left:.6em;
-  color:#dfe6f5;opacity:0;transition:opacity 3s ease, color .6s ease, text-shadow .8s ease, letter-spacing 1.2s var(--ease)}
-.motto.on{opacity:.26;pointer-events:auto}
-.motto.on:hover{opacity:1;color:#fff;letter-spacing:.68em;transition:opacity .6s ease, color .6s ease, text-shadow .8s ease, letter-spacing 1.2s var(--ease);
-  text-shadow:0 0 8px rgba(220,232,255,.9),0 0 22px rgba(170,195,255,.65),0 0 48px rgba(140,170,255,.4)}
+.motto{position:absolute;left:50%;transform:translateX(-50%);bottom:15vh;z-index:3;pointer-events:none;text-align:center;white-space:nowrap;padding:12px 0 12px .6em;cursor:default;
+  font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;transition:letter-spacing 1.4s var(--ease);--a:.3}
+.motto.on{pointer-events:auto}
+.motto .ch{display:inline-block;opacity:0;filter:blur(5px);transform:translateY(4px);color:rgba(223,230,245,var(--a));
+  transition:opacity 1.4s ease calc(var(--i)*80ms), filter 1.4s ease calc(var(--i)*80ms), transform 1.4s var(--ease) calc(var(--i)*80ms), color .5s ease, text-shadow .7s ease}
+.motto .sp{display:inline-block;width:.9em}
+.motto.on .ch{opacity:1;filter:none;transform:none}
+.motto.live .ch{animation:glint 9s ease-in-out calc(1.2s + var(--i)*90ms) infinite}
+@keyframes glint{0%,5%,100%{color:rgba(223,230,245,var(--a));text-shadow:none}
+  2.2%{color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5)}}
+.motto.on:hover{letter-spacing:.7em}
+.motto.on:hover .ch{animation:none;color:#fff;text-shadow:0 0 8px rgba(220,232,255,.9),0 0 22px rgba(170,195,255,.6),0 0 46px rgba(140,170,255,.35);transition-delay:calc(var(--i)*25ms)}
 .sky.shine .seg{stroke-opacity:.75;stroke-width:1.1;transition:stroke-opacity .8s var(--ease), stroke-width .8s var(--ease)}
 .sky.shine .star.lit .glow{transform:translate(-50%,-50%) scale(1.35);opacity:1}
 .sky.shine .star.lit .spk.h{transform:translate(-50%,-50%) scaleX(1.6)}
 .sky.shine .star.lit .spk.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(1.6)}
-@media (max-width:760px){.motto.on{opacity:.2}.motto{bottom:9vh;font-size:11px;letter-spacing:.5em;padding-left:.5em}}
+@media (max-width:760px){.motto{bottom:9vh;font-size:11px;letter-spacing:.5em;padding-left:.5em;--a:.24}}
 </style>
 </head>
 <body>
@@ -381,7 +387,9 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
   /* ---- reveal: photo → stars ignite (Alkaid → Dubhe) → lines → Polaris guide ---- */
   const motto = document.getElementById('motto');
-  motto.textContent = 'RISING FINANCIAL STARS';
+  let ci = 0;
+  motto.setAttribute('aria-label','Rising Financial Stars');
+  motto.innerHTML = 'RISING FINANCIAL STARS'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" style="--i:${ci++}">${c}</span>`).join('');
   motto.addEventListener('pointerenter', () => sky.classList.add('shine'));
   motto.addEventListener('pointerleave', () => sky.classList.remove('shine'));
   const copy = motto, hint = {classList:{add(){}}};
@@ -404,6 +412,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
     }, 1250 + i*110));
     setTimeout(() => copy.classList.add('on'), 2300);
+    setTimeout(() => copy.classList.add('live'), 2300 + 3200);
     setTimeout(() => window.__done = true, 3400);
   };
   let seen = false, loaded = false, started = false;
