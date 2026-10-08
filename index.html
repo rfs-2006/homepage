@@ -2406,7 +2406,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>Timefolio · 모의투자 대회 · 학회 순위</span></p>
         <h1 class="pg-title">Road to Fund Manager</h1>
-        <p class="pg-lede"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</p>
         <p class="pg-note">{{ rfmBeatLine }}</p>
         <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
         <div class="fd-kc">
@@ -4315,7 +4314,7 @@ class Component extends DCLogic {
       const r = rep[h.code];
       return {
         cls: 'fd-row' + (hi === i ? ' hi' : ''), enter: () => this.setState({ fdHi: i }), leave: () => this.setState({ fdHi: null }),
-        rank: i + 1, badge: i === 0 ? '#E3C07A' : i === 1 ? '#C9CFD8' : i === 2 ? '#D8A07A' : 'rgba(247,246,243,0.1)', badgeC: i < 3 ? '#0F1B2E' : 'rgba(247,246,243,0.7)',
+        rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : i === 2 ? '#F7F6F3' : 'rgba(247,246,243,0.7)',
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
         meta: [h.code, r && r.sector, h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
@@ -4459,7 +4458,7 @@ class Component extends DCLogic {
     const ctot = contrib.reduce((a, x) => a + Math.abs(x.c), 0) || 1;
     const prevMap = {}; ((s.fundLivePrev && s.fundLivePrev.holdings) || []).forEach((h) => { prevMap[h.code] = h.cur; });
     const tick = this._fundTick || 0;
-    const shades = ['#8FAADC', '#E3C07A', '#A99BD8', '#7FC4E0', '#CBB89D', '#6F8FC9', '#E0A98A', '#9AA5B8', '#B7C9EA', '#C3A3C9'];
+    const shades = ['#8FAADC', '#3E5F9E', '#C3D3EE', '#6F8FC9', '#2C4A82', '#A9BEE6', '#5577B5', '#DCE6F6', '#4A6AA6', '#7E9BD2'];
     const cw = F.cashWeight || 0;
     const alloc = hs.map((h, i) => ({ grow: (h.weight || 0).toFixed(2), bg: shades[i % shades.length], tc: '#0F1B2E', label: (h.weight || 0) >= 7 ? h.name : '' }))
       .concat(cw > 0 ? [{ grow: cw.toFixed(2), bg: 'rgba(247,246,243,0.16)', tc: '#F7F6F3', label: cw >= 7 ? '현금' : '' }] : []);
