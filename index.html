@@ -759,6 +759,17 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 main.pgx{background:#EEEDE8 !important}
 main.pgx .story h2,main.pgx .story .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(29px,2.9vw,42px) !important;font-weight:400 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
 main.pgx .story .nettitle{font-weight:700 !important}
+
+main.pgx>.pg-hero.pg-full{margin-bottom:0 !important}
+.story-tabs{height:69px;box-sizing:border-box;margin-bottom:-69px;background:rgba(11,21,36,0.28) !important;border-bottom:1px solid rgba(247,246,243,0.12) !important;transition:background .4s ease,border-color .4s ease}
+.story-tabs a{color:rgba(247,246,243,0.72) !important}
+.story-tabs a:hover{color:#FFFFFF !important;border-color:rgba(247,246,243,0.45) !important}
+.story-tabs.on-light{background:rgba(247,246,243,0.94) !important;border-bottom-color:#E2E0DA !important}
+.story-tabs.on-light a{color:rgba(26,26,26,0.65) !important}
+.story-tabs.on-light a:hover{color:#0F1B2E !important;border-color:rgba(32,56,100,0.4) !important}
+main.pgx .story>section[data-snap]>.wrap{width:100%}
+main.pgx .story #home-process>.wrap{padding-top:150px !important}
+@media (max-width:860px){.story-tabs{height:50px;margin-bottom:-50px}.story-tabs .wrap{overflow-x:auto;scrollbar-width:none}.story-tabs a{flex:0 0 auto;padding:8px 10px}}
 main.pgx .story .secpad{padding-top:110px !important;padding-bottom:110px !important}
 @media (max-width:768px){main.pgx .story h2,main.pgx .story .sec-title{font-size:clamp(26px,7.4vw,32px) !important}}
 main.pgx>section[data-nav="light"]:not(.pres){background:transparent !important;border:0 !important;padding:10px 0 !important}
@@ -1538,7 +1549,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
     <div class="story">
-    <section data-snap="" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
+    <nav class="pg-tabs story-tabs {{ navCls }}" data-nav="dark"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="process" onClick="{{ tabGo }}">프로세스</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">알럼나이</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
+    <section data-snap="" data-tab="intro" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
         <image-slot id="intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot>
       </div>
@@ -1580,7 +1592,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
 
 
-    <section data-snap="" id="home-process" data-about-sec="" class="on-photo bigsec tight" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh">
+    <section data-snap="" data-tab="process" id="home-process" data-about-sec="" class="on-photo bigsec tight" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="home-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Annie Spratt on Unsplash" credit-href="https://unsplash.com/@anniespratt"></image-slot></div>
       <div class="scrim"></div>
       <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
@@ -1677,7 +1689,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section data-snap="" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
+    <section data-snap="" data-tab="alumni" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="alumni-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Nastuh Abootalebi on Unsplash" credit-href="https://unsplash.com/@sunday_digital"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
@@ -1728,7 +1740,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
+    <section data-snap="" data-tab="network" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
       <div class="secpad" style="position:relative;z-index:1;width:100%">
         <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
           <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
@@ -1746,41 +1758,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    </div>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
-
-    <section data-tab="values" id="about-values" data-about-sec="" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE;scroll-margin-top:72px">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          
-          <h2 class="sec-title">Vita Contemplativa</h2>
-          <p class="sec-sub" style="max-width:52em">R.F.S.는 2006년 창립된 중앙대학교 가치투자학회로,&nbsp;사색적 삶을 기반으로 금융과 경제 현상을 탐구합니다.&nbsp;<br>끊임없이 읽고 치열하게 토론하는 과정에서 리서치를 이해하고, 자신만의 논리로 투자의견을 세우는 것을 목표로 합니다.</p>
-        </div>
-        <div class="values2" style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:clamp(40px,6vh,64px)">
-          <div class="rv rv-left" style="background:#203864;padding:clamp(28px,3vw,40px)">
-            <h3 style="font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;letter-spacing:-0.02em;line-height:1.3;margin:0;color:#F7F6F3">현직에서 경쟁력 있는 인재</h3>
-            <div style="height:1px;background:rgba(247,246,243,0.35);margin:20px 0"></div>
-            <ul style="list-style:none;padding:0;margin:0;display:grid;gap:12px">
-              <li style="display:flex;gap:10px;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.9)"><span style="color:rgba(247,246,243,0.7)">·</span><span>실제 금융권 직무와 유사한 활동을 통해 간접 경험과 직무 역량을 개발합니다.</span></li>
-              <li style="display:flex;gap:10px;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.9)"><span style="color:rgba(247,246,243,0.7)">·</span><span>Research Team은 리서치 보고서를 작성하고 발표하며, Asset Management Team은 매크로 보고서를 작성하고 RFS 펀드를 운용합니다.</span></li>
-              <li style="display:flex;gap:10px;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.9)"><span style="color:rgba(247,246,243,0.7)">·</span><span>RFS 네트워크와 직무세미나로 커리어 로드맵을 구체화합니다.</span></li>
-            </ul>
-          </div>
-          <div class="rv rv-right" style="background:#F7F6F3;border:1px solid #D0CECE;padding:clamp(28px,3vw,40px)">
-            <h3 style="font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;letter-spacing:-0.02em;line-height:1.3;margin:0;color:#0F1B2E">Vita contemplativa</h3>
-            <div style="height:1px;background:#D0CECE;margin:20px 0"></div>
-            <ul style="list-style:none;padding:0;margin:0;display:grid;gap:12px">
-              <li style="display:flex;gap:10px;font-size:14px;line-height:1.7;color:rgba(26,26,26,0.8)"><span style="color:#203864">·</span><span>사색적 삶을 기반으로 금융과 경제 현상을 탐구하고 분석합니다.</span></li>
-              <li style="display:flex;gap:10px;font-size:14px;line-height:1.7;color:rgba(26,26,26,0.8)"><span style="color:#203864">·</span><span>증권사 애널리스트 보고서를 요약하고 정리하는 것이 아니라, 학회원의 논리와 주장이 담긴 보고서를 작성합니다.</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    
-
-    <section data-tab="history" class="on-photo" id="about-history" data-about-sec="" data-nav="dark" style="position:relative;overflow:hidden;scroll-margin-top:72px">
+    <section data-snap="" data-tab="history" class="on-photo" id="about-history" data-about-sec="" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-mid" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
       <div class="scrim" style="opacity:0.86"></div>
       <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px">
@@ -1813,7 +1791,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <a href="{{ a.href }}" class="{{ a.cls }}"><span class="lab">{{ a.label }}</span><span class="dot"></span></a>
       </sc-for>
     </nav>
-    <section data-tab="calendar" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
+    <section data-snap="" data-tab="calendar" id="about-calendar" data-about-sec="" data-nav="light" style="background:#FFFFFF;min-height:100vh;display:flex;align-items:center">
       <div class="wrap secpad" style="padding:110px 35px">
         <div class="rv rv-up">
           <h2 class="sec-title">학기 중에는 국내를, 방학에는 <strong>세계를 분석합니다.</strong></h2>
@@ -1894,6 +1872,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </div>
     </section>
+    </div>
 
 
   </main>
@@ -1909,7 +1888,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
     <div class="story">
-    <section id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
+    <nav class="pg-tabs story-tabs {{ navCls }}" data-nav="dark"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="process" onClick="{{ tabGo }}">프로세스</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">알럼나이</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
+    <section data-tab="intro" id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
       <div class="scrim" style="opacity:0.86"></div>
       <div style="position:relative;z-index:1">
@@ -1929,7 +1909,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden">
+    <section data-tab="process" class="on-photo" data-nav="dark" style="position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden">
       <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
       <div class="scrim" style="opacity:0.82"></div>
       <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%">
@@ -1946,7 +1926,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
     </section>
 
-    <section id="home-alumni" data-nav="dark" style="background:#111c2e;padding:64px 24px 60px">
+    <section data-tab="alumni" id="home-alumni" data-nav="dark" style="background:#111c2e;padding:64px 24px 60px">
       <p class="sec-label">Alumni</p>
       <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
       <div style="display:flex;align-items:baseline;gap:14px;margin-top:40px">
@@ -1965,7 +1945,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
     </section>
 
-    <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
+    <section data-tab="network" id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
       <div style="padding:0 24px">
         <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
         <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
@@ -1982,23 +1962,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     </section>
 
     </div>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
 
-    <section data-tab="values" data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#0F1B2E">Vita Contemplativa</h2>
-      <div style="margin-top:32px;display:grid;gap:22px">
-        <div style="background:#203864;color:#F7F6F3;padding:26px 24px">
-          <div style="font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.35">현직에서 경쟁력 있는 인재</div>
-          <div style="width:28px;height:1px;background:rgba(247,246,243,0.6);margin:16px 0"></div>
-          <p style="margin:0;font-size:14px;line-height:1.8;color:rgba(247,246,243,0.85)">실제 금융권 직무와 유사한 활동으로 간접 경험과 직무 역량을 개발합니다.</p>
-        </div>
-        <div style="background:#F7F6F3;border:1px solid #D0CECE;padding:26px 24px">
-          <div style="font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.35;color:#0F1B2E">사색하는 삶</div>
-          <div style="width:28px;height:1px;background:#203864;margin:16px 0"></div>
-          <p style="margin:0;font-size:14px;line-height:1.8;color:rgba(26,26,26,0.75)">증권사 보고서를 요약하는 것이 아니라, 학회원의 논리와 주장으로 보고서를 씁니다.</p>
-        </div>
-      </div>
-    </section>
 
     <section data-tab="history" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:64px 24px 56px">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-history-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
@@ -4125,7 +4089,7 @@ class Component extends DCLogic {
         });
       };
       // 히어로를 지나면 상단 메뉴에 배경을 깔아 아래 고정 탭과 한 덩어리로 보이게
-      const solid = (on) => { const d = document.documentElement; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      const solid = (on) => { const d = document.documentElement; if (document.querySelector('main.pgx .story')) on = false; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
       const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-84px 0px 0px 0px' });
       const scanHero = () => {
         const h = document.querySelector('.pg-hero');
@@ -5061,7 +5025,7 @@ class Component extends DCLogic {
         e.preventDefault();
         const t = e.currentTarget.getAttribute('data-t');
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
-        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
       isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
@@ -5241,10 +5205,8 @@ class Component extends DCLogic {
         { label:'프로세스', href:'#home-process', id:'home-process' },
         { label:'알럼나이', href:'#home-alumni', id:'home-alumni' },
         { label:'네트워크', href:'#home-network', id:'home-network' },
-        { label:'핵심 가치', href:'#about-values', id:'about-values' },
         { label:'연혁', href:'#about-history', id:'about-history' },
-        { label:'SOHKA 연합', href:'#about-sohka', id:'about-sohka' },
-        { label:'기타 활동', href:'#about-etc', id:'about-etc' }
+        { label:'리서치 일정', href:'#about-calendar', id:'about-calendar' }
       ].map((a) => ({ ...a, cls: s.activeSec === a.id ? 'active' : '' })),
       toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
       goHome: (e) => { e.preventDefault(); this.go('home'); },
