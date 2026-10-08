@@ -626,6 +626,20 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* FUND 상단 문장 */
+.fdpage .fd-stmt{padding:72px 0 40px !important;margin-top:0 !important;border-top:0 !important;text-align:center}
+.fd-stmt .st{margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(28px,3vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1.35;color:#F7F6F3;word-break:keep-all}
+.fd-stmt .ps{max-width:760px;margin:44px auto 0;padding-top:34px;border-top:1px solid rgba(247,246,243,0.14);text-align:left}
+.fd-stmt .ps .fd-ct{font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#8FAADC;text-transform:uppercase}
+.fd-stmt .hl{margin:14px 0 0;font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;line-height:1.45;color:#F7F6F3}
+.fd-stmt ul{list-style:none;margin:14px 0 0;padding:0}
+.fd-stmt li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.75)}
+.fd-stmt li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
+.fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.4);margin-top:48px;word-break:keep-all}
+@media (max-width:860px){.fdpage .fd-stmt{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
+
+:root{--up:#5FC48A;--dn:#E8837B;--flat:rgba(247,246,243,0.45)}
+
 /* FUND 시안: 박스 줄이고 섹션마다 구조 다르게 */
 .fdpage .fd-card.fd-open{background:transparent;border:0;border-top:1px solid rgba(247,246,243,0.14);padding:48px 0 12px;margin-top:48px}
 .fdpage .fd-card.fd-open:first-child{margin-top:24px}
@@ -1855,8 +1869,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개" class="pgx">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:center 55%"></image-slot></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">About R.F.S.</h1>
       </div>
@@ -2016,8 +2030,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="소개 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:30% 55%"></image-slot></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">About<br>R.F.S.</h1>
       </div>
@@ -2497,19 +2511,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
 
-      <section class="fd-card fd-mgr fd-open" id="fd-strat">
-        <div class="pm">
-          <img src="assets/officers/am.webp" alt="운용팀장 박정훈" loading="lazy">
-          <div class="pn"><b>박정훈</b><small>41기</small></div>
-        </div>
-        <div class="ps">
-          <h2 class="fd-ct">운용전략</h2>
-          <p class="hl">업황 사이클의 변곡점을 포착하는 코스피·코스닥 섹터 투자</p>
-          <ul>
-            <li>가격·물량·리드타임 등 업황 지표 기반 업종 선별 및 주 단위 비중 조절 전략</li>
-            <li>반도체·2차전지·정유 등 사이클 업종과 소부장·기판 등 밸류체인 중소형주 중심 편입</li>
-          </ul>
-        </div>
+      <section class="fd-card fd-open fd-stmt" id="fd-strat">
+        <p class="st">R.F.S.는 지속 가능한 투자를 지향합니다.</p>
       </section>
 
       <div class="fd-kc fd-kc-in">
@@ -4556,7 +4559,7 @@ class Component extends DCLogic {
         cls: 'fd-row' + (hi === i ? ' hi' : ''), enter: () => this.setState({ fdHi: i }), leave: () => this.setState({ fdHi: null }),
         rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : i === 2 ? '#F7F6F3' : 'rgba(247,246,243,0.7)',
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
-        meta: [h.code, sectorOf(h), h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
+        meta: [h.code, sectorOf(h)].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
         ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
         px: live ? won(h.cur) : '', avgL: live ? '평균 ' + won(h.avg) : '', ev: live ? won(h.evlt) : '', qtyL: live ? Number(h.qty).toLocaleString('ko-KR') + '주' : '',
@@ -4662,7 +4665,7 @@ class Component extends DCLogic {
     const F = live || s.fundPub;
     const pct = (v, d = 2) => (v === null || v === undefined || isNaN(v) ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%');
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
-    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
+    const up = 'var(--up)', dn = 'var(--dn)', flat = 'var(--flat)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
     if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
@@ -4784,7 +4787,7 @@ class Component extends DCLogic {
           dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
         };
       }),
-      fdNote: live ? '자료: 키움증권 운용 계좌 · 장중 15초 갱신 · 투자 권유 아님' : '자료: 키움증권 운용 계좌 · 장 마감 기준 · 투자 권유 아님',
+      fdNote: '본 페이지는 중앙대학교 가치투자학회 R.F.S. 운용팀의 운용 현황을 학회 활동 목적으로 공개하는 자료이며, 특정 종목의 매수·매도를 권유하지 않습니다. 과거의 수익률이 미래의 수익을 보장하지 않으며, 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다. 표시된 수치는 운용 계좌의 추정 자산 기준으로 실제와 다를 수 있습니다.',
     };
   }
 
