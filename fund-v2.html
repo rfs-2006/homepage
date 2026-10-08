@@ -190,6 +190,9 @@ tbody tr:hover .wbar,tbody tr.on .wbar{background:#8FAADC}
   .disc{width:calc(100% - 24px)}
   .eyebrow{flex-direction:column;gap:2px}
   .eyebrow span{font-size:12px}
+  .card h2.num{font-size:22px!important;line-height:1.45}
+  .seglabels{display:none}.stack{height:40px}
+  .sector-labels>div{font-size:11px}.sector-labels>div span{display:block;margin:0}
 }
 </style>
 </head>
@@ -361,7 +364,8 @@ $('trendH').innerHTML = `${f2(n0[1]).replace('.00','')} → ${f2(DATA.nav)}${SEP
 $('trendSub').textContent = `${dot(pd(n0[0]))} – ${dot(lastD)} · 일별`;
 (function(){
   const svg = $('chart');
-  const W=1120, Ht=330, L=56, Rr=128, T=14, B=38;
+  const M=innerWidth<860, W=M?560:1120, Ht=M?420:330, L=M?62:56, Rr=M?110:128, T=14, B=M?44:38, FS=M?18:13;
+  svg.setAttribute('viewBox',`0 0 ${W} ${Ht}`);
   const t0 = pd(H[0][0]).getTime(), t1 = lastD.getTime();
   const x = t => L + (t - t0)/(t1 - t0)*(W-L-Rr);
   let ymax = 0, ymin = Infinity;
@@ -372,13 +376,13 @@ $('trendSub').textContent = `${dot(pd(n0[0]))} – ${dot(lastD)} · 일별`;
   for(let v=yBot; v<=yTop; v+=500){
     const isBase = v===1000;
     g += `<line x1="${L}" x2="${W-Rr}" y1="${y(v)}" y2="${y(v)}" stroke="${isBase?'#8B95A1':'#E5E8EB'}" stroke-width="1" ${isBase?'stroke-dasharray="4 4"':''}/>`;
-    g += `<text x="${L-12}" y="${y(v)+4}" text-anchor="end" font-size="13" fill="#6B7684">${v.toLocaleString('ko-KR')}</text>`;
+    g += `<text x="${L-12}" y="${y(v)+4}" text-anchor="end" font-size="${FS}" fill="#6B7684">${v.toLocaleString('ko-KR')}</text>`;
   }
   const d0 = pd(H[0][0]);
   for(let m = new Date(d0.getFullYear(), d0.getMonth()+1, 1); m.getTime()<=t1; m = new Date(m.getFullYear(), m.getMonth()+1, 1)){
     const xx = x(m.getTime());
     g += `<line x1="${xx}" x2="${xx}" y1="${Ht-B}" y2="${Ht-B+6}" stroke="#191F28"/>`;
-    g += `<text x="${xx}" y="${Ht-B+24}" text-anchor="middle" font-size="13" fill="#6B7684">${m.getMonth()+1}월</text>`;
+    g += `<text x="${xx}" y="${Ht-B+24}" text-anchor="middle" font-size="${FS}" fill="#6B7684">${m.getMonth()+1}월</text>`;
   }
   g += `<line x1="${L}" x2="${W-Rr}" y1="${Ht-B}" y2="${Ht-B}" stroke="#191F28"/>`;
   const path = i => H.map((r,k)=>`${k?'L':'M'}${x(pd(r[0]).getTime()).toFixed(1)},${y(i===1?r[1]:norm(r,i)).toFixed(1)}`).join('');
@@ -390,12 +394,12 @@ $('trendSub').textContent = `${dot(pd(n0[0]))} – ${dot(lastD)} · 일별`;
     {v:kEnd, t:'KOSPI', c:'#6B7684', w:600},
     {v:qEnd, t:'KOSDAQ', c:'#6B7684', w:600},
   ].map(e=>({...e, yy:y(e.v)})).sort((a,b)=>a.yy-b.yy);
-  for(let i=1;i<ends.length;i++) if(ends[i].yy-ends[i-1].yy<36) ends[i].yy = ends[i-1].yy+36;
+  for(let i=1;i<ends.length;i++) if(ends[i].yy-ends[i-1].yy<(M?44:36)) ends[i].yy = ends[i-1].yy+(M?44:36);
   const ex = x(t1);
   ends.forEach(e=>{
     g += `<circle cx="${ex}" cy="${y(e.v)}" r="${e.t==='AMT'?5:4}" fill="${e.c}"/>`;
-    g += `<text x="${ex+14}" y="${e.yy-2}" font-size="13" font-weight="${e.w}" fill="${e.c}">${e.t}</text>`;
-    g += `<text x="${ex+14}" y="${e.yy+15}" font-size="13" fill="#191F28">${f2(e.v)}</text>`;
+    g += `<text x="${ex+14}" y="${e.yy-2}" font-size="${FS}" font-weight="${e.w}" fill="${e.c}">${e.t}</text>`;
+    g += `<text x="${ex+14}" y="${e.yy+(M?20:15)}" font-size="${FS}" fill="#191F28">${f2(e.v)}</text>`;
   });
   g += `<g class="hv" opacity="0"><line class="vx" y1="${T}" y2="${Ht-B}" stroke="#191F28" stroke-width="1" stroke-dasharray="3 3"/><circle class="cq" r="4" fill="#B0B8C1"/><circle class="ck" r="4" fill="#8B95A1"/><circle class="ca" r="6" fill="#203864" stroke="#fff" stroke-width="2"/></g>`;
   g += `<rect x="${L}" y="${T}" width="${W-L-Rr}" height="${Ht-T-B}" fill="transparent" class="ov"/>`;
