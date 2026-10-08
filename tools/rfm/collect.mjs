@@ -1,5 +1,5 @@
 // 타임폴리오 RFM(Road To Fund Manager) 학회원 순위 수집기
-// 타임폴리오 허가 범위(하루 1~2회 조회·CSV 다운로드, 학회 내부 공개)에서만 실행한다.
+// 타임폴리오 허가 범위(조회·CSV 다운로드, 학회 내부 공개)에서만 실행한다. 일정은 .github/workflows/rfm.yml
 // 일반 사용자와 같은 화면 조작(로그인 → 대회 → 수익률 순위 → CSV 다운로드)만 사용하고 API는 호출하지 않는다.
 // 결과는 Supabase intranet_content 의 id='rfm' 행에 저장되며, 로그인한 학회원만 AGORA에서 본다.
 //
