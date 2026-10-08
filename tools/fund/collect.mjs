@@ -95,12 +95,24 @@ async function loadPrev() {
   const j = await r.json();
   return (j[0] && j[0].data) || null;
 }
-async function save(data) {
-  const r = await fetch(SB_URL + '/rest/v1/intranet_content', {
+async function save(data, table = 'intranet_content', id = 'fund_live') {
+  const r = await fetch(SB_URL + '/rest/v1/' + table, {
     method: 'POST', headers: { ...sbH(), Prefer: 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({ id: 'fund_live', data }),
+    body: JSON.stringify({ id, data }),
   });
-  if (!r.ok) throw new Error('supabase write ' + r.status + ' ' + (await r.text()));
+  if (!r.ok) throw new Error('supabase write ' + table + ' ' + r.status + ' ' + (await r.text()));
+}
+
+// 외부 공개용: 장 마감 확정치만, 금액·수량·평단은 빼고 비율만 (public_content 테이블, 누구나 읽기)
+async function savePublic(d) {
+  const pub = {
+    asOf: d.asOf.slice(0, 10), start: d.start, nav: d.nav, ret: d.ret, day: d.day, cashWeight: d.cashWeight,
+    bm: { kospi: d.bm.kospi && { ret: d.bm.kospi.ret, day: d.bm.kospi.day }, kosdaq: d.bm.kosdaq && { ret: d.bm.kosdaq.ret, day: d.bm.kosdaq.day } },
+    holdings: d.holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day })),
+    history: d.history,
+  };
+  try { await save(pub, 'public_content', 'fund'); console.log(d.asOf + ' public snapshot saved'); }
+  catch (e) { console.error('public snapshot skipped: ' + e.message.split('\n')[0]); }
 }
 
 // ---------- 한 번 조회 ----------
@@ -130,35 +142,39 @@ async function round() {
       qty: n(r.rmnd_qty), avg: n(r.pur_pric), cur, evlt, pl: n(r.evltv_prft), ret: n(r.prft_rt),
       weight: total ? evlt / total * 100 : n(r.poss_rt),
       day: prevClose ? (cur / prevClose - 1) * 100 : null,
+      dayPl: prevClose ? n(r.rmnd_qty) * (cur - prevClose) : null,
     };
   }).filter((h) => h.qty > 0).sort((a, b) => b.evlt - a.evlt);
   const cash = Math.max(0, total - stock);
   const [kospi, kosdaq] = await Promise.all([indexRet('KOSPI', START || baseDate), indexRet('KOSDAQ', START || baseDate)]);
   const history = hist.filter((h) => h[0] !== today);
+  const prevNav = history.length ? history[history.length - 1][1] : null;
   if (nav) history.push([today, +nav.toFixed(2), kospi && kospi.now, kosdaq && kosdaq.now]);
   const data = {
     asOf: stamp(), start: START || baseDate, baseTotal: base, baseDate,
     total, stock, cash, cashWeight: total ? cash / total * 100 : 0,
     nav: nav && +nav.toFixed(2), ret: nav ? nav / 1000 * 100 - 100 : n(head.tot_prft_rt),
+    day: nav && prevNav ? (nav / prevNav - 1) * 100 : null,
     pl: n(head.tot_evlt_pl), plRet: n(head.tot_prft_rt),
     holdings, bm: { kospi, kosdaq }, history: history.slice(-400),
   };
   if (DRY) { console.log(JSON.stringify({ ...data, holdings: data.holdings.length + ' holdings' })); return; }
   await save(data);
   prev = data;
+  if (round.publish) await savePublic(data);
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
 }
 
 // ---------- 실행 ----------
 if (!DRY) prev = await loadPrev().catch(() => null);
-if (ONCE || DRY) { await round(); process.exit(0); }
+if (ONCE || DRY) { round.publish = ONCE; await round(); process.exit(0); }
 let closedDone = '';
 for (;;) {
   const t0 = Date.now();
   const open = weekday() && hm() >= 535 && hm() <= 940; // 08:55~15:40
   try {
     if (open) await round();
-    else if (weekday() && hm() > 940 && closedDone !== ymd()) { await round(); closedDone = ymd(); } // 마감 후 확정치 1회
+    else if (weekday() && hm() > 940 && closedDone !== ymd()) { round.publish = true; await round(); round.publish = false; closedDone = ymd(); } // 마감 후 확정치 1회 + 외부 공개분
   } catch (e) { console.error(stamp() + ' ' + e.message); }
   await sleep(open ? Math.max(1000, EVERY - (Date.now() - t0)) : 60e3);
 }

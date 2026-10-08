@@ -448,6 +448,35 @@ nav.nav{view-transition-name:rfs-nav}
 <style>
 .intra-rail a{display:block;padding:9px 0;font-size:13px;color:rgba(247,246,243,0.65);border-bottom:1px solid transparent;transition:color 120ms ease}
 .intra-rail a:hover{color:#F7F6F3}
+
+.fd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:32px;border-top:1px solid rgba(247,246,243,0.3)}
+.fd-kpis div{padding:16px 18px 4px 0;font-variant-numeric:tabular-nums}
+.fd-kpis .kv{display:block;font-family:'Noto Serif KR',serif;font-size:26px;letter-spacing:-0.02em;font-weight:700}
+.fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.42);margin-top:4px}
+.fd-h{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:56px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);color:#F7F6F3}
+.fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.42)}
+.fd-chart{display:block;width:100%;height:260px;margin-top:18px}
+.fd-legend{display:flex;gap:18px;font-size:12px;color:rgba(247,246,243,0.68);margin-top:10px}.fd-legend i{display:inline-block;width:14px;height:2px;vertical-align:4px;margin-right:6px}
+.fd-attr{display:flex;height:34px;margin-top:18px;gap:2px}
+.fd-attr div{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
+.fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.42);margin-top:8px}
+.fd-hold{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;align-items:center;padding:14px 0;border-top:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
+.fd-hold:first-of-type{border-top:0}
+.fd-hold .nm b{display:block;font-size:15px;font-weight:600}.fd-hold .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px}
+.fd-hold .wbar{position:relative;height:22px}.fd-hold .wbar i{position:absolute;left:0;top:0;bottom:0;background:rgba(143,170,220,0.22)}
+.fd-hold .wv{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;white-space:nowrap}
+.fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.42);white-space:nowrap}
+.fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.42)}
+@keyframes fdFu0{0%{background:rgba(95,196,138,0.22)}}@keyframes fdFu1{0%{background:rgba(95,196,138,0.22)}}
+@keyframes fdFd0{0%{background:rgba(232,131,123,0.22)}}@keyframes fdFd1{0%{background:rgba(232,131,123,0.22)}}
+@media (max-width:760px){
+  .fdpage .wrap{padding:28px 16px 80px !important}
+  .fd-kpis{grid-template-columns:repeat(2,1fr)}.fd-kpis b{font-size:22px}
+  .fd-chart{height:200px}
+  .fd-hold{grid-template-columns:minmax(0,1fr) 90px;grid-template-rows:auto auto;gap:6px 12px}
+  .fd-hold .wbar{grid-column:1/3;grid-row:2;height:18px}.fd-hold .c3,.fd-hold .c4{display:none}
+  .fd-attr div{font-size:10px}
+}
 .rfmpage{--rH:64px}
 .rfm-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums;flex-wrap:wrap}
 .rfm-live{display:inline-flex;align-items:center;gap:6px;color:#5FC48A;font-weight:600;letter-spacing:0.06em}
@@ -2012,6 +2041,60 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.5)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.75)">recruiting.rfs@gmail.com</a></p>
       </div>
     </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#111c2e;min-height:100vh;color:#F7F6F3">
+    <div data-nav="light" style="height:72px"></div>
+    <div class="wrap" style="padding:36px 35px 110px">
+      <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
+        <p class="rfm-meta">RFS 펀드</p>
+        <h1 class="rfm-head" style="max-width:none">운용 현황을 준비하고 있습니다</h1>
+        <p class="rfm-dek">장 마감 후 첫 기록이 올라오면 여기에 표시됩니다.</p>
+      </sc-if>
+      <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
+      <div class="rfm-meta">
+        <sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if>
+        <span>{{ fdMeta }}</span>
+      </div>
+      <h1 class="rfm-head" style="max-width:none">RFS 펀드 <span style="color:{{ fdHeadColor }}">{{ fdHeadRet }}</span>{{ fdHeadRest }}</h1>
+      <p class="rfm-dek"><span class="rfm-beat" style="color:rgba(247,246,243,0.7)">{{ fdDek }}</span></p>
+      <div class="fd-kpis">
+        <sc-for list="{{ fdKpis }}" as="k" hint-placeholder-count="5"><div><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><em class="kk">{{ k.k }}</em></div></sc-for>
+      </div>
+
+      <h2 class="fd-h">기준가 추이 <small>RFS 펀드 · KOSPI · KOSDAQ, 첫 기록일 = 1,000</small></h2>
+      <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
+        <svg class="fd-chart" viewBox="0 0 1000 250" preserveAspectRatio="none">
+          <line x1="0" x2="1000" y1="{{ fdBaseY }}" y2="{{ fdBaseY }}" stroke="rgba(247,246,243,0.15)" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
+          <polyline points="{{ fdPtsQ }}" fill="none" stroke="rgba(247,246,243,0.25)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
+          <polyline points="{{ fdPtsK }}" fill="none" stroke="rgba(247,246,243,0.5)" stroke-width="1.5" vector-effect="non-scaling-stroke"></polyline>
+          <polyline points="{{ fdPtsF }}" fill="none" stroke="#8FAADC" stroke-width="2.5" vector-effect="non-scaling-stroke"></polyline>
+        </svg>
+        <div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.5)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.25)"></i>KOSDAQ</span></div>
+      </sc-if>
+      <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p style="margin-top:16px;font-size:13px;color:rgba(247,246,243,0.45)">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
+
+      <sc-if value="{{ fdHasContrib }}" hint-placeholder-val="{{ false }}">
+        <h2 class="fd-h">오늘 수익 기여 <small>{{ fdContribSum }}</small></h2>
+        <div class="fd-attr"><sc-for list="{{ fdContrib }}" as="c" hint-placeholder-count="5"><div style="flex-grow:{{ c.grow }};background:{{ c.bg }}">{{ c.label }}</div></sc-for></div>
+        <div class="fd-attrcap"><span>깎아먹은 종목</span><span>벌어준 종목</span></div>
+      </sc-if>
+
+      <h2 class="fd-h">보유 종목 <small>{{ fdHoldCap }}</small></h2>
+      <sc-for list="{{ fdHolds }}" as="h" hint-placeholder-count="6">
+        <div class="fd-hold" style="animation-name:{{ h.fl }}">
+          <div class="nm"><b>{{ h.name }}</b><small>{{ h.meta }}</small></div>
+          <div class="wbar"><i style="width:{{ h.wbar }}"></i><b class="wv">{{ h.w }}</b><em class="we">{{ h.evlt }}</em></div>
+          <div class="r c3"><small>{{ h.avg }}</small><b>{{ h.cur }}</b></div>
+          <div class="r"><b style="color:{{ h.retColor }}">{{ h.ret }}</b><small style="color:{{ h.dayColor }}">{{ h.day }}</small></div>
+          <div class="r c4"><b style="color:{{ h.dayPlColor }}">{{ h.dayPl }}</b></div>
+        </div>
+      </sc-for>
+      <p style="margin-top:40px;font-size:12px;color:rgba(247,246,243,0.42)">{{ fdNote }}</p>
+      </sc-if>
+    </div>
   </main>
   </sc-if>
 
@@ -3646,7 +3729,7 @@ class Component extends DCLogic {
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
       this.sb = window.supabase.createClient(SB_URL, SB_KEY);
-      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else this.setState({ intraData: null, rfmData: null }); });
+      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else this.setState({ intraData: null, rfmData: null, fundLive: null }); });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -3665,7 +3748,7 @@ class Component extends DCLogic {
   }
 
   pickNavMode() {
-    if (this.state.page === 'intranet' || this.state.page === 'rfm') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
+    if (this.state.page === 'intranet' || this.state.page === 'rfm' || this.state.page === 'fund') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
     let mode = 'light';
     document.querySelectorAll('[data-nav]').forEach((n) => {
       const r = n.getBoundingClientRect();
@@ -3825,6 +3908,7 @@ class Component extends DCLogic {
       .then(({ data }) => { if (data && data.data) this.setState({ intraData: data.data }); });
     // RFM 순위는 GitHub Actions(tools/rfm)가 하루 1~2회 갱신한다
     this.loadRfm();
+    this.loadFundLive();
     // 장중에는 수집기가 15초마다 저장한다. 실시간 구독으로 바로 반영하고, 구독이 안 되는 환경을 위해 15초 폴링도 둔다
     if (!this._rfmCh) {
       this._rfmCh = this.sb.channel('rfs-rfm')
@@ -3832,6 +3916,26 @@ class Component extends DCLogic {
         .subscribe();
     }
     if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
+  }
+
+  // 학회원: 운용 계좌 실시간 (tools/fund 수집기가 장중 15초마다 저장)
+  loadFundLive() {
+    if (!this.sb) return;
+    this.sb.from('intranet_content').select('data').eq('id', 'fund_live').maybeSingle()
+      .then(({ data }) => { if (data && data.data) this.setFundLive(data.data); });
+    if (!this._fundCh) {
+      this._fundCh = this.sb.channel('rfs-fund')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.fund_live' }, (p) => { if (p.new && p.new.data) this.setFundLive(p.new.data); })
+        .subscribe();
+    }
+    if (!this._fundTimer) this._fundTimer = setInterval(() => { if (this.state.user && this.state.page === 'fund' && !document.hidden) this.sb.from('intranet_content').select('data').eq('id', 'fund_live').maybeSingle().then(({ data }) => { if (data && data.data) this.setFundLive(data.data); }); }, 15000);
+  }
+
+  setFundLive(next) {
+    const prev = this.state.fundLive;
+    if (prev && prev.asOf === next.asOf) return;
+    this._fundTick = (this._fundTick || 0) + 1;
+    this.setState({ fundLive: next, fundLivePrev: prev || null });
   }
 
   loadRfm() {
@@ -3869,6 +3973,73 @@ class Component extends DCLogic {
   // 실명은 서버에 두지 않고, 회장 브라우저(localStorage)에만 별칭→실명 목록을 저장해 그 기기에서만 보이게 한다
   rfmNames() {
     try { return JSON.parse(localStorage.getItem('rfs_rfm_names') || '{}') || {}; } catch (e) { return {}; }
+  }
+
+  fundProps(authed) {
+    const s = this.state;
+    const live = authed && s.fundLive ? s.fundLive : null;
+    const F = live || s.fundPub;
+    const pct = (v, d = 2) => (v === null || v === undefined || isNaN(v) ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%');
+    const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
+    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
+    const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
+    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
+    const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
+    const open = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
+    const kospi = F.bm && F.bm.kospi ? F.bm.kospi.ret : null, kosdaq = F.bm && F.bm.kosdaq ? F.bm.kosdaq.ret : null;
+    const gap = kospi !== null && kospi !== undefined ? F.ret - kospi : null;
+    const hs = (F.holdings || []).slice().sort((a, b) => b.weight - a.weight);
+    const maxW = Math.max(10, ...hs.map((h) => h.weight || 0));
+    const best = live ? hs.filter((h) => h.dayPl !== null && h.dayPl !== undefined).sort((a, b) => b.dayPl - a.dayPl)[0] : hs.filter((h) => h.day !== null && h.day !== undefined).sort((a, b) => b.day - a.day)[0];
+    // 기준가 추이: history = [날짜, 기준가, KOSPI, KOSDAQ] → 첫날 1,000으로 맞춰 세 선
+    const H = (F.history || []).filter((h) => h[1]);
+    let chart = { f: '', k: '', q: '', base: '125', has: false };
+    if (H.length >= 2) {
+      const k0 = (H.find((h) => h[2]) || [])[2], q0 = (H.find((h) => h[3]) || [])[3];
+      const fs = H.map((h) => h[1]), ks = H.map((h) => (k0 && h[2] ? h[2] / k0 * 1000 : null)), qs = H.map((h) => (q0 && h[3] ? h[3] / q0 * 1000 : null));
+      const all = fs.concat(ks, qs).filter((v) => v), lo = Math.min(...all, 1000) * 0.995, hi = Math.max(...all, 1000) * 1.005;
+      const y = (v) => (245 - (v - lo) / (hi - lo) * 235).toFixed(1);
+      const pts = (a) => a.map((v, i) => (v ? (i / (a.length - 1) * 1000).toFixed(1) + ',' + y(v) : null)).filter(Boolean).join(' ');
+      chart = { f: pts(fs), k: pts(ks), q: pts(qs), base: y(1000), has: true };
+    }
+    // 오늘 수익 기여 (학회원): 종목별 오늘 손익 / 전일 총자산
+    const prevTotal = live && live.day !== null && live.day !== undefined ? live.total / (1 + live.day / 100) : null;
+    const contrib = live ? hs.filter((h) => h.dayPl).map((h) => ({ nm: h.name, c: prevTotal ? h.dayPl / prevTotal * 100 : 0 })).sort((a, b) => a.c - b.c) : [];
+    const ctot = contrib.reduce((a, x) => a + Math.abs(x.c), 0) || 1;
+    const prevMap = {}; ((s.fundLivePrev && s.fundLivePrev.holdings) || []).forEach((h) => { prevMap[h.code] = h.cur; });
+    const tick = this._fundTick || 0;
+    return {
+      fdHas: true, fdNone: false, fdLive: !!live, fdPublic: !live,
+      fdLiveDot: !!live && open, fdClosed: !(live && open),
+      fdMeta: live ? 'RFS 펀드 · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'RFS 펀드 · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
+      fdHeadRet: pct(F.ret), fdHeadColor: col(F.ret),
+      fdHeadRest: gap === null ? '' : ', KOSPI보다 ' + Math.abs(gap).toFixed(2) + '%p ' + (gap >= 0 ? '앞서' : '뒤처져'),
+      fdDek: (F.day !== null && F.day !== undefined ? '오늘 ' + pct(F.day) + '. ' : '') + (best ? best.name + (live ? '이 오늘 가장 많이 벌었고, ' : '이 오늘 가장 많이 올랐고, ') : '') + hs.length + '개 종목과 현금 ' + (F.cashWeight || 0).toFixed(1) + '%로 운용 중입니다.',
+      fdKpis: [
+        { v: F.nav ? Number(F.nav).toFixed(2) : '-', k: '기준가', c: '#F7F6F3' },
+        { v: pct(F.ret), k: (F.start ? F.start.slice(2).replace(/-/g, '.') + ' 이후' : '설정 이후'), c: col(F.ret) },
+        { v: pct(F.day), k: '오늘', c: col(F.day) },
+        { v: pct(kospi), k: 'KOSPI 동기간', c: col(kospi) },
+        { v: pct(kosdaq), k: 'KOSDAQ 동기간', c: col(kosdaq) },
+      ].concat(live ? [{ v: won(live.total) + '원', k: '운용 규모', c: '#F7F6F3' }] : []),
+      fdChartHas: chart.has, fdChartNone: !chart.has, fdPtsF: chart.f, fdPtsK: chart.k, fdPtsQ: chart.q, fdBaseY: chart.base,
+      fdContrib: contrib.map((x) => ({ grow: (Math.abs(x.c) / ctot * 100).toFixed(2), bg: x.c >= 0 ? up : dn, label: Math.abs(x.c) / ctot > 0.08 ? x.nm + ' ' + (x.c > 0 ? '+' : '−') + Math.abs(x.c).toFixed(2) + '%p' : '' })),
+      fdHasContrib: contrib.length > 0,
+      fdContribSum: live ? '합계 ' + pct(live.day) + (prevTotal ? ' · ' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원' : '') : '',
+      fdHoldCap: hs.length + '종목 · 주식 ' + (100 - (F.cashWeight || 0)).toFixed(1) + '% · 현금 ' + (F.cashWeight || 0).toFixed(1) + '%',
+      fdHolds: hs.map((h) => {
+        const pc = prevMap[h.code];
+        const fl = live && pc !== undefined && pc !== h.cur ? (h.cur > pc ? 'fdFu' : 'fdFd') + (tick % 2) : 'none';
+        return {
+          name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : ''),
+          w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: live ? won(h.evlt) + '원' : '',
+          avg: live ? won(h.avg) : '', cur: live ? won(h.cur) : '',
+          ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+          dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
+        };
+      }),
+      fdNote: live ? '운용 계좌를 키움증권 API로 조회해 장중 15초마다 갱신합니다. 투자 권유가 아닙니다.' : '장 마감 기준으로 하루 한 번 갱신합니다. 학회원은 로그인하면 실시간으로 볼 수 있습니다. 투자 권유가 아닙니다.',
+    };
   }
 
   rfmProps(RF) {
@@ -4021,6 +4192,7 @@ class Component extends DCLogic {
       : page === 'recruit' ? '신입 학회원 모집 | 중앙대 가치투자학회 R.F.S.'
       : page === 'intranet' ? 'Intranet | RFS'
       : page === 'rfm' ? 'RFM 순위 | RFS'
+      : page === 'fund' ? 'RFS 펀드 | 중앙대 가치투자학회 R.F.S.'
       : 'R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회';
   }
 
@@ -4031,7 +4203,7 @@ class Component extends DCLogic {
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t) this.setState({ intraTab: t }); }
-    else if (['home','research','about','people','activity','recruit','rfm'].includes(h)) page = h;
+    else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;
@@ -4056,6 +4228,12 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state;
     // 리포트 1페이지 원문(tools/extract-page1.py가 만든 파일)은 리포트 화면을 처음 열 때 한 번 받아 온다
+    // 펀드 공개분(장 마감 확정치)은 누구나 읽는 public_content에서 받는다
+    if (s.page === 'fund' && !this._fundPubReq && this.sb) {
+      this._fundPubReq = true;
+      this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
+        .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
+    }
     if (s.page === 'report' && !this._p1req) {
       this._p1req = true;
       fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); }).catch(() => {});
@@ -4138,7 +4316,7 @@ class Component extends DCLogic {
     const isPh = !active.summary;
     const opc = opStyle(active.op);
     // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
-    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['RFM','rfm'], ['AGORA','intranet']];
+    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['FUND','fund'], ['RFM','rfm'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
       : s.page === 'activity' ? 'about' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
@@ -4181,7 +4359,7 @@ class Component extends DCLogic {
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
-      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed,
+      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed, fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
@@ -4196,7 +4374,7 @@ class Component extends DCLogic {
       qna: ID.QNA.map((x) => ({ ...x, meta: x.from + ' 질문 · ' + x.date })),
       qnaCount: ID.QNA.length + '건',
       hasQna: ID.QNA.length > 0,
-      goFund: setTab('fund'), goBoard: setTab('board'),
+      goFund: (e) => { e.preventDefault(); this.go('fund'); }, goBoard: setTab('board'),
       pCats: CATS.map((c) => chip(pCat === c, c, () => this.setState({ pCat: c }))),
       boardCats: ['전체', ...CATS].map((c) => chip(bCat === c, c, () => this.setState({ bCat: c }))),
       posts: shown.map((p) => {
@@ -4250,6 +4428,7 @@ class Component extends DCLogic {
       fundPos: FD.positions.map((p) => ({ ...p, w: p.weight.toFixed(1) + '%', bar: (p.weight * 2.6).toFixed(0) + 'px', tick: p.ticker || '—', retColor: p.ret ? (p.up ? '#0F5132' : '#842029') : 'rgba(26,26,26,0.4)', retText: p.ret || '—' })),
       fundNotes: FD.notes, hasFundNotes: FD.notes.length > 0,
       ...this.rfmProps(s.rfmData),
+      ...this.fundProps(authed),
       stopProp: (e) => e.stopPropagation(),
       intraUser: s.user ? this.who() : '미리보기',
       editMe: (e) => { e.preventDefault(); const m = this.me(); try { localStorage.removeItem('rfs_me'); } catch (x) {} this.setState({ me: null, nmName: m.name, nmCohort: m.cohort }); },
@@ -4266,7 +4445,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), railItem('fund', 'RFS 펀드'), { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'RFS 펀드 ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
