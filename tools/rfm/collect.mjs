@@ -174,6 +174,7 @@ async function openRanking(page) {
   await page.waitForTimeout(1500);
 }
 
+let cut50 = null;     // 전체 50위 기준가
 let csvBroken = false; // 한 번 실패하면 이후 반복에서는 바로 검색 방식으로 간다
 async function grabCsv(page) {
   await page.evaluate(() => { window.__rfmCsv = []; window.__rfmSeen = []; });
@@ -202,6 +203,12 @@ async function grabBySearch(page) {
   const box = page.getByPlaceholder(/search/i).first();
   const lines = ['순위현재,순위등락,별칭,기준가현재,기준가등락,편입비,종목수'];
   const q = (v) => '"' + String(v).replace(/"/g, '""') + '"';
+  // 검색 전 첫 화면(순위순)에서 50위 기준가를 읽어 둔다 (포트폴리오 공개선)
+  await box.fill('');
+  await page.waitForTimeout(300);
+  const first = await page.locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+  const r50 = first.find((c) => c.length >= 7 && num(c[0]) === 50);
+  if (r50) cut50 = num(r50[3]);
   for (const m of members) {
     await box.fill(m.nick);
     // 표가 해당 별칭으로 걸러질 때까지 최대 2초 기다린다
@@ -297,6 +304,8 @@ async function publish(got) {
   const all = rowsFromCsv(got.text);
   if (!all.length) throw new Error('no rows parsed (' + got.via + ')');
   const byNick = new Map(all.map((r) => [norm(r.nick), r]));
+  const r50 = all.find((r) => r.rank === 50);
+  if (r50) cut50 = r50.nav;
   if (!DRY && !prev) prev = await loadPrev();
   const sameContest = prev && (!got.contest || !prev.contest || prev.contest === got.contest);
   const series = sameContest && prev.series ? prev.series : {};
@@ -314,6 +323,7 @@ async function publish(got) {
     asOf: stamp,
     total: got.via === 'csv' ? (got.total || all.length) : (got.total || (prev && prev.total) || null),
     members: out,
+    cut50: cut50 || (prev && prev.cut50) || null,
     series,
   };
   // 15초마다 돌므로 로그는 1분에 한 줄만 남긴다
