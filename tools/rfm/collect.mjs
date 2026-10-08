@@ -85,6 +85,15 @@ function mapColumns(header) {
   const chg = (re) => h.findIndex((x) => re.test(x) && /등락|변동|change|chg/.test(x));
   if (chg(/순위/) >= 0) { col.rankChg = chg(/순위/); col.rank = h.findIndex((x, i) => /순위/.test(x) && i !== col.rankChg); }
   if (chg(/기준가/) >= 0) { col.navChg = chg(/기준가/); col.nav = h.findIndex((x, i) => /기준가/.test(x) && i !== col.navChg); }
+  // 묶음 헤더 없이 "현재,등락,별칭,현재,등락,..."만 온 경우: 별칭 앞이 순위, 뒤가 기준가
+  if (col.nav < 0 && col.nick >= 0) {
+    const cur = all(/현재/), chg = all(/등락/);
+    const before = (a) => a.filter((i) => i < col.nick), after = (a) => a.filter((i) => i > col.nick);
+    if (col.rank < 0 && before(cur).length) col.rank = before(cur)[0];
+    if (col.rankChg < 0 && before(chg).length) col.rankChg = before(chg)[0];
+    if (after(cur).length) col.nav = after(cur)[0];
+    if (col.navChg < 0 && after(chg).length) col.navChg = after(chg)[0];
+  }
   return col;
 }
 
@@ -115,35 +124,96 @@ function rowsFromCsv(text) {
 }
 
 // ---------- 브라우저 ----------
-async function fetchCsv() {
+// CSV 다운로드는 사이트가 브라우저 안에서 파일을 만들어 내려준다. 저장 이벤트가 안 잡히는 경우를 대비해
+// 만들어지는 내용을 페이지 안에서 함께 받아 둔다.
+const CAPTURE = () => {
+  window.__rfmCsv = [];
+  const keep = (t) => { if (typeof t === 'string' && t.includes('별칭')) window.__rfmCsv.push(t); };
+  const oc = URL.createObjectURL;
+  URL.createObjectURL = function (b) { try { if (b instanceof Blob && b.size < 5e6) b.text().then(keep); } catch (e) {} return oc.apply(this, arguments); };
+  const ac = HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click = function () {
+    try { if (this.href && this.href.startsWith('data:')) { const d = this.href.slice(this.href.indexOf(',') + 1); keep(/;base64/.test(this.href.slice(0, this.href.indexOf(','))) ? new TextDecoder().decode(Uint8Array.from(atob(d), (c) => c.charCodeAt(0))) : decodeURIComponent(d)); } } catch (e) {}
+    return ac.apply(this, arguments);
+  };
+  window.showSaveFilePicker = async () => ({ createWritable: async () => { const parts = []; return { write: async (d) => { parts.push(d); }, close: async () => { keep(await new Blob(parts).text()); } }; } });
+};
+
+async function login(page) {
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  const email = page.locator('#email');
+  if (!(await email.isVisible().catch(() => false))) {
+    const btn = page.getByText(/로그인|Login|Sign in/i).first();
+    if (await btn.isVisible().catch(() => false)) await btn.click();
+  }
+  await email.waitFor();
+  await email.fill(TF_EMAIL);
+  await page.locator('#password').fill(TF_PASSWORD);
+  await page.getByRole('button', { name: /submit|로그인|login/i }).first().click();
+  await page.waitForFunction(() => !document.querySelector('#password'), null, { timeout: 30000 })
+    .catch(() => { throw new Error('login failed (password field still visible)'); });
+}
+
+async function openRanking(page) {
+  await page.goto(BASE + '/Contest', { waitUntil: 'domcontentloaded' });
+  if (await page.locator('#password').isVisible().catch(() => false)) { await login(page); await page.goto(BASE + '/Contest', { waitUntil: 'domcontentloaded' }); }
+  await page.getByText('수익률 순위', { exact: false }).first().click();
+  await page.getByText('CSV 다운로드', { exact: false }).first().waitFor();
+  await page.waitForTimeout(1500);
+}
+
+async function grabCsv(page) {
+  await page.evaluate(() => { window.__rfmCsv = []; });
+  const roleBtn = page.getByRole('button', { name: /CSV 다운로드/ }).first();
+  const btn = (await roleBtn.count()) ? roleBtn : page.getByText('CSV 다운로드', { exact: false }).first();
+  const dl = page.waitForEvent('download', { timeout: 20000 }).catch(() => null);
+  await btn.click();
+  const t0 = Date.now();
+  while (Date.now() - t0 < 20000) {
+    const got = await page.evaluate(() => (window.__rfmCsv || [])[0] || null);
+    if (got) return got;
+    const d = await Promise.race([dl, page.waitForTimeout(500).then(() => undefined)]);
+    if (d) {
+      const chunks = []; for await (const c of await d.createReadStream()) chunks.push(c);
+      return decode(Buffer.concat(chunks));
+    }
+    if (d === null) break;
+  }
+  return null;
+}
+
+// CSV가 안 될 때: 표 검색창에 별칭을 하나씩 넣어 보이는 행을 읽는다 (열 순서: 순위 현재·등락, 별칭, 기준가 현재·등락, 편입비, 종목수)
+async function grabBySearch(page) {
+  const box = page.getByPlaceholder(/search/i).first();
+  const lines = ['순위현재,순위등락,별칭,기준가현재,기준가등락,편입비,종목수'];
+  const q = (v) => '"' + String(v).replace(/"/g, '""') + '"';
+  for (const m of members) {
+    await box.fill(m.nick);
+    await page.waitForTimeout(700);
+    const rows = await page.locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+    for (const c of rows) if (c.length >= 7 && norm(c[2]) === norm(m.nick)) lines.push(c.slice(0, 7).map(q).join(','));
+  }
+  await box.fill('');
+  return lines.join('\n');
+}
+
+async function snapshot(page) {
+  await openRanking(page);
+  let text = await grabCsv(page);
+  let via = 'csv';
+  if (!text) { text = await grabBySearch(page); via = 'search'; }
+  return { text, via, contest: await readContestName(page), total: await readTotal(page) };
+}
+
+async function withBrowser(fn) {
   const browser = await chromium.launch();
   const ctx = await browser.newContext({ acceptDownloads: true, locale: 'ko-KR', timezoneId: 'Asia/Seoul', viewport: { width: 1440, height: 1000 } });
+  await ctx.addInitScript(CAPTURE);
   const page = await ctx.newPage();
   page.setDefaultTimeout(30000);
   try {
-    await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
-    const email = page.locator('#email');
-    if (!(await email.isVisible().catch(() => false))) {
-      const login = page.getByText(/로그인|Login|Sign in/i).first();
-      if (await login.isVisible().catch(() => false)) await login.click();
-    }
-    await email.waitFor();
-    await email.fill(TF_EMAIL);
-    await page.locator('#password').fill(TF_PASSWORD);
-    await page.getByRole('button', { name: /submit|로그인|login/i }).first().click();
-    await page.waitForFunction(() => !document.querySelector('#password'), null, { timeout: 30000 })
-      .catch(() => { throw new Error('login failed (password field still visible)'); });
-
-    await page.goto(BASE + '/Contest', { waitUntil: 'domcontentloaded' });
-    await page.getByText('수익률 순위', { exact: false }).first().click();
-    const btn = page.getByText('CSV 다운로드', { exact: false }).first();
-    await btn.waitFor();
-    const contest = await readContestName(page);
-    const total = await readTotal(page);
-    const [dl] = await Promise.all([page.waitForEvent('download', { timeout: 60000 }), btn.click()]);
-    const stream = await dl.createReadStream();
-    const chunks = []; for await (const c of stream) chunks.push(c);
-    return { text: decode(Buffer.concat(chunks)), contest, total };
+    await login(page);
+    return await fn(page);
   } catch (e) {
     // 공개 저장소의 Actions 로그이므로 스크린샷·본문은 남기지 않고, 위치와 버튼 이름만 출력한다
     const url = page.url().replace(/[?#].*$/, '');
@@ -196,37 +266,59 @@ async function save(data) {
 }
 
 // ---------- main ----------
-const kst = new Date(Date.now() + 9 * 3600e3);
-const today = kst.toISOString().slice(0, 10);
-const stamp = today + ' ' + kst.toISOString().slice(11, 16);
+const kstNow = () => new Date(Date.now() + 9 * 3600e3);
+const kstHM = () => { const k = kstNow(); return k.getUTCHours() * 60 + k.getUTCMinutes(); };
 
-const got = CSV_FILE ? { text: decode(readFileSync(CSV_FILE)), contest: '', total: null } : await fetchCsv();
-const all = rowsFromCsv(got.text);
-const byNick = new Map(all.map((r) => [norm(r.nick), r]));
-const prev = DRY ? null : await loadPrev();
-const sameContest = prev && (!got.contest || !prev.contest || prev.contest === got.contest);
-const series = sameContest && prev.series ? prev.series : {};
+let prev = null;
+async function publish(got) {
+  const k = kstNow();
+  const today = k.toISOString().slice(0, 10);
+  const stamp = today + ' ' + k.toISOString().slice(11, 16);
+  const all = rowsFromCsv(got.text);
+  if (!all.length) throw new Error('no rows parsed (' + got.via + ')');
+  const byNick = new Map(all.map((r) => [norm(r.nick), r]));
+  if (!DRY && !prev) prev = await loadPrev();
+  const sameContest = prev && (!got.contest || !prev.contest || prev.contest === got.contest);
+  const series = sameContest && prev.series ? prev.series : {};
+  const out = members.map((m) => {
+    const r = byNick.get(norm(m.nick));
+    if (!r) return { name: m.name, nick: m.nick, found: false };
+    const key = norm(m.nick);
+    const s = (series[key] || []).filter((p) => p[0] !== today);
+    s.push([today, r.nav, r.rank]);
+    series[key] = s.slice(-120);
+    return { name: m.name, nick: r.nick, found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
+  });
+  const data = {
+    contest: got.contest || (prev && prev.contest) || '',
+    asOf: stamp,
+    total: got.via === 'csv' ? (got.total || all.length) : (got.total || (prev && prev.total) || null),
+    members: out,
+    series,
+  };
+  console.log(`${stamp} via ${got.via}: matched ${out.filter((m) => m.found).length}/${members.length}`);
+  if (DRY) return;
+  await save(data);
+  prev = data;
+}
 
-const out = members.map((m) => {
-  const r = byNick.get(norm(m.nick));
-  if (!r) return { name: m.name, nick: m.nick, found: false };
-  const key = norm(m.nick);
-  const s = (series[key] || []).filter((p) => p[0] !== today);
-  s.push([today, r.nav, r.rank]);
-  series[key] = s.slice(-120);
-  return { name: m.name, nick: r.nick, found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
-});
-
-const data = {
-  contest: got.contest || (prev && prev.contest) || '',
-  asOf: stamp,
-  total: got.total || all.length,
-  members: out,
-  series,
-};
-
-const found = out.filter((m) => m.found).length;
-console.log(`parsed ${all.length} rows, matched ${found}/${members.length} members`);
-if (DRY) { console.log('dry run, not saved'); process.exit(0); }
-await save(data);
-console.log('saved intranet_content/rfm at ' + stamp + ' KST');
+if (CSV_FILE) {
+  await publish({ text: decode(readFileSync(CSV_FILE)), via: 'file', contest: '', total: null });
+} else {
+  // RFM_UNTIL=HH:MM (KST) 이면 그 시각까지 RFM_EVERY초(기본 60)마다 반복, 없으면 한 번만
+  const until = (process.env.RFM_UNTIL || '').match(/^(\d{1,2}):(\d{2})$/);
+  const endMin = until ? +until[1] * 60 + +until[2] : -1;
+  const every = Math.max(30, +(process.env.RFM_EVERY || 60)) * 1000;
+  const hardStop = Date.now() + 5.6 * 3600e3; // Actions 작업 한도(6시간) 안에서 끝낸다
+  await withBrowser(async (page) => {
+    let fails = 0;
+    do {
+      const t0 = Date.now();
+      try { await publish(await snapshot(page)); fails = 0; }
+      catch (e) { fails++; console.error('round failed: ' + e.message.split('\n')[0]); if (fails >= 5 || endMin < 0) throw e; }
+      if (endMin < 0) break;
+      const wait = every - (Date.now() - t0);
+      if (wait > 0) await page.waitForTimeout(wait);
+    } while (kstHM() < endMin && Date.now() < hardStop);
+  });
+}
