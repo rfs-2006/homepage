@@ -2198,10 +2198,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                 <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.6)">{{ rfmContest }} · 타임폴리오</div>
                 <div style="font-size:12px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ rfmAsOf }}</div>
               </div>
-              <div class="fundstat" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:22px">
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmAvgColor }}">{{ rfmAvg }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">학회원 평균 수익률</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1">{{ rfmTop }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">학회 1위 · {{ rfmTopRet }}</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ rfmCount }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">참가 학회원 · {{ rfmTotal }}</div></div>
+              <div class="fundstat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:22px">
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmAvgColor }}">{{ rfmAvg }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">학회원 평균</div></div>
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmKospiColor }}">{{ rfmKospi }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSPI 동기간</div></div>
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:{{ rfmKosdaqColor }}">{{ rfmKosdaq }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSDAQ 동기간</div></div>
+                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(24px,2.3vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ rfmBeat }}</div><div style="font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.6);margin-top:8px;font-variant-numeric:tabular-nums">KOSPI를 이긴 학회원</div></div>
+              </div>
+              <div style="margin-top:22px;padding-top:14px;border-top:1px solid rgba(247,246,243,0.18);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums">
+                <span>학회 1위 <b style="color:#F7F6F3">{{ rfmTop }}</b> · {{ rfmTopRet }}</span>
+                <span>참가 학회원 {{ rfmCount }} · {{ rfmTotal }}{{ rfmBmStart }}</span>
               </div>
             </div>
             <sc-if value="{{ hasRfmToday }}" hint-placeholder-val="{{ false }}">
@@ -2217,7 +2222,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </sc-if>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">학회원 순위</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · 장중 실시간</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · <span style="display:inline-block;width:2px;height:10px;background:#F2C94C;vertical-align:-1px;margin-right:4px"></span>KOSPI 위치 · 장중 실시간</span>
             </div>
             <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
               <div style="padding:28px 0;font-size:14px;color:rgba(247,246,243,0.6)">아직 수집된 순위가 없습니다. 평일 장중에는 실시간(약 15초 간격)으로 갱신됩니다.</div>
@@ -2233,8 +2238,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <div class="rfmrow" style="display:grid;grid-template-columns:28px minmax(0,1fr) 120px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
                 <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:rgba(247,246,243,0.55);font-variant-numeric:tabular-nums">{{ r.no }}</div>
                 <div style="min-width:0">
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.label }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.sub }}</span><sc-if value="{{ r.in50 }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:#111c2e;background:#8FAADC;padding:2px 6px;vertical-align:2px">포폴 공개</span></sc-if></div>
-                  <div style="position:relative;height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="position:absolute;left:50%;top:-3px;width:1px;height:9px;background:rgba(247,246,243,0.4)"></div><div style="position:absolute;top:0;height:3px;left:{{ r.barL }};width:{{ r.barW }};background:{{ r.barColor }}"></div></div>
+                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.label }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.sub }}</span><sc-if value="{{ r.in50 }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:#111c2e;background:#8FAADC;padding:2px 6px;vertical-align:2px">포폴 공개</span></sc-if><sc-if value="{{ r.streak }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:11px;font-weight:600;color:#5FC48A;white-space:nowrap">{{ r.streak }}</span></sc-if></div>
+                  <div style="position:relative;height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="position:absolute;left:50%;top:-3px;width:1px;height:9px;background:rgba(247,246,243,0.4)"></div><div style="position:absolute;top:0;height:3px;left:{{ r.barL }};width:{{ r.barW }};background:{{ r.barColor }}"></div><sc-if value="{{ hasKospiTick }}" hint-placeholder-val="{{ false }}"><div title="KOSPI" style="position:absolute;top:-4px;left:{{ kospiTick }};width:2px;height:11px;background:#F2C94C"></div></sc-if></div>
                   <div style="font-size:12px;color:rgba(247,246,243,0.45);margin-top:6px;font-variant-numeric:tabular-nums">기준가 {{ r.nav }} · {{ r.hold }}<sc-if value="{{ r.gap }}" hint-placeholder-val="{{ false }}"><span style="color:#8FAADC;margin-left:6px">· {{ r.gap }}</span></sc-if></div>
                 </div>
                 <div class="rfmrank" style="text-align:right;font-variant-numeric:tabular-nums">
@@ -3788,6 +3793,17 @@ class Component extends DCLogic {
     const best = withDay.length ? withDay.reduce((a, m) => (dayOf(m) > dayOf(a) ? m : a)) : null;
     const worst = withDay.length ? withDay.reduce((a, m) => (dayOf(m) < dayOf(a) ? m : a)) : null;
     const climb = on.length ? on.reduce((a, m) => ((m.rankChg || 0) > (a.rankChg || 0) ? m : a)) : null;
+    const bm = (RF && RF.bm) || {};
+    const kospi = bm.kospi ? bm.kospi.ret : null, kosdaq = bm.kosdaq ? bm.kosdaq.ret : null;
+    const span = Math.max(maxAbs, kospi !== null ? Math.abs(kospi) : 0);
+    const pos = (v) => (50 + v / span * 50).toFixed(2) + '%';
+    // 날짜별 기록(series)으로 연속 상승일 계산
+    const streak = (m) => {
+      const sr = (RF && RF.series && RF.series[key(m.nick)]) || [];
+      let n = 0;
+      for (let i = sr.length - 1; i > 0 && sr[i][1] > sr[i - 1][1]; i--) n++;
+      return n;
+    };
     const lineAt = on.findIndex((m) => !(m.rank && m.rank <= 50)); // 50위 밖 첫 학회원 앞에 선을 긋는다
     return {
       hasRfm: on.length > 0, noRfm: on.length === 0,
@@ -3795,6 +3811,11 @@ class Component extends DCLogic {
       rfmAvg: on.length ? pct(avg) : '-', rfmAvgColor: avg > 0 ? up : avg < 0 ? dn : '#F7F6F3',
       rfmTop: top ? (real(top) || top.nick) : '-', rfmTopRet: top ? pct(ret(top)) + ' · 전체 ' + top.rank + '위' : '',
       rfmCount: on.length + '명', rfmTotal: RF && RF.total ? '전체 참가자 ' + Number(RF.total).toLocaleString('ko-KR') + '명' : '',
+      rfmKospi: kospi !== null ? pct(kospi) : '-', rfmKospiColor: kospi > 0 ? up : kospi < 0 ? dn : '#F7F6F3',
+      rfmKosdaq: kosdaq !== null ? pct(kosdaq) : '-', rfmKosdaqColor: kosdaq > 0 ? up : kosdaq < 0 ? dn : '#F7F6F3',
+      rfmBeat: kospi !== null && on.length ? on.filter((m) => ret(m) > kospi).length + ' / ' + on.length : '-',
+      rfmBmStart: bm.start ? ' · ' + bm.start.slice(5).replace('-', '/') + ' 시작 기준' : '',
+      hasKospiTick: kospi !== null, kospiTick: kospi !== null ? pos(kospi) : '50%',
       rfmToday: [
         best && dayOf(best) > 0 ? { k: '오늘의 MVP', v: nm(best), d: pct(dayOf(best)), c: up } : null,
         climb && climb.rankChg > 0 ? { k: '순위 급상승', v: nm(climb), d: '▲' + climb.rankChg.toLocaleString('ko-KR') + '계단', c: up } : null,
@@ -3814,7 +3835,8 @@ class Component extends DCLogic {
           day: day === null ? '' : '오늘 ' + pct(day), dayColor: day > 0 ? up : day < 0 ? dn : flat,
           nav: m.nav.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
           hold: (m.count ? m.count + '종목' : '현금') + (m.weight !== null && m.weight !== undefined ? ' · 편입 ' + m.weight.toFixed(1) + '%' : ''),
-          barL: (r >= 0 ? 50 : 50 - Math.abs(r) / maxAbs * 50).toFixed(2) + '%', barW: (Math.abs(r) / maxAbs * 50).toFixed(2) + '%', barColor: r >= 0 ? up : dn,
+          barL: (r >= 0 ? 50 : 50 - Math.abs(r) / span * 50).toFixed(2) + '%', barW: (Math.abs(r) / span * 50).toFixed(2) + '%',
+          streak: streak(m) >= 2 ? streak(m) + '일 연속 상승' : '', barColor: r >= 0 ? up : dn,
           in50, gap: !in50 && cut ? '50위까지 ' + pct((cut / m.nav - 1) * 100) : '',
           line: i === lineAt, lineText: '전체 50위 · 여기 위로 포트폴리오 공개' + (cut ? ' · 기준가 ' + cut.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
         };

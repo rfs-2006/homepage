@@ -229,7 +229,7 @@ async function snapshot(page) {
   let text = csvBroken ? null : await grabCsv(page);
   let via = 'csv';
   if (!text) { csvBroken = true; text = await grabBySearch(page); via = 'search'; }
-  return { text, via, contest: await readContestName(page), total: await readTotal(page) };
+  return { text, via, contest: await readContestName(page), total: await readTotal(page), start: await readStart(page) };
 }
 
 async function withBrowser(fn) {
@@ -263,6 +263,46 @@ async function readContestName(page) {
     const m = txt.match(/RFM\s*\d+\s*회/);
     return m ? m[0].replace(/\s+/g, ' ') : '';
   } catch { return ''; }
+}
+
+// 대회 기간 "2026.10.01 ~ 2026.11.30" 같은 문구에서 시작일을 찾는다
+async function readStart(page) {
+  try {
+    const txt = await page.locator('body').innerText();
+    const m = txt.match(/(20\d\d)[.\-\/년]\s*(\d{1,2})[.\-\/월]\s*(\d{1,2})일?\s*[~∼～-]\s*(?:20\d\d)?/);
+    return m ? `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}` : null;
+  } catch { return null; }
+}
+
+// ---------- 벤치마크 (네이버 금융 공개 시세) ----------
+// 대회 기준가 1,000은 시작일 직전 거래일 종가 기준이므로 지수도 같은 날 종가를 기준점으로 쓴다
+const bmBase = {};
+async function indexBase(code, start) {
+  const k = code + start;
+  if (bmBase[k]) return bmBase[k];
+  const r = await fetch(`https://fchart.stock.naver.com/sise.nhn?symbol=${code}&timeframe=day&count=200&requestType=0`);
+  const xml = await r.text();
+  const ymd = start.replace(/-/g, '');
+  let base = null;
+  for (const m of xml.matchAll(/data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([\d.]+)\|/g)) if (m[1] < ymd) base = parseFloat(m[2]);
+  if (base) bmBase[k] = base;
+  return base;
+}
+async function indexNow(code) {
+  const r = await fetch(`https://m.stock.naver.com/api/index/${code}/basic`);
+  const j = await r.json();
+  return num(j.closePrice);
+}
+async function benchmarks(start) {
+  if (!start) return null;
+  const out = { start };
+  for (const [key, code] of [['kospi', 'KOSPI'], ['kosdaq', 'KOSDAQ']]) {
+    try {
+      const base = await indexBase(code, start), now = await indexNow(code);
+      if (base && now) out[key] = { base, now, ret: (now / base - 1) * 100 };
+    } catch (e) { /* 지수를 못 받아도 순위 저장은 계속한다 */ }
+  }
+  return out.kospi || out.kosdaq ? out : null;
 }
 
 async function readTotal(page) {
@@ -320,6 +360,7 @@ async function publish(got) {
   });
   const data = {
     contest: got.contest || (prev && prev.contest) || '',
+    bm: (await benchmarks(got.start || process.env.RFM_START || (prev && prev.bm && prev.bm.start))) || (prev && prev.bm) || null,
     asOf: stamp,
     total: got.via === 'csv' ? (got.total || all.length) : (got.total || (prev && prev.total) || null),
     members: out,
