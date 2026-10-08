@@ -40,4 +40,6 @@ jobs:
           RFM_MEMBERS: ${{ secrets.RFM_MEMBERS }}
           RFM_UNTIL: '15:40'
           RFM_EVERY: '15'
+          # 대회 시작일. 대회 화면에서 기간을 못 읽을 때만 쓴다 (회차가 바뀌면 수정)
+          RFM_START: '2026-10-01'
         run: node collect.mjs
