@@ -626,8 +626,30 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 질감: 밝은 페이지 배경에 옅은 종이 결 */
+body main.pgx{background-image:url("assets/grain.png") !important;background-size:160px 160px}
+main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inset:0;pointer-events:none;background:url("assets/grain.png");background-size:160px 160px;opacity:.6;mix-blend-mode:normal;z-index:0}
+
+/* 상단 메뉴: PC에서 크게 + 마우스 올리면 밑줄이 왼쪽부터 그어짐 */
+.navlink{position:relative}
+.navlink::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.navlink:hover::after,.navlink.on::after{transform:scaleX(1)}
+.nav .navlink.on{border-bottom-color:transparent !important}
+.nav.on-dark .navlink:hover{color:#F7F6F3}
+@media (min-width:1024px){
+  .nav{height:84px;padding:0 48px}
+  .nav .seal{width:46px;height:46px}
+  .nav .wordmark-block{gap:5px !important}
+  .nav .wordmark-block>span:first-child{font-size:22px !important}
+  .nav .wordmark-sub{font-size:12px !important}
+  .nav .navlinks{gap:40px !important;font-size:14px !important;letter-spacing:0.1em !important}
+  .pg-tabs,.fd-nav{top:84px !important}
+}
+.fdpage .fd-sum{border-top:0 !important;margin-top:16px !important;padding-top:40px !important}
+.fdpage .fd-sum .fd-kc{margin-top:22px}
+
 /* FUND 상단 문장 */
-.fdpage .fd-stmt{padding:72px 0 40px !important;margin-top:0 !important;border-top:0 !important;text-align:center}
+/* (unused) */.fdpage .fd-stmt-x{padding:72px 0 40px !important;margin-top:0 !important;border-top:0 !important;text-align:center}
 .fd-stmt .st{margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(28px,3vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1.35;color:#F7F6F3;word-break:keep-all}
 .fd-stmt .ps{max-width:760px;margin:44px auto 0;padding-top:34px;border-top:1px solid rgba(247,246,243,0.14);text-align:left}
 .fd-stmt .ps .fd-ct{font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#8FAADC;text-transform:uppercase}
@@ -636,7 +658,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-stmt li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.75)}
 .fd-stmt li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
 .fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.4);margin-top:48px;word-break:keep-all}
-@media (max-width:860px){.fdpage .fd-stmt{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
+@media (max-width:860px){/* (unused) */.fdpage .fd-stmt-x{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
 
 :root{--up:#5FC48A;--dn:#E8837B;--flat:rgba(247,246,243,0.45)}
 
@@ -2186,66 +2208,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </sc-for>
           </div>
         </div>
-      </div>
-    </section>
-
-    <section data-tab="cohorts" data-nav="light" style="background:#F7F6F3;border-bottom:1px solid #D0CECE">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          <h2 class="sec-title">Cohorts</h2>
-
-        </div>
-        <div class="gisu-index rv rv-up" style="margin-top:clamp(36px,5vh,56px)">
-      <sc-for list="{{ cohorts }}" as="c" hint-placeholder-count="12">
-        <a href="#people" onClick="{{ c.on }}" class="{{ c.cls }}" style="background:{{ c.bg }};color:{{ c.color }};font-weight:{{ c.weight }}">{{ c.label }}</a>
-      </sc-for>
-        </div>
-        <div class="rv rv-up" style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;padding:28px 4px;margin-top:32px">
-          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
-            <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums">{{ cohortLabel }}</span>
-            <span style="font-size:13px;color:rgba(26,26,26,0.65);font-variant-numeric:tabular-nums">{{ cohortCount }}</span>
-          </div>
-          <div style="font-size:15px;line-height:2;color:rgba(26,26,26,0.85);text-wrap:pretty">{{ cohortNames }}</div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-  </sc-if>
-
-  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="구성원 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Our<br>People</h1>
-      </div>
-    </section>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
-
-    <section data-tab="officers" data-nav="light" style="background:#FFFFFF">
-      <h2 class="sec-title">{{ currentCohort }}기 임원진</h2>
-      <p class="og-h"><span>Executive Board</span></p>
-      <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-      <p class="og-h"><span>Research Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-      <p class="og-h"><span>Asset Management Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-    </section>
-
-    <section data-tab="network" id="m-people-alumni" data-nav="dark" style="background:#111c2e;padding:60px 24px 56px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">R.F.S. Network</h2>
-      <div style="display:flex;align-items:baseline;gap:14px;margin-top:36px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:82px;font-weight:700;letter-spacing:-0.05em;line-height:0.9;color:#F7F6F3;font-variant-numeric:tabular-nums">68<span style="font-size:38px;letter-spacing:-0.02em">%</span></div>
-        <div style="font-size:12px;line-height:1.6;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.7)">of alumni<br>in financial services</div>
-      </div>
-      <div style="margin-top:34px;display:grid;gap:15px">
-        <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(247,246,243,0.85);margin-bottom:7px"><span>{{ d.text }}</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span></div>
-            <div style="height:6px;background:rgba(247,246,243,0.12)"><div style="height:100%;width:{{ d.val }};background:{{ d.color }}"></div></div>
-          </div>
         </sc-for>
       </div>
       <p style="margin:20px 0 0;font-size:12px;color:rgba(247,246,243,0.5)">20년의 역사, 608명의 네트워크</p>
@@ -2511,13 +2473,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
 
-      <section class="fd-card fd-open fd-stmt" id="fd-strat">
-        <p class="st">R.F.S.는 지속 가능한 투자를 지향합니다.</p>
-      </section>
 
-      <div class="fd-kc fd-kc-in">
+      <section class="fd-card fd-open fd-sum" id="fd-strat">
+        <h2 class="fd-ct">Summary</h2>
+        <div class="fd-kc fd-kc-in">
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
       </div>
+      </section>
 
       <section class="fd-card fd-open" id="fd-perf">
         <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
@@ -4240,7 +4202,7 @@ class Component extends DCLogic {
       };
       // 히어로를 지나면 상단 메뉴에 배경을 깔아 아래 고정 탭과 한 덩어리로 보이게
       const solid = (on) => { const d = document.documentElement; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
-      const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-72px 0px 0px 0px' });
+      const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-84px 0px 0px 0px' });
       const scanHero = () => {
         const h = document.querySelector('.pg-hero');
         if (h === this._fxHero) return;
@@ -4742,10 +4704,10 @@ class Component extends DCLogic {
           { k: '수익률 (설정 이후)', v: pct(F.ret), c: col(F.ret), s: '', sc: '' },
           { k: '수익률 (1개월)', v: r1 === null ? '-' : pct(r1), c: col(r1), s: '', sc: '' },
           { k: 'KOSPI 대비 (설정 이후)', v: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', c: col(ex), s: 'KOSPI ' + pct(kospi), sc: 'rgba(247,246,243,0.55)' },
-          { k: '보유 종목', v: hs.length + '종목', c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
+          { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-strat', '운용전략'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
