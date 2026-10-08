@@ -2234,7 +2234,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                 <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700;color:rgba(247,246,243,0.55);font-variant-numeric:tabular-nums">{{ r.no }}</div>
                 <div style="min-width:0">
                   <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ r.label }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px">{{ r.sub }}</span><sc-if value="{{ r.in50 }}" hint-placeholder-val="{{ false }}"><span style="margin-left:8px;font-size:10.5px;font-weight:600;letter-spacing:0.04em;color:#111c2e;background:#8FAADC;padding:2px 6px;vertical-align:2px">포폴 공개</span></sc-if></div>
-                  <div style="height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="height:3px;background:{{ r.barColor }};width:{{ r.bar }}"></div></div>
+                  <div style="position:relative;height:3px;background:rgba(247,246,243,0.08);margin-top:8px"><div style="position:absolute;left:50%;top:-3px;width:1px;height:9px;background:rgba(247,246,243,0.4)"></div><div style="position:absolute;top:0;height:3px;left:{{ r.barL }};width:{{ r.barW }};background:{{ r.barColor }}"></div></div>
                   <div style="font-size:12px;color:rgba(247,246,243,0.45);margin-top:6px;font-variant-numeric:tabular-nums">기준가 {{ r.nav }} · {{ r.hold }}<sc-if value="{{ r.gap }}" hint-placeholder-val="{{ false }}"><span style="color:#8FAADC;margin-left:6px">· {{ r.gap }}</span></sc-if></div>
                 </div>
                 <div class="rfmrank" style="text-align:right;font-variant-numeric:tabular-nums">
@@ -3776,7 +3776,7 @@ class Component extends DCLogic {
     const hasNames = Object.keys(names).length > 0;
     const on = ms.filter((m) => m.found && m.nav).sort((a, b) => b.nav - a.nav);
     const pct = (v, d = 2) => (v > 0 ? '+' : '') + v.toFixed(d) + '%';
-    const up = '#E8837B', dn = '#8FAADC', flat = 'rgba(247,246,243,0.45)';
+    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
     const ret = (m) => (m.nav / 1000 - 1) * 100;
     const maxAbs = Math.max(1, ...on.map((m) => Math.abs(ret(m))));
     const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
@@ -3814,7 +3814,7 @@ class Component extends DCLogic {
           day: day === null ? '' : '오늘 ' + pct(day), dayColor: day > 0 ? up : day < 0 ? dn : flat,
           nav: m.nav.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
           hold: (m.count ? m.count + '종목' : '현금') + (m.weight !== null && m.weight !== undefined ? ' · 편입 ' + m.weight.toFixed(1) + '%' : ''),
-          bar: (Math.abs(r) / maxAbs * 100).toFixed(1) + '%', barColor: r >= 0 ? up : dn,
+          barL: (r >= 0 ? 50 : 50 - Math.abs(r) / maxAbs * 50).toFixed(2) + '%', barW: (Math.abs(r) / maxAbs * 50).toFixed(2) + '%', barColor: r >= 0 ? up : dn,
           in50, gap: !in50 && cut ? '50위까지 ' + pct((cut / m.nav - 1) * 100) : '',
           line: i === lineAt, lineText: '전체 50위 · 여기 위로 포트폴리오 공개' + (cut ? ' · 기준가 ' + cut.toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''),
         };
