@@ -1,0 +1,14 @@
+[Unit]
+Description=RFS fund collector (Kiwoom REST -> Supabase)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/homepage/tools/fund
+ExecStart=/usr/bin/node --env-file=.env collect.mjs
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
