@@ -479,6 +479,35 @@ nav.nav{view-transition-name:rfs-nav}
 
 
 .fd-wrap{padding:64px 35px 72px !important}
+.fd-cap{margin:12px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.62);max-width:none !important}
+.fd-port{display:grid;grid-template-columns:260px minmax(0,1fr);gap:56px;align-items:start;margin-top:36px}
+.fd-donut{width:260px;height:260px;border-radius:50%;position:relative;position:sticky;top:110px}
+.fd-donut>div{position:absolute;inset:44px;border-radius:50%;background:#111c2e;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.fd-donut b{font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.02em}
+.fd-donut em{font-style:normal;font-size:12px;color:rgba(247,246,243,0.6);margin-top:6px}
+.fd-row{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;align-items:center;padding:15px 0;border-bottom:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums}
+.fd-row:first-child{border-top:1px solid rgba(247,246,243,0.3)}
+.fd-row .dt{display:block;width:12px;height:12px;border-radius:50%}
+.fd-row .nm b{display:block;font-size:17px;font-weight:700;color:#F7F6F3;letter-spacing:-0.01em}
+.fd-row .nm small{display:block;font-size:12px;color:rgba(247,246,243,0.55);margin-top:4px}
+.fd-row .nm .rp{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#8FAADC;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:13px;font-weight:600;color:rgba(247,246,243,0.85)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
+.fd-row .wt{text-align:right;font-size:17px;font-weight:700;color:#F7F6F3}
+.fd-row .rt{text-align:right}.fd-row .rt b{display:block;font-size:15px;font-weight:700}.fd-row .rt small{display:block;font-size:11.5px;margin-top:3px}
+.fd-movers{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
+.fd-mv{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;align-items:center;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-variant-numeric:tabular-nums}
+.fd-mv .mn{font-size:15px;font-weight:600;color:#F7F6F3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-mv .mb{position:relative;height:14px}
+.fd-mv .mb .z{position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:rgba(247,246,243,0.3)}
+.fd-mv .mb .f{position:absolute;top:0;bottom:0}
+.fd-mv .mp{text-align:right;font-size:14px;font-weight:700}
+.fd-mv .ma{text-align:right;font-style:normal;font-size:12.5px;color:rgba(247,246,243,0.6)}
+@media (max-width:860px){
+  .fd-port{grid-template-columns:1fr;gap:28px}.fd-donut{position:relative;top:0;margin:0 auto;width:220px;height:220px}.fd-donut>div{inset:38px}
+  .fd-row{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-row .px{display:none}.fd-row .nm b{font-size:16px}
+  .fd-mv{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mv .ma{display:none}.fd-mv .mn{font-size:13px}
+}
+
 .fd-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap}
 .fd-head .fd-sub{margin:0}
 .fd-sec{margin-top:64px}
@@ -2110,10 +2139,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="pg-stats">
             <sc-for list="{{ fdKpis }}" as="k" hint-placeholder-count="5"><div><b class="sv" style="color:{{ k.c }}">{{ k.v }}</b><em class="sk">{{ k.k }}</em></div></sc-for>
           </div>
-          <div class="fd-alloc">
-            <div class="bar"><sc-for list="{{ fdAlloc }}" as="a" hint-placeholder-count="6"><i style="flex-grow:{{ a.grow }};background:{{ a.bg }};color:{{ a.tc }}">{{ a.label }}</i></sc-for></div>
-            <div class="lg"><sc-for list="{{ fdAllocLegend }}" as="l" hint-placeholder-count="6"><span><i style="background:{{ l.c }}"></i>{{ l.t }} <b>{{ l.w }}</b></span></sc-for></div>
-          </div>
           <div class="fd-chips"><sc-for list="{{ fdChips }}" as="c" hint-placeholder-count="3"><div><em class="ck">{{ c.k }}</em><b class="cn">{{ c.n }}</b><b class="cv" style="color:{{ c.c }}">{{ c.v }}</b></div></sc-for></div>
         </sc-if>
       </div>
@@ -2121,8 +2146,43 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
     <section class="on-photo" data-nav="dark" style="background:#111c2e">
     <div class="wrap fd-wrap">
-      <div class="fd-head"><div><p class="sec-label">Performance</p><h2 class="sec-title">기준가 추이</h2></div>
+      <p class="sec-label">Portfolio</p>
+      <h2 class="sec-title">지금 들고 있는 종목</h2>
+      <p class="fd-cap">비중이 큰 순서입니다. 학회 리포트가 있는 종목은 눌러서 투자 아이디어를 볼 수 있습니다.</p>
+      <div class="fd-port">
+        <div class="fd-donut" style="background:{{ fdDonut }}"><div><b>{{ fdCount }}</b><em>{{ fdCashLine }}</em></div></div>
+        <div class="fd-list">
+          <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
+            <div class="fd-row">
+              <i class="dt" style="background:{{ r.dot }}"></i>
+              <div class="nm"><b>{{ r.name }}</b><small>{{ r.meta }}</small><sc-if value="{{ r.hasRep }}" hint-placeholder-val="{{ false }}"><a class="rp" href="{{ r.repHref }}" onClick="{{ r.repOn }}">{{ r.repLabel }} →</a></sc-if></div>
+              <div class="px"><b>{{ r.px }}</b><small>{{ r.amt }}</small></div>
+              <div class="wt">{{ r.w }}</div>
+              <div class="rt"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
+        <div class="fd-sec">
+          <p class="sec-label">Today</p>
+          <h2 class="sec-title">오늘 움직인 종목</h2>
+          <p class="fd-cap">{{ fdTodayCap }}</p>
+          <div class="fd-movers">
+            <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
+              <div class="fd-mv"><b class="mn">{{ m.name }}</b><div class="mb"><i class="z"></i><i class="f" style="left:{{ m.l }};width:{{ m.w }};background:{{ m.c }}"></i></div><b class="mp" style="color:{{ m.c }}">{{ m.pp }}</b><em class="ma">{{ m.amt }}</em></div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+    </div></section>
+
+    <section class="on-photo" data-nav="dark" style="background:#0F1B2E">
+    <div class="wrap fd-wrap">
+      <div class="fd-head"><div><p class="sec-label">Performance</p><h2 class="sec-title">시장과 비교</h2></div>
         <div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
+      <p class="fd-cap">{{ fdPerfCap }}</p>
       <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
         <div class="fd-cw">
           <div class="fd-ya"><sc-for list="{{ fdTicks }}" as="t" hint-placeholder-count="4"><em class="yl" style="top:{{ t.y }}">{{ t.t }}</em></sc-for></div>
@@ -2139,26 +2199,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </sc-if>
       <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p style="margin-top:16px;font-size:13px;color:rgba(247,246,243,0.45)">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
-
-      <sc-if value="{{ fdHasContrib }}" hint-placeholder-val="{{ false }}">
-        <div class="fd-head fd-sec"><div><p class="sec-label">Today</p><h2 class="sec-title">오늘 수익 기여</h2></div><p class="fd-sub">{{ fdContribSum }}</p></div>
-        <div class="fd-attr"><sc-for list="{{ fdContrib }}" as="c" hint-placeholder-count="5"><div style="flex-grow:{{ c.grow }};background:{{ c.bg }}">{{ c.label }}</div></sc-for></div>
-        <div class="fd-attrcap"><span>깎아먹은 종목</span><span>벌어준 종목</span></div>
-      </sc-if>
-    </div></section>
-    <section class="on-photo" data-nav="dark" style="background:#0F1B2E">
-    <div class="wrap fd-wrap">
-      <div class="fd-head"><div><p class="sec-label">Portfolio</p><h2 class="sec-title">보유 종목</h2></div><p class="fd-sub">{{ fdHoldCap }}</p></div>
-      <div class="fd-th"><span>종목</span><span>비중</span><span class="r c3">평단 → 현재가</span><span class="r">수익률</span><span class="r c4">오늘 손익</span></div>
-      <sc-for list="{{ fdHolds }}" as="h" hint-placeholder-count="6">
-        <div class="fd-hold" style="animation-name:{{ h.fl }}">
-          <div class="nm"><b>{{ h.name }}</b><small>{{ h.meta }}</small></div>
-          <div class="wbar"><i style="width:{{ h.wbar }}"></i><b class="wv">{{ h.w }}</b><em class="we">{{ h.evlt }}</em></div>
-          <div class="r c3"><small>{{ h.avg }}</small><b>{{ h.cur }}</b></div>
-          <div class="r"><b style="color:{{ h.retColor }}">{{ h.ret }}</b><small style="color:{{ h.dayColor }}">{{ h.day }}</small></div>
-          <div class="r c4"><b style="color:{{ h.dayPlColor }}">{{ h.dayPl }}</b></div>
-        </div>
-      </sc-for>
       <p style="margin-top:40px;font-size:12px;color:rgba(247,246,243,0.42)">{{ fdNote }}</p>
     </div>
     </section>
@@ -4050,6 +4090,46 @@ class Component extends DCLogic {
     try { return JSON.parse(localStorage.getItem('rfs_rfm_names') || '{}') || {}; } catch (e) { return {}; }
   }
 
+  // 보유 종목 원형 차트·목록, 오늘 움직인 종목 (학회 리포트가 있으면 연결)
+  fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn) {
+    const rep = {}; REPORTS.forEach((r) => { if (r.ticker && !rep[r.ticker]) rep[r.ticker] = r; });
+    let acc = 0; const stops = [];
+    hs.forEach((h, i) => { const w = h.weight || 0; stops.push(shades[i % shades.length] + ' ' + acc.toFixed(2) + '% ' + (acc + w).toFixed(2) + '%'); acc += w; });
+    if (cw > 0) stops.push('rgba(247,246,243,0.18) ' + acc.toFixed(2) + '% 100%');
+    const rows = hs.map((h, i) => {
+      const r = rep[h.code];
+      return {
+        dot: shades[i % shades.length], name: h.name,
+        meta: [h.code, r && r.sector, h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
+        w: (h.weight || 0).toFixed(1) + '%',
+        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+        px: live ? won(h.avg) + ' → ' + won(h.cur) : '', amt: live ? won(h.evlt) + '원 · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '',
+        hasRep: !!r, repLabel: r ? 'R.F.S. 리포트 · ' + r.op + (r.tp ? ' · 목표가 ' + r.tp : '') : '', repHref: r ? '#research/' + r.id : '#',
+        repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
+      };
+    });
+    if (cw > 0) rows.push({ dot: 'rgba(247,246,243,0.18)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', amt: live ? won(live.cash) + '원' : '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
+    // 오늘 기여: 학회원은 원 단위 손익/전일 총자산, 외부는 비중×등락
+    const mv = hs.map((h) => {
+      const c = live ? (h.dayPl !== null && h.dayPl !== undefined && prevTotal ? h.dayPl / prevTotal * 100 : null) : (h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
+      return { h, c };
+    }).filter((x) => x.c !== null).sort((a, b) => b.c - a.c);
+    const mx = Math.max(0.01, ...mv.map((x) => Math.abs(x.c)));
+    return {
+      fdDonut: 'conic-gradient(' + stops.join(',') + ')',
+      fdCount: hs.length + '종목', fdCashLine: '현금 ' + cw.toFixed(1) + '%',
+      fdRows: rows,
+      fdMovers: mv.map((x) => ({
+        name: x.h.name, pp: (x.c > 0 ? '+' : x.c < 0 ? '−' : '') + Math.abs(x.c).toFixed(2) + '%p',
+        amt: live && x.h.dayPl !== null && x.h.dayPl !== undefined ? (x.h.dayPl >= 0 ? '+' : '−') + won(x.h.dayPl) + '원' : pct(x.h.day),
+        c: x.c >= 0 ? up : dn, l: (x.c >= 0 ? 50 : 50 - Math.abs(x.c) / mx * 50).toFixed(2) + '%', w: (Math.abs(x.c) / mx * 50).toFixed(2) + '%',
+      })),
+      hasMovers: mv.length > 0,
+      fdTodayCap: '오늘 펀드 ' + pct(F.day) + (live && prevTotal ? ' (' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원)' : '') + '를 종목별로 나눈 값입니다.' + (live ? '' : ' 비중 × 오늘 등락률로 계산합니다.'),
+      fdPerfCap: (F.start ? +F.start.slice(5, 7) + '월 ' + +F.start.slice(8, 10) + '일' : '시작일') + ' 기준가를 1,000으로 놓고, 같은 기간 KOSPI·KOSDAQ와 비교합니다.',
+    };
+  }
+
   fundProps(authed) {
     const s = this.state;
     const live = authed && s.fundLive ? s.fundLive : null;
@@ -4098,7 +4178,7 @@ class Component extends DCLogic {
     const ctot = contrib.reduce((a, x) => a + Math.abs(x.c), 0) || 1;
     const prevMap = {}; ((s.fundLivePrev && s.fundLivePrev.holdings) || []).forEach((h) => { prevMap[h.code] = h.cur; });
     const tick = this._fundTick || 0;
-    const shades = ['#8FAADC', '#6F8FC9', '#B7C9EA', '#4F6FA8', '#A3B8DE', '#5D7DB8', '#C9D6EF', '#3F5E96', '#7F9CD2', '#94A9CF'];
+    const shades = ['#8FAADC', '#E3C07A', '#A99BD8', '#7FC4E0', '#CBB89D', '#6F8FC9', '#E0A98A', '#9AA5B8', '#B7C9EA', '#C3A3C9'];
     const cw = F.cashWeight || 0;
     const alloc = hs.map((h, i) => ({ grow: (h.weight || 0).toFixed(2), bg: shades[i % shades.length], tc: '#0F1B2E', label: (h.weight || 0) >= 7 ? h.name : '' }))
       .concat(cw > 0 ? [{ grow: cw.toFixed(2), bg: 'rgba(247,246,243,0.16)', tc: '#F7F6F3', label: cw >= 7 ? '현금' : '' }] : []);
@@ -4118,6 +4198,7 @@ class Component extends DCLogic {
         bot && key(bot) < 0 ? { k: live ? '오늘 최저 기여' : '오늘 최대 하락', n: bot.name, v: fmtK(bot), c: dn } : null,
       ].filter(Boolean),
       fdTicks: chart.ticks, fdXs: chart.xs, fdEnds: chart.ends,
+      ...this.fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn),
       fdLiveDot: !!live && open, fdClosed: !(live && open),
       fdMeta: live ? 'RFS 펀드 · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'RFS 펀드 · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
       fdHeadRet: pct(F.ret), fdHeadColor: col(F.ret),
