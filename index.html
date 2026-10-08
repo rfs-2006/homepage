@@ -626,6 +626,22 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 임원진 카드 */
+.og-h{display:flex;align-items:center;gap:16px;margin:40px 0 22px !important;padding:0 !important;border:0 !important;font-size:11.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#203864}
+.og-h::before,.og-h::after{content:'';flex:1;height:1px;background:#E2E0DA}
+.og-row{display:flex;flex-wrap:wrap;justify-content:center;gap:28px 22px}
+.oc{width:200px;text-align:center}
+.oc .ph{aspect-ratio:4/5;overflow:hidden;background:#E8EEF6;border:1px solid #E2E0DA}
+.oc .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.oc:hover .ph img{transform:scale(1.04)}
+.oc b{display:block;margin-top:14px;font-size:17px;font-weight:700;color:#0F1B2E;letter-spacing:-0.01em;font-family:'Pretendard Variable',sans-serif}
+.oc em{display:block;margin-top:6px;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#203864}
+.oc small{display:block;margin-top:3px;font-size:12.5px;color:rgba(26,26,26,0.55)}
+@media (max-width:860px){.og-row{gap:22px 14px}.oc{width:calc(50% - 7px)}.oc b{font-size:15px}.og-h{margin:30px 0 16px !important}}
+/* 최신 리포트 카드는 고딕 */
+.rpaper,.rpaper *,.mfeat>*,.mfeat>* *{font-family:'Pretendard Variable',Pretendard,sans-serif !important}
+.rpaper b,.rpaper div{letter-spacing:-0.02em}
+
 /* 회장·부회장 */
 .pres-in.duo{display:flex;justify-content:center;gap:72px;padding:36px 35px !important}
 .pres .pl{display:flex;align-items:center;gap:20px}
@@ -2064,43 +2080,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
 
-    <section class="pres" data-nav="light">
-      <div class="wrap pres-in duo">
-        <sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="pl"><img src="{{ p.photo }}" alt="{{ p.title }} {{ p.name }}" loading="lazy"><div><b>{{ p.name }}</b><small>{{ p.title }}</small></div></div></sc-for>
-      </div>
-    </section>
-
-    <section data-tab="officers" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          <h2 class="sec-title">{{ currentCohort }}기 임원진</h2>
-        </div>
-        <p class="og-h">Research Team</p>
-        <div class="people-grid">
-      <sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4">
-        <div class="rv rv-up">
-          <div style="aspect-ratio:1/1;border:1px solid #D0CECE;position:relative;overflow:hidden">
-            <image-slot id="person-{{ p.id }}" shape="rect" fit="cover" src="{{ p.photo }}" style="--slot-position:center 22%" placeholder="헤드샷 (1:1, 배경 통일)"></image-slot>
-          </div>
-          <div style="font-weight:700;font-size:15px;margin-top:12px">{{ p.name }}</div>
-          <div style="font-size:13px;color:#203864;font-weight:600;margin-top:2px">{{ p.desc }}</div>
-          
-        </div>
-      </sc-for>
-        </div>
-        <p class="og-h">Asset Management Team</p>
-        <div class="people-grid">
-      <sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1">
-        <div class="rv rv-up">
-          <div style="aspect-ratio:1/1;border:1px solid #D0CECE;position:relative;overflow:hidden">
-            <image-slot id="person-{{ p.id }}" shape="rect" fit="cover" src="{{ p.photo }}" style="--slot-position:center 22%" placeholder="헤드샷 (1:1, 배경 통일)"></image-slot>
-          </div>
-          <div style="font-weight:700;font-size:15px;margin-top:12px">{{ p.name }}</div>
-          <div style="font-size:13px;color:#203864;font-weight:600;margin-top:2px">{{ p.desc }}</div>
-          
-        </div>
-      </sc-for>
-        </div>
+    <section data-tab="officers" data-nav="light" style="background:#FFFFFF">
+      <div class="wrap secpad">
+        <div class="rv rv-up"><h2 class="sec-title">{{ currentCohort }}기 임원진</h2></div>
+        <p class="og-h"><span>Executive Board</span></p>
+        <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
+        <p class="og-h"><span>Research Team</span></p>
+        <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
+        <p class="og-h"><span>Asset Management Team</span></p>
+        <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
       </div>
     </section>
 
@@ -2190,38 +2178,14 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
 
-    <section class="pres" data-nav="light">
-      <div class="wrap pres-in duo">
-        <sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="pl"><img src="{{ p.photo }}" alt="{{ p.title }} {{ p.name }}" loading="lazy"><div><b>{{ p.name }}</b><small>{{ p.title }}</small></div></div></sc-for>
-      </div>
-    </section>
-
-    <section data-tab="officers" data-nav="light" style="background:#FFFFFF;padding:52px 24px 48px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">{{ currentCohort }}기 임원진</h2>
-      <p class="og-h">Research Team</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 16px;margin-top:30px">
-        <sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4">
-          <div>
-            <div style="aspect-ratio:1/1;border:1px solid #D0CECE;position:relative;overflow:hidden">
-              <image-slot id="m-person-{{ p.id }}" shape="rect" fit="cover" src="{{ p.photo }}" style="--slot-position:center 22%" placeholder="헤드샷"></image-slot>
-            </div>
-            <div style="font-weight:700;font-size:15px;margin-top:11px">{{ p.name }}</div>
-            <div style="font-size:12px;color:#203864;font-weight:600;margin-top:2px">{{ p.desc }}</div>
-          </div>
-        </sc-for>
-      </div>
-      <p class="og-h">Asset Management Team</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 16px;margin-top:30px">
-        <sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1">
-          <div>
-            <div style="aspect-ratio:1/1;border:1px solid #D0CECE;position:relative;overflow:hidden">
-              <image-slot id="m-person-{{ p.id }}" shape="rect" fit="cover" src="{{ p.photo }}" style="--slot-position:center 22%" placeholder="헤드샷"></image-slot>
-            </div>
-            <div style="font-weight:700;font-size:15px;margin-top:11px">{{ p.name }}</div>
-            <div style="font-size:12px;color:#203864;font-weight:600;margin-top:2px">{{ p.desc }}</div>
-          </div>
-        </sc-for>
-      </div>
+    <section data-tab="officers" data-nav="light" style="background:#FFFFFF">
+      <h2 class="sec-title">{{ currentCohort }}기 임원진</h2>
+      <p class="og-h"><span>Executive Board</span></p>
+      <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
+      <p class="og-h"><span>Research Team</span></p>
+      <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
+      <p class="og-h"><span>Asset Management Team</span></p>
+      <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em><small>{{ p.desc }}</small></div></sc-for></div>
     </section>
 
     <section data-tab="network" id="m-people-alumni" data-nav="dark" style="background:#111c2e;padding:60px 24px 56px">
@@ -5560,14 +5524,14 @@ class Component extends DCLogic {
         { id:'t2', photo:'assets/officers/team2.webp', name:'김우주', role:'Research Team 2', desc:'2팀장' },
         { id:'t3', photo:'assets/officers/team3.webp', name:'이동헌', role:'Research Team 3', desc:'3팀장' },
         { id:'t4', photo:'assets/officers/team4.webp', name:'이원석', role:'Research Team 4', desc:'4팀장' },
-        { id:'am', photo:'assets/officers/am.webp', name:'박정훈', role:'Asset Management Team', desc:'운용팀장' }],
-      peopleLead: [{ photo:'assets/officers/president.webp', name:'김민석', title:'43기 회장' }, { photo:'assets/officers/vice.webp', name:'이승혁', title:'43기 부회장' }],
+        { id:'am', photo:'assets/officers/am.webp', name:'박정훈', role:'Asset Management', desc:'운용팀장' }],
+      peopleLead: [{ id:'chair', photo:'assets/officers/president.webp', name:'김민석', role:'President', desc:'회장' }, { id:'vice', photo:'assets/officers/vice.webp', name:'이승혁', role:'Vice President', desc:'부회장' }],
       peopleRT: [
         { id:'t1', photo:'assets/officers/team1.webp', name:'김세정', role:'Research Team 1', desc:'1팀장' },
         { id:'t2', photo:'assets/officers/team2.webp', name:'김우주', role:'Research Team 2', desc:'2팀장' },
         { id:'t3', photo:'assets/officers/team3.webp', name:'이동헌', role:'Research Team 3', desc:'3팀장' },
         { id:'t4', photo:'assets/officers/team4.webp', name:'이원석', role:'Research Team 4', desc:'4팀장' }],
-      peopleAM: [{ id:'am', photo:'assets/officers/am.webp', name:'박정훈', role:'Asset Management Team', desc:'운용팀장' }],
+      peopleAM: [{ id:'am', photo:'assets/officers/am.webp', name:'박정훈', role:'Asset Management', desc:'운용팀장' }],
       teams: [
         { name:'Research Team', desc:'팀 단위로 기업을 선정하고 Valuation을 거쳐 20p 분량 보고서를 작성합니다. 선배님과 함께하는 세미나에서 발표하고 피드백을 받습니다.' },
         { name:'Asset Management Team', desc:'실제 자금을 기반으로 투자전략을 수립하고 포트폴리오를 구성해 RFS 펀드를 운용합니다. 운용 성과를 분석해 운용 보고서를 작성하고 매크로 보고서를 씁니다.' },
