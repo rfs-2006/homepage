@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="ko">
-<script>(function(){var c=new URLSearchParams(location.search).get('c');if(/^[abc]$/.test(c))document.documentElement.dataset.pal=c;})();</script>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -196,22 +195,15 @@ tbody tr:hover .wbar,tbody tr.on .wbar{background:#8FAADC}
   .sector-labels>div{font-size:11px}.sector-labels>div span{display:block;margin:0}
 }
 
-/* 색 시안 */
-:root{--k:#8B95A1;--q:#B0B8C1;--chl:#E9EEF7;--cb:#B0B8C1;--cm:#203864}
-html[data-pal="c"]{--cm:#8FAADC}
-html[data-pal]{--cb:#B7C9EA}html[data-pal="b"]{--cb:#D3CCBE}html[data-pal="c"]{--cb:#5B6F9E}
-html[data-pal]{--k:#8FAADC;--q:#C0BCB3}
-html[data-pal="a"]{--up:#D6404E;--down:#2F64C2;--soft:#F2F4F8;--chl:#E6ECF7}
-html[data-pal="b"]{--up:#C8343F;--down:#2B5BAE;--soft:#F7F6F3;--line:#E9E7E1;--gray:#77746C;--chl:#EFEBE2;--k:#b9821f;--q:#C0BCB3}
-html[data-pal="b"] .card{border:1px solid #E9E7E1}
-html[data-pal="c"]{--up:#D6404E;--down:#2F64C2;--soft:#F2F4F8;--chl:#E6ECF7}
-html[data-pal="c"] #s-sum{background:#0F1B2E;color:#fff}
-html[data-pal="c"] #s-sum .eyebrow{color:#8FAADC}
-html[data-pal="c"] #s-sum .label,html[data-pal="c"] #s-sum .dayc,html[data-pal="c"] #s-sum .eyebrow span,html[data-pal="c"] #s-sum .stats em,html[data-pal="c"] #s-sum .k{color:#9AA6B8}
-html[data-pal="c"] #s-sum .up{color:#FF6B76}html[data-pal="c"] #s-sum .down{color:#7FA8F0}
-html[data-pal="c"] #s-sum .sr{background:rgba(255,255,255,.06)}
-html[data-pal="c"] #s-sum .stats>div{border-color:rgba(255,255,255,.14)}
-html[data-pal="c"] #s-sum .cmp .nm{color:#fff}html[data-pal="c"] #s-sum .cmp .nm.sub{color:#9AA6B8}
+/* 색 */
+:root{--up:#D6404E;--down:#2F64C2;--soft:#F2F4F8;--chl:#E6ECF7;--k:#8FAADC;--q:#C0BCB3;--cb:#5B6F9E;--cm:#8FAADC}
+#s-sum{background:#0F1B2E;color:#fff}
+#s-sum .eyebrow{color:#8FAADC}
+#s-sum .label,#s-sum .dayc,#s-sum .eyebrow span,#s-sum .stats em,#s-sum .k{color:#9AA6B8}
+#s-sum .up{color:#FF6B76}#s-sum .down{color:#7FA8F0}
+#s-sum .sr{background:rgba(255,255,255,.06)}
+#s-sum .stats,#s-sum .stats>div{border-color:rgba(255,255,255,.14)}
+#s-sum .cmp .nm{color:#fff}#s-sum .cmp .nm.sub{color:#9AA6B8}
 .periods>div.ch{background:var(--chl) !important}
 .legend i.k{border-top-color:var(--k)!important}.legend i.q{border-top-color:var(--q)!important}
 </style>
@@ -468,11 +460,11 @@ $('facts').innerHTML = `
   <div><div class="k">최대 업종 비중</div><div class="v">${secs[0][1].toFixed(1)}%</div><div class="s">${secs[0][0]} · 전체 ${secs.length}개 업종</div></div>`;
 (function(){
   const segs = ordered.map(h=>({w:h.weight, lab:h.name, cash:false, code:h.code, ret:h.ret, sec:h.sector})).concat([{w:DATA.cashWeight, lab:'현금', cash:true, code:'cash'}]);
-  const CV=document.documentElement.dataset.pal, mix=(a,b,t)=>'#'+[0,2,4].map(i=>Math.round(parseInt(a.substr(i+1,2),16)*(1-t)+parseInt(b.substr(i+1,2),16)*t).toString(16).padStart(2,'0')).join('');
-  const shade=(i,n,a,b)=>CV?mix(a,b,n>1?i/(n-1):0):'';
+  const mix=(a,b,t)=>'#'+[0,2,4].map(i=>Math.round(parseInt(a.substr(i+1,2),16)*(1-t)+parseInt(b.substr(i+1,2),16)*t).toString(16).padStart(2,'0')).join('');
+  const shade=(i,n,a,b)=>mix(a,b,n>1?i/(n-1):0);
   const rk={}; segs.filter(x=>!x.cash).slice().sort((a,b)=>b.w-a.w).forEach((x,i)=>rk[x.code]=i);
-  const gB=CV==='b'?'#C3D3EE':'#8FAADC';
-  $('stockBar').innerHTML = segs.map((s,i)=>`<div class="seg ${s.cash?'cash':''}" data-code="${s.code}" style="flex:${s.w} 1 0;${!s.cash&&CV?'background:'+shade(rk[s.code],segs.length-1,'#203864',gB):''}"></div>`).join('');
+  const gB='#8FAADC';
+  $('stockBar').innerHTML = segs.map((s,i)=>`<div class="seg ${s.cash?'cash':''}" data-code="${s.code}" style="flex:${s.w} 1 0;${s.cash?'':'background:'+shade(rk[s.code],segs.length-1,'#203864',gB)}"></div>`).join('');
   const sb=$('stockBar'), stip=document.createElement('div'); stip.className='tip st'; sb.parentNode.style.position='relative'; sb.parentNode.appendChild(stip);
   const hiCode=(code)=>{ document.querySelectorAll('[data-code]').forEach(x=>x.classList.toggle('on', x.dataset.code===code)); sb.classList.toggle('hov', !!code); $('tbody').classList.toggle('hov', !!code); };
   sb.addEventListener('mousemove',(e)=>{ const t=e.target.closest('.seg'); if(!t){return;} const sg=segs.find(x=>x.code===t.dataset.code); hiCode(sg.code);
@@ -485,7 +477,7 @@ $('facts').innerHTML = `
     return `<div style="flex:${s.w} 1 0">${show?`<div class="in"><b>${s.lab}</b><span class="num">${s.w.toFixed(1)}%</span></div>`:''}</div>`;
   }).join('');
   const ss = secs.map(([s,w])=>({s,w})).concat([{s:'현금',w:DATA.cashWeight,cash:true}]);
-  $('secBar').innerHTML = ss.map((s,i)=>`<div class="seg ${s.cash?'cash':''}" style="flex:${s.w} 1 0;${!s.cash&&CV?'background:'+shade(i,ss.length-1,'#3E5F9E',CV==='b'?'#D9E2F1':'#C3D3EE'):''}"></div>`).join('');
+  $('secBar').innerHTML = ss.map((s,i)=>`<div class="seg ${s.cash?'cash':''}" style="flex:${s.w} 1 0;${s.cash?'':'background:'+shade(i,ss.length-1,'#3E5F9E','#C3D3EE')}"></div>`).join('');
   $('secLabels').innerHTML = ss.map(s=>`<div style="flex:${s.w} 1 0">${s.w>=8?`${s.s}<span class="num">${s.w.toFixed(1)}%</span>`:''}</div>`).join('');
   const small = segs.filter(s=>!(s.w>=5.5||s.cash));
   const smallSec = ss.filter(s=>s.w<8);
