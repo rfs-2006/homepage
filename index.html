@@ -479,8 +479,8 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-hold .wv{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;white-space:nowrap}
 .fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.42);white-space:nowrap}
 .fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.42)}
-@keyframes fdFu0{0%{background:rgba(95,196,138,0.22)}}@keyframes fdFu1{0%{background:rgba(95,196,138,0.22)}}
-@keyframes fdFd0{0%{background:rgba(232,131,123,0.22)}}@keyframes fdFd1{0%{background:rgba(232,131,123,0.22)}}
+@keyframes fdFu0{0%{background:rgba(242,98,107,0.22)}}@keyframes fdFu1{0%{background:rgba(242,98,107,0.22)}}
+@keyframes fdFd0{0%{background:rgba(94,155,255,0.22)}}@keyframes fdFd1{0%{background:rgba(94,155,255,0.22)}}
 @media (max-width:760px){
   .fd-kpis{grid-template-columns:repeat(2,1fr)}.fd-kpis b{font-size:22px}
   .fd-chart{height:200px}
@@ -568,7 +568,7 @@ nav.nav{view-transition-name:rfs-nav}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
-.fdpage::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
+.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -585,7 +585,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:13px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
 .fd-nav a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.5)}
 .fd-body{padding:28px 35px 90px}
-.fd-card{background:#15233B;border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
+.fd-card{background:rgba(21,35,59,0.86);border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
 .fd-ch{display:flex;justify-content:space-between;align-items:baseline;gap:12px 28px;flex-wrap:wrap}
 .fd-ct{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;margin:0;color:#F7F6F3}
 .fd-card .fd-pt{margin-top:22px}
@@ -675,7 +675,7 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.4);margin-top:48px;word-break:keep-all}
 @media (max-width:860px){/* (unused) */.fdpage .fd-stmt-x{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
 
-:root{--up:#5FC48A;--dn:#E8837B;--flat:rgba(247,246,243,0.45)}
+:root{--up:#F2626B;--dn:#5E9BFF;--flat:rgba(247,246,243,0.45)}
 
 /* FUND 시안: 박스 줄이고 섹션마다 구조 다르게 */
 .fdpage .fd-card.fd-open{background:transparent;border:0;border-top:1px solid rgba(247,246,243,0.14);padding:48px 0 12px;margin-top:48px}
@@ -715,7 +715,7 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .pg-hero .pg-eyebrow{justify-content:center}
 .pg-hero .pg-hero-in>div[style*="flex"]{justify-content:center !important}
 .pg-hero .pg-hero-in p{margin-left:auto !important;margin-right:auto !important}
-.fd-kc.fd-kc-in{margin:20px 0 0;background:#15233B;backdrop-filter:none;-webkit-backdrop-filter:none}
+.fd-kc.fd-kc-in{margin:20px 0 0;background:rgba(21,35,59,0.86);backdrop-filter:none;-webkit-backdrop-filter:none}
 .kc-light{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:2px solid #203864}
 .kc-light>div{padding:22px 26px;border-left:1px solid #E2E0DA}
 .kc-light>div:first-child{border-left:0}
@@ -1032,8 +1032,8 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .rfmlane .rt b{display:block;font-size:18px;font-weight:700}
 .rfmlane .rt small{display:block;font-size:11.5px;margin-top:2px}
 .rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:10.5px;color:rgba(247,246,243,0.42);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
-@keyframes rfmFu0{0%{background:rgba(95,196,138,0.28)}}@keyframes rfmFu1{0%{background:rgba(95,196,138,0.28)}}
-@keyframes rfmFd0{0%{background:rgba(232,131,123,0.28)}}@keyframes rfmFd1{0%{background:rgba(232,131,123,0.28)}}
+@keyframes rfmFu0{0%{background:rgba(242,98,107,0.28)}}@keyframes rfmFu1{0%{background:rgba(242,98,107,0.28)}}
+@keyframes rfmFd0{0%{background:rgba(94,155,255,0.28)}}@keyframes rfmFd1{0%{background:rgba(94,155,255,0.28)}}
 .rfm-side{position:sticky;top:96px;align-self:start}
 .rfm-mine{padding:18px 0 20px;border-top:2px solid #8FAADC}
 .rfm-pick{width:100%;background:transparent;color:#8FAADC;border:0;font:inherit;font-size:12px;letter-spacing:0.06em;padding:0;cursor:pointer}
@@ -4417,11 +4417,9 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    this.sb.from('public_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => {
-        if (data && data.data) return this.setRfm(data.data);
-        if (this.state.user) this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle().then(({ data: d }) => { if (d && d.data) this.setRfm(d.data); });
-      });
+    if (!this.state.user) return;
+    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -4719,7 +4717,7 @@ class Component extends DCLogic {
     const nm = (m) => real(m) || m.nick;
     const pct = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
     const pp = (v) => Math.abs(v).toFixed(2) + '%p';
-    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
+    const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.45)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
     const ret = (m) => (m.nav / 1000 - 1) * 100;
     const on = ms.filter((m) => m.found && m.nav);
@@ -4792,7 +4790,7 @@ class Component extends DCLogic {
       rfmBmRows: (() => {
         const row = (k, v, cls) => {
           const ex = kospi === null || v === null ? null : v - kospi;
-          return { k, v: v === null ? '-' : pct(v), c: v === null ? flat : col(v), ex: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), ec: ex === null ? flat : col(ex), eb: ex === null ? 'transparent' : ex >= 0 ? 'rgba(95,196,138,0.12)' : 'rgba(232,131,123,0.12)', cls: 'fd-pr rfm-pr' + (cls ? ' ' + cls : '') };
+          return { k, v: v === null ? '-' : pct(v), c: v === null ? flat : col(v), ex: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), ec: ex === null ? flat : col(ex), eb: ex === null ? 'transparent' : ex >= 0 ? 'rgba(242,98,107,0.12)' : 'rgba(94,155,255,0.12)', cls: 'fd-pr rfm-pr' + (cls ? ' ' + cls : '') };
         };
         const top10 = order.slice(0, 10);
         return [
@@ -4957,7 +4955,7 @@ class Component extends DCLogic {
       this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
         .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
     }
-    if (s.page === 'rfm' && !this._rfmReq && this.sb) {
+    if (s.page === 'rfm' && s.user && !this._rfmReq && this.sb) {
       this._rfmReq = true;
       this.loadRfm();
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
@@ -5094,7 +5092,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
+      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed, fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),

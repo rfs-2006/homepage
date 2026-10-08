@@ -1,7 +1,7 @@
 // 타임폴리오 RFM(Road To Fund Manager) 학회원 순위 수집기
 // 타임폴리오 허가 범위(조회·CSV 다운로드, 학회 내부 공개)에서만 실행한다. 일정은 .github/workflows/rfm.yml
 // 일반 사용자와 같은 화면 조작(로그인 → 대회 → 수익률 순위 → CSV 다운로드)만 사용하고 API는 호출하지 않는다.
-// 결과는 Supabase intranet_content·public_content 의 id='rfm' 행에 저장되며, 홈페이지 #rfm 에서 누구나 본다.
+// 결과는 Supabase intranet_content 의 id='rfm' 행에 저장되며, 홈페이지 #rfm 에서 학회원 로그인 후 본다.
 //
 // 환경 변수 (GitHub Actions Secrets)
 //   TF_EMAIL, TF_PASSWORD        타임폴리오 계정
@@ -330,13 +330,9 @@ async function save(data) {
     body: JSON.stringify({ id: 'rfm', data }),
   });
   if (!r.ok) throw new Error('supabase write ' + r.status + ' ' + (await r.text()));
-  // 홈페이지 RFM 페이지는 로그인 없이 public_content에서 읽는다 (별칭만 들어 있다)
-  const p = await fetch(SB_URL + '/rest/v1/public_content', {
-    method: 'POST',
-    headers: { ...sbHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' },
-    body: JSON.stringify({ id: 'rfm', data }),
-  });
-  if (!p.ok) console.error('public rfm skipped: ' + p.status);
+  // RFM 순위는 학회원 로그인 후에만 본다. 예전에 공개용으로 올렸던 public_content 행은 지운다
+  const p = await fetch(SB_URL + '/rest/v1/public_content?id=eq.rfm', { method: 'DELETE', headers: { ...sbHeaders(), Prefer: 'return=minimal' } });
+  if (!p.ok) console.error('public rfm cleanup skipped: ' + p.status);
 }
 
 // ---------- main ----------
