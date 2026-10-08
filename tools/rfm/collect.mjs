@@ -128,14 +128,25 @@ function rowsFromCsv(text) {
 // CSV 다운로드는 사이트가 브라우저 안에서 파일을 만들어 내려준다. 저장 이벤트가 안 잡히는 경우를 대비해
 // 만들어지는 내용을 페이지 안에서 함께 받아 둔다.
 const CAPTURE = () => {
-  window.__rfmCsv = [];
-  const keep = (t) => { if (typeof t === 'string' && t.includes('별칭')) window.__rfmCsv.push(t); };
+  window.__rfmCsv = []; window.__rfmSeen = [];
+  // 별칭 헤더가 있거나 쉼표로 된 줄이 많은 텍스트를 CSV로 본다. 진단용으로 첫 줄(헤더)만 따로 남긴다
+  const keep = (t) => {
+    if (typeof t !== 'string') return;
+    const first = t.replace(/^\uFEFF/, '').split(/\r?\n/)[0].slice(0, 80);
+    window.__rfmSeen.push(first);
+    if (t.includes('별칭') || (t.split('\n').length > 50 && first.split(',').length >= 5)) window.__rfmCsv.push(t);
+  };
   const oc = URL.createObjectURL;
   URL.createObjectURL = function (b) { try { if (b instanceof Blob && b.size < 5e6) b.text().then(keep); } catch (e) {} return oc.apply(this, arguments); };
   const ac = HTMLAnchorElement.prototype.click;
   HTMLAnchorElement.prototype.click = function () {
     try { if (this.href && this.href.startsWith('data:')) { const d = this.href.slice(this.href.indexOf(',') + 1); keep(/;base64/.test(this.href.slice(0, this.href.indexOf(','))) ? new TextDecoder().decode(Uint8Array.from(atob(d), (c) => c.charCodeAt(0))) : decodeURIComponent(d)); } } catch (e) {}
     return ac.apply(this, arguments);
+  };
+  const ad = HTMLAnchorElement.prototype.dispatchEvent;
+  HTMLAnchorElement.prototype.dispatchEvent = function (ev) {
+    try { if (ev && ev.type === 'click' && this.href && this.href.startsWith('data:')) { const d = this.href.slice(this.href.indexOf(',') + 1); keep(decodeURIComponent(d)); } } catch (e) {}
+    return ad.apply(this, arguments);
   };
   window.showSaveFilePicker = async () => ({ createWritable: async () => { const parts = []; return { write: async (d) => { parts.push(d); }, close: async () => { keep(await new Blob(parts).text()); } }; } });
 };
@@ -163,8 +174,9 @@ async function openRanking(page) {
   await page.waitForTimeout(1500);
 }
 
+let csvBroken = false; // 한 번 실패하면 이후 반복에서는 바로 검색 방식으로 간다
 async function grabCsv(page) {
-  await page.evaluate(() => { window.__rfmCsv = []; });
+  await page.evaluate(() => { window.__rfmCsv = []; window.__rfmSeen = []; });
   const roleBtn = page.getByRole('button', { name: /CSV 다운로드/ }).first();
   const btn = (await roleBtn.count()) ? roleBtn : page.getByText('CSV 다운로드', { exact: false }).first();
   const dl = page.waitForEvent('download', { timeout: 20000 }).catch(() => null);
@@ -180,6 +192,8 @@ async function grabCsv(page) {
     }
     if (d === null) break;
   }
+  const seen = await page.evaluate(() => window.__rfmSeen || []).catch(() => []);
+  console.log('csv capture failed; blobs seen: ' + seen.length + (seen.length ? ' | first line: ' + seen[0] : ''));
   return null;
 }
 
@@ -190,9 +204,14 @@ async function grabBySearch(page) {
   const q = (v) => '"' + String(v).replace(/"/g, '""') + '"';
   for (const m of members) {
     await box.fill(m.nick);
-    await page.waitForTimeout(700);
-    const rows = await page.locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
-    for (const c of rows) if (c.length >= 7 && norm(c[2]) === norm(m.nick)) lines.push(c.slice(0, 7).map(q).join(','));
+    // 표가 해당 별칭으로 걸러질 때까지 최대 2초 기다린다
+    let hit = null;
+    for (let t = 0; t < 20 && !hit; t++) {
+      await page.waitForTimeout(100);
+      const rows = await page.locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+      hit = rows.find((c) => c.length >= 7 && norm(c[2]) === norm(m.nick)) || null;
+    }
+    if (hit) lines.push(hit.slice(0, 7).map(q).join(','));
   }
   await box.fill('');
   return lines.join('\n');
@@ -200,9 +219,9 @@ async function grabBySearch(page) {
 
 async function snapshot(page) {
   await openRanking(page);
-  let text = await grabCsv(page);
+  let text = csvBroken ? null : await grabCsv(page);
   let via = 'csv';
-  if (!text) { text = await grabBySearch(page); via = 'search'; }
+  if (!text) { csvBroken = true; text = await grabBySearch(page); via = 'search'; }
   return { text, via, contest: await readContestName(page), total: await readTotal(page) };
 }
 
@@ -274,7 +293,7 @@ let prev = null;
 async function publish(got) {
   const k = kstNow();
   const today = k.toISOString().slice(0, 10);
-  const stamp = today + ' ' + k.toISOString().slice(11, 16);
+  const stamp = today + ' ' + k.toISOString().slice(11, 19);
   const all = rowsFromCsv(got.text);
   if (!all.length) throw new Error('no rows parsed (' + got.via + ')');
   const byNick = new Map(all.map((r) => [norm(r.nick), r]));
@@ -297,7 +316,11 @@ async function publish(got) {
     members: out,
     series,
   };
-  console.log(`${stamp} via ${got.via}: matched ${out.filter((m) => m.found).length}/${members.length}`);
+  // 15초마다 돌므로 로그는 1분에 한 줄만 남긴다
+  if (!publish.lastLog || Date.now() - publish.lastLog > 55000) {
+    publish.lastLog = Date.now();
+    console.log(`${stamp} via ${got.via}: matched ${out.filter((m) => m.found).length}/${members.length}`);
+  }
   if (DRY) return;
   await save(data);
   prev = data;
@@ -309,7 +332,7 @@ if (CSV_FILE) {
   // RFM_UNTIL=HH:MM (KST) 이면 그 시각까지 RFM_EVERY초(기본 60)마다 반복, 없으면 한 번만
   const until = (process.env.RFM_UNTIL || '').match(/^(\d{1,2}):(\d{2})$/);
   const endMin = until ? +until[1] * 60 + +until[2] : -1;
-  const every = Math.max(30, +(process.env.RFM_EVERY || 60)) * 1000;
+  const every = Math.max(10, +(process.env.RFM_EVERY || 60)) * 1000;
   const hardStop = Date.now() + 5.6 * 3600e3; // Actions 작업 한도(6시간) 안에서 끝낸다
   await withBrowser(async (page) => {
     let fails = 0;

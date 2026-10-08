@@ -2206,10 +2206,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">학회원 순위</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · 장중 1분마다 갱신</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.45)">수익률순 · 장중 실시간</span>
             </div>
             <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-              <div style="padding:28px 0;font-size:14px;color:rgba(247,246,243,0.6)">아직 수집된 순위가 없습니다. 평일 장중에는 1분마다 갱신됩니다.</div>
+              <div style="padding:28px 0;font-size:14px;color:rgba(247,246,243,0.6)">아직 수집된 순위가 없습니다. 평일 장중에는 실시간(약 15초 간격)으로 갱신됩니다.</div>
             </sc-if>
             <sc-for list="{{ rfmRows }}" as="r" hint-placeholder-count="8">
               <div class="rfmrow" style="display:grid;grid-template-columns:28px minmax(0,1fr) 120px 96px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
@@ -3728,8 +3728,13 @@ class Component extends DCLogic {
       .then(({ data }) => { if (data && data.data) this.setState({ intraData: data.data }); });
     // RFM 순위는 GitHub Actions(tools/rfm)가 하루 1~2회 갱신한다
     this.loadRfm();
-    // 장중에는 1분마다 갱신되므로 RFM 탭을 보고 있으면 1분마다 다시 받는다
-    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'intranet' && this.state.intraTab === 'rfm' && !document.hidden) this.loadRfm(); }, 60000);
+    // 장중에는 수집기가 15초마다 저장한다. 실시간 구독으로 바로 반영하고, 구독이 안 되는 환경을 위해 15초 폴링도 둔다
+    if (!this._rfmCh) {
+      this._rfmCh = this.sb.channel('rfs-rfm')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.rfm' }, (p) => { if (p.new && p.new.data) this.setState({ rfmData: p.new.data }); })
+        .subscribe();
+    }
+    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'intranet' && this.state.intraTab === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
   }
 
   loadRfm() {
