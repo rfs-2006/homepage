@@ -627,6 +627,26 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 운용전략 + 운용팀장 */
+.fd-mgr{display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px;align-items:center}
+.fd-mgr .pm{display:flex;flex-direction:column;align-items:center;text-align:center}
+.fd-mgr .pm img{display:block;width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:2px solid rgba(143,170,220,0.5);box-shadow:0 0 0 6px rgba(143,170,220,0.08)}
+.fd-mgr .pn{margin-top:16px}
+.fd-mgr .pn em{display:block;font-style:normal;font-size:12px;letter-spacing:0.06em;color:#8FAADC}
+.fd-mgr .pn b{display:block;font-size:19px;font-weight:700;color:#F7F6F3;margin-top:4px}
+.fd-mgr .pn small{display:block;font-size:12.5px;color:rgba(247,246,243,0.55);margin-top:4px}
+.fd-mgr .ps{border-left:1px solid rgba(247,246,243,0.1);padding-left:44px}
+.fd-mgr .hl{margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;line-height:1.45;letter-spacing:-0.02em;color:#F7F6F3;word-break:keep-all}
+.fd-mgr ul{list-style:none;margin:16px 0 0;padding:0}
+.fd-mgr li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.78);word-break:keep-all}
+.fd-mgr li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
+@media (max-width:860px){
+  .fd-mgr{grid-template-columns:1fr;gap:22px}
+  .fd-mgr .pm{flex-direction:row;text-align:left;gap:16px}.fd-mgr .pm img{width:76px;height:76px}.fd-mgr .pn{margin-top:0}
+  .fd-mgr .ps{border-left:0;padding-left:0;border-top:1px solid rgba(247,246,243,0.1);padding-top:20px}
+  .fd-mgr .hl{font-size:19px}.fd-mgr li{font-size:14px}
+}
+
 /* 기간별 수익률 표 (KB 형식) */
 .fd-rtw{margin-top:24px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid rgba(143,170,220,0.16)}
 .fd-rt{min-width:760px}
@@ -2373,6 +2393,21 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
+
+      <section class="fd-card fd-mgr" id="fd-strat">
+        <div class="pm">
+          <img src="assets/officers/am.webp" alt="운용팀장 박정훈" loading="lazy">
+          <div class="pn"><em>운용팀장</em><b>박정훈</b><small>40기 · 26-2학기</small></div>
+        </div>
+        <div class="ps">
+          <h2 class="fd-ct">운용전략</h2>
+          <p class="hl">업황 사이클의 변곡점을 포착하는 코스피·코스닥 섹터 투자</p>
+          <ul>
+            <li>가격·물량·리드타임 등 업황 지표 기반 업종 선별 및 주 단위 비중 조절 전략</li>
+            <li>반도체·2차전지·정유 등 사이클 업종과 소부장·기판 등 밸류체인 중소형주 중심 편입</li>
+          </ul>
+        </div>
+      </section>
 
       <section class="fd-card" id="fd-perf">
         <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
@@ -4593,7 +4628,7 @@ class Component extends DCLogic {
           { k: '보유 종목', v: hs.length + '종목', c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', '운용전략'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
