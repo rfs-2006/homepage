@@ -1,5 +1,5 @@
 // RFS 펀드 실시간 수집기 (키움 REST API → Supabase)
-// 고정 IP 국내 서버에서 상시 실행한다. 키움 REST API는 등록한 IP에서만 호출되므로 GitHub Actions에서는 쓸 수 없다.
+// 고정 IP 국내 서버(네이버 클라우드 등)에서 상시 실행한다. 키움 REST API는 등록한 IP에서만 호출되므로 GitHub Actions에서는 쓸 수 없다.
 // 앱키는 주문도 낼 수 있는 키라 이 서버의 .env에만 두고, Supabase에는 잔고 결과만 올린다.
 //
 // 환경 변수 (.env)

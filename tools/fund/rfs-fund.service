@@ -4,8 +4,8 @@ After=network-online.target
 Wants=network-online.target
 
 [Service]
-User=ubuntu
-WorkingDirectory=/home/ubuntu/homepage/tools/fund
+User=__USER__
+WorkingDirectory=__DIR__
 ExecStart=/usr/bin/node --env-file=.env collect.mjs
 Restart=always
 RestartSec=30
