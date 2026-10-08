@@ -515,34 +515,15 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-pr .ex{justify-self:end;padding:3px 8px;border-radius:3px}
 .fd-pr:last-child{border-bottom:0}
 @media (max-width:560px){.fd-pr{grid-template-columns:58px repeat(3,minmax(0,1fr));padding:12px 12px !important;font-size:13px}.fd-pr>*:nth-child(4){display:none}.fd-pr .ex{padding:2px 6px}}
-@property --sweep{syntax:'<angle>';inherits:false;initial-value:360deg}
 @keyframes pgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes fdUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes fdFade{from{opacity:0}to{opacity:1}}
 @keyframes fdGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes fdSweep{from{--sweep:0deg}to{--sweep:360deg}}
 @keyframes fdDraw{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes fdPop{from{transform:scale(0)}to{transform:scale(1)}}
 @media (prefers-reduced-motion:no-preference){
   .pg-hero-in>*>*,.pg-hero-in>*{animation:pgIn .9s cubic-bezier(.2,.8,.2,1) both}
   .pg-hero-in .pg-title{animation-delay:.08s}.pg-hero-in .pg-lede{animation-delay:.18s}.pg-hero-in .pg-stats{animation-delay:.28s}.pg-hero-in .fd-chips,.pg-hero-in .pg-note{animation-delay:.38s}
-  .fd-donut{-webkit-mask:conic-gradient(#000 var(--sweep),transparent 0);mask:conic-gradient(#000 var(--sweep),transparent 0)}
-  @supports (animation-timeline: view()){
-    .fd-t,.fd-cap,.fd-head{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
-    .fd-row,.fd-mv,.fd-pr,.fd-lh,.fd-mh{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
-    .fd-mv .mb .f,.fd-row .wt .wb i{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 35%}
-    .fd-donut{animation:fdSweep linear both;animation-timeline:view();animation-range:entry 10% cover 45%}
-    .fd-plot .fd-chart{animation:fdDraw linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
-    .fd-ends .el,.fd-ya .yl{animation:fdFade linear both;animation-timeline:view();animation-range:entry 40% cover 50%}
-    .rfmlane .nm,.rfmlane .rt,.rfmlane .rk{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
-    .rfmlane .tail{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 40%}
-    .rfmlane .run{animation:fdPop linear both;animation-timeline:view();animation-range:entry 50% cover 45%}
-    .rfm-mine,.rfm-feed{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
-  }
-  @supports not (animation-timeline: view()){
-    .fd-donut{animation:fdSweep 1.4s cubic-bezier(.3,.7,.2,1) .2s both}
-    .fd-plot .fd-chart{animation:fdDraw 1.6s cubic-bezier(.3,.7,.2,1) .3s both}
-  }
 }
 @media (max-width:860px){.fd-list,.fd-movers{padding-left:12px;padding-right:12px}.fd-pr{padding:12px 10px !important}}
 
@@ -571,6 +552,8 @@ nav.nav{view-transition-name:rfs-nav}
 @media (max-width:860px){.fd-hov{height:200px}.fd-tip{min-width:150px;font-size:11px}}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
+.pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
+@media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:34px}
 .fd-kc>div{background:rgba(15,27,46,0.72);border:1px solid rgba(247,246,243,0.14);padding:18px 18px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .fd-kc .kk{display:block;font-style:normal;font-size:12px;color:rgba(247,246,243,0.62)}
@@ -589,11 +572,30 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-ct{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;margin:0;color:#F7F6F3}
 .fd-card .fd-pt{margin-top:22px}
 .fd-card .fd-cw{margin-top:22px}
-.fd-ac{display:flex;justify-content:center;padding:34px 0 26px;background:rgba(247,246,243,0.03);margin-top:22px}
-.fd-ac .fd-donut{position:relative;top:0;width:280px;height:280px}
-.fd-ac .fd-donut>div{inset:30px;background:#15233B}
-.fd-ac .fd-donut b{font-family:'Pretendard Variable',sans-serif;font-size:34px;font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
-.fd-ac .fd-donut em{font-size:14px;margin-top:6px;color:rgba(247,246,243,0.65)}
+.fd-ac{display:grid;grid-template-columns:320px minmax(0,1fr);gap:56px;align-items:center;margin-top:26px}
+.fd-ring{position:relative;width:320px;height:320px;cursor:pointer}
+.fd-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible;pointer-events:none}
+.fd-ring .trk circle{fill:none;stroke:rgba(247,246,243,0.05);stroke-width:16}
+.fd-ring .trk circle.in2{stroke:rgba(143,170,220,0.14);stroke-width:1;stroke-dasharray:1 3}
+.fd-arc circle{fill:none;stroke-width:16;transition:stroke-width .3s cubic-bezier(.2,.8,.2,1),opacity .3s}
+.fd-arc.on circle{stroke-width:24;filter:drop-shadow(0 0 6px rgba(143,170,220,0.45))}
+.fd-arc.dim circle{opacity:0.22}
+.fd-ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.fd-ring .ck{font-style:normal;font-size:12px;letter-spacing:0.08em;color:#8FAADC;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-ring .cv{font-family:'Noto Serif KR',serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;margin-top:6px;font-variant-numeric:tabular-nums;color:#F7F6F3}
+.fd-ring .cs{font-size:12px;color:rgba(247,246,243,0.55);margin-top:6px;font-variant-numeric:tabular-nums}
+.fd-split .lab{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.6)}
+.fd-split .lab b{color:#F7F6F3;font-weight:700;margin-left:6px;font-variant-numeric:tabular-nums}
+.fd-split .bar{height:6px;margin-top:10px;background:rgba(247,246,243,0.14);border-radius:3px;overflow:hidden}
+.fd-split .bar i{display:block;height:100%;background:linear-gradient(90deg,#3E5F9E,#8FAADC);border-radius:3px;transform-origin:left}
+.fd-alc .fd-lg{grid-template-columns:1fr;margin-top:18px}
+.fd-li .ch{width:8px;height:8px;border-radius:2px}
+.fd-li .ln{flex:0 0 110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-li .lb{flex:1;height:4px;background:rgba(247,246,243,0.06);border-radius:2px;overflow:hidden}
+.fd-li .lb i{display:block;height:100%;border-radius:2px;transform-origin:left;opacity:0.85}
+.fd-li .lw{flex:0 0 64px;text-align:right}
+.fd-alc .fd-li{padding:10px 8px}
+@keyframes fdArc{from{stroke-dasharray:0 600}}
 .fd-lg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:40px;margin-top:22px}
 .fd-li{display:flex;align-items:center;gap:10px;padding:13px 4px;border-bottom:1px solid rgba(247,246,243,0.08);font-size:14px;cursor:pointer;transition:background .2s}
 .fd-li i{width:10px;height:10px;border-radius:50%;flex:none}
@@ -615,16 +617,41 @@ nav.nav{view-transition-name:rfs-nav}
   .fd-kc{grid-template-columns:repeat(2,1fr)}.fd-kc>div:last-child{grid-column:1/3}.fd-kc .kv{font-size:22px}
   .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px}.fd-nav a{font-size:12px;padding:8px 0}
   .fd-body{padding:16px 12px 64px}.fd-card{padding:24px 16px 20px}
-  .fd-lg{grid-template-columns:1fr 1fr;column-gap:16px}.fd-ac .fd-donut{width:220px;height:220px}.fd-ac .fd-donut b{font-size:26px}
+  .fd-ac{grid-template-columns:1fr;gap:28px}.fd-ring{width:260px;height:260px;margin:0 auto}.fd-ring .cv{font-size:32px}.fd-li .ln{flex-basis:84px}
   .fd-bars{height:200px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px}
   .fd-row,.fd-lh{grid-template-columns:24px minmax(0,1fr) 56px 76px !important}
 }
-@media (prefers-reduced-motion:no-preference){@supports (animation-timeline: view()){
-  .fd-card{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 35%}
-  .fd-bars>div>i{animation:fdRise linear both;animation-timeline:view();animation-range:entry 40% cover 40%}
-  .fd-li{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
-}}
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* 등장 효과: 화면에 들어오면 한 번 끝까지 재생 (스크롤 위치에 묶지 않는다) */
+@keyframes fdIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:no-preference){
+  .fx .fd-card{opacity:0}
+  .fx .fd-card.in{animation:fdUp .7s cubic-bezier(.2,.8,.2,1) both}
+  .fx .fd-card:not(.in) .fd-arc{opacity:0}
+  .fx .fd-card.in .fd-arc circle{animation:fdArc .9s cubic-bezier(.3,.7,.2,1) both}
+  .fx .fd-card.in .fd-ring .ctr{animation:fdIn .7s ease .5s both}
+  .fx .fd-card.in .fd-split .bar i,.fx .fd-card.in .fd-li .lb i{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .35s both}
+  .fx .fd-card.in .fd-plot .fd-chart{animation:fdDraw 1.4s cubic-bezier(.3,.7,.2,1) .25s both}
+  .fx .fd-card.in .fd-ends .el,.fx .fd-card.in .fd-ya .yl{animation:fdIn .6s ease .9s both}
+  .fx .fd-card.in .fd-bars>div>i{animation:fdRise .9s cubic-bezier(.2,.8,.2,1) .2s both}
+  .fx .fd-card.in .fd-row .wt .wb i,.fx .fd-card.in .fd-mv .mb .f{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .3s both}
+  .fx .fd-card.in .rfmlane .tail{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .25s both}
+  .fx .fd-card.in .rfmlane .run{animation:fdPop .5s cubic-bezier(.2,.8,.2,1.4) .7s both}
+  .fx .fd-card.in .fd-lg>div,.fx .fd-card.in .fd-pr,.fx .fd-card.in .fd-row,.fx .fd-card.in .fd-mv,.fx .fd-card.in .rfm-mt>div{animation:fdIn .5s ease both}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(1){animation-delay:0.20s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(2){animation-delay:0.25s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(3){animation-delay:0.30s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(4){animation-delay:0.35s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(5){animation-delay:0.40s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(6){animation-delay:0.45s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(7){animation-delay:0.50s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(8){animation-delay:0.55s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(9){animation-delay:0.60s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(10){animation-delay:0.65s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(11){animation-delay:0.70s}
+  .fx .fd-card.in :is(.fd-lg>div,.fd-pr,.fd-row,.fd-mv,.rfm-mt>div):nth-child(12){animation-delay:0.75s}
+}
 .fd-cap{margin:12px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.62);max-width:none !important}
 .fd-port{display:grid;grid-template-columns:260px minmax(0,1fr);gap:56px;align-items:start;margin-top:36px}
 .fd-donut{width:260px;height:260px;border-radius:50%;position:relative;position:sticky;top:110px}
@@ -2298,18 +2325,18 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFS 펀드" data-nav="dark" class="fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
+  <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock" style="--slot-position:center 45%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">RFS Fund</h1>
+          <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>R.F.S. Asset Management Team · 국내주식 · 액티브</span></p>
-          <h1 class="pg-title">RFS Fund</h1>
+          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>RFS Asset Management · 국내·미국 상장주식 · 일반사모</span></p>
+          <h1 class="pg-title">AMT Fund</h1>
           <div class="fd-kc">
             <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
           </div>
@@ -2322,9 +2349,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <div class="wrap fd-body">
 
       <section class="fd-card" id="fd-perf">
-        <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
+        <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
       <div class="fd-pt">
-        <div class="fd-pr hd"><span>기간</span><span>RFS 펀드</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
+        <div class="fd-pr hd"><span>기간</span><span>AMT Fund</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
         <sc-for list="{{ fdPeriods }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}" onClick="{{ q.on }}"><span>{{ q.k }}</span><b style="color:{{ q.fc }}">{{ q.f }}</b><span>{{ q.kp }}</span><span>{{ q.kq }}</span><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
       </div>
         <div class="fd-tabs" style="margin-top:28px"><sc-for list="{{ fdTabs }}" as="t" hint-placeholder-count="4"><a href="#" class="{{ t.cls }}" onClick="{{ t.on }}">{{ t.t }}</a></sc-for></div>
@@ -2351,9 +2378,16 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <section class="fd-card" id="fd-alloc">
         <h2 class="fd-ct">자산구성현황</h2>
         <div class="fd-ac">
-          <div class="fd-donut" style="background:{{ fdDonut }}" onMouseMove="{{ fdDonutMove }}" onMouseLeave="{{ fdDonutLeave }}"><div><b>{{ fdCenterV }}</b><em>{{ fdCenterK }}</em></div></div>
+          <div class="fd-ring" onMouseMove="{{ fdDonutMove }}" onMouseLeave="{{ fdDonutLeave }}">
+            <svg class="trk" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80"></circle><circle class="in2" cx="100" cy="100" r="62"></circle></svg>
+            <sc-for list="{{ fdArcs }}" as="a" hint-placeholder-count="8"><svg class="{{ a.cls }}" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" style="stroke:{{ a.c }};stroke-dasharray:{{ a.da }};stroke-dashoffset:{{ a.off }};animation-delay:{{ a.dl }}"></circle></svg></sc-for>
+            <div class="ctr"><em class="ck">{{ fdCenterK }}</em><b class="cv">{{ fdCenterV }}</b><small class="cs">{{ fdCenterS }}</small></div>
+          </div>
+          <div class="fd-alc">
+            <div class="fd-split"><div class="lab"><span>주식 <b>{{ fdStockPct }}</b></span><span>현금 <b>{{ fdCashPct }}</b></span></div><div class="bar"><i style="width:{{ fdStockPct }}"></i></div></div>
+            <div class="fd-lg"><sc-for list="{{ fdLegend }}" as="l" hint-placeholder-count="8"><div class="{{ l.cls }}" onMouseEnter="{{ l.enter }}" onMouseLeave="{{ l.leave }}"><i class="ch" style="background:{{ l.c }}"></i><span class="ln">{{ l.t }}</span><em class="lb"><i style="width:{{ l.bw }};background:{{ l.c }}"></i></em><b class="lw">{{ l.w }}</b></div></sc-for></div>
+          </div>
         </div>
-        <div class="fd-lg"><sc-for list="{{ fdLegend }}" as="l" hint-placeholder-count="8"><div class="{{ l.cls }}" onMouseEnter="{{ l.enter }}" onMouseLeave="{{ l.leave }}"><i style="background:{{ l.c }}"></i><span>{{ l.t }}</span><b>{{ l.w }}</b></div></sc-for></div>
         <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
       </section>
 
@@ -2487,7 +2521,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </section>
 
-      <p class="fd-disc">학회 내부 공개 · 외부 공유 금지 · 자료: 타임폴리오 RFM 순위표 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+      <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
       <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:12px;max-width:520px">
           <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
@@ -2544,7 +2578,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                 </a>
                 <a href="#intranet/fund" onClick="{{ goFund }}" style="display:block">
                   <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3">{{ fundSince }}</div>
-                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8FAADC;margin-top:8px">RFS 펀드 →</div>
+                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8FAADC;margin-top:8px">AMT Fund →</div>
                 </a>
               </div>
               <div class="intra-card" style="padding-bottom:20px">
@@ -4027,6 +4061,14 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    // 카드가 화면에 들어오면 in 클래스를 붙여 등장 효과를 한 번 재생한다
+    if ('IntersectionObserver' in window && 'MutationObserver' in window) {
+      document.documentElement.classList.add('fx');
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+      const scan = () => document.querySelectorAll('.fd-card:not([data-fx])').forEach((el) => { el.setAttribute('data-fx', '1'); io.observe(el); });
+      scan();
+      new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
+    }
     // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
     const t0 = performance.now(), minHold = 1200;
     const finish = () => {
@@ -4241,20 +4283,28 @@ class Component extends DCLogic {
         .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.rfm' }, (p) => { if (p.new && p.new.data) this.setRfm(p.new.data); })
         .subscribe();
     }
-    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.user && this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
+    if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
   }
 
   // 학회원: 운용 계좌 실시간 (tools/fund 수집기가 장중 15초마다 저장)
   loadFundLive() {
     if (!this.sb) return;
-    this.sb.from('intranet_content').select('data').eq('id', 'fund_live').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setFundLive(data.data); });
+    this.fetchFundLive();
     if (!this._fundCh) {
       this._fundCh = this.sb.channel('rfs-fund')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'intranet_content', filter: 'id=eq.fund_live' }, (p) => { if (p.new && p.new.data) this.setFundLive(p.new.data); })
         .subscribe();
     }
-    if (!this._fundTimer) this._fundTimer = setInterval(() => { if (this.state.user && this.state.page === 'fund' && !document.hidden) this.sb.from('intranet_content').select('data').eq('id', 'fund_live').maybeSingle().then(({ data }) => { if (data && data.data) this.setFundLive(data.data); }); }, 15000);
+    if (!this._fundTimer) this._fundTimer = setInterval(() => { if (this.state.page === 'fund' && !document.hidden) this.fetchFundLive(); }, 15000);
+  }
+
+  // 로그인 없이 누구나: public_content 우선, 아직 없으면(수집기 갱신 전) 학회원은 intranet_content
+  fetchFundLive() {
+    this.sb.from('public_content').select('data').eq('id', 'fund_live').maybeSingle()
+      .then(({ data }) => {
+        if (data && data.data) return this.setFundLive(data.data);
+        if (this.state.user) this.sb.from('intranet_content').select('data').eq('id', 'fund_live').maybeSingle().then(({ data: d }) => { if (d && d.data) this.setFundLive(d.data); });
+      });
   }
 
   setFundLive(next) {
@@ -4266,8 +4316,11 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
+    this.sb.from('public_content').select('data').eq('id', 'rfm').maybeSingle()
+      .then(({ data }) => {
+        if (data && data.data) return this.setRfm(data.data);
+        if (this.state.user) this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle().then(({ data: d }) => { if (d && d.data) this.setRfm(d.data); });
+      });
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -4335,17 +4388,26 @@ class Component extends DCLogic {
     const stockW = hs.reduce((a, h) => a + (h.weight || 0), 0) || 1;
     const secs = Object.entries(sec).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const secMax = Math.max(...secs.map((x) => x[1]), 1);
-    const legend = hs.map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(2) + '%', i })).concat(cw > 0 ? [{ c: 'rgba(247,246,243,0.3)', t: '현금', w: cw.toFixed(2) + '%', i: hs.length }] : []);
+    const wMax = Math.max(cw, ...hs.map((h) => h.weight || 0), 1);
+    const legend = hs.map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(2) + '%', bw: ((h.weight || 0) / wMax * 100).toFixed(1) + '%', i })).concat(cw > 0 ? [{ c: 'rgba(247,246,243,0.35)', t: '현금', w: cw.toFixed(2) + '%', bw: (cw / wMax * 100).toFixed(1) + '%', i: hs.length }] : []);
+    // 링: 반지름 80 원둘레를 비중대로 나누고 조각 사이를 조금 띄운다 (12시 방향부터 시계방향)
+    const C = 2 * Math.PI * 80, gap = 1.6;
+    const arcs = segs.map(([a, b], i) => {
+      const len = Math.max(0.6, (b - a) / 100 * C - gap);
+      return { c: i < hs.length ? shades[i % shades.length] : 'rgba(247,246,243,0.32)', da: len.toFixed(2) + ' ' + C.toFixed(2), off: (-(a / 100 * C) - gap / 2).toFixed(2), dl: (0.15 + i * 0.08).toFixed(2) + 's', cls: 'fd-arc' + (hi === null ? '' : hi === i ? ' on' : ' dim') };
+    });
     return {
       fdLegend: legend.map((l) => ({ ...l, cls: 'fd-li' + (hi === l.i ? ' on' : ''), enter: () => this.setState({ fdHi: l.i }), leave: () => this.setState({ fdHi: null }) })),
       fdCenterV: hh ? (hh.weight || 0).toFixed(2) + '%' : (100 - cw).toFixed(2) + '%',
-      fdCenterK: hh ? hh.name : '주식',
+      fdCenterK: hh ? hh.name : '주식 비중',
+      fdCenterS: hh ? (hh.ret !== undefined ? '수익률 ' + pct(hh.ret) : '대기 자금') : hs.length + '종목 · 현금 ' + cw.toFixed(1) + '%',
+      fdArcs: arcs, fdStockPct: (100 - cw).toFixed(2) + '%', fdCashPct: cw.toFixed(2) + '%',
       fdSectors: secs.map(([t, w]) => ({ t, w: (w / stockW * 100).toFixed(2) + '%', h: (w / secMax * 72).toFixed(1) + '%' })),
       fdDonut: 'conic-gradient(' + stops.join(',') + ')',
       fdCount: hh ? hh.name : hs.length + '종목', fdCashLine: hh ? (hh.weight || 0).toFixed(1) + '%' + (hh.ret !== undefined ? ' · ' + pct(hh.ret) : '') : '현금 ' + cw.toFixed(1) + '%',
       fdDonutMove: (e) => {
         const rc = e.currentTarget.getBoundingClientRect(); const dx = e.clientX - rc.left - rc.width / 2, dy = e.clientY - rc.top - rc.height / 2;
-        const r = Math.hypot(dx, dy); if (r < rc.width * 0.33 || r > rc.width / 2) { if (this.state.fdHi !== null) this.setState({ fdHi: null }); return; }
+        const r = Math.hypot(dx, dy); if (r < rc.width * 0.32 || r > rc.width * 0.5) { if (this.state.fdHi !== null) this.setState({ fdHi: null }); return; }
         const pctA = ((Math.atan2(dx, -dy) * 180 / Math.PI + 360) % 360) / 3.6;
         const k = (this._fdSegs || []).findIndex(([a, b]) => pctA >= a && pctA < b);
         if (k !== this.state.fdHi) this.setState({ fdHi: k < 0 ? null : k });
@@ -4379,7 +4441,7 @@ class Component extends DCLogic {
     el.querySelector('.fd-cross').style.left = x;
     [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); });
     const tip = el.querySelector('.fd-tip');
-    tip.innerHTML = '<b>' + C.d[i].replace(/-/g, '.') + '</b><span><i style="background:#8FAADC"></i>RFS 펀드<em>' + pc(C.fs[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.7)"></i>KOSPI<em>' + pc(C.ks[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.35)"></i>KOSDAQ<em>' + pc(C.qs[i]) + '</em></span>';
+    tip.innerHTML = '<b>' + C.d[i].replace(/-/g, '.') + '</b><span><i style="background:#8FAADC"></i>AMT Fund<em>' + pc(C.fs[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.7)"></i>KOSPI<em>' + pc(C.ks[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.35)"></i>KOSDAQ<em>' + pc(C.qs[i]) + '</em></span>';
     tip.style.left = x; tip.style.transform = i / (n - 1) > 0.6 ? 'translateX(calc(-100% - 14px))' : 'translateX(14px)';
   }
 
@@ -4403,7 +4465,7 @@ class Component extends DCLogic {
 
   fundProps(authed) {
     const s = this.state;
-    const live = authed && s.fundLive ? s.fundLive : null;
+    const live = s.fundLive || null;
     const F = live || s.fundPub;
     const pct = (v, d = 2) => (v === null || v === undefined || isNaN(v) ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%');
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
@@ -4501,7 +4563,7 @@ class Component extends DCLogic {
       fdMove: (e) => this.fdHover(e), fdLeave: (e) => { const r = e.currentTarget; r.classList.remove('on'); },
       ...this.fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn),
       fdLiveDot: !!live && open, fdClosed: !(live && open),
-      fdMeta: live ? 'RFS 펀드 · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'RFS 펀드 · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
+      fdMeta: live ? 'AMT Fund · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'AMT Fund · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
       fdHeadRet: pct(F.ret), fdHeadColor: col(F.ret),
       fdHeadRest: gap === null ? '' : ', KOSPI보다 ' + Math.abs(gap).toFixed(2) + '%p ' + (gap >= 0 ? '앞서' : '뒤처져'),
       fdDek: (F.day !== null && F.day !== undefined ? '오늘 ' + pct(F.day) + '. ' : '') + (best ? best.name + (live ? '이 오늘 가장 많이 벌었고, ' : '이 오늘 가장 많이 올랐고, ') : '') + hs.length + '개 종목과 현금 ' + (F.cashWeight || 0).toFixed(1) + '%로 운용 중입니다.',
@@ -4528,7 +4590,7 @@ class Component extends DCLogic {
           dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
         };
       }),
-      fdNote: live ? '자료: 키움증권 운용 계좌 · 장중 15초 갱신 · 투자 권유 아님' : '자료: 키움증권 운용 계좌 · 장 마감 기준 일 1회 갱신 (학회원 로그인 시 실시간) · 투자 권유 아님',
+      fdNote: live ? '자료: 키움증권 운용 계좌 · 장중 15초 갱신 · 투자 권유 아님' : '자료: 키움증권 운용 계좌 · 장 마감 기준 · 투자 권유 아님',
     };
   }
 
@@ -4735,7 +4797,7 @@ class Component extends DCLogic {
       : page === 'recruit' ? '신입 학회원 모집 | 중앙대 가치투자학회 R.F.S.'
       : page === 'intranet' ? 'Intranet | RFS'
       : page === 'rfm' ? 'RFM 순위 | RFS'
-      : page === 'fund' ? 'RFS 펀드 | 중앙대 가치투자학회 R.F.S.'
+      : page === 'fund' ? 'AMT Fund | 중앙대 가치투자학회 R.F.S.'
       : 'R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회';
   }
 
@@ -4774,8 +4836,14 @@ class Component extends DCLogic {
     // 펀드 공개분(장 마감 확정치)은 누구나 읽는 public_content에서 받는다
     if (s.page === 'fund' && !this._fundPubReq && this.sb) {
       this._fundPubReq = true;
+      this.loadFundLive();
       this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
         .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
+    }
+    if (s.page === 'rfm' && !this._rfmReq && this.sb) {
+      this._rfmReq = true;
+      this.loadRfm();
+      if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
     }
     if (s.page === 'report' && !this._p1req) {
       this._p1req = true;
@@ -4902,7 +4970,7 @@ class Component extends DCLogic {
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
-      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed, fundOpen: s.page === 'fund',
+      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
@@ -4988,7 +5056,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'RFS 펀드 ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
