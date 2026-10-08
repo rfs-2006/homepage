@@ -629,32 +629,6 @@ nav.nav{view-transition-name:rfs-nav}
 /* 질감: 밝은 페이지 배경에 옅은 종이 결 */
 body main.pgx{background-image:url("assets/grain.png") !important;background-size:160px 160px}
 main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inset:0;pointer-events:none;background:url("assets/grain.png");background-size:160px 160px;opacity:.6;mix-blend-mode:normal;z-index:0}
-/* 알럼나이 노드 맵 */
-.netmap{position:relative;height:clamp(420px,42vw,560px);margin-top:28px}
-.netmap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
-.netmap line{stroke:rgba(247,246,243,0.32);stroke-width:1;stroke-dasharray:600;stroke-dashoffset:0;transition:stroke .3s,opacity .3s}
-.netmap .nl.big line{stroke:#8FAADC;stroke-width:1.4}
-.netmap .nl.hot line{stroke:#F7F6F3;stroke-width:1.6}
-.netmap .nl.dim{opacity:.35}
-.netmap .hub{position:absolute;left:50%;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;background:#F3EEDF;transform:rotate(45deg);box-shadow:0 0 0 1px rgba(15,27,46,0.6)}
-.netmap .hub-cap{position:absolute;left:50%;top:50%;transform:translate(-50%,22px);font-size:10.5px;font-weight:600;letter-spacing:0.22em;color:rgba(247,246,243,0.5);white-space:nowrap}
-.netmap .nd{position:absolute;transform:translate(-5px,-5px);cursor:default;transition:opacity .3s}
-.netmap .nd>i{display:block;width:10px;height:10px;background:rgba(247,246,243,0.75);transform:rotate(45deg);transition:transform .3s cubic-bezier(.2,.8,.2,1),background .3s}
-.netmap .nd.big>i{width:12px;height:12px;background:#F7F6F3}
-.netmap .nd .lb{position:absolute;top:50%;left:24px;transform:translateY(-50%);white-space:nowrap;display:flex;align-items:baseline;gap:10px}
-.netmap .nd.lft .lb{left:auto;right:24px;flex-direction:row-reverse}
-.netmap .nd b{font-size:14px;font-weight:600;letter-spacing:0.06em;color:rgba(247,246,243,0.72)}
-.netmap .nd.big b{font-size:24px;font-weight:700;letter-spacing:0.02em;color:#F7F6F3}
-.netmap .nd em{font-style:normal;font-size:12px;font-weight:600;color:rgba(247,246,243,0.5);font-variant-numeric:tabular-nums}
-.netmap .nd.big em{font-size:15px;color:#8FAADC}
-.netmap .nd:hover>i,.netmap .nd.hot>i{transform:rotate(45deg) scale(1.5);background:#8FAADC}
-.netmap .nd.dim{opacity:.4}
-@media (prefers-reduced-motion:no-preference){
-  .fx .netmap:not(.is-in) line{stroke-dashoffset:600}
-  .netmap.is-in line{animation:netDraw 1.1s cubic-bezier(.3,.7,.2,1) both}
-  .netmap.is-in .nd{animation:fdIn .6s ease .6s both}
-}
-@keyframes netDraw{from{stroke-dashoffset:600}to{stroke-dashoffset:0}}
 
 /* 상단 메뉴: PC에서 크게 + 마우스 올리면 밑줄이 왼쪽부터 그어짐 */
 .navlink{position:relative}
@@ -2199,71 +2173,41 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <h2 class="sec-title"><strong>R.F.S. Network</strong></h2>
           
         </div>
-        <div class="netmap rv rv-up" onMouseLeave="{{ sliceLeave }}">
-          <sc-for list="{{ netNodes }}" as="n" hint-placeholder-count="6"><svg class="{{ n.lcls }}" viewBox="0 0 1000 560" preserveAspectRatio="none"><line x1="500" y1="280" x2="{{ n.x2 }}" y2="{{ n.y2 }}" vector-effect="non-scaling-stroke" style="animation-delay:{{ n.dl }}"></line></svg></sc-for>
-          <i class="hub"></i><span class="hub-cap">ALUMNI {{ netTotal }}</span>
-          <sc-for list="{{ netNodes }}" as="n" hint-placeholder-count="6"><div class="{{ n.cls }}" style="left:{{ n.left }};top:{{ n.top }}" onMouseEnter="{{ n.onEnter }}"><i></i><span class="lb"><b>{{ n.text }}</b><em>{{ n.val }}</em></span></div></sc-for>
-        </div>
-      </div>
-    </section>
-
-    <section data-tab="cohorts" data-nav="light" style="background:#F7F6F3;border-bottom:1px solid #D0CECE">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          <h2 class="sec-title">Cohorts</h2>
-
-        </div>
-        <div class="gisu-index rv rv-up" style="margin-top:clamp(36px,5vh,56px)">
-      <sc-for list="{{ cohorts }}" as="c" hint-placeholder-count="12">
-        <a href="#people" onClick="{{ c.on }}" class="{{ c.cls }}" style="background:{{ c.bg }};color:{{ c.color }};font-weight:{{ c.weight }}">{{ c.label }}</a>
-      </sc-for>
-        </div>
-        <div class="rv rv-up" style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;padding:28px 4px;margin-top:32px">
-          <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
-            <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums">{{ cohortLabel }}</span>
-            <span style="font-size:13px;color:rgba(26,26,26,0.65);font-variant-numeric:tabular-nums">{{ cohortCount }}</span>
+        <div class="donut-wrap" onMouseLeave="{{ sliceLeave }}" style="display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center;margin-top:clamp(40px,6vh,64px)">
+          <div class="rv rv-left" style="position:relative;width:100%;aspect-ratio:1/1">
+            <svg viewBox="0 0 480 480" class="donutsvg {{ drawnCls }}" style="position:absolute;inset:0;width:100%;height:100%" role="img" aria-label="알럼나이 진출 분야 분포">
+              <g transform="rotate(-90 240 240)">
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="{{ d.r }}" fill="none" stroke="{{ d.color }}" stroke-width="{{ d.w }}" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" opacity="{{ d.opacity }}" style="transition-delay:{{ d.delay }}" onMouseEnter="{{ d.onEnter }}"></circle>
+                </sc-for>
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="134" fill="none" stroke="{{ d.color }}" stroke-width="6" stroke-dasharray="{{ d.echoDash }}" stroke-dashoffset="{{ d.echoOffset }}" opacity="{{ d.echoOpacity }}" style="transition-delay:{{ d.delay }}"></circle>
+                </sc-for>
+              </g>
+              <circle cx="240" cy="240" r="130" fill="rgba(17,28,46,0.55)"></circle>
+              <text x="240" y="292" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="0.16em" fill="#6b7a91">ALUMNI</text>
+            </svg>
+            <img src="assets/rfs-seal-light-640.png" alt="R.F.S." style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:19%;opacity:0.34">
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <sc-if value="{{ d.big }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;left:{{ d.lx }};top:{{ d.ly }};transform:translate(-50%,-50%);text-align:center;line-height:1.25;color:{{ d.ink }};white-space:nowrap;pointer-events:none">
+                  <div style="font-size:12px;letter-spacing:0.02em">{{ d.text }}</div>
+                  <div style="font-size:{{ d.size }};font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</div>
+                </div>
+              </sc-if>
+            </sc-for>
           </div>
-          <div style="font-size:15px;line-height:2;color:rgba(26,26,26,0.85);text-wrap:pretty">{{ cohortNames }}</div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-  </sc-if>
-
-  <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="구성원 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Our<br>People</h1>
-      </div>
-    </section>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
-
-    <section data-tab="officers" data-nav="light" style="background:#FFFFFF">
-      <h2 class="sec-title">{{ currentCohort }}기 임원진</h2>
-      <p class="og-h"><span>Executive Board</span></p>
-      <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-      <p class="og-h"><span>Research Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-      <p class="og-h"><span>Asset Management Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
-    </section>
-
-    <section data-tab="network" id="m-people-alumni" data-nav="dark" style="background:#111c2e;padding:60px 24px 56px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">R.F.S. Network</h2>
-      <div style="display:flex;align-items:baseline;gap:14px;margin-top:36px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:82px;font-weight:700;letter-spacing:-0.05em;line-height:0.9;color:#F7F6F3;font-variant-numeric:tabular-nums">68<span style="font-size:38px;letter-spacing:-0.02em">%</span></div>
-        <div style="font-size:12px;line-height:1.6;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.7)">of alumni<br>in financial services</div>
-      </div>
-      <div style="margin-top:34px;display:grid;gap:15px">
-        <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(247,246,243,0.85);margin-bottom:7px"><span>{{ d.text }}</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span></div>
-            <div style="height:6px;background:rgba(247,246,243,0.12)"><div style="height:100%;width:{{ d.val }};background:{{ d.color }}"></div></div>
+          <div class="rv rv-right">
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.55);padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.4)">진출 분야</div>
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(247,246,243,0.18);font-size:14px;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
+                <span style="width:10px;height:10px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
+                <span style="color:rgba(247,246,243,0.85);flex:1">{{ d.text }}</span>
+                <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:17px;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ d.val }}</span>
+              </div>
+            </sc-for>
           </div>
+        </div>
         </sc-for>
       </div>
       <p style="margin:20px 0 0;font-size:12px;color:rgba(247,246,243,0.5)">20년의 역사, 608명의 네트워크</p>
@@ -5535,23 +5479,6 @@ class Component extends DCLogic {
       donutSegs: ring(SEGS, 86),
       bootCls: s.boot === 'in' ? '' : (s.boot === 'out' ? 'out' : 'out gone'),
       slices: slices(s.hoverSlice, (i) => this.setState({ hoverSlice: i }), s.drawn),
-      // 알럼나이 진출 분야 노드 맵: 가운데 R.F.S.에서 분야별로 선이 뻗는다 (비중이 클수록 글자가 크고 진함)
-      netNodes: (() => {
-        const ang = [-148, -62, -14, 34, 118, 168], rad = [0.86, 0.78, 0.9, 0.82, 0.7, 0.92];
-        const hv = s.hoverSlice === undefined ? null : s.hoverSlice;
-        return CHART.map((x, i) => {
-          const t = ang[i % ang.length] * Math.PI / 180, r = rad[i % rad.length];
-          const x2 = 500 + Math.cos(t) * 430 * r, y2 = 280 + Math.sin(t) * 240 * r;
-          const big = x.pct >= 15, hot = hv === i, dim = hv !== null && !hot;
-          return {
-            x2: x2.toFixed(1), y2: y2.toFixed(1), left: (x2 / 10).toFixed(2) + '%', top: (y2 / 5.6).toFixed(2) + '%', dl: (0.15 + i * 0.09).toFixed(2) + 's',
-            lcls: 'nl' + (big ? ' big' : '') + (hot ? ' hot' : '') + (dim ? ' dim' : ''),
-            cls: 'nd' + (big ? ' big' : '') + (Math.cos(t) < 0 ? ' lft' : '') + (hot ? ' hot' : '') + (dim ? ' dim' : ''),
-            text: x.label, val: x.pct + '%', onEnter: () => this.setState({ hoverSlice: i }),
-          };
-        });
-      })(),
-      netTotal: '608',
       sliceLeave: () => this.setState({ hoverSlice: null }),
       drawnCls: s.drawn ? 'drawn' : '',
       donutArcs: arcs(SEGS.map((x) => ({ ...x, color: x.dark })), 360, 180, {
