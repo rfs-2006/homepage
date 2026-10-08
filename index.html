@@ -761,14 +761,43 @@ nav.nav{view-transition-name:rfs-nav}
   .rfmlane .nm small{display:none}
   .rfmlane .rt b{font-size:16px}
   .rfmlane .gap{right:0;bottom:-6px}
-  .rfm-side{position:fixed;left:0;right:0;bottom:0;top:auto;background:#0c1524;border-top:1px solid #8FAADC;padding:0 16px;z-index:40}
-  .rfm-mine{border-top:0;padding:10px 0 12px;display:grid;grid-template-columns:auto 1fr;column-gap:14px;align-items:center}
-  .rfm-pick{grid-column:1/3;margin-bottom:6px}
-  .rfm-mine .big{font-size:28px;margin:0}
-  .rfm-mine p{margin:0;font-size:12px;line-height:1.55}
-  .rfm-feed{display:none}
 }
 @media (prefers-reduced-motion:reduce){.rfmlane,.rfmlane .run,.rfmlane .tail{transition:none}.rfm-live i{animation:none}}
+
+/* RFM: 펀드 페이지와 같은 카드 구성 */
+.rfm-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.rfm-grid>.fd-card{margin-top:20px}
+.rfm-grid .rfm-side{position:sticky;top:140px;align-self:start}
+.rfm-board{margin-top:26px}
+.fd-legend i.dash{height:0;border-top:1px dashed #8FAADC}
+.rfmpage .rfmlane .gap{background:#15233B}
+.rfmpage .rfm-mine{border-top:1px solid rgba(247,246,243,0.08);padding:28px 26px 24px}
+.rfmpage .rfm-feed{margin-top:20px;padding:28px 26px 20px}
+.rfmpage .rfm-side .fd-ct{font-size:20px}
+.rfmpage .rfm-pick{margin-top:16px;padding:10px 12px;border:1px solid rgba(143,170,220,0.35);background:rgba(143,170,220,0.06);color:#F7F6F3;font-size:13px;letter-spacing:0}
+.rfmpage .rfm-mine .big{margin-top:20px}
+.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.45);margin:14px 0 0}
+.rfm-mt{margin-top:16px;border-top:1px solid rgba(247,246,243,0.12)}
+.rfm-mt>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-size:13px;font-variant-numeric:tabular-nums}
+.rfm-mt>div:last-child{border-bottom:0}
+.rfm-mt span{color:rgba(247,246,243,0.6)}
+.rfm-mt b{font-weight:700;color:#F7F6F3;text-align:right}
+.rfmpage .rfm-feed ol{margin-top:12px}
+.rfmpage .rfm-feed li{border-bottom:1px solid rgba(247,246,243,0.07)}
+.rfmpage .rfm-feed li:last-child{border-bottom:0}
+.rfm-bars>div.k>i{box-shadow:0 0 0 2px #8FAADC}
+.rfm-bars>div.k .bl{color:#8FAADC}
+.fd-pr.rfm-pr{grid-template-columns:minmax(0,1.4fr) repeat(2,minmax(0,1fr))}
+.fd-pr.rfm-pr.me{background:rgba(143,170,220,0.10)}
+.rfmpage .pg-note{margin-top:14px}
+@media (max-width:860px){
+  .rfm-grid{grid-template-columns:1fr;gap:0}
+  .rfm-grid .rfm-side{position:static}
+  .rfmpage .rfm-mine,.rfmpage .rfm-feed{padding:24px 16px 20px}
+  .rfmpage .rfm-feed li:nth-child(n+6){display:none}
+  .fd-pr.rfm-pr{grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(0,1fr)) !important}
+  .rfm-bars .bl{font-size:10.5px !important}
+}
 
 .intra-rail a.on{color:#F7F6F3;font-weight:700}
 .intra-rail .sec{color:rgba(247,246,243,0.4) !important}
@@ -2370,29 +2399,33 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage" style="position:relative;background:#111c2e;color:#F7F6F3">
+  <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>{{ rfmMeta }}</span></p>
+        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>Timefolio · 모의투자 대회 · 학회 순위</span></p>
         <h1 class="pg-title">Road to Fund Manager</h1>
         <p class="pg-lede"><em>{{ rfmHeadLead }}</em>{{ rfmHeadRest }}</p>
-        <div class="pg-stats">
-          <sc-for list="{{ rfmDek }}" as="d" hint-placeholder-count="3"><div><b class="sv" style="color:{{ d.c }}">{{ d.v }}</b><em class="sk">{{ d.k }}</em></div></sc-for>
-        </div>
         <p class="pg-note">{{ rfmBeatLine }}</p>
+        <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
+        <div class="fd-kc">
+          <sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
+        </div>
+        </sc-if>
+        <p class="fd-asof"><i></i>{{ rfmMeta }}</p>
       </div>
     </section>
-    <section class="on-photo" data-nav="dark" style="background:#111c2e">
-    <div class="wrap rfm-wrap">
-      <h2 class="sec-title fd-t">Live Ranking</h2>
-      <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-        <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
-      </sc-if>
-      <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
-      <div class="rfm-body">
-        <div>
+    <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">수집된 데이터가 없습니다.</p></section></div>
+    </sc-if>
+    <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
+    <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
+    <div class="wrap fd-body">
+      <div class="rfm-grid">
+      <section class="fd-card" id="rfm-rank">
+        <div class="fd-ch"><h2 class="fd-ct">학회 순위</h2><div class="fd-legend"><span><i style="background:rgba(247,246,243,0.4)"></i>0%</span><span><i style="background:#8FAADC"></i>KOSPI</span><span><i class="dash"></i>전체 50위</span></div></div>
+        <div class="rfm-board">
           <div class="rfm-axis">
             <sc-for list="{{ rfmAxis }}" as="a" hint-placeholder-count="2"><em class="al" style="left:{{ a.x }}">{{ a.t }}</em></sc-for>
           </div>
@@ -2416,40 +2449,57 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
             <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
-          <p style="margin-top:14px;font-size:12px;color:rgba(247,246,243,0.4)">학회 내부 공개. 외부 공유 금지. <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
-          <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
-            <div style="margin-top:12px;max-width:520px">
-              <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
-              <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
-                <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
-                <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
-              </div>
-            </div>
-          </sc-if>
         </div>
-        <aside class="rfm-side">
-          <div class="rfm-mine">
-            <select class="rfm-pick" value="{{ rfmMineNick }}" onChange="{{ onRfmPick }}">
-              <sc-for list="{{ rfmPick }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
-            </select>
-            <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
-              <div class="big">{{ rfmMineRank }}<small>{{ rfmMineOf }}</small></div>
-              <p>{{ rfmMineUp }}<br>{{ rfmMineDn }}<br><span style="color:#8FAADC">{{ rfmMine50 }}</span></p>
-            </sc-if>
-            <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}"><p class="hint">내 별칭을 선택하면 순위·격차 표시</p></sc-if>
-          </div>
-          <div class="rfm-feed">
-            <h3>순위 변동</h3>
-            <sc-if value="{{ noRfmFeed }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:rgba(247,246,243,0.45);margin-top:10px">변동 없음</p></sc-if>
-            <ol>
-              <sc-for list="{{ rfmFeed }}" as="e" hint-placeholder-count="0"><li><time>{{ e.t }}</time><b>{{ e.who }}</b> {{ e.text }}</li></sc-for>
-            </ol>
-          </div>
-        </aside>
+        <p class="fd-foot"><i></i>{{ rfmFoot }}</p>
+      </section>
+      <div class="rfm-side">
+        <section class="fd-card rfm-mine" id="rfm-me">
+          <div class="fd-ch"><h2 class="fd-ct">내 순위</h2></div>
+          <select class="rfm-pick" value="{{ rfmMineNick }}" onChange="{{ onRfmPick }}">
+            <sc-for list="{{ rfmPick }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}">{{ o.t }}</option></sc-for>
+          </select>
+          <sc-if value="{{ hasMine }}" hint-placeholder-val="{{ false }}">
+            <div class="big">{{ rfmMineRank }}<small>{{ rfmMineOf }}</small></div>
+            <div class="rfm-mt"><sc-for list="{{ rfmMineRows }}" as="m" hint-placeholder-count="4"><div><span>{{ m.k }}</span><b style="color:{{ m.c }}">{{ m.v }}</b></div></sc-for></div>
+          </sc-if>
+          <sc-if value="{{ noMine }}" hint-placeholder-val="{{ true }}"><p class="hint">별칭 선택 시 순위·격차 표시</p></sc-if>
+        </section>
+        <section class="fd-card rfm-feed" id="rfm-feed">
+          <div class="fd-ch"><h2 class="fd-ct">순위 변동</h2></div>
+          <sc-if value="{{ noRfmFeed }}" hint-placeholder-val="{{ false }}"><p class="hint">변동 없음</p></sc-if>
+          <ol>
+            <sc-for list="{{ rfmFeed }}" as="e" hint-placeholder-count="0"><li><time>{{ e.t }}</time><b>{{ e.who }}</b> {{ e.text }}</li></sc-for>
+          </ol>
+        </section>
       </div>
+      </div>
+
+      <section class="fd-card" id="rfm-dist">
+        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2><span class="fd-sub">{{ rfmDistCap }}</span></div>
+        <div class="fd-bars rfm-bars"><sc-for list="{{ rfmDist }}" as="b" hint-placeholder-count="6"><div class="{{ b.cls }}"><span class="bl">{{ b.n }}<em>{{ b.t }}</em></span><i style="height:{{ b.h }};background:{{ b.bg }}"></i></div></sc-for></div>
+        <p class="fd-foot"><i></i>{{ rfmDistFoot }}</p>
+      </section>
+
+      <section class="fd-card" id="rfm-bm">
+        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2><span class="fd-sub">대회 시작일 이후</span></div>
+        <div class="fd-pt">
+          <div class="fd-pr hd rfm-pr"><span>구분</span><span>수익률</span><span>KOSPI 대비</span></div>
+          <sc-for list="{{ rfmBmRows }}" as="q" hint-placeholder-count="5"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c }}">{{ q.v }}</b><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
+        </div>
+      </section>
+
+      <p class="fd-disc">학회 내부 공개 · 외부 공유 금지 · 자료: 타임폴리오 RFM 순위표 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+      <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:12px;max-width:520px">
+          <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
+          <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
+            <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
+            <sc-if value="{{ rfmHasNames }}" hint-placeholder-val="{{ false }}"><a href="#" onClick="{{ rfmNameClear }}" style="color:rgba(247,246,243,0.5)">지우기</a></sc-if>
+          </div>
+        </div>
       </sc-if>
     </div>
-    </section>
+    </sc-if>
   </main>
   </sc-if>
 
@@ -4505,6 +4555,7 @@ class Component extends DCLogic {
     const lo = Math.min(...vals) - 2, hi = Math.max(...vals) + 2;
     const x = (v) => ((v - lo) / (hi - lo) * 100).toFixed(2) + '%';
     const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
+    const srt = on.map(ret).sort((a, b) => a - b), med = srt.length ? (srt.length % 2 ? srt[(srt.length - 1) / 2] : (srt[srt.length / 2 - 1] + srt[srt.length / 2]) / 2) : 0;
     const prevRet = {}; ((s.rfmPrevData && s.rfmPrevData.members) || []).forEach((m) => { if (m.nav) prevRet[m.nick] = ret(m); });
     const tick = this._rfmTick || 0;
     const dayOf = (m) => (m.navChg !== null && m.navChg !== undefined && m.nav - m.navChg ? m.navChg / (m.nav - m.navChg) * 100 : null);
@@ -4518,7 +4569,7 @@ class Component extends DCLogic {
     return {
       hasRfm: on.length > 0, noRfm: on.length === 0,
       rfmLive: live, rfmClosed: !live,
-      rfmMeta: ((RF && RF.contest) || 'RFM') + ' · 타임폴리오 · ' + (RF && RF.asOf ? RF.asOf.slice(5, 16).replace('-', '/') + ' 기준' : ''),
+      rfmMeta: [RF && RF.asOf ? RF.asOf.slice(0, 16).replace(/-/g, '.').replace('T', ' ') + ' 기준' : '', (RF && RF.contest) || '', on.length ? '참가 ' + on.length + '명' : '', '벤치마크 KOSPI'].filter(Boolean).join(' · '),
       rfmHeadLead: a1 ? nm(a1) : '',
       rfmHeadRest: !a1 ? '' : !a2 ? ' 단독 참가' : gap12 > 5 ? ' 독주, 2위와 ' + pp(gap12) + ' 차' : (' · ' + nm(a2) + ', ' + pp(gap12) + ' 차 접전'),
       rfmDek: [
@@ -4526,6 +4577,58 @@ class Component extends DCLogic {
         { k: 'KOSPI', v: kospi !== null ? pct(kospi) : '-', c: kospi !== null ? col(kospi) : flat },
         { k: 'KOSDAQ', v: kosdaq !== null ? pct(kosdaq) : '-', c: kosdaq !== null ? col(kosdaq) : flat },
       ],
+      rfmCards: (() => {
+        if (!a1) return [];
+        const beat = kospi !== null ? on.filter((m) => ret(m) > kospi).length : null;
+        const in50 = on.filter((m) => m.rank && m.rank <= 50).length;
+        const ex = kospi !== null ? avg - kospi : null;
+        return [
+          { k: '학회 1위', v: nm(a1), c: '#F7F6F3', s: pct(ret(a1)), sc: col(ret(a1)) },
+          { k: '학회 평균 수익률', v: pct(avg), c: col(avg), s: '중앙값 ' + pct(med), sc: 'rgba(247,246,243,0.6)' },
+          { k: 'KOSPI 대비 (평균)', v: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), c: ex === null ? flat : col(ex), s: kospi !== null ? 'KOSPI ' + pct(kospi) : '', sc: 'rgba(247,246,243,0.6)' },
+          { k: 'KOSPI 초과', v: beat === null ? '-' : beat + '명', c: '#F7F6F3', s: beat === null ? '' : '참가 ' + on.length + '명 중 ' + Math.round(beat / on.length * 100) + '%', sc: 'rgba(247,246,243,0.6)' },
+          { k: '전체 50위 이내', v: in50 + '명', c: '#F7F6F3', s: cut !== null ? '50위 컷 ' + pct(cut) : '', sc: 'rgba(247,246,243,0.6)' },
+        ];
+      })(),
+      rfmNav: [['rfm-rank', '순위'], ['rfm-me', '내 순위'], ['rfm-dist', '분포'], ['rfm-bm', '벤치마크']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      rfmFoot: '학회 내 순위 · 이름 아래 전체 순위 · 장중 15초 갱신',
+      rfmMineRows: !me ? [] : [
+        { k: '수익률', v: pct(ret(me)), c: col(ret(me)) },
+        { k: '전체 순위', v: me.rank ? Number(me.rank).toLocaleString('ko-KR') + '위' + (me.rankChg > 0 ? ' ▲' + me.rankChg : me.rankChg < 0 ? ' ▼' + -me.rankChg : '') : '-', c: '#F7F6F3' },
+        mi > 0 ? { k: '위 ' + nm(order[mi - 1]), v: '−' + pp(ret(order[mi - 1]) - ret(me)), c: dn } : { k: '학회 1위', v: '-', c: '#F7F6F3' },
+        mi < order.length - 1 ? { k: '아래 ' + nm(order[mi + 1]), v: '+' + pp(ret(me) - ret(order[mi + 1])), c: up } : null,
+        kospi !== null ? { k: 'KOSPI 대비', v: (ret(me) >= kospi ? '+' : '−') + pp(ret(me) - kospi), c: col(ret(me) - kospi) } : null,
+        cut !== null ? { k: '전체 50위 컷', v: ret(me) >= cut ? '통과' : '−' + pp(cut - ret(me)), c: ret(me) >= cut ? up : dn } : null,
+      ].filter(Boolean),
+      ...(() => {
+        const edges = [-Infinity, -10, -5, 0, 5, 10, 20, Infinity];
+        const labs = ['<−10', '−10~−5', '−5~0', '0~5', '5~10', '10~20', '20+'];
+        const cnt = labs.map((_, j) => on.filter((m) => ret(m) >= edges[j] && ret(m) < edges[j + 1]).length);
+        const mx = Math.max(1, ...cnt);
+        const kb = kospi === null ? -1 : edges.findIndex((e, j) => kospi >= e && kospi < edges[j + 1]);
+        return {
+          rfmDist: labs.map((t, j) => ({ t, n: cnt[j] + '명', h: (cnt[j] ? Math.max(4, cnt[j] / mx * 72) : 1) + '%', bg: j < 3 ? 'linear-gradient(180deg,#F0A9A2,#C9665E)' : 'linear-gradient(180deg,#9FDDB8,#3E9E68)', cls: j === kb ? 'k' : '' })),
+          rfmDistCap: '참가 ' + on.length + '명',
+          rfmDistFoot: '단위 % · 설정 이후 수익률' + (kospi !== null ? ' · 테두리는 KOSPI ' + pct(kospi) + ' 구간' : ''),
+        };
+      })(),
+      rfmBmRows: (() => {
+        const row = (k, v, cls) => {
+          const ex = kospi === null || v === null ? null : v - kospi;
+          return { k, v: v === null ? '-' : pct(v), c: v === null ? flat : col(v), ex: ex === null ? '-' : (ex >= 0 ? '+' : '−') + pp(ex), ec: ex === null ? flat : col(ex), eb: ex === null ? 'transparent' : ex >= 0 ? 'rgba(95,196,138,0.12)' : 'rgba(232,131,123,0.12)', cls: 'fd-pr rfm-pr' + (cls ? ' ' + cls : '') };
+        };
+        const top10 = order.slice(0, 10);
+        return [
+          a1 ? row('학회 1위', ret(a1)) : null,
+          top10.length > 1 ? row('학회 상위 ' + top10.length + '명 평균', top10.reduce((x, m) => x + ret(m), 0) / top10.length) : null,
+          row('학회 평균', avg),
+          row('학회 중앙값', med),
+          me ? row('내 수익률', ret(me), 'me') : null,
+          cut !== null ? row('전체 50위 컷', cut) : null,
+          row('KOSDAQ', kosdaq),
+          { ...row('KOSPI', kospi), ex: '-', ec: flat, eb: 'transparent' },
+        ].filter(Boolean);
+      })(),
       rfmBeatLine: kospi !== null && on.length ? on.length + '명 중 ' + on.filter((m) => ret(m) > kospi).length + '명이 KOSPI를 앞서고 있습니다.' : '',
       rfmAxis: [kospi !== null ? { x: x(kospi), t: 'KOSPI' } : null, cut !== null ? { x: x(cut), t: '50위' } : null].filter(Boolean),
       rfmZero: x(0), rfmKx: kospi !== null ? x(kospi) : '-10%', rfmCx: cut !== null ? x(cut) : '-10%',
