@@ -168,6 +168,8 @@ async function round() {
   };
   if (DRY) { console.log(JSON.stringify({ ...data, holdings: data.holdings.length + ' holdings' })); return; }
   await save(data);
+  // 홈페이지 FUND 페이지는 로그인 없이 public_content에서 읽는다
+  await save(data, 'public_content', 'fund_live').catch((e) => console.error('public live skipped: ' + e.message.split('\n')[0]));
   prev = data;
   if (round.publish) await savePublic(data);
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
