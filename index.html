@@ -626,6 +626,11 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+/* 고딕 시안: 큰 제목(h1·홈 헤드라인)·로고·리포트 상세 외에는 Pretendard */
+body :is(h2,h3,h4,h5,blockquote,b,strong,div,span,p,a,em,small,li,button,label,td,th):not(.hero-title):not(.hero-title *):not(h1 *):not(.wordmark):not(.wordmark *):not(.wordmark-block):not(.wordmark-block *):not(.rpt *){font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif !important}
+svg text{font-family:'Pretendard Variable',Pretendard,sans-serif !important}
+.sec-title{font-weight:700 !important;letter-spacing:-0.03em !important}
+
 /* 리서치·소개·구성원·리크루팅: 펀드 페이지와 같은 구조 (히어로 → 고정 탭 → 카드) */
 .pg-tabs{position:sticky;top:64px;z-index:20;background:rgba(247,246,243,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E2E0DA}
 .pg-tabs .wrap{display:flex;gap:6px;padding:12px 35px}
