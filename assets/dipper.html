@@ -406,14 +406,14 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       const el = byId[id].el; el.classList.add('lit','igniting');
       if (id==='mizar') setTimeout(()=>alcor.classList.add('lit'), 250);
       setTimeout(()=>el.classList.remove('igniting'), 1000);
-    }, 60 + i*55));
+    }, 650 + i*55));
     const order = [['alkaid','mizar'],['mizar','alioth'],['alioth','megrez'],['phecda','megrez'],['merak','phecda'],['dubhe','merak'],['megrez','dubhe']];
     order.forEach(([a,b],i) => setTimeout(() => {                   // 1.25–2.0s lines draw
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
-    }, 380 + i*45));
-    setTimeout(() => copy.classList.add('on'), 750);
-    setTimeout(() => copy.classList.add('live'), 750 + 1600);
-    setTimeout(() => window.__done = true, 1500);
+    }, 980 + i*45));
+    setTimeout(() => copy.classList.add('on'), 80);
+    setTimeout(() => copy.classList.add('live'), 2600);
+    setTimeout(() => window.__done = true, 1700);
   };
   let seen = false, loaded = false, started = false;
   const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
