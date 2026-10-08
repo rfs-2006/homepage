@@ -19,6 +19,8 @@ const ONCE = process.argv.includes('--once');
 const DRY = process.argv.includes('--dry');
 const EVERY = Math.max(5, +(process.env.FUND_EVERY || 15)) * 1000;
 const START = process.env.FUND_START || '';
+// 이미 들고 있던 종목의 편입일 (예: 005930:2026-08-04,062040:2026-08-12). 이후 새로 산 종목은 처음 보인 날로 자동 기록
+const SINCE = Object.fromEntries((process.env.FUND_SINCE || '').split(',').map((x) => x.trim().split(':')).filter((x) => x.length === 2));
 const BASE = +(process.env.FUND_BASE || 0);
 const FLOWS = (process.env.FUND_FLOWS || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => {
   const [d, v] = x.split(':');
@@ -111,7 +113,7 @@ async function savePublic(d) {
   const pub = {
     asOf: d.asOf.slice(0, 10), start: d.start, nav: d.nav, ret: d.ret, day: d.day, cashWeight: d.cashWeight,
     bm: { kospi: d.bm.kospi && { ret: d.bm.kospi.ret, day: d.bm.kospi.day }, kosdaq: d.bm.kosdaq && { ret: d.bm.kosdaq.ret, day: d.bm.kosdaq.day } },
-    holdings: d.holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day })),
+    holdings: d.holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day, since: h.since })),
     history: d.history,
   };
   try { await save(pub, 'public_content', 'fund'); console.log(d.asOf + ' public snapshot saved'); }
@@ -148,6 +150,9 @@ async function round() {
       dayPl: prevClose ? n(r.rmnd_qty) * (cur - prevClose) : null,
     };
   }).filter((h) => h.qty > 0).sort((a, b) => b.evlt - a.evlt);
+  const prevSince = (prev && prev.since) || {};
+  const since = {};
+  holdings.forEach((h) => { h.since = SINCE[h.code] || prevSince[h.code] || today; since[h.code] = h.since; });
   const cash = Math.max(0, total - stock);
   const [kospi, kosdaq] = await Promise.all([indexRet('KOSPI', START || baseDate), indexRet('KOSDAQ', START || baseDate)]);
   const history = hist.filter((h) => h[0] !== today);
@@ -159,7 +164,7 @@ async function round() {
     nav: nav && +nav.toFixed(2), ret: nav ? nav / 1000 * 100 - 100 : n(head.tot_prft_rt),
     day: nav && prevNav ? (nav / prevNav - 1) * 100 : null,
     pl: n(head.tot_evlt_pl), plRet: n(head.tot_prft_rt),
-    holdings, bm: { kospi, kosdaq }, history: history.slice(-400),
+    holdings, since, bm: { kospi, kosdaq }, history: history.slice(-400),
   };
   if (DRY) { console.log(JSON.stringify({ ...data, holdings: data.holdings.length + ' holdings' })); return; }
   await save(data);
