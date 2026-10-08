@@ -626,6 +626,94 @@ nav.nav{view-transition-name:rfs-nav}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
+:root{--up:#5FC48A;--dn:#E8837B;--flat:rgba(247,246,243,0.45)}
+/* ===== FUND 시안 (미리보기 전용, ?fdv=) ===== */
+[data-fdv]{--up:#F0525A;--dn:#4E8BFF}
+
+/* A. paper: 인쇄된 팩트시트 */
+[data-fdv=paper]{--up:#D6343C;--dn:#1F5FD6;--flat:rgba(22,24,29,0.4)}
+[data-fdv=paper] main.fdpage{background:#EFEBE2 !important;color:#16181D !important}
+[data-fdv=paper] main.fdpage::after{content:'';position:fixed;inset:0;pointer-events:none;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.5'/></svg>");opacity:.07;mix-blend-mode:multiply;z-index:60}
+[data-fdv=paper] .fdpage .fd-body *{color:inherit;border-color:rgba(22,24,29,0.16) !important}
+[data-fdv=paper] .fdpage .fd-body :is(small,em,.kk,.ks,.fd-legend,.fd-lh,.fd-mh,.yl,.xl,.cs,.ck){color:rgba(22,24,29,0.55)}
+[data-fdv=paper] .fdpage .fd-card{background:transparent !important;border:0 !important;border-top:2px solid #16181D !important;padding:28px 0 8px !important;margin-top:44px !important}
+[data-fdv=paper] .fdpage .fd-ct{font-size:22px !important;color:#16181D}
+[data-fdv=paper] .fdpage .fd-kc{background:#FBF9F4 !important;border:1px solid rgba(22,24,29,0.2) !important;border-top:3px solid #16181D !important;backdrop-filter:none}
+[data-fdv=paper] .fdpage .fd-kc>div{border-color:rgba(22,24,29,0.12) !important}
+[data-fdv=paper] .fdpage .fd-kc>div:first-child{background:transparent}
+[data-fdv=paper] .fdpage .fd-kc .kv{font-family:'Noto Serif KR',serif;color:#16181D}
+[data-fdv=paper] .fdpage .fd-nav{background:rgba(239,235,226,0.96)}
+[data-fdv=paper] .fdpage .fd-nav a{color:rgba(22,24,29,0.7)}
+[data-fdv=paper] .fdpage .fd-chart polyline:nth-of-type(3){stroke:#16181D}
+[data-fdv=paper] .fdpage .fd-chart polyline:nth-of-type(2){stroke:#9A9488}
+[data-fdv=paper] .fdpage .fd-chart polyline:nth-of-type(1){stroke:#C8C2B5}
+[data-fdv=paper] .fdpage .fd-grid i{background:rgba(22,24,29,0.1)}
+[data-fdv=paper] .fdpage .fd-tabs a{border-color:rgba(22,24,29,0.25) !important}
+[data-fdv=paper] .fdpage .fd-tabs a.on{background:#16181D !important;color:#EFEBE2 !important}
+[data-fdv=paper] .fdpage .fd-rt>div>*:first-child{background:#EFEBE2}
+[data-fdv=paper] .fdpage .fd-rt .rh,[data-fdv=paper] .fdpage .fd-rt .rh>*:first-child{background:#E5E0D4}
+[data-fdv=paper] .fdpage .fd-ring .ctr .cv{color:#16181D}
+[data-fdv=paper] .fdpage .fd-ring .trk circle{stroke:rgba(22,24,29,0.06)}
+[data-fdv=paper] .fdpage .fd-bars>div>i{background:#16181D !important;border-radius:0}
+[data-fdv=paper] .fdpage .fd-row:hover,[data-fdv=paper] .fdpage .fd-row.hi{background:rgba(22,24,29,0.04)}
+[data-fdv=paper] .fdpage .fd-mgr .pm img{box-shadow:none;border:1px solid rgba(22,24,29,0.3);filter:grayscale(1) contrast(1.05)}
+[data-fdv=paper] .fdpage .fd-mgr .hl{color:#16181D}
+[data-fdv=paper] .fdpage .fd-disc{color:rgba(22,24,29,0.5)}
+[data-fdv=paper] .fdpage [style*="247, 246, 243"],[data-fdv=paper] .fdpage [style*="F7F6F3"],[data-fdv=paper] .fdpage [style*="f7f6f3"]{color:#16181D !important}
+[data-fdv=paper] .fdpage .fd-rt .rr.fund>*:first-child,[data-fdv=paper] .fdpage .fd-rt>div>*:first-child{color:#16181D}
+[data-fdv=paper] .fdpage .fd-ends .el{color:#16181D !important}
+[data-fdv=paper] .fdpage .fd-legend i{background:#16181D !important}
+[data-fdv=paper] .fdpage .fd-ct,[data-fdv=paper] .fdpage .fd-mgr .fd-ct{color:#16181D !important}
+
+/* B. editorial: 연차보고서처럼 왼쪽 제목 단 + 오른쪽 본문 */
+[data-fdv=editorial] .fdpage .fd-card,[data-fdv=editorial] .fdpage .fd-two>.fd-card,[data-fdv=editorial] .fdpage .fd-two>sc-if>.fd-card{display:grid;grid-template-columns:260px minmax(0,1fr);column-gap:56px;background:transparent !important;border:0 !important;border-top:1px solid rgba(247,246,243,0.22) !important;padding:40px 0 24px !important;margin-top:28px !important}
+[data-fdv=editorial] .fdpage .fd-card>*{grid-column:2}
+[data-fdv=editorial] .fdpage .fd-card{row-gap:0 !important}
+[data-fdv=editorial] .fdpage .fd-mgr{align-items:start !important}
+[data-fdv=editorial] .fdpage .fd-card>:first-child{grid-column:1;grid-row:1 / span 30;align-self:start;position:sticky;top:150px}
+[data-fdv=editorial] .fdpage .fd-card>.fd-ch{display:block}
+[data-fdv=editorial] .fdpage .fd-card>.fd-ch .fd-legend{flex-direction:column;gap:8px;margin-top:18px}
+[data-fdv=editorial] .fdpage .fd-ct{font-size:34px !important;line-height:1.2;font-weight:400 !important}
+[data-fdv=editorial] .fdpage .fd-two{display:block}
+[data-fdv=editorial] .fdpage .fd-mgr{grid-template-columns:260px minmax(0,1fr) !important}
+[data-fdv=editorial] .fdpage .fd-mgr>.pm{position:static}
+[data-fdv=editorial] .fdpage .fd-mgr .ps{grid-column:2;border-left:0;padding-left:0}
+[data-fdv=editorial] .fdpage .fd-mgr .hl{font-size:34px;font-weight:400}
+[data-fdv=editorial] .fdpage .fd-kc{background:transparent !important;border:0 !important;border-top:1px solid rgba(247,246,243,0.22) !important;backdrop-filter:none}
+[data-fdv=editorial] .fdpage .fd-kc>div{border-left:0 !important;padding:26px 0 !important}
+[data-fdv=editorial] .fdpage .fd-kc>div:first-child{background:transparent}
+[data-fdv=editorial] .fdpage .fd-kc .kv{font-family:'Noto Serif KR',serif;font-weight:400;font-size:44px}
+[data-fdv=editorial] .fdpage .fd-bars>div>i{border-radius:0;background:#8FAADC !important}
+@media (max-width:860px){[data-fdv=editorial] .fdpage .fd-card{display:block}[data-fdv=editorial] .fdpage .fd-card>:first-child{position:static}[data-fdv=editorial] .fdpage .fd-ct{font-size:26px !important}[data-fdv=editorial] .fdpage .fd-kc .kv{font-size:30px}}
+
+/* C. terminal: 촘촘한 데이터 화면 */
+[data-fdv=terminal]{--up:#FF5A5F;--dn:#4D9BFF;--flat:#7A8088}
+[data-fdv=terminal] main.fdpage{background:#0A0C0F !important}
+[data-fdv=terminal] .fdpage .fd-body{font-variant-numeric:tabular-nums}
+[data-fdv=terminal] .fdpage .fd-body :is(b,.kv,.cv,.fd-rt>div>*,.px,.wt,.rt){font-family:ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace !important;letter-spacing:-0.01em}
+[data-fdv=terminal] .fdpage .fd-card{background:#0F1216 !important;border:1px solid #23272E !important;padding:18px 20px 14px !important;margin-top:10px !important}
+[data-fdv=terminal] .fdpage .fd-ct{font-family:ui-monospace,Menlo,monospace !important;font-size:12px !important;font-weight:700 !important;letter-spacing:0.12em !important;text-transform:uppercase;color:#F5A524 !important}
+[data-fdv=terminal] .fdpage .fd-kc{background:#0F1216 !important;border:1px solid #23272E !important;border-top:2px solid #F5A524 !important;backdrop-filter:none;margin-top:10px}
+[data-fdv=terminal] .fdpage .fd-kc>div:first-child{background:transparent}
+[data-fdv=terminal] .fdpage .fd-kc .kk{font-family:ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#7A8088}
+[data-fdv=terminal] .fdpage .fd-kc .kv{font-size:26px}
+[data-fdv=terminal] .fdpage .fd-mgr .hl{font-family:ui-monospace,Menlo,monospace;font-size:17px;font-weight:600;color:#E6E8EB}
+[data-fdv=terminal] .fdpage .fd-mgr .pm img{width:72px;height:72px;box-shadow:none;border-radius:0;filter:grayscale(1)}
+[data-fdv=terminal] .fdpage .fd-mgr{grid-template-columns:120px minmax(0,1fr) !important;gap:20px !important;padding:16px 20px !important}
+[data-fdv=terminal] .fdpage .fd-chart polyline:nth-of-type(3){stroke:#F5A524}
+[data-fdv=terminal] .fdpage .fd-tabs a.on{background:#F5A524 !important;color:#0A0C0F !important}
+[data-fdv=terminal] .fdpage .fd-bars>div>i{background:#F5A524 !important;border-radius:0;width:40px}
+[data-fdv=terminal] .fdpage .fd-bars{height:170px}
+[data-fdv=terminal] .fdpage .fd-row{padding:8px 0 !important}
+[data-fdv=terminal] .fdpage .fd-row .nm b{font-size:14px}
+[data-fdv=terminal] .fdpage .fd-rt>div>*{padding:9px 12px;font-size:13px}
+[data-fdv=terminal] .fdpage .fd-rt>div>*:first-child{background:#0F1216}
+[data-fdv=terminal] .fdpage .fd-ac{gap:28px}
+[data-fdv=terminal] .fdpage .fd-ring{width:240px;height:240px}
+[data-fdv=terminal] .fdpage .fd-nav{background:#0A0C0F;border-bottom:1px solid #23272E}
+[data-fdv=terminal] .fdpage .fd-nav a{font-family:ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase}
+[data-fdv=terminal] .fdpage .fd-card.fd-open{margin-top:10px !important}
+
 /* FUND 시안: 박스 줄이고 섹션마다 구조 다르게 */
 .fdpage .fd-card.fd-open{background:transparent;border:0;border-top:1px solid rgba(247,246,243,0.14);padding:48px 0 12px;margin-top:48px}
 .fdpage .fd-card.fd-open:first-child{margin-top:24px}
@@ -4222,6 +4310,8 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    // FUND 디자인 시안 미리보기: 주소에 ?fdv=paper|editorial|terminal
+    try { const v = new URLSearchParams(location.search).get('fdv'); if (v) document.documentElement.dataset.fdv = v; } catch (e) {}
     // 카드가 화면에 들어오면 in 클래스를 붙여 등장 효과를 한 번 재생한다
     if ('IntersectionObserver' in window && 'MutationObserver' in window) {
       document.documentElement.classList.add('fx');
@@ -4662,7 +4752,7 @@ class Component extends DCLogic {
     const F = live || s.fundPub;
     const pct = (v, d = 2) => (v === null || v === undefined || isNaN(v) ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%');
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
-    const up = '#5FC48A', dn = '#E8837B', flat = 'rgba(247,246,243,0.45)';
+    const up = 'var(--up)', dn = 'var(--dn)', flat = 'var(--flat)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
     if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
