@@ -755,6 +755,10 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:13px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
 .pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
 main.pgx{background:#EEEDE8 !important}
+main.pgx .story h2,main.pgx .story .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(29px,2.9vw,42px) !important;font-weight:400 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
+main.pgx .story .nettitle{font-weight:700 !important}
+main.pgx .story .secpad{padding-top:110px !important;padding-bottom:110px !important}
+@media (max-width:768px){main.pgx .story h2,main.pgx .story .sec-title{font-size:clamp(26px,7.4vw,32px) !important}}
 main.pgx>section[data-nav="light"]:not(.pres){background:transparent !important;border:0 !important;padding:10px 0 !important}
 main.pgx>section[data-nav="light"]:not(.pres)>.wrap{max-width:1290px;width:calc(100% - 70px);box-sizing:border-box;background:#FFFFFF;border:1px solid #E2E0DA;padding:56px 56px !important;margin:10px auto}
 main.pgx>section[data-nav="light"]:not(.pres):first-of-type{padding-top:20px !important}
@@ -1159,96 +1163,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
       <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
-    <section id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div style="position:relative;z-index:1">
-      <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:72px;height:auto;display:block">
-      <p class="sec-label" style="margin-top:26px">About R.F.S.</p>
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><b>중앙의 가치</b>를 발견합니다</h2>
-      <p style="margin:14px 0 0;font-size:13px;letter-spacing:0.01em;color:rgba(247,246,243,0.6)">Rising Financial Stars · Chung-Ang University</p>
-      <p style="margin:26px 0 0;font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;line-height:1.55;letter-spacing:-0.02em;color:#F7F6F3">Vita contemplativa — 사색하는 삶을 기반으로 금융과 경제를 탐구합니다.</p>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px 18px;margin-top:36px;padding-top:22px;border-top:1px solid rgba(247,246,243,0.4)">
-        <sc-for list="{{ aboutStats }}" as="a" hint-placeholder-count="4">
-          <div>
-            <div style="font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums"><span data-hero-num="" data-target="{{ a.target }}">{{ a.shown }}</span>{{ a.suffix }}</div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
-          </div>
-        </sc-for>
-      </div>
-      <a href="#about" onClick="{{ goAbout }}" class="btn btn-photo" style="display:inline-block;margin-top:34px;padding:13px 22px;font-size:12px">ABOUT R.F.S.</a>
-      </div>
-    </section>
-
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden">
-      <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
-      <div class="scrim" style="opacity:0.82"></div>
-      <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%">
-        <p class="sec-label">Process</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><strong>가격의 너머</strong>를 위하여</h2>
-        <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
-          <sc-for list="{{ mProcess }}" as="p" hint-placeholder-count="4">
-            <div style="display:grid;grid-template-columns:36px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
-              <div style="font-family:'Noto Serif KR',serif;font-size:13px;color:rgba(247,246,243,0.55);padding-top:3px">{{ p.n }}</div>
-              <div><div style="font-size:16px;font-weight:700;color:#F7F6F3">{{ p.t }}</div><div style="font-size:13px;color:rgba(247,246,243,0.72);margin-top:4px;line-height:1.6">{{ p.d }}</div></div>
-            </div>
-          </sc-for>
-        </div>
-      </div>
-    </section>
-
-    <section id="home-alumni" data-nav="dark" style="background:#111c2e;padding:64px 24px 60px">
-      <p class="sec-label">Alumni</p>
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
-      <div style="display:flex;align-items:baseline;gap:14px;margin-top:40px">
-        <div style="font-family:'Noto Serif KR',serif;font-size:88px;font-weight:700;letter-spacing:-0.05em;line-height:0.9;color:#F7F6F3;font-variant-numeric:tabular-nums">68<span style="font-size:40px;letter-spacing:-0.02em">%</span></div>
-        <div style="font-size:12px;line-height:1.6;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.7)">of alumni<br>in financial services</div>
-      </div>
-      <div style="margin-top:34px;display:grid;gap:14px">
-        <sc-for list="{{ mAlumniTop }}" as="a" hint-placeholder-count="3">
-          <div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(247,246,243,0.85);margin-bottom:7px"><span>{{ a.label }}</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ a.pct }}</span></div>
-            <div style="height:6px;background:rgba(247,246,243,0.12)"><div style="height:100%;width:{{ a.w }};background:{{ a.color }}"></div></div>
-          </div>
-        </sc-for>
-      </div>
-      <p style="margin:18px 0 0;font-size:12px;color:rgba(247,246,243,0.5)">20년의 역사, 608명의 네트워크</p>
-      <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
-    </section>
-
-    <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
-      <div style="padding:0 24px">
-        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
-      </div>
-      <div style="margin-top:30px">
-        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
-          <sc-for list="{{ mNetRows }}" as="row" hint-placeholder-count="3">
-            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
-            </div></div>
-          </sc-for>
-        </div></div>
-      </div>
-    </section>
-
-    <section id="home-research" data-nav="light" style="background:#FFFFFF;padding:64px 24px 60px">
-      <div style="display:flex;align-items:baseline;justify-content:space-between">
-        <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">Coverage</h2>
-        <a href="#research" onClick="{{ goResearch }}" style="font-size:11px;font-weight:600;letter-spacing:0.12em;color:#203864;text-decoration:none">VIEW ALL</a>
-      </div>
-      <div style="margin-top:26px;border-top:1px solid #1A1A1A">
-        <sc-for list="{{ homeRows }}" as="r" hint-placeholder-count="8">
-          <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:16px 0;border-bottom:1px solid #D0CECE;text-decoration:none;color:inherit">
-            <div style="font-weight:700;font-size:15px">{{ r.name }}</div>
-            <div style="font-size:15px;font-weight:700;color:#203864;font-variant-numeric:tabular-nums;text-align:right">{{ r.upside }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.6)">{{ r.sector }} · {{ r.op }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.6);text-align:right;font-variant-numeric:tabular-nums">{{ r.tp }}</div>
-          </a>
-        </sc-for>
-      </div>
-    </section>
-
+    <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
       <div style="position:absolute;inset:0"><image-slot id="m-recruit-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
       <div class="scrim" style="opacity:0.84"></div>
@@ -1259,6 +1174,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <a href="#recruit" onClick="{{ goRecruitLink }}" class="btn btn-photo" style="display:inline-block;margin-top:28px;padding:14px 24px;font-size:12px">RECRUITING</a>
       </div>
     </section>
+    </sc-if>
   </main>
   </sc-if>
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
@@ -1328,249 +1244,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
       <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
-    <section data-snap="" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
-      <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
-        <image-slot id="intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot>
-      </div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap ident-grid secpad" style="position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr);gap:clamp(36px,4.6vw,72px);align-items:center;padding:110px 35px;width:100%">
-        <div class="seal-stage rv rv-left" style="position:relative;display:flex;align-items:center;justify-content:center">
-          <svg viewBox="0 0 420 420" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128%;height:128%;max-width:none" aria-hidden="true">
-            <g fill="none" stroke="#F7F6F3" stroke-opacity="0.28">
-              <circle cx="210" cy="210" r="205"></circle>
-              <circle cx="210" cy="210" r="163"></circle>
-            </g>
-            <g fill="none" stroke="#F7F6F3" stroke-opacity="0.4" stroke-dasharray="2 6">
-              <circle cx="210" cy="210" r="184"></circle>
-            </g>
-          </svg>
-          <img src="assets/rfs-seal-light-640.png" alt="R.F.S. 인장" style="position:relative;width:clamp(180px,21vw,330px);height:auto;display:block">
-        </div>
-        <div class="rv rv-right">
-          
-          <h2 class="sec-title" style="color:#F7F6F3;max-width:22em"><b>중앙의 가치</b>를 발견합니다</h2>
-          
-          <p style="margin: clamp(20px,3.2vh,34px) 0 0; font-family: 'Noto Serif KR',serif; font-size: clamp(16px,1.35vw,21px); font-weight: 600; line-height: 1.6; letter-spacing: -0.02em; color: #F7F6F3; max-width: 40em">Vita contemplativa — 사색하는 삶을 기반으로 <br>금융과 경제를 탐구합니다.</p>
-          <p style="margin:clamp(16px,2.4vh,26px) 0 0;font-size:clamp(14px,1.05vw,16px);line-height:1.85;color:rgba(247,246,243,0.85);max-width:40em">정보가 무료가 된 세상에서는 안목이 곧 자산이 됩니다.<br>보다 값진 인사이트를 제공할 수 있도록, R.F.S.는 오늘도 최선을 다하겠습니다.</p>
-          <div class="statrow" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(24px,4vh,44px)">
-            <sc-for list="{{ aboutStats }}" as="a" hint-placeholder-count="4">
-              <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
-                <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">
-                  <span data-hero-num="" data-target="{{ a.target }}">{{ a.shown }}</span>{{ a.suffix }}
-                </div>
-                <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
-              </div>
-            </sc-for>
-          </div>
-          <div style="margin-top:clamp(24px,4vh,40px)">
-            <a href="#about" onClick="{{ goAbout }}" class="btn btn-photo">ABOUT R.F.S.</a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-
-
-
-    <section data-snap="" id="home-process" data-about-sec="" class="on-photo bigsec tight" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="home-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Annie Spratt on Unsplash" credit-href="https://unsplash.com/@anniespratt"></image-slot></div>
-      <div class="scrim"></div>
-      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
-        <div class="sec-head rv rv-up">
-          <p class="sec-label">Process</p>
-          <h2 class="sec-title"><strong>가격의 너머</strong>를 위하여</h2>
-          
-        </div>
-        <div class="rv rv-up diag-desktop" style="margin-top:clamp(34px,5.4vh,74px);max-width:1040px">
-          <svg viewBox="0 0 1100 320" style="width:100%;height:auto;display:block" role="img" aria-label="리서치 사이클 4단계와 Asset Management Team 편입 분기">
-            <defs>
-              <marker id="arb" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="rgba(247,246,243,0.75)"></path></marker>
-              <marker id="arn" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#F7F6F3"></path></marker>
-            </defs>
-            <g font-family="'Pretendard Variable', Pretendard, sans-serif">
-              <rect x="0" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="0" y1="0" x2="248" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="20" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">01</text>
-              <text x="20" y="62" font-size="17" font-weight="600" fill="#F7F6F3">투자제안서</text>
-              <text x="20" y="88" font-size="14" fill="rgba(247,246,243,0.72)">신입 학회원 작성</text>
-              <text x="20" y="110" font-size="14" fill="rgba(247,246,243,0.72)">Valuation 기초 학습</text>
-              <rect x="284" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="284" y1="0" x2="532" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="304" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">02</text>
-              <text x="304" y="62" font-size="17" font-weight="600" fill="#F7F6F3">1차 기업 보고서</text>
-              <text x="304" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
-              <text x="304" y="110" font-size="14" fill="rgba(247,246,243,0.72)">세미나 발표 · 피드백</text>
-              <rect x="568" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="568" y1="0" x2="816" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="588" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">03</text>
-              <text x="588" y="62" font-size="17" font-weight="600" fill="#F7F6F3">2차 기업 보고서</text>
-              <text x="588" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
-              <text x="588" y="110" font-size="14" fill="rgba(247,246,243,0.72)">SOHKA 학술제 출전</text>
-              <rect x="852" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="852" y1="0" x2="1100" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="872" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">04</text>
-              <text x="872" y="62" font-size="17" font-weight="600" fill="#F7F6F3">3차 기업 보고서</text>
-              <text x="872" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
-              <text x="872" y="110" font-size="14" fill="rgba(247,246,243,0.72)">세미나 발표 · 피드백</text>
-              <line x1="252" y1="63" x2="278" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
-              <line x1="536" y1="63" x2="562" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
-              <line x1="820" y1="63" x2="846" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
-              <path d="M44 126 V254 H556" stroke="#F7F6F3" fill="none" marker-end="url(#arn)"></path>
-              <text x="60" y="246" font-size="14" fill="rgba(247,246,243,0.8)">우수 투자제안서 종목</text>
-              <rect x="568" y="212" width="532" height="86" fill="#203864" stroke="rgba(247,246,243,0.55)"></rect>
-              <text x="592" y="252" font-size="17" font-weight="600" fill="#F7F6F3">Asset Management Team 포트폴리오</text>
-              <text x="592" y="277" font-size="14" fill="rgba(247,246,243,0.75)">RFS 펀드에 실제로 편입</text>
-            </g>
-          </svg>
-        </div>
-        <div class="rv rv-up diag-mobile" style="margin-top:40px">
-          <svg viewBox="0 0 320 640" class="diag-m" role="img" aria-label="리서치 사이클 4단계와 Asset Management Team 편입 분기">
-            <defs><marker id="arbm" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="rgba(247,246,243,0.75)"></path></marker></defs>
-            <g font-family="'Pretendard Variable', Pretendard, sans-serif">
-              <rect x="0" y="0" width="320" height="112" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="0" y1="0" x2="320" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="18" y="28" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">01</text>
-              <text x="18" y="58" font-size="16" font-weight="600" fill="#F7F6F3">투자제안서</text>
-              <text x="18" y="82" font-size="13" fill="rgba(247,246,243,0.72)">신입 학회원 작성</text>
-              <text x="18" y="102" font-size="13" fill="rgba(247,246,243,0.72)">Valuation 기초 학습</text>
-              <path d="M36 112 V160 H300" stroke="#F7F6F3" fill="none" marker-end="url(#arbm)"></path>
-              <text x="50" y="152" font-size="13" fill="rgba(247,246,243,0.8)">우수 투자제안서 종목</text>
-              <rect x="0" y="176" width="320" height="72" fill="#203864" stroke="rgba(247,246,243,0.55)"></rect>
-              <text x="18" y="206" font-size="14" font-weight="600" fill="#F7F6F3">Asset Management Team</text>
-              <text x="18" y="230" font-size="13" fill="rgba(247,246,243,0.75)">포트폴리오 편입</text>
-              <line x1="160" y1="266" x2="160" y2="288" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
-              <rect x="0" y="296" width="320" height="100" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="0" y1="296" x2="320" y2="296" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="18" y="324" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">02</text>
-              <text x="18" y="352" font-size="16" font-weight="600" fill="#F7F6F3">1차 기업 보고서</text>
-              <text x="18" y="376" font-size="13" fill="rgba(247,246,243,0.72)">20p 분량 · 세미나 발표</text>
-              <line x1="160" y1="414" x2="160" y2="436" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
-              <rect x="0" y="444" width="320" height="100" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="0" y1="444" x2="320" y2="444" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="18" y="472" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">03</text>
-              <text x="18" y="500" font-size="16" font-weight="600" fill="#F7F6F3">2차 기업 보고서</text>
-              <text x="18" y="524" font-size="13" fill="rgba(247,246,243,0.72)">20p 분량 · SOHKA 출전</text>
-              <line x1="160" y1="562" x2="160" y2="584" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
-              <rect x="0" y="592" width="320" height="48" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
-              <line x1="0" y1="592" x2="320" y2="592" stroke="#F7F6F3" stroke-width="2"></line>
-              <text x="18" y="622" font-size="16" font-weight="600" fill="#F7F6F3">3차 기업 보고서</text>
-            </g>
-          </svg>
-        </div>
-        <div class="notes3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(32px,3.4vw,56px);margin-top:clamp(34px,5.4vh,74px);border-top:1px solid rgba(247,246,243,0.35);padding-top:clamp(22px,3vh,34px);max-width:1040px">
-          <sc-for list="{{ procNotes }}" as="n" hint-placeholder-count="3">
-            <div class="rv rv-up">
-              <div style="font-size:15px;font-weight:700;color:#F7F6F3;margin-bottom:12px">{{ n.name }}</div>
-              <div style="width:28px;height:1px;background:rgba(247,246,243,0.5);margin-bottom:14px"></div>
-              <p style="margin: 0; font-size: 14px; line-height: 1.8; color: rgba(247,246,243,0.82); text-wrap: pretty">{{ n.desc }}</p>
-            </div>
-          </sc-for>
-        </div>
-      </div>
-    </section>
-
-    <section data-snap="" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="alumni-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Nastuh Abootalebi on Unsplash" credit-href="https://unsplash.com/@sunday_digital"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
-        <div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni</p>
-          <h2 class="sec-title" style="color: #F7F6F3; font-weight: 500">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
-          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">20년의 역사, 608명의 네트워크</p>
-        </div>
-        <div class="chartwrap" onMouseLeave="{{ sliceLeave }}" style="margin:clamp(20px,3vh,40px) auto 0;max-width:min(500px,50vh);position:relative;width:100%">
-          <div style="position:relative;width:100%;aspect-ratio:1/1">
-            <svg viewBox="0 0 480 480" class="donutsvg {{ drawnCls }}" style="position:absolute;inset:0;width:100%;height:100%" role="img" aria-label="알럼나이 진출 분야 분포">
-              <g transform="rotate(-90 240 240)">
-                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-                  <circle class="seg" cx="240" cy="240" r="{{ d.r }}" fill="none" stroke="{{ d.color }}" stroke-width="{{ d.w }}" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" opacity="{{ d.opacity }}" style="transition-delay:{{ d.delay }}" onMouseEnter="{{ d.onEnter }}"></circle>
-                </sc-for>
-                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-                  <circle class="seg" cx="240" cy="240" r="134" fill="none" stroke="{{ d.color }}" stroke-width="6" stroke-dasharray="{{ d.echoDash }}" stroke-dashoffset="{{ d.echoOffset }}" opacity="{{ d.echoOpacity }}" style="transition-delay:{{ d.delay }}"></circle>
-                </sc-for>
-              </g>
-              <circle cx="240" cy="240" r="130" fill="rgba(17,28,46,0.55)"></circle>
-              <text x="240" y="292" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="0.16em" fill="#6b7a91">ALUMNI</text>
-            </svg>
-            <img src="assets/rfs-seal-light-640.png" alt="R.F.S." style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:19%;opacity:0.34">
-            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-              <sc-if value="{{ d.big }}" hint-placeholder-val="{{ true }}">
-                <div style="position:absolute;left:{{ d.lx }};top:{{ d.ly }};transform:translate(-50%,-50%);text-align:center;line-height:1.25;color:{{ d.ink }};white-space:nowrap;pointer-events:none">
-                  <div style="font-size:12px;letter-spacing:0.02em">{{ d.text }}</div>
-                  <div style="font-size:{{ d.size }};font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</div>
-                </div>
-              </sc-if>
-            </sc-for>
-          </div>
-          <div class="legstrip" style="display:flex;justify-content:center;gap:clamp(16px,3vw,34px);flex-wrap:nowrap;margin-top:clamp(18px,2.6vh,30px);padding-top:16px;border-top:1px solid rgba(247,246,243,0.18)">
-            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-              <sc-if value="{{ d.small }}" hint-placeholder-val="{{ true }}">
-                <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(247,246,243,0.8);white-space:nowrap;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
-                  <span style="width:8px;height:8px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
-                  <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span>
-                  <span>{{ d.text }}</span>
-                </div>
-              </sc-if>
-            </sc-for>
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
-          <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
-        </div>
-      </div>
-    </section>
-
-    <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
-      <div class="secpad" style="position:relative;z-index:1;width:100%">
-        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
-          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
-        </div></div>
-        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
-        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
-          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
-            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
-            </div></div>
-          </sc-for>
-        </div></div>
-        </div>
-      </div>
-    </section>
-
-    <section data-snap="" id="home-research" data-about-sec="" class="bigsec" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
-      <div class="wrap secpad" style="padding:110px 35px;width:100%">
-        <div class="sec-head rv rv-up">
-          <h2 class="sec-title" style="letter-spacing:-0.01em">Coverage</h2>
-        </div>
-        <div class="rv rv-up" style="margin-top:clamp(20px,3vh,40px);border-bottom:1px solid #1A1A1A">
-          <table class="covtbl" style="width:100%;border-collapse:collapse">
-            <thead><tr>
-              <sc-for list="{{ covHead }}" as="c" hint-placeholder-count="7">
-                <th class="{{ c.cls }}" style="text-align:{{ c.align }};font-size:12px;font-weight:600;letter-spacing:0.04em;color:rgba(26,26,26,0.65);padding:10px 12px;border-bottom:1px solid #1A1A1A;white-space:nowrap">{{ c.label }}</th>
-              </sc-for>
-            </tr></thead>
-            <tbody>
-              <sc-for list="{{ homeRows }}" as="r" hint-placeholder-count="8">
-                <tr class="rowh" onClick="{{ r.open }}">
-                  <td style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;font-weight:600;white-space:nowrap"><a href="{{ r.href }}" onClick="{{ r.open }}">{{ r.name }} <span class="tick-sm" style="color:rgba(26,26,26,0.65);font-weight:400;font-variant-numeric:tabular-nums">({{ r.ticker }})</span></a></td>
-                  <td class="col-s" style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;font-size:14px">{{ r.sector }}</td>
-                  <td style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;font-weight:700;color:{{ r.opColor }};opacity:{{ r.opAlpha }};font-variant-numeric:tabular-nums">{{ r.op }}</td>
-                  <td class="col-tp" style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;text-align:right;font-variant-numeric:tabular-nums">{{ r.tp }}</td>
-                  <td style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;text-align:right;font-variant-numeric:tabular-nums;font-weight:600">{{ r.upside }}</td>
-                  <td class="col-t" style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;text-align:right;font-variant-numeric:tabular-nums;font-size:14px;color:rgba(26,26,26,0.7)">{{ r.term }}</td>
-                  <td class="col-t" style="padding:clamp(8px,1.4vh,14px) 12px;border-bottom:1px solid #D0CECE;text-align:right;font-size:14px;color:rgba(26,26,26,0.7);white-space:nowrap">{{ r.team }}</td>
-                </tr>
-              </sc-for>
-            </tbody>
-          </table>
-        </div>
-        <a href="#research" onClick="{{ goResearch }}" class="btn btn-outline rv rv-up" style="margin-top:clamp(20px,3vh,36px)">VIEW ALL COVERAGE</a>
-      </div>
-    </section>
-
-
+    <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="recruit-band-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
       <div class="scrim" style="opacity:0.86"></div>
@@ -1584,12 +1258,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
       </div>
     </section>
+    </sc-if>
 
-    <nav class="anchor-nav {{ navCls }} {{ anchorVis }}">
-      <sc-for list="{{ homeSecs }}" as="h" hint-placeholder-count="5">
-        <a href="{{ h.href }}" class="{{ h.cls }}"><span class="lab">{{ h.label }}</span><span class="dot"></span></a>
-      </sc-for>
-    </nav>
   </main>
   </sc-if>
   </sc-if>
@@ -1858,13 +1528,223 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
+    <section data-snap="" class="on-photo pg-hero pg-big" data-nav="dark">
       <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">About R.F.S.</h1>
       </div>
     </section>
+    <div class="story">
+    <section data-snap="" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
+      <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
+        <image-slot id="intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot>
+      </div>
+      <div class="scrim" style="opacity:0.86"></div>
+      <div class="wrap ident-grid secpad" style="position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr);gap:clamp(36px,4.6vw,72px);align-items:center;padding:110px 35px;width:100%">
+        <div class="seal-stage rv rv-left" style="position:relative;display:flex;align-items:center;justify-content:center">
+          <svg viewBox="0 0 420 420" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:128%;height:128%;max-width:none" aria-hidden="true">
+            <g fill="none" stroke="#F7F6F3" stroke-opacity="0.28">
+              <circle cx="210" cy="210" r="205"></circle>
+              <circle cx="210" cy="210" r="163"></circle>
+            </g>
+            <g fill="none" stroke="#F7F6F3" stroke-opacity="0.4" stroke-dasharray="2 6">
+              <circle cx="210" cy="210" r="184"></circle>
+            </g>
+          </svg>
+          <img src="assets/rfs-seal-light-640.png" alt="R.F.S. 인장" style="position:relative;width:clamp(180px,21vw,330px);height:auto;display:block">
+        </div>
+        <div class="rv rv-right">
+          
+          <h2 class="sec-title" style="color:#F7F6F3;max-width:22em"><b>중앙의 가치</b>를 발견합니다</h2>
+          
+          <p style="margin: clamp(20px,3.2vh,34px) 0 0; font-family: 'Noto Serif KR',serif; font-size: clamp(16px,1.35vw,21px); font-weight: 600; line-height: 1.6; letter-spacing: -0.02em; color: #F7F6F3; max-width: 40em">Vita contemplativa — 사색하는 삶을 기반으로 <br>금융과 경제를 탐구합니다.</p>
+          <p style="margin:clamp(16px,2.4vh,26px) 0 0;font-size:clamp(14px,1.05vw,16px);line-height:1.85;color:rgba(247,246,243,0.85);max-width:40em">정보가 무료가 된 세상에서는 안목이 곧 자산이 됩니다.<br>보다 값진 인사이트를 제공할 수 있도록, R.F.S.는 오늘도 최선을 다하겠습니다.</p>
+          <div class="statrow" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(247,246,243,0.4);margin-top:clamp(24px,4vh,44px)">
+            <sc-for list="{{ aboutStats }}" as="a" hint-placeholder-count="4">
+              <div class="statcell" style="padding:clamp(14px,2.2vh,24px) 18px 0 0">
+                <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.7vw,42px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">
+                  <span data-hero-num="" data-target="{{ a.target }}">{{ a.shown }}</span>{{ a.suffix }}
+                </div>
+                <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:clamp(7px,1.2vh,12px)">{{ a.key }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+    <section data-snap="" id="home-process" data-about-sec="" class="on-photo bigsec tight" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="home-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Annie Spratt on Unsplash" credit-href="https://unsplash.com/@anniespratt"></image-slot></div>
+      <div class="scrim"></div>
+      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
+        <div class="sec-head rv rv-up">
+          <p class="sec-label">Process</p>
+          <h2 class="sec-title"><strong>가격의 너머</strong>를 위하여</h2>
+          
+        </div>
+        <div class="rv rv-up diag-desktop" style="margin-top:clamp(34px,5.4vh,74px);max-width:1040px">
+          <svg viewBox="0 0 1100 320" style="width:100%;height:auto;display:block" role="img" aria-label="리서치 사이클 4단계와 Asset Management Team 편입 분기">
+            <defs>
+              <marker id="arb" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="rgba(247,246,243,0.75)"></path></marker>
+              <marker id="arn" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="#F7F6F3"></path></marker>
+            </defs>
+            <g font-family="'Pretendard Variable', Pretendard, sans-serif">
+              <rect x="0" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="0" y1="0" x2="248" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="20" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">01</text>
+              <text x="20" y="62" font-size="17" font-weight="600" fill="#F7F6F3">투자제안서</text>
+              <text x="20" y="88" font-size="14" fill="rgba(247,246,243,0.72)">신입 학회원 작성</text>
+              <text x="20" y="110" font-size="14" fill="rgba(247,246,243,0.72)">Valuation 기초 학습</text>
+              <rect x="284" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="284" y1="0" x2="532" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="304" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">02</text>
+              <text x="304" y="62" font-size="17" font-weight="600" fill="#F7F6F3">1차 기업 보고서</text>
+              <text x="304" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
+              <text x="304" y="110" font-size="14" fill="rgba(247,246,243,0.72)">세미나 발표 · 피드백</text>
+              <rect x="568" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="568" y1="0" x2="816" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="588" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">03</text>
+              <text x="588" y="62" font-size="17" font-weight="600" fill="#F7F6F3">2차 기업 보고서</text>
+              <text x="588" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
+              <text x="588" y="110" font-size="14" fill="rgba(247,246,243,0.72)">SOHKA 학술제 출전</text>
+              <rect x="852" y="0" width="248" height="126" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="852" y1="0" x2="1100" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="872" y="30" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">04</text>
+              <text x="872" y="62" font-size="17" font-weight="600" fill="#F7F6F3">3차 기업 보고서</text>
+              <text x="872" y="88" font-size="14" fill="rgba(247,246,243,0.72)">20p 분량 · 팀 단위</text>
+              <text x="872" y="110" font-size="14" fill="rgba(247,246,243,0.72)">세미나 발표 · 피드백</text>
+              <line x1="252" y1="63" x2="278" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
+              <line x1="536" y1="63" x2="562" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
+              <line x1="820" y1="63" x2="846" y2="63" stroke="rgba(247,246,243,0.55)" marker-end="url(#arb)"></line>
+              <path d="M44 126 V254 H556" stroke="#F7F6F3" fill="none" marker-end="url(#arn)"></path>
+              <text x="60" y="246" font-size="14" fill="rgba(247,246,243,0.8)">우수 투자제안서 종목</text>
+              <rect x="568" y="212" width="532" height="86" fill="#203864" stroke="rgba(247,246,243,0.55)"></rect>
+              <text x="592" y="252" font-size="17" font-weight="600" fill="#F7F6F3">Asset Management Team 포트폴리오</text>
+              <text x="592" y="277" font-size="14" fill="rgba(247,246,243,0.75)">RFS 펀드에 실제로 편입</text>
+            </g>
+          </svg>
+        </div>
+        <div class="rv rv-up diag-mobile" style="margin-top:40px">
+          <svg viewBox="0 0 320 640" class="diag-m" role="img" aria-label="리서치 사이클 4단계와 Asset Management Team 편입 분기">
+            <defs><marker id="arbm" viewBox="0 0 7 7" refX="6.4" refY="3.5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L7 3.5 L0 7 z" fill="rgba(247,246,243,0.75)"></path></marker></defs>
+            <g font-family="'Pretendard Variable', Pretendard, sans-serif">
+              <rect x="0" y="0" width="320" height="112" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="0" y1="0" x2="320" y2="0" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="18" y="28" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">01</text>
+              <text x="18" y="58" font-size="16" font-weight="600" fill="#F7F6F3">투자제안서</text>
+              <text x="18" y="82" font-size="13" fill="rgba(247,246,243,0.72)">신입 학회원 작성</text>
+              <text x="18" y="102" font-size="13" fill="rgba(247,246,243,0.72)">Valuation 기초 학습</text>
+              <path d="M36 112 V160 H300" stroke="#F7F6F3" fill="none" marker-end="url(#arbm)"></path>
+              <text x="50" y="152" font-size="13" fill="rgba(247,246,243,0.8)">우수 투자제안서 종목</text>
+              <rect x="0" y="176" width="320" height="72" fill="#203864" stroke="rgba(247,246,243,0.55)"></rect>
+              <text x="18" y="206" font-size="14" font-weight="600" fill="#F7F6F3">Asset Management Team</text>
+              <text x="18" y="230" font-size="13" fill="rgba(247,246,243,0.75)">포트폴리오 편입</text>
+              <line x1="160" y1="266" x2="160" y2="288" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
+              <rect x="0" y="296" width="320" height="100" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="0" y1="296" x2="320" y2="296" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="18" y="324" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">02</text>
+              <text x="18" y="352" font-size="16" font-weight="600" fill="#F7F6F3">1차 기업 보고서</text>
+              <text x="18" y="376" font-size="13" fill="rgba(247,246,243,0.72)">20p 분량 · 세미나 발표</text>
+              <line x1="160" y1="414" x2="160" y2="436" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
+              <rect x="0" y="444" width="320" height="100" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="0" y1="444" x2="320" y2="444" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="18" y="472" font-size="11" font-weight="600" letter-spacing="1.6" fill="rgba(247,246,243,0.55)">03</text>
+              <text x="18" y="500" font-size="16" font-weight="600" fill="#F7F6F3">2차 기업 보고서</text>
+              <text x="18" y="524" font-size="13" fill="rgba(247,246,243,0.72)">20p 분량 · SOHKA 출전</text>
+              <line x1="160" y1="562" x2="160" y2="584" stroke="rgba(247,246,243,0.55)" marker-end="url(#arbm)"></line>
+              <rect x="0" y="592" width="320" height="48" fill="rgba(15,27,46,0.42)" stroke="rgba(247,246,243,0.32)"></rect>
+              <line x1="0" y1="592" x2="320" y2="592" stroke="#F7F6F3" stroke-width="2"></line>
+              <text x="18" y="622" font-size="16" font-weight="600" fill="#F7F6F3">3차 기업 보고서</text>
+            </g>
+          </svg>
+        </div>
+        <div class="notes3" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(32px,3.4vw,56px);margin-top:clamp(34px,5.4vh,74px);border-top:1px solid rgba(247,246,243,0.35);padding-top:clamp(22px,3vh,34px);max-width:1040px">
+          <sc-for list="{{ procNotes }}" as="n" hint-placeholder-count="3">
+            <div class="rv rv-up">
+              <div style="font-size:15px;font-weight:700;color:#F7F6F3;margin-bottom:12px">{{ n.name }}</div>
+              <div style="width:28px;height:1px;background:rgba(247,246,243,0.5);margin-bottom:14px"></div>
+              <p style="margin: 0; font-size: 14px; line-height: 1.8; color: rgba(247,246,243,0.82); text-wrap: pretty">{{ n.desc }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section data-snap="" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="alumni-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Nastuh Abootalebi on Unsplash" credit-href="https://unsplash.com/@sunday_digital"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
+        <div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni</p>
+          <h2 class="sec-title" style="color: #F7F6F3; font-weight: 500">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
+          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">20년의 역사, 608명의 네트워크</p>
+        </div>
+        <div class="chartwrap" onMouseLeave="{{ sliceLeave }}" style="margin:clamp(20px,3vh,40px) auto 0;max-width:min(500px,50vh);position:relative;width:100%">
+          <div style="position:relative;width:100%;aspect-ratio:1/1">
+            <svg viewBox="0 0 480 480" class="donutsvg {{ drawnCls }}" style="position:absolute;inset:0;width:100%;height:100%" role="img" aria-label="알럼나이 진출 분야 분포">
+              <g transform="rotate(-90 240 240)">
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="{{ d.r }}" fill="none" stroke="{{ d.color }}" stroke-width="{{ d.w }}" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" opacity="{{ d.opacity }}" style="transition-delay:{{ d.delay }}" onMouseEnter="{{ d.onEnter }}"></circle>
+                </sc-for>
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="134" fill="none" stroke="{{ d.color }}" stroke-width="6" stroke-dasharray="{{ d.echoDash }}" stroke-dashoffset="{{ d.echoOffset }}" opacity="{{ d.echoOpacity }}" style="transition-delay:{{ d.delay }}"></circle>
+                </sc-for>
+              </g>
+              <circle cx="240" cy="240" r="130" fill="rgba(17,28,46,0.55)"></circle>
+              <text x="240" y="292" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="0.16em" fill="#6b7a91">ALUMNI</text>
+            </svg>
+            <img src="assets/rfs-seal-light-640.png" alt="R.F.S." style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:19%;opacity:0.34">
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <sc-if value="{{ d.big }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;left:{{ d.lx }};top:{{ d.ly }};transform:translate(-50%,-50%);text-align:center;line-height:1.25;color:{{ d.ink }};white-space:nowrap;pointer-events:none">
+                  <div style="font-size:12px;letter-spacing:0.02em">{{ d.text }}</div>
+                  <div style="font-size:{{ d.size }};font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</div>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <div class="legstrip" style="display:flex;justify-content:center;gap:clamp(16px,3vw,34px);flex-wrap:nowrap;margin-top:clamp(18px,2.6vh,30px);padding-top:16px;border-top:1px solid rgba(247,246,243,0.18)">
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <sc-if value="{{ d.small }}" hint-placeholder-val="{{ true }}">
+                <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(247,246,243,0.8);white-space:nowrap;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
+                  <span style="width:8px;height:8px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
+                  <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span>
+                  <span>{{ d.text }}</span>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
+          <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
+        </div>
+      </div>
+    </section>
+
+    <section data-snap="" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
+      <div class="secpad" style="position:relative;z-index:1;width:100%">
+        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
+        </div></div>
+        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
+        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div></div>
+        </div>
+      </div>
+    </section>
+
+    </div>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
 
     <section data-tab="values" id="about-values" data-about-sec="" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE;scroll-margin-top:72px">
@@ -2026,6 +1906,80 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <h1 class="pg-title">About<br>R.F.S.</h1>
       </div>
     </section>
+    <div class="story">
+    <section id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
+      <div class="scrim" style="opacity:0.86"></div>
+      <div style="position:relative;z-index:1">
+      <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:72px;height:auto;display:block">
+      <p class="sec-label" style="margin-top:26px">About R.F.S.</p>
+      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><b>중앙의 가치</b>를 발견합니다</h2>
+      <p style="margin:14px 0 0;font-size:13px;letter-spacing:0.01em;color:rgba(247,246,243,0.6)">Rising Financial Stars · Chung-Ang University</p>
+      <p style="margin:26px 0 0;font-family:'Noto Serif KR',serif;font-size:17px;font-weight:600;line-height:1.55;letter-spacing:-0.02em;color:#F7F6F3">Vita contemplativa — 사색하는 삶을 기반으로 금융과 경제를 탐구합니다.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px 18px;margin-top:36px;padding-top:22px;border-top:1px solid rgba(247,246,243,0.4)">
+        <sc-for list="{{ aboutStats }}" as="a" hint-placeholder-count="4">
+          <div>
+            <div style="font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums"><span data-hero-num="" data-target="{{ a.target }}">{{ a.shown }}</span>{{ a.suffix }}</div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
+          </div>
+        </sc-for>
+      </div>
+      </div>
+    </section>
+
+    <section class="on-photo" data-nav="dark" style="position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden">
+      <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
+      <div class="scrim" style="opacity:0.82"></div>
+      <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%">
+        <p class="sec-label">Process</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><strong>가격의 너머</strong>를 위하여</h2>
+        <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
+          <sc-for list="{{ mProcess }}" as="p" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:36px 1fr;gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
+              <div style="font-family:'Noto Serif KR',serif;font-size:13px;color:rgba(247,246,243,0.55);padding-top:3px">{{ p.n }}</div>
+              <div><div style="font-size:16px;font-weight:700;color:#F7F6F3">{{ p.t }}</div><div style="font-size:13px;color:rgba(247,246,243,0.72);margin-top:4px;line-height:1.6">{{ p.d }}</div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section id="home-alumni" data-nav="dark" style="background:#111c2e;padding:64px 24px 60px">
+      <p class="sec-label">Alumni</p>
+      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
+      <div style="display:flex;align-items:baseline;gap:14px;margin-top:40px">
+        <div style="font-family:'Noto Serif KR',serif;font-size:88px;font-weight:700;letter-spacing:-0.05em;line-height:0.9;color:#F7F6F3;font-variant-numeric:tabular-nums">68<span style="font-size:40px;letter-spacing:-0.02em">%</span></div>
+        <div style="font-size:12px;line-height:1.6;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.7)">of alumni<br>in financial services</div>
+      </div>
+      <div style="margin-top:34px;display:grid;gap:14px">
+        <sc-for list="{{ mAlumniTop }}" as="a" hint-placeholder-count="3">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;color:rgba(247,246,243,0.85);margin-bottom:7px"><span>{{ a.label }}</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ a.pct }}</span></div>
+            <div style="height:6px;background:rgba(247,246,243,0.12)"><div style="height:100%;width:{{ a.w }};background:{{ a.color }}"></div></div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="margin:18px 0 0;font-size:12px;color:rgba(247,246,243,0.5)">20년의 역사, 608명의 네트워크</p>
+      <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
+    </section>
+
+    <section id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
+      <div style="padding:0 24px">
+        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
+      </div>
+      <div style="margin-top:30px">
+        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ mNetRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div></div>
+      </div>
+    </section>
+
+    </div>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="values" onClick="{{ tabGo }}">핵심 가치</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">리서치 일정</a></div></nav>
 
     <section data-tab="values" data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
@@ -4347,7 +4301,7 @@ class Component extends DCLogic {
   setupSnap() {
     if (this._onWheel) return;
     this._onWheel = (e) => {
-      if (this.state.page !== 'home' || this.state.menuOpen) return;
+      if ((this.state.page !== 'home' && this.state.page !== 'about') || this.state.menuOpen) return;
       if (window.innerWidth < 900 || window.matchMedia('(pointer: coarse)').matches) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       if (Math.abs(e.deltaY) < 4 || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
@@ -4898,6 +4852,7 @@ class Component extends DCLogic {
 
 
   setupReveal() {
+    this.setupCount();
     if (!this._rvDone) this._rvDone = (e) => { if (e.propertyName === 'opacity') { e.currentTarget.style.willChange = 'auto'; e.currentTarget.removeEventListener('transitionend', this._rvDone); } };
     if (!this._rvIo) this._rvIo = new IntersectionObserver((entries) => {
       entries.filter((e) => e.isIntersecting)
@@ -5280,6 +5235,10 @@ class Component extends DCLogic {
       goRecruitLink: (e) => { e.preventDefault(); this.go('recruit'); },
       navItems, menuCls: s.menuOpen ? 'open' : '', navCls: s.navMode === 'dark' ? 'on-dark' : 'on-light',
       aboutSecs: [
+        { label:'소개', href:'#home-intro', id:'home-intro' },
+        { label:'프로세스', href:'#home-process', id:'home-process' },
+        { label:'알럼나이', href:'#home-alumni', id:'home-alumni' },
+        { label:'네트워크', href:'#home-network', id:'home-network' },
         { label:'핵심 가치', href:'#about-values', id:'about-values' },
         { label:'연혁', href:'#about-history', id:'about-history' },
         { label:'SOHKA 연합', href:'#about-sohka', id:'about-sohka' },
@@ -5478,14 +5437,6 @@ class Component extends DCLogic {
       heroPrev: () => heroStep(-1),
       heroNext: () => heroStep(1),
       heroTicker: (() => { const live = REPORTS.filter((r) => r.heroBg).map((r) => ({ ticker: r.region === 'Korea' ? r.name : r.ticker, op: r.op, upside: r.upside })); const out = []; while (out.length < 12) live.forEach((x) => out.push(x)); return out; })(),
-      homeSecs: [
-        { label:'about', href:'#home-intro', id:'home-intro' },
-        { label:'process', href:'#home-process', id:'home-process' },
-        { label:'alumni', href:'#home-alumni', id:'home-alumni' },
-        { label:'network', href:'#home-network', id:'home-network' },
-        { label:'coverage', href:'#home-research', id:'home-research' },
-        { label:'recruiting', href:'#home-recruit', id:'home-recruit' }
-      ].map((h) => ({ ...h, cls: s.activeSec === h.id ? 'active' : '' })),
       people: [
         { id:'chair', photo:'assets/officers/president.webp', name:'김민석', role:'President', desc:'회장' },
         { id:'vice', photo:'assets/officers/vice.webp', name:'이승혁', role:'Vice President', desc:'부회장' },
