@@ -228,10 +228,9 @@ h1,h2,h3{text-wrap:balance}
 .on-photo .inv-line{border-color:rgba(247,246,243,0.5) !important}
 .on-photo .inv-dot{background:#F7F6F3 !important;outline-color:transparent !important}
 .on-photo .inv-card{background:rgba(247,246,243,0.06) !important;border:1px solid rgba(247,246,243,0.25) !important}
-.rv{opacity:0;transition:opacity 500ms cubic-bezier(0.23,1,0.32,1),transform 500ms cubic-bezier(0.23,1,0.32,1);transition-delay:var(--rv-delay,0ms);will-change:opacity,transform}
-.rv-left{transform:translateX(-20px)}
-.rv-right{transform:translateX(20px)}
-.rv-up{transform:translateY(16px)}
+.rv{opacity:0;transition:opacity 700ms cubic-bezier(.2,.8,.2,1),transform 700ms cubic-bezier(.2,.8,.2,1);transition-delay:var(--rv-delay,0ms);will-change:opacity,transform}
+/* 펀드 페이지와 같은 등장 효과: 아래에서 올라오고, 안의 항목은 차례로 */
+.rv-left,.rv-right,.rv-up{transform:translateY(22px)}
 .rv.is-in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{transform:none;transition:opacity 300ms linear;transition-delay:0ms}.rv-left,.rv-right,.rv-up{transform:none}}
 .anchor-nav{position:fixed;right:calc((100vw - min(1240px, 100vw - 70px)) / 2 - 100px);top:50%;transform:translateY(-50%);z-index:40;opacity:0;pointer-events:none;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1)}
@@ -626,6 +625,61 @@ nav.nav{view-transition-name:rfs-nav}
   .fd-row,.fd-lh{grid-template-columns:24px minmax(0,1fr) 56px 76px !important}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* 알럼나이 진출 분야 아이콘 */
+.al-ic{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:34px;max-width:760px}
+.al-ic>div{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 6px 16px;border:1px solid rgba(247,246,243,0.14);background:rgba(15,27,46,0.35);color:#F7F6F3;transition:border-color .2s,background .2s}
+.al-ic>div:hover{border-color:rgba(143,170,220,0.6);background:rgba(143,170,220,0.08)}
+.al-ic svg{width:34px;height:34px;color:#8FAADC}
+.al-ic span{font-size:13px;color:rgba(247,246,243,0.85);white-space:nowrap}
+@media (max-width:860px){.al-ic{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* 상단 사진 히어로 크게 */
+.pg-hero{min-height:84vh;display:flex;align-items:flex-end}
+.pg-hero .pg-hero-in{padding-top:150px;padding-bottom:64px}
+@media (max-width:860px){.pg-hero{min-height:82svh}.pg-hero .pg-hero-in{padding-top:112px;padding-bottom:36px}}
+
+/* 회장 인사 (PEOPLE) */
+.pres{background:#0F1B2E;color:#F7F6F3;border-top:1px solid rgba(143,170,220,0.25)}
+.pres-in{display:grid;grid-template-columns:220px minmax(0,1fr);gap:64px;align-items:center;padding:96px 35px}
+.pres-in img{display:block;width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:2px solid rgba(143,170,220,0.5);box-shadow:0 0 0 8px rgba(143,170,220,0.08)}
+.pres .sec-label{color:#8FAADC;margin:0}
+.pres blockquote{margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(28px,3.4vw,48px);font-weight:700;line-height:1.55;letter-spacing:-0.025em;color:#F7F6F3;word-break:keep-all}
+.pres blockquote em{font-style:normal;color:#8FAADC}
+.pres .pb{margin:22px 0 0;font-size:16px;line-height:1.7;color:rgba(247,246,243,0.72);word-break:keep-all}
+.pres .ps{margin:26px 0 0;font-size:13px;color:rgba(247,246,243,0.55)}
+.pres .ps b{font-size:16px;color:#F7F6F3;margin-right:8px}
+@media (max-width:860px){
+  .pres-in{grid-template-columns:1fr;gap:24px;padding:56px 24px}
+  .pres-in img{width:96px;height:96px}
+  .pres blockquote{font-size:26px}
+  .pres .pb{font-size:14.5px}
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .fx [data-fxb]:not(.in){opacity:0}
+  .fx [data-fxb].in{animation:fdUp .7s cubic-bezier(.2,.8,.2,1) backwards}
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .rv.is-in>:is(div,a,article,li,sc-for>*){animation:fdIn .5s ease both}
+  .rv.is-in>:is(div,a,article,li):nth-child(1){animation-delay:0.18s}
+  .rv.is-in>:is(div,a,article,li):nth-child(2){animation-delay:0.24s}
+  .rv.is-in>:is(div,a,article,li):nth-child(3){animation-delay:0.30s}
+  .rv.is-in>:is(div,a,article,li):nth-child(4){animation-delay:0.36s}
+  .rv.is-in>:is(div,a,article,li):nth-child(5){animation-delay:0.42s}
+  .rv.is-in>:is(div,a,article,li):nth-child(6){animation-delay:0.48s}
+  .rv.is-in>:is(div,a,article,li):nth-child(7){animation-delay:0.54s}
+  .rv.is-in>:is(div,a,article,li):nth-child(8){animation-delay:0.60s}
+}
+
+/* 리서치·소개·구성원 히어로: 펀드 페이지와 같은 지표 패널 */
+.pg-big .pg-hero-in{padding:150px 35px 64px}
+.fd-kc.auto{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}
+.fd-kc .kv{color:#F7F6F3}
+@media (max-width:860px){
+  .fd-kc.auto{grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pg-big .pg-hero-in{padding:112px 20px 44px}
+}
 
 /* 운용전략 + 운용팀장 */
 .fd-mgr{display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px;align-items:center}
@@ -1427,18 +1481,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isResearch }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap" style="position:relative;z-index:1;padding:136px 35px 72px">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Research</h1>
-        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
-          <sc-for list="{{ researchStats }}" as="a" hint-placeholder-count="4">
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
-            </div>
-          </sc-for>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Research</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
         </div>
       </div>
     </section>
@@ -1483,11 +1532,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <span style="margin-left:auto;font-size:13px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }} reports</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
+              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
               <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:58px minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
                 <span style="font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">{{ r.term }}</span>
-                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span><span style="display:block;margin-top:4px;font-size:13px;color:rgba(26,26,26,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.headline }}</span></span>
+                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
                 <span class="col-s" style="font-size:13px;color:rgba(26,26,26,0.6)">{{ r.sector }}</span>
                 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
@@ -1513,18 +1562,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
-      <div style="position:relative;z-index:1;padding:116px 22px 44px">
-        <h1 style="margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(40px,12vw,54px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3">Research</h1>
-        <div style="display:flex;flex-wrap:wrap;gap:18px 30px;margin-top:26px">
-          <sc-for list="{{ researchStats }}" as="a" hint-placeholder-count="4">
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:10px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:7px">{{ a.key }}</div>
-            </div>
-          </sc-for>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Research</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ researchStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
         </div>
       </div>
     </section>
@@ -1564,14 +1608,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }}&nbsp;reports</div>
       <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-        <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span><span>{{ g.count }}</span></div>
+        <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
         <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
           <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:block;padding:15px 0;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
               <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:11px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
               <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
-            <div style="margin-top:4px;font-size:13px;color:rgba(26,26,26,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.headline }}</div>
             <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">
               <span style="font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
               <span>{{ r.sector }}</span><span>{{ r.term }}</span>
@@ -1703,19 +1746,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isAbout }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="소개">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Ben O'Bro on Unsplash" credit-href="https://unsplash.com/@benobro"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">About R.F.S.</h1>
-        
-        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
-          <sc-for list="{{ aboutHeroStats }}" as="a" hint-placeholder-count="4">
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
-            </div>
-          </sc-for>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">About R.F.S.</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
         </div>
       </div>
     </section>
@@ -1872,11 +1909,14 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="소개 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:62svh;display:flex;align-items:flex-end;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
-      <div class="scrim" style="opacity:0.8"></div>
-      <div style="position:relative;z-index:1;padding:0 24px 40px;width:100%">
-        <h1 style="margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">About<br>R.F.S.</h1>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">About<br>R.F.S.</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ aboutHeroStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
+        </div>
       </div>
     </section>
 
@@ -1962,18 +2002,24 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="구성원">
-    <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap" style="position:relative;z-index:1;width:100%;padding:136px 35px 80px">
-        <h1 class="rv rv-up" style="font-family:'Noto Serif KR',serif;font-size:clamp(48px,5.6vw,80px);font-weight:700;letter-spacing:-0.035em;line-height:1;color:#F7F6F3;margin:14px 0 0">Our People</h1>
-        <div class="rv rv-up" style="display:flex;flex-wrap:wrap;gap:20px 52px;margin-top:30px">
-          <sc-for list="{{ peopleStats }}" as="a" hint-placeholder-count="4">
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">{{ a.key }}</div>
-            </div>
-          </sc-for>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Our People</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section class="pres" data-nav="light">
+      <div class="wrap pres-in">
+        <img src="assets/officers/president.webp" alt="회장 김민석" loading="lazy">
+        <div class="pq">
+          <p class="sec-label">From the President</p>
+          <blockquote>우선 시장의 합의를 의심하겠습니다.</blockquote>
+          <p class="ps"><b>김민석</b> 43기 회장</p>
         </div>
       </div>
     </section>
@@ -2006,7 +2052,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px">
         <div class="rv rv-up">
           <h2 class="sec-title"><strong>R.F.S. Network</strong></h2>
-          <p class="sec-sub" style="max-width:52em">RFS의 Alumni는 증권사, 은행, 자산운용사, 사모펀드, 회계법인, 컨설팅 등 금융권을 중심으로 구성되어 있습니다.&nbsp;</p>
+          <div class="al-ic"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19V5M5 19h14"/><path d="M8 15l3-4 3 2 4-6"/></svg><span>증권사</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l8-5 8 5"/><path d="M5 9h14M7 9v8M11 9v8M15 9v8M19 9v8M4 19h16"/></svg><span>은행</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v8l6 5"/></svg><span>자산운용사</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="1.5"/><path d="M9 8V6a1 1 0 011-1h4a1 1 0 011 1v2M4 13h16"/></svg><span>사모펀드</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3.5" width="12" height="17" rx="1.5"/><path d="M9 7.5h6M9 12h1M12 12h1M15 12h0M9 15.5h1M12 15.5h1M15 15.5v1"/></svg><span>회계법인</span></div><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17h6M10 20h4"/><path d="M12 4a5 5 0 00-3 9c.6.5 1 1.2 1 2h4c0-.8.4-1.5 1-2a5 5 0 00-3-9z"/></svg><span>컨설팅</span></div></div>
         </div>
         <div class="donut-wrap" onMouseLeave="{{ sliceLeave }}" style="display:grid;grid-template-columns:minmax(0,460px) minmax(0,1fr);gap:clamp(40px,6vw,96px);align-items:center;margin-top:clamp(40px,6vh,64px)">
           <div class="rv rv-left" style="position:relative;width:100%;aspect-ratio:1/1">
@@ -2072,23 +2118,29 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="구성원 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo" data-nav="dark" style="position:relative;min-height:62svh;display:flex;align-items:flex-end;overflow:hidden">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.8"></div>
-      <div style="position:relative;z-index:1;padding:0 24px 40px;width:100%">
-        <h1 style="margin:0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Our<br>People</h1>
+    <section class="on-photo pg-hero pg-big" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Our<br>People</h1>
+        <div class="fd-kc auto">
+          <sc-for list="{{ peopleStats }}" as="k" hint-placeholder-count="4"><div><em class="kk">{{ k.k }}</em><b class="kv">{{ k.val }}</b><small class="ks" style="color:rgba(247,246,243,0.6)">{{ k.s }}</small></div></sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section class="pres" data-nav="light">
+      <div class="wrap pres-in">
+        <img src="assets/officers/president.webp" alt="회장 김민석" loading="lazy">
+        <div class="pq">
+          <p class="sec-label">From the President</p>
+          <blockquote>우선 시장의 합의를 의심하겠습니다.</blockquote>
+          <p class="ps"><b>김민석</b> 43기 회장</p>
+        </div>
       </div>
     </section>
 
     <section data-nav="light" style="background:#FFFFFF;padding:52px 24px 48px">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;padding-bottom:36px;border-bottom:1px solid #D0CECE">
-        <sc-for list="{{ peopleStats }}" as="a" hint-placeholder-count="4">
-          <div>
-            <div style="font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#0F1B2E;font-variant-numeric:tabular-nums">{{ a.val }}</div>
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(26,26,26,0.5);margin-top:8px">{{ a.key }}</div>
-          </div>
-        </sc-for>
-      </div>
       <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">{{ currentCohort }}기 임원진</h2>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px 16px;margin-top:30px">
         <sc-for list="{{ people }}" as="p" hint-placeholder-count="7">
@@ -2386,7 +2438,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="fd-kc">
             <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
           </div>
-          <p class="fd-asof"><i></i>{{ fdAsOfLine }}</p>
         </sc-if>
       </div>
     </section>
@@ -2397,7 +2448,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <section class="fd-card fd-mgr" id="fd-strat">
         <div class="pm">
           <img src="assets/officers/am.webp" alt="운용팀장 박정훈" loading="lazy">
-          <div class="pn"><em>운용팀장</em><b>박정훈</b><small>40기 · 26-2학기</small></div>
+          <div class="pn"><em>운용팀장</em><b>박정훈</b><small>40기</small></div>
         </div>
         <div class="ps">
           <h2 class="fd-ct">운용전략</h2>
@@ -2429,7 +2480,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         </div>
         </sc-if>
         <sc-if value="{{ fdChartNone }}" hint-placeholder-val="{{ true }}"><p class="fd-cap">기록이 이틀 이상 쌓이면 그래프가 나타납니다.</p></sc-if>
-        <p class="fd-foot"><i></i>{{ fdRangeCap }}</p>
       </section>
 
       <section class="fd-card" id="fd-period">
@@ -2438,8 +2488,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
           <div class="rh"><span>구분</span><span>1주(%)</span><span>1개월(%)</span><span>3개월(%)</span><span>6개월(%)</span><span>1년(%)</span><span>설정 이후(%)</span></div>
           <sc-for list="{{ fdPerRows }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c1 }}">{{ q.v1 }}</b><b style="color:{{ q.c2 }}">{{ q.v2 }}</b><b style="color:{{ q.c3 }}">{{ q.v3 }}</b><b style="color:{{ q.c4 }}">{{ q.v4 }}</b><b style="color:{{ q.c5 }}">{{ q.v5 }}</b><b style="color:{{ q.c6 }}">{{ q.v6 }}</b></div></sc-for>
         </div></div>
-        <p class="fd-foot"><i></i>{{ fdPerAsOf }}</p>
-        <ul class="fd-notes"><li>운용 계좌 추정자산 기준 세전 수익률 (보수·세금 차감 전)</li><li>기간 시작일이 설정일보다 앞서면 표시하지 않음 (-)</li><li>KOSPI 대비는 같은 기간 펀드 수익률 − KOSPI 수익률 (%p)</li></ul>
       </section>
 
 
@@ -2456,17 +2504,15 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <div class="fd-lg"><sc-for list="{{ fdLegend }}" as="l" hint-placeholder-count="8"><div class="{{ l.cls }}" onMouseEnter="{{ l.enter }}" onMouseLeave="{{ l.leave }}"><i class="ch" style="background:{{ l.c }}"></i><span class="ln">{{ l.t }}</span><em class="lb"><i style="width:{{ l.bw }};background:{{ l.c }}"></i></em><b class="lw">{{ l.w }}</b></div></sc-for></div>
           </div>
         </div>
-        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
       </section>
 
       <section class="fd-card">
         <h2 class="fd-ct">업종별 비중</h2>
         <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
-        <p class="fd-foot"><i></i>주식 내 비중 · 업종은 운용팀 분류</p>
       </section>
 
       <section class="fd-card" id="fd-hold">
-        <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2><span class="fd-sub">{{ fdPortCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2></div>
         <div class="fd-list">
           <div class="fd-lh"><span></span><span>종목</span><span class="r c3">현재가</span><span class="r c3">평가금액</span><span class="r">비중</span><span class="r">수익률</span></div>
           <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
@@ -2479,12 +2525,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             </div>
           </sc-for>
         </div>
-        <p class="fd-foot"><i></i>{{ fdAsOfLine }}</p>
       </section>
 
       <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-attr">
-        <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2><span class="fd-sub">{{ fdTodayCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2></div>
           <div class="fd-movers">
             <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">손익</span></div>
             <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
@@ -2507,13 +2552,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
-        <p class="pg-note">{{ rfmBeatLine }}</p>
         <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
         <div class="fd-kc">
           <sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
         </div>
         </sc-if>
-        <p class="fd-asof"><i></i>{{ rfmMeta }}</p>
       </div>
     </section>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
@@ -2533,7 +2576,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <sc-for list="{{ rfmLanes }}" as="r" hint-placeholder-count="8">
               <div class="{{ r.cls }}" style="transform:translateY(calc(var(--rH) * {{ r.idx }}))">
                 <div class="rk">{{ r.no }}</div>
-                <div class="nm"><div class="nn"><b>{{ r.label }}</b> <i class="ns">{{ r.sub }}</i></div><small>{{ r.meta }}</small></div>
+                <div class="nm"><div class="nn"><b>{{ r.label }}</b> <i class="ns">{{ r.sub }}</i></div></div>
                 <div class="trk">
                   <i class="vl" style="left:{{ rfmZero }};background:rgba(247,246,243,0.18)"></i>
                   <i class="vl" style="left:{{ rfmKx }};background:#8FAADC;opacity:0.5"></i>
@@ -2542,7 +2585,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                   <i class="run" style="left:{{ r.x }};background:{{ r.dot }}"></i>
                 </div>
                 <div class="rt" style="animation-name:{{ r.fl }}"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
-                <sc-if value="{{ r.hasGap }}" hint-placeholder-val="{{ true }}"><span class="gap">{{ r.gap }}</span></sc-if>
               </div>
             </sc-for>
           </div>
@@ -2550,7 +2592,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
             <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
         </div>
-        <p class="fd-foot"><i></i>{{ rfmFoot }}</p>
       </section>
       <div class="rfm-side">
         <section class="fd-card rfm-mine" id="rfm-me">
@@ -2575,13 +2616,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </div>
 
       <section class="fd-card" id="rfm-dist">
-        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2><span class="fd-sub">{{ rfmDistCap }}</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2></div>
         <div class="fd-bars rfm-bars"><sc-for list="{{ rfmDist }}" as="b" hint-placeholder-count="6"><div class="{{ b.cls }}"><span class="bl">{{ b.n }}<em>{{ b.t }}</em></span><i style="height:{{ b.h }};background:{{ b.bg }}"></i></div></sc-for></div>
-        <p class="fd-foot"><i></i>{{ rfmDistFoot }}</p>
       </section>
 
       <section class="fd-card" id="rfm-bm">
-        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2><span class="fd-sub">대회 시작일 이후</span></div>
+        <div class="fd-ch"><h2 class="fd-ct">벤치마크 비교</h2></div>
         <div class="fd-pt">
           <div class="fd-pr hd rfm-pr"><span>구분</span><span>수익률</span><span>KOSPI 대비</span></div>
           <sc-for list="{{ rfmBmRows }}" as="q" hint-placeholder-count="5"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c }}">{{ q.v }}</b><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
@@ -4132,7 +4172,15 @@ class Component extends DCLogic {
     if ('IntersectionObserver' in window && 'MutationObserver' in window) {
       document.documentElement.classList.add('fx');
       const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
-      const scan = () => document.querySelectorAll('.fd-card:not([data-fx])').forEach((el) => { el.setAttribute('data-fx', '1'); io.observe(el); });
+      // 펀드 카드 + 다른 페이지(홈 제외)의 본문 블록에도 같은 등장 효과
+      const blocks = 'main section:not(.pg-hero):not(.hero) > .wrap > *:not(.rv), main.mhome section:not(.pg-hero) > *:not(.rv)';
+      const scan = () => {
+        document.querySelectorAll('.fd-card:not([data-fx])').forEach((el) => { el.setAttribute('data-fx', '1'); io.observe(el); });
+        document.querySelectorAll(blocks).forEach((el) => {
+          if (el.hasAttribute('data-fx') || el.closest('.fdpage, [data-screen-label="홈"], [data-screen-label="홈 (모바일)"], [data-screen-label="아고라"]')) return;
+          el.setAttribute('data-fx', '1'); el.setAttribute('data-fxb', ''); io.observe(el);
+        });
+      };
       scan();
       new MutationObserver(scan).observe(document.body, { childList: true, subtree: true });
     }
@@ -4446,7 +4494,7 @@ class Component extends DCLogic {
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
         meta: [h.code, sectorOf(h), h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
-        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+        ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
         px: live ? won(h.cur) : '', avgL: live ? '평균 ' + won(h.avg) : '', ev: live ? won(h.evlt) : '', qtyL: live ? Number(h.qty).toLocaleString('ko-KR') + '주' : '',
         hasRep: !!r, repLabel: r ? '리포트 ' + r.op + (r.tp ? ' · TP ' + r.tp : '') + ' · ' + (r.date || '').slice(2, 7) : '', repHref: r ? '#research/' + r.id : '#',
         repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
@@ -4519,7 +4567,7 @@ class Component extends DCLogic {
     el.classList.toggle('mv', el.classList.contains('on'));
     el.classList.add('on');
     el.querySelector('.fd-cross').style.left = x;
-    [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); });
+    [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); d.style.visibility = a[i] ? 'visible' : 'hidden'; });
     const tip = el.querySelector('.fd-tip');
     tip.innerHTML = '<b>' + C.d[i].replace(/-/g, '.') + '</b><span><i style="background:#8FAADC"></i>AMT Fund<em>' + pc(C.fs[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.7)"></i>KOSPI<em>' + pc(C.ks[i]) + '</em></span><span><i style="background:rgba(247,246,243,0.35)"></i>KOSDAQ<em>' + pc(C.qs[i]) + '</em></span>';
     tip.style.left = x; tip.style.transform = i / (n - 1) > 0.6 ? 'translateX(calc(-100% - 14px))' : 'translateX(14px)';
@@ -4528,7 +4576,8 @@ class Component extends DCLogic {
   // 기간별 수익률 표: history [날짜, 기준가, KOSPI, KOSDAQ]
   fundPerf(F, pct, col) {
     const s = this.state;
-    const H = (F.history || []).filter((h) => h[1]);
+    const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
+    const H = (F.history || []).filter((h) => h[1] && wkd(h[0]));
     if (H.length < 2) return { fdPerRows: [], fdPerAsOf: '' };
     const last = H[H.length - 1];
     const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H[0][0] <= d ? H.filter((h) => h[0] <= d).pop() : null; };
@@ -4560,7 +4609,8 @@ class Component extends DCLogic {
     const maxW = Math.max(10, ...hs.map((h) => h.weight || 0));
     const best = live ? hs.filter((h) => h.dayPl !== null && h.dayPl !== undefined).sort((a, b) => b.dayPl - a.dayPl)[0] : hs.filter((h) => h.day !== null && h.day !== undefined).sort((a, b) => b.day - a.day)[0];
     // 기준가 추이: history = [날짜, 기준가, KOSPI, KOSDAQ] → 첫날 1,000으로 맞춰 세 선
-    const HA = (F.history || []).filter((h) => h[1]);
+    const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
+    const HA = (F.history || []).filter((h) => h[1] && wkd(h[0]));
     const RANGES = { '1w': 7, '1m': 30, '3m': 91 };
     const rk = s.fdRange && RANGES[s.fdRange] ? s.fdRange : 'all';
     let H = HA;
@@ -4666,7 +4716,7 @@ class Component extends DCLogic {
           name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '') + (h.since ? ' · ' + h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''),
           w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: live ? won(h.evlt) + '원' : '',
           avg: live ? won(h.avg) : '', cur: live ? won(h.cur) : '',
-          ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
+          ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
           dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
         };
       }),
@@ -4785,7 +4835,7 @@ class Component extends DCLogic {
           idx: i, no: i + 1, cls: 'rfmlane' + (i < 3 ? ' top' : '') + (m.nick === mine ? ' me' : ''),
           label: nm(m), sub: real(m) ? m.nick : '',
           meta: '전체 ' + (m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-') + (m.rankChg > 0 ? ' ▲' + m.rankChg : m.rankChg < 0 ? ' ▼' + -m.rankChg : '') + ' · ' + (m.count ? m.count + '종목' : '현금'),
-          ret: pct(r), retColor: col(r), day: d === null ? '' : '오늘 ' + pct(d), dayColor: d === null ? flat : col(d),
+          ret: pct(r), retColor: col(r), day: d === null ? '' : 'Today ' + pct(d), dayColor: d === null ? flat : col(d),
           x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl, to: r >= 0 ? 'left' : 'right',
           gap: above ? '위와 ' + pp(ret(above) - r) : '', hasGap: !!above,
         };
@@ -5196,15 +5246,15 @@ class Component extends DCLogic {
       mAlumniTop: CHART.filter((c) => ['증권사','대기업','은행'].indexOf(c.label) >= 0).sort((a, b) => b.pct - a.pct).map((c) => ({ label: c.label, pct: c.pct + '%', w: Math.round(c.pct / 29 * 100) + '%', color: c.color })),
       isHome: s.page==='home', isResearch: s.page==='research', isReport: s.page==='report', isAbout: s.page==='about', isPeople: s.page==='people', isActivity: s.page==='activity', isRecruit: s.page==='recruit', isIntranet: s.page==='intranet',
       aboutHeroStats: [
-        { val:'2006', key:'Founded' },
-        { val:'43기', key:'Cohort' },
-        { val:'608명', key:'Alumni' },
-        { val:'250+', key:'Reports' }],
+        { val:'2006', key:'Founded', k:'설립', s:'중앙대학교 가치투자학회' },
+        { val:'43기', key:'Cohort', k:'활동 기수', s:'2026년 2학기' },
+        { val:'608명', key:'Alumni', k:'알럼나이', s:'2006년 이후 누적' },
+        { val:'250+', key:'Reports', k:'발간 리포트', s:'기업분석 · 해외기업' }],
       researchStats: [
-        { val:'250+', key:'Reports since 2006' },
-        { val:'12편', key:'정규 리포트 · 학기' },
-        { val:'4편', key:'해외기업 리포트 · 방학' },
-        { val:'20p', key:'보고서 분량' }],
+        { val:'250+', key:'Reports since 2006', k:'누적 리포트', s:'2006년 이후' },
+        { val:'12편', key:'정규 리포트 · 학기', k:'정규 리포트', s:'학기당' },
+        { val:'4편', key:'해외기업 리포트 · 방학', k:'해외기업 리포트', s:'방학당' },
+        { val:'20p', key:'보고서 분량', k:'보고서 분량', s:'리포트당' }],
       rhythmYear: [
         { name:'방학', months:'1 – 2월', items:'해외기업 리포트 4편', ink:'#1A1A1A' },
         { name:'1학기', months:'3 – 6월', items:'투자제안서 → 1차 → 2차(SOHKA 출전) → 3차 기업보고서 · 정규 리포트 12편', ink:'#203864' },
@@ -5363,10 +5413,10 @@ class Component extends DCLogic {
         { name:'모의투자 대회', desc:'다양한 모의투자 대회에 학회 자격으로 참가해 실제 운용 경험을 학습합니다.' }],
       currentCohort: CUR,
       peopleStats: [
-        { val:'608명', key:'Alumni' },
-        { val:'43기', key:'Cohorts' },
-        { val:'68%', key:'금융권' },
-        { val:'20년', key:'Since 2006' }],
+        { val:'608명', key:'Alumni', k:'알럼나이', s:'2006년 이후 누적' },
+        { val:'43기', key:'Cohorts', k:'기수', s:'현재 43기 활동' },
+        { val:'68%', key:'금융권', k:'금융권 진출', s:'알럼나이 중' },
+        { val:'20년', key:'Since 2006', k:'역사', s:'2006년 창립' }],
       roleCards: [
         { name:'회장 · 부회장', desc:'학회 운영과 정기 세미나, 선배님 초청을 담당합니다.', bg:'#FFFFFF', border:'#D0CECE', top:'#1A1A1A', ink:'#0F1B2E', body:'rgba(26,26,26,0.75)' },
         { name:'Research Team', desc:'팀 단위로 기업을 발굴해 Valuation을 거쳐 20p 분량 보고서를 작성하고, 세미나에서 발표해 피드백을 받습니다.', bg:'#FFFFFF', border:'#D0CECE', top:'#203864', ink:'#0F1B2E', body:'rgba(26,26,26,0.75)' },

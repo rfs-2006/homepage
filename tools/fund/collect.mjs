@@ -155,7 +155,8 @@ async function round() {
   holdings.forEach((h) => { h.since = SINCE[h.code] || prevSince[h.code] || today; since[h.code] = h.since; });
   const cash = Math.max(0, total - stock);
   const [kospi, kosdaq] = await Promise.all([indexRet('KOSPI', START || baseDate), indexRet('KOSDAQ', START || baseDate)]);
-  const history = hist.filter((h) => h[0] !== today);
+  const wk = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
+  const history = hist.filter((h) => h[0] !== today && wk(h[0]));
   const prevNav = history.length ? history[history.length - 1][1] : null;
   if (nav) history.push([today, +nav.toFixed(2), kospi && kospi.now, kosdaq && kosdaq.now]);
   const data = {
@@ -175,7 +176,7 @@ async function round() {
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
 }
 
-const BF_KEY = START + '/2'; // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
+const BF_KEY = START + '/3'; // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
 
 // ---------- 지난 기록 채우기 (일별 추정예탁자산, kt00002) ----------
 // FUND_START부터 어제까지 날짜별 총자산으로 기준가를 거꾸로 만든다. 첫날 총자산 = 1,000 (입출금이 있으면 FUND_FLOWS 필요)
@@ -184,21 +185,38 @@ async function indexCloses(code) {
   const m = {}; for (const x of xml.matchAll(/data="(\d{8})\|[^|]*\|[^|]*\|[^|]*\|([\d.]+)\|/g)) m[x[1]] = parseFloat(x[2]);
   return m;
 }
-async function backfill() {
-  const s0 = START.replace(/-/g, ''), e0 = ymd().replace(/-/g, '');
-  const items = []; let cont = '', next = '';
+// 한 구간 조회 (연속조회 포함)
+async function dailyAssets(sd, ed) {
+  const out = []; let cont = '', next = '';
   for (let page = 0; page < 20; page++) {
     const h = { 'Content-Type': 'application/json;charset=UTF-8', 'api-id': 'kt00002', authorization: 'Bearer ' + (await token()) };
     if (cont === 'Y') { h['cont-yn'] = 'Y'; h['next-key'] = next; }
-    const r = await fetch(API + '/api/dostk/acnt', { method: 'POST', headers: h, body: JSON.stringify({ start_dt: s0, end_dt: e0 }) });
+    const r = await fetch(API + '/api/dostk/acnt', { method: 'POST', headers: h, body: JSON.stringify({ start_dt: sd, end_dt: ed }) });
     const j = await r.json();
-    if (j.return_code !== undefined && +j.return_code !== 0) throw new Error('kt00002: ' + j.return_msg);
+    if (j.return_code !== undefined && +j.return_code !== 0) throw new Error(j.return_msg || ('code ' + j.return_code));
     const arr = Object.values(j).find((v) => Array.isArray(v)) || [];
-    if (!page && arr[0]) console.log('kt00002 fields: ' + Object.keys(arr[0]).join(','));
-    items.push(...arr);
+    if (!dailyAssets.logged && arr[0]) { dailyAssets.logged = true; console.log('kt00002 fields: ' + Object.keys(arr[0]).join(',')); }
+    out.push(...arr);
     cont = r.headers.get('cont-yn') || ''; next = r.headers.get('next-key') || '';
     if (cont !== 'Y') break;
     await sleep(250);
+  }
+  return out;
+}
+async function backfill() {
+  const s0 = START.replace(/-/g, ''), e0 = ymd().replace(/-/g, '');
+  // 기간이 길면 거부될 수 있어 한 달씩 나눠 받고, 실패한 달은 건너뛴다
+  const items = [];
+  let cur = new Date(+s0.slice(0, 4), +s0.slice(4, 6) - 1, +s0.slice(6, 8));
+  const end = new Date(+e0.slice(0, 4), +e0.slice(4, 6) - 1, +e0.slice(6, 8));
+  const f8 = (d) => d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  while (cur <= end) {
+    const me = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+    const sd = f8(cur), ed = f8(me < end ? me : end);
+    try { const got = await dailyAssets(sd, ed); items.push(...got); console.log(`backfill ${sd}~${ed}: ${got.length} rows`); }
+    catch (e) { console.error(`backfill ${sd}~${ed} failed: ${e.message}`); }
+    cur = new Date(cur.getFullYear(), cur.getMonth() + 1, 1);
+    await sleep(300);
   }
   const rows = items.map((it) => {
     const d = String(it.dt || it.trde_dt || Object.values(it).find((v) => /^\d{8}$/.test(String(v))) || '');
