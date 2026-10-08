@@ -179,6 +179,19 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   .credit{right:16px;left:16px;bottom:8px;font-size:9px}
   .copy p{font-size:12.5px}
 }
+
+/* motto */
+.motto{position:absolute;left:50%;transform:translateX(-50%);bottom:15vh;z-index:3;pointer-events:none;text-align:center;white-space:nowrap;padding-top:10px;padding-bottom:10px;cursor:default;
+  font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;padding-left:.6em;
+  color:#dfe6f5;opacity:0;transition:opacity 3s ease, color .6s ease, text-shadow .8s ease, letter-spacing 1.2s var(--ease)}
+.motto.on{opacity:.26;pointer-events:auto}
+.motto.on:hover{opacity:1;color:#fff;letter-spacing:.68em;transition:opacity .6s ease, color .6s ease, text-shadow .8s ease, letter-spacing 1.2s var(--ease);
+  text-shadow:0 0 8px rgba(220,232,255,.9),0 0 22px rgba(170,195,255,.65),0 0 48px rgba(140,170,255,.4)}
+.sky.shine .seg{stroke-opacity:.75;stroke-width:1.1;transition:stroke-opacity .8s var(--ease), stroke-width .8s var(--ease)}
+.sky.shine .star.lit .glow{transform:translate(-50%,-50%) scale(1.35);opacity:1}
+.sky.shine .star.lit .spk.h{transform:translate(-50%,-50%) scaleX(1.6)}
+.sky.shine .star.lit .spk.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(1.6)}
+@media (max-width:760px){.motto.on{opacity:.2}.motto{bottom:9vh;font-size:11px;letter-spacing:.5em;padding-left:.5em}}
 </style>
 </head>
 <body>
@@ -196,6 +209,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
 
 
+  <div class="motto" id="motto"></div>
   <div class="credit" id="credit"></div>
 </main>
 
@@ -215,11 +229,11 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const STARS = [
     {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:'RESEARCH',   ko:'기업 분석 리포트',      href:'/#research', lab:'r'},
     {id:'merak',  name:'Merak',  bayer:'β UMa', ra:165.460, de:56.383, mag:2.37, tint:'236,242,255', menu:'FUND',       ko:'AMT 펀드 운용',         href:'/fund/',     lab:'r'},
-    {id:'phecda', name:'Phecda', bayer:'γ UMa', ra:178.457, de:53.695, mag:2.44, tint:'236,242,255', menu:'ABOUT',      ko:'학회 소개',             href:'/#about',    lab:'b'},
+    {id:'phecda', name:'Phecda', bayer:'γ UMa', ra:178.457, de:53.695, mag:2.44, tint:'236,242,255', menu:'AGORA',      ko:'학회원 공간',           href:'/#intranet',    lab:'b'},
     {id:'megrez', name:'Megrez', bayer:'δ UMa', ra:183.857, de:57.033, mag:3.31, tint:'240,244,255', menu:'PEOPLE',     ko:'임원진 · 동문',          href:'/#people',   lab:'bl'},
     {id:'alioth', name:'Alioth', bayer:'ε UMa', ra:193.507, de:55.960, mag:1.77, tint:'236,242,255', menu:'RECRUITING', ko:'신입 모집',             href:'/#recruit',  lab:'b'},
     {id:'mizar',  name:'Mizar',  bayer:'ζ UMa', ra:200.981, de:54.925, mag:2.04, tint:'236,242,255', menu:'RFM',        ko:'Road to Fund Manager', href:'/#rfm',      lab:'t'},
-    {id:'alkaid', name:'Alkaid', bayer:'η UMa', ra:206.885, de:49.313, mag:1.86, tint:'214,226,255', menu:'AGORA',      ko:'학회원 공간',           href:'/#intranet',    lab:'b'},
+    {id:'alkaid', name:'Alkaid', bayer:'η UMa', ra:206.885, de:49.313, mag:1.86, tint:'214,226,255', menu:'ABOUT',      ko:'학회 소개',             href:'/#about',    lab:'b'},
   ];
   const ALCOR   = {ra:201.306, de:54.988};
   const POLARIS = {ra:37.95,  de:89.264};
@@ -366,7 +380,11 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   if (!STATIC) requestAnimationFrame(tick);
 
   /* ---- reveal: photo → stars ignite (Alkaid → Dubhe) → lines → Polaris guide ---- */
-  const copy = {classList:{add(){}}}, hint = copy;
+  const motto = document.getElementById('motto');
+  motto.textContent = 'RISING FINANCIAL STARS';
+  motto.addEventListener('pointerenter', () => sky.classList.add('shine'));
+  motto.addEventListener('pointerleave', () => sky.classList.remove('shine'));
+  const copy = motto, hint = {classList:{add(){}}};
   function finalState(){
     sky.classList.add('ready');
     STARS.forEach(s => s.el.classList.add('lit')); alcor.classList.add('lit'); pol.classList.add('lit');
@@ -385,6 +403,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     order.forEach(([a,b],i) => setTimeout(() => {                   // 1.25–2.0s lines draw
       const s = segs.find(s => (s.a===a&&s.b===b)||(s.a===b&&s.b===a)); s.l.classList.add('drawn');
     }, 1250 + i*110));
+    setTimeout(() => copy.classList.add('on'), 2300);
     setTimeout(() => window.__done = true, 3400);
   };
   let seen = false, loaded = false, started = false;
