@@ -491,6 +491,59 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);padding:12px 0 8px}
 .fd-h3{font-size:17px;font-weight:700;color:#F7F6F3;margin:0}
 @media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:10px}}
+
+/* 펀드·RFM 표 색과 등장 효과 */
+.fd-t{font-family:'Noto Serif KR',serif;font-weight:700 !important;letter-spacing:-0.03em !important}
+.fd-list{background:linear-gradient(180deg,rgba(143,170,220,0.06),rgba(143,170,220,0.015));border:1px solid rgba(143,170,220,0.16);padding:6px 20px 4px}
+.fd-lh{color:#8FAADC !important;border-bottom-color:rgba(143,170,220,0.35) !important;padding-top:12px !important}
+.fd-row{transition:background .2s ease}
+.fd-row:hover{background:rgba(143,170,220,0.07)}
+.fd-row:last-child{border-bottom:0}
+.fd-row .wt{position:relative}
+.fd-row .wt .wb{display:block;height:3px;margin-top:6px;background:rgba(247,246,243,0.08);border-radius:2px;overflow:hidden}
+.fd-row .wt .wb i{display:block;height:100%;border-radius:2px}
+.fd-movers{background:rgba(247,246,243,0.02);border:1px solid rgba(247,246,243,0.08) !important;padding:0 20px}
+.fd-mh{color:#8FAADC !important}
+.fd-mv:last-child{border-bottom:0}
+.fd-mv:hover{background:rgba(143,170,220,0.05)}
+.fd-mv .mb .f{border-radius:2px}
+.fd-pt{border:1px solid rgba(143,170,220,0.16) !important;background:rgba(143,170,220,0.03)}
+.fd-pr{padding:14px 20px !important}
+.fd-pr.hd{background:rgba(143,170,220,0.08);color:#8FAADC !important}
+.fd-pr>*:nth-child(2){position:relative}
+.fd-pr:not(.hd)>*:nth-child(2){color:#F7F6F3}
+.fd-pr .ex{justify-self:end;padding:3px 8px;border-radius:3px}
+.fd-pr:last-child{border-bottom:0}
+@property --sweep{syntax:'<angle>';inherits:false;initial-value:360deg}
+@keyframes pgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fdUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fdFade{from{opacity:0}to{opacity:1}}
+@keyframes fdGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fdSweep{from{--sweep:0deg}to{--sweep:360deg}}
+@keyframes fdDraw{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes fdPop{from{transform:scale(0)}to{transform:scale(1)}}
+@media (prefers-reduced-motion:no-preference){
+  .pg-hero-in>*>*,.pg-hero-in>*{animation:pgIn .9s cubic-bezier(.2,.8,.2,1) both}
+  .pg-hero-in .pg-title{animation-delay:.08s}.pg-hero-in .pg-lede{animation-delay:.18s}.pg-hero-in .pg-stats{animation-delay:.28s}.pg-hero-in .fd-chips,.pg-hero-in .pg-note{animation-delay:.38s}
+  .fd-donut{-webkit-mask:conic-gradient(#000 var(--sweep),transparent 0);mask:conic-gradient(#000 var(--sweep),transparent 0)}
+  @supports (animation-timeline: view()){
+    .fd-t,.fd-cap,.fd-head{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+    .fd-row,.fd-mv,.fd-pr,.fd-lh,.fd-mh{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
+    .fd-mv .mb .f,.fd-row .wt .wb i{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 35%}
+    .fd-donut{animation:fdSweep linear both;animation-timeline:view();animation-range:entry 10% cover 45%}
+    .fd-plot .fd-chart{animation:fdDraw linear both;animation-timeline:view();animation-range:entry 20% cover 55%}
+    .fd-ends .el,.fd-ya .yl{animation:fdFade linear both;animation-timeline:view();animation-range:entry 40% cover 50%}
+    .rfmlane .nm,.rfmlane .rt,.rfmlane .rk{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 90%}
+    .rfmlane .tail{animation:fdGrow linear both;animation-timeline:view();animation-range:entry 30% cover 40%}
+    .rfmlane .run{animation:fdPop linear both;animation-timeline:view();animation-range:entry 50% cover 45%}
+    .rfm-mine,.rfm-feed{animation:fdUp linear both;animation-timeline:view();animation-range:entry 0% entry 60%}
+  }
+  @supports not (animation-timeline: view()){
+    .fd-donut{animation:fdSweep 1.4s cubic-bezier(.3,.7,.2,1) .2s both}
+    .fd-plot .fd-chart{animation:fdDraw 1.6s cubic-bezier(.3,.7,.2,1) .3s both}
+  }
+}
+@media (max-width:860px){.fd-list,.fd-movers{padding-left:12px;padding-right:12px}.fd-pr{padding:12px 10px !important}}
 .fd-cap{margin:12px 0 0;font-size:14px;line-height:1.6;color:rgba(247,246,243,0.62);max-width:none !important}
 .fd-port{display:grid;grid-template-columns:260px minmax(0,1fr);gap:56px;align-items:start;margin-top:36px}
 .fd-donut{width:260px;height:260px;border-radius:50%;position:relative;position:sticky;top:110px}
@@ -2159,8 +2212,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
     <section class="on-photo" data-nav="dark" style="background:#111c2e">
     <div class="wrap fd-wrap">
-      <p class="sec-label">Portfolio</p>
-      <h2 class="sec-title">자산구성</h2>
+      <h2 class="sec-title fd-t">Portfolio</h2>
       <p class="fd-cap">{{ fdPortCap }}</p>
       <div class="fd-port">
         <div class="fd-donut" style="background:{{ fdDonut }}"><div><b>{{ fdCount }}</b><em>{{ fdCashLine }}</em></div></div>
@@ -2171,7 +2223,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
               <i class="dt" style="background:{{ r.dot }}"></i>
               <div class="nm"><b>{{ r.name }}</b><small>{{ r.meta }}</small><sc-if value="{{ r.hasRep }}" hint-placeholder-val="{{ false }}"><a class="rp" href="{{ r.repHref }}" onClick="{{ r.repOn }}">{{ r.repLabel }} →</a></sc-if></div>
               <div class="px"><b>{{ r.px }}</b><small>{{ r.amt }}</small></div>
-              <div class="wt">{{ r.w }}</div>
+              <div class="wt">{{ r.w }}<i class="wb"><i style="width:{{ r.wbar }};background:{{ r.dot }}"></i></i></div>
               <div class="rt"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
             </div>
           </sc-for>
@@ -2180,13 +2232,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
       <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
         <div class="fd-sec">
-          <p class="sec-label">Attribution</p>
-          <h2 class="sec-title">일간 기여도</h2>
+          <h2 class="sec-title fd-t">Attribution</h2>
           <p class="fd-cap">{{ fdTodayCap }}</p>
           <div class="fd-movers">
             <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">손익</span></div>
             <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
-              <div class="fd-mv"><b class="mn">{{ m.name }}</b><div class="mb"><i class="z"></i><i class="f" style="left:{{ m.l }};width:{{ m.w }};background:{{ m.c }}"></i></div><b class="mp" style="color:{{ m.c }}">{{ m.pp }}</b><em class="ma">{{ m.amt }}</em></div>
+              <div class="fd-mv"><b class="mn">{{ m.name }}</b><div class="mb"><i class="z"></i><i class="f" style="left:{{ m.l }};width:{{ m.w }};background:{{ m.c }};transform-origin:{{ m.o }}"></i></div><b class="mp" style="color:{{ m.c }}">{{ m.pp }}</b><em class="ma">{{ m.amt }}</em></div>
             </sc-for>
           </div>
         </div>
@@ -2195,11 +2246,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
     <section class="on-photo" data-nav="dark" style="background:#0F1B2E">
     <div class="wrap fd-wrap">
-      <p class="sec-label">Performance</p>
-      <h2 class="sec-title">기간 수익률</h2>
+      <h2 class="sec-title fd-t">Performance</h2>
       <div class="fd-pt">
         <div class="fd-pr hd"><span>기간</span><span>RFS 펀드</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
-        <sc-for list="{{ fdPeriods }}" as="q" hint-placeholder-count="4"><div class="fd-pr"><span>{{ q.k }}</span><b style="color:{{ q.fc }}">{{ q.f }}</b><span>{{ q.kp }}</span><span>{{ q.kq }}</span><b style="color:{{ q.ec }}">{{ q.ex }}</b></div></sc-for>
+        <sc-for list="{{ fdPeriods }}" as="q" hint-placeholder-count="4"><div class="fd-pr"><span>{{ q.k }}</span><b style="color:{{ q.fc }}">{{ q.f }}</b><span>{{ q.kp }}</span><span>{{ q.kq }}</span><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
       </div>
       <div class="fd-head fd-sec"><div><h3 class="fd-h3">기준가격 추이</h3></div>
         <div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>RFS 펀드</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
@@ -2244,8 +2294,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     </section>
     <section class="on-photo" data-nav="dark" style="background:#111c2e">
     <div class="wrap rfm-wrap">
-      <p class="sec-label">Live Ranking</p>
-      <h2 class="sec-title">학회원 순위</h2>
+      <h2 class="sec-title fd-t">Live Ranking</h2>
       <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
         <p style="margin-top:40px;font-size:14px;color:rgba(247,246,243,0.6)">수집된 데이터가 없습니다.</p>
       </sc-if>
@@ -2264,7 +2313,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                   <i class="vl" style="left:{{ rfmZero }};background:rgba(247,246,243,0.18)"></i>
                   <i class="vl" style="left:{{ rfmKx }};background:#8FAADC;opacity:0.5"></i>
                   <i class="vl" style="left:{{ rfmCx }};border-left:1px dashed #8FAADC;opacity:0.55"></i>
-                  <i class="tail" style="left:{{ r.tailL }};width:{{ r.tailW }};background:{{ r.dot }}"></i>
+                  <i class="tail" style="left:{{ r.tailL }};width:{{ r.tailW }};background:{{ r.dot }};transform-origin:{{ r.to }}"></i>
                   <i class="run" style="left:{{ r.x }};background:{{ r.dot }}"></i>
                 </div>
                 <div class="rt" style="animation-name:{{ r.fl }}"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
@@ -4120,7 +4169,7 @@ class Component extends DCLogic {
     const rows = hs.map((h, i) => {
       const r = rep[h.code];
       return {
-        dot: shades[i % shades.length], name: h.name,
+        dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
         meta: [h.code, r && r.sector, h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
         ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
@@ -4129,7 +4178,7 @@ class Component extends DCLogic {
         repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
       };
     });
-    if (cw > 0) rows.push({ dot: 'rgba(247,246,243,0.18)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', amt: live ? won(live.cash) + '원' : '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
+    if (cw > 0) rows.push({ wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', amt: live ? won(live.cash) + '원' : '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
     // 오늘 기여: 학회원은 원 단위 손익/전일 총자산, 외부는 비중×등락
     const mv = hs.map((h) => {
       const c = live ? (h.dayPl !== null && h.dayPl !== undefined && prevTotal ? h.dayPl / prevTotal * 100 : null) : (h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
@@ -4143,7 +4192,7 @@ class Component extends DCLogic {
       fdMovers: mv.map((x) => ({
         name: x.h.name, pp: (x.c > 0 ? '+' : x.c < 0 ? '−' : '') + Math.abs(x.c).toFixed(2) + '%p',
         amt: live && x.h.dayPl !== null && x.h.dayPl !== undefined ? (x.h.dayPl >= 0 ? '+' : '−') + won(x.h.dayPl) + '원' : pct(x.h.day),
-        c: x.c >= 0 ? up : dn, l: (x.c >= 0 ? 50 : 50 - Math.abs(x.c) / mx * 50).toFixed(2) + '%', w: (Math.abs(x.c) / mx * 50).toFixed(2) + '%',
+        c: x.c >= 0 ? up : dn, l: (x.c >= 0 ? 50 : 50 - Math.abs(x.c) / mx * 50).toFixed(2) + '%', w: (Math.abs(x.c) / mx * 50).toFixed(2) + '%', o: x.c >= 0 ? 'left' : 'right',
       })),
       hasMovers: mv.length > 0,
       fdAsOfShort: (F.asOf || '').slice(5, 10).replace('-', '/'),
@@ -4165,7 +4214,7 @@ class Component extends DCLogic {
       if (!ref || ref === last) return null;
       const f = r(last[1], ref[1]), kp = r(last[2], ref[2]), kq = r(last[3], ref[3]);
       const ex = f !== null && kp !== null ? f - kp : null;
-      return { k, f: pct(f), fc: col(f), kp: pct(kp), kq: pct(kq), ex: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', ec: col(ex) };
+      return { k, f: pct(f), fc: col(f), kp: pct(kp), kq: pct(kq), ex: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', ec: col(ex), eb: ex > 0 ? 'rgba(95,196,138,0.14)' : ex < 0 ? 'rgba(232,131,123,0.14)' : 'transparent' };
     };
     return [row('1주', back(7)), row('1개월', back(30)), row('3개월', back(91)), row('설정 이후', H[0])].filter(Boolean);
   }
@@ -4330,7 +4379,7 @@ class Component extends DCLogic {
           label: nm(m), sub: real(m) ? m.nick : '',
           meta: '전체 ' + (m.rank ? Number(m.rank).toLocaleString('ko-KR') + '위' : '-') + (m.rankChg > 0 ? ' ▲' + m.rankChg : m.rankChg < 0 ? ' ▼' + -m.rankChg : '') + ' · ' + (m.count ? m.count + '종목' : '현금'),
           ret: pct(r), retColor: col(r), day: d === null ? '' : '오늘 ' + pct(d), dayColor: d === null ? flat : col(d),
-          x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl,
+          x: x(r), tailL: x(lo2), tailW: 'calc(' + x(hi2) + ' - ' + x(lo2) + ')', dot: col(r), fl, to: r >= 0 ? 'left' : 'right',
           gap: above ? '위와 ' + pp(ret(above) - r) : '', hasGap: !!above,
         };
       }),
