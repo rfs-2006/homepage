@@ -514,7 +514,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-pr:not(.hd)>*:nth-child(2){color:#F7F6F3}
 .fd-pr .ex{justify-self:end;padding:3px 8px;border-radius:3px}
 .fd-pr:last-child{border-bottom:0}
-@media (max-width:560px){.fd-pr{grid-template-columns:58px repeat(3,minmax(0,1fr));padding:12px 12px !important;font-size:13px}.fd-pr>*:nth-child(4){display:none}.fd-pr .ex{padding:2px 6px}}
+@media (max-width:560px){.fd-pr{grid-template-columns:56px repeat(3,minmax(0,1fr));gap:4px !important;padding:12px 10px !important;font-size:12.5px}.fd-pr>*:nth-child(4){display:none}.fd-pr .ex{padding:2px 5px;font-size:12px}}
 @keyframes pgIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes fdUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 @keyframes fdFade{from{opacity:0}to{opacity:1}}
@@ -545,6 +545,9 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-tip span i{display:inline-block;width:8px;height:2px}
 .fd-tip span em{font-style:normal;margin-left:auto;padding-left:14px;color:#F7F6F3;font-weight:600}
 .fd-hov.on .fd-cross,.fd-hov.on .fd-dot,.fd-hov.on .fd-tip{opacity:1}
+.fd-hov.mv .fd-cross{transition:opacity .15s,left .22s cubic-bezier(.22,.9,.3,1)}
+.fd-hov.mv .fd-dot{transition:opacity .15s,left .22s cubic-bezier(.22,.9,.3,1),top .22s cubic-bezier(.22,.9,.3,1)}
+.fd-hov.mv .fd-tip{transition:opacity .15s,left .22s cubic-bezier(.22,.9,.3,1),transform .3s cubic-bezier(.22,.9,.3,1)}
 .fd-row{cursor:default}
 .fd-row.hi{background:rgba(143,170,220,0.10)}
 .fd-donut>div b{transition:opacity .2s}
@@ -554,11 +557,12 @@ nav.nav{view-transition-name:rfs-nav}
 .fdpage .pg-hero-in{padding-bottom:56px}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
-.fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:34px}
-.fd-kc>div{background:rgba(15,27,46,0.72);border:1px solid rgba(247,246,243,0.14);padding:18px 18px 16px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-.fd-kc .kk{display:block;font-style:normal;font-size:12px;color:rgba(247,246,243,0.62)}
-.fd-kc .kv{display:block;font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-top:14px;font-variant-numeric:tabular-nums}
-.fd-kc .ks{display:block;font-size:12px;margin-top:6px;min-height:16px;font-variant-numeric:tabular-nums}
+.fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.fd-kc>div{padding:22px 26px 22px;border-left:1px solid rgba(247,246,243,0.08);min-width:0}
+.fd-kc>div:first-child{border-left:0;background:rgba(143,170,220,0.07)}
+.fd-kc .kk{display:block;font-style:normal;font-size:12px;letter-spacing:0.01em;color:rgba(247,246,243,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-kc .kv{display:block;font-family:'Pretendard Variable',sans-serif;font-size:30px;font-weight:700;letter-spacing:-0.03em;line-height:1.1;margin-top:14px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-kc .ks{display:block;font-size:12.5px;margin-top:8px;min-height:16px;font-variant-numeric:tabular-nums;font-weight:500}
 .fd-asof,.fd-foot{display:flex;align-items:center;gap:8px;margin:16px 0 0;font-size:12px;color:rgba(247,246,243,0.55);max-width:none !important}
 .fd-asof i,.fd-foot i{display:inline-block;width:12px;height:12px;border:1.5px solid currentColor;border-radius:50%;position:relative}
 .fd-asof i::after,.fd-foot i::after{content:'';position:absolute;left:4px;top:1.5px;width:1.5px;height:4px;background:currentColor;box-shadow:1.5px 3px 0 -0.2px currentColor}
@@ -575,10 +579,10 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-ac{display:grid;grid-template-columns:320px minmax(0,1fr);gap:56px;align-items:center;margin-top:26px}
 .fd-ring{position:relative;width:320px;height:320px;cursor:pointer}
 .fd-ring svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg);overflow:visible;pointer-events:none}
-.fd-ring .trk circle{fill:none;stroke:rgba(247,246,243,0.05);stroke-width:16}
+.fd-ring .trk circle{fill:none;stroke:rgba(247,246,243,0.04);stroke-width:26}
 .fd-ring .trk circle.in2{stroke:rgba(143,170,220,0.14);stroke-width:1;stroke-dasharray:1 3}
 .fd-arc circle{fill:none;stroke-width:16;transition:stroke-width .3s cubic-bezier(.2,.8,.2,1),opacity .3s}
-.fd-arc.on circle{stroke-width:24;filter:drop-shadow(0 0 6px rgba(143,170,220,0.45))}
+.fd-arc.on circle{stroke-width:30 !important;filter:drop-shadow(0 0 6px rgba(143,170,220,0.45))}
 .fd-arc.dim circle{opacity:0.22}
 .fd-ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
 .fd-ring .ck{font-style:normal;font-size:12px;letter-spacing:0.08em;color:#8FAADC;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -609,19 +613,61 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-bars>div>i{display:block;width:56px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#B7C9EA,#6F8FC9);transform-origin:bottom}
 .fd-card .fd-list{margin-top:18px;background:transparent;border:0;padding:0}
 .fd-row .dt{width:24px !important;height:24px !important;border-radius:50%;display:flex !important;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700}
-.fd-row{grid-template-columns:24px minmax(0,1fr) 150px 72px 88px !important}
-.fd-lh{grid-template-columns:24px minmax(0,1fr) 150px 72px 88px !important}
+.fd-row{grid-template-columns:24px minmax(0,1fr) 104px 112px 72px 88px !important}
+.fd-lh{grid-template-columns:24px minmax(0,1fr) 104px 112px 72px 88px !important}
 .fd-card .fd-movers{margin-top:18px}
 .fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
 @media (max-width:860px){
-  .fd-kc{grid-template-columns:repeat(2,1fr)}.fd-kc>div:last-child{grid-column:1/3}.fd-kc .kv{font-size:22px}
+  .fd-kc{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:28px}.fd-kc>div{padding:16px 16px 16px;border-left:0;border-top:1px solid rgba(247,246,243,0.08)}.fd-kc>div:nth-child(-n+2){border-top:0}.fd-kc>div:nth-child(even){border-left:1px solid rgba(247,246,243,0.08)}.fd-kc>div:last-child:nth-child(odd){grid-column:1/3}.fd-kc .kv{font-size:24px;margin-top:10px}.fd-kc .kk{font-size:11.5px}.fd-kc .ks{font-size:11.5px;margin-top:6px}
   .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px}.fd-nav a{font-size:12px;padding:8px 0}
   .fd-body{padding:16px 12px 64px}.fd-card{padding:24px 16px 20px}
   .fd-ac{grid-template-columns:1fr;gap:28px}.fd-ring{width:260px;height:260px;margin:0 auto}.fd-ring .cv{font-size:32px}.fd-li .ln{flex-basis:84px}
-  .fd-bars{height:200px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px}
+  .fd-bars{height:220px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px;white-space:normal;line-height:1.3;word-break:keep-all}
   .fd-row,.fd-lh{grid-template-columns:24px minmax(0,1fr) 56px 76px !important}
 }
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+/* 운용전략 + 운용팀장 */
+.fd-mgr{display:grid;grid-template-columns:200px minmax(0,1fr);gap:44px;align-items:center}
+.fd-mgr .pm{display:flex;flex-direction:column;align-items:center;text-align:center}
+.fd-mgr .pm img{display:block;width:150px;height:150px;border-radius:50%;object-fit:cover;object-position:50% 22%;border:2px solid rgba(143,170,220,0.5);box-shadow:0 0 0 6px rgba(143,170,220,0.08)}
+.fd-mgr .pn{margin-top:16px}
+.fd-mgr .pn em{display:block;font-style:normal;font-size:12px;letter-spacing:0.06em;color:#8FAADC}
+.fd-mgr .pn b{display:block;font-size:19px;font-weight:700;color:#F7F6F3;margin-top:4px}
+.fd-mgr .pn small{display:block;font-size:12.5px;color:rgba(247,246,243,0.55);margin-top:4px}
+.fd-mgr .ps{border-left:1px solid rgba(247,246,243,0.1);padding-left:44px}
+.fd-mgr .hl{margin:18px 0 0;font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;line-height:1.45;letter-spacing:-0.02em;color:#F7F6F3;word-break:keep-all}
+.fd-mgr ul{list-style:none;margin:16px 0 0;padding:0}
+.fd-mgr li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.78);word-break:keep-all}
+.fd-mgr li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
+@media (max-width:860px){
+  .fd-mgr{grid-template-columns:1fr;gap:22px}
+  .fd-mgr .pm{flex-direction:row;text-align:left;gap:16px}.fd-mgr .pm img{width:76px;height:76px}.fd-mgr .pn{margin-top:0}
+  .fd-mgr .ps{border-left:0;padding-left:0;border-top:1px solid rgba(247,246,243,0.1);padding-top:20px}
+  .fd-mgr .hl{font-size:19px}.fd-mgr li{font-size:14px}
+}
+
+/* 기간별 수익률 표 (KB 형식) */
+.fd-rtw{margin-top:24px;overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid rgba(143,170,220,0.16)}
+.fd-rt{min-width:760px}
+.fd-rt>div{display:grid;grid-template-columns:150px repeat(6,minmax(0,1fr));font-variant-numeric:tabular-nums}
+.fd-rt>div>*{padding:18px 16px;text-align:right;border-left:1px solid rgba(247,246,243,0.06);font-size:15px;white-space:nowrap}
+.fd-rt>div>*:first-child{text-align:left;border-left:0;position:sticky;left:0;background:#15233B;z-index:1;color:rgba(247,246,243,0.85);font-weight:500}
+.fd-rt .rh{background:rgba(143,170,220,0.08)}
+.fd-rt .rh>*{font-size:12.5px;color:#8FAADC;padding:14px 16px}
+.fd-rt .rh>*:first-child{background:#1b2a45;color:#8FAADC}
+.fd-rt .rr{border-top:1px solid rgba(247,246,243,0.07);transition:background .2s}
+.fd-rt .rr:hover{background:rgba(143,170,220,0.05)}
+.fd-rt .rr b{font-weight:600}
+.fd-rt .rr.fund>*:first-child{color:#F7F6F3;font-weight:700}
+.fd-rt .rr.fund b{font-weight:700;font-size:16px}
+.fd-rt .rr.ex{background:rgba(143,170,220,0.04)}
+.fd-notes{list-style:none;margin:10px 0 0;padding:0}
+.fd-notes li{position:relative;padding-left:12px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.5)}
+.fd-notes li::before{content:'';position:absolute;left:2px;top:.85em;width:3px;height:3px;border-radius:50%;background:currentColor}
+@media (max-width:860px){
+  .fd-rt>div{grid-template-columns:96px repeat(6,minmax(84px,1fr))}.fd-rt{min-width:600px}.fd-rt>div>*{padding:14px 10px;font-size:13.5px}.fd-rt .rh>*{font-size:11.5px;padding:12px 10px}.fd-rt .rr.fund b{font-size:14px}
+}
 
 /* 등장 효과: 화면에 들어오면 한 번 끝까지 재생 (스크롤 위치에 묶지 않는다) */
 @keyframes fdIn{from{opacity:0}to{opacity:1}}
@@ -664,7 +710,7 @@ nav.nav{view-transition-name:rfs-nav}
 .fd-row .nm b{display:block;font-size:17px;font-weight:700;color:#F7F6F3;letter-spacing:-0.01em}
 .fd-row .nm small{display:block;font-size:12px;color:rgba(247,246,243,0.55);margin-top:4px}
 .fd-row .nm .rp{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#8FAADC;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:13px;font-weight:600;color:rgba(247,246,243,0.85)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
+.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:14px;font-weight:600;color:rgba(247,246,243,0.9)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
 .fd-row .wt{text-align:right;font-size:17px;font-weight:700;color:#F7F6F3}
 .fd-row .rt{text-align:right}.fd-row .rt b{display:block;font-size:15px;font-weight:700}.fd-row .rt small{display:block;font-size:11.5px;margin-top:3px}
 .fd-movers{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
@@ -2348,13 +2394,24 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ fdNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
 
+      <section class="fd-card fd-mgr" id="fd-strat">
+        <div class="pm">
+          <img src="assets/officers/am.webp" alt="운용팀장 박정훈" loading="lazy">
+          <div class="pn"><em>운용팀장</em><b>박정훈</b><small>40기 · 26-2학기</small></div>
+        </div>
+        <div class="ps">
+          <h2 class="fd-ct">운용전략</h2>
+          <p class="hl">업황 사이클의 변곡점을 포착하는 코스피·코스닥 섹터 투자</p>
+          <ul>
+            <li>가격·물량·리드타임 등 업황 지표 기반 업종 선별 및 주 단위 비중 조절 전략</li>
+            <li>반도체·2차전지·정유 등 사이클 업종과 소부장·기판 등 밸류체인 중소형주 중심 편입</li>
+          </ul>
+        </div>
+      </section>
+
       <section class="fd-card" id="fd-perf">
         <div class="fd-ch"><h2 class="fd-ct">수익률</h2><div class="fd-legend"><span><i style="background:#8FAADC;height:3px"></i>AMT Fund</span><span><i style="background:rgba(247,246,243,0.6)"></i>KOSPI</span><span><i style="background:rgba(247,246,243,0.3)"></i>KOSDAQ</span></div></div>
-      <div class="fd-pt">
-        <div class="fd-pr hd"><span>기간</span><span>AMT Fund</span><span>KOSPI</span><span>KOSDAQ</span><span>KOSPI 대비</span></div>
-        <sc-for list="{{ fdPeriods }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}" onClick="{{ q.on }}"><span>{{ q.k }}</span><b style="color:{{ q.fc }}">{{ q.f }}</b><span>{{ q.kp }}</span><span>{{ q.kq }}</span><b class="ex" style="color:{{ q.ec }};background:{{ q.eb }}">{{ q.ex }}</b></div></sc-for>
-      </div>
-        <div class="fd-tabs" style="margin-top:28px"><sc-for list="{{ fdTabs }}" as="t" hint-placeholder-count="4"><a href="#" class="{{ t.cls }}" onClick="{{ t.on }}">{{ t.t }}</a></sc-for></div>
+        <div class="fd-tabs" style="margin-top:22px"><sc-for list="{{ fdTabs }}" as="t" hint-placeholder-count="4"><a href="#" class="{{ t.cls }}" onClick="{{ t.on }}">{{ t.t }}</a></sc-for></div>
         <sc-if value="{{ fdChartHas }}" hint-placeholder-val="{{ false }}">
         <div class="fd-cw">
           <div class="fd-ya"><sc-for list="{{ fdTicks }}" as="t" hint-placeholder-count="4"><em class="yl" style="top:{{ t.y }}">{{ t.t }}</em></sc-for></div>
@@ -2375,12 +2432,23 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
         <p class="fd-foot"><i></i>{{ fdRangeCap }}</p>
       </section>
 
+      <section class="fd-card" id="fd-period">
+        <h2 class="fd-ct">기간별 수익률</h2>
+        <div class="fd-rtw"><div class="fd-rt">
+          <div class="rh"><span>구분</span><span>1주(%)</span><span>1개월(%)</span><span>3개월(%)</span><span>6개월(%)</span><span>1년(%)</span><span>설정 이후(%)</span></div>
+          <sc-for list="{{ fdPerRows }}" as="q" hint-placeholder-count="4"><div class="{{ q.cls }}"><span>{{ q.k }}</span><b style="color:{{ q.c1 }}">{{ q.v1 }}</b><b style="color:{{ q.c2 }}">{{ q.v2 }}</b><b style="color:{{ q.c3 }}">{{ q.v3 }}</b><b style="color:{{ q.c4 }}">{{ q.v4 }}</b><b style="color:{{ q.c5 }}">{{ q.v5 }}</b><b style="color:{{ q.c6 }}">{{ q.v6 }}</b></div></sc-for>
+        </div></div>
+        <p class="fd-foot"><i></i>{{ fdPerAsOf }}</p>
+        <ul class="fd-notes"><li>운용 계좌 추정자산 기준 세전 수익률 (보수·세금 차감 전)</li><li>기간 시작일이 설정일보다 앞서면 표시하지 않음 (-)</li><li>KOSPI 대비는 같은 기간 펀드 수익률 − KOSPI 수익률 (%p)</li></ul>
+      </section>
+
+
       <section class="fd-card" id="fd-alloc">
         <h2 class="fd-ct">자산구성현황</h2>
         <div class="fd-ac">
           <div class="fd-ring" onMouseMove="{{ fdDonutMove }}" onMouseLeave="{{ fdDonutLeave }}">
             <svg class="trk" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80"></circle><circle class="in2" cx="100" cy="100" r="62"></circle></svg>
-            <sc-for list="{{ fdArcs }}" as="a" hint-placeholder-count="8"><svg class="{{ a.cls }}" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" style="stroke:{{ a.c }};stroke-dasharray:{{ a.da }};stroke-dashoffset:{{ a.off }};animation-delay:{{ a.dl }}"></circle></svg></sc-for>
+            <sc-for list="{{ fdArcs }}" as="a" hint-placeholder-count="8"><svg class="{{ a.cls }}" viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" style="stroke:{{ a.c }};stroke-width:{{ a.sw }};stroke-dasharray:{{ a.da }};stroke-dashoffset:{{ a.off }};animation-delay:{{ a.dl }}"></circle></svg></sc-for>
             <div class="ctr"><em class="ck">{{ fdCenterK }}</em><b class="cv">{{ fdCenterV }}</b><small class="cs">{{ fdCenterS }}</small></div>
           </div>
           <div class="fd-alc">
@@ -2394,18 +2462,18 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <section class="fd-card">
         <h2 class="fd-ct">업종별 비중</h2>
         <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
-        <p class="fd-foot"><i></i>업종은 R.F.S. 리포트 기준, 리포트가 없는 종목은 미분류 · 주식 내 비중</p>
+        <p class="fd-foot"><i></i>주식 내 비중 · 업종은 운용팀 분류</p>
       </section>
 
       <section class="fd-card" id="fd-hold">
         <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2><span class="fd-sub">{{ fdPortCap }}</span></div>
         <div class="fd-list">
-          <div class="fd-lh"><span></span><span>종목</span><span class="r c3">평균단가 → 현재가</span><span class="r">비중</span><span class="r">수익률</span></div>
+          <div class="fd-lh"><span></span><span>종목</span><span class="r c3">현재가</span><span class="r c3">평가금액</span><span class="r">비중</span><span class="r">수익률</span></div>
           <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
             <div class="{{ r.cls }}" onMouseEnter="{{ r.enter }}" onMouseLeave="{{ r.leave }}">
               <i class="dt" style="background:{{ r.badge }};color:{{ r.badgeC }}">{{ r.rank }}</i>
               <div class="nm"><b>{{ r.name }}</b><small>{{ r.meta }}</small><sc-if value="{{ r.hasRep }}" hint-placeholder-val="{{ false }}"><a class="rp" href="{{ r.repHref }}" onClick="{{ r.repOn }}">{{ r.repLabel }} →</a></sc-if></div>
-              <div class="px"><b>{{ r.px }}</b><small>{{ r.amt }}</small></div>
+              <div class="px"><b>{{ r.px }}</b><small>{{ r.avgL }}</small></div><div class="px"><b>{{ r.ev }}</b><small>{{ r.qtyL }}</small></div>
               <div class="wt">{{ r.w }}<i class="wb"><i style="width:{{ r.wbar }};background:{{ r.dot }}"></i></i></div>
               <div class="rt"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
             </div>
@@ -2438,7 +2506,6 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow"><sc-if value="{{ rfmLive }}" hint-placeholder-val="{{ true }}"><span class="rfm-live"><i></i>장중</span></sc-if><sc-if value="{{ rfmClosed }}" hint-placeholder-val="{{ false }}"><span style="opacity:0.7">장 마감</span></sc-if><span>Timefolio · 모의투자 대회 · 학회 순위</span></p>
         <h1 class="pg-title">Road to Fund Manager</h1>
         <p class="pg-note">{{ rfmBeatLine }}</p>
         <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
@@ -4357,6 +4424,14 @@ class Component extends DCLogic {
   // 보유 종목 원형 차트·목록, 오늘 움직인 종목 (학회 리포트가 있으면 연결)
   fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn) {
     const rep = {}; REPORTS.forEach((r) => { if (r.ticker && !rep[r.ticker]) rep[r.ticker] = r; });
+    // 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가)
+    const SECTOR = {
+      '009150': '전자부품', '353200': 'PCB·기판', '007660': 'PCB·기판', '222800': 'PCB·기판', '007810': 'PCB·기판',
+      '064290': '반도체 장비·부품', '039030': '반도체 장비·부품', '058470': '반도체 장비·부품', '089030': '반도체 장비·부품', '330860': '반도체 장비·부품',
+      '005930': '반도체', '000660': '반도체', '103590': '전력기기', '062040': '전력기기', '033790': '2차전지 소재',
+      '003490': '항공', '041830': '의료기기', 'TRMD': '해운',
+    };
+    const sectorOf = (h) => SECTOR[h.code] || (rep[h.code] && rep[h.code].sector) || '기타';
     const hi = this.state.fdHi === undefined ? null : this.state.fdHi;
     let acc = 0; const stops = []; const segs = [];
     hs.forEach((h, i) => { const w = h.weight || 0; const c = shades[i % shades.length] + (hi !== null && hi !== i ? '40' : ''); stops.push(c + ' ' + acc.toFixed(2) + '% ' + (acc + w).toFixed(2) + '%'); segs.push([acc, acc + w]); acc += w; });
@@ -4369,22 +4444,22 @@ class Component extends DCLogic {
         cls: 'fd-row' + (hi === i ? ' hi' : ''), enter: () => this.setState({ fdHi: i }), leave: () => this.setState({ fdHi: null }),
         rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : i === 2 ? '#F7F6F3' : 'rgba(247,246,243,0.7)',
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
-        meta: [h.code, r && r.sector, h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
+        meta: [h.code, sectorOf(h), h.since ? h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
         ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : '오늘 ' + pct(h.day), dayColor: col(h.day),
-        px: live ? won(h.avg) + ' → ' + won(h.cur) : '', amt: live ? won(h.evlt) + '원 · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '',
+        px: live ? won(h.cur) : '', avgL: live ? '평균 ' + won(h.avg) : '', ev: live ? won(h.evlt) : '', qtyL: live ? Number(h.qty).toLocaleString('ko-KR') + '주' : '',
         hasRep: !!r, repLabel: r ? '리포트 ' + r.op + (r.tp ? ' · TP ' + r.tp : '') + ' · ' + (r.date || '').slice(2, 7) : '', repHref: r ? '#research/' + r.id : '#',
         repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
       };
     });
-    if (cw > 0) rows.push({ rank: '', badge: 'rgba(247,246,243,0.18)', badgeC: '#F7F6F3', cls: 'fd-row' + (hi === hs.length ? ' hi' : ''), enter: () => this.setState({ fdHi: hs.length }), leave: () => this.setState({ fdHi: null }), wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', amt: live ? won(live.cash) + '원' : '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
+    if (cw > 0) rows.push({ rank: '', badge: 'rgba(247,246,243,0.18)', badgeC: '#F7F6F3', cls: 'fd-row' + (hi === hs.length ? ' hi' : ''), enter: () => this.setState({ fdHi: hs.length }), leave: () => this.setState({ fdHi: null }), wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', avgL: '', ev: live ? won(live.cash) : '', qtyL: '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
     // 오늘 기여: 학회원은 원 단위 손익/전일 총자산, 외부는 비중×등락
     const mv = hs.map((h) => {
       const c = live ? (h.dayPl !== null && h.dayPl !== undefined && prevTotal ? h.dayPl / prevTotal * 100 : null) : (h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
       return { h, c };
     }).filter((x) => x.c !== null).sort((a, b) => b.c - a.c);
     const mx = Math.max(0.01, ...mv.map((x) => Math.abs(x.c)));
-    const sec = {}; hs.forEach((h) => { const r = rep[h.code]; const k = (r && r.sector) || '미분류'; sec[k] = (sec[k] || 0) + (h.weight || 0); });
+    const sec = {}; hs.forEach((h) => { const k = sectorOf(h); sec[k] = (sec[k] || 0) + (h.weight || 0); });
     const stockW = hs.reduce((a, h) => a + (h.weight || 0), 0) || 1;
     const secs = Object.entries(sec).sort((a, b) => b[1] - a[1]).slice(0, 5);
     const secMax = Math.max(...secs.map((x) => x[1]), 1);
@@ -4394,7 +4469,8 @@ class Component extends DCLogic {
     const C = 2 * Math.PI * 80, gap = 1.6;
     const arcs = segs.map(([a, b], i) => {
       const len = Math.max(0.6, (b - a) / 100 * C - gap);
-      return { c: i < hs.length ? shades[i % shades.length] : 'rgba(247,246,243,0.32)', da: len.toFixed(2) + ' ' + C.toFixed(2), off: (-(a / 100 * C) - gap / 2).toFixed(2), dl: (0.15 + i * 0.08).toFixed(2) + 's', cls: 'fd-arc' + (hi === null ? '' : hi === i ? ' on' : ' dim') };
+      const sw = 10 + ((b - a) / Math.max(...segs.map(([x, y]) => y - x), 1)) * 16;
+      return { sw: sw.toFixed(1), c: i < hs.length ? shades[i % shades.length] : 'rgba(247,246,243,0.32)', da: len.toFixed(2) + ' ' + C.toFixed(2), off: (-(a / 100 * C) - gap / 2).toFixed(2), dl: (0.15 + i * 0.08).toFixed(2) + 's', cls: 'fd-arc' + (hi === null ? '' : hi === i ? ' on' : ' dim') };
     });
     return {
       fdLegend: legend.map((l) => ({ ...l, cls: 'fd-li' + (hi === l.i ? ' on' : ''), enter: () => this.setState({ fdHi: l.i }), leave: () => this.setState({ fdHi: null }) })),
@@ -4424,7 +4500,7 @@ class Component extends DCLogic {
       fdPortCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · ' + hs.length + '종목 · 상위 3종목 ' + hs.slice(0, 3).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '% · 현금 ' + cw.toFixed(1) + '%',
       fdTodayCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · 펀드 ' + pct(F.day) + (live && prevTotal ? ' · ' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원' : '') + (live ? '' : ' · 비중 × 일간 등락률'),
       fdPerfCap: '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ',
-      fdPeriods: this.fundPeriods(F, pct, col),
+      ...this.fundPerf(F, pct, col),
     };
   }
 
@@ -4437,6 +4513,10 @@ class Component extends DCLogic {
     const x = (i / (n - 1) * 100).toFixed(2) + '%';
     const yp = (v) => (v ? (+C.y(v) / 250 * 100).toFixed(2) + '%' : '-50%');
     const pc = (v) => (v ? ((v / 1000 - 1) * 100 >= 0 ? '+' : '−') + Math.abs((v / 1000 - 1) * 100).toFixed(2) + '%' : '-');
+    if (el._fdI === i && el.classList.contains('on')) return;
+    el._fdI = i;
+    // 처음 들어올 때는 바로 그 자리에, 이후에는 부드럽게 따라가게 (CSS transition)
+    el.classList.toggle('mv', el.classList.contains('on'));
     el.classList.add('on');
     el.querySelector('.fd-cross').style.left = x;
     [['f', C.fs], ['k', C.ks], ['q', C.qs]].forEach(([k, a]) => { const d = el.querySelector('.fd-dot.' + k); d.style.left = x; d.style.top = yp(a[i]); });
@@ -4445,22 +4525,22 @@ class Component extends DCLogic {
     tip.style.left = x; tip.style.transform = i / (n - 1) > 0.6 ? 'translateX(calc(-100% - 14px))' : 'translateX(14px)';
   }
 
-  // 기간 수익률: history [날짜, 기준가, KOSPI, KOSDAQ]에서 1주·1개월·3개월·설정 이후
-  fundPeriods(F, pct, col) {
+  // 기간별 수익률 표: history [날짜, 기준가, KOSPI, KOSDAQ]
+  fundPerf(F, pct, col) {
+    const s = this.state;
     const H = (F.history || []).filter((h) => h[1]);
-    if (H.length < 2) return [];
+    if (H.length < 2) return { fdPerRows: [], fdPerAsOf: '' };
     const last = H[H.length - 1];
-    const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H.filter((h) => h[0] <= d).pop(); };
-    const r = (a, b) => (a && b ? (a / b - 1) * 100 : null);
-    const row = (k, ref) => {
-      if (!ref || ref === last) return null;
-      const f = r(last[1], ref[1]), kp = r(last[2], ref[2]), kq = r(last[3], ref[3]);
-      const ex = f !== null && kp !== null ? f - kp : null;
-      return { k, f: pct(f), fc: col(f), kp: pct(kp), kq: pct(kq), ex: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', ec: col(ex), eb: ex > 0 ? 'rgba(95,196,138,0.14)' : ex < 0 ? 'rgba(232,131,123,0.14)' : 'transparent' };
+    const back = (days) => { const t = new Date(last[0]); t.setDate(t.getDate() - days); const d = t.toISOString().slice(0, 10); return H[0][0] <= d ? H.filter((h) => h[0] <= d).pop() : null; };
+    const refs = [back(7), back(30), back(91), back(182), back(365), H[0]];
+    const r = (j, ref) => (ref && ref !== last && last[j] && ref[j] ? (last[j] / ref[j] - 1) * 100 : null);
+    const fmt = (v, p) => (v === null ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + (p || ''));
+    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.35)' : col(v); }); return o; };
+    const f = refs.map((x) => r(1, x)), kp = refs.map((x) => r(2, x)), kq = refs.map((x) => r(3, x));
+    return {
+      fdPerRows: [mk('AMT Fund', f, 'fund'), mk('KOSPI', kp), mk('KOSDAQ', kq), mk('KOSPI 대비', f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i])), 'ex', '%p')],
+      fdPerAsOf: last[0].replace(/-/g, '.') + ' 기준 · 설정일 ' + (F.start || H[0][0]).replace(/-/g, '.'),
     };
-    const s0 = this.state.fdRange || 'all';
-    return [['1w', row('1주', back(7))], ['1m', row('1개월', back(30))], ['3m', row('3개월', back(91))], ['all', row('설정 이후', H[0])]]
-      .filter(([, r0]) => r0).map(([k, r0]) => ({ ...r0, cls: 'fd-pr' + (k === s0 ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ fdRange: k }); } }));
   }
 
   fundProps(authed) {
@@ -4505,7 +4585,7 @@ class Component extends DCLogic {
       const md = (d) => +d.slice(5, 7) + '/' + +d.slice(8, 10);
       const xi = [0, Math.floor((H.length - 1) / 2), H.length - 1].filter((v, i, a) => a.indexOf(v) === i);
       const ends = [
-        { v: fs[fs.length - 1], n: 'RFS', c: '#8FAADC' },
+        { v: fs[fs.length - 1], n: 'AMT', c: '#8FAADC' },
         { v: ks[ks.length - 1], n: 'KOSPI', c: 'rgba(247,246,243,0.75)' },
         { v: qs[qs.length - 1], n: 'KOSDAQ', c: 'rgba(247,246,243,0.5)' },
       ].filter((e) => e.v).map((e) => ({ ...e, yy: +y(e.v) / 250 * 100 })).sort((a, b) => a.yy - b.yy);
@@ -4548,7 +4628,7 @@ class Component extends DCLogic {
           { k: '보유 종목', v: hs.length + '종목', c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', '운용전략'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
@@ -4560,7 +4640,7 @@ class Component extends DCLogic {
       fdTicks: chart.ticks, fdXs: chart.xs, fdEnds: chart.ends,
       fdTabs: [['1w', '1주'], ['1m', '1개월'], ['3m', '3개월'], ['all', '설정 이후']].filter(([k]) => k === 'all' || (HA.length && (new Date(HA[HA.length - 1][0]) - new Date(HA[0][0])) / 864e5 > RANGES[k] * 0.6)).map(([k, t]) => ({ t, cls: k === rk ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ fdRange: k }); } })),
       fdRangeCap: rk === 'all' ? '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ' : (H[0] ? H[0][0].replace(/-/g, '.') : '') + ' = 0% · 벤치마크 KOSPI, KOSDAQ',
-      fdMove: (e) => this.fdHover(e), fdLeave: (e) => { const r = e.currentTarget; r.classList.remove('on'); },
+      fdMove: (e) => this.fdHover(e), fdLeave: (e) => { const r = e.currentTarget; r.classList.remove('on', 'mv'); r._fdI = null; },
       ...this.fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn),
       fdLiveDot: !!live && open, fdClosed: !(live && open),
       fdMeta: live ? 'AMT Fund · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'AMT Fund · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
@@ -4927,7 +5007,7 @@ class Component extends DCLogic {
     const isPh = !active.summary;
     const opc = opStyle(active.op);
     // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
-    const navDefs = [['RESEARCH','research'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['FUND','fund'], ['RFM','rfm'], ['AGORA','intranet']];
+    const navDefs = [['RESEARCH','research'], ['FUND','fund'], ['ABOUT','about'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['RFM','rfm'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
       : s.page === 'activity' ? 'about' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
