@@ -206,9 +206,9 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .v-a .lab b{font-size:11px;letter-spacing:.34em;font-weight:500;color:rgba(233,237,246,.82)}
 .v-a .seg{stroke-opacity:.2}
 .v-a .shade{background:radial-gradient(ellipse 120% 90% at 50% 45%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.4) 0%, rgba(2,3,8,0) 22%, rgba(2,3,8,0) 70%, rgba(2,3,8,.6) 100%)}
-.v-b .photo img{transform:scale(1.16);transition:opacity 1.2s ease, transform 16s cubic-bezier(.12,.8,.2,1)}
-.v-b.ready .photo img{transform:scale(1)}
-.v-b .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.72) 100%),linear-gradient(180deg, rgba(2,3,8,.5) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 65%, rgba(2,3,8,.7) 100%)}
+.v-zoom .photo img,.v-b .photo img{transform:scale(1.16);transition:opacity 1.2s ease, transform 16s cubic-bezier(.12,.8,.2,1)}
+.v-zoom.ready .photo img,.v-b.ready .photo img{transform:scale(1)}
+.v-zoom .shade,.v-b .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.72) 100%),linear-gradient(180deg, rgba(2,3,8,.5) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 65%, rgba(2,3,8,.7) 100%)}
 .v-b .seg{stroke-opacity:.42;stroke-width:1;filter:drop-shadow(0 0 3px rgba(170,195,255,.55))}
 .v-b .star{transform:scale(1.1)}
 .v-b .lab b{font-size:13.5px;letter-spacing:.3em}
@@ -308,7 +308,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     return {a,b,l,p};
   });
   const VAR = q.get('v') || '';
-  if (VAR) document.getElementById('sky').classList.add('v-' + VAR);
+  if (VAR) document.getElementById('sky').classList.add(...(VAR === 'd' ? ['v-c', 'v-zoom'] : ['v-' + VAR]));
   const grid = document.createElementNS(NS,'path'); grid.setAttribute('class','grid'); svg.insertBefore(grid, svg.firstChild.nextSibling);
   const guide = document.createElementNS(NS,'line'); guide.setAttribute('class','guide'); svg.appendChild(guide);
   const gflow = document.createElementNS(NS,'line'); gflow.setAttribute('class','guide-flow'); gflow.setAttribute('pathLength','1'); svg.appendChild(gflow);
@@ -325,7 +325,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     sky.classList.toggle('tall', narrow);
     const xs = STARS.map(s=>s.p[0]), ys = STARS.map(s=>s.p[1]);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-    const VS = {a:.7, b:.9, c:.64}[VAR] || 1, VY = {a:.45, b:.48, c:.43}[VAR] || .5;
+    const VS = {a:.7, b:.9, c:.64, d:.64}[VAR] || 1, VY = {a:.45, b:.48, c:.43, d:.43}[VAR] || .5;
     const k = (narrow ? Math.min(.32*W/(maxX-minX), .44*H/(maxY-minY)) : Math.min(.50*W/(maxX-minX), .34*H/(maxY-minY))) * (narrow ? Math.max(VS, .85) : VS);
     const cx = W*(narrow?.52:.5), cy = H*(narrow?.48:VY);
     const midX=(minX+maxX)/2, midY=(minY+maxY)/2;
@@ -348,7 +348,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     // guide: from just past Dubhe to just short of Polaris
     const gx1=dx+ux*16, gy1=dy+uy*16, gx2=polScr[0]-ux*16, gy2=polScr[1]-uy*16;
     [guide,gflow].forEach(g=>{g.setAttribute('x1',gx1);g.setAttribute('y1',gy1);g.setAttribute('x2',gx2);g.setAttribute('y2',gy2);});
-    if (VAR === 'c') {   // 천문도 좌표선 (적위 5°, 적경 1h)
+    if (VAR === 'c' || VAR === 'd') {   // 천문도 좌표선 (적위 5°, 적경 1h)
       const pt = (ra, de) => to(rot(proj(ra, de), deg));
       let d = '';
       for (let de = 40; de <= 85; de += 5) { let first = true; for (let ra = 110; ra <= 262; ra += 2) { const [x, y] = pt(ra, de); d += (first ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1); first = false; } }
