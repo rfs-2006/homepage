@@ -206,14 +206,22 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .v-zoom.ready .photo img{transform:scale(1)}
 .v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.72) 100%),linear-gradient(180deg, rgba(2,3,8,.5) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 65%, rgba(2,3,8,.7) 100%)}
 .v-c .star{transform:scale(.8)}
-.v-c .lab b{font-size:11.5px;letter-spacing:.32em;font-weight:500;color:rgba(233,237,246,.85)}
+.v-c .lab b{font-size:13px;letter-spacing:.32em;font-weight:500;color:rgba(233,237,246,.85)}
 .v-c .lab small{font-size:9.5px;letter-spacing:.18em}
 .v-c .seg{stroke-opacity:.24;stroke-width:.7}
+
+
+/* 사진 입체 (깊이 지도 시차) */
+#gl3d{position:absolute;inset:0;width:100%;height:100%;display:none;opacity:0;transition:opacity 1.2s ease}
+.photo.p3d #gl3d{display:block}
+.ready .photo.p3d #gl3d{opacity:1}
+.photo.p3d img{visibility:hidden}
+.p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
 </head>
 <body>
 <main class="sky" id="sky">
-  <div class="photo" id="photo"><img id="photoImg" alt="" src=""></div>
+  <div class="photo" id="photo"><img id="photoImg" alt="" src=""><canvas id="gl3d"></canvas></div>
   <div class="wash"></div><div class="wash2"></div>
   <div class="shade"></div>
   <div class="torch" id="torch"></div>
@@ -405,6 +413,63 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     requestAnimationFrame(tick);
   }
   if (!STATIC) requestAnimationFrame(tick);
+
+  /* ---- 사진 입체: 깊이 지도로 하늘·구름·산을 따로 움직인다 (?p=3d) ---- */
+  (() => {
+    const cv = document.getElementById('gl3d');
+    const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
+    if (!g) return;
+    const dimg = new Image(); dimg.src = 'hero/sky-depth.png';
+    const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    const fs = `precision highp float;
+      uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z;
+      vec2 cover(vec2 f){ float sr=R.x/R.y, ir=S.x/S.y; vec2 uv=f/R; uv.y=1.-uv.y;
+        if(sr>ir){ float h=ir/sr; uv.y=uv.y*h+(1.-h)*.4; } else { float w=sr/ir; uv.x=uv.x*w+(1.-w)*.5; } return uv; }
+      void main(){
+        vec2 uv=cover(gl_FragCoord.xy);
+        vec2 c=vec2(.5,.62);
+        vec2 q=uv;
+        for(int i=0;i<4;i++){ float d=texture2D(D,q).r;
+          float s=1.+Z*(.25+.75*d);
+          q=c+(uv-c)/s - M*(d-.3)*.05; }
+        gl_FragColor=texture2D(I,clamp(q,.001,.999));
+      }`;
+    const sh = (t, src) => { const o = g.createShader(t); g.shaderSource(o, src); g.compileShader(o); return o; };
+    const pr = g.createProgram(); g.attachShader(pr, sh(g.VERTEX_SHADER, vs)); g.attachShader(pr, sh(g.FRAGMENT_SHADER, fs)); g.linkProgram(pr);
+    if (!g.getProgramParameter(pr, g.LINK_STATUS)) return;
+    g.useProgram(pr);
+    const b = g.createBuffer(); g.bindBuffer(g.ARRAY_BUFFER, b); g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), g.STATIC_DRAW);
+    const loc = g.getAttribLocation(pr, 'p'); g.enableVertexAttribArray(loc); g.vertexAttribPointer(loc, 2, g.FLOAT, false, 0, 0);
+    const tex = (unit, im) => { const t = g.createTexture(); g.activeTexture(g.TEXTURE0 + unit); g.bindTexture(g.TEXTURE_2D, t);
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR); g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MAG_FILTER, g.LINEAR);
+      g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_S, g.CLAMP_TO_EDGE); g.texParameteri(g.TEXTURE_2D, g.TEXTURE_WRAP_T, g.CLAMP_TO_EDGE);
+      g.texImage2D(g.TEXTURE_2D, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, im); };
+    const U = (n) => g.getUniformLocation(pr, n);
+    let t0 = 0, mx = 0, my = 0;
+    const start = () => {
+      tex(0, img); tex(1, dimg); g.uniform1i(U('I'), 0); g.uniform1i(U('D'), 1);
+      g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight);
+      photo.classList.add('p3d'); sky.classList.add('p3dm'); photo.style.filter = getComputedStyle(img).filter;
+      t0 = performance.now(); requestAnimationFrame(draw);
+    };
+    const draw = (now) => {
+      const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+      if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
+      const t = (now - t0) / 1000;
+      // 마우스가 없으면 아주 느리게 저절로 흔들린다
+      const ax = Math.sin(t * .16) * .55, ay = Math.cos(t * .11) * .35;
+      const on = sky.classList.contains('pointer');
+      mx += ((on ? x * 2 : ax) - mx) * .05; my += ((on ? -y * 2 : ay) - my) * .05;
+      const z = .18 * Math.pow(Math.max(0, 1 - t / 14), 2.2);
+      g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), z);
+      g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(draw);
+    };
+    let n = 0; const one = () => { if (++n === 2) start(); };
+    if (img.complete && img.naturalWidth) one(); else img.addEventListener('load', one, { once: true });
+    if (dimg.complete && dimg.naturalWidth) one(); else dimg.addEventListener('load', one, { once: true });
+  })();
+
 
   /* ---- reveal: photo → stars ignite (Alkaid → Dubhe) → lines → Polaris guide ---- */
   const motto = document.getElementById('motto');
