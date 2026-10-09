@@ -1,5 +1,4 @@
 plugins = []
-headers = []
 
 [functions]
 
@@ -57,3 +56,13 @@ force = true
   [redirects.conditions]
 
   [redirects.headers]
+
+# 보안 헤더: 다른 사이트에 프레임으로 끼워 넣기(클릭재킹) 차단, MIME 스니핑 차단, 리퍼러 최소화, 불필요한 기기 권한 차단
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Content-Security-Policy = "frame-ancestors 'self'; base-uri 'self'; object-src 'none'"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
