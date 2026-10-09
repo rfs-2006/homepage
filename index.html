@@ -490,12 +490,12 @@ main.agora{background:#111c2e}
 main.agora.ag-dash{background:#F4F2EC}
 .ag-hero{position:relative;padding:150px 0 0;color:#F7F6F3;overflow:hidden}
 .ag-bg{position:absolute;inset:0}
-.ag-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,27,46,.72) 0%,rgba(15,27,46,.55) 55%,#111c2e 100%)}
-.ag-dash .ag-shade{background:linear-gradient(180deg,rgba(15,27,46,.72) 0%,rgba(15,27,46,.5) 50%,rgba(244,242,236,.0) 78%,#F4F2EC 100%)}
+.ag-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(15,27,46,.82) 0%,rgba(15,27,46,.6) 40%,rgba(15,27,46,.2) 75%,rgba(15,27,46,.1) 100%),linear-gradient(180deg,rgba(15,27,46,.55) 0%,rgba(15,27,46,.1) 30%,rgba(17,28,46,0) 60%,#111c2e 100%)}
+.ag-dash .ag-shade{background:linear-gradient(90deg,rgba(15,27,46,.82) 0%,rgba(15,27,46,.6) 40%,rgba(15,27,46,.2) 75%,rgba(15,27,46,.1) 100%),linear-gradient(180deg,rgba(15,27,46,.55) 0%,rgba(15,27,46,.1) 30%,rgba(244,242,236,0) 66%,#F4F2EC 100%)}
 .ag-in{position:relative;z-index:1}
 .ag-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
 .ag-top h1{color:#F7F6F3 !important;margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(32px,3.2vw,46px);font-weight:600;letter-spacing:-.02em}
-.ag-user{display:flex;align-items:center;gap:16px;font-size:13px;color:rgba(247,246,243,.8)}.ag-user a{color:rgba(247,246,243,.7)}
+.ag-user{display:flex;align-items:center;gap:16px;font-size:13px;color:#F7F6F3;text-shadow:0 1px 8px rgba(10,18,32,.85),0 0 2px rgba(10,18,32,.6)}.ag-user a{color:rgba(247,246,243,.7)}
 .ag-stats{display:flex;gap:44px;margin-top:22px}.ag-stats b{display:block;font-family:'Noto Serif KR',serif;font-size:clamp(30px,3vw,42px);font-weight:700;letter-spacing:-.02em;line-height:1.1}
 .ag-stats>div>span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C9D8F5}
 .ag-search{margin-top:36px;background:#fff;color:#1A1A1A;padding:22px 26px 26px;box-shadow:0 22px 50px rgba(15,27,46,.25)}
@@ -2701,7 +2701,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ intraOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="아고라" data-nav="dark" class="agora {{ agoraCls }}" style="position:relative;min-height:100vh">
     <section class="ag-hero on-photo" data-nav="dark">
-      <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
+      <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
       <div class="ag-shade"></div>
       <div class="wrap ag-in">
         <div class="ag-top">
@@ -5256,7 +5256,7 @@ class Component extends DCLogic {
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       // 아고라 첫 화면 (네트워크형)
       agoraCls: tab === 'dashboard' ? 'ag-dash' : 'ag-sub',
-      agoraBg: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80', agoraBgCredit: 'Photo by Pedro Lastra on Unsplash', agoraBgHref: 'https://unsplash.com/@peterlaster',
+      agoraBg: s.isMobile ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp', agoraBgCredit: '', agoraBgHref: '',
       agAlumniN: String(allNames.length || dirAll.length),
       onDirQGo: (e) => { const v = e.target.value; this.setState({ dirQ: v }); if (tab !== 'directory') this.setState({ intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); },
       agTiles: [['전체', dirAll.length]].concat(Object.keys(indCounts).filter((k) => k && k !== 'undefined').map((k) => [k, indCounts[k]]).sort((x, y) => y[1] - x[1]).slice(0, 6)).map(([label, count]) => ({ label, count, cls: (label === '전체' ? (tab !== 'directory' || !s.dirInd || s.dirInd === '전체') : (tab === 'directory' && s.dirInd === label)) ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ dirInd: label, intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); } })),
