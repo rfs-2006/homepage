@@ -169,14 +169,21 @@ async function round() {
   };
   if (DRY) { console.log(JSON.stringify({ ...data, holdings: data.holdings.length + ' holdings' })); return; }
   await save(data);
-  // 홈페이지 FUND 페이지는 로그인 없이 public_content에서 읽는다
-  await save(data, 'public_content', 'fund_live').catch((e) => console.error('public live skipped: ' + e.message.split('\n')[0]));
+  // 홈페이지 FUND 페이지는 로그인 없이 public_content에서 읽는다. 금액·수량·평단·총자산은 빼고 비중·비율만 올린다
+  const prevTotal = data.day !== null && data.day !== undefined ? total / (1 + data.day / 100) : null;
+  const pubLive = {
+    asOf: data.asOf, start: data.start, baseDate: data.baseDate, backfilledFrom: data.backfilledFrom,
+    cashWeight: data.cashWeight, nav: data.nav, ret: data.ret, day: data.day, since: data.since, bm: data.bm, history: data.history,
+    holdings: holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day, cur: h.cur, since: h.since,
+      ctb: prevTotal && h.dayPl !== null && h.dayPl !== undefined ? h.dayPl / prevTotal * 100 : null })),
+  };
+  await save(pubLive, 'public_content', 'fund_live').catch((e) => console.error('public live skipped: ' + e.message.split('\n')[0]));
   prev = data;
   if (round.publish) await savePublic(data);
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
 }
 
-const BF_KEY = START + '/3'; // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
+const BF_KEY = START + '/4:' + FLOWS.map((f) => f.d + f.v).join(','); // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
 
 // ---------- 지난 기록 채우기 (일별 추정예탁자산, kt00002) ----------
 // FUND_START부터 어제까지 날짜별 총자산으로 기준가를 거꾸로 만든다. 첫날 총자산 = 1,000 (입출금이 있으면 FUND_FLOWS 필요)
@@ -234,7 +241,14 @@ async function backfill() {
   // 시작 금액(FUND_BASE)이 있으면 시작일 직전을 1,000으로, 없으면 첫 기록일 총자산을 1,000으로
   const base = BASE || rows[0].v;
   const fmt = (d) => d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8);
-  const history = rows.map((r) => [fmt(r.d), +(r.v / base * 1000).toFixed(2), kc[r.d] || null, qc[r.d] || null]);
+  // 입출금(FUND_FLOWS)은 그 전날 기준가로 좌수를 늘리거나 줄여서 수익률에 섞이지 않게 한다
+  let units = base / 1000, navPrev = 1000; const done = new Set();
+  const history = rows.map((r) => {
+    const day = fmt(r.d);
+    FLOWS.forEach((f, i) => { if (!done.has(i) && f.d <= day) { units += f.v / navPrev; done.add(i); } });
+    const nav = units > 0 ? r.v / units : 0; navPrev = nav || navPrev;
+    return [day, +nav.toFixed(2), kc[r.d] || null, qc[r.d] || null];
+  });
   if (BASE) {
     const before = Object.keys(kc).filter((d) => d < s0).sort().pop();
     if (before) history.unshift([fmt(before), 1000, kc[before] || null, qc[before] || null]);

@@ -703,8 +703,8 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-bars>div>i{display:block;width:56px;border-radius:8px 8px 0 0;background:linear-gradient(180deg,#B7C9EA,#6F8FC9);transform-origin:bottom}
 .fd-card .fd-list{margin-top:18px;background:transparent;border:0;padding:0}
 .fd-row .dt{width:24px !important;height:24px !important;border-radius:50%;display:flex !important;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:700}
-.fd-row{grid-template-columns:24px minmax(0,1fr) 104px 112px 72px 88px !important}
-.fd-lh{grid-template-columns:24px minmax(0,1fr) 104px 112px 72px 88px !important}
+.fd-row{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
+.fd-lh{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
 .fd-card .fd-movers{margin-top:18px}
 .fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
 @media (max-width:860px){
@@ -2567,12 +2567,11 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <section class="fd-card fd-open" id="fd-hold">
         <div class="fd-ch"><h2 class="fd-ct">보유 종목</h2></div>
         <div class="fd-list">
-          <div class="fd-lh"><span></span><span>종목</span><span class="r c3">현재가</span><span class="r c3">평가금액</span><span class="r">비중</span><span class="r">수익률</span></div>
+          <div class="fd-lh"><span></span><span>종목</span><span class="r">비중</span><span class="r">수익률</span></div>
           <sc-for list="{{ fdRows }}" as="r" hint-placeholder-count="8">
             <div class="{{ r.cls }}" onMouseEnter="{{ r.enter }}" onMouseLeave="{{ r.leave }}">
               <i class="dt" style="background:{{ r.badge }};color:{{ r.badgeC }}">{{ r.rank }}</i>
               <div class="nm"><b>{{ r.name }}</b><small>{{ r.meta }}</small><sc-if value="{{ r.hasRep }}" hint-placeholder-val="{{ false }}"><a class="rp" href="{{ r.repHref }}" onClick="{{ r.repOn }}">{{ r.repLabel }} →</a></sc-if></div>
-              <div class="px"><b>{{ r.px }}</b><small>{{ r.avgL }}</small></div><div class="px"><b>{{ r.ev }}</b><small>{{ r.qtyL }}</small></div>
               <div class="wt">{{ r.w }}<i class="wb"><i style="width:{{ r.wbar }};background:{{ r.dot }}"></i></i></div>
               <div class="rt"><b style="color:{{ r.retColor }}">{{ r.ret }}</b><small style="color:{{ r.dayColor }}">{{ r.day }}</small></div>
             </div>
@@ -2589,7 +2588,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <section class="fd-card" id="fd-attr">
         <div class="fd-ch"><h2 class="fd-ct">일간 기여도</h2></div>
           <div class="fd-movers">
-            <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">손익</span></div>
+            <div class="fd-mh"><span>종목</span><span></span><span class="r">기여도</span><span class="r ma">등락</span></div>
             <sc-for list="{{ fdMovers }}" as="m" hint-placeholder-count="8">
               <div class="fd-mv"><b class="mn">{{ m.name }}</b><div class="mb"><i class="z"></i><i class="f" style="left:{{ m.l }};width:{{ m.w }};background:{{ m.c }};transform-origin:{{ m.o }}"></i></div><b class="mp" style="color:{{ m.c }}">{{ m.pp }}</b><em class="ma">{{ m.amt }}</em></div>
             </sc-for>
@@ -2902,11 +2901,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
                 <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.6)">RFS Fund</div>
                 <div style="font-size:12px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ fundAsOf }}</div>
               </div>
-              <div class="fundstat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;margin-top:22px">
+              <div class="fundstat" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:22px">
                 <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ fundNav }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">기준가</div></div>
                 <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ fundSince }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">설정 이후</div></div>
                 <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:rgba(247,246,243,0.7)">{{ fundBench }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">KOSPI 동기간</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.6vw,23px);font-weight:700;letter-spacing:-0.02em;line-height:1.3;font-variant-numeric:tabular-nums">{{ fundAum }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">운용 규모</div></div>
               </div>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
@@ -4523,7 +4521,9 @@ class Component extends DCLogic {
   }
 
   // 보유 종목 원형 차트·목록, 오늘 움직인 종목 (학회 리포트가 있으면 연결)
-  fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn) {
+  fundPortfolio(F, live, hs, shades, cw, pct, won, col, up, dn) {
+    // 기여도 = 비중 × 등락률 (수집기가 넣은 ctb가 있으면 그 값). 금액은 쓰지 않는다
+    const ctbOf = (h) => (typeof h.ctb === 'number' ? h.ctb : h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
     const rep = {}; REPORTS.forEach((r) => { if (r.ticker && !rep[r.ticker]) rep[r.ticker] = r; });
     // 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가)
     const SECTOR = {
@@ -4548,15 +4548,14 @@ class Component extends DCLogic {
         meta: [h.code, sectorOf(h)].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
         ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
-        px: live ? won(h.cur) : '', avgL: live ? '평균 ' + won(h.avg) : '', ev: live ? won(h.evlt) : '', qtyL: live ? Number(h.qty).toLocaleString('ko-KR') + '주' : '',
         hasRep: !!r, repLabel: r ? '리포트 ' + r.op + (r.tp ? ' · TP ' + r.tp : '') + ' · ' + (r.date || '').slice(2, 7) : '', repHref: r ? '#research/' + r.id : '#',
         repOn: (e) => { e.preventDefault(); if (r) this.go('report', r.id); },
       };
     });
-    if (cw > 0) rows.push({ rank: '', badge: 'rgba(247,246,243,0.18)', badgeC: '#F7F6F3', cls: 'fd-row' + (hi === hs.length ? ' hi' : ''), enter: () => this.setState({ fdHi: hs.length }), leave: () => this.setState({ fdHi: null }), wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '', px: '', avgL: '', ev: live ? won(live.cash) : '', qtyL: '', hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
+    if (cw > 0) rows.push({ rank: '', badge: 'rgba(247,246,243,0.18)', badgeC: '#F7F6F3', cls: 'fd-row' + (hi === hs.length ? ' hi' : ''), enter: () => this.setState({ fdHi: hs.length }), leave: () => this.setState({ fdHi: null }), wbar: Math.min(100, cw / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%', dot: 'rgba(247,246,243,0.35)', name: '현금', meta: '', w: cw.toFixed(1) + '%', ret: '', retColor: '', day: '', dayColor: '',  hasRep: false, repLabel: '', repHref: '#', repOn: (e) => e.preventDefault() });
     // 오늘 기여: 학회원은 원 단위 손익/전일 총자산, 외부는 비중×등락
     const mv = hs.map((h) => {
-      const c = live ? (h.dayPl !== null && h.dayPl !== undefined && prevTotal ? h.dayPl / prevTotal * 100 : null) : (h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
+      const c = ctbOf(h);
       return { h, c };
     }).filter((x) => x.c !== null).sort((a, b) => b.c - a.c);
     const mx = Math.max(0.01, ...mv.map((x) => Math.abs(x.c)));
@@ -4593,13 +4592,13 @@ class Component extends DCLogic {
       fdRows: rows,
       fdMovers: mv.map((x) => ({
         name: x.h.name, pp: (x.c > 0 ? '+' : x.c < 0 ? '−' : '') + Math.abs(x.c).toFixed(2) + '%p',
-        amt: live && x.h.dayPl !== null && x.h.dayPl !== undefined ? (x.h.dayPl >= 0 ? '+' : '−') + won(x.h.dayPl) + '원' : pct(x.h.day),
+        amt: pct(x.h.day),
         c: x.c >= 0 ? up : dn, l: (x.c >= 0 ? 50 : 50 - Math.abs(x.c) / mx * 50).toFixed(2) + '%', w: (Math.abs(x.c) / mx * 50).toFixed(2) + '%', o: x.c >= 0 ? 'left' : 'right',
       })),
       hasMovers: mv.length > 0,
       fdAsOfShort: (F.asOf || '').slice(5, 10).replace('-', '/'),
       fdPortCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · ' + hs.length + '종목 · 상위 3종목 ' + hs.slice(0, 3).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '% · 현금 ' + cw.toFixed(1) + '%',
-      fdTodayCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · 펀드 ' + pct(F.day) + (live && prevTotal ? ' · ' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원' : '') + (live ? '' : ' · 비중 × 일간 등락률'),
+      fdTodayCap: '기준일 ' + (F.asOf || '').slice(5, 10).replace('-', '/') + ' · 펀드 ' + pct(F.day) + ' · 비중 × 일간 등락률',
       fdPerfCap: '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ',
       ...this.fundPerf(F, pct, col),
     };
@@ -4664,7 +4663,8 @@ class Component extends DCLogic {
     const gap = kospi !== null && kospi !== undefined ? F.ret - kospi : null;
     const hs = (F.holdings || []).slice().sort((a, b) => b.weight - a.weight);
     const maxW = Math.max(10, ...hs.map((h) => h.weight || 0));
-    const best = live ? hs.filter((h) => h.dayPl !== null && h.dayPl !== undefined).sort((a, b) => b.dayPl - a.dayPl)[0] : hs.filter((h) => h.day !== null && h.day !== undefined).sort((a, b) => b.day - a.day)[0];
+    const ctbOf = (h) => (typeof h.ctb === 'number' ? h.ctb : h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
+    const best = hs.filter((h) => ctbOf(h) !== null).sort((a, b) => ctbOf(b) - ctbOf(a))[0];
     // 기준가 추이: history = [날짜, 기준가, KOSPI, KOSDAQ] → 첫날 1,000으로 맞춰 세 선
     const wkd = (d) => { const x = new Date(d + 'T00:00:00Z').getUTCDay(); return x !== 0 && x !== 6; };
     const HA = (F.history || []).filter((h) => h[1] && wkd(h[0]));
@@ -4702,8 +4702,7 @@ class Component extends DCLogic {
       chart.ends = ends.map((e) => ({ y: e.yy.toFixed(2) + '%', t: e.n + ' ' + pct((e.v / 1000 - 1) * 100), c: e.c }));
     }
     // 오늘 수익 기여 (학회원): 종목별 오늘 손익 / 전일 총자산
-    const prevTotal = live && live.day !== null && live.day !== undefined ? live.total / (1 + live.day / 100) : null;
-    const contrib = live ? hs.filter((h) => h.dayPl).map((h) => ({ nm: h.name, c: prevTotal ? h.dayPl / prevTotal * 100 : 0 })).sort((a, b) => a.c - b.c) : [];
+    const contrib = live ? hs.map((h) => ({ nm: h.name, c: ctbOf(h) })).filter((x) => x.c).sort((a, b) => a.c - b.c) : [];
     const ctot = contrib.reduce((a, x) => a + Math.abs(x.c), 0) || 1;
     const prevMap = {}; ((s.fundLivePrev && s.fundLivePrev.holdings) || []).forEach((h) => { prevMap[h.code] = h.cur; });
     const tick = this._fundTick || 0;
@@ -4711,10 +4710,10 @@ class Component extends DCLogic {
     const cw = F.cashWeight || 0;
     const alloc = hs.map((h, i) => ({ grow: (h.weight || 0).toFixed(2), bg: shades[i % shades.length], tc: '#0F1B2E', label: (h.weight || 0) >= 7 ? h.name : '' }))
       .concat(cw > 0 ? [{ grow: cw.toFixed(2), bg: 'rgba(247,246,243,0.16)', tc: '#F7F6F3', label: cw >= 7 ? '현금' : '' }] : []);
-    const byDay = hs.filter((h) => (live ? h.dayPl !== null && h.dayPl !== undefined : h.day !== null && h.day !== undefined));
-    const key = (h) => (live ? h.dayPl : h.day);
+    const byDay = hs.filter((h) => ctbOf(h) !== null);
+    const key = (h) => ctbOf(h);
     const top = byDay.slice().sort((a, b) => key(b) - key(a))[0], bot = byDay.slice().sort((a, b) => key(a) - key(b))[0];
-    const fmtK = (h) => (live ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) + '원' : pct(h.day));
+    const fmtK = (h) => pct(h.day);
     const sd = F.start ? F.start : '';
     return {
       fdHas: true, fdNone: false, fdLive: !!live, fdPublic: !live,
@@ -4748,7 +4747,7 @@ class Component extends DCLogic {
       fdTabs: [['1w', '1주'], ['1m', '1개월'], ['3m', '3개월'], ['all', '설정 이후']].filter(([k]) => k === 'all' || (HA.length && (new Date(HA[HA.length - 1][0]) - new Date(HA[0][0])) / 864e5 > RANGES[k] * 0.6)).map(([k, t]) => ({ t, cls: k === rk ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ fdRange: k }); } })),
       fdRangeCap: rk === 'all' ? '설정일 ' + (F.start || '').replace(/-/g, '.') + ' = 1,000 · 벤치마크 KOSPI, KOSDAQ' : (H[0] ? H[0][0].replace(/-/g, '.') : '') + ' = 0% · 벤치마크 KOSPI, KOSDAQ',
       fdMove: (e) => this.fdHover(e), fdLeave: (e) => { const r = e.currentTarget; r.classList.remove('on', 'mv'); r._fdI = null; },
-      ...this.fundPortfolio(F, live, hs, shades, cw, prevTotal, pct, won, col, up, dn),
+      ...this.fundPortfolio(F, live, hs, shades, cw, pct, won, col, up, dn),
       fdLiveDot: !!live && open, fdClosed: !(live && open),
       fdMeta: live ? 'AMT Fund · 키움증권 계좌 · ' + (F.asOf || '').slice(5, 19).replace('-', '/') + ' 기준' : 'AMT Fund · ' + (F.asOf || '').replace(/-/g, '.') + ' 장 마감 기준',
       fdHeadRet: pct(F.ret), fdHeadColor: col(F.ret),
@@ -4760,21 +4759,21 @@ class Component extends DCLogic {
         { v: pct(F.day), k: '일간', c: col(F.day) },
         { v: pct(kospi), k: 'KOSPI 동기간', c: col(kospi) },
         { v: pct(kosdaq), k: 'KOSDAQ 동기간', c: col(kosdaq) },
-      ].concat(live ? [{ v: won(live.total) + '원', k: '순자산', c: '#F7F6F3' }] : []),
+      ],
       fdChartHas: chart.has, fdChartNone: !chart.has, fdPtsF: chart.f, fdPtsK: chart.k, fdPtsQ: chart.q, fdBaseY: chart.base,
       fdContrib: contrib.map((x) => ({ grow: (Math.abs(x.c) / ctot * 100).toFixed(2), bg: x.c >= 0 ? up : dn, label: Math.abs(x.c) / ctot > 0.08 ? x.nm + ' ' + (x.c > 0 ? '+' : '−') + Math.abs(x.c).toFixed(2) + '%p' : '' })),
       fdHasContrib: contrib.length > 0,
-      fdContribSum: live ? '합계 ' + pct(live.day) + (prevTotal ? ' · ' + (live.total - prevTotal >= 0 ? '+' : '−') + won(live.total - prevTotal) + '원' : '') : '',
+      fdContribSum: live ? '합계 ' + pct(live.day) : '',
       fdHoldCap: hs.length + '종목 · 주식 ' + (100 - (F.cashWeight || 0)).toFixed(1) + '% · 현금 ' + (F.cashWeight || 0).toFixed(1) + '%',
       fdHolds: hs.map((h) => {
         const pc = prevMap[h.code];
         const fl = live && pc !== undefined && pc !== h.cur ? (h.cur > pc ? 'fdFu' : 'fdFd') + (tick % 2) : 'none';
         return {
-          name: h.name, meta: h.code + (live ? ' · ' + Number(h.qty).toLocaleString('ko-KR') + '주' : '') + (h.since ? ' · ' + h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''),
-          w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: live ? won(h.evlt) + '원' : '',
-          avg: live ? won(h.avg) : '', cur: live ? won(h.cur) : '',
+          name: h.name, meta: h.code + (h.since ? ' · ' + h.since.slice(2).replace(/-/g, '.') + ' 편입' : ''),
+          w: (h.weight || 0).toFixed(1) + '%', wbar: ((h.weight || 0) / maxW * 72).toFixed(1) + '%', evlt: '',
+          avg: '', cur: '',
           ret: pct(h.ret), retColor: col(h.ret), day: h.day === null || h.day === undefined ? '' : 'Today ' + pct(h.day), dayColor: col(h.day),
-          dayPl: live && h.dayPl !== null && h.dayPl !== undefined ? (h.dayPl >= 0 ? '+' : '−') + won(h.dayPl) : '', dayPlColor: col(h.dayPl), fl,
+          dayPl: '', dayPlColor: col(h.day), fl,
         };
       }),
       fdNote: '본 페이지는 중앙대학교 가치투자학회 R.F.S. 운용팀의 운용 현황을 학회 활동 목적으로 공개하는 자료이며, 특정 종목의 매수·매도를 권유하지 않습니다. 과거의 수익률이 미래의 수익을 보장하지 않으며, 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다. 표시된 수치는 운용 계좌의 추정 자산 기준으로 실제와 다를 수 있습니다.',
