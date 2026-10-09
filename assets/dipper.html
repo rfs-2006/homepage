@@ -210,15 +210,6 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .v-c .lab small{font-size:9.5px;letter-spacing:.18em}
 .v-c .seg{stroke-opacity:.24;stroke-width:.7}
 
-/* 깊이감 시안 */
-.near{position:absolute;left:-80px;top:-60px;pointer-events:none;display:none;will-change:transform}
-.depth .near{display:block;opacity:0;transition:opacity 2s ease 1.6s}
-.depth.ready .near{opacity:1}
-.depth .near.n2{filter:blur(.6px)}
-.depth.ready .near{animation:tw 7s ease-in-out 3.6s infinite}
-.depth.ready .near.n2{animation-duration:9.5s;animation-delay:4.4s}
-@keyframes tw{0%,100%{opacity:1}50%{opacity:.55}}
-.depth .dipper{transform-style:preserve-3d}
 
 /* 사진 입체 (깊이 지도 시차) */
 #gl3d{position:absolute;inset:0;width:100%;height:100%;display:none;opacity:0;transition:opacity 1.2s ease}
@@ -235,7 +226,6 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   <div class="shade"></div>
   <div class="torch" id="torch"></div>
 
-  <canvas class="near" id="nearA"></canvas><canvas class="near n2" id="nearB"></canvas>
   <div class="dipper" id="dipper">
     <svg class="lines" id="lines" aria-hidden="true">
       <defs><radialGradient id="gfade" gradientUnits="userSpaceOnUse" cx="50%" cy="46%" r="62%"><stop offset="0" stop-color="#C8D7FF" stop-opacity=".09"/><stop offset=".55" stop-color="#C8D7FF" stop-opacity=".06"/><stop offset="1" stop-color="#C8D7FF" stop-opacity="0"/></radialGradient><filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.2"/></filter></defs>
@@ -415,42 +405,17 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     sky.classList.add('pointer');
   });
   sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); });
-  // 깊이감: 사진(먼 하늘) · 가까운 별 두 겹 · 별자리를 서로 다른 속도로 움직인다
-  const DEPTH = q.get('d') || '';
-  const nearA = document.getElementById('nearA'), nearB = document.getElementById('nearB');
-  if (DEPTH) {
-    sky.classList.add('depth');
-    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    const paint = (cv, n, rmin, rmax, blur) => {
-      const W0 = innerWidth + 160, H0 = innerHeight + 120, dpr = Math.min(2, devicePixelRatio || 1);
-      cv.width = W0 * dpr; cv.height = H0 * dpr; cv.style.width = W0 + 'px'; cv.style.height = H0 + 'px';
-      const c = cv.getContext('2d'); c.scale(dpr, dpr);
-      for (let i = 0; i < n; i++) {
-        const x0 = rnd() * W0, y0 = rnd() * H0 * .82, r = rmin + Math.pow(rnd(), 3) * (rmax - rmin), a = .35 + rnd() * .55;
-        const g = c.createRadialGradient(x0, y0, 0, x0, y0, r * (blur ? 4 : 3));
-        g.addColorStop(0, `rgba(235,242,255,${a})`); g.addColorStop(.35, `rgba(200,218,255,${a * .35})`); g.addColorStop(1, 'rgba(200,218,255,0)');
-        c.fillStyle = g; c.beginPath(); c.arc(x0, y0, r * (blur ? 4 : 3), 0, 7); c.fill();
-      }
-    };
-    paint(nearA, 90, .5, 1.4, false); paint(nearB, 26, 1.2, 2.6, true);
-  }
   function tick(){
     x += (tx-x)*.06; y += (ty-y)*.06;
     photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
-    if (DEPTH) {
-      nearA.style.transform = `translate3d(${(-x*44).toFixed(2)}px, ${(-y*30).toFixed(2)}px, 0)`;
-      nearB.style.transform = `translate3d(${(-x*70).toFixed(2)}px, ${(-y*48).toFixed(2)}px, 0)`;
-    }
-    dipper.style.transform = DEPTH === 'b'
-      ? `translate3d(${(-x*30).toFixed(2)}px, ${(-y*20).toFixed(2)}px, 0) perspective(1400px) rotateX(${(y*6).toFixed(2)}deg) rotateY(${(-x*9).toFixed(2)}deg)`
-      : `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
+    dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
     torch.style.transform = `translate3d(${px}px, ${py}px, 0)`;
     requestAnimationFrame(tick);
   }
   if (!STATIC) requestAnimationFrame(tick);
 
   /* ---- 사진 입체: 깊이 지도로 하늘·구름·산을 따로 움직인다 (?p=3d) ---- */
-  if (q.get('p') === '3d') (() => {
+  (() => {
     const cv = document.getElementById('gl3d');
     const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
     if (!g) return;
