@@ -206,7 +206,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .v-zoom.ready .photo img{transform:scale(1)}
 .v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.72) 100%),linear-gradient(180deg, rgba(2,3,8,.5) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 65%, rgba(2,3,8,.7) 100%)}
 .v-c .star{transform:scale(.8)}
-.v-c .lab b{font-size:10.5px;letter-spacing:.32em;font-weight:500;color:rgba(233,237,246,.85)}
+.v-c .lab b{font-size:11.5px;letter-spacing:.32em;font-weight:500;color:rgba(233,237,246,.85)}
 .v-c .lab small{font-size:9.5px;letter-spacing:.18em}
 .v-c .seg{stroke-opacity:.24;stroke-width:.7}
 </style>
@@ -316,7 +316,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     sky.classList.toggle('tall', narrow);
     const xs = STARS.map(s=>s.p[0]), ys = STARS.map(s=>s.p[1]);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-    const VS = .64, VY = .43;
+    const VS = .75, VY = .44;
     const k = (narrow ? Math.min(.32*W/(maxX-minX), .44*H/(maxY-minY)) : Math.min(.50*W/(maxX-minX), .34*H/(maxY-minY))) * (narrow ? Math.max(VS, .85) : VS);
     const cx = W*(narrow?.52:.5), cy = H*(narrow?.48:VY);
     const midX=(minX+maxX)/2, midY=(minY+maxY)/2;
