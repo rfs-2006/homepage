@@ -484,6 +484,53 @@ nav.nav{view-transition-name:rfs-nav}
   main.pgx.mhome .story>section{margin:0 !important;width:auto !important;max-width:none !important}
   main.pgx.mhome .story .sec-label{color:rgba(247,246,243,0.72) !important}
 }
+
+/* 아고라 (네트워크형) */
+main.agora{background:#111c2e}
+main.agora.ag-dash{background:#F4F2EC}
+.ag-hero{position:relative;padding:150px 0 0;color:#F7F6F3;overflow:hidden}
+.ag-bg{position:absolute;inset:0}
+.ag-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,27,46,.72) 0%,rgba(15,27,46,.55) 55%,#111c2e 100%)}
+.ag-dash .ag-shade{background:linear-gradient(180deg,rgba(15,27,46,.72) 0%,rgba(15,27,46,.5) 50%,rgba(244,242,236,.0) 78%,#F4F2EC 100%)}
+.ag-in{position:relative;z-index:1}
+.ag-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.ag-top h1{color:#F7F6F3 !important;margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(32px,3.2vw,46px);font-weight:600;letter-spacing:-.02em}
+.ag-user{display:flex;align-items:center;gap:16px;font-size:13px;color:rgba(247,246,243,.8)}.ag-user a{color:rgba(247,246,243,.7)}
+.ag-stats{display:flex;gap:44px;margin-top:22px}.ag-stats b{display:block;font-family:'Noto Serif KR',serif;font-size:clamp(30px,3vw,42px);font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.ag-stats>div>span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C9D8F5}
+.ag-search{margin-top:36px;background:#fff;color:#1A1A1A;padding:22px 26px 26px;box-shadow:0 22px 50px rgba(15,27,46,.25)}
+.ag-search input{width:100%;font:inherit;font-size:20px;border:0;border-bottom:1px solid #E2DED4;outline:0;padding:6px 0 12px;background:transparent;color:#1A1A1A}
+.ag-tiles{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:#E2DED4;border:1px solid #E2DED4;margin-top:16px}
+.ag-tiles a{background:#fff;padding:14px 14px 12px;color:#1A1A1A;transition:background .2s}.ag-tiles a:hover{background:#F4F2EC}
+.ag-tiles b{display:block;font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:#203864;line-height:1.1}.ag-tiles a>span{font-size:12px;color:#77746C}
+.ag-tiles a.on{background:#203864}.ag-tiles a.on b,.ag-tiles a.on>span{color:#fff}
+.ag-tabs{position:sticky;top:72px;z-index:20;background:rgba(17,28,46,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(247,246,243,.12);margin-top:26px}
+.ag-dash .ag-tabs{background:rgba(244,242,236,.95);border-bottom-color:#E2DED4}
+.ag-tabs .wrap{display:flex;gap:28px;padding-top:0 !important;padding-bottom:0 !important;overflow-x:auto;scrollbar-width:none}
+.ag-tabs a{padding:15px 0;font-size:13px;color:rgba(247,246,243,.65);white-space:nowrap;border-bottom:2px solid transparent}
+.ag-tabs a.on{color:#F7F6F3;font-weight:700;border-bottom-color:#8FAADC}
+.ag-dash .ag-tabs a{color:rgba(26,26,26,.6)}.ag-dash .ag-tabs a.on{color:#203864;border-bottom-color:#203864}
+.ag-body{padding-top:32px !important;padding-bottom:100px !important}
+.ag-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}.ag-h h2{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#0F1B2E;margin:0}.ag-h a{font-size:12px;color:#77746C}
+.ag-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ag-card{background:#fff;border:1px solid #E2DED4;padding:20px;display:flex;flex-direction:column;gap:10px;color:#1A1A1A;transition:transform .2s,box-shadow .2s}
+.ag-card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(15,27,46,.1)}
+.ag-card .r{display:flex;gap:12px;align-items:center}.ag-card b{font-size:17px}.ag-card small{font-size:12px;color:#77746C}.ag-card b *,.ag-stats b *,.ag-tiles b *{font:inherit;color:inherit}
+.ag-card .av{width:44px;height:44px;border-radius:50%;background:#203864;color:#F7F6F3;display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.ag-card .ind{font-size:11px;font-weight:600;color:#203864}.ag-card .co{font-size:14px}.ag-card .ro{font-size:13px;color:#77746C}
+.ag-card .bt{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #EEEAE2;padding-top:12px;margin-top:auto;font-size:12px;color:#77746C}
+.ag-card .btn{padding:7px 12px;font-size:11px;color:#203864 !important;border-color:#203864 !important}
+.ag-two{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}
+.ag-box{background:#fff;border:1px solid #E2DED4;padding:24px}
+.ag-li{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px solid #EEEAE2;font-size:14px;color:#1A1A1A}
+.ag-li .m{font-size:12px;color:#8A867C;white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#203864;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#203864;margin-right:6px}
+.ag-empty{font-size:13px;color:#77746C}
+@media (max-width:860px){
+  .ag-hero{padding-top:104px}.ag-stats{gap:26px}.ag-search{padding:16px 16px 18px;margin-top:26px}.ag-search input{font-size:16px}
+  .ag-tiles{display:flex;overflow-x:auto;scrollbar-width:none}.ag-tiles a{flex:0 0 96px}
+  .ag-user{width:100%;justify-content:flex-end}
+  .ag-cards,.ag-two{grid-template-columns:1fr}.ag-tabs{top:56px}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
@@ -2652,79 +2699,69 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   </sc-if>
 
   <sc-if value="{{ intraOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="아고라" data-nav="dark" style="position:relative;background:#111c2e;min-height:100vh">
-    <div style="position:fixed;inset:0;z-index:0"><image-slot id="agora-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
-    <div style="position:fixed;inset:0;z-index:0;background:linear-gradient(to bottom, rgba(17,28,46,0.82) 0%, rgba(17,28,46,0.95) 55%, #111c2e 100%)"></div>
-    <div style="position:relative;z-index:1">
-    <div data-nav="light" style="height:72px"></div>
-    <div class="wrap" style="padding:36px 35px 100px">
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid rgba(247,246,243,0.25)">
-        <div>
-          <p class="sec-label" style="color:#8FAADC">Agora · 43기</p>
-          <h1 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(28px,2.6vw,38px);font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">{{ intraTitle }}</h1>
+  <main data-screen-label="아고라" data-nav="dark" class="agora {{ agoraCls }}" style="position:relative;min-height:100vh">
+    <section class="ag-hero on-photo" data-nav="dark">
+      <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
+      <div class="ag-shade"></div>
+      <div class="wrap ag-in">
+        <div class="ag-top">
+          <div>
+            <p class="sec-label" style="color:#C9D8F5">Agora · 43기</p>
+            <h1>R.F.S. Network</h1>
+          </div>
+          <div class="ag-user">
+            <span>{{ intraUser }}</span>
+            <a href="#" onClick="{{ editMe }}">변경</a>
+            <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
+          </div>
         </div>
-        <div style="display:flex;align-items:center;gap:18px;font-size:13px;color:rgba(26,26,26,0.65)">
-          <span>{{ intraUser }}</span>
-          <a href="#" onClick="{{ editMe }}" style="font-size:12px;color:rgba(247,246,243,0.6)">변경</a>
-          <a href="{{ cafeUrl }}" target="_blank" rel="noopener" class="btn btn-outline" style="padding:9px 14px;font-size:11px">CAFE</a>
-          <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
+        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>43</b><span>Cohorts</span></div><div><b>68%</b><span>In finance</span></div></div>
+        <div class="ag-search">
+          <input type="search" placeholder="이름, 회사, 직무로 선배 찾기" value="{{ dirQ }}" onChange="{{ onDirQGo }}">
+          <div class="ag-tiles"><sc-for list="{{ agTiles }}" as="t" hint-placeholder-count="7"><a href="#intranet/directory" onClick="{{ t.on }}" class="{{ t.cls }}"><b>{{ t.count }}</b><span>{{ t.label }}</span></a></sc-for></div>
         </div>
       </div>
-
-      <div class="intra-grid" style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:clamp(32px,4vw,64px);margin-top:36px;align-items:start">
-        <nav class="intra-rail" style="position:sticky;top:96px">
-          <div class="sec" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(26,26,26,0.45);margin:0 0 8px">Menu</div>
-          <sc-for list="{{ intraRailMain }}" as="r" hint-placeholder-count="5"><a href="{{ r.href }}" onClick="{{ r.on }}" class="{{ r.cls }}">{{ r.label }}</a></sc-for>
-          <div class="sec" style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(26,26,26,0.45);margin:26px 0 8px">Cafe</div>
-          <a href="{{ cafeUrl }}" target="_blank" rel="noopener">네이버 카페 ↗</a>
-        </nav>
-
+    </section>
+    <nav class="ag-tabs" data-nav="light"><div class="wrap">
+      <sc-for list="{{ intraRailMain }}" as="r" hint-placeholder-count="5"><a href="{{ r.href }}" onClick="{{ r.on }}" class="{{ r.cls }}">{{ r.label }}</a></sc-for>
+      <a href="{{ cafeUrl }}" target="_blank" rel="noopener">네이버 카페 ↗</a>
+    </div></nav>
+    <div style="position:relative;z-index:1">
+    <div class="wrap ag-body">
+      <div>
         <div style="min-width:0">
           <sc-if value="{{ isIntraDash }}" hint-placeholder-val="{{ true }}">
-            <div class="intra-cards" style="display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:24px">
-              <div style="grid-column:1 / -1;display:flex;gap:clamp(24px,4vw,56px);flex-wrap:wrap;align-items:baseline;padding:0 0 4px">
-                <a href="#intranet/directory" onClick="{{ goDirectory }}" style="display:block">
-                  <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3">{{ dirTotal }}</div>
-                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8FAADC;margin-top:8px">알럼나이 디렉토리 →</div>
-                </a>
-                <a href="#intranet/board" onClick="{{ goBoard }}" style="display:block">
-                  <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3">{{ postCount }}</div>
-                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8FAADC;margin-top:8px">게시판 →</div>
-                </a>
-                <a href="#intranet/fund" onClick="{{ goFund }}" style="display:block">
-                  <div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,34px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3">{{ fundSince }}</div>
-                  <div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8FAADC;margin-top:8px">AMT Fund →</div>
-                </a>
-              </div>
-              <div class="intra-card" style="padding-bottom:20px">
-                <div class="rule"><div class="hd">최근 글</div><a href="#intranet/board" onClick="{{ goBoard }}" style="font-size:12px;color:#8FAADC">게시판 →</a></div>
+            <div class="ag-h"><h2>선배</h2><a href="#intranet/directory" onClick="{{ goDirectory }}">{{ dirTotal }} 전체 →</a></div>
+            <div class="ag-cards">
+              <sc-for list="{{ agAlumni }}" as="a" hint-placeholder-count="6">
+                <div class="ag-card">
+                  <div class="r"><span class="av">{{ a.ini }}</span><div><b>{{ a.name }}</b> <small>{{ a.cohortLabel }}</small><div class="ind">{{ a.industry }}</div></div></div>
+                  <div><div class="co">{{ a.company }}</div><div class="ro">{{ a.role }}</div></div>
+                  <div class="bt"><span>커피챗</span><a href="#" onClick="{{ a.on }}" class="btn btn-outline">커피챗 신청</a></div>
+                </div>
+              </sc-for>
+            </div>
+            <div class="ag-two">
+              <div class="ag-box">
+                <div class="ag-h"><h2>게시판</h2><a href="#intranet/board" onClick="{{ goBoard }}">전체 →</a></div>
                 <sc-if value="{{ hasDashPosts }}" hint-placeholder-val="{{ true }}">
-                  <sc-for list="{{ dashPostTop }}" as="p" hint-placeholder-count="3">
-                    <a href="#intranet/board" onClick="{{ goBoard }}" style="display:block;padding:12px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                      <div style="font-size:11px;color:#8FAADC">{{ p.category }} · {{ p.meta }}</div>
-                      <div style="font-size:14px;color:#F7F6F3;margin-top:4px">{{ p.title }}</div>
-                    </a>
+                  <sc-for list="{{ dashPostTop }}" as="p" hint-placeholder-count="4">
+                    <a href="#intranet/board" onClick="{{ goBoard }}" class="ag-li"><span><span class="cat">{{ p.category }}</span> {{ p.title }}</span><span class="m">{{ p.meta }}</span></a>
                   </sc-for>
                 </sc-if>
-                <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:rgba(247,246,243,0.55)">첫 글을 남겨보세요.</p></sc-if>
+                <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><p class="ag-empty">첫 글을 남겨보세요.</p></sc-if>
               </div>
-              <div class="intra-card" style="padding-bottom:20px">
-                <div class="rule"><div class="hd">이번 학기 일정</div></div>
-                <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="8">
-                  <div style="display:grid;grid-template-columns:124px minmax(0,1fr);gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
-                    <span style="font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums;white-space:nowrap">{{ d.date }} <span style="font-family:inherit;font-weight:500;color:rgba(247,246,243,0.65)">{{ d.dowLabel }}</span></span>
-                    <span style="font-size:13px;color:rgba(247,246,243,0.85)">{{ d.title }}</span>
-                  </div>
+              <div class="ag-box">
+                <div class="ag-h"><h2>이번 학기 일정</h2></div>
+                <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="6">
+                  <div class="ag-li"><span><b class="dt">{{ d.date }}</b> {{ d.title }}</span><span class="m">{{ d.meta }}</span></div>
                 </sc-for>
               </div>
             </div>
           </sc-if>
 
           <sc-if value="{{ isIntraDirectory }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
-              <input class="intra-input" type="search" placeholder="이름 · 회사 · 직무 검색" value="{{ dirQ }}" onChange="{{ onDirQ }}" style="flex:1 1 260px">
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:14px">
+            <div style="display:flex;flex-wrap:wrap;gap:4px">
               <sc-for list="{{ dirInds }}" as="i" hint-placeholder-count="10">
                 <a href="#" onClick="{{ i.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ i.bg }};color:{{ i.color }}">{{ i.label }} <span style="opacity:0.6">{{ i.count }}</span></a>
               </sc-for>
@@ -4958,7 +4995,7 @@ class Component extends DCLogic {
     const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
-    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t) this.setState({ intraTab: t }); }
+    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
     else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
@@ -5217,6 +5254,13 @@ class Component extends DCLogic {
       intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
+      // 아고라 첫 화면 (네트워크형)
+      agoraCls: tab === 'dashboard' ? 'ag-dash' : 'ag-sub',
+      agoraBg: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&fit=crop&w=1920&q=80', agoraBgCredit: 'Photo by Pedro Lastra on Unsplash', agoraBgHref: 'https://unsplash.com/@peterlaster',
+      agAlumniN: String(allNames.length || dirAll.length),
+      onDirQGo: (e) => { const v = e.target.value; this.setState({ dirQ: v }); if (tab !== 'directory') this.setState({ intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); },
+      agTiles: [['전체', dirAll.length]].concat(Object.keys(indCounts).filter((k) => k && k !== 'undefined').map((k) => [k, indCounts[k]]).sort((x, y) => y[1] - x[1]).slice(0, 6)).map(([label, count]) => ({ label, count, cls: (label === '전체' ? (tab !== 'directory' || !s.dirInd || s.dirInd === '전체') : (tab === 'directory' && s.dirInd === label)) ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ dirInd: label, intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); } })),
+      agAlumni: (() => { const pool = dirAll.filter((a) => a.company); if (!pool.length) return []; const k = Math.floor(Date.now() / 864e5) % pool.length; return pool.slice(k).concat(pool.slice(0, k)).slice(0, 6).map((a) => ({ ...a, ini: (a.name || '?')[0], cohortLabel: a.cohort ? a.cohort + '기' : '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ intraTab: 'directory', coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })); })(),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
       dirHits: dirHits.map((a) => ({ ...a, cohortLabel: a.cohort ? a.cohort + '기' : '', hasCohort: !!a.cohort, hasNote: !!a.note, hasInd: !!a.industry, hasCompany: !!a.company, companyLine: a.company + (a.role ? ' · ' + a.role : ''), on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })),
       hasDirHits: dirHits.length > 0, noDirHits: dirHits.length === 0,
