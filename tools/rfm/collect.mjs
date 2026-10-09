@@ -194,7 +194,7 @@ async function grabCsv(page) {
     if (d === null) break;
   }
   const seen = await page.evaluate(() => window.__rfmSeen || []).catch(() => []);
-  console.log('csv capture failed; blobs seen: ' + seen.length + (seen.length ? ' | first line: ' + seen[0] : ''));
+  console.log('csv capture failed; blobs seen: ' + seen.length); // 공개 저장소라 로그에 내용은 남기지 않는다
   return null;
 }
 
