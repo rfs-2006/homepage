@@ -199,6 +199,16 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .sky.shine .star.lit .spk.h{transform:translate(-50%,-50%) scaleX(1.6)}
 .sky.shine .star.lit .spk.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(1.6)}
 @media (max-width:760px){.motto{bottom:auto;top:12vh;font-size:11.5px;letter-spacing:.5em;padding-left:.5em;--a:.5}}
+
+/* 천문도 좌표선 · 하늘 줌 */
+.grid{fill:none;stroke:rgba(200,215,255,.12);stroke-width:.8}
+.v-zoom .photo img{transform:scale(1.16);transition:opacity 1.2s ease, transform 16s cubic-bezier(.12,.8,.2,1)}
+.v-zoom.ready .photo img{transform:scale(1)}
+.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 40%, rgba(0,0,0,.72) 100%),linear-gradient(180deg, rgba(2,3,8,.5) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 65%, rgba(2,3,8,.7) 100%)}
+.v-c .star{transform:scale(.8)}
+.v-c .lab b{font-size:10.5px;letter-spacing:.32em;font-weight:500;color:rgba(233,237,246,.85)}
+.v-c .lab small{opacity:.45;transform:none;font-size:9.5px;letter-spacing:.18em}
+.v-c .seg{stroke-opacity:.24;stroke-width:.7}
 </style>
 </head>
 <body>
@@ -289,6 +299,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     p.style.strokeDasharray = '.10 1.2'; svg.appendChild(p);
     return {a,b,l,p};
   });
+  document.getElementById('sky').classList.add('v-c', 'v-zoom');
+  const grid = document.createElementNS(NS,'path'); grid.setAttribute('class','grid'); svg.insertBefore(grid, svg.firstChild.nextSibling);
   const guide = document.createElementNS(NS,'line'); guide.setAttribute('class','guide'); svg.appendChild(guide);
   const gflow = document.createElementNS(NS,'line'); gflow.setAttribute('class','guide-flow'); gflow.setAttribute('pathLength','1'); svg.appendChild(gflow);
 
@@ -299,13 +311,14 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     W = innerWidth; H = innerHeight;
     const narrow = W < 760 && H > W;
     const deg = narrow ? TALL_ROT : WIDE_ROT;
-    STARS.forEach(s => { s.p = rot(s.raw, deg); s.el.querySelector('.lab').className = 'lab ' + (narrow ? LABELS_TALL[s.id] : s.lab); });
+    STARS.forEach(s => { s.p = rot(s.raw, deg); s.el.querySelector('.lab').className = 'lab ' + (narrow ? LABELS_TALL[s.id] : (s.id === 'megrez' ? 't' : s.lab)); });
     const alcorP = rot(alcorRaw, deg);
     sky.classList.toggle('tall', narrow);
     const xs = STARS.map(s=>s.p[0]), ys = STARS.map(s=>s.p[1]);
     const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
-    const k = narrow ? Math.min(.32*W/(maxX-minX), .44*H/(maxY-minY)) : Math.min(.50*W/(maxX-minX), .34*H/(maxY-minY));
-    const cx = W*(narrow?.52:.5), cy = H*(narrow?.48:.5);
+    const VS = .64, VY = .43;
+    const k = (narrow ? Math.min(.32*W/(maxX-minX), .44*H/(maxY-minY)) : Math.min(.50*W/(maxX-minX), .34*H/(maxY-minY))) * (narrow ? Math.max(VS, .85) : VS);
+    const cx = W*(narrow?.52:.5), cy = H*(narrow?.48:VY);
     const midX=(minX+maxX)/2, midY=(minY+maxY)/2;
     const to = ([x,y]) => [cx+(x-midX)*k, cy-(y-midY)*k];
     STARS.forEach(s => { const [x,y] = to(s.p); scr[s.id]=[x,y]; s.el.style.left=x+'px'; s.el.style.top=y+'px'; });
@@ -326,6 +339,13 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     // guide: from just past Dubhe to just short of Polaris
     const gx1=dx+ux*16, gy1=dy+uy*16, gx2=polScr[0]-ux*16, gy2=polScr[1]-uy*16;
     [guide,gflow].forEach(g=>{g.setAttribute('x1',gx1);g.setAttribute('y1',gy1);g.setAttribute('x2',gx2);g.setAttribute('y2',gy2);});
+    {   // 천문도 좌표선 (적위 5°, 적경 1h)
+      const pt = (ra, de) => to(rot(proj(ra, de), deg));
+      let d = '';
+      for (let de = 40; de <= 85; de += 5) { let first = true; for (let ra = 110; ra <= 262; ra += 2) { const [x, y] = pt(ra, de); d += (first ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1); first = false; } }
+      for (let ra = 120; ra <= 255; ra += 15) { let first = true; for (let de = 36; de <= 86; de += 1) { const [x, y] = pt(ra, de); d += (first ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1); first = false; } }
+      grid.setAttribute('d', d);
+    }
     window.__layout = {scr, polScr, k};
   }
   layout(); addEventListener('resize', layout);
