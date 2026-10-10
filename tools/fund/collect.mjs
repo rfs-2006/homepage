@@ -264,6 +264,8 @@ if (START && !(prev && prev.backfilledFrom === BF_KEY)) {
   await backfill().catch((e) => console.error('backfill failed: ' + e.message));
 }
 if (ONCE || DRY) { round.publish = ONCE; await round(); process.exit(0); }
+// 켜질 때 한 번 바로 저장한다 (주말·장 마감 뒤에 재시작해도 다시 채운 기록과 공개분이 바로 올라가게)
+round.publish = true; await round().catch((e) => console.error(stamp() + ' ' + e.message)); round.publish = false;
 let closedDone = '';
 for (;;) {
   const t0 = Date.now();
