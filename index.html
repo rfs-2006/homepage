@@ -2613,7 +2613,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
       <section class="fd-card fd-open fd-sum" id="fd-strat">
         <div class="fd-ch wk-ch"><h2 class="fd-ct">Summary</h2>
-        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>이번 주 운용 노트<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
+        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>이번 주 전략 보기<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
         </div>
         <div class="fd-kc fd-kc-in">
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
