@@ -1301,6 +1301,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-cat.n{color:#F2D27A}
 .wk-head{grid-template-columns:110px auto minmax(0,1fr) 20px !important}
 @media (max-width:860px){.wk-head{grid-template-columns:1fr 20px !important}.wk-cat{display:inline;margin:0 8px 0 0}}
+.wk-fig{margin:6px 0 18px}.wk-fig img{display:block;max-width:100%;max-height:560px;border:1px solid rgba(247,246,243,0.1)}
+.wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:10.5px;color:#F7F6F3}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
 .tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
@@ -2638,8 +2640,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
         <sc-if value="{{ wkIsNotice }}" hint-placeholder-val="{{ false }}"><input class="intra-input" placeholder="공지 제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></sc-if>
-        <textarea class="intra-input" rows="12" placeholder="본문. 노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다." value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
-        <div class="wk-pics"><sc-for list="{{ wkPreviews }}" as="pv"><div class="pv"><img src="{{ pv.u }}" alt=""><a href="#" onClick="{{ pv.rm }}">×</a></div></sc-for><label class="wk-add">＋ 사진 추가<input type="file" accept="image/*" multiple="multiple" onChange="{{ onWkFiles }}"></label></div>
+        <textarea class="intra-input" rows="12" placeholder="본문. 노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다. 사진을 넣을 자리에 커서를 두고 ‘사진 추가’를 누르면 그 자리에 [사진 1]이 들어갑니다." value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
+        <div class="wk-pics"><sc-for list="{{ wkPreviews }}" as="pv"><div class="pv"><img src="{{ pv.u }}" alt=""><span>{{ pv.n }}</span><a href="#" onClick="{{ pv.rm }}">×</a></div></sc-for><label class="wk-add">＋ 사진 추가<input type="file" accept="image/*" multiple="multiple" onChange="{{ onWkFiles }}"></label></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
       </form></sc-if>
@@ -2648,7 +2650,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
+            <sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -2685,7 +2687,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
+            <sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -5028,6 +5030,14 @@ class Component extends DCLogic {
     const cat = s.wkCat || '투자전략';
     const strat = cat === '투자전략';
     const monPick = (() => { const v = s.wkMon || ymdOf(nextMon); const d = new Date(v + 'T00:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return ymdOf(d); })();
+    // 본문 속 [사진 N] 줄은 그 자리에 N번째 사진을 넣는다. 본문에 안 쓰인 사진은 글 끝에 모아 보여준다
+    const TOK = /\[사진\s*(\d+)\]/g;
+    const parasImg = (b, imgs) => String(b || '').replace(/\r/g, '').replace(/[ \t]*\[사진\s*(\d+)\][ \t]*/g, '\n\n[사진 $1]\n\n').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => {
+      const m = p.match(/^\[사진 (\d+)\]$/);
+      if (m) { const u = imgs[+m[1] - 1]; return u ? { isImg: true, isText: false, u, lines: [] } : null; }
+      return { isImg: false, isText: true, u: '', lines: p.split('\n').map((t) => ({ t })) };
+    }).filter(Boolean);
+    const usedIdx = (b) => { const set = new Set(); String(b || '').replace(TOK, (_, n) => { set.add(+n - 1); return ''; }); return set; };
     const paras = (b) => String(b || '').replace(/\r/g, '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => ({ lines: p.split('\n').map((t) => ({ t })) }));
     const upload = async (files) => {
       const urls = [];
@@ -5044,8 +5054,8 @@ class Component extends DCLogic {
       const body = String(w.body || '');
       return {
         date: fmt(w.week), title: w.title, cat: w.category || '투자전략', catCls: 'wk-cat' + ((w.category || '투자전략') === '공지' ? ' n' : ''), open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
-        excerpt: body.replace(/\s+/g, ' ').slice(0, 120) + (body.length > 120 ? '…' : ''),
-        paras: open ? paras(body) : [], imgs: open ? (w.images || []).map((u) => ({ u })) : [],
+        excerpt: body.replace(TOK, '').replace(/\s+/g, ' ').trim().slice(0, 120) + (body.length > 120 ? '…' : ''),
+        paras: open ? parasImg(body, w.images || []) : [], imgs: open ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, link: w.link || '',
         toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
         canDel: open && isAmt,
@@ -5060,7 +5070,12 @@ class Component extends DCLogic {
       wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
       wkBack: (e) => { e.preventDefault(); this.go('fund'); },
       wkNewLabel: s.wkWrite ? '닫기' : '글쓰기',
-      wkPreviews: (s.wkFiles || []).map((f, i) => ({ u: f.__url || (f.__url = URL.createObjectURL(f)), rm: (e) => { e.preventDefault(); this.setState({ wkFiles: s.wkFiles.filter((_, k) => k !== i) }); } })),
+      wkPreviews: (s.wkFiles || []).map((f, i) => ({ n: '사진 ' + (i + 1), u: f.__url || (f.__url = URL.createObjectURL(f)), rm: (e) => {
+        e.preventDefault();
+        const ta = document.querySelector('.wk-form textarea');
+        const body = (ta ? ta.value : (s.wkBody || '')).replace(new RegExp('\\s*\\[사진\\s*' + (i + 1) + '\\]\\s*', 'g'), '\n\n').replace(TOK, (m0, n) => (+n > i + 1 ? '[사진 ' + (+n - 1) + ']' : m0)).replace(/\n{3,}/g, '\n\n').trim();
+        this.setState({ wkFiles: s.wkFiles.filter((_, k) => k !== i), wkBody: body });
+      } })),
       hasWkLatest: true,
       wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
       wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
@@ -5080,7 +5095,19 @@ class Component extends DCLogic {
       wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
-      onWkFiles: (e) => { const add = [...(e.target.files || [])].filter((f) => /^image\//.test(f.type)); e.target.value = ''; this.setState({ wkFiles: [...(s.wkFiles || []), ...add].slice(0, 10) }); },
+      onWkFiles: (e) => {
+        const cur = s.wkFiles || [];
+        const add = [...(e.target.files || [])].filter((f) => /^image\//.test(f.type)).slice(0, 10 - cur.length); e.target.value = '';
+        if (!add.length) return;
+        // 커서가 있던 자리(없으면 끝)에 [사진 N] 줄을 넣어 글 중간에 사진이 들어가게 한다
+        const ta = document.querySelector('.wk-form textarea');
+        const body = ta ? ta.value : (s.wkBody || '');
+        const c0 = ta && typeof ta.selectionStart === 'number' ? ta.selectionStart : body.length;
+        const nl = body.indexOf('\n', c0); const at = nl < 0 ? body.length : nl; // 커서가 있는 줄 끝에 넣어 단어가 잘리지 않게
+        const toks = add.map((_, k) => '[사진 ' + (cur.length + k + 1) + ']').join('\n\n');
+        const next = body.slice(0, at).replace(/\s*$/, '') + (at ? '\n\n' : '') + toks + '\n\n' + body.slice(at).replace(/^\s*/, '');
+        this.setState({ wkFiles: [...cur, ...add], wkBody: next });
+      },
       wkFileNote: (s.wkFiles || []).length ? '사진 ' + s.wkFiles.length + '장' : '',
       wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
       wkSubmit: async (e) => {
