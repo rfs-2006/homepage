@@ -2697,7 +2697,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="fd-ch"><h2 class="fd-ct">팀별 순위</h2><div class="fd-legend"><span><i style="background:#E6E0D2"></i>팀 평균</span><span><i style="background:rgba(230,224,210,0.45)"></i>0%</span></div></div>
         <div class="tm-list"><sc-for list="{{ rfmTeams }}" as="t" hint-placeholder-count="5"><div class="tm-row">
           <b class="tr">{{ t.rank }}</b>
-          <div class="tn"><strong>{{ t.name }}</strong><small>{{ t.n }}</small></div>
+          <div class="tn"><strong>{{ t.name }}</strong></div>
           <div class="tb"><i class="z" style="left:{{ t.z }}"></i><sc-for list="{{ t.dots }}" as="d"><i class="d" style="left:{{ d.x }};background:{{ d.c }}" title="{{ d.t }}"></i></sc-for><i class="av" style="left:{{ t.ax }}"></i></div>
           <div class="tv"><b style="color:{{ t.c }}">{{ t.avg }}</b><small>{{ t.best }}</small></div>
         </div></sc-for></div>
