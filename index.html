@@ -675,9 +675,9 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-arc.on circle{stroke-width:30 !important;filter:drop-shadow(0 0 6px rgba(143,170,220,0.45))}
 .fd-arc.dim circle{opacity:0.22}
 .fd-ring .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
-.fd-ring .ck{font-style:normal;font-size:12px;letter-spacing:0.08em;color:#8FAADC;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fd-ring .ck{font-style:normal;font-size:16px;font-weight:600;letter-spacing:0.04em;color:#8FAADC;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fd-ring .cv{font-family:'Noto Serif KR',serif;font-size:40px;font-weight:700;letter-spacing:-0.03em;margin-top:6px;font-variant-numeric:tabular-nums;color:#F7F6F3}
-.fd-ring .cs{font-size:12px;color:rgba(247,246,243,0.55);margin-top:6px;font-variant-numeric:tabular-nums}
+.fd-ring .cs{font-size:13.5px;color:rgba(247,246,243,0.55);margin-top:6px;font-variant-numeric:tabular-nums}
 .fd-split .lab{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.6)}
 .fd-split .lab b{color:#F7F6F3;font-weight:700;margin-left:6px;font-variant-numeric:tabular-nums}
 .fd-split .bar{height:6px;margin-top:10px;background:rgba(247,246,243,0.14);border-radius:3px;overflow:hidden}
@@ -766,11 +766,31 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .fd-two>sc-if{display:contents}
 .fd-two>.fd-card,.fd-two>sc-if>.fd-card{margin-top:0}
 .fd-two .fd-bars{height:220px}
+/* 막대 차트 (업종별 비중, 수익률 분포) */
+.vc{display:flex;flex-direction:column;height:280px;margin-top:30px;padding-left:44px}
+.vc-p{position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;border-bottom:1px solid rgba(247,246,243,0.22)}
+.vc-p .gl{position:absolute;left:0;right:0;height:0;border-top:1px dashed rgba(247,246,243,0.08)}
+.vc-p .gl em{position:absolute;right:calc(100% + 12px);top:-8px;font-style:normal;font-size:11px;line-height:14px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vc-b{position:relative;flex:1;height:100%}
+.vc-b s,.vc-b i{position:absolute;bottom:0;left:50%;width:min(40px,46%);margin-left:calc(min(40px,46%) / -2);border-radius:20px 20px 0 0}
+.vc-b s{top:0;background:linear-gradient(180deg,rgba(247,246,243,0),rgba(247,246,243,0.04))}
+.vc-b i{min-height:3px;background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 40%,#0F1B2E) 100%);box-shadow:0 0 26px -6px var(--c);transform-origin:bottom;transition:filter .25s}
+.vc-b i::before{content:'';position:absolute;left:32%;right:32%;top:6px;height:2px;border-radius:2px;background:rgba(255,255,255,0.45)}
+.vc-b b{position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
+.vc-b.z b{color:rgba(247,246,243,0.28);font-family:inherit;font-size:12px;font-weight:500}
+.vc-b.z i{box-shadow:none}.vc-b.z i::before{display:none}
+.vc-b:hover i{filter:brightness(1.15)}
+.vc-x{display:flex}
+.vc-x span{flex:1;text-align:center;padding-top:12px;font-size:12.5px;font-weight:600;color:rgba(247,246,243,0.75);word-break:keep-all;line-height:1.35}
+.vc-rfm .vc-x span{font-weight:500;font-variant-numeric:tabular-nums}
+.vc-rfm .vc-x span.k{color:#8FAADC}.vc-rfm .vc-x span.k::after{content:'KOSPI';display:block;font-size:10px;letter-spacing:0.08em;margin-top:2px}
+.vc-cap{margin-top:16px;font-size:12px;color:rgba(247,246,243,0.45)}
+.fd-sec{display:flex;flex-direction:column}
+.fd-sec .vc{flex:1;min-height:280px}
+@media (max-width:860px){.vc{height:240px;padding-left:30px}.vc-p .gl em{right:calc(100% + 8px);font-size:10px}.vc-b s,.vc-b i{width:min(30px,56%);margin-left:calc(min(30px,56%) / -2)}.vc-b b{font-size:13px}.vc-b.z b{font-size:10.5px}.vc-x span{font-size:10.5px}.fd-sec .vc{min-height:240px}}
 @media (max-width:1100px){.fd-two{grid-template-columns:1fr}}
 @media (min-width:861px){.fd-two .fd-mh,.fd-two .fd-mv{grid-template-columns:minmax(72px,130px) minmax(30px,1fr) 80px 72px;gap:12px}}
 .fd-row .rt small{white-space:nowrap}
-.fd-lg .fd-li .ln{font-size:15.5px;font-weight:500;flex-basis:124px}
-@media (max-width:860px){.fd-lg .fd-li .ln{flex-basis:108px}}
 @media (max-width:860px){
   .fdpage .fd-card.fd-open{padding:32px 0 8px;margin-top:32px}
   .fdpage .fd-mgr.fd-open{grid-template-columns:1fr;gap:18px;padding:28px 0}
@@ -987,7 +1007,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
   .fx .fd-card.in .fd-split .bar i,.fx .fd-card.in .fd-li .lb i{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .35s both}
   .fx .fd-card.in .fd-plot .fd-chart{animation:fdDraw 1.4s cubic-bezier(.3,.7,.2,1) .25s both}
   .fx .fd-card.in .fd-ends .el,.fx .fd-card.in .fd-ya .yl{animation:fdIn .6s ease .9s both}
-  .fx .fd-card.in .fd-bars>div>i{animation:fdRise .9s cubic-bezier(.2,.8,.2,1) .2s both}
+  .fx .fd-card.in .vc-b i,.fx .fd-card.in .fd-bars>div>i{animation:fdRise .9s cubic-bezier(.2,.8,.2,1) .2s both}
   .fx .fd-card.in .fd-row .wt .wb i,.fx .fd-card.in .fd-mv .mb .f{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .3s both}
   .fx .fd-card.in .rfmlane .tail{animation:fdGrow .9s cubic-bezier(.2,.8,.2,1) .25s both}
   .fx .fd-card.in .rfmlane .run{animation:fdPop .5s cubic-bezier(.2,.8,.2,1.4) .7s both}
@@ -2585,9 +2605,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       </section>
 
       <div class="fd-two">
-      <section class="fd-card">
+      <section class="fd-card fd-sec">
         <h2 class="fd-ct">업종별 비중</h2>
-        <div class="fd-bars"><sc-for list="{{ fdSectors }}" as="b" hint-placeholder-count="5"><div><span class="bl">{{ b.t }}<em>{{ b.w }}</em></span><i style="height:{{ b.h }}"></i></div></sc-for></div>
+        <div class="vc"><div class="vc-p"><sc-for list="{{ fdSecChart.ticks }}" as="t"><i class="gl" style="bottom:{{ t.p }}"><em>{{ t.v }}</em></i></sc-for><sc-for list="{{ fdSecChart.bars }}" as="b"><div class="vc-b {{ b.cls }}"><b style="bottom:calc({{ b.h }} + 8px)">{{ b.v }}</b><s></s><i style="height:{{ b.h }};--c:{{ b.bg }}"></i></div></sc-for></div><div class="vc-x"><sc-for list="{{ fdSecChart.bars }}" as="b"><span>{{ b.t }}</span></sc-for></div></div>
       </section>
       <sc-if value="{{ hasMovers }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-attr">
@@ -2676,7 +2696,8 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 
       <section class="fd-card" id="rfm-dist">
         <div class="fd-ch"><h2 class="fd-ct">수익률 분포</h2></div>
-        <div class="fd-bars rfm-bars"><sc-for list="{{ rfmDist }}" as="b" hint-placeholder-count="6"><div class="{{ b.cls }}"><span class="bl">{{ b.n }}<em>{{ b.t }}</em></span><i style="height:{{ b.h }};background:{{ b.bg }}"></i></div></sc-for></div>
+        <div class="vc vc-rfm"><div class="vc-p"><sc-for list="{{ rfmDistChart.ticks }}" as="t"><i class="gl" style="bottom:{{ t.p }}"><em>{{ t.v }}</em></i></sc-for><sc-for list="{{ rfmDistChart.bars }}" as="b"><div class="vc-b {{ b.cls }}"><b style="bottom:calc({{ b.h }} + 8px)">{{ b.v }}</b><s></s><i style="height:{{ b.h }};--c:{{ b.bg }}"></i></div></sc-for></div><div class="vc-x"><sc-for list="{{ rfmDistChart.bars }}" as="b"><span class="{{ b.cls }}">{{ b.t }}</span></sc-for></div></div>
+        <p class="vc-cap">{{ rfmDistFoot }}</p>
       </section>
 
       <section class="fd-card" id="rfm-bm">
@@ -4581,8 +4602,9 @@ class Component extends DCLogic {
       fdLegend: legend.map((l) => ({ ...l, cls: 'fd-li' + (hi === l.i ? ' on' : ''), enter: () => this.setState({ fdHi: l.i }), leave: () => this.setState({ fdHi: null }) })),
       fdCenterV: hh ? (hh.weight || 0).toFixed(2) + '%' : (100 - cw).toFixed(2) + '%',
       fdCenterK: hh ? hh.name : '주식 비중',
-      fdCenterS: hh ? (hh.ret !== undefined ? '수익률 ' + pct(hh.ret) : '대기 자금') : hs.length + '종목 · 현금 ' + cw.toFixed(1) + '%',
+      fdCenterS: hh ? (hh.ret !== undefined ? '수익률 ' + pct(hh.ret) : '대기 자금') : '현금 ' + cw.toFixed(1) + '%',
       fdArcs: arcs, fdStockPct: (100 - cw).toFixed(2) + '%', fdCashPct: cw.toFixed(2) + '%',
+      fdSecChart: (() => { const sh = secs.map(([, w]) => w / stockW * 100); const top = Math.max(10, Math.ceil(Math.max(...sh, 0) / 0.85 / 10) * 10); const ticks = []; for (let v = 0; v <= top; v += top > 50 ? 20 : 10) ticks.push({ v: v + '%', p: (v / top * 100) + '%' }); return { ticks, bars: secs.map(([t], i) => ({ t, v: sh[i].toFixed(1) + '%', h: (sh[i] / top * 100).toFixed(1) + '%', bg: i === 0 ? '#A9C2EE' : '#7B9BD6', cls: '' })) }; })(),
       fdSectors: secs.map(([t, w]) => ({ t, w: (w / stockW * 100).toFixed(2) + '%', h: (w / secMax * 72).toFixed(1) + '%' })),
       fdDonut: 'conic-gradient(' + stops.join(',') + ')',
       fdCount: hh ? hh.name : hs.length + '종목', fdCashLine: hh ? (hh.weight || 0).toFixed(1) + '%' + (hh.ret !== undefined ? ' · ' + pct(hh.ret) : '') : '현금 ' + cw.toFixed(1) + '%',
@@ -4859,9 +4881,10 @@ class Component extends DCLogic {
         const mx = Math.max(1, ...cnt);
         const kb = kospi === null ? -1 : edges.findIndex((e, j) => kospi >= e && kospi < edges[j + 1]);
         return {
+          rfmDistChart: (() => { const st = mx <= 5 ? 1 : mx <= 10 ? 2 : mx <= 25 ? 5 : 10; const top = Math.ceil(mx / 0.85 / st) * st; const ticks = []; for (let v = 0; v <= top; v += st) ticks.push({ v: String(v), p: (v / top * 100) + '%' }); return { ticks, bars: labs.map((t, j) => ({ t, v: cnt[j] + '명', h: (cnt[j] / top * 100).toFixed(1) + '%', bg: j < 3 ? '#6FA6FF' : '#F2747C', cls: (j === kb ? 'k ' : '') + (cnt[j] ? '' : 'z') })) }; })(),
           rfmDist: labs.map((t, j) => ({ t, n: cnt[j] + '명', h: (cnt[j] ? Math.max(4, cnt[j] / mx * 72) : 1) + '%', bg: j < 3 ? 'linear-gradient(180deg,#A9C6FF,#4A7FD9)' : 'linear-gradient(180deg,#F7A8AE,#D9505B)', cls: j === kb ? 'k' : '' })),
           rfmDistCap: '참가 ' + on.length + '명',
-          rfmDistFoot: '단위 % · 설정 이후 수익률' + (kospi !== null ? ' · 테두리는 KOSPI ' + pct(kospi) + ' 구간' : ''),
+          rfmDistFoot: '설정 이후 수익률 구간(%)별 인원' + (kospi !== null ? ' · KOSPI ' + pct(kospi) : ''),
         };
       })(),
       rfmBmRows: (() => {
