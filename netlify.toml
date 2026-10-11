@@ -66,3 +66,9 @@ force = true
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
+
+# 사진·글꼴은 하루 동안 브라우저에 두고, 일주일까지는 바뀌었는지 뒤에서 확인하며 바로 보여준다
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, stale-while-revalidate=604800"
