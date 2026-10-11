@@ -8,7 +8,9 @@
 //   SUPABASE_SERVICE_ROLE_KEY         Supabase service_role 키
 //   FUND_START=YYYY-MM-DD             운용 시작일 (지수 비교 기준)
 //   FUND_BASE=원                      시작 금액 (기준가 1,000 기준). 입출금이 있으면 FUND_FLOWS로 보정
-//   FUND_FLOWS=YYYY-MM-DD:+금액,...   입금(+)/출금(-) 내역
+//   FUND_FLOWS=YYYY-MM-DD:+금액,...   입금(+)/출금(-) 내역 (seed.json 마지막 날 이후 것만 쓴다)
+// seed.json: 운용팀 AP 시트(국내+해외 당일손익)로 만든 날짜별 기준가 [[날짜, 기준가], ...]. 해외 잔고는 키움 API로 안 보여서
+//   이 기간은 시트 값을 쓰고, 마지막 날 이후만 API 일별 자산으로 이어 붙인다. 금액은 넣지 않는다
 //   FUND_EVERY=15                     장중 조회 간격(초)
 // 실행: node --env-file=.env collect.mjs        한 번만: node --env-file=.env collect.mjs --once
 
@@ -22,10 +24,13 @@ const START = process.env.FUND_START || '';
 // 이미 들고 있던 종목의 편입일 (예: 005930:2026-08-04,062040:2026-08-12). 이후 새로 산 종목은 처음 보인 날로 자동 기록
 const SINCE = Object.fromEntries((process.env.FUND_SINCE || '').split(',').map((x) => x.trim().split(':')).filter((x) => x.length === 2));
 const BASE = +(process.env.FUND_BASE || 0);
+import { readFileSync } from 'node:fs';
+const SEED = (() => { try { return JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8')); } catch { return []; } })();
+const SEED_END = SEED.length ? SEED[SEED.length - 1][0] : '';
 const FLOWS = (process.env.FUND_FLOWS || '').split(',').map((x) => x.trim()).filter(Boolean).map((x) => {
   const [d, v] = x.split(':');
   return { d, v: +String(v).replace(/[,+\s]/g, '') };
-});
+}).filter((f) => !SEED_END || f.d > SEED_END);
 
 for (const [k, v] of Object.entries({ KIWOOM_APPKEY, KIWOOM_SECRETKEY })) if (!v) { console.error('missing env ' + k); process.exit(1); }
 if (!DRY && !SB_KEY) { console.error('missing env SUPABASE_SERVICE_ROLE_KEY'); process.exit(1); }
@@ -129,8 +134,8 @@ async function round() {
   const today = ymd();
   // 기준가: 시작 금액 1,000 기준, 입출금은 그날 기준가로 좌수를 늘리거나 줄인다
   // FUND_BASE가 없으면 처음 기록한 날의 총자산을 기준가 1,000으로 잡는다 (그날부터의 성과)
-  const base = BASE || (prev && prev.baseTotal) || total;
-  const baseDate = BASE ? (START || null) : ((prev && prev.baseDate) || today);
+  const base = (SEED_END ? 0 : BASE) || (prev && prev.baseTotal) || total;
+  const baseDate = SEED_END ? SEED[0][0] : BASE ? (START || null) : ((prev && prev.baseDate) || today);
   let units = base / 1000;
   const hist = (prev && prev.history) || [];
   if (units) for (const f of FLOWS) {
@@ -183,7 +188,7 @@ async function round() {
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
 }
 
-const BF_KEY = START + '/4:' + FLOWS.map((f) => f.d + f.v).join(','); // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
+const BF_KEY = START + '/5:' + SEED_END + ':' + FLOWS.map((f) => f.d + f.v).join(','); // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
 
 // ---------- 지난 기록 채우기 (일별 추정예탁자산, kt00002) ----------
 // FUND_START부터 어제까지 날짜별 총자산으로 기준가를 거꾸로 만든다. 첫날 총자산 = 1,000 (입출금이 있으면 FUND_FLOWS 필요)
@@ -239,8 +244,26 @@ async function backfill() {
   for (let i = rows.length - 1; i >= 0; i--) if (!trading(rows[i].d)) rows.splice(i, 1);
   if (!rows.length) { console.log('backfill: no trading-day rows'); return; }
   // 시작 금액(FUND_BASE)이 있으면 시작일 직전을 1,000으로, 없으면 첫 기록일 총자산을 1,000으로
-  const base = BASE || rows[0].v;
   const fmt = (d) => d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8);
+  if (SEED_END) {
+    // 시트 기간은 시트 기준가 그대로, 그 뒤는 마지막 날 API 자산을 시트 기준가에 맞춰 좌수를 정하고 이어 붙인다
+    const key = (d) => d.replace(/-/g, '');
+    const history = SEED.filter(([d]) => trading(key(d))).map(([d, v]) => [d, v, kc[key(d)] || null, qc[key(d)] || null]);
+    const anchor = rows.filter((r) => fmt(r.d) <= SEED_END).pop();
+    const seedAt = anchor && SEED.filter(([d]) => d <= fmt(anchor.d)).pop();
+    if (!anchor || !seedAt) { console.log('backfill: no API row on or before seed end'); return; }
+    const units0 = anchor.v / seedAt[1]; let units = units0, navPrev = SEED[SEED.length - 1][1]; const done = new Set();
+    for (const r of rows) {
+      const day = fmt(r.d); if (day <= SEED_END) continue;
+      FLOWS.forEach((f, i) => { if (!done.has(i) && f.d <= day) { units += f.v / navPrev; done.add(i); } });
+      const nav = r.v / units; navPrev = nav;
+      history.push([day, +nav.toFixed(2), kc[r.d] || null, qc[r.d] || null]);
+    }
+    prev = { ...(prev || {}), baseTotal: units0 * 1000, baseDate: SEED[0][0], history, backfilledFrom: BF_KEY };
+    console.log(`backfill: seed ${SEED[0][0]}~${SEED_END} + ${history.length} days`);
+    return;
+  }
+  const base = BASE || rows[0].v;
   // 입출금(FUND_FLOWS)은 그 전날 기준가로 좌수를 늘리거나 줄여서 수익률에 섞이지 않게 한다
   let units = base / 1000, navPrev = 1000; const done = new Set();
   const history = rows.map((r) => {
