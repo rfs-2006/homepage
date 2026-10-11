@@ -66,6 +66,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script>
+// 리포트 주소로 바로 들어오면 리포트 글꼴(KoPub 돋움)을 화면 그리기 전에 받기 시작한다
+(function(){ if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); }); })();
+</script>
 <script src="./image-slot.js"></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
@@ -436,9 +440,9 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .mmenu{transform:none}
 }
 /* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py */
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:block}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @media (min-width:1025px){@view-transition{navigation:auto}}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
@@ -1227,6 +1231,38 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
 @media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
+.wk-ch{align-items:center !important}
+.wk-cta{display:inline-flex;align-items:center;gap:10px;margin:0;padding:10px 16px;border:1px solid rgba(143,170,220,0.35);font-size:14px;font-weight:600;color:#F7F6F3;text-decoration:none;transition:border-color .2s,background .2s}
+.wk-cta:hover{border-color:#8FAADC;background:rgba(143,170,220,0.08)}
+.wk-cta i{width:6px;height:6px;border-radius:50%;background:#8FAADC}
+.wk-cta time{font-size:12px;font-weight:400;color:rgba(247,246,243,0.5);font-variant-numeric:tabular-nums}
+.wk-cta em{font-style:normal;color:#8FAADC;transition:transform .2s}
+.wk-cta:hover em{transform:translateX(3px)}
+/* FUND 위클리 */
+.wk-sub{font-size:13px;color:rgba(247,246,243,0.5)}
+.wk-empty{margin:18px 0 0;font-size:14px;color:rgba(247,246,243,0.5)}
+.wk-list{margin-top:14px}
+.wk-item{border-bottom:1px solid rgba(247,246,243,0.08)}
+.wk-item:last-child{border-bottom:0}
+.wk-head{display:grid;grid-template-columns:92px auto minmax(0,1fr) 20px;gap:18px;align-items:baseline;padding:16px 0;color:#F7F6F3;text-decoration:none}
+.wk-head time{font-size:13px;color:#8FAADC;font-variant-numeric:tabular-nums}
+.wk-head b{font-size:16px;font-weight:700}
+.wk-head .ex{font-size:13px;color:rgba(247,246,243,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wk-head i{font-style:normal;color:rgba(247,246,243,0.5);text-align:right;grid-column:4}
+.wk-item.open .wk-head i{grid-column:3 / 5}
+.wk-body{padding:0 0 22px 110px;font-size:15px;line-height:1.8;color:rgba(247,246,243,0.85);word-break:keep-all}
+.wk-body p{margin:0 0 14px}.wk-body p span{display:block}
+.wk-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:6px 0 14px}
+.wk-imgs img{width:100%;display:block;border:1px solid rgba(247,246,243,0.1)}
+.wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
+.wk-del{font-size:13px;color:rgba(247,246,243,0.4)}
+.wk-foot{margin-top:14px;text-align:right}.wk-foot a{font-size:12px;color:rgba(247,246,243,0.3)}
+.wk-form{display:grid;gap:10px;margin-top:14px}
+.wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
+.wk-file{font-size:13px;color:rgba(247,246,243,0.7)}.wk-file input{margin-left:10px}.wk-file span{margin-left:8px;color:#8FAADC}
+.wk-btn{justify-self:start;padding:10px 22px;background:#8FAADC;color:#0F1B2E;border:0;font-weight:700;cursor:pointer}
+.wk-err{margin:0;font-size:13px;color:#F2626B}
+@media (max-width:860px){.wk-head{grid-template-columns:1fr 20px;gap:4px 12px}.wk-head time{grid-column:1}.wk-head b{grid-column:1}.wk-head .ex{grid-column:1}.wk-head i{grid-column:2;grid-row:1}.wk-item.open .wk-head i{grid-column:2}.wk-body{padding:0 0 18px}.wk-row{grid-template-columns:1fr}}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
 .tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
@@ -2576,7 +2612,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
 
       <section class="fd-card fd-open fd-sum" id="fd-strat">
-        <h2 class="fd-ct">Summary</h2>
+        <div class="fd-ch wk-ch"><h2 class="fd-ct">Summary</h2>
+        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>Weekly Strategy<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
+        </div>
         <div class="fd-kc fd-kc-in">
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
       </div>
@@ -2666,7 +2704,33 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </sc-if>
       </div>
 
+      <sc-if value="{{ hasWeekly }}" hint-placeholder-val="{{ false }}">
+      <section class="fd-card" id="fd-weekly" style="margin-top:20px">
+        <div class="fd-ch"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-sub">운용팀 주간 투자전략</span></div>
+        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">아직 올라온 전략이 없습니다.</p></sc-if>
+        <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
+          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
+          <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
+            <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
+            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
+            <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
+            <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
+          </div></sc-if>
+        </article></sc-for></div>
+        <div class="wk-foot"><a href="#" onClick="{{ wkToggleWrite }}">운용팀 글쓰기</a></div>
+        <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form" onSubmit="{{ wkLogin }}"><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
+        <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form" onSubmit="{{ wkSubmit }}">
+          <div class="wk-row"><input class="intra-input" type="date" value="{{ wkDate }}" onChange="{{ onWkDate }}"><input class="intra-input" placeholder="제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></div>
+          <textarea class="intra-input" rows="10" placeholder="본문 (노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다)" value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
+          <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
+          <label class="wk-file">사진 첨부<input type="file" accept="image/*" multiple onChange="{{ onWkFiles }}"><span>{{ wkFileNote }}</span></label>
+          <button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><p class="wk-err">{{ wkErr }}</p>
+        </form></sc-if>
+      </section>
+      </sc-if>
+
       <p class="fd-disc">{{ fdNote }}</p>
+      <sc-if value="{{ noWeekly }}" hint-placeholder-val="{{ false }}"><p class="wk-foot"><a href="#" onClick="{{ wkStart }}">운용팀 글쓰기</a></p></sc-if>
     </div>
     </sc-if>
   </main>
@@ -2693,7 +2757,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="fd-ch"><h2 class="fd-ct">팀별 순위</h2><div class="fd-legend"><span><i style="background:#E6E0D2"></i>팀 평균</span><span><i style="background:rgba(230,224,210,0.45)"></i>0%</span></div></div>
         <div class="tm-list"><sc-for list="{{ rfmTeams }}" as="t" hint-placeholder-count="5"><div class="tm-row">
           <b class="tr">{{ t.rank }}</b>
-          <div class="tn"><strong>{{ t.name }}</strong><small>{{ t.n }}</small></div>
+          <div class="tn"><strong>{{ t.name }}</strong></div>
           <div class="tb"><i class="z" style="left:{{ t.z }}"></i><sc-for list="{{ t.dots }}" as="d"><i class="d" style="left:{{ d.x }};background:{{ d.c }}" title="{{ d.t }}"></i></sc-for><i class="av" style="left:{{ t.ax }}"></i></div>
           <div class="tv"><b style="color:{{ t.c }}">{{ t.avg }}</b><small>{{ t.best }}</small></div>
         </div></sc-for></div>
@@ -4357,7 +4421,9 @@ class Component extends DCLogic {
         const i = new Image(); i.decoding = 'async'; i.src = src; this._heroGot[src] = i;
       });
     };
-    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); });
+    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
+      // 리포트 글꼴은 리포트를 처음 열 때 받기 시작해 잠깐 다른 글꼴로 보였다가 바뀌었다. 미리 받아 둔다
+      if (document.fonts && document.fonts.load) [300, 500, 700].forEach((w) => document.fonts.load(w + " 16px 'RFS Report Dotum'").catch(() => {})); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
@@ -4837,7 +4903,7 @@ class Component extends DCLogic {
           { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도'], ...((this.state.weekly || []).length ? [['fd-weekly', 'Strategy']] : [])].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
@@ -4880,6 +4946,84 @@ class Component extends DCLogic {
         };
       }),
       fdNote: '본 페이지는 중앙대학교 가치투자학회 R.F.S. 운용팀의 운용 현황을 학회 활동 목적으로 공개하는 자료이며, 특정 종목의 매수·매도를 권유하지 않습니다. 과거의 수익률이 미래의 수익을 보장하지 않으며, 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다. 표시된 수치는 운용 계좌의 추정 자산 기준으로 실제와 다를 수 있습니다.',
+    };
+  }
+
+  // FUND 위클리: 누구나 읽고, 운용팀 계정(AMT_EMAIL)만 쓴다. 표는 Supabase fund_weekly, 사진은 Storage fund-weekly
+  loadWeekly() {
+    if (!this.sb) return;
+    this.sb.from('fund_weekly').select('*').order('week', { ascending: false }).order('created_at', { ascending: false }).limit(30)
+      .then(({ data, error }) => this.setState({ weekly: error ? [] : (data || []), weeklyLoaded: true }), () => this.setState({ weekly: [], weeklyLoaded: true }));
+  }
+
+  weeklyProps() {
+    const s = this.state;
+    const AMT_EMAIL = 'amt@caurfs.kr';
+    const isAmt = !!(s.user && s.user.email === AMT_EMAIL);
+    const list = s.weekly || [];
+    const openId = s.wkOpen === undefined ? (list[0] && list[0].id) : s.wkOpen;
+    const fmt = (d) => { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? d : t.getFullYear() + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + String(t.getDate()).padStart(2, '0'); };
+    const today = (() => { const k = new Date(Date.now() + 9 * 3600e3); return k.toISOString().slice(0, 10); })();
+    const paras = (b) => String(b || '').replace(/\r/g, '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => ({ lines: p.split('\n').map((t) => ({ t })) }));
+    const upload = async (files) => {
+      const urls = [];
+      for (const f of files) {
+        const ext = (f.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '');
+        const path = today + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+        const { error } = await this.sb.storage.from('fund-weekly').upload(path, f, { contentType: f.type || undefined, upsert: false });
+        if (error) throw error;
+        urls.push(this.sb.storage.from('fund-weekly').getPublicUrl(path).data.publicUrl);
+      }
+      return urls;
+    };
+    return {
+      hasWeekly: list.length > 0 || isAmt || !!s.wkLogin || !!s.wkWrite, weeklyEmpty: list.length === 0, noWeekly: !(list.length > 0 || isAmt || s.wkLogin || s.wkWrite),
+      wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
+      weeklyList: list.map((w) => {
+        const open = w.id === openId;
+        const body = String(w.body || '');
+        return {
+          date: fmt(w.week), title: w.title, open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
+          excerpt: body.replace(/\s+/g, ' ').slice(0, 120) + (body.length > 120 ? '…' : ''),
+          paras: open ? paras(body) : [], imgs: open ? (w.images || []).map((u) => ({ u })) : [],
+          hasLink: open && !!w.link, link: w.link || '',
+          toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
+          canDel: open && isAmt,
+          del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
+        };
+      }),
+      hasWkLatest: list.length > 0,
+      wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
+      wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
+      wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] && list[0].id }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
+      wkIsAmt: isAmt, wkWriteOpen: !!s.wkWrite, wkLoginOpen: !!s.wkLogin && !isAmt,
+      wkToggleWrite: (e) => { e.preventDefault(); if (isAmt) this.setState({ wkWrite: !s.wkWrite }); else this.setState({ wkLogin: !s.wkLogin }); },
+      wkPw: s.wkPw || '', onWkPw: (e) => this.setState({ wkPw: e.target.value }), wkErr: s.wkErr || '',
+      wkLogin: (e) => {
+        e.preventDefault();
+        this.sb.auth.signInWithPassword({ email: AMT_EMAIL, password: s.wkPw || '' })
+          .then(({ error }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true }));
+      },
+      wkDate: s.wkDate || today, onWkDate: (e) => this.setState({ wkDate: e.target.value }),
+      wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
+      wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
+      wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
+      onWkFiles: (e) => this.setState({ wkFiles: [...(e.target.files || [])] }),
+      wkFileNote: (s.wkFiles || []).length ? '사진 ' + s.wkFiles.length + '장' : '',
+      wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
+      wkSubmit: async (e) => {
+        e.preventDefault();
+        if (s.wkBusy || !(s.wkTitle || '').trim()) { this.setState({ wkErr: '제목을 입력하세요' }); return; }
+        this.setState({ wkBusy: true, wkErr: '' });
+        try {
+          const images = await upload(s.wkFiles || []);
+          const link = (s.wkLink || '').trim();
+          const { error } = await this.sb.from('fund_weekly').insert({ week: s.wkDate || today, title: s.wkTitle.trim(), body: (s.wkBody || '').trim(), images, link: /^https?:\/\//.test(link) ? link : '' });
+          if (error) throw error;
+          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkOpen: undefined });
+          this.loadWeekly();
+        } catch (x) { this.setState({ wkBusy: false, wkErr: '올리지 못했습니다: ' + ((x && x.message) || x) }); }
+      },
     };
   }
 
@@ -4951,7 +5095,7 @@ class Component extends DCLogic {
       })(),
       hasRfmTeams: teams.length > 0,
       rfmTeams: teams.map((t, i) => ({
-        rank: i + 1, name: t.name, n: t.live.length + '명' + (t.list.length > t.live.length ? ' · 미집계 ' + (t.list.length - t.live.length) : ''),
+        rank: i + 1, name: t.name === '회장단' ? 'Executive' : t.name === '운용팀' ? 'Team AMT' : /^\d+팀$/.test(t.name) ? 'Team ' + parseInt(t.name, 10) : t.name, n: t.live.length + '명' + (t.list.length > t.live.length ? ' · 미집계 ' + (t.list.length - t.live.length) : ''),
         avg: pct(t.a), c: col(t.a), ax: x(t.a), z: x(0),
         best: '팀 내 1위 ' + nm(t.best) + ' ' + pct(ret(t.best)),
         dots: t.live.map((m) => ({ x: x(ret(m)), c: col(ret(m)), t: nm(m) + ' ' + pct(ret(m)) })),
@@ -5146,6 +5290,7 @@ class Component extends DCLogic {
     if (s.page === 'fund' && !this._fundPubReq && this.sb) {
       this._fundPubReq = true;
       this.loadFundLive();
+      this.loadWeekly();
       this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
         .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
     }
@@ -5356,6 +5501,7 @@ class Component extends DCLogic {
       fundPos: FD.positions.map((p) => ({ ...p, w: p.weight.toFixed(1) + '%', bar: (p.weight * 2.6).toFixed(0) + 'px', tick: p.ticker || '—', retColor: p.ret ? (p.up ? '#0F5132' : '#842029') : 'rgba(26,26,26,0.4)', retText: p.ret || '—' })),
       fundNotes: FD.notes, hasFundNotes: FD.notes.length > 0,
       ...this.rfmProps(s.rfmData),
+      ...this.weeklyProps(),
       ...this.fundProps(authed),
       stopProp: (e) => e.stopPropagation(),
       intraUser: s.user ? this.who() : '미리보기',
