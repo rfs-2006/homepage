@@ -1256,7 +1256,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-imgs img{width:100%;display:block;border:1px solid rgba(247,246,243,0.1)}
 .wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
 .wk-del{font-size:13px;color:rgba(247,246,243,0.4)}
-.wk-foot{margin-top:14px;text-align:right}.wk-foot a{font-size:12px;color:rgba(247,246,243,0.3)}
+.wk-foot{margin-top:16px;text-align:right}.wk-foot a{display:inline-block;padding:7px 12px;border:1px solid rgba(247,246,243,0.18);font-size:12.5px;color:rgba(247,246,243,0.65)}.wk-foot a:hover{color:#F7F6F3;border-color:rgba(247,246,243,0.4)}
 .wk-form{display:grid;gap:10px;margin-top:14px}
 .wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
 .wk-file{font-size:13px;color:rgba(247,246,243,0.7)}.wk-file input{margin-left:10px}.wk-file span{margin-left:8px;color:#8FAADC}
@@ -2707,7 +2707,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <sc-if value="{{ hasWeekly }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-weekly" style="margin-top:20px">
         <div class="fd-ch"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-sub">운용팀 주간 투자전략</span></div>
-        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">아직 올라온 전략이 없습니다.</p></sc-if>
+        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
@@ -4903,7 +4903,7 @@ class Component extends DCLogic {
           { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도'], ...((this.state.weekly || []).length ? [['fd-weekly', 'Strategy']] : [])].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도'], ['fd-weekly', 'Strategy']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
@@ -4977,7 +4977,7 @@ class Component extends DCLogic {
       return urls;
     };
     return {
-      hasWeekly: list.length > 0 || isAmt || !!s.wkLogin || !!s.wkWrite, weeklyEmpty: list.length === 0, noWeekly: !(list.length > 0 || isAmt || s.wkLogin || s.wkWrite),
+      hasWeekly: true, weeklyEmpty: list.length === 0 && !!s.weeklyLoaded, noWeekly: false,
       wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
       weeklyList: list.map((w) => {
         const open = w.id === openId;
