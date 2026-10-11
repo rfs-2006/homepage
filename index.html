@@ -1227,6 +1227,23 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
 @media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
+/* RFM 팀별 순위 */
+.tm-list{margin-top:18px}
+.tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
+.tm-row:last-child{border-bottom:0}
+.tm-row .tr{font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:var(--paper,#E6E0D2);text-align:center}
+.tm-row .tn strong{display:block;font-size:17px;font-weight:700;color:#F7F6F3}
+.tm-row .tn small{display:block;margin-top:3px;font-size:12px;color:var(--ash,#8D8A84)}
+.tm-row .tb{position:relative;height:28px}
+.tm-row .tb::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(230,224,210,.12)}
+.tm-row .tb .z{position:absolute;top:3px;bottom:3px;width:1px;background:rgba(230,224,210,.45)}
+.tm-row .tb .d{position:absolute;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;opacity:.8}
+.tm-row .tb .av{position:absolute;top:0;bottom:0;width:3px;margin-left:-1.5px;background:var(--paper,#E6E0D2);box-shadow:0 0 10px rgba(230,224,210,.5)}
+.tm-row .tv{text-align:right}
+.tm-row .tv b{display:block;font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.tm-row .tv small{display:block;margin-top:3px;font-size:12px;color:var(--ash,#8D8A84);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tm-row:first-child .tr{color:#F7F6F3}
+@media (max-width:860px){.tm-row{grid-template-columns:28px minmax(0,1fr) auto;gap:6px 12px;padding:14px 0}.tm-row .tr{font-size:18px}.tm-row .tb{grid-column:2/-1;grid-row:2}.tm-row .tv b{font-size:17px}}
 /* RFM 팔레트: 객장 사진 톤 (먹색·흑연·종이) */
 .rfmpage{--ink:#0B0C0E;--floor:#141518;--steel:#26282C;--ash:#8D8A84;--paper:#E6E0D2;background:var(--ink) !important}
 .rfmpage::after{background:linear-gradient(180deg,rgba(8,9,11,.45) 0,rgba(8,9,11,.6) 40vh,rgba(11,12,14,.84) 62vh,rgba(11,12,14,.92) 80%,var(--ink) 100%) !important}
@@ -2671,7 +2688,20 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
     <div class="wrap fd-body">
       <div class="fd-kc fd-kc-in"><sc-for list="{{ rfmCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for></div>
+      <sc-if value="{{ hasRfmTeams }}" hint-placeholder-val="{{ false }}">
+      <section class="fd-card" id="rfm-team" style="margin-top:20px">
+        <div class="fd-ch"><h2 class="fd-ct">팀별 순위</h2><div class="fd-legend"><span><i style="background:#E6E0D2"></i>팀 평균</span><span><i style="background:rgba(230,224,210,0.45)"></i>0%</span></div></div>
+        <div class="tm-list"><sc-for list="{{ rfmTeams }}" as="t" hint-placeholder-count="5"><div class="tm-row">
+          <b class="tr">{{ t.rank }}</b>
+          <div class="tn"><strong>{{ t.name }}</strong><small>{{ t.n }}</small></div>
+          <div class="tb"><i class="z" style="left:{{ t.z }}"></i><sc-for list="{{ t.dots }}" as="d"><i class="d" style="left:{{ d.x }};background:{{ d.c }}" title="{{ d.t }}"></i></sc-for><i class="av" style="left:{{ t.ax }}"></i></div>
+          <div class="tv"><b style="color:{{ t.c }}">{{ t.avg }}</b><small>{{ t.best }}</small></div>
+        </div></sc-for></div>
+      </section>
+      </sc-if>
+
       <div class="rfm-grid">
+
       <section class="fd-card" id="rfm-rank">
         <div class="fd-ch"><h2 class="fd-ct">학회 순위</h2><div class="fd-legend"><span><i style="background:rgba(247,246,243,0.4)"></i>0%</span><span><i style="background:#8FAADC"></i>KOSPI</span><span><i class="dash"></i>전체 50위</span></div></div>
         <div class="rfm-board">
@@ -4857,6 +4887,15 @@ class Component extends DCLogic {
     const lo = Math.min(...vals) - 2, hi = Math.max(...vals) + 2;
     const x = (v) => ((v - lo) / (hi - lo) * 100).toFixed(2) + '%';
     const avg = on.length ? on.reduce((a, m) => a + ret(m), 0) / on.length : 0;
+    // 팀별: 수집기 명단의 팀 제목 줄로 묶인 별칭들. 평균 수익률 순
+    const teamMap = {};
+    ms.forEach((m) => { if (m.team) (teamMap[m.team] = teamMap[m.team] || []).push(m); });
+    const teams = Object.entries(teamMap).map(([name, list]) => {
+      const live = list.filter((m) => m.found && m.nav);
+      const a = live.length ? live.reduce((q, m) => q + ret(m), 0) / live.length : null;
+      const best = [...live].sort((p, q) => q.nav - p.nav)[0];
+      return { name, list, live, a, best };
+    }).filter((t) => t.live.length).sort((p, q) => q.a - p.a);
     const srt = on.map(ret).sort((a, b) => a - b), med = srt.length ? (srt.length % 2 ? srt[(srt.length - 1) / 2] : (srt[srt.length / 2 - 1] + srt[srt.length / 2]) / 2) : 0;
     const prevRet = {}; ((s.rfmPrevData && s.rfmPrevData.members) || []).forEach((m) => { if (m.nav) prevRet[m.nick] = ret(m); });
     const tick = this._rfmTick || 0;
@@ -4892,7 +4931,14 @@ class Component extends DCLogic {
           { k: '전체 50위 이내', v: in50 + '명', c: '#F7F6F3', s: cut !== null ? '50위 컷 ' + pct(cut) : '', sc: 'rgba(247,246,243,0.6)' },
         ];
       })(),
-      rfmNav: [['rfm-rank', '순위'], ['rfm-me', '내 순위'], ['rfm-dist', '분포'], ['rfm-bm', '벤치마크']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      hasRfmTeams: teams.length > 0,
+      rfmTeams: teams.map((t, i) => ({
+        rank: i + 1, name: t.name, n: t.live.length + '명' + (t.list.length > t.live.length ? ' · 미집계 ' + (t.list.length - t.live.length) : ''),
+        avg: pct(t.a), c: col(t.a), ax: x(t.a), z: x(0),
+        best: '팀 내 1위 ' + nm(t.best) + ' ' + pct(ret(t.best)),
+        dots: t.live.map((m) => ({ x: x(ret(m)), c: col(ret(m)), t: nm(m) + ' ' + pct(ret(m)) })),
+      })),
+      rfmNav: [...(teams.length ? [['rfm-team', '팀']] : []), ['rfm-rank', '순위'], ['rfm-me', '내 순위'], ['rfm-dist', '분포'], ['rfm-bm', '벤치마크']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       rfmFoot: '학회 내 순위 · 이름 아래 전체 순위 · 장중 15초 갱신',
       rfmMineRows: !me ? [] : [
         { k: '수익률', v: pct(ret(me)), c: col(ret(me)) },
@@ -4972,7 +5018,7 @@ class Component extends DCLogic {
         e.preventDefault();
         // 기존 목록에 더한다 (같은 별칭은 새 이름으로 바뀜). 추가분만 붙여넣어도 예전 이름이 지워지지 않게
         const map = { ...this.rfmNames() };
-        (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { const p = l.split(/[,\t:]/).map((y) => y.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
+        (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { l = l.trim(); const sp = l.match(/^(\S+)\s+(.+)$/); const p = (/[,\t:]/.test(l) ? l.split(/[,\t:]/) : sp ? [sp[1], sp[2]] : []).map((y) => y.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
         try { localStorage.setItem('rfs_rfm_names', JSON.stringify(map)); } catch (y) {}
         this.setState({ rfmNameOpen: false, rfmNameText: '' });
       },

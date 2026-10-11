@@ -24,11 +24,23 @@ if (!CSV_FILE) { need('TF_EMAIL', TF_EMAIL); need('TF_PASSWORD', TF_PASSWORD); }
 if (!DRY) need('SUPABASE_SERVICE_ROLE_KEY', SB_KEY);
 
 const norm = (s) => String(s || '').replace(/\s+/g, '').toLowerCase();
-// 실명은 Supabase에 올리지 않는다. 한 줄이 "이름,별칭"이면 별칭만, 별칭만 있어도 된다.
-const members = RFM_MEMBERS.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
-  const parts = l.split(/[,\t:]/).map((x) => x.trim());
-  return { nick: parts.length > 1 ? parts.slice(1).join(',') : parts[0] };
-}).filter((m) => m.nick);
+// 실명은 Supabase에 올리지 않는다. 한 줄이 "이름,별칭"(또는 "이름 별칭")이면 별칭만, 별칭만 있어도 된다.
+// "1팀", "운용팀", "회장단"처럼 팀 이름만 있는 줄 아래 사람들은 그 팀으로 묶는다. 같은 별칭이 두 번 나오면 처음 것만 쓴다.
+const TEAM_LINE = /^(\d+팀|운용팀|회장단)$/;
+const members = [];
+{
+  let team = '';
+  for (const raw of RFM_MEMBERS.split(/\r?\n/)) {
+    const l = raw.trim();
+    if (!l) continue;
+    const sep = /[,\t:]/.test(l);
+    if (!sep && TEAM_LINE.test(l.replace(/\s+/g, ''))) { team = l.replace(/\s+/g, ''); continue; }
+    const sp = l.match(/^(\S+)\s+(.+)$/);
+    const parts = (sep ? l.split(/[,\t:]/) : sp ? [sp[1], sp[2]] : [l]).map((x) => x.trim());
+    const nick = parts.length > 1 ? parts.slice(1).join(',') : parts[0];
+    if (nick && !members.some((m) => norm(m.nick) === norm(nick))) members.push({ nick, team });
+  }
+}
 
 // ---------- CSV ----------
 function decode(buf) {
@@ -354,12 +366,12 @@ async function publish(got) {
   const series = sameContest && prev.series ? prev.series : {};
   const out = members.map((m) => {
     const r = byNick.get(norm(m.nick));
-    if (!r) return { nick: m.nick, found: false };
+    if (!r) return { nick: m.nick, team: m.team || '', found: false };
     const key = norm(m.nick);
     const s = (series[key] || []).filter((p) => p[0] !== today);
     s.push([today, r.nav, r.rank]);
     series[key] = s.slice(-120);
-    return { nick: r.nick, found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
+    return { nick: r.nick, team: m.team || '', found: true, rank: r.rank, rankChg: r.rankChg, nav: r.nav, navChg: r.navChg, weight: r.weight, count: r.count };
   });
   const data = {
     contest: got.contest || (prev && prev.contest) || '',
