@@ -66,6 +66,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script>
+// 리포트 주소로 바로 들어오면 리포트 글꼴(KoPub 돋움)을 화면 그리기 전에 받기 시작한다
+(function(){ if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); }); })();
+</script>
 <script src="./image-slot.js"></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
@@ -436,9 +440,9 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .mmenu{transform:none}
 }
 /* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py */
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:block}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @media (min-width:1025px){@view-transition{navigation:auto}}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
@@ -4357,7 +4361,9 @@ class Component extends DCLogic {
         const i = new Image(); i.decoding = 'async'; i.src = src; this._heroGot[src] = i;
       });
     };
-    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); });
+    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
+      // 리포트 글꼴은 리포트를 처음 열 때 받기 시작해 잠깐 다른 글꼴로 보였다가 바뀌었다. 미리 받아 둔다
+      if (document.fonts && document.fonts.load) [300, 500, 700].forEach((w) => document.fonts.load(w + " 16px 'RFS Report Dotum'").catch(() => {})); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
