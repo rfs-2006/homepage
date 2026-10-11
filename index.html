@@ -2717,6 +2717,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
       <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
       <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:12px;max-width:520px">
+          <p style="margin:0 0 8px;font-size:12px;color:rgba(247,246,243,0.5)">{{ rfmNameCount }}</p>
           <textarea class="intra-input" rows="6" placeholder="이름,별칭 (한 줄에 한 명). 이 기기에만 저장됩니다." value="{{ rfmNameText }}" onChange="{{ onRfmNameText }}" style="resize:vertical"></textarea>
           <div style="display:flex;gap:14px;margin-top:10px;font-size:13px">
             <a href="#" onClick="{{ rfmNameSave }}" style="color:#8FAADC;font-weight:600">이 기기에 저장</a>
@@ -4943,16 +4944,18 @@ class Component extends DCLogic {
       rfmMissing: ms.filter((m) => !m.found).map((m) => (real(m) ? real(m) + '(' + m.nick + ')' : m.nick)).join(', '),
       hasRfmMissing: ms.some((m) => !m.found),
       rfmHasNames: Object.keys(names).length > 0, rfmNameOpen: !!s.rfmNameOpen, rfmNameText: s.rfmNameText || '',
-      rfmNameToggle: (e) => { e.preventDefault(); this.setState({ rfmNameOpen: !s.rfmNameOpen }); },
+      rfmNameCount: Object.keys(names).length ? '이 기기에 ' + Object.keys(names).length + '명 저장됨 · 새로 붙여넣으면 기존 목록에 더해집니다' : '이 기기에 저장된 이름 없음',
+      rfmNameToggle: (e) => { e.preventDefault(); this.setState({ rfmNameOpen: !s.rfmNameOpen, rfmNameText: '' }); },
       onRfmNameText: (e) => this.setState({ rfmNameText: e.target.value }),
       rfmNameSave: (e) => {
         e.preventDefault();
-        const map = {};
+        // 기존 목록에 더한다 (같은 별칭은 새 이름으로 바뀜). 추가분만 붙여넣어도 예전 이름이 지워지지 않게
+        const map = { ...this.rfmNames() };
         (s.rfmNameText || '').split(/\r?\n/).forEach((l) => { const p = l.split(/[,\t:]/).map((y) => y.trim()); if (p.length > 1 && p[0] && p[1]) map[key(p.slice(1).join(','))] = p[0]; });
         try { localStorage.setItem('rfs_rfm_names', JSON.stringify(map)); } catch (y) {}
         this.setState({ rfmNameOpen: false, rfmNameText: '' });
       },
-      rfmNameClear: (e) => { e.preventDefault(); try { localStorage.removeItem('rfs_rfm_names'); } catch (y) {} this.setState({ rfmNameOpen: false }); },
+      rfmNameClear: (e) => { e.preventDefault(); if (!window.confirm('이 기기에 저장된 이름을 모두 지울까요?')) return; try { localStorage.removeItem('rfs_rfm_names'); } catch (y) {} this.setState({ rfmNameOpen: false }); },
     };
   }
 
