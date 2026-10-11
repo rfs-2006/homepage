@@ -26,8 +26,7 @@ if (!DRY) need('SUPABASE_SERVICE_ROLE_KEY', SB_KEY);
 const norm = (s) => String(s || '').replace(/\s+/g, '').toLowerCase();
 // 실명은 Supabase에 올리지 않는다. 한 줄이 "이름,별칭"이면 별칭만, 별칭만 있어도 된다.
 const members = RFM_MEMBERS.split(/\r?\n/).map((l) => l.trim()).filter(Boolean).map((l) => {
-  // 쉼표 대신 띄어쓰기로 적은 줄("이름 별칭")도 받는다
-  const parts = (/[,\t:]/.test(l) ? l.split(/[,\t:]/) : l.split(/\s+/)).map((x) => x.trim());
+  const parts = l.split(/[,\t:]/).map((x) => x.trim());
   return { nick: parts.length > 1 ? parts.slice(1).join(',') : parts[0] };
 }).filter((m) => m.nick);
 
