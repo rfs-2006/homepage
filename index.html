@@ -4992,10 +4992,10 @@ class Component extends DCLogic {
           del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
         };
       }),
-      hasWkLatest: list.length > 0,
+      hasWkLatest: true,
       wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
       wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
-      wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] && list[0].id }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
+      wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] ? list[0].id : undefined }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
       wkIsAmt: isAmt, wkWriteOpen: !!s.wkWrite, wkLoginOpen: !!s.wkLogin && !isAmt,
       wkToggleWrite: (e) => { e.preventDefault(); if (isAmt) this.setState({ wkWrite: !s.wkWrite }); else this.setState({ wkLogin: !s.wkLogin }); },
       wkPw: s.wkPw || '', onWkPw: (e) => this.setState({ wkPw: e.target.value }), wkErr: s.wkErr || '',
