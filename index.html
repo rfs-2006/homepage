@@ -1268,6 +1268,29 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-top .wk-body{font-size:16px}
 .wk-top .wk-empty{font-size:16px;padding:10px 0 4px}
 @media (max-width:860px){.wk-top .wk-item.open .wk-head b{font-size:20px}.wk-top .wk-body{font-size:15px}}
+.wk-hlink{text-decoration:none;color:inherit;align-items:center !important}
+.wk-arrow{font-size:14px;font-weight:600;color:#8FAADC;white-space:nowrap}
+.wk-arrow em{display:inline-block;margin-left:8px;font-style:normal;font-size:18px;transition:transform .2s}
+.wk-hlink:hover .wk-arrow em{transform:translateX(4px)}
+.wk-top .wk-item .wk-head{cursor:default}
+.wk-board{padding-top:120px !important}
+.wk-back{font-size:13px;color:rgba(247,246,243,0.6);text-decoration:none}
+.wk-bh{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:18px 0 22px}
+.wk-bh h1{margin:0;color:#F7F6F3 !important;opacity:1 !important;font-family:'Noto Serif KR',serif;font-size:clamp(30px,4vw,44px);letter-spacing:-0.03em}
+.wk-bh p{margin:8px 0 0;font-size:14px;color:rgba(247,246,243,0.55)}
+.wk-new{padding:10px 18px;border:1px solid rgba(143,170,220,0.5);color:#F7F6F3;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.wk-new:hover{background:rgba(143,170,220,0.12)}
+.wk-form.fd-card{margin:0 0 20px}
+.wk-note{margin:0;font-size:13px;color:rgba(247,246,243,0.6)}
+.wk-pics{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.wk-pics .pv{position:relative;width:96px;height:72px}
+.wk-pics .pv img{width:100%;height:100%;object-fit:cover;display:block;border:1px solid rgba(247,246,243,0.15)}
+.wk-pics .pv a{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:#0F1B2E;border:1px solid rgba(247,246,243,0.4);color:#F7F6F3;font-size:14px;line-height:20px;text-align:center;text-decoration:none}
+.wk-add{display:inline-flex;align-items:center;justify-content:center;width:96px;height:72px;border:1px dashed rgba(143,170,220,0.6);font-size:12.5px;color:#8FAADC;cursor:pointer}
+.wk-add input{display:none}
+.wk-acts{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.wk-acts a{font-size:13px;color:rgba(247,246,243,0.55)}
+.wk-all{margin-top:0}
+@media (max-width:860px){.wk-board{padding-top:96px !important}.wk-bh{align-items:flex-start}.wk-arrow{font-size:13px}}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
 .tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
@@ -2595,6 +2618,34 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </main>
   </sc-if>
 
+  <sc-if value="{{ strategyOpen }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Weekly Strategy" data-nav="dark" class="fdpage wkpage" style="position:relative;background:#0B1524;color:#F7F6F3">
+    <div class="wrap fd-body wk-board">
+      <a class="wk-back" href="#fund" onClick="{{ wkBack }}">← AMT Fund</a>
+      <div class="wk-bh"><div><h1>Weekly Strategy</h1><p>운용팀 주간 투자전략</p></div><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div>
+      <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkLogin }}"><p class="wk-note">운용팀 계정으로 로그인해야 글을 쓸 수 있습니다.</p><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
+      <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkSubmit }}">
+        <div class="wk-row"><input class="intra-input" type="date" value="{{ wkDate }}" onChange="{{ onWkDate }}"><input class="intra-input" placeholder="제목 (예: 10월 2주차 · 반도체 장비 비중 확대)" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></div>
+        <textarea class="intra-input" rows="12" placeholder="본문. 노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다." value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
+        <div class="wk-pics"><sc-for list="{{ wkPreviews }}" as="pv"><div class="pv"><img src="{{ pv.u }}" alt=""><a href="#" onClick="{{ pv.rm }}">×</a></div></sc-for><label class="wk-add">＋ 사진 추가<input type="file" accept="image/*" multiple="multiple" onChange="{{ onWkFiles }}"></label></div>
+        <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
+        <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
+      </form></sc-if>
+      <section class="fd-card wk-all">
+        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
+        <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
+          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
+          <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
+            <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
+            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
+            <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
+            <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
+          </div></sc-if>
+        </article></sc-for></div>
+      </section>
+    </div>
+  </main>
+  </sc-if>
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
@@ -2616,11 +2667,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <div class="wrap fd-body">
 
 
-      <sc-if value="{{ hasWeekly }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card fd-open wk-top" id="fd-weekly">
-        <div class="fd-ch"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-sub">운용팀 주간 투자전략</span></div>
+        <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 보기<em>→</em></span></a>
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
-        <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
+        <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
             <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
@@ -2629,17 +2679,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
           </div></sc-if>
         </article></sc-for></div>
-        <div class="wk-foot"><a href="#" onClick="{{ wkToggleWrite }}">운용팀 글쓰기</a></div>
-        <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form" onSubmit="{{ wkLogin }}"><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
-        <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form" onSubmit="{{ wkSubmit }}">
-          <div class="wk-row"><input class="intra-input" type="date" value="{{ wkDate }}" onChange="{{ onWkDate }}"><input class="intra-input" placeholder="제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></div>
-          <textarea class="intra-input" rows="10" placeholder="본문 (노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다)" value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
-          <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
-          <label class="wk-file">사진 첨부<input type="file" accept="image/*" multiple onChange="{{ onWkFiles }}"><span>{{ wkFileNote }}</span></label>
-          <button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><p class="wk-err">{{ wkErr }}</p>
-        </form></sc-if>
       </section>
-      </sc-if>
 
       <section class="fd-card fd-open fd-sum" id="fd-strat">
         <h2 class="fd-ct">Summary</h2>
@@ -4456,7 +4496,7 @@ class Component extends DCLogic {
   }
 
   pickNavMode() {
-    if (this.state.page === 'intranet' || this.state.page === 'rfm' || this.state.page === 'fund') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
+    if (this.state.page === 'intranet' || this.state.page === 'rfm' || this.state.page === 'fund' || this.state.page === 'strategy') { if (this.state.navMode !== 'dark') this.setState({ navMode: 'dark' }); return; }
     let mode = 'light';
     document.querySelectorAll('[data-nav]').forEach((n) => {
       const r = n.getBoundingClientRect();
@@ -4980,22 +5020,27 @@ class Component extends DCLogic {
       }
       return urls;
     };
+    const item = (w, open) => {
+      const body = String(w.body || '');
+      return {
+        date: fmt(w.week), title: w.title, open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
+        excerpt: body.replace(/\s+/g, ' ').slice(0, 120) + (body.length > 120 ? '…' : ''),
+        paras: open ? paras(body) : [], imgs: open ? (w.images || []).map((u) => ({ u })) : [],
+        hasLink: open && !!w.link, link: w.link || '',
+        toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
+        canDel: open && isAmt,
+        del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
+      };
+    };
     return {
       hasWeekly: true, weeklyEmpty: list.length === 0 && !!s.weeklyLoaded, noWeekly: false,
       wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
-      weeklyList: list.map((w) => {
-        const open = w.id === openId;
-        const body = String(w.body || '');
-        return {
-          date: fmt(w.week), title: w.title, open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
-          excerpt: body.replace(/\s+/g, ' ').slice(0, 120) + (body.length > 120 ? '…' : ''),
-          paras: open ? paras(body) : [], imgs: open ? (w.images || []).map((u) => ({ u })) : [],
-          hasLink: open && !!w.link, link: w.link || '',
-          toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
-          canDel: open && isAmt,
-          del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
-        };
-      }),
+      weeklyLatest: list.slice(0, 1).map((w) => item(w, true)),
+      weeklyList: list.map((w) => item(w, w.id === openId)),
+      wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
+      wkBack: (e) => { e.preventDefault(); this.go('fund'); },
+      wkNewLabel: s.wkWrite ? '닫기' : '글쓰기',
+      wkPreviews: (s.wkFiles || []).map((f, i) => ({ u: f.__url || (f.__url = URL.createObjectURL(f)), rm: (e) => { e.preventDefault(); this.setState({ wkFiles: s.wkFiles.filter((_, k) => k !== i) }); } })),
       hasWkLatest: true,
       wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
       wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
@@ -5012,7 +5057,7 @@ class Component extends DCLogic {
       wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
-      onWkFiles: (e) => this.setState({ wkFiles: [...(e.target.files || [])] }),
+      onWkFiles: (e) => { const add = [...(e.target.files || [])].filter((f) => /^image\//.test(f.type)); e.target.value = ''; this.setState({ wkFiles: [...(s.wkFiles || []), ...add].slice(0, 10) }); },
       wkFileNote: (s.wkFiles || []).length ? '사진 ' + s.wkFiles.length + '장' : '',
       wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
       wkSubmit: async (e) => {
@@ -5254,6 +5299,7 @@ class Component extends DCLogic {
       : page === 'recruit' ? '신입 학회원 모집 | 중앙대 가치투자학회 R.F.S.'
       : page === 'intranet' ? 'Intranet | RFS'
       : page === 'rfm' ? 'RFM 순위 | RFS'
+      : page === 'strategy' ? 'Weekly Strategy | AMT Fund | RFS'
       : page === 'fund' ? 'AMT Fund | 중앙대 가치투자학회 R.F.S.'
       : 'R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회';
   }
@@ -5265,6 +5311,7 @@ class Component extends DCLogic {
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
+    else if (h === 'fund/strategy') page = 'strategy';
     else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
@@ -5281,7 +5328,7 @@ class Component extends DCLogic {
 
   go(page, id) {
     this._navAt = Date.now();
-    const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page;
+    const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page === 'strategy' ? 'fund/strategy' : page;
     // 리포트 개별 주소에서 다른 화면으로 갈 때는 주소를 메인(/#...)으로 바꾼다
     if (location.pathname !== '/') history.pushState(null, '', '/#' + nh); else location.hash = nh;
     this.withTransition((done) => this.setState({ page, reportId: id || this.state.reportId, menuOpen:false }, () => { window.scrollTo(0, 0); this.setupReveal(); this.observeSentinel(); done && done(); }));
@@ -5291,6 +5338,7 @@ class Component extends DCLogic {
     const s = this.state;
     // 리포트 1페이지 원문(tools/extract-page1.py가 만든 파일)은 리포트 화면을 처음 열 때 한 번 받아 온다
     // 펀드 공개분(장 마감 확정치)은 누구나 읽는 public_content에서 받는다
+    if (s.page === 'strategy' && !this._wkReq && this.sb) { this._wkReq = true; this.loadWeekly(); }
     if (s.page === 'fund' && !this._fundPubReq && this.sb) {
       this._fundPubReq = true;
       this.loadFundLive();
@@ -5387,7 +5435,7 @@ class Component extends DCLogic {
     // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
     const navDefs = [['ABOUT','about'], ['RESEARCH','research'], ['FUND','fund'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['RFM','rfm'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
-      : s.page === 'activity' ? 'about' : s.page;
+      : s.page === 'activity' ? 'about' : s.page === 'strategy' ? 'fund' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
       label, href: url || '#' + page,
       on: url ? () => {} : (e) => { e.preventDefault(); this.preloadHero && this.preloadHero(page); this.go(page); },
@@ -5436,7 +5484,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
+      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
