@@ -25,3 +25,6 @@ drop policy if exists "weekly img write" on storage.objects;
 drop policy if exists "weekly img delete" on storage.objects;
 create policy "weekly img write" on storage.objects for insert with check (bucket_id = 'fund-weekly' and (auth.jwt() ->> 'email') = 'amt@caurfs.kr');
 create policy "weekly img delete" on storage.objects for delete using (bucket_id = 'fund-weekly' and (auth.jwt() ->> 'email') = 'amt@caurfs.kr');
+
+-- 카테고리 (공지 / 투자전략)
+alter table public.fund_weekly add column if not exists category text not null default '투자전략';

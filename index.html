@@ -1250,7 +1250,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-head .ex{font-size:13px;color:rgba(247,246,243,0.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .wk-head i{font-style:normal;color:rgba(247,246,243,0.5);text-align:right;grid-column:4}
 .wk-item.open .wk-head i{grid-column:3 / 5}
-.wk-body{padding:0 0 22px 110px;font-size:15px;line-height:1.8;color:rgba(247,246,243,0.85);word-break:keep-all}
+.wk-body{padding:0 0 22px 128px;font-size:15px;line-height:1.8;color:rgba(247,246,243,0.85);word-break:keep-all}
 .wk-body p{margin:0 0 14px}.wk-body p span{display:block}
 .wk-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:6px 0 14px}
 .wk-imgs img{width:100%;display:block;border:1px solid rgba(247,246,243,0.1)}
@@ -1291,6 +1291,16 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-acts{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.wk-acts a{font-size:13px;color:rgba(247,246,243,0.55)}
 .wk-all{margin-top:0}
 @media (max-width:860px){.wk-board{padding-top:96px !important}.wk-bh{align-items:flex-start}.wk-arrow{font-size:13px}}
+.wk-cats{display:flex;gap:8px}
+.wk-catbtn{padding:8px 16px;border:1px solid rgba(247,246,243,0.2);font-size:13.5px;color:rgba(247,246,243,0.7);text-decoration:none}
+.wk-catbtn.on{background:#8FAADC;border-color:#8FAADC;color:#0F1B2E;font-weight:700}
+.wk-auto{display:flex;flex-direction:column;justify-content:center;padding:0 4px}
+.wk-auto small{font-size:11.5px;color:rgba(247,246,243,0.5)}
+.wk-auto b{font-size:16px;color:#F7F6F3}
+.wk-cat{display:block;font-style:normal;font-size:11px;font-weight:700;letter-spacing:.04em;color:#8FAADC;margin-bottom:2px}
+.wk-cat.n{color:#F2D27A}
+.wk-head{grid-template-columns:110px auto minmax(0,1fr) 20px !important}
+@media (max-width:860px){.wk-head{grid-template-columns:1fr 20px !important}.wk-cat{display:inline;margin:0 8px 0 0}}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
 .tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
@@ -2625,7 +2635,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="wk-bh"><div><h1>Weekly Strategy</h1><p>운용팀 주간 투자전략</p></div><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div>
       <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkLogin }}"><p class="wk-note">운용팀 계정으로 로그인해야 글을 쓸 수 있습니다.</p><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
       <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkSubmit }}">
-        <div class="wk-row"><input class="intra-input" type="date" value="{{ wkDate }}" onChange="{{ onWkDate }}"><input class="intra-input" placeholder="제목 (예: 10월 2주차 · 반도체 장비 비중 확대)" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></div>
+        <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
+        <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
+        <sc-if value="{{ wkIsNotice }}" hint-placeholder-val="{{ false }}"><input class="intra-input" placeholder="공지 제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></sc-if>
         <textarea class="intra-input" rows="12" placeholder="본문. 노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다." value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
         <div class="wk-pics"><sc-for list="{{ wkPreviews }}" as="pv"><div class="pv"><img src="{{ pv.u }}" alt=""><a href="#" onClick="{{ pv.rm }}">×</a></div></sc-for><label class="wk-add">＋ 사진 추가<input type="file" accept="image/*" multiple="multiple" onChange="{{ onWkFiles }}"></label></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
@@ -2634,7 +2646,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <section class="fd-card wk-all">
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
-          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
+          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
             <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
@@ -2671,7 +2683,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 보기<em>→</em></span></a>
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
         <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
-          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
+          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
             <sc-for list="{{ w.paras }}" as="p"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
@@ -5008,6 +5020,14 @@ class Component extends DCLogic {
     const openId = s.wkOpen === undefined ? (list[0] && list[0].id) : s.wkOpen;
     const fmt = (d) => { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? d : t.getFullYear() + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + String(t.getDate()).padStart(2, '0'); };
     const today = (() => { const k = new Date(Date.now() + 9 * 3600e3); return k.toISOString().slice(0, 10); })();
+    // 투자전략: 일요일에 올리면 다음 월~금. 그 주 월요일(오늘이 월요일이면 오늘)을 기준일로, 제목은 날짜 범위
+    const nextMon = (() => { const d = new Date(today + 'T00:00:00'); d.setDate(d.getDate() + ((8 - d.getDay()) % 7)); return d; })();
+    const ymdOf = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const md = (d) => (d.getMonth() + 1) + '.' + d.getDate();
+    const weekTitle = (mon) => { const a = new Date(mon + 'T00:00:00'); const f = new Date(a); f.setDate(a.getDate() + 4); return md(a) + '(월) ~ ' + md(f) + '(금) 투자전략'; };
+    const cat = s.wkCat || '투자전략';
+    const strat = cat === '투자전략';
+    const monPick = (() => { const v = s.wkMon || ymdOf(nextMon); const d = new Date(v + 'T00:00:00'); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return ymdOf(d); })();
     const paras = (b) => String(b || '').replace(/\r/g, '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => ({ lines: p.split('\n').map((t) => ({ t })) }));
     const upload = async (files) => {
       const urls = [];
@@ -5023,7 +5043,7 @@ class Component extends DCLogic {
     const item = (w, open) => {
       const body = String(w.body || '');
       return {
-        date: fmt(w.week), title: w.title, open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
+        date: fmt(w.week), title: w.title, cat: w.category || '투자전략', catCls: 'wk-cat' + ((w.category || '투자전략') === '공지' ? ' n' : ''), open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
         excerpt: body.replace(/\s+/g, ' ').slice(0, 120) + (body.length > 120 ? '…' : ''),
         paras: open ? paras(body) : [], imgs: open ? (w.images || []).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, link: w.link || '',
@@ -5035,7 +5055,7 @@ class Component extends DCLogic {
     return {
       hasWeekly: true, weeklyEmpty: list.length === 0 && !!s.weeklyLoaded, noWeekly: false,
       wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
-      weeklyLatest: list.slice(0, 1).map((w) => item(w, true)),
+      weeklyLatest: list.filter((w) => (w.category || '투자전략') === '투자전략').slice(0, 1).map((w) => item(w, true)),
       weeklyList: list.map((w) => item(w, w.id === openId)),
       wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
       wkBack: (e) => { e.preventDefault(); this.go('fund'); },
@@ -5054,6 +5074,9 @@ class Component extends DCLogic {
           .then(({ error }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true }));
       },
       wkDate: s.wkDate || today, onWkDate: (e) => this.setState({ wkDate: e.target.value }),
+      wkCats: ['투자전략', '공지'].map((c) => ({ t: c, cls: 'wk-catbtn' + (cat === c ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkCat: c }); } })),
+      wkIsStrat: strat, wkIsNotice: !strat,
+      wkMon: monPick, onWkMon: (e) => this.setState({ wkMon: e.target.value }), wkAutoTitle: weekTitle(monPick),
       wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
@@ -5062,14 +5085,15 @@ class Component extends DCLogic {
       wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
       wkSubmit: async (e) => {
         e.preventDefault();
-        if (s.wkBusy || !(s.wkTitle || '').trim()) { this.setState({ wkErr: '제목을 입력하세요' }); return; }
+        if (s.wkBusy) return;
+        if (!strat && !(s.wkTitle || '').trim()) { this.setState({ wkErr: '제목을 입력하세요' }); return; }
         this.setState({ wkBusy: true, wkErr: '' });
         try {
           const images = await upload(s.wkFiles || []);
           const link = (s.wkLink || '').trim();
-          const { error } = await this.sb.from('fund_weekly').insert({ week: s.wkDate || today, title: s.wkTitle.trim(), body: (s.wkBody || '').trim(), images, link: /^https?:\/\//.test(link) ? link : '' });
+          const { error } = await this.sb.from('fund_weekly').insert({ category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body: (s.wkBody || '').trim(), images, link: /^https?:\/\//.test(link) ? link : '' });
           if (error) throw error;
-          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkOpen: undefined });
+          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined });
           this.loadWeekly();
         } catch (x) { this.setState({ wkBusy: false, wkErr: '올리지 못했습니다: ' + ((x && x.message) || x) }); }
       },
