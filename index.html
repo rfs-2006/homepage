@@ -2635,7 +2635,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <div class="wrap fd-body wk-board">
       <a class="wk-back" href="#fund" onClick="{{ wkBack }}">← AMT Fund</a>
       <div class="wk-bh"><div><h1>Weekly Strategy</h1><p>운용팀 주간 투자전략</p></div><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div>
-      <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkLogin }}"><p class="wk-note">운용팀 계정으로 로그인해야 글을 쓸 수 있습니다.</p><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
+      <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkLogin }}"><p class="wk-note">학회원 로그인과 같은 곳입니다. 운용팀 비밀번호를 넣으면 글쓰기가 열립니다.</p><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
       <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkSubmit }}">
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
@@ -5007,6 +5007,14 @@ class Component extends DCLogic {
     };
   }
 
+  // 로그인은 한 곳: 비밀번호 하나로 학회원 공용 계정, 맞지 않으면 운용팀 계정을 차례로 시도한다 (운용팀은 학회원 화면도 다 본다)
+  signIn(pw) {
+    if (!this.sb) return Promise.resolve({ error: new Error('no client') });
+    const p = pw || '';
+    return this.sb.auth.signInWithPassword({ email: 'member@caurfs.kr', password: p })
+      .then(({ error }) => (error ? this.sb.auth.signInWithPassword({ email: 'amt@caurfs.kr', password: p }).then(({ error: e2 }) => ({ error: e2, email: 'amt@caurfs.kr' })) : { error: null, email: 'member@caurfs.kr' }));
+  }
+
   // FUND 위클리: 누구나 읽고, 운용팀 계정(AMT_EMAIL)만 쓴다. 표는 Supabase fund_weekly, 사진은 Storage fund-weekly
   loadWeekly() {
     if (!this.sb) return;
@@ -5085,8 +5093,8 @@ class Component extends DCLogic {
       wkPw: s.wkPw || '', onWkPw: (e) => this.setState({ wkPw: e.target.value }), wkErr: s.wkErr || '',
       wkLogin: (e) => {
         e.preventDefault();
-        this.sb.auth.signInWithPassword({ email: AMT_EMAIL, password: s.wkPw || '' })
-          .then(({ error }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true }));
+        this.signIn(s.wkPw)
+          .then(({ error, email }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : email === AMT_EMAIL ? { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true } : { wkErr: '학회원으로 로그인했습니다. 글쓰기는 운용팀 비밀번호로 로그인해야 합니다.', wkPw: '' }));
       },
       wkDate: s.wkDate || today, onWkDate: (e) => this.setState({ wkDate: e.target.value }),
       wkCats: ['투자전략', '공지'].map((c) => ({ t: c, cls: 'wk-catbtn' + (cat === c ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkCat: c }); } })),
@@ -5543,7 +5551,7 @@ class Component extends DCLogic {
         e.preventDefault();
         if (!this.sb) return this.setState({ loginErr: '연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.' });
         this.setState({ loginBusy: true, loginErr: '' });
-        this.sb.auth.signInWithPassword({ email: 'member@caurfs.kr', password: s.loginPw || '' })
+        this.signIn(s.loginPw)
           .then(({ error }) => this.setState({ loginBusy: false, loginErr: error ? '비밀번호를 확인해 주세요.' : '', loginPw: error ? s.loginPw : '' }));
       },
       intraLogout: (e) => { e.preventDefault(); if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); },
