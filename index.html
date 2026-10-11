@@ -645,6 +645,8 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
 .fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
+.rfmpage::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/nyse.webp") center 30%/cover no-repeat;opacity:.15}
+@media (max-width:768px){.rfmpage::before{background-image:url("assets/hero/nyse-m.webp")}}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -2631,7 +2633,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
-      <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster" style="--slot-position:center 55%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="assets/hero/nyse.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:NY_stock_exchange_traders_floor_LC-U9-10548-6.jpg" style="--slot-position:center 30%"></image-slot></div>
       <div class="scrim" style="opacity:0.9"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
