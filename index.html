@@ -4957,7 +4957,7 @@ class Component extends DCLogic {
       })(),
       hasRfmTeams: teams.length > 0,
       rfmTeams: teams.map((t, i) => ({
-        rank: i + 1, name: t.name, n: t.live.length + '명' + (t.list.length > t.live.length ? ' · 미집계 ' + (t.list.length - t.live.length) : ''),
+        rank: i + 1, name: t.name === '회장단' ? 'Executive' : t.name === '운용팀' ? 'Team AMT' : /^\d+팀$/.test(t.name) ? 'Team ' + parseInt(t.name, 10) : t.name, n: t.live.length + '명' + (t.list.length > t.live.length ? ' · 미집계 ' + (t.list.length - t.live.length) : ''),
         avg: pct(t.a), c: col(t.a), ax: x(t.a), z: x(0),
         best: '팀 내 1위 ' + nm(t.best) + ' ' + pct(ret(t.best)),
         dots: t.live.map((m) => ({ x: x(ret(m)), c: col(ret(m)), t: nm(m) + ' ' + pct(ret(m)) })),
