@@ -2613,7 +2613,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
       <section class="fd-card fd-open fd-sum" id="fd-strat">
         <div class="fd-ch wk-ch"><h2 class="fd-ct">Summary</h2>
-        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>이번 주 전략 보기<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
+        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>Weekly Strategy<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
         </div>
         <div class="fd-kc fd-kc-in">
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
@@ -2706,8 +2706,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
       <sc-if value="{{ hasWeekly }}" hint-placeholder-val="{{ false }}">
       <section class="fd-card" id="fd-weekly" style="margin-top:20px">
-        <div class="fd-ch"><h2 class="fd-ct">Weekly</h2><span class="wk-sub">운용팀 주간 코멘트</span></div>
-        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">아직 올라온 위클리가 없습니다.</p></sc-if>
+        <div class="fd-ch"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-sub">운용팀 주간 투자전략</span></div>
+        <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">아직 올라온 전략이 없습니다.</p></sc-if>
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
@@ -4903,7 +4903,7 @@ class Component extends DCLogic {
           { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
         ];
       })(),
-      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도'], ...((this.state.weekly || []).length ? [['fd-weekly', 'Weekly']] : [])].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
+      fdNav: [['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도'], ...((this.state.weekly || []).length ? [['fd-weekly', 'Strategy']] : [])].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
       fdStartLabel: '설정 이후' + (sd ? ' (' + sd.replace(/-/g, '.') + ')' : ''),
       fdAlloc: alloc,
       fdAllocLegend: hs.slice(0, 6).map((h, i) => ({ c: shades[i % shades.length], t: h.name, w: (h.weight || 0).toFixed(1) + '%' })).concat(hs.length > 6 ? [{ c: 'rgba(247,246,243,0.35)', t: '외 ' + (hs.length - 6) + '종목', w: hs.slice(6).reduce((a, h) => a + (h.weight || 0), 0).toFixed(1) + '%' }] : []).concat([{ c: 'rgba(247,246,243,0.16)', t: '현금', w: cw.toFixed(1) + '%' }]),
@@ -4989,7 +4989,7 @@ class Component extends DCLogic {
           hasLink: open && !!w.link, link: w.link || '',
           toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
           canDel: open && isAmt,
-          del: async (e) => { e.preventDefault(); if (!window.confirm('이 위클리를 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
+          del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
         };
       }),
       hasWkLatest: list.length > 0,
