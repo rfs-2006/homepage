@@ -1286,7 +1286,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
       <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="5">
-        <a href="{{ it.href }}" onClick="{{ it.on }}" class="navlink {{ it.cls }}" style="padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap">{{ it.label }}</a>
+        <a href="{{ it.href }}" onClick="{{ it.on }}" onMouseEnter="{{ it.pre }}" class="navlink {{ it.cls }}" style="padding:4px 0;border-bottom:2px solid transparent;white-space:nowrap">{{ it.label }}</a>
       </sc-for>
     </div>
     <button class="burger press" onClick="{{ toggleMenu }}" style="background:none;border:1px solid;padding:8px 14px;font-size:13px;cursor:pointer">Menu</button>
@@ -4339,7 +4339,25 @@ class Component extends DCLogic {
       urls.slice(0, 12).forEach((u) => { const i = new Image(); i.decoding = 'async'; i.src = u; });
     };
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
-    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); });
+    // 메뉴 페이지 맨 위 사진은 그 페이지를 열 때 처음 받기 시작해서 늦게 떴다. 첫 화면이 뜬 뒤 미리 받아 둔다 (기기에 맞는 크기로)
+    this._menuHeroes = () => {
+      const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
+      return {
+        fund: ['assets/hero/sky.webp'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
+        research: [u + '1470219556762-1771e7f9427d?auto=format&fit=crop&w=' + (m ? 1200 : 1600) + '&q=72'],
+        about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
+        recruit: [u + '1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=72'],
+        intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
+      };
+    };
+    this._heroGot = {};
+    this.preloadHero = (page) => {
+      ((this._menuHeroes()[page]) || []).forEach((src) => {
+        if (this._heroGot[src]) return;
+        const i = new Image(); i.decoding = 'async'; i.src = src; this._heroGot[src] = i;
+      });
+    };
+    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
@@ -4349,7 +4367,7 @@ class Component extends DCLogic {
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
       this.sb = window.supabase.createClient(SB_URL, SB_KEY);
-      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else this.setState({ intraData: null, rfmData: null, fundLive: null }); });
+      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -4568,8 +4586,8 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    if (!this.state.user) return;
-    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
+    // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
+    this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
       .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
   }
 
@@ -5131,7 +5149,7 @@ class Component extends DCLogic {
       this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle()
         .then(({ data }) => this.setState({ fundPub: (data && data.data) || null, fundPubLoaded: true }), () => this.setState({ fundPubLoaded: true }));
     }
-    if (s.page === 'rfm' && s.user && !this._rfmReq && this.sb) {
+    if (s.page === 'rfm' && !this._rfmReq && this.sb) {
       this._rfmReq = true;
       this.loadRfm();
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
@@ -5223,7 +5241,8 @@ class Component extends DCLogic {
       : s.page === 'activity' ? 'about' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
       label, href: url || '#' + page,
-      on: url ? () => {} : (e) => { e.preventDefault(); this.go(page); },
+      on: url ? () => {} : (e) => { e.preventDefault(); this.preloadHero && this.preloadHero(page); this.go(page); },
+      pre: () => { this.preloadHero && this.preloadHero(page); },
       cls: (navActive === page ? 'on' : '') + (url ? ' hide-m' : ''),
       hideM: !!url,
       mcolor: navActive === page ? '#203864' : '#1A1A1A' }));
@@ -5268,7 +5287,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' || s.page === 'rfm') && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm' && authed, fundOpen: s.page === 'fund',
+      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund',
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
