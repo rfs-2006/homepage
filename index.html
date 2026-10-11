@@ -2721,6 +2721,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </sc-if>
 
       <p class="fd-disc">{{ fdNote }}</p>
+      <sc-if value="{{ noWeekly }}" hint-placeholder-val="{{ false }}"><p class="wk-foot"><a href="#" onClick="{{ wkStart }}">운용팀 글쓰기</a></p></sc-if>
     </div>
     </sc-if>
   </main>
@@ -4967,7 +4968,8 @@ class Component extends DCLogic {
       return urls;
     };
     return {
-      hasWeekly: list.length > 0 || isAmt, weeklyEmpty: list.length === 0,
+      hasWeekly: list.length > 0 || isAmt || !!s.wkLogin || !!s.wkWrite, weeklyEmpty: list.length === 0, noWeekly: !(list.length > 0 || isAmt || s.wkLogin || s.wkWrite),
+      wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
       weeklyList: list.map((w) => {
         const open = w.id === openId;
         const body = String(w.body || '');
