@@ -1231,21 +1231,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
 @media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
-.wk-cta{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:22px;align-items:center;margin:22px 0 0;padding:20px 26px;border:1px solid rgba(143,170,220,0.22);background:linear-gradient(100deg,rgba(143,170,220,0.16),rgba(143,170,220,0.04) 55%,rgba(143,170,220,0.02));text-decoration:none;color:#F7F6F3;overflow:hidden;transition:border-color .25s,background .25s}
-.wk-cta::after{content:'';position:absolute;inset:0;background:radial-gradient(420px 120px at var(--mx,85%) 50%,rgba(143,170,220,0.14),transparent 70%);pointer-events:none;opacity:.8}
-.wk-cta:hover{border-color:rgba(143,170,220,0.5)}
-.wk-cta .tg{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8FAADC;white-space:nowrap}
-.wk-cta .tg i{width:7px;height:7px;border-radius:50%;background:#8FAADC;box-shadow:0 0 0 0 rgba(143,170,220,.6);animation:wkPulse 2.4s ease-out infinite}
-@keyframes wkPulse{0%{box-shadow:0 0 0 0 rgba(143,170,220,.55)}70%{box-shadow:0 0 0 9px rgba(143,170,220,0)}100%{box-shadow:0 0 0 0 rgba(143,170,220,0)}}
-.wk-cta .tx{min-width:0;display:grid;gap:3px}
-.wk-cta .tx time{font-size:12px;color:rgba(247,246,243,0.5);font-variant-numeric:tabular-nums}
-.wk-cta .tx b{font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wk-cta .tx small{font-size:13px;color:rgba(247,246,243,0.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wk-cta .go{font-size:13px;font-weight:600;color:#F7F6F3;white-space:nowrap;padding:9px 14px;border:1px solid rgba(247,246,243,0.25)}
-.wk-cta .go em{display:inline-block;margin-left:8px;font-style:normal;transition:transform .25s}
-.wk-cta:hover .go em{transform:translateX(4px)}
-@media (prefers-reduced-motion:reduce){.wk-cta .tg i{animation:none}}
-@media (max-width:860px){.wk-cta{grid-template-columns:1fr;gap:10px;padding:16px 16px 18px}.wk-cta .tx b{font-size:17px;white-space:normal}.wk-cta .go{justify-self:start}}
+.wk-ch{align-items:center !important}
+.wk-cta{display:inline-flex;align-items:center;gap:10px;margin:0;padding:10px 16px;border:1px solid rgba(143,170,220,0.35);font-size:14px;font-weight:600;color:#F7F6F3;text-decoration:none;transition:border-color .2s,background .2s}
+.wk-cta:hover{border-color:#8FAADC;background:rgba(143,170,220,0.08)}
+.wk-cta i{width:6px;height:6px;border-radius:50%;background:#8FAADC}
+.wk-cta time{font-size:12px;font-weight:400;color:rgba(247,246,243,0.5);font-variant-numeric:tabular-nums}
+.wk-cta em{font-style:normal;color:#8FAADC;transition:transform .2s}
+.wk-cta:hover em{transform:translateX(3px)}
 /* FUND 위클리 */
 .wk-sub{font-size:13px;color:rgba(247,246,243,0.5)}
 .wk-empty{margin:18px 0 0;font-size:14px;color:rgba(247,246,243,0.5)}
@@ -2620,14 +2612,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
 
       <section class="fd-card fd-open fd-sum" id="fd-strat">
-        <h2 class="fd-ct">Summary</h2>
-        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}">
-        <a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}">
-          <span class="tg"><i></i>This Week</span>
-          <span class="tx"><time>{{ wkLatestDate }}</time><b>{{ wkLatestTitle }}</b><small>{{ wkLatestEx }}</small></span>
-          <span class="go">운용 노트 읽기<em>→</em></span>
-        </a>
-        </sc-if>
+        <div class="fd-ch wk-ch"><h2 class="fd-ct">Summary</h2>
+        <sc-if value="{{ hasWkLatest }}" hint-placeholder-val="{{ false }}"><a class="wk-cta" href="#fd-weekly" onClick="{{ wkGo }}"><i></i>이번 주 운용 노트<time>{{ wkLatestShort }}</time><em>→</em></a></sc-if>
+        </div>
         <div class="fd-kc fd-kc-in">
         <sc-for list="{{ fdCards }}" as="k" hint-placeholder-count="5"><div><em class="kk">{{ k.k }}</em><b class="kv" style="color:{{ k.c }}">{{ k.v }}</b><small class="ks" style="color:{{ k.sc }}">{{ k.s }}</small></div></sc-for>
       </div>
@@ -5006,7 +4993,7 @@ class Component extends DCLogic {
         };
       }),
       hasWkLatest: list.length > 0,
-      wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
+      wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
       wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
       wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] && list[0].id }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
       wkIsAmt: isAmt, wkWriteOpen: !!s.wkWrite, wkLoginOpen: !!s.wkLogin && !isAmt,
