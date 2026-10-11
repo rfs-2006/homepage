@@ -63,3 +63,9 @@ cd ~/homepage && git pull && sudo systemctl restart rfs-fund
 
 `.env`의 `FUND_FLOWS`에 `날짜:금액`을 쉼표로 이어 적고 `sudo systemctl restart rfs-fund` 합니다.
 예: `FUND_FLOWS=2026-05-01:+1000000,2026-09-01:-500000`
+`seed.json`(운용팀 AP 시트로 만든 기준가) 마지막 날 이전의 입출금은 이미 반영돼 있어서 그 뒤 것만 적습니다.
+
+## 지난 기준가 (seed.json)
+
+해외(원화주문) 잔고는 키움 REST API로 보이지 않아서, 2026-03-03~09-29는 AP 시트의 국내+해외 당일손익으로 만든 기준가를 씁니다.
+`[날짜, 기준가]`만 들어 있고 금액은 없습니다. 시트를 갱신하면 이 파일을 다시 만들고 서버에서 `git pull` 후 재시작하면 다시 채웁니다.
