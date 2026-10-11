@@ -4820,7 +4820,7 @@ class Component extends DCLogic {
     const key = (n) => String(n || '').replace(/\s+/g, '').toLowerCase();
     const names = this.rfmNames();
     const real = (m) => names[key(m.nick)] || '';
-    const nm = (m) => real(m) || m.nick;
+    const nm = (m) => real(m) || String(m.nick || '').replace(/\s+/g, '');
     const pct = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
     const pp = (v) => Math.abs(v).toFixed(2) + '%p';
     const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.45)';
