@@ -7,13 +7,17 @@
 문서 단위로도 같이 잰다. 청크는 못 맞혀도 같은 리포트를 찾았으면 답변 단계에서 쓸 수 있기 때문이다.
 """
 import json
-import math
 import re
+import urllib.request
 import sys
 from collections import defaultdict
 from pathlib import Path
 
+import numpy as np
 from rank_bm25 import BM25Okapi
+
+sys.path.insert(0, str(Path(__file__).parent))
+from embed import embed  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 METHOD = sys.argv[2] if len(sys.argv) > 2 else 'bm25'
@@ -34,11 +38,48 @@ def main():
     chunks = [json.loads(l) for l in open(CAFE / 'parsed' / 'chunks.jsonl')]
     qs = [json.loads(l) for l in open(CAFE / 'eval' / 'eval_v0.jsonl')]
     doc_of = {c['chunk_id']: c['doc_id'] for c in chunks}
-    if METHOD == 'bm25':
+    # 방법: bm25 | vector | hybrid | hybrid+rerank  (vector 계열은 Voyage 임베딩 필요)
+    model = 'voyage-3.5'
+    need_bm = METHOD in ('bm25', 'hybrid', 'hybrid+rerank')
+    need_vec = METHOD in ('vector', 'hybrid', 'hybrid+rerank')
+    if need_bm:
         bm = BM25Okapi([tokens(c['header'] + '\n' + c['text']) for c in chunks])
-        search = lambda q: sorted(range(len(chunks)), key=lambda i: -s[i]) if (s := bm.get_scores(tokens(q))) is not None else []
-    else:
-        raise SystemExit('unknown method ' + METHOD)
+    if need_vec:
+        V = np.load(CAFE / 'vectors' / f'{model}.f16.npy').astype(np.float32)
+        V /= np.linalg.norm(V, axis=1, keepdims=True)
+        qv, _ = embed([q['question'] for q in qs], input_type='query', model=model)
+        QV = {q['question']: np.asarray(v, dtype=np.float32) for q, v in zip(qs, qv)}
+
+    def rank_bm(q):
+        return list(np.argsort(-bm.get_scores(tokens(q)))[:200])
+
+    def rank_vec(q):
+        v = QV[q] / np.linalg.norm(QV[q])
+        return list(np.argsort(-(V @ v))[:200])
+
+    def rrf(*lists, k=60):
+        # Reciprocal Rank Fusion: 점수 크기가 다른 두 검색을 순위만으로 합친다
+        sc = defaultdict(float)
+        for lst in lists:
+            for r, i in enumerate(lst, 1):
+                sc[i] += 1 / (k + r)
+        return sorted(sc, key=lambda i: -sc[i])
+
+    def rerank(q, cand, top=50):
+        body = json.dumps({'query': q, 'documents': [chunks[i]['header'] + '\n' + chunks[i]['text'] for i in cand[:top]],
+                           'model': 'rerank-2.5', 'top_k': top}).encode()
+        req = urllib.request.Request('https://api.voyageai.com/v1/rerank', data=body, headers={'content-type': 'application/json'})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            j = json.load(r)
+        return [cand[d['index']] for d in j['data']] + cand[top:]
+
+    def search(q):
+        if METHOD == 'bm25':
+            return rank_bm(q)
+        if METHOD == 'vector':
+            return rank_vec(q)
+        fused = rrf(rank_bm(q), rank_vec(q))
+        return rerank(q, fused) if METHOD == 'hybrid+rerank' else fused
     res = defaultdict(list)
     rows = []
     for q in qs:
