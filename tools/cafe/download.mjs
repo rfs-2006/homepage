@@ -35,7 +35,8 @@ const WANT = new Map();
 for (const [g, list] of Object.entries(BOARDS)) for (const b of list) WANT.set(norm(b), g);
 
 const DOC = /\.(pdf|pptx?|xlsx?|xlsm|docx?|hwpx?|zip|csv|txt)$/i;
-const safe = (s) => String(s || '').replace(/[\\/:*?"<>|\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) || 'untitled';
+// 윈도우는 이름 끝의 점·공백을 못 다룬다 ("입니다." 폴더가 안 열림)
+const safe = (s) => String(s || '').replace(/[\\/:*?"<>|\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80).replace(/[. ]+$/, '') || 'untitled';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 // 글 사이 쉬는 시간(초). 기본 0.8~1.6초, --delay=2 처럼 늘릴 수 있다
 const DELAY = (Number(arg('delay')) || 0.8) * 1000;
