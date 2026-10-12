@@ -1278,7 +1278,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-bh{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin:18px 0 22px}
 .wk-bh h1{margin:0;color:#F7F6F3 !important;opacity:1 !important;font-family:'Noto Serif KR',serif;font-size:clamp(30px,4vw,44px);letter-spacing:-0.03em}
 .wk-bh p{margin:8px 0 0;font-size:14px;color:rgba(247,246,243,0.55)}
-.wk-new{padding:10px 18px;border:1px solid rgba(143,170,220,0.5);color:#F7F6F3;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.wk-new{padding:10px 18px;border:1px solid rgba(143,170,220,0.5);color:#F7F6F3 !important;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
 .wk-new:hover{background:rgba(143,170,220,0.12)}
 .wk-form.fd-card{margin:0 0 20px}
 .wk-note{margin:0;font-size:13px;color:rgba(247,246,243,0.6)}
@@ -1303,6 +1303,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 @media (max-width:860px){.wk-head{grid-template-columns:1fr 20px !important}.wk-cat{display:inline;margin:0 8px 0 0}}
 .wk-fig{margin:6px 0 18px}.wk-fig img{display:block;max-width:100%;max-height:560px;border:1px solid rgba(247,246,243,0.1)}
 .wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:10.5px;color:#F7F6F3}
+.wk-msg{margin:0 0 16px;padding:12px 16px;border:1px solid rgba(242,210,122,0.4);background:rgba(242,210,122,0.06);font-size:13.5px;color:#F2D27A}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
 .tm-row{display:grid;grid-template-columns:36px 150px minmax(0,1fr) 190px;gap:22px;align-items:center;padding:16px 0;border-bottom:1px solid rgba(230,224,210,.08)}
@@ -2616,14 +2617,16 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:64px;height:auto;display:block;margin:0 auto">
         <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">{{ loginLabel }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">학회원 로그인</h1>
-        <p style="margin:14px 0 0;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.72)">카톡방 공지의 공통 비밀번호를 입력하세요.</p>
+        <p style="margin:14px 0 0;font-size:14px;line-height:1.7;color:rgba(247,246,243,0.72)">카톡방 공지의 아이디와 비밀번호를 입력하세요.</p>
         <form onSubmit="{{ intraLogin }}" style="margin-top:26px;display:flex;flex-direction:column;gap:10px">
-          <input class="intra-input" type="password" name="password" placeholder="학회 공통 비밀번호" required="" value="{{ loginPw }}" onChange="{{ onLoginPw }}" style="background:rgba(247,246,243,0.1);border-color:rgba(247,246,243,0.4);color:#F7F6F3;text-align:center">
+          <input class="intra-input" type="text" name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required="" value="{{ loginId }}" onChange="{{ onLoginId }}" style="background:rgba(247,246,243,0.1);border-color:rgba(247,246,243,0.4);color:#F7F6F3;text-align:center">
+          <input class="intra-input" type="password" name="password" autocomplete="current-password" placeholder="비밀번호" required="" value="{{ loginPw }}" onChange="{{ onLoginPw }}" style="background:rgba(247,246,243,0.1);border-color:rgba(247,246,243,0.4);color:#F7F6F3;text-align:center">
           <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}">
             <p style="margin:2px 0 0;font-size:12px;color:#E8A9A9">{{ loginErr }}</p>
           </sc-if>
           <button type="submit" class="btn btn-photo press" style="display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3">LOGIN</button>
         </form>
+        <sc-if value="{{ loginBack }}" hint-placeholder-val="{{ false }}"><p style="margin:18px 0 0;font-size:13px"><a href="#" onClick="{{ loginBackGo }}" style="color:rgba(247,246,243,0.75)">← 돌아가기</a></p></sc-if>
         <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.5)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.75)">recruiting.rfs@gmail.com</a></p>
       </div>
     </section>
@@ -2635,7 +2638,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <div class="wrap fd-body wk-board">
       <a class="wk-back" href="#fund" onClick="{{ wkBack }}">← AMT Fund</a>
       <div class="wk-bh"><div><h1>Weekly Strategy</h1><p>운용팀 주간 투자전략</p></div><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div>
-      <sc-if value="{{ wkLoginOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkLogin }}"><p class="wk-note">운용팀 계정으로 로그인해야 글을 쓸 수 있습니다.</p><input class="intra-input" type="password" placeholder="운용팀 비밀번호" value="{{ wkPw }}" onChange="{{ onWkPw }}"><button class="wk-btn" type="submit">로그인</button><p class="wk-err">{{ wkErr }}</p></form></sc-if>
+      <sc-if value="{{ hasWkMsg }}" hint-placeholder-val="{{ false }}"><p class="wk-msg">{{ wkErr }}</p></sc-if>
       <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkSubmit }}">
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
@@ -5007,6 +5010,15 @@ class Component extends DCLogic {
     };
   }
 
+  // 로그인은 한 곳: 비밀번호 하나로 학회원 공용 계정, 맞지 않으면 운용팀 계정을 차례로 시도한다 (운용팀은 학회원 화면도 다 본다)
+  // 아이디는 '@' 앞만 써도 된다 (amt → amt@caurfs.kr, member → member@caurfs.kr)
+  signIn(id, pw) {
+    if (!this.sb) return Promise.resolve({ error: new Error('no client') });
+    const raw = String(id || '').trim().toLowerCase();
+    const email = raw.includes('@') ? raw : raw + '@caurfs.kr';
+    return this.sb.auth.signInWithPassword({ email, password: pw || '' }).then(({ error }) => ({ error, email }));
+  }
+
   // FUND 위클리: 누구나 읽고, 운용팀 계정(AMT_EMAIL)만 쓴다. 표는 Supabase fund_weekly, 사진은 Storage fund-weekly
   loadWeekly() {
     if (!this.sb) return;
@@ -5080,13 +5092,14 @@ class Component extends DCLogic {
       wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
       wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
       wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] ? list[0].id : undefined }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
+      hasWkMsg: !!s.wkErr && !s.wkWrite,
       wkIsAmt: isAmt, wkWriteOpen: !!s.wkWrite, wkLoginOpen: !!s.wkLogin && !isAmt,
-      wkToggleWrite: (e) => { e.preventDefault(); if (isAmt) this.setState({ wkWrite: !s.wkWrite }); else this.setState({ wkLogin: !s.wkLogin }); },
+      wkToggleWrite: (e) => { e.preventDefault(); if (isAmt) this.setState({ wkWrite: !s.wkWrite, wkErr: '' }); else { this.setState({ wkLogin: true, wkErr: '', loginErr: '' }); window.scrollTo(0, 0); } },
       wkPw: s.wkPw || '', onWkPw: (e) => this.setState({ wkPw: e.target.value }), wkErr: s.wkErr || '',
       wkLogin: (e) => {
         e.preventDefault();
-        this.sb.auth.signInWithPassword({ email: AMT_EMAIL, password: s.wkPw || '' })
-          .then(({ error }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true }));
+        this.signIn('amt', s.wkPw)
+          .then(({ error, email }) => this.setState(error ? { wkErr: '비밀번호가 맞지 않습니다' } : email === AMT_EMAIL ? { wkErr: '', wkPw: '', wkLogin: false, wkWrite: true } : { wkErr: '학회원으로 로그인했습니다. 글쓰기는 운용팀 계정(amt)으로 로그인해야 합니다.', wkPw: '' }));
       },
       wkDate: s.wkDate || today, onWkDate: (e) => this.setState({ wkDate: e.target.value }),
       wkCats: ['투자전략', '공지'].map((c) => ({ t: c, cls: 'wk-catbtn' + (cat === c ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkCat: c }); } })),
@@ -5535,16 +5548,19 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: s.page === 'intranet' && !authed, intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy',
-      loginLabel: s.page === 'rfm' ? 'RFM 순위' : 'Agora',
+      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' && !authed) || (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
+      loginLabel: s.page === 'rfm' ? 'RFM 순위' : s.page === 'strategy' ? 'Weekly Strategy 글쓰기' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
+      loginId: s.loginId || '', onLoginId: (e) => this.setState({ loginId: e.target.value }),
       intraLogin: (e) => {
         e.preventDefault();
         if (!this.sb) return this.setState({ loginErr: '연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.' });
         this.setState({ loginBusy: true, loginErr: '' });
-        this.sb.auth.signInWithPassword({ email: 'member@caurfs.kr', password: s.loginPw || '' })
-          .then(({ error }) => this.setState({ loginBusy: false, loginErr: error ? '비밀번호를 확인해 주세요.' : '', loginPw: error ? s.loginPw : '' }));
+        this.signIn(s.loginId, s.loginPw)
+          .then(({ error, email }) => this.setState({ loginBusy: false, loginErr: error ? '아이디와 비밀번호를 확인해 주세요.' : '', loginPw: error ? s.loginPw : '',
+            // 게시판 글쓰기에서 왔으면 로그인 뒤 게시판으로 돌아간다 (운용팀이면 작성 폼을 연다)
+            ...(!error && s.page === 'strategy' ? { wkLogin: false, wkWrite: email === 'amt@caurfs.kr', wkErr: email === 'amt@caurfs.kr' ? '' : '학회원으로 로그인했습니다. 글쓰기는 운용팀 계정(amt)으로 로그인해야 합니다.' } : {}) }));
       },
       intraLogout: (e) => { e.preventDefault(); if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); },
       qna: ID.QNA.map((x) => ({ ...x, meta: x.from + ' 질문 · ' + x.date })),
