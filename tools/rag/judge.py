@@ -1,6 +1,6 @@
 """LLM 채점: 여러 검색 방법의 상위 결과를 한데 모아(pooling) Claude가 같은 기준으로 채점하고, 그 점수로 방법들을 다시 잰다.
 
-  python3 -I tools/rag/judge.py /home/user/rfs-cafe-data v2
+  python3 -I tools/rag/judge.py /home/user/rfs-cafe-data v2 [추가 방법 ...]   (예: multiquery@haiku agent@haiku)
 입력  eval/eval_<v>.jsonl, eval/result_<v>_<방법>.json (문항별 상위 청크가 저장된 결과)
 출력  eval/judge_<v>.jsonl (문항·청크별 점수, 이어하기용), eval/judged_<v>.json (방법별 지표)
 
@@ -24,7 +24,8 @@ from retriever import load_chunks  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 EVAL = sys.argv[2] if len(sys.argv) > 2 else 'v2'
-METHODS = ['bm25', 'vector', 'hybrid', 'hybrid+rerank', 'multiquery', 'agent']
+# multiquery·agent(이름에 모델 표시 없음)는 8~9절의 Opus 5.5 결과. 뒤에 붙인 방법은 풀에 더해 새 청크만 추가 채점한다
+METHODS = ['bm25', 'vector', 'hybrid', 'hybrid+rerank', 'multiquery', 'agent'] + sys.argv[3:]
 POOL_K = 10
 
 SYSTEM = """너는 검색 결과 채점자다. 중앙대 투자학회 RFS 자료(기업·산업 리포트, 세미나, 엑셀 모델, 가이드)에서 찾은 청크가

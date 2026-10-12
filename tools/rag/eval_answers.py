@@ -20,12 +20,15 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from agent_search import JUDGE_LLM, ask  # noqa: E402
+from agent_search import JUDGE_LLM, MODELS, ask  # noqa: E402
 from answer import GRADE, Answerer  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 EVAL = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+# 방법 뒤에 '@검색모델/답변모델'로 Claude 모델을 고른다 (예: routed@haiku/haiku, routed@haiku/sonnet). 없으면 둘 다 sonnet
 MODE = sys.argv[3] if len(sys.argv) > 3 else 'routed'
+BASE, _, MS = MODE.partition('@')
+SEARCH_M, _, ANSWER_M = (MS or 'sonnet/sonnet').partition('/')
 REJUDGE = len(sys.argv) > 4 and sys.argv[4] == 'rejudge'  # 답변은 그대로 두고 채점만 다시
 
 JUDGE = """너는 RAG 챗봇 답변 채점자다. 질문, 챗봇이 받은 학회 자료(검색 결과), 챗봇의 답을 보고 채점한다.
@@ -53,10 +56,10 @@ def judge(cl, q, out, chunks):
 
 
 def main():
-    a = Answerer(CAFE, mode=MODE)
+    a = Answerer(CAFE, mode=BASE, search_model=MODELS[SEARCH_M], answer_model=MODELS[ANSWER_M or SEARCH_M])
     chunks = {c['chunk_id']: c for c in a.chunks}
     qs = [json.loads(l) for l in open(CAFE / 'eval' / f'eval_{EVAL}.jsonl')]
-    path = CAFE / 'eval' / f'answers_{EVAL}_{MODE}.jsonl'
+    path = CAFE / 'eval' / f"answers_{EVAL}_{MODE.replace('/', '-')}.jsonl"
     done = {}
     if path.exists():
         for l in open(path):
@@ -123,7 +126,7 @@ def main():
         'by_type': by_type,
         'answer_tokens': a.s.usage, 'judge_tokens': {'input': jtok[0], 'output': jtok[1]},
     }
-    (CAFE / 'eval' / f'answers_{EVAL}_{MODE}_summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=1))
+    (CAFE / 'eval' / f"answers_{EVAL}_{MODE.replace('/', '-')}_summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     print(json.dumps(summary, ensure_ascii=False, indent=1))
     print('근거 없는 주장이 나온 답:')
     for r in rows:

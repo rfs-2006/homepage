@@ -7,7 +7,7 @@
   PORT                   기본 8787
   ALLOW_ORIGIN           CORS 허용 주소, 기본 https://caurfs.kr (쉼표로 여러 개)
   PER_IP_DAILY           IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
-  DAILY_LIMIT            전체 하루 질문 수 상한 (비용 안전장치), 기본 400
+  DAILY_LIMIT            전체 하루 질문 수 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
   GET  /health                   준비됐는지
@@ -40,7 +40,7 @@ SB_ANON = ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 ALLOWED_DOMAIN = '@caurfs.kr'
 ORIGINS = [o.strip() for o in os.environ.get('ALLOW_ORIGIN', 'https://caurfs.kr').split(',')]
 PER_IP_DAILY = int(os.environ.get('PER_IP_DAILY', 40))
-DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', 400))
+DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', 100))
 LOG_PATH = os.environ.get('LOG_PATH')
 MAX_TURNS, IDLE_SEC, MAX_MSG = 12, 2 * 3600, 1000
 

@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from agent_search import AgentSearch, ask  # noqa: E402
+from agent_search import LLM, AgentSearch, ask  # noqa: E402
 
 PREFETCH, OPEN_PREFETCH, MAX_SEARCH, PER_SEARCH = 8, 10, 3, 6
 GRADE = {'A': 'A 정규 리포트·가이드·모델', 'B': 'B 스터디·운용 보고·게시글', 'C': 'C 신입 투자제안서'}
@@ -52,10 +52,12 @@ TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관
 
 
 class Answerer:
-    """mode: routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery, 10절의 처음 버전)"""
+    """mode: routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery, 10절의 처음 버전)
+    search_model: 검색어 재작성·agent 검색 모델, answer_model: 답변 모델 (기본 둘 다 Sonnet 5.5)"""
 
-    def __init__(self, cafe, searcher=None, mode='routed'):
-        self.s = searcher or AgentSearch(cafe)
+    def __init__(self, cafe, searcher=None, mode='routed', search_model=LLM, answer_model=LLM):
+        self.s = searcher or AgentSearch(cafe, model=search_model)
+        self.answer_model = answer_model
         self.chunks = self.s.r.chunks
         self.mode = mode
 
@@ -125,7 +127,7 @@ class Chat:
         searches, n = [], 0
         for _ in range(MAX_SEARCH + 2):
             # cache_control: 마지막 블록까지를 캐시에 쓴다. 다음 호출(도구 결과 뒤, 다음 턴)은 이 앞부분을 캐시에서 읽는다
-            resp = ask(s.cl, system=SYSTEM.format(max=MAX_SEARCH), tools=[TOOL], cache_control={'type': 'ephemeral'},
+            resp = ask(s.cl, model=a.answer_model, system=SYSTEM.format(max=MAX_SEARCH), tools=[TOOL], cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             self.msgs.append({'role': 'assistant', 'content': resp.content})

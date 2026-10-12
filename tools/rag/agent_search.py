@@ -24,6 +24,7 @@ from retriever import Retriever, rrf  # noqa: E402
 # 채점 모델을 챗봇과 다르게 두면 자기가 낸 답을 후하게 보는 문제도 줄어든다.
 LLM = 'claude-sonnet-5-5'
 JUDGE_LLM = 'claude-opus-5-5'
+MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
 SNIPPET = 350
 
@@ -69,18 +70,22 @@ def client():
 
 
 def ask(cl, model=LLM, **kw):
-    # 안전 분류기가 거절하면 서버가 다른 모델로 다시 돌린다 (fallbacks: default)
-    r = cl.beta.messages.create(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
-                                fallbacks='default', **kw)
+    if 'haiku' in model:  # Haiku 5.5는 서버 쪽 대체 모델(fallbacks)이 없다
+        r = cl.messages.create(model=model, max_tokens=16000, **kw)
+    else:
+        # 안전 분류기가 거절하면 서버가 다른 모델로 다시 돌린다 (fallbacks: default)
+        r = cl.beta.messages.create(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
+                                    fallbacks='default', **kw)
     if r.stop_reason == 'refusal':
         raise RuntimeError(f'거절: {r.stop_details}')
     return r
 
 
 class AgentSearch:
-    def __init__(self, cafe, retriever=None):
+    def __init__(self, cafe, retriever=None, model=LLM):
         self.r = retriever or Retriever(cafe)
         self.cl = client()
+        self.model = model
         self.id2i = {c['chunk_id']: i for i, c in enumerate(self.r.chunks)}
         self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0}
         self.log = []
@@ -95,7 +100,7 @@ class AgentSearch:
     def rewrite(self, question, context=''):
         """검색어 3~5개, 질문 종류(fact/open), 앞 대화 없이 통하는 질문을 돌려준다. context는 여러 턴 대화의 앞선 대화."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
-        resp = ask(self.cl, system=MQ_SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
+        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
             'type': 'object', 'properties': {'queries': {'type': 'array', 'items': {'type': 'string'}},
                                              'kind': {'type': 'string', 'enum': ['fact', 'open']},
                                              'standalone': {'type': 'string'}},
@@ -125,7 +130,7 @@ class AgentSearch:
         found, picked, n = [], None, 0
         trace = {'question': question, 'queries': []}
         for _ in range(MAX_SEARCH + 2):
-            resp = ask(self.cl, system=AGENT_SYSTEM.format(max=MAX_SEARCH), tools=TOOLS, cache_control={'type': 'ephemeral'},
+            resp = ask(self.cl, model=self.model, system=AGENT_SYSTEM.format(max=MAX_SEARCH), tools=TOOLS, cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=msgs)
             self._count(resp)
             msgs.append({'role': 'assistant', 'content': resp.content})

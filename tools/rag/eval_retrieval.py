@@ -19,6 +19,9 @@ from retriever import Retriever, load_chunks, rrf  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 METHOD = sys.argv[2] if len(sys.argv) > 2 else 'bm25'
+# multiquery·agent는 '@모델'로 Claude 모델을 고를 수 있다 (예: agent@haiku). 없으면 sonnet
+BASE, _, MODEL = METHOD.partition('@')
+MODEL = MODEL or 'sonnet'
 EVAL = sys.argv[3] if len(sys.argv) > 3 else 'v0'
 KS = (1, 5, 10, 20)
 
@@ -29,11 +32,11 @@ def main():
     doc_of = {c['chunk_id']: c['doc_id'] for c in chunks}
     # 방법: bm25 | vector | hybrid | hybrid+rerank | multiquery | agent
     # vector 계열은 Voyage 임베딩, multiquery·agent는 Claude(RAG_ANTHROPIC_API_KEY)도 필요
-    ret = Retriever(CAFE, chunks, bm=METHOD != 'vector', vec=METHOD != 'bm25')
-    if METHOD in ('multiquery', 'agent'):
-        from agent_search import AgentSearch
-        ag = AgentSearch(CAFE, ret)
-    elif METHOD != 'bm25':
+    ret = Retriever(CAFE, chunks, bm=BASE != 'vector', vec=BASE != 'bm25')
+    if BASE in ('multiquery', 'agent'):
+        from agent_search import MODELS, AgentSearch
+        ag = AgentSearch(CAFE, ret, model=MODELS[MODEL])
+    elif BASE != 'bm25':
         ret.embed_queries([q['question'] for q in qs])
 
     def search(q):
@@ -41,9 +44,9 @@ def main():
             return ret.bm25(q)
         if METHOD == 'vector':
             return ret.vector(q)
-        if METHOD == 'multiquery':
+        if BASE == 'multiquery':
             return ag.multiquery(q)
-        if METHOD == 'agent':
+        if BASE == 'agent':
             return ag.agent(q)
         fused = rrf(ret.bm25(q), ret.vector(q))
         return ret.rerank(q, fused) if METHOD == 'hybrid+rerank' else fused
@@ -67,7 +70,7 @@ def main():
         rows.append((q['id'], q['type'], rd, q['question'][:40], top))
     out = {k: round(sum(v) / len(v), 3) for k, v in res.items()}  # docs@10은 비율이 아니라 평균 개수
     out['n'] = len(rows)
-    if METHOD in ('multiquery', 'agent'):
+    if BASE in ('multiquery', 'agent'):
         out['claude_tokens'] = ag.usage
         (CAFE / 'eval' / f'log_{EVAL}_{METHOD}.json').write_text(json.dumps(ag.log, ensure_ascii=False, indent=1))
     print(json.dumps(out, ensure_ascii=False, indent=1))
