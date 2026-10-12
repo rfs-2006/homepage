@@ -19,7 +19,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from agent_search import ask, client  # noqa: E402
+from agent_search import JUDGE_LLM, ask, client  # noqa: E402
 from retriever import load_chunks  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
@@ -50,7 +50,7 @@ def judge_question(cl, q, chunks, tries=3):
     got, todo, usage = {}, list(chunks), [0, 0]
     for _ in range(tries):
         body = '\n\n'.join(f"[{c['chunk_id']}] {c['header']}\n{c['text']}" for c in todo)
-        resp = ask(cl, system=SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
+        resp = ask(cl, model=JUDGE_LLM, system=SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
                    messages=[{'role': 'user', 'content': f"질문: {q['question']}\n\n청크 {len(todo)}개:\n\n{body}"}])
         usage[0] += resp.usage.input_tokens
         usage[1] += resp.usage.output_tokens

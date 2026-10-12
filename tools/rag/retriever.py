@@ -17,7 +17,7 @@ import numpy as np
 from rank_bm25 import BM25Okapi
 
 sys.path.insert(0, str(Path(__file__).parent))
-from embed import embed  # noqa: E402
+from embed import embed, voyage_headers  # noqa: E402
 
 MODEL = 'voyage-3.5'
 
@@ -80,7 +80,7 @@ class Retriever:
         top = min(top, len(cand))
         body = json.dumps({'query': q, 'documents': [self.texts[i] for i in cand[:top]],
                            'model': 'rerank-2.5', 'top_k': top}).encode()
-        req = urllib.request.Request('https://api.voyageai.com/v1/rerank', data=body, headers={'content-type': 'application/json'})
+        req = urllib.request.Request('https://api.voyageai.com/v1/rerank', data=body, headers=voyage_headers())
         with urllib.request.urlopen(req, timeout=120) as r:
             j = json.load(r)
         return [cand[d['index']] for d in j['data']] + cand[top:]

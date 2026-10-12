@@ -1,7 +1,9 @@
 """답변 평가: 평가셋 전 문항에 answer.py로 답을 만들고 채점한다.
 
-  python3 -I tools/rag/eval_answers.py /home/user/rfs-cafe-data v2 [rejudge]
-출력  eval/answers_<v>.jsonl (답변·출처·채점, 이어하기용), eval/answers_<v>_summary.json
+  python3 -I tools/rag/eval_answers.py /home/user/rfs-cafe-data v2 routed [rejudge]
+방법  routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery). 챗봇은 Sonnet 5.5, 채점은 Opus 5.5.
+출력  eval/answers_<v>_<방법>.jsonl (답변·출처·채점, 이어하기용), eval/answers_<v>_<방법>_summary.json
+      (eval/answers_v2.jsonl은 Opus 5.5로 만든 처음 basic 답변)
 
 채점
 - 자동
@@ -18,12 +20,13 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from agent_search import ask  # noqa: E402
+from agent_search import JUDGE_LLM, ask  # noqa: E402
 from answer import GRADE, Answerer  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 EVAL = sys.argv[2] if len(sys.argv) > 2 else 'v2'
-REJUDGE = len(sys.argv) > 3 and sys.argv[3] == 'rejudge'  # 답변은 그대로 두고 채점만 다시
+MODE = sys.argv[3] if len(sys.argv) > 3 else 'routed'
+REJUDGE = len(sys.argv) > 4 and sys.argv[4] == 'rejudge'  # 답변은 그대로 두고 채점만 다시
 
 JUDGE = """너는 RAG 챗봇 답변 채점자다. 질문, 챗봇이 받은 학회 자료(검색 결과), 챗봇의 답을 보고 채점한다.
 - unsupported: 답에 나온 숫자·회사명·방법·사실 주장 중 자료 어디에도 근거가 없는 것을 그대로 옮겨 적는다.
@@ -44,16 +47,16 @@ SCHEMA = {'type': 'object', 'properties': {
 def judge(cl, q, out, chunks):
     # 챗봇이 받은 것과 같은 제목(등급 포함)을 보여준다. 빠뜨리면 "A등급" 같은 말이 근거 없는 주장으로 잡힌다
     ctx = '\n\n'.join(f"[{c}] {chunks[c]['header']} [{GRADE[chunks[c]['grade']]}]\n{chunks[c]['text']}" for c in out['shown'])
-    resp = ask(cl, system=JUDGE, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
+    resp = ask(cl, model=JUDGE_LLM, system=JUDGE, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
                messages=[{'role': 'user', 'content': f"질문: {q['question']}\n\n챗봇이 받은 자료:\n\n{ctx}\n\n챗봇의 답:\n{out['answer']}"}])
     return json.loads(next(b.text for b in resp.content if b.type == 'text')), resp.usage
 
 
 def main():
-    a = Answerer(CAFE)
+    a = Answerer(CAFE, mode=MODE)
     chunks = {c['chunk_id']: c for c in a.chunks}
     qs = [json.loads(l) for l in open(CAFE / 'eval' / f'eval_{EVAL}.jsonl')]
-    path = CAFE / 'eval' / f'answers_{EVAL}.jsonl'
+    path = CAFE / 'eval' / f'answers_{EVAL}_{MODE}.jsonl'
     done = {}
     if path.exists():
         for l in open(path):
@@ -116,10 +119,11 @@ def main():
         'answered2': round(sum(r['judge']['answered'] == 2 for r in pos) / len(pos), 3),
         'proper_refusal': f"{sum(bool(r['judge']['proper_refusal']) for r in neg)}/{len(neg)}",
         'avg_extra_searches': round(sum(len(r['searches']) for r in rows) / len(rows), 2),
+        'kind_open': sum(r.get('kind') == 'open' for r in rows),
         'by_type': by_type,
         'answer_tokens': a.s.usage, 'judge_tokens': {'input': jtok[0], 'output': jtok[1]},
     }
-    (CAFE / 'eval' / f'answers_{EVAL}_summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=1))
+    (CAFE / 'eval' / f'answers_{EVAL}_{MODE}_summary.json').write_text(json.dumps(summary, ensure_ascii=False, indent=1))
     print(json.dumps(summary, ensure_ascii=False, indent=1))
     print('근거 없는 주장이 나온 답:')
     for r in rows:

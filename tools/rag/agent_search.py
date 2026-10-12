@@ -20,7 +20,10 @@ import anthropic
 sys.path.insert(0, str(Path(__file__).parent))
 from retriever import Retriever, rrf  # noqa: E402
 
-LLM = 'claude-opus-5-5'
+# 챗봇(검색어 재작성·agent 검색·답변)은 Sonnet 5.5, 채점(judge.py, eval_answers.py)은 Opus 5.5.
+# 채점 모델을 챗봇과 다르게 두면 자기가 낸 답을 후하게 보는 문제도 줄어든다.
+LLM = 'claude-sonnet-5-5'
+JUDGE_LLM = 'claude-opus-5-5'
 MAX_SEARCH = 5
 SNIPPET = 350
 
@@ -33,7 +36,11 @@ MQ_SYSTEM = CORPUS + """
 사용자 질문을 이 자료에서 찾기 좋은 검색어로 바꿔라.
 - 질문의 일상 표현을 리포트에 실제로 나올 용어로 바꾼다 (예: '적자인데 빠르게 크는' → 'PSR', '매출 성장률', 'ARR').
 - 해당하는 회사·업종 이름을 알면 넣는다 (예: 항공사 → 대한항공, 저비용항공사).
-- 검색어마다 다른 각도로. 3~5개, 각각 짧게 (2~8단어)."""
+- 검색어마다 다른 각도로. 3~5개, 각각 짧게 (2~8단어).
+- 앞선 대화가 같이 오면, 마지막 질문이 무엇을 가리키는지 앞 대화로 풀어서 검색어를 만든다 (예: "LCC면?" → "저비용항공사 밸류에이션").
+- standalone: 마지막 질문을 앞 대화 없이도 뜻이 통하는 한 문장으로 다시 쓴다. 앞선 대화가 없으면 질문 그대로.
+- kind: 특정 문서·회사의 사실이나 용어 뜻을 묻는 질문은 fact, 방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘",
+  "목차는 보통", "~관련 리포트 있어?")은 open."""
 
 AGENT_SYSTEM = CORPUS + """
 
@@ -61,9 +68,9 @@ def client():
     return anthropic.Anthropic(api_key=os.environ['RAG_ANTHROPIC_API_KEY'], base_url='https://api.anthropic.com')
 
 
-def ask(cl, **kw):
+def ask(cl, model=LLM, **kw):
     # 안전 분류기가 거절하면 서버가 다른 모델로 다시 돌린다 (fallbacks: default)
-    r = cl.beta.messages.create(model=LLM, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
+    r = cl.beta.messages.create(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
                                 fallbacks='default', **kw)
     if r.stop_reason == 'refusal':
         raise RuntimeError(f'거절: {r.stop_details}')
@@ -75,23 +82,31 @@ class AgentSearch:
         self.r = retriever or Retriever(cafe)
         self.cl = client()
         self.id2i = {c['chunk_id']: i for i, c in enumerate(self.r.chunks)}
-        self.usage = {'input': 0, 'output': 0}
+        self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0}
         self.log = []
 
     def _count(self, resp):
-        self.usage['input'] += resp.usage.input_tokens
-        self.usage['output'] += resp.usage.output_tokens
+        u = resp.usage
+        self.usage['input'] += u.input_tokens
+        self.usage['output'] += u.output_tokens
+        self.usage['cache_read'] += u.cache_read_input_tokens or 0
+        self.usage['cache_write'] += u.cache_creation_input_tokens or 0
 
-    def rewrite(self, question):
+    def rewrite(self, question, context=''):
+        """검색어 3~5개, 질문 종류(fact/open), 앞 대화 없이 통하는 질문을 돌려준다. context는 여러 턴 대화의 앞선 대화."""
+        user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
         resp = ask(self.cl, system=MQ_SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
-            'type': 'object', 'properties': {'queries': {'type': 'array', 'items': {'type': 'string'}}},
-            'required': ['queries'], 'additionalProperties': False}}},
-            messages=[{'role': 'user', 'content': question}])
+            'type': 'object', 'properties': {'queries': {'type': 'array', 'items': {'type': 'string'}},
+                                             'kind': {'type': 'string', 'enum': ['fact', 'open']},
+                                             'standalone': {'type': 'string'}},
+            'required': ['queries', 'kind', 'standalone'], 'additionalProperties': False}}},
+            messages=[{'role': 'user', 'content': user}])
         self._count(resp)
-        return json.loads(next(b.text for b in resp.content if b.type == 'text'))['queries'][:5]
+        out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
+        return out['queries'][:5], out['kind'], out['standalone'] or question
 
-    def multiquery(self, question, rerank_top=100):
-        qs = self.rewrite(question)
+    def multiquery(self, question, rerank_top=100, queries=None):
+        qs = queries if queries is not None else self.rewrite(question)[0]
         self.log.append({'question': question, 'queries': qs})
         self.r.embed_queries([question] + qs)
         fused = rrf(*[self.r.hybrid(q) for q in [question] + qs])
@@ -110,7 +125,7 @@ class AgentSearch:
         found, picked, n = [], None, 0
         trace = {'question': question, 'queries': []}
         for _ in range(MAX_SEARCH + 2):
-            resp = ask(self.cl, system=AGENT_SYSTEM.format(max=MAX_SEARCH), tools=TOOLS,
+            resp = ask(self.cl, system=AGENT_SYSTEM.format(max=MAX_SEARCH), tools=TOOLS, cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=msgs)
             self._count(resp)
             msgs.append({'role': 'assistant', 'content': resp.content})

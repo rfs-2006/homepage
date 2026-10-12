@@ -1,15 +1,19 @@
-"""RFS 챗봇 답변: 학회 자료를 찾아 출처를 단 답을 쓴다.
+"""RFS 챗봇 답변: 학회 자료를 찾아 출처를 단 답을 쓴다. 여러 턴 대화를 이어간다.
 
-  python3 -I tools/rag/answer.py /home/user/rfs-cafe-data "항공사 밸류에이션은 뭘로 하는 게 좋아?"
+  python3 -I tools/rag/answer.py /home/user/rfs-cafe-data "항공사 밸류에이션은 뭘로 하는 게 좋아?" ["FSC야"] ...
+  (질문을 여러 개 주면 한 대화로 이어서 묻는다)
 키  Claude API 키는 환경변수 RAG_ANTHROPIC_API_KEY.
 
 흐름
-1. multiquery(검색어 3~5개 → 하이브리드 → 리랭크)로 상위 PREFETCH개를 미리 찾아 넣는다. 사실 질문은 대개 여기서 끝난다.
-2. 부족하면 Claude가 search 도구를 최대 MAX_SEARCH번 더 부른다 (코칭·글쓰기·"사례 여러 개" 질문).
-   9절 평가에서 열린 질문은 Claude가 검색어를 바꿔 가며 찾을 때 크게 좋아졌다.
+1. Claude가 질문을 검색어 3~5개로 바꾸고 종류를 정한다 (fact / open). 여러 턴이면 앞 대화를 보고 질문을 혼자 통하게 다시 쓴다.
+   - fact: multiquery(검색어마다 하이브리드 → 합쳐서 리랭크) 상위 PREFETCH개를 넣는다.
+   - open(방법·사례·예시): agent 검색(검색어를 바꿔 가며 최대 5번 찾고 골라냄)이 고른 청크를 넣는다.
+     9절 평가에서 열린 질문은 이렇게 찾을 때 크게 좋아졌다 (코칭 nDCG 0.86 → 0.94, 글쓰기 0.29 → 0.84).
+2. 그래도 부족하면 답하는 Claude가 search 도구를 최대 MAX_SEARCH번 더 부른다.
 3. 검색 결과는 search_result 블록으로 넣는다. Claude가 답의 문장마다 어느 청크에서 왔는지 citations로 돌려준다.
    출처 표시를 프롬프트로 시키지 않아도 되고, 인용한 원문(cited_text)이 그대로 따라와서 검증할 수 있다.
 4. 자료 등급을 제목에 붙인다. A(정규 리포트·가이드)는 모범 사례, C(신입 투자제안서)는 아이디어 사례로만 쓰게 한다.
+5. 대화는 앞부분을 바꾸지 않고 뒤에 붙이기만 한다. 그래서 프롬프트 캐싱이 턴마다 앞부분을 다시 읽지 않게 해 준다.
 """
 import json
 import sys
@@ -18,7 +22,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import AgentSearch, ask  # noqa: E402
 
-PREFETCH, MAX_SEARCH, PER_SEARCH = 8, 3, 6
+PREFETCH, OPEN_PREFETCH, MAX_SEARCH, PER_SEARCH = 8, 10, 3, 6
 GRADE = {'A': 'A 정규 리포트·가이드·모델', 'B': 'B 스터디·운용 보고·게시글', 'C': 'C 신입 투자제안서'}
 
 SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원이 리포트를 쓰고 모델을 만들 때 옆에서 돕는다.
@@ -48,9 +52,12 @@ TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관
 
 
 class Answerer:
-    def __init__(self, cafe, searcher=None):
+    """mode: routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery, 10절의 처음 버전)"""
+
+    def __init__(self, cafe, searcher=None, mode='routed'):
         self.s = searcher or AgentSearch(cafe)
         self.chunks = self.s.r.chunks
+        self.mode = mode
 
     def result_block(self, i):
         c = self.chunks[i]
@@ -64,35 +71,7 @@ class Answerer:
                 'citations': {'enabled': True}}
 
     def answer(self, question):
-        first = self.s.multiquery(question)[:PREFETCH]
-        shown = list(first)
-        msgs = [{'role': 'user', 'content': [self.result_block(i) for i in first]
-                 + [{'type': 'text', 'text': f'질문: {question}'}]}]
-        searches, n = [], 0
-        for _ in range(MAX_SEARCH + 2):
-            resp = ask(self.s.cl, system=SYSTEM.format(max=MAX_SEARCH), tools=[TOOL],
-                       output_config={'effort': 'medium'}, messages=msgs)
-            self.s._count(resp)
-            msgs.append({'role': 'assistant', 'content': resp.content})
-            if resp.stop_reason != 'tool_use':
-                break
-            results = []
-            for b in resp.content:
-                if b.type != 'tool_use':
-                    continue
-                if n >= MAX_SEARCH:
-                    results.append({'type': 'tool_result', 'tool_use_id': b.id, 'is_error': True,
-                                    'content': f'검색 횟수({MAX_SEARCH}) 초과. 지금까지 찾은 자료로 답해라.'})
-                    continue
-                n += 1
-                searches.append(b.input['query'])
-                q = b.input['query']
-                found = [i for i in self.s.r.rerank(q, self.s.r.hybrid(q), top=30) if i not in shown][:PER_SEARCH]
-                shown += found
-                results.append({'type': 'tool_result', 'tool_use_id': b.id,
-                                'content': [self.result_block(i) for i in found] or [{'type': 'text', 'text': '새 결과 없음'}]})
-            msgs.append({'role': 'user', 'content': results})
-        return self.render(resp, shown, searches)
+        return Chat(self).turn(question)
 
     def render(self, resp, shown, searches):
         """답 본문에 [1] 같은 출처 번호를 달고, 번호별 문서·페이지·인용 원문을 모은다."""
@@ -117,11 +96,72 @@ class Answerer:
                 'shown': [self.chunks[i]['chunk_id'] for i in shown], 'stop_reason': resp.stop_reason}
 
 
+class Chat:
+    """한 사람과의 대화. msgs는 뒤에 붙이기만 한다 (앞을 고치면 캐시와 이전 턴의 thinking이 무효가 된다)."""
+
+    def __init__(self, answerer):
+        self.a = answerer
+        self.msgs, self.shown, self.turns = [], [], []
+
+    def _context(self):
+        return '\n'.join(f"Q: {t['question']}\nA: {t['answer'][:600]}" for t in self.turns[-3:])
+
+    def _retrieve(self, question):
+        s = self.a.s
+        queries, kind, standalone = s.rewrite(question, self._context())
+        if self.a.mode == 'routed' and kind == 'open':
+            found = s.agent(standalone)[:OPEN_PREFETCH]
+        else:
+            kind = kind if self.a.mode == 'routed' else 'basic'
+            found = s.multiquery(standalone, queries=queries)[:PREFETCH]
+        return [i for i in found if i not in self.shown], kind, standalone
+
+    def turn(self, question):
+        a, s = self.a, self.a.s
+        first, kind, standalone = self._retrieve(question)
+        self.shown += first
+        content = [a.result_block(i) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]
+        self.msgs.append({'role': 'user', 'content': content})
+        searches, n = [], 0
+        for _ in range(MAX_SEARCH + 2):
+            # cache_control: 마지막 블록까지를 캐시에 쓴다. 다음 호출(도구 결과 뒤, 다음 턴)은 이 앞부분을 캐시에서 읽는다
+            resp = ask(s.cl, system=SYSTEM.format(max=MAX_SEARCH), tools=[TOOL], cache_control={'type': 'ephemeral'},
+                       output_config={'effort': 'medium'}, messages=self.msgs)
+            s._count(resp)
+            self.msgs.append({'role': 'assistant', 'content': resp.content})
+            if resp.stop_reason != 'tool_use':
+                break
+            results = []
+            for b in resp.content:
+                if b.type != 'tool_use':
+                    continue
+                if n >= MAX_SEARCH:
+                    results.append({'type': 'tool_result', 'tool_use_id': b.id, 'is_error': True,
+                                    'content': f'검색 횟수({MAX_SEARCH}) 초과. 지금까지 찾은 자료로 답해라.'})
+                    continue
+                n += 1
+                searches.append(b.input['query'])
+                q = b.input['query']
+                found = [i for i in s.r.rerank(q, s.r.hybrid(q), top=30) if i not in self.shown][:PER_SEARCH]
+                self.shown += found
+                results.append({'type': 'tool_result', 'tool_use_id': b.id,
+                                'content': [a.result_block(i) for i in found] or [{'type': 'text', 'text': '새 결과 없음'}]})
+            self.msgs.append({'role': 'user', 'content': results})
+        out = a.render(resp, self.shown, searches)
+        out.update(kind=kind, standalone=standalone)
+        self.turns.append({'question': question, 'answer': out['answer']})
+        return out
+
+
+
 if __name__ == '__main__':
     a = Answerer(sys.argv[1])
-    out = a.answer(sys.argv[2])
-    print(out['answer'])
-    print()
-    for s in out['sources']:
-        print(f"[{s['n']}] {s['title']} ({s['source']})")
-    print('추가 검색:', out['searches'], '토큰', a.s.usage)
+    chat = Chat(a)
+    for q in sys.argv[2:]:
+        out = chat.turn(q)
+        print(f"######## {q}  ({out['kind']}: {out['standalone']})")
+        print(out['answer'])
+        print()
+        for src in out['sources']:
+            print(f"[{src['n']}] {src['title']} ({src['source']})")
+        print('추가 검색:', out['searches'], '토큰 누적', a.s.usage)
