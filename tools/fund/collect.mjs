@@ -12,6 +12,7 @@
 // seed.json: 운용팀 AP 시트(국내+해외 당일손익)로 만든 날짜별 기준가 [[날짜, 기준가], ...]. 해외 잔고는 키움 API로 안 보여서
 //   이 기간은 시트 값을 쓰고, 마지막 날 이후만 API 일별 자산으로 이어 붙인다. 금액은 넣지 않는다
 //   FUND_EVERY=15                     장중 조회 간격(초)
+//   TG_TOKEN, TG_CHAT                 매매 알림을 받을 텔레그램 봇 토큰과 대화 ID (TG_CHAT이 비어 있으면 시작할 때 찾아서 로그에 알려준다)
 // 실행: node --env-file=.env collect.mjs        한 번만: node --env-file=.env collect.mjs --once
 
 const SB_URL = process.env.SUPABASE_URL || 'https://xyewclvpshldjucryapr.supabase.co';
@@ -183,9 +184,60 @@ async function round() {
       ctb: prevTotal && h.dayPl !== null && h.dayPl !== undefined ? h.dayPl / prevTotal * 100 : null })),
   };
   await save(pubLive, 'public_content', 'fund_live').catch((e) => console.error('public live skipped: ' + e.message.split('\n')[0]));
+  await tradeAlert(holdings, total, data.asOf).catch((e) => console.error('telegram skipped: ' + e.message));
   prev = data;
   if (round.publish) await savePublic(data);
   if (!round.lastLog || Date.now() - round.lastLog > 60e3) { round.lastLog = Date.now(); console.log(`${data.asOf} saved: ${holdings.length} holdings`); }
+}
+
+// ---------- 매매 알림 (텔레그램, 운용자 한 명에게만) ----------
+// 직전 조회와 보유 수량이 달라지면 알린다. 잔고 조회가 잠깐 이상하게 오는 경우를 걸러내려고 같은 변화가 두 번 연속 보일 때만 보낸다.
+const TG_TOKEN = process.env.TG_TOKEN || '', TG_CHAT = process.env.TG_CHAT || '';
+const won = (v) => Math.round(v).toLocaleString('ko-KR') + '원';
+let lastQty = null, pendingKey = '';
+async function tg(text) {
+  if (!TG_TOKEN || !TG_CHAT) return;
+  const r = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: TG_CHAT, text }) });
+  if (!r.ok) throw new Error('telegram ' + r.status);
+}
+async function tradeAlert(holdings, total, asOf) {
+  if (!TG_TOKEN || !TG_CHAT) return;
+  const now = {}; holdings.forEach((h) => { now[h.code] = h; });
+  if (!lastQty) { lastQty = Object.fromEntries(holdings.map((h) => [h.code, { qty: h.qty, name: h.name, cur: h.cur, avg: h.avg }])); return; }
+  if (!holdings.length && Object.keys(lastQty).length > 1) return; // 잔고가 통째로 비어 오면 조회 오류로 본다
+  const changes = [];
+  for (const code of new Set([...Object.keys(lastQty), ...Object.keys(now)])) {
+    const a = lastQty[code] ? lastQty[code].qty : 0, b = now[code] ? now[code].qty : 0;
+    if (a !== b) changes.push({ code, a, b });
+  }
+  const key = changes.map((c) => c.code + ':' + c.a + '>' + c.b).join(',');
+  if (!changes.length) { pendingKey = ''; return; }
+  if (key !== pendingKey) { pendingKey = key; return; } // 다음 조회에서 같은 변화가 또 보이면 확정
+  pendingKey = '';
+  const lines = changes.map(({ code, a, b }) => {
+    const h = now[code], o = lastQty[code] || {};
+    const name = (h && h.name) || o.name || code, d = b - a;
+    const tag = a === 0 ? '🆕 신규 매수' : b === 0 ? '🔴 전량 매도' : d > 0 ? '🟢 매수' : '🔴 매도';
+    const px = h ? h.cur : o.cur;
+    return [
+      `${tag} · ${name}`,
+      `  수량 ${d > 0 ? '+' : ''}${d.toLocaleString('ko-KR')}주 (${a.toLocaleString('ko-KR')} → ${b.toLocaleString('ko-KR')}주)`,
+      `  현재가 ${px ? won(px) : '-'}` + (h && h.avg ? ` · 평단 ${won(h.avg)}` : ''),
+      `  비중 ${h ? h.weight.toFixed(2) + '%' : '0%'}` + (px ? ` · 거래 약 ${won(Math.abs(d) * px)}` : ''),
+    ].join('\n');
+  });
+  await tg(`[AMT Fund 매매] ${asOf}\n\n` + lines.join('\n\n') + `\n\n총자산 ${won(total)}`);
+  lastQty = Object.fromEntries(holdings.map((h) => [h.code, { qty: h.qty, name: h.name, cur: h.cur, avg: h.avg }]));
+  console.log(`${asOf} trade alert: ${changes.length} change(s)`);
+}
+// TG_CHAT을 모를 때: 봇에게 아무 말이나 보낸 뒤 서버를 재시작하면 로그에 대화 ID가 찍힌다
+async function tgFindChat() {
+  if (!TG_TOKEN || TG_CHAT) return;
+  try {
+    const j = await (await fetch(`https://api.telegram.org/bot${TG_TOKEN}/getUpdates`)).json();
+    const ids = [...new Set((j.result || []).map((u) => u.message && u.message.chat && u.message.chat.id).filter(Boolean))];
+    console.log(ids.length ? 'telegram chat id: ' + ids.join(', ') + '  → .env에 TG_CHAT=' + ids[0] + ' 를 넣고 재시작' : 'telegram: 봇에게 먼저 아무 메시지나 보낸 뒤 재시작하세요');
+  } catch (e) { console.error('telegram setup failed: ' + e.message); }
 }
 
 const BF_KEY = START + '/5:' + SEED_END + ':' + FLOWS.map((f) => f.d + f.v).join(','); // 채우는 방식이 바뀌면 숫자를 올려 다시 채운다
@@ -282,6 +334,8 @@ async function backfill() {
 
 // ---------- 실행 ----------
 if (!DRY) prev = await loadPrev().catch(() => null);
+await tgFindChat();
+if (TG_TOKEN && TG_CHAT && !DRY && !ONCE) await tg('AMT Fund 매매 알림이 켜졌습니다.').catch((e) => console.error('telegram test failed: ' + e.message));
 // 시작일이 있으면 한 번, 시작일부터 어제까지 지난 기록을 채운다
 if (START && !(prev && prev.backfilledFrom === BF_KEY)) {
   await backfill().catch((e) => console.error('backfill failed: ' + e.message));
