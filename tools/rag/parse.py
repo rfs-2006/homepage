@@ -26,6 +26,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 import olefile
+import xlrd
 import openpyxl
 import pymupdf
 from datasketch import MinHash, MinHashLSH
@@ -129,7 +130,9 @@ def _hwp_text(b):
 
 
 # 엑셀: 밸류에이션·가정·추정 시트는 수식을 항목 이름으로 풀어서 문장처럼, 나머지 시트는 구조만
-KEY_SHEET = re.compile(r'valu|wacc|assum|가정|추정|estim|dcf|per\b|pbr|ev|target|목표|peer|summary|요약|beta|sotp|rim|매출|비용|cost|revenue|sales', re.I)
+KEY_SHEET = re.compile(r'valu|wacc|assum|가정|추정|estim|dcf|\bper\b|pbr|ev\s*/?\s*ebitda|^ev\b|target|목표|peer|summary|요약|beta|sotp|\brim\b|매출|비용|cost|revenue|sales', re.I)
+# 같은 행에서 열만 바뀐 수식(=C5*(1+C6), =D5*(1+D6) …)은 한 번만 풀어 쓴다
+_R1C1 = re.compile(r'\$?([A-Z]{1,3})\$?(\d+)')
 REF = re.compile(r"(?:'([^']+)'|([A-Za-z0-9_가-힣]+))?!?\$?([A-Z]{1,3})\$?(\d+)(?::\$?([A-Z]{1,3})\$?(\d+))?")
 
 
@@ -192,23 +195,49 @@ def xlsx(path):
             for (r, c), v in sorted(g.items()):
                 rows[r].append((c, v))
             for r, cells in rows.items():
-                out = []
-                for c, v in cells:
+                out, formula = [], None
+                for c, v in cells[:16]:
                     cv = vals.get(name, {}).get((r, c))
                     if isinstance(v, str) and v.startswith('='):
-                        shown = _fmt(cv) if cv is not None else '?'
-                        out.append(f'{shown} (= {explain(name, v)[:120]})')
+                        out.append(_fmt(cv) if cv is not None else '?')
+                        if formula is None:
+                            formula = explain(name, v)[:140]
                     else:
                         out.append(_fmt(v))
                 line = ' | '.join(out)
+                if formula:
+                    line += f'  ⟨식: {formula}⟩'
                 if len(line) > 2:
-                    lines.append(line[:400])
-            parts.append(f'## 시트: {name}\n' + '\n'.join(lines[:200]))
+                    lines.append(line[:300])
+            parts.append(f'## 시트: {name}\n' + '\n'.join(lines[:120]))
         else:
             heads = sorted({_fmt(v) for (r, c), v in g.items() if r <= 6 and v is not None})[:30]
             items = list(dict.fromkeys(labels[name].values()))[:80]
             parts.append(f'## 시트: {name} (구조만)\n열: {", ".join(heads)}\n항목: {", ".join(items)}')
-    return {'text': '\n\n'.join(parts), 'sheets': list(grids)}
+    # 밸류에이션 → 가정·추정 → 나머지 순으로 앞에 두고, 모델 하나당 4만 자에서 자른다
+    first = re.compile(r'valu|wacc|dcf|target|목표|peer|summary|요약|sotp|\bper\b|pbr|ebitda', re.I)
+    parts.sort(key=lambda t: (0 if first.search(t.split('\n')[0]) else 1 if '(구조만)' not in t.split('\n')[0] else 2))
+    return {'text': '\n\n'.join(parts)[:40000], 'sheets': list(grids)}
+
+
+def xls(path):
+    """옛 엑셀(.xls). 수식은 못 읽어서 값만, 시트 구성은 xlsx와 같게"""
+    wb = xlrd.open_workbook(str(path))
+    parts = []
+    for sh in wb.sheets():
+        rows = []
+        for r in range(min(sh.nrows, 250)):
+            vs = [_fmt(v) for v in sh.row_values(r)[:40] if v not in ('', None)]
+            if vs:
+                rows.append(vs)
+        if not rows:
+            continue
+        if KEY_SHEET.search(sh.name):
+            parts.append(f'## 시트: {sh.name}\n' + '\n'.join(' | '.join(v[:16])[:300] for v in rows[:120]))
+        else:
+            items = list(dict.fromkeys(v[0] for v in rows if not re.match(r'^[\d.,\-]+$', v[0])))[:80]
+            parts.append(f'## 시트: {sh.name} (구조만)\n항목: {", ".join(items)}')
+    return {'text': '\n\n'.join(parts), 'sheets': wb.sheet_names()}
 
 
 def convert(path, fmt):
@@ -238,7 +267,7 @@ def extract(path):
     if ext == '.ppt':
         return pptx(convert(path, 'pptx'))
     if ext == '.xls':
-        return xlsx(convert(path, 'xlsx'))
+        return xls(path)
     if ext == '.doc':
         return docx(convert(path, 'docx'))
     if ext in ('.txt', '.csv'):
@@ -379,6 +408,32 @@ def main():
             for x in g[1:]:
                 by_id[x]['duplicate_of'] = g[0]
 
+    # 같은 글 안의 PDF·워드·PPT는 같은 리포트의 초안·최종본인 경우가 많다.
+    # 서식 차이로 MinHash 유사도가 0.3~0.7에 머물러서, 작은 쪽이 큰 쪽에 얼마나 들어있는지(포함도)로 본다.
+    def shingles(t):
+        n = re.sub(r'\s+', '', t)[:30000]
+        return {n[k:k + 8] for k in range(0, len(n) - 8, 3)}
+    per_article = defaultdict(list)
+    for d in docs:
+        if d['source'] == 'cafe' and 'duplicate_of' not in d and d['ext'] in ('.pdf', '.docx', '.pptx', '.hwp') and d['chars'] > 500:
+            per_article[d['article_id']].append(d)
+    contained = 0
+    for ds in per_article.values():
+        if len(ds) < 2:
+            continue
+        ds.sort(key=prio, reverse=True)
+        sh = {d['doc_id']: shingles(d['text']) for d in ds}
+        for i, a in enumerate(ds):
+            if 'duplicate_of' in a:
+                continue
+            for b in ds[i + 1:]:
+                if 'duplicate_of' in b:
+                    continue
+                A, B = sh[a['doc_id']], sh[b['doc_id']]
+                if A and B and len(A & B) / min(len(A), len(B)) >= 0.5:
+                    b['duplicate_of'] = a['doc_id']
+                    contained += 1
+
     with open(OUT / 'docs.jsonl', 'w') as f:
         for d in docs:
             f.write(json.dumps(d, ensure_ascii=False) + '\n')
@@ -391,6 +446,7 @@ def main():
         'docs_after_dedup': len(live),
         'duplicates_removed': len(docs) - len(live),
         'dup_groups': len(groups),
+        'dup_same_article_contained': contained,
         'site_reports_dup_in_cafe': sum(1 for g in groups if any(by_id[x]['source'] == 'site' for x in g)
                                         and any(by_id[x]['source'] == 'cafe' for x in g)),
         'chars_after_dedup': sum(d['chars'] for d in live),
