@@ -13,6 +13,8 @@ import hashlib
 import json
 import re
 import shutil
+import signal
+import time
 import struct
 import subprocess
 import sys
@@ -297,11 +299,18 @@ def files_of(adir):
         yield p, p.name
 
 
+def _timeout(*_):
+    raise TimeoutError('90초 초과')
+
+
 def main():
+    signal.signal(signal.SIGALRM, _timeout)
     OUT.mkdir(exist_ok=True)
     docs, fails = [], []
     arts = sorted(CAFE.glob('*/*/*/meta.json'))
-    for mp in arts:
+    for k, mp in enumerate(arts):
+        if k % 50 == 0:
+            print(f'{k}/{len(arts)} 글, 문서 {len(docs)}, 실패 {len(fails)}', flush=True)
         meta = json.loads(mp.read_text())
         adir = mp.parent
         base = {'source': 'cafe', 'group': meta['group'], 'board': meta['board'], 'article_id': meta['articleId'],
@@ -314,11 +323,17 @@ def main():
             if ext == '.zip':
                 fails.append({'file': str(p.relative_to(CAFE)), 'error': 'zip 열기 실패'})
                 continue
+            t0 = time.time()
+            signal.alarm(90)  # 파일 하나가 90초 넘게 걸리면 건너뛴다
             try:
                 r = extract(p)
             except Exception as e:
+                signal.alarm(0)
                 fails.append({'file': f'{adir.relative_to(CAFE)}/{shown}', 'error': str(e)[:120]})
                 continue
+            signal.alarm(0)
+            if time.time() - t0 > 20:
+                print(f'  느림 {time.time() - t0:.0f}s {shown}', flush=True)
             t = r.get('text') or '\n\n'.join(r.get('pages', []))
             dt = doc_type(meta['board'], meta['group'], meta['subject'], shown, ext)
             docs.append({**base, 'file': shown, 'ext': ext, 'doc_type': dt, 'text': t,
@@ -346,8 +361,7 @@ def main():
         if len(n) < 300:
             continue
         m = MinHash(num_perm=128)
-        for k in range(0, len(n) - 5, 2):
-            m.update(n[k:k + 5].encode())
+        m.update_batch([n[k:k + 5].encode() for k in range(0, len(n) - 5, 2)])
         mh[d['doc_id']] = m
         lsh.insert(d['doc_id'], m)
     by_id = {d['doc_id']: d for d in docs}
