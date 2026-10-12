@@ -1,6 +1,6 @@
 """답변 평가: 평가셋 전 문항에 answer.py로 답을 만들고 채점한다.
 
-  python3 -I tools/rag/eval_answers.py /home/user/rfs-cafe-data v2
+  python3 -I tools/rag/eval_answers.py /home/user/rfs-cafe-data v2 [rejudge]
 출력  eval/answers_<v>.jsonl (답변·출처·채점, 이어하기용), eval/answers_<v>_summary.json
 
 채점
@@ -19,10 +19,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import ask  # noqa: E402
-from answer import Answerer  # noqa: E402
+from answer import GRADE, Answerer  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 EVAL = sys.argv[2] if len(sys.argv) > 2 else 'v2'
+REJUDGE = len(sys.argv) > 3 and sys.argv[3] == 'rejudge'  # 답변은 그대로 두고 채점만 다시
 
 JUDGE = """너는 RAG 챗봇 답변 채점자다. 질문, 챗봇이 받은 학회 자료(검색 결과), 챗봇의 답을 보고 채점한다.
 - unsupported: 답에 나온 숫자·회사명·방법·사실 주장 중 자료 어디에도 근거가 없는 것을 그대로 옮겨 적는다.
@@ -41,7 +42,8 @@ SCHEMA = {'type': 'object', 'properties': {
 
 
 def judge(cl, q, out, chunks):
-    ctx = '\n\n'.join(f"[{c}] {chunks[c]['header']}\n{chunks[c]['text']}" for c in out['shown'])
+    # 챗봇이 받은 것과 같은 제목(등급 포함)을 보여준다. 빠뜨리면 "A등급" 같은 말이 근거 없는 주장으로 잡힌다
+    ctx = '\n\n'.join(f"[{c}] {chunks[c]['header']} [{GRADE[chunks[c]['grade']]}]\n{chunks[c]['text']}" for c in out['shown'])
     resp = ask(cl, system=JUDGE, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
                messages=[{'role': 'user', 'content': f"질문: {q['question']}\n\n챗봇이 받은 자료:\n\n{ctx}\n\n챗봇의 답:\n{out['answer']}"}])
     return json.loads(next(b.text for b in resp.content if b.type == 'text')), resp.usage
@@ -57,9 +59,22 @@ def main():
         for l in open(path):
             r = json.loads(l)
             done[r['id']] = r
+    jtok = [0, 0]
+    if REJUDGE:
+        def rj(r):
+            j, u = judge(a.s.cl, {'question': r['question']}, r, chunks)
+            return {**r, 'judge': j}, u
+        with ThreadPoolExecutor(4) as ex:
+            for r, u in ex.map(rj, list(done.values())):
+                done[r['id']] = r
+                jtok[0] += u.input_tokens
+                jtok[1] += u.output_tokens
+        with open(path, 'w') as f:
+            for q in qs:
+                if q['id'] in done:
+                    f.write(json.dumps(done[q['id']], ensure_ascii=False) + '\n')
     todo = [q for q in qs if q['id'] not in done]
     print(f'문항 {len(qs)}, 남은 {len(todo)}', flush=True)
-    jtok = [0, 0]
 
     def run(q):
         try:
