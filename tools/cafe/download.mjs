@@ -5,7 +5,7 @@
 //   npm i playwright@1.48.2
 //   node download.mjs menus --cafe=카페주소      게시판 목록과 받을 대상 표시만
 //   node download.mjs --cafe=카페주소            받기 (끊기면 다시 실행하면 받은 글은 건너뜀)
-//   옵션: --out=폴더  --only=게시판이름  --max=글수(시험용)  --debug(첫 글 응답을 debug.json으로)
+//   옵션: --out=폴더  --only=게시판이름  --skip=게시판이름,게시판이름  --delay=초  --max=글수(시험용)  --debug
 
 import { chromium } from 'playwright';
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
@@ -19,6 +19,7 @@ const MODE = process.argv[2] === 'menus' ? 'menus' : 'download';
 const CAFE = arg('cafe');
 const OUT = arg('out') || join(homedir(), 'rfs-cafe');
 const ONLY = arg('only');
+const SKIP = new Set(arg('skip').split(',').filter(Boolean).map((x) => x.replace(/\s+/g, '').toLowerCase()));
 const MAX = Number(arg('max')) || Infinity;
 if (!CAFE) { console.error('--cafe=카페주소 가 필요합니다 (cafe.naver.com/ 뒤 부분)'); process.exit(1); }
 
@@ -36,7 +37,9 @@ for (const [g, list] of Object.entries(BOARDS)) for (const b of list) WANT.set(n
 const DOC = /\.(pdf|pptx?|xlsx?|xlsm|docx?|hwpx?|zip|csv|txt)$/i;
 const safe = (s) => String(s || '').replace(/[\\/:*?"<>|\r\n\t]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) || 'untitled';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const pause = () => sleep(1500 + Math.random() * 2000); // 사람 속도로
+// 글 사이 쉬는 시간(초). 기본 0.8~1.6초, --delay=2 처럼 늘릴 수 있다
+const DELAY = (Number(arg('delay')) || 0.8) * 1000;
+const pause = () => sleep(DELAY + Math.random() * DELAY);
 
 // JSON 안에서 조건에 맞는 객체를 전부 찾는다. 네이버 응답 모양이 바뀌어도 버티게.
 function walk(o, fn, out = []) {
@@ -84,7 +87,7 @@ console.log('카페 번호', club);
 // 게시판 목록
 const mj = await api('https://apis.naver.com/cafe-web/cafe2/SideMenuList?cafeId=' + club);
 const menus = walk(mj, (o) => o.menuId != null && typeof o.menuName === 'string');
-const targets = menus.filter((m) => WANT.has(norm(m.menuName)) && (!ONLY || norm(m.menuName) === norm(ONLY)));
+const targets = menus.filter((m) => WANT.has(norm(m.menuName)) && (!ONLY || norm(m.menuName) === norm(ONLY)) && !SKIP.has(norm(m.menuName)));
 if (MODE === 'menus') {
   for (const m of menus) console.log((WANT.has(norm(m.menuName)) ? '[받음] ' : '       ') + m.menuId + '  ' + m.menuName.replace(/&amp;/g, '&'));
   const found = new Set(targets.map((m) => norm(m.menuName)));
@@ -144,7 +147,6 @@ for (const m of targets) {
         if (!r.ok()) { console.log('  첨부 실패', r.status(), n); continue; }
         writeFileSync(join(adir, n), await r.body());
         saved.push(n); files++;
-        await sleep(500);
       }
       // 작성자 이름은 남기지 않는다
       const date = walk(j, (o) => o.writeDate || o.writeDateTimestamp)[0] || {};
