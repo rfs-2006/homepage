@@ -31,6 +31,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
+from agent_search import MODELS  # noqa: E402
 from answer import Answerer, Chat  # noqa: E402
 
 SB_URL = 'https://xyewclvpshldjucryapr.supabase.co'
@@ -169,7 +170,8 @@ def main():
     cafe = sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data'
     port = int(os.environ.get('PORT', 8787))
     print('자료 불러오는 중 (BM25 색인 30초쯤)', flush=True)
-    answerer = Answerer(cafe, mode='routed')
+    # 12절: 검색은 Haiku로 바꿔도 품질이 그대로, 답변은 Sonnet이어야 한다
+    answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=MODELS['sonnet'])
     print(f'준비됨 :{port}, 허용 주소 {ORIGINS}', flush=True)
     ThreadingHTTPServer(('0.0.0.0', port), Handler).serve_forever()
 
