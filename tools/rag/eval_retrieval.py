@@ -1,11 +1,14 @@
 """검색 평가: 평가셋 질문마다 정답 청크가 상위 k개 안에 나오는지 잰다.
 
-  python3 -I tools/rag/eval_retrieval.py /home/user/rfs-cafe-data bm25
+  python3 -I tools/rag/eval_retrieval.py /home/user/rfs-cafe-data bm25 [v0|v1]
 지표
 - hit@k: 정답 청크(또는 같은 문서의 다른 청크)가 상위 k개 안에 있는 질문 비율
 - MRR: 정답이 처음 나온 순위의 역수 평균 (1위면 1, 2위면 0.5)
 문서 단위로도 같이 잰다. 청크는 못 맞혀도 같은 리포트를 찾았으면 답변 단계에서 쓸 수 있기 때문이다.
+- docs@10 (v1, 코칭·글쓰기·종합만): 상위 10개 안에 서로 다른 정답 문서가 몇 개 있는지.
+  "사례 몇 개 알려줘"류는 하나 맞히는 것보다 여러 사례를 모아오는 게 중요해서 따로 본다.
 """
+import gzip
 import json
 import re
 import urllib.request
@@ -21,6 +24,7 @@ from embed import embed  # noqa: E402
 
 CAFE = Path(sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data')
 METHOD = sys.argv[2] if len(sys.argv) > 2 else 'bm25'
+EVAL = sys.argv[3] if len(sys.argv) > 3 else 'v0'
 KS = (1, 5, 10, 20)
 
 
@@ -35,8 +39,9 @@ def tokens(s):
 
 
 def main():
-    chunks = [json.loads(l) for l in open(CAFE / 'parsed' / 'chunks.jsonl')]
-    qs = [json.loads(l) for l in open(CAFE / 'eval' / 'eval_v0.jsonl')]
+    p = CAFE / 'parsed' / 'chunks.jsonl'
+    chunks = [json.loads(l) for l in (open(p) if p.exists() else gzip.open(f'{p}.gz', 'rt'))]
+    qs = [json.loads(l) for l in open(CAFE / 'eval' / f'eval_{EVAL}.jsonl')]
     doc_of = {c['chunk_id']: c['doc_id'] for c in chunks}
     # 방법: bm25 | vector | hybrid | hybrid+rerank  (vector 계열은 Voyage 임베딩 필요)
     model = 'voyage-3.5'
@@ -95,15 +100,17 @@ def main():
         res['chunk_mrr'].append(1 / rc if rc else 0)
         res['doc_mrr'].append(1 / rd if rd else 0)
         res[f"type:{q['type']}:doc_hit@5"].append(rd is not None and rd <= 5)
+        if EVAL != 'v0' and q['type'] in ('coach', 'writing', 'cross'):
+            res[f"type:{q['type']}:docs@10"].append(len({doc_of[c] for c in top[:10]} & gold_d))
         rows.append((q['id'], q['type'], rd, q['question'][:40]))
-    out = {k: round(sum(v) / len(v), 3) for k, v in res.items()}
+    out = {k: round(sum(v) / len(v), 3) for k, v in res.items()}  # docs@10은 비율이 아니라 평균 개수
     out['n'] = len(rows)
     print(json.dumps(out, ensure_ascii=False, indent=1))
     print('놓친 질문 (문서 기준 top5 밖):')
     for r in rows:
         if not r[2] or r[2] > 5:
             print(' ', r)
-    (CAFE / 'eval' / f'result_{METHOD}.json').write_text(json.dumps({'metrics': out, 'rows': rows}, ensure_ascii=False, indent=1))
+    (CAFE / 'eval' / (f'result_{METHOD}.json' if EVAL == 'v0' else f'result_{EVAL}_{METHOD}.json')).write_text(json.dumps({'metrics': out, 'rows': rows}, ensure_ascii=False, indent=1))
 
 
 if __name__ == '__main__':
