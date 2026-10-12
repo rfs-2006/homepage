@@ -64,7 +64,7 @@ def main():
         res[f"type:{q['type']}:doc_hit@5"].append(rd is not None and rd <= 5)
         if EVAL != 'v0' and q['type'] in ('coach', 'writing', 'cross'):
             res[f"type:{q['type']}:docs@10"].append(len({doc_of[c] for c in top[:10]} & gold_d))
-        rows.append((q['id'], q['type'], rd, q['question'][:40]))
+        rows.append((q['id'], q['type'], rd, q['question'][:40], top))
     out = {k: round(sum(v) / len(v), 3) for k, v in res.items()}  # docs@10은 비율이 아니라 평균 개수
     out['n'] = len(rows)
     if METHOD in ('multiquery', 'agent'):
@@ -74,7 +74,7 @@ def main():
     print('놓친 질문 (문서 기준 top5 밖):')
     for r in rows:
         if not r[2] or r[2] > 5:
-            print(' ', r)
+            print(' ', r[:4])
     (CAFE / 'eval' / (f'result_{METHOD}.json' if EVAL == 'v0' else f'result_{EVAL}_{METHOD}.json')).write_text(json.dumps({'metrics': out, 'rows': rows}, ensure_ascii=False, indent=1))
 
 
