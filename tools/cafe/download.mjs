@@ -48,9 +48,12 @@ const firstStr = (o, keys) => { for (const k of keys) if (typeof o[k] === 'strin
 
 const ctx = await chromium.launchPersistentContext(join(OUT, '.profile'), { channel: 'chrome', headless: false, acceptDownloads: true });
 const page = ctx.pages()[0] || await ctx.newPage();
-await page.goto('https://cafe.naver.com/' + CAFE);
+await page.goto(/^\d+$/.test(CAFE) ? 'https://cafe.naver.com/f-e/cafes/' + CAFE : 'https://cafe.naver.com/' + CAFE);
+// 네이버 로그인 쿠키는 브라우저를 닫으면 사라질 수 있어서 매번 확인한다
+const loggedIn = async () => (await ctx.cookies('https://naver.com')).some((c) => c.name === 'NID_AUT');
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
 await rl.question('\n크롬 창에서 네이버 로그인을 마치고 카페가 보이면 여기서 엔터를 누르세요. ');
+while (!(await loggedIn())) await rl.question('아직 로그인이 안 됐습니다. 크롬 창 오른쪽 위에서 로그인한 뒤 엔터를 누르세요. ');
 rl.close();
 
 async function api(url) {
@@ -151,7 +154,11 @@ for (const m of targets) {
       }, null, 1));
       done++;
       console.log(`  ${aid} ${safe(subj).slice(0, 40)}  첨부 ${saved.length}`);
-    } catch (e) { console.log('  실패', aid, String(e.message).slice(0, 160)); }
+    } catch (e) {
+      const msg = String(e.message);
+      if (/로그인|401|login/i.test(msg)) { console.error('\n로그인이 풀렸습니다. 다시 실행해서 로그인해 주세요. (받은 글은 건너뜁니다)'); await ctx.close(); process.exit(1); }
+      console.log('  실패', aid, msg.slice(0, 160));
+    }
     await pause();
   }
 }
