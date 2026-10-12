@@ -45,17 +45,25 @@ SCHEMA = {'type': 'object', 'properties': {'judgments': {'type': 'array', 'items
     'required': ['judgments'], 'additionalProperties': False}
 
 
-def judge_question(cl, q, chunks):
-    body = '\n\n'.join(f"[{c['chunk_id']}] {c['header']}\n{c['text']}" for c in chunks)
-    resp = ask(cl, system=SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
-               messages=[{'role': 'user', 'content': f"질문: {q['question']}\n\n청크 {len(chunks)}개:\n\n{body}"}])
-    out = json.loads(next(b.text for b in resp.content if b.type == 'text'))['judgments']
-    want = {c['chunk_id'] for c in chunks}
-    got = {j['chunk_id']: j for j in out if j['chunk_id'] in want}
-    missing = want - set(got)
-    if missing:
-        raise RuntimeError(f"{q['id']}: 채점 누락 {len(missing)}개")
-    return list(got.values()), resp.usage
+def judge_question(cl, q, chunks, tries=3):
+    """한 문항의 청크를 한 번에 채점한다. 채점기가 몇 개를 빠뜨리면 빠진 것만 다시 묻는다."""
+    got, todo, usage = {}, list(chunks), [0, 0]
+    for _ in range(tries):
+        body = '\n\n'.join(f"[{c['chunk_id']}] {c['header']}\n{c['text']}" for c in todo)
+        resp = ask(cl, system=SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': SCHEMA}},
+                   messages=[{'role': 'user', 'content': f"질문: {q['question']}\n\n청크 {len(todo)}개:\n\n{body}"}])
+        usage[0] += resp.usage.input_tokens
+        usage[1] += resp.usage.output_tokens
+        want = {c['chunk_id'] for c in todo}
+        for j in json.loads(next(b.text for b in resp.content if b.type == 'text'))['judgments']:
+            if j['chunk_id'] in want:
+                got[j['chunk_id']] = j
+        todo = [c for c in todo if c['chunk_id'] not in got]
+        if not todo:
+            break
+    if todo:
+        raise RuntimeError(f"{q['id']}: 채점 누락 {len(todo)}개")
+    return list(got.values()), usage
 
 
 def main():
@@ -81,18 +89,26 @@ def main():
 
     def run(qid):
         need = sorted(set(pool[qid]) - set(done[qid]))
-        js, u = judge_question(cl, qs[qid], [chunks[c] for c in need])
+        try:
+            js, u = judge_question(cl, qs[qid], [chunks[c] for c in need])
+        except Exception as e:  # 한 문항이 실패해도 나머지는 계속, 다시 실행하면 빠진 것만 채점
+            print('실패', qid, e, flush=True)
+            return qid, [], [0, 0]
         return qid, js, u
 
     with ThreadPoolExecutor(4) as ex, open(path, 'a') as f:
         for qid, js, u in ex.map(run, todo):
-            usage['input'] += u.input_tokens
-            usage['output'] += u.output_tokens
+            usage['input'] += u[0]
+            usage['output'] += u[1]
             for j in js:
                 rec = {'qid': qid, 'chunk_id': j['chunk_id'], 'score': j['score'], 'reason': j['reason']}
                 done[qid][j['chunk_id']] = rec
                 f.write(json.dumps(rec, ensure_ascii=False) + '\n')
             print(qid, sum(j['score'] == 2 for j in js), '/', len(js), flush=True)
+
+    left = sum(len(set(pool[q]) - set(done[q])) for q in pool)
+    if left:
+        sys.exit(f'아직 채점 안 된 청크 {left}개. 다시 실행하면 이어서 채점한다.')
 
     # 사람 판정과 일치율: 사람이 고른 정답(양성)이 풀에 들어온 경우, 채점기가 2점(또는 1점 이상)을 줬는가
     agree = defaultdict(list)
