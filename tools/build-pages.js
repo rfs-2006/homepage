@@ -75,7 +75,7 @@ const COHORT = stat('Cohort').target, ALUMNI = stat('Alumni').target, REPORTS_N 
 const ORG = { '@type': 'Organization', name: C.SITE_NAME, url: `${C.SITE}/` };
 const NAV = `<header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
 <nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>`;
-const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <span style="white-space:nowrap">Crafted by <b>Minseok Kim</b> (41st cohort)</span></footer>
+const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st cohort)</span></footer>
 </body>
 </html>
 `;
