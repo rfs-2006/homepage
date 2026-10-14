@@ -667,12 +667,9 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
 .fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp?v=1014") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
-/* RFM: 객장 사진 한 장이 맨 위부터 이어지고 아래 끝은 흐리게 사라진다 */
-.rfmpage .pg-hero .pg-bg,.rfmpage .pg-hero .scrim{display:none}
+/* RFM·AMT Fund 첫 화면: ABOUT처럼 사진 한 장이 화면을 채우고 제목만 (pg-full) */
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
-.rfmpage::before{content:'';position:absolute;left:0;right:0;top:-4vw;height:max(66vw,820px);z-index:-1;pointer-events:none;background:url("assets/hero/nyse.webp") center top/cover no-repeat;filter:grayscale(1) contrast(1.05);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%)}
-.rfmpage::after{content:'';position:absolute;left:0;right:0;top:0;height:max(66vw,820px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,10,14,.5) 0,rgba(8,10,14,.62) 40vh,rgba(12,18,28,.84) 62vh,rgba(15,27,46,.9) 80%,#0F1B2E 100%);backdrop-filter:blur(0);-webkit-mask-image:none}
-@media (max-width:768px){.rfmpage::before,.rfmpage::after{height:900px}.rfmpage::before{top:-24px}.rfmpage::before{background-image:url("assets/hero/nyse-m.webp");background-position:30% top}}
+.rfmpage .pg-bg{filter:grayscale(1) contrast(1.05)}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -2683,7 +2680,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
-    <section class="on-photo pg-hero" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
@@ -2692,7 +2689,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>RFS Asset Management · 국내·미국 상장주식 · 일반사모</span></p>
           <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
@@ -2817,9 +2813,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
-    <section class="on-photo pg-hero" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="assets/hero/nyse.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:NY_stock_exchange_traders_floor_LC-U9-10548-6.jpg" style="--slot-position:center 30%"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
