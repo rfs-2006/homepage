@@ -180,6 +180,15 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   .copy p{font-size:12.5px}
 }
 
+/* welcome: 하늘이 밝아질 때 글자마다 별빛처럼 켜지고, 별자리가 켜진 뒤에는 은은한 캡션으로 남는다 */
+.welcome{position:absolute;left:50%;transform:translateX(-50%);top:17vh;z-index:3;pointer-events:none;text-align:center;white-space:nowrap;
+  font-family:var(--serif);font-weight:400;font-size:clamp(17px,1.5vw,22px);letter-spacing:.14em;padding-left:.14em}
+.welcome .ch{display:inline-block;opacity:0;filter:blur(6px);transform:translateY(5px);color:rgba(240,244,252,.92);text-shadow:0 0 12px rgba(190,210,255,.5);
+  transition:opacity 1.1s ease calc(var(--i)*55ms), filter 1.1s ease calc(var(--i)*55ms), transform 1.1s var(--ease) calc(var(--i)*55ms), color 2.4s ease, text-shadow 2.4s ease}
+.welcome .sp{display:inline-block;width:.35em}
+.welcome.on .ch{opacity:1;filter:none;transform:none}
+.welcome.rest .ch{color:rgba(223,230,245,.62);text-shadow:none}
+@media (max-width:760px){.welcome{top:auto;bottom:14vh;font-size:16px;letter-spacing:.1em;padding-left:.1em}}
 /* motto */
 .motto{position:absolute;left:50%;transform:translateX(-50%);bottom:15vh;z-index:3;pointer-events:none;text-align:center;white-space:nowrap;padding:12px 0 12px .6em;cursor:default;
   font-family:var(--sans);font-weight:300;font-size:13px;letter-spacing:.6em;transition:letter-spacing 1.4s var(--ease);--a:.4}
@@ -234,6 +243,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
 
 
+  <div class="welcome" id="welcome" aria-label="R.F.S.에 오신 것을 환영합니다"></div>
   <div class="motto" id="motto"></div>
   <div class="credit" id="credit"></div>
 </main>
@@ -479,15 +489,20 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   motto.addEventListener('pointerenter', () => sky.classList.add('shine'));
   motto.addEventListener('pointerleave', () => sky.classList.remove('shine'));
   const copy = motto, hint = {classList:{add(){}}};
+  const welcome = document.getElementById('welcome'); let wi = 0;
+  welcome.innerHTML = 'R.F.S.에 오신 것을 환영합니다'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" style="--i:${wi++}">${c}</span>`).join('');
   function finalState(){
     sky.classList.add('ready');
     STARS.forEach(s => s.el.classList.add('lit')); alcor.classList.add('lit'); pol.classList.add('lit');
     segs.forEach(s => s.l.classList.add('drawn')); guide.classList.add('on'); copy.classList.add('on'); hint.classList.add('on');
+    welcome.classList.add('on','rest');
     window.__done = true;
   }
   if (STATIC) { document.documentElement.classList.add('static'); sky.classList.add('static'); finalState(); return; }
   const go = () => {
     sky.classList.add('ready');                                     // 0.0s photo fades in
+    setTimeout(() => welcome.classList.add('on'), 250);              // 0.25–2.6s 환영 문장이 글자마다 켜진다
+    setTimeout(() => welcome.classList.add('rest'), 4200);           // 별자리가 다 켜진 뒤 은은한 캡션으로
     IGNITE.forEach((id,i) => setTimeout(() => {                     // 0.45–1.53s stars ignite
       const el = byId[id].el; el.classList.add('lit','igniting');
       if (id==='mizar') setTimeout(()=>alcor.classList.add('lit'), 250);

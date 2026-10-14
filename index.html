@@ -234,19 +234,6 @@ h1,h2,h3{text-wrap:balance}
 .on-photo .inv-card{background:rgba(247,246,243,0.06) !important;border:1px solid rgba(247,246,243,0.25) !important}
 /* 홈: 첫 화면과 별자리 사이 환영 문장. 첫 화면 사진 아래를 밤하늘색으로 어둡게 하고, 별이 아래로 갈수록 많아져 별자리 하늘로 이어진다 */
 .hero-fade{position:absolute;left:0;right:0;bottom:0;height:42vh;background:linear-gradient(180deg,rgba(11,21,36,0) 0%,rgba(11,21,36,.75) 60%,#0B1524 100%);pointer-events:none}
-/* 홈 별자리 칸: 들어오면 환영 문장이 떠올랐다가 사라지고, 그 순간 별자리가 켜진다 (스크립트는 문서 끝) */
-.sky-intro{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px;pointer-events:none;color:#F7F6F3}
-.sky-intro>*{opacity:0;transform:translateY(16px);transition:opacity 1.6s cubic-bezier(.25,.7,.25,1),transform 1.6s cubic-bezier(.25,.7,.25,1)}
-.sky-intro.show>*{opacity:1;transform:none}
-.sky-intro.show>:nth-child(2){transition-delay:.45s}
-.sky-intro.show>:nth-child(3){transition-delay:.9s}
-.sky-intro.gone>*{opacity:0;transform:translateY(-10px);transition-duration:2s;transition-delay:0s}
-.sky-intro .w-ey{font-size:11px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:rgba(247,246,243,.5);margin:0 0 28px}
-.sky-intro .w-hi{font-family:'Noto Serif KR',serif;font-weight:400;font-size:clamp(20px,2vw,28px);letter-spacing:-.02em;color:rgba(247,246,243,.72);margin:0 0 14px}
-.sky-intro .w-main{font-family:'Noto Serif KR',serif;font-weight:400;font-size:clamp(28px,3.6vw,56px);line-height:1.35;letter-spacing:-.03em;color:#F7F6F3;margin:0;word-break:keep-all;text-wrap:balance}
-.mhome .sky-intro .w-main{font-size:clamp(24px,7vw,30px);line-height:1.45}
-.mhome .sky-intro .w-main br{display:none}
-@media (prefers-reduced-motion:reduce){.sky-intro{display:none}}
 .rv{opacity:0;transition:opacity 700ms cubic-bezier(.2,.8,.2,1),transform 700ms cubic-bezier(.2,.8,.2,1);transition-delay:var(--rv-delay,0ms);will-change:opacity,transform}
 /* 펀드 페이지와 같은 등장 효과: 아래에서 올라오고, 안의 항목은 차례로 */
 .rv-left,.rv-right,.rv-up{transform:translateY(22px)}
@@ -1418,11 +1405,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <div class="sky-intro" aria-hidden="true">
-        <p class="w-ey">Welcome</p>
-        <p class="w-hi">안녕하세요,</p>
-        <p class="w-main">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</p>
-      </div>
       <iframe src="assets/dipper.html?hold=1" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
@@ -1504,11 +1486,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <div class="sky-intro" aria-hidden="true">
-        <p class="w-ey">Welcome</p>
-        <p class="w-hi">안녕하세요,</p>
-        <p class="w-main">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</p>
-      </div>
       <iframe src="assets/dipper.html?hold=1" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
@@ -6003,32 +5980,22 @@ class Component extends DCLogic {
 }
 </script>
 <script>
-// 홈 별자리 칸: 처음 들어오면 환영 문장을 보여주고, 문장이 사라지는 순간 별자리(iframe)에 시작 신호를 보낸다.
-// 같은 방문 중 다시 오거나 움직임 줄이기 설정이면 문장 없이 바로 별자리를 켠다. 홈은 다시 그려질 수 있어 새로 생긴 칸마다 붙인다.
+// 홈 별자리 칸: 별자리(iframe, ?hold=1)는 이 칸이 실제로 화면에 들어왔을 때 시작 신호를 받아 하늘·환영 문장·별을 켠다.
+// 미리 로드돼도 보지 않는 사이에 애니메이션이 끝나 버리지 않게 하려는 것. 홈은 다시 그려질 수 있어 새로 생긴 칸마다 붙인다.
 (() => {
-  const KEY = 'rfs-sky-intro';
-  const seen = () => { try { return sessionStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
-  const mark = () => { try { sessionStorage.setItem(KEY, '1'); } catch (e) {} };
-  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function wire(sec) {
-    if (sec.dataset.intro) return; sec.dataset.intro = '1';
-    const intro = sec.querySelector('.sky-intro'), frame = sec.querySelector('iframe');
-    let revealed = false;
-    const reveal = () => { revealed = true; try { frame.contentWindow.postMessage('rfs:reveal', location.origin); } catch (e) {} };
-    frame.addEventListener('load', () => { if (revealed) reveal(); });   // 늦게 로드돼도 신호를 다시 보낸다
-    if (!intro || reduce || seen()) { if (intro) intro.remove(); reveal(); return; }
+    if (sec.dataset.sky) return; sec.dataset.sky = '1';
+    const frame = sec.querySelector('iframe');
+    let go = false;
+    const reveal = () => { try { frame.contentWindow.postMessage('rfs:reveal', location.origin); } catch (e) {} };
+    frame.addEventListener('load', () => { if (go) reveal(); });   // 늦게 로드돼도 신호를 다시 보낸다
     const io = new IntersectionObserver((es) => {
-      if (!es.some((e) => e.intersectionRatio >= 0.6)) return;
-      io.disconnect(); mark();
-      intro.classList.add('show');
-      setTimeout(() => intro.classList.add('gone'), 6000);   // 다 떠오른 뒤(약 2.5초) 3.5초 머물다 2초에 걸쳐 사라진다
-      setTimeout(reveal, 6800);                             // 문장이 반쯤 사라졌을 때 별이 켜지기 시작한다
-      setTimeout(() => intro.remove(), 8400);
-    }, { threshold: [0, 0.6] });
+      if (!es.some((e) => e.intersectionRatio >= 0.5)) return;
+      io.disconnect(); go = true; reveal();
+    }, { threshold: [0, 0.5] });
     io.observe(sec);
   }
   const scan = () => document.querySelectorAll('#home-sky, #home-sky-m').forEach(wire);
-  window.__rfsSkyIntro = true;
   new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });   // 앱이 body를 새로 그릴 수 있어 문서 전체를 본다
   scan();
 })();
