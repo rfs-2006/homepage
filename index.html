@@ -1422,10 +1422,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
     <section id="home-welcome-m" class="welcome on-photo" data-nav="dark" aria-label="환영 인사">
       <div class="w-in">
-        <p class="w-ey wf">Welcome</p>
-        <p class="w-hi wf" style="--wf:500ms">안녕하세요,</p>
-        <h2 class="w-main wf" style="--wf:1100ms">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</h2>
-        <div class="w-line wf" style="--wf:2000ms" aria-hidden="true"></div>
+        <p class="w-ey wf" style="--wf:1200ms">Welcome</p>
+        <p class="w-hi wf" style="--wf:1700ms">안녕하세요,</p>
+        <h2 class="w-main wf" style="--wf:2300ms">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</h2>
+        <div class="w-line wf" style="--wf:3200ms" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -1512,10 +1512,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
     <section data-snap="" id="home-welcome" class="welcome on-photo" data-nav="dark" aria-label="환영 인사">
       <div class="w-in">
-        <p class="w-ey wf">Welcome</p>
-        <p class="w-hi wf" style="--wf:500ms">안녕하세요,</p>
-        <h2 class="w-main wf" style="--wf:1100ms">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</h2>
-        <div class="w-line wf" style="--wf:2000ms" aria-hidden="true"></div>
+        <p class="w-ey wf" style="--wf:1200ms">Welcome</p>
+        <p class="w-hi wf" style="--wf:1700ms">안녕하세요,</p>
+        <h2 class="w-main wf" style="--wf:2300ms">중앙대학교 최고의 가치투자학회 <br>R.F.S.에 오신 것을 환영합니다.</h2>
+        <div class="w-line wf" style="--wf:3200ms" aria-hidden="true"></div>
       </div>
     </section>
 
@@ -6014,10 +6014,10 @@ class Component extends DCLogic {
 }
 </script>
 <script>
-/* 홈 환영 문장: 칸에 들어오면 문장이 차례로 나타난다. 처음 보면 읽을 시간(약 6초)이 지난 뒤 별자리 칸으로 천천히 내려간다.
+/* 홈 환영 문장: 칸에 도착하면 하늘을 먼저 보여 주고 1.2초 뒤부터 문장이 차례로 나타난다. 처음 보면 읽을 시간(도착 후 약 7초)이 지난 뒤 별자리 칸으로 천천히 내려간다.
    그 사이 사용자가 스크롤·터치·키를 쓰면 취소하고, 같은 탭에서 두 번째부터와 동작 줄이기 설정에서는 하지 않는다 */
 (() => {
-  const KEY = 'rfs-welcome-auto', WAIT = 6200, DUR = 2400, GRACE = 1500;
+  const KEY = 'rfs-welcome-auto', WAIT = 7400, DUR = 2400, GRACE = 1500;
   let done = false, armedAt = 0, timer = null, raf = null;
   try { if (sessionStorage.getItem(KEY)) done = true; } catch (e) {}
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) done = true;
@@ -6043,9 +6043,9 @@ class Component extends DCLogic {
   };
   const check = () => {
     const w = pick(['home-welcome', 'home-welcome-m']);
-    if (!w || Math.abs(w.getBoundingClientRect().top) > innerHeight * 0.4) return;
+    if (!w || !near(w)) return;
     w.querySelectorAll('.wf:not(.on)').forEach((n) => n.classList.add('on'));
-    if (done || timer || !near(w)) return;
+    if (done || timer) return;
     try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
     armedAt = performance.now();
     ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((t) => addEventListener(t, onInput, { capture: true, passive: true }));
