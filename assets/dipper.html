@@ -406,9 +406,9 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const STATIC = location.hash === '#static' || q.has('static') || reduce;
   sky.addEventListener('pointermove', e => {
     tx = e.clientX/W - .5; ty = e.clientY/H - .5; px = e.clientX; py = e.clientY;
-    sky.classList.add('pointer');
+    sky.classList.add('pointer'); wake();
   });
-  sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); });
+  sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); wake(); });
   // 화면에 보일 때만 그린다 (스크롤해서 지나가거나 탭을 숨기면 멈춤)
   // 홈 iframe 안에서는 IntersectionObserver가 바깥 페이지 스크롤을 못 따라가서, 바깥에서 iframe 위치를 직접 본다 (같은 출처)
   let tickOn = false, lastPx = -1, lastPy = -1;
@@ -421,6 +421,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     return r.width > 0 && r.bottom > 0 && r.top < parent.innerHeight;
   };
   const resume = () => { if (live()) loops.forEach(f => f()); };
+  function wake() { resume(); }
   document.addEventListener('visibilitychange', resume);
   if (fe) { parent.addEventListener('scroll', resume, { passive: true }); parent.addEventListener('resize', resume); }
   function tick(){
@@ -431,7 +432,9 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
       dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
     }
-    if (px !== lastPx || py !== lastPy) { torch.style.transform = `translate3d(${px}px, ${py}px, 0)`; lastPx = px; lastPy = py; }
+    const torchMoved = px !== lastPx || py !== lastPy;
+    if (torchMoved) { torch.style.transform = `translate3d(${px}px, ${py}px, 0)`; lastPx = px; lastPy = py; }
+    if (!moving && !torchMoved) { tickOn = false; return; }   // 다 멎으면 쉰다. 마우스가 움직이면 다시 시작
     requestAnimationFrame(tick);
   }
   const startTick = () => { if (!tickOn) { tickOn = true; requestAnimationFrame(tick); } };
@@ -442,7 +445,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     const cv = document.getElementById('gl3d');
     const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
     if (!g) return;
-    const dimg = new Image(); dimg.src = 'hero/sky-depth.png';
+    const dimg = new Image(); dimg.src = innerWidth < 760 ? 'hero/sky-depth-m.png' : 'hero/sky-depth.png';   // 모바일 사진은 가운데 40%만 잘라 쓴다 (세로 화면에서는 가운데만 보여서)
     const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
     const fs = `precision highp float;
       uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z;
@@ -491,22 +494,22 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       photo.classList.add('p3d'); sky.classList.add('p3dm');
       t0 = performance.now(); loops.push(startDraw); startDraw();
     };
-    let drawOn = false, skip = false;
+    let drawOn = false;
     const startDraw = () => { if (!drawOn) { drawOn = true; requestAnimationFrame(draw); } };
     const draw = (now) => {
       if (!live()) { drawOn = false; return; }
-      // 마우스가 없고 처음 확대가 끝나면 저절로 흔들리는 아주 느린 움직임뿐이라 두 프레임에 한 번만 그린다
-      if (!sky.classList.contains('pointer') && now - t0 > 14000 && (skip = !skip)) { requestAnimationFrame(draw); return; }
       const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
       const t = (now - t0) / 1000;
-      // 마우스가 없으면 아주 느리게 저절로 흔들린다
-      const ax = Math.sin(t * .16) * .55, ay = Math.cos(t * .11) * .35;
-      const on = sky.classList.contains('pointer');
-      mx += ((on ? x * 2 : ax) - mx) * .05; my += ((on ? -y * 2 : ay) - my) * .05;
+      // 처음 14초(확대 연출) 동안은 마우스가 없어도 천천히 흔들리고, 그 뒤로는 마우스를 따라서만 움직인다
+      const on = sky.classList.contains('pointer'), intro = t < 14;
+      const gx = intro && !on ? Math.sin(t * .16) * .55 : x * 2, gy = intro && !on ? Math.cos(t * .11) * .35 : -y * 2;
+      mx += (gx - mx) * .05; my += (gy - my) * .05;
       const z = .18 * Math.pow(Math.max(0, 1 - t / 14), 2.2);
       g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), z);
       g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
+      // 움직임이 다 멎으면 그리기를 멈춘다 (마지막 장면이 그대로 남는다). 마우스가 움직이면 다시 시작
+      if (!intro && Math.abs(gx - mx) < .002 && Math.abs(gy - my) < .002) { drawOn = false; return; }
       requestAnimationFrame(draw);
     };
     let n = 0; const one = () => { if (++n === 2) start(); };
