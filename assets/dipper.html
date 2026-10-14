@@ -216,6 +216,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .photo.p3d #gl3d{display:block}
 .ready .photo.p3d #gl3d{opacity:1}
 .photo.p3d img{visibility:hidden}
+.p3dm .wash,.p3dm .wash2{display:none}   /* WebGL이 사진 보정·덧칠까지 직접 그린다 (아래 셰이더). 혼합 모드 층을 매 프레임 다시 합성하지 않게 */
 .p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
 </head>
@@ -405,14 +406,33 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     sky.classList.add('pointer');
   });
   sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); });
+  // 화면에 보일 때만 그린다 (스크롤해서 지나가거나 탭을 숨기면 멈춤)
+  // 홈 iframe 안에서는 IntersectionObserver가 바깥 페이지 스크롤을 못 따라가서, 바깥에서 iframe 위치를 직접 본다 (같은 출처)
+  let tickOn = false, lastPx = -1, lastPy = -1;
+  const loops = [];
+  const fe = (() => { try { return window.frameElement; } catch (e) { return null; } })();
+  const live = () => {
+    if (document.hidden) return false;
+    if (!fe) return true;
+    const r = fe.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < parent.innerHeight;
+  };
+  const resume = () => { if (live()) loops.forEach(f => f()); };
+  document.addEventListener('visibilitychange', resume);
+  if (fe) { parent.addEventListener('scroll', resume, { passive: true }); parent.addEventListener('resize', resume); }
   function tick(){
-    x += (tx-x)*.06; y += (ty-y)*.06;
-    photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
-    dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
-    torch.style.transform = `translate3d(${px}px, ${py}px, 0)`;
+    if (!live()) { tickOn = false; return; }
+    const moving = Math.abs(tx-x) > .0005 || Math.abs(ty-y) > .0005;
+    if (moving) {
+      x += (tx-x)*.06; y += (ty-y)*.06;
+      photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
+      dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
+    }
+    if (px !== lastPx || py !== lastPy) { torch.style.transform = `translate3d(${px}px, ${py}px, 0)`; lastPx = px; lastPy = py; }
     requestAnimationFrame(tick);
   }
-  if (!STATIC) requestAnimationFrame(tick);
+  const startTick = () => { if (!tickOn) { tickOn = true; requestAnimationFrame(tick); } };
+  if (!STATIC) { loops.push(startTick); startTick(); }
 
   /* ---- 사진 입체: 깊이 지도로 하늘·구름·산을 따로 움직인다 (?p=3d) ---- */
   (() => {
@@ -432,7 +452,23 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
         for(int i=0;i<4;i++){ float d=texture2D(D,q).r;
           float s=1.+Z*(.25+.75*d);
           q=c+(uv-c)/s - M*(d-.3)*.05; }
-        gl_FragColor=texture2D(I,clamp(q,.001,.999));
+        vec3 col=texture2D(I,clamp(q,.001,.999)).rgb;
+        // CSS filter: brightness(.74) saturate(.8) contrast(1.05)
+        col*=.74;
+        col=mat3(.2126+.7874*.8,.2126-.2126*.8,.2126-.2126*.8, .7152-.7152*.8,.7152+.2848*.8,.7152-.7152*.8, .0722-.0722*.8,.0722-.0722*.8,.0722+.9278*.8)*col;
+        col=clamp((col-.5)*1.05+.5,0.,1.);
+        // .wash: multiply, 위 rgba(15,27,46,.55) · 55% rgba(20,38,72,.38) · 아래 rgba(11,21,36,.7)
+        float y=1.-gl_FragCoord.y/R.y;
+        vec3 f0=1.-.55+.55*vec3(15.,27.,46.)/255., f1=1.-.38+.38*vec3(20.,38.,72.)/255., f2=1.-.7+.7*vec3(11.,21.,36.)/255.;
+        col*= y<.55 ? mix(f0,f1,y/.55) : mix(f1,f2,(y-.55)/.45);
+        // .wash2: color 혼합 rgba(32,56,100,.16) (색조·채도는 덧칠 색, 밝기는 사진)
+        vec3 tc=vec3(32.,56.,100.)/255., L=vec3(.3,.59,.11);
+        vec3 cc=tc+(dot(col,L)-dot(tc,L));
+        float l=dot(cc,L), n=min(min(cc.r,cc.g),cc.b), x=max(max(cc.r,cc.g),cc.b);
+        if(n<0.) cc=l+(cc-l)*l/(l-n);
+        if(x>1.) cc=l+(cc-l)*(1.-l)/(x-l);
+        col=mix(col,cc,.16);
+        gl_FragColor=vec4(col,1.);
       }`;
     const sh = (t, src) => { const o = g.createShader(t); g.shaderSource(o, src); g.compileShader(o); return o; };
     const pr = g.createProgram(); g.attachShader(pr, sh(g.VERTEX_SHADER, vs)); g.attachShader(pr, sh(g.FRAGMENT_SHADER, fs)); g.linkProgram(pr);
@@ -449,10 +485,13 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     const start = () => {
       tex(0, img); tex(1, dimg); g.uniform1i(U('I'), 0); g.uniform1i(U('D'), 1);
       g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight);
-      photo.classList.add('p3d'); sky.classList.add('p3dm'); photo.style.filter = getComputedStyle(img).filter;
-      t0 = performance.now(); requestAnimationFrame(draw);
+      photo.classList.add('p3d'); sky.classList.add('p3dm');
+      t0 = performance.now(); loops.push(startDraw); startDraw();
     };
+    let drawOn = false;
+    const startDraw = () => { if (!drawOn) { drawOn = true; requestAnimationFrame(draw); } };
     const draw = (now) => {
+      if (!live()) { drawOn = false; return; }
       const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
       const t = (now - t0) / 1000;
