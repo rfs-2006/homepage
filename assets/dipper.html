@@ -503,7 +503,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     setTimeout(() => window.__done = true, 2600);
   };
   let seen = false, loaded = false, started = false;
-  const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
+  // 홈에 끼워질 때(?hold=1)는 홈의 환영 문장이 사라지는 순간 보내는 신호('rfs:reveal')를 받고 시작한다
+  let released = !(q.has('hold') && window.parent !== window);
+  addEventListener('message', (e) => { if (e.origin === location.origin && e.data === 'rfs:reveal') { released = true; start(); } });
+  const start = () => { if (seen && loaded && released && !started) { started = true; requestAnimationFrame(go); } };
   if (img.complete && img.naturalWidth) loaded = true; else { img.addEventListener('load', () => { loaded = true; start(); }, {once:true}); img.addEventListener('error', () => { loaded = true; start(); }, {once:true}); }
   new IntersectionObserver((es) => { if (es.some(e => e.isIntersecting)) { seen = true; start(); } }, {threshold:.1}).observe(sky);
   start();
