@@ -245,7 +245,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 <script>
 (() => {
   /* ---- photo choice (?photo=1|2|3) ---- */
-  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp':'hero/sky.webp'), flip:false, pos:'50% 40%', credit:'Photo: Unsplash'}};
+  // 사진을 바꾸면 ?v= 를 올린다 (assets는 브라우저가 하루 동안 저장해 두어서, 이름이 같으면 예전 사진이 계속 보인다)
+  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp?v=1014':'hero/sky.webp?v=1014'), flip:false, pos:'50% 40%', credit:'Photo: Unsplash'}};
   const q = new URLSearchParams(location.search);
   const P = PHOTOS[q.get('photo')] || PHOTOS[1];
   const img = document.getElementById('photoImg');
@@ -445,7 +446,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     const cv = document.getElementById('gl3d');
     const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
     if (!g) return;
-    const dimg = new Image(); dimg.src = innerWidth < 760 ? 'hero/sky-depth-m.png' : 'hero/sky-depth.png';   // 모바일 사진은 가운데 40%만 잘라 쓴다 (세로 화면에서는 가운데만 보여서)
+    const dimg = new Image(); dimg.src = innerWidth < 760 ? 'hero/sky-depth-m.png?v=1014' : 'hero/sky-depth.png?v=1014';   // 모바일 사진은 가운데 40%만 잘라 쓴다 (세로 화면에서는 가운데만 보여서)
     const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
     const fs = `precision highp float;
       uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z;

@@ -67,8 +67,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
-// 리포트 주소로 바로 들어오면 리포트 글꼴(KoPub 돋움)을 화면 그리기 전에 받기 시작한다
-(function(){ if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); }); })();
+// 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
+// 리포트 주소로 바로 들어오면 화면 그리기 전에 받기 시작하고, 다른 화면에서는 한가할 때·리포트를 열 때 받는다. 6초 넘게 걸리면 그냥 보여 준다
+(function(){
+  var started = false, ok = function(){ document.documentElement.classList.add('rfont'); };
+  window.__rfsFont = function(){
+    if (started) return; started = true;
+    ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); });
+    if (!window.FontFace || !document.fonts) return ok();
+    setTimeout(ok, 6000);
+    // 아래 <style>의 @font-face가 읽히기 전이라 fonts.load()로는 기다릴 수 없다. 같은 파일로 글꼴을 직접 등록해 받는다
+    Promise.all([['light',300],['medium',500],['bold',700]].map(function(x){
+      var f = new FontFace('RFS Report Dotum', "url('/assets/fonts/rfs-report-dotum-"+x[0]+".woff2') format('woff2')", {weight: String(x[1]), display: 'block'});
+      document.fonts.add(f); return f.load();
+    })).then(ok, ok);
+  };
+  if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) window.__rfsFont();
+})();
 </script>
 <script src="./image-slot.js"></script>
 <style>
@@ -439,7 +454,10 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .press:active{transform:none}
 .mmenu{transform:none}
 }
-/* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py */
+/* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py
+   글꼴이 다 받아지기 전에는 리포트 본문을 감춰 두었다가 부드럽게 보인다 (머리말 스크립트의 __rfsFont) */
+.rpt-paper{transition:opacity .35s ease}
+html:not(.rfont) .rpt-paper{opacity:0}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:block}
@@ -648,7 +666,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
-.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
+.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp?v=1014") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 /* RFM: 객장 사진 한 장이 맨 위부터 이어지고 아래 끝은 흐리게 사라진다 */
 .rfmpage .pg-hero .pg-bg,.rfmpage .pg-hero .scrim{display:none}
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
@@ -1403,7 +1421,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1014" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
@@ -1484,7 +1502,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1014" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
@@ -2666,7 +2684,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
     <section class="on-photo pg-hero" data-nav="dark">
-      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
@@ -4468,7 +4486,7 @@ class Component extends DCLogic {
     this._menuHeroes = () => {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
-        fund: ['assets/hero/sky.webp'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
+        fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
         research: [u + '1470219556762-1771e7f9427d?auto=format&fit=crop&w=' + (m ? 1200 : 1600) + '&q=72'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [u + '1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=72'],
@@ -4483,8 +4501,8 @@ class Component extends DCLogic {
       });
     };
     idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
-      // 리포트 글꼴은 리포트를 처음 열 때 받기 시작해 잠깐 다른 글꼴로 보였다가 바뀌었다. 미리 받아 둔다
-      if (document.fonts && document.fonts.load) [300, 500, 700].forEach((w) => document.fonts.load(w + " 16px 'RFS Report Dotum'").catch(() => {})); });
+      // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
+      window.__rfsFont && window.__rfsFont(); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
@@ -5354,6 +5372,7 @@ class Component extends DCLogic {
   }
 
   setTitle(page, reportId) {
+    if (page === 'report' && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
     const r = REPORTS.find((x) => x.id === reportId);
     document.title = page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
