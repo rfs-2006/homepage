@@ -673,6 +673,16 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .rfmpage::before{content:'';position:absolute;left:0;right:0;top:-4vw;height:max(66vw,820px);z-index:-1;pointer-events:none;background:url("assets/hero/nyse.webp") center top/cover no-repeat;filter:grayscale(1) contrast(1.05);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%)}
 .rfmpage::after{content:'';position:absolute;left:0;right:0;top:0;height:max(66vw,820px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,10,14,.5) 0,rgba(8,10,14,.62) 40vh,rgba(12,18,28,.84) 62vh,rgba(15,27,46,.9) 80%,#0F1B2E 100%);backdrop-filter:blur(0);-webkit-mask-image:none}
 @media (max-width:768px){.rfmpage::before,.rfmpage::after{height:900px}.rfmpage::before{top:-24px}.rfmpage::before{background-image:url("assets/hero/nyse-m.webp");background-position:30% top}}
+/* RFM 첫 화면: 객장 사진이 잘려 보이지 않게 첫 칸을 화면 대부분으로 키우고, 제목은 아래쪽에 두어 가운데 인물(전표를 든 트레이더)을 가리지 않게.
+   위쪽 어둡게 덮는 층을 옅게 하고, 들어올 때 사진이 아주 천천히 물러난다 (한 번, 합성기에서만) */
+.rfmpage .pg-hero{min-height:84vh !important;align-items:flex-end !important}
+.rfmpage .pg-hero .pg-hero-in{padding:130px 35px 7vh !important}
+.rfmpage::before,.rfmpage::after{height:max(72vw,calc(100vh + 240px))}
+.rfmpage::before{background-position:center 18%;transform-origin:50% 30%;animation:rfmIn 9s cubic-bezier(.2,.7,.2,1) both}
+.rfmpage::after{background:linear-gradient(180deg,rgba(8,10,14,.55) 0,rgba(8,10,14,.28) 16vh,rgba(8,10,14,.34) 48vh,rgba(12,18,28,.8) 80vh,rgba(15,27,46,.94) 92%,#0F1B2E 100%)}
+@keyframes rfmIn{from{transform:scale(1.08)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.rfmpage::before{animation:none}}
+@media (max-width:768px){.rfmpage .pg-hero{min-height:72svh !important}.rfmpage::before,.rfmpage::after{height:calc(72svh + 260px)}.rfmpage::before{background-position:34% 22%}}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
