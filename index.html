@@ -1528,8 +1528,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+      <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
       </div>
@@ -1607,8 +1607,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+      <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
       </div>
@@ -2278,9 +2278,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="구성원" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our People</h1>
       </div>
@@ -2375,9 +2375,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="구성원 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg" style="overflow:hidden"><image-slot id="m-people-hero" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%;transform:scale(1.45);transform-origin:50% 92%"></image-slot></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our<br>People</h1>
       </div>
@@ -4486,7 +4486,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [u + '1470219556762-1771e7f9427d?auto=format&fit=crop&w=' + (m ? 1200 : 1600) + '&q=72'],
+        research: [m ? 'assets/hero/research-m.webp' : 'assets/hero/research.webp'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [u + '1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=72'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -4618,11 +4618,11 @@ class Component extends DCLogic {
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
   }
 
-  // ABOUT·FUND·RFM 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 흐려지며 다음 내용으로 내려간다.
+  // ABOUT·FUND·RFM·PEOPLE 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 흐려지며 다음 내용으로 내려간다.
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
-    if (!['about', 'fund', 'rfm'].includes(page)) return;
+    if (!['about', 'fund', 'rfm', 'people'].includes(page)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     requestAnimationFrame(() => {
       const hero = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
