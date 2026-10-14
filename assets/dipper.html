@@ -189,10 +189,13 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .motto .sp{display:inline-block;width:.9em}
 .motto.on .ch{opacity:1;filter:none;transform:none}
 .motto.solo .ch{color:rgba(240,244,252,.88);text-shadow:0 0 10px rgba(190,210,255,.45);transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color 1.6s ease, text-shadow 1.6s ease}
-.motto.live .ch{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
-@keyframes glint{0%,5%,100%{color:rgba(223,230,245,var(--a));text-shadow:none}
-  2.2%{color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5)}}
+.motto .ch{position:relative}
+/* 반짝임: 빛나는 글자 사본(::after)의 불투명도만 움직인다. 색·그림자를 직접 움직이면 매 프레임 스타일 계산·다시 그리기가 일어난다 */
+.motto .ch::after{content:attr(data-c);position:absolute;left:0;top:0;color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5);opacity:0;pointer-events:none}
+.motto.live .ch::after{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
+@keyframes glint{0%,5%,100%{opacity:0}2.2%{opacity:1}}
 .motto.on:hover{letter-spacing:.7em}
+.motto.on:hover .ch::after{animation:none;opacity:0}
 .motto.on:hover .ch{animation:none;color:#fff;text-shadow:0 0 8px rgba(220,232,255,.9),0 0 22px rgba(170,195,255,.6),0 0 46px rgba(140,170,255,.35);transition-delay:calc(var(--i)*25ms)}
 .sky.shine .seg{stroke-opacity:.75;stroke-width:1.1;transition:stroke-opacity .8s var(--ease), stroke-width .8s var(--ease)}
 .sky.shine .star.lit .glow{transform:translate(-50%,-50%) scale(1.35);opacity:1}
@@ -488,10 +491,12 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       photo.classList.add('p3d'); sky.classList.add('p3dm');
       t0 = performance.now(); loops.push(startDraw); startDraw();
     };
-    let drawOn = false;
+    let drawOn = false, skip = false;
     const startDraw = () => { if (!drawOn) { drawOn = true; requestAnimationFrame(draw); } };
     const draw = (now) => {
       if (!live()) { drawOn = false; return; }
+      // 마우스가 없고 처음 확대가 끝나면 저절로 흔들리는 아주 느린 움직임뿐이라 두 프레임에 한 번만 그린다
+      if (!sky.classList.contains('pointer') && now - t0 > 14000 && (skip = !skip)) { requestAnimationFrame(draw); return; }
       const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
       const t = (now - t0) / 1000;
@@ -514,7 +519,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const motto = document.getElementById('motto');
   let ci = 0;
   motto.setAttribute('aria-label','Rising Financial Stars');
-  motto.innerHTML = 'RISING FINANCIAL STARS'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" style="--i:${ci++}">${c}</span>`).join('');
+  motto.innerHTML = 'RISING FINANCIAL STARS'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" data-c="${c}" style="--i:${ci++}">${c}</span>`).join('');
   motto.addEventListener('pointerenter', () => sky.classList.add('shine'));
   motto.addEventListener('pointerleave', () => sky.classList.remove('shine'));
   const copy = motto, hint = {classList:{add(){}}};
