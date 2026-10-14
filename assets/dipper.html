@@ -428,7 +428,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     const cv = document.getElementById('gl3d');
     const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
     if (!g) return;
-    const dimg = new Image(); dimg.src = 'hero/sky-depth.png';
+    const dimg = new Image(); dimg.src = innerWidth < 760 ? 'hero/sky-depth-m.png' : 'hero/sky-depth.png';   // 모바일 사진은 가운데 40%를 잘라 쓴다
     const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
     const fs = `precision highp float;
       uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z;
