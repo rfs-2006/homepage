@@ -880,7 +880,8 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 /* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
 .pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
 .pg-hero.pg-full{min-height:100vh !important}
-@media (max-width:860px){.pg-hero.pg-full{min-height:100svh !important}}
+.pg-hero.pg-full.hero-short{min-height:0 !important}
+@media (max-width:860px){.pg-hero.pg-full{min-height:100svh !important}.pg-hero.pg-full.hero-short{min-height:0 !important}}
 .pg-hero .pg-hero-in{text-align:center;padding:130px 35px 80px !important}
 .pg-hero .pg-eyebrow{justify-content:center}
 .pg-hero .pg-hero-in>div[style*="flex"]{justify-content:center !important}
@@ -4723,7 +4724,19 @@ class Component extends DCLogic {
       // 첫 화면 바로 아래 탭이 메뉴 아래에 붙어 있으면(sticky) 그만큼 덜 내려가야 내용 첫 줄이 가려지지 않는다
       const stick = () => { const n = hero.nextElementSibling, cs = n && getComputedStyle(n); return cs && cs.position === 'sticky' ? parseFloat(cs.top) || 0 : 0; };
       const target = () => hero.getBoundingClientRect().bottom + window.scrollY - stick();
-      const onScroll = () => hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
+      // 한 번 지나간 첫 화면은 띠 높이(제목만 있는 배너)로 줄인다. 다시 올라오면 전체 화면이 아니라 이 띠가 보인다
+      const shrink = () => {
+        if (hero.classList.contains('hero-short')) return;
+        const h0 = hero.offsetHeight, y0 = window.scrollY;
+        hero.classList.add('hero-short');
+        if (y0 > 0) window.scrollTo({ top: Math.max(0, y0 - (h0 - hero.offsetHeight)), behavior: 'instant' });
+        hero.classList.remove('hero-out');
+      };
+      const onScroll = () => {
+        if (hero.classList.contains('hero-short')) return;
+        if (window.scrollY >= target()) return shrink();
+        hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
+      };
       const cancel = () => { clearTimeout(this._hiT); off(); };
       const evs = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
       const off = () => evs.forEach((t) => window.removeEventListener(t, cancel, true));
@@ -4731,23 +4744,26 @@ class Component extends DCLogic {
       this._hiStop = () => { off(); window.removeEventListener('scroll', onScroll); hero.classList.remove('hero-out'); };
       let seen = false;
       try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
-      if (seen) { window.scrollTo({ top: target(), behavior: 'instant' }); onScroll(); return; }
+      if (seen) { shrink(); return; }
       evs.forEach((t) => window.addEventListener(t, cancel, { capture: true, passive: true }));
       this._hiT = setTimeout(() => {
         off();
         if (this.state.page !== page || window.scrollY > 10) return;
         hero.classList.add('hero-out');
-        // 다 흐려진 뒤 안 보이는 사이에 내용 위치로 옮기고, 내용을 서서히 띄운다
+        // 다 흐려진 뒤 안 보이는 사이에 첫 화면을 띠로 줄이고 내용 위치로 옮긴 다음, 내용을 서서히 띄운다
         this._hiT = setTimeout(() => {
           if (this.state.page !== page || window.scrollY > 10) return;
           const main = hero.closest('main');
           main.classList.add('hi-in');
+          hero.classList.add('hero-short');
           window.scrollTo({ top: target(), behavior: 'instant' });
+          hero.classList.remove('hero-out');
           setTimeout(() => main.classList.remove('hi-in'), 900);
         }, 900);
       }, 2100);
     });
   }
+
 
   componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('popstate', this._onPop); this._navIo && this._navIo.disconnect(); this._onResize && window.removeEventListener('resize', this._onResize); this._secIo && this._secIo.disconnect(); this._rvIo && this._rvIo.disconnect(); this._onScroll && window.removeEventListener('scroll', this._onScroll); this._cntIo && this._cntIo.disconnect(); this._mch && this.sb && this.sb.removeChannel(this._mch); this._onWheel && window.removeEventListener('wheel', this._onWheel); this._onResize && window.removeEventListener('resize', this._onResize); this._glideRaf && cancelAnimationFrame(this._glideRaf); this._settle && clearTimeout(this._settle); }
 
