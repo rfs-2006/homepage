@@ -2,6 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>
+// 미리보기 주소(deploy-preview-…)나 주소 끝 ?motion=1 이면, 컴퓨터에서 애니메이션을 꺼 두었어도(동작 줄이기) 효과를 그대로 보여 준다. ?motion=0 으로 끈다. 실제 사이트에는 영향 없음
+(function(){
+  try {
+    var q = /[?&]motion=(1|0)\b/.exec(location.search), ls = window.localStorage;
+    if (q) q[1] === '1' ? ls.setItem('rfs-motion', '1') : ls.removeItem('rfs-motion');
+    if (!(/^deploy-preview-/.test(location.hostname) || ls.getItem('rfs-motion') === '1')) return;
+  } catch (e) { return; }
+  var mm = window.matchMedia.bind(window);
+  window.matchMedia = function(s){ return /prefers-reduced-motion/.test(s) ? mm(/:\s*reduce/.test(s) ? 'not all' : 'all') : mm(s); };
+  var fix = function(){
+    [].forEach.call(document.styleSheets, function(sh){ var r; try { r = sh.cssRules; } catch (e) { return; }
+      (function walk(rs){ [].forEach.call(rs, function(x){
+        if (x.media && /prefers-reduced-motion/.test(x.media.mediaText)) x.media.mediaText = /:\s*reduce/.test(x.media.mediaText) ? 'not all' : 'all';
+        else if (x.cssRules) walk(x.cssRules);
+      }); })(r);
+    });
+  };
+  document.addEventListener('DOMContentLoaded', fix); window.addEventListener('load', fix);
+  new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeName === 'STYLE' || n.nodeName === 'LINK'; }); })) setTimeout(fix, 50); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>R.F.S.</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
