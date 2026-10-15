@@ -1171,7 +1171,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero .pg-title.fx-line::before{content:'';position:absolute;left:50%;bottom:-5px;width:11px;height:11px;margin-left:-5.5px;background:#FFF3DA;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 7px rgba(255,236,200,.95))}
 @media (prefers-reduced-motion:no-preference){
   .pg-hero-in .pg-title.fx{animation:none}
-  .pg-title.fx .tl{animation:tlIn 1s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.12s + var(--i) * min(.055s, .8s / var(--n)))}
+  .pg-title.fx .tl{animation:tlIn .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.1s + var(--i) * min(.045s, .55s / var(--n)))}
   .pg-title.fx-line::after{animation:tlLine 1.1s cubic-bezier(.2,.7,.2,1) .75s both}
   .pg-title.fx-line::before{animation:tlStar 1.1s ease .7s both}
 }
@@ -4745,7 +4745,7 @@ class Component extends DCLogic {
           window.scrollTo({ top: target(), behavior: 'instant' });
           setTimeout(() => main.classList.remove('hi-in'), 900);
         }, 900);
-      }, 3000);
+      }, 2100);
     });
   }
 
