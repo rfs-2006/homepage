@@ -1168,19 +1168,11 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
 /* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
-   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 주고, 제목은 글자씩 떠오른다 */
+   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 준다 */
 .pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
   background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
 .pg-hero.pg-full.hero-out::after{opacity:0}
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
-.pg-hero .pg-title.fx{position:relative}
-.pg-title .tw{display:inline-block;white-space:nowrap}
-.pg-title .tl{display:inline-block}
-@media (prefers-reduced-motion:no-preference){
-  .pg-hero-in .pg-title.fx{animation:none}
-  .pg-title.fx .tl{animation:tlIn .8s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.1s + var(--i) * min(.045s, .55s / var(--n)))}
-}
-@keyframes tlIn{from{opacity:0;filter:blur(14px);transform:translateY(.18em)}}
 main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -1600,7 +1592,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
+        <h1 class="pg-title">Research</h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1679,7 +1671,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
+        <h1 class="pg-title">Research</h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1861,7 +1853,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span> <span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
+        <h1 class="pg-title">About R.F.S.</h1>
       </div>
     </section>
     <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
@@ -2203,7 +2195,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:30% 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span><br><span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
+        <h1 class="pg-title">About<br>R.F.S.</h1>
       </div>
     </section>
     <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
@@ -2353,7 +2345,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:9" aria-label="Our People"><span class="tw"><span class="tl" style="--i:0">O</span><span class="tl" style="--i:1">u</span><span class="tl" style="--i:2">r</span></span> <span class="tw"><span class="tl" style="--i:3">P</span><span class="tl" style="--i:4">e</span><span class="tl" style="--i:5">o</span><span class="tl" style="--i:6">p</span><span class="tl" style="--i:7">l</span><span class="tl" style="--i:8">e</span></span></h1>
+        <h1 class="pg-title">Our People</h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2450,7 +2442,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg" style="overflow:hidden"><image-slot id="m-people-hero" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%;transform:scale(1.45);transform-origin:50% 92%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:9" aria-label="Our People"><span class="tw"><span class="tl" style="--i:0">O</span><span class="tl" style="--i:1">u</span><span class="tl" style="--i:2">r</span></span><br><span class="tw"><span class="tl" style="--i:3">P</span><span class="tl" style="--i:4">e</span><span class="tl" style="--i:5">o</span><span class="tl" style="--i:6">p</span><span class="tl" style="--i:7">l</span><span class="tl" style="--i:8">e</span></span></h1>
+        <h1 class="pg-title">Our<br>People</h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2542,7 +2534,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
-        <h1 class="pg-title fx" style="--n:10" aria-label="Recruiting"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">c</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">i</span><span class="tl" style="--i:6">t</span><span class="tl" style="--i:7">i</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">g</span></span></h1>
+        <h1 class="pg-title">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p style="margin:18px 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
         </sc-if>
@@ -2759,11 +2751,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title fx" style="--n:7" aria-label="AMT Fund"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">M</span><span class="tl" style="--i:2">T</span></span> <span class="tw"><span class="tl" style="--i:3">F</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">n</span><span class="tl" style="--i:6">d</span></span></h1>
+          <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <h1 class="pg-title fx" style="--n:7" aria-label="AMT Fund"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">M</span><span class="tl" style="--i:2">T</span></span> <span class="tw"><span class="tl" style="--i:3">F</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">n</span><span class="tl" style="--i:6">d</span></span></h1>
+          <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
     </section>
@@ -2891,7 +2883,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="assets/hero/nyse.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:NY_stock_exchange_traders_floor_LC-U9-10548-6.jpg" style="--slot-position:center 30%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:17" aria-label="Road to Fund Manager"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">o</span><span class="tl" style="--i:2">a</span><span class="tl" style="--i:3">d</span></span> <span class="tw"><span class="tl" style="--i:4">t</span><span class="tl" style="--i:5">o</span></span> <span class="tw"><span class="tl" style="--i:6">F</span><span class="tl" style="--i:7">u</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">d</span></span> <span class="tw"><span class="tl" style="--i:10">M</span><span class="tl" style="--i:11">a</span><span class="tl" style="--i:12">n</span><span class="tl" style="--i:13">a</span><span class="tl" style="--i:14">g</span><span class="tl" style="--i:15">e</span><span class="tl" style="--i:16">r</span></span></h1>
+        <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
@@ -3000,7 +2992,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="agora-intro" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
       <div class="scrim" style="opacity:0.5"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title fx" style="--n:5" aria-label="Agora"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">g</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">a</span></span></h1>
+        <h1 class="pg-title">Agora</h1>
       </div>
     </section>
     <section class="ag-hero on-photo" data-nav="dark">
