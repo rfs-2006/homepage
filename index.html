@@ -1594,8 +1594,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isResearch }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
@@ -1673,8 +1673,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
@@ -4562,7 +4562,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research-m.webp' : 'assets/hero/research.webp'],
+        research: [m ? 'assets/hero/research-m.webp?v=1017' : 'assets/hero/research.webp?v=1017'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -4712,7 +4712,7 @@ class Component extends DCLogic {
 
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
-    if (!['about', 'fund', 'rfm', 'people', 'intranet'].includes(page)) return;
+    if (!['about', 'research', 'fund', 'rfm', 'people', 'intranet'].includes(page)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     requestAnimationFrame(() => {
       const hero = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
