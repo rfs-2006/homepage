@@ -4733,7 +4733,8 @@ class Component extends DCLogic {
         hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
       };
       const cancel = () => { clearTimeout(this._hiT); off(); };
-      const evs = ['wheel', 'touchstart', 'keydown', 'pointerdown'];
+      // 화면을 톡 건드리기만 한 건 멈추지 않는다 (폰에서 첫 화면이 계속 남던 원인). 실제로 내렸으면 넘길 때 scrollY로 거른다
+      const evs = ['wheel', 'keydown'];
       const off = () => evs.forEach((t) => window.removeEventListener(t, cancel, true));
       window.addEventListener('scroll', onScroll, { passive: true });
       this._hiStop = () => { off(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
@@ -4759,7 +4760,7 @@ class Component extends DCLogic {
           hero.classList.remove('hero-out');
           main.classList.remove('hi-in');
         }, 950);
-      }, 2100);
+      }, window.innerWidth <= 1024 ? 1600 : 2100);   // 폰은 전환 효과 없이 바로 떠서 PC와 체감이 같게 조금 짧게
     });
   }
 
