@@ -547,10 +547,24 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-li:last-child{border-bottom:0}a.ag-li:hover{color:#C9D8F5}
 .ag-li .m{font-size:12px;color:rgba(247,246,243,.45);white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#8FAADC;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#C9D8F5;margin-right:8px}
 .ag-empty{font-size:13px;color:rgba(247,246,243,.5)}
+.ag-two.one{grid-template-columns:1fr}
+/* 알럼나이 디렉토리: 기수별 명부 */
+.ag-dir{display:flex;flex-direction:column;gap:10px}
+.ag-dg{border:1px solid rgba(247,246,243,.1);background:rgba(21,35,59,.6)}
+.ag-dgh{display:flex;align-items:baseline;gap:12px;padding:14px 18px;color:#F7F6F3}
+.ag-dgh b{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700}.ag-dgh span{font-size:12px;color:rgba(247,246,243,.5)}
+.ag-dgh i{margin-left:auto;font-style:normal;font-size:18px;color:#8FAADC}.ag-dgh:hover{background:rgba(32,56,100,.35)}
+.ag-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;padding:0 18px 8px;border-top:1px solid rgba(247,246,243,.08)}
+.ag-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,.06);font-size:14px;color:rgba(247,246,243,.9)}
+.ag-row b{font-weight:700;color:#F7F6F3}.ag-row .c{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-row .i{font-size:11px;letter-spacing:.04em;color:#8FAADC;white-space:nowrap}
+.ag-row .cf{font-size:11px;color:rgba(247,246,243,.55);border:1px solid rgba(247,246,243,.2);padding:3px 8px;white-space:nowrap}.ag-row .cf:hover{color:#0F1B2E;background:#8FAADC;border-color:#8FAADC}
 @media (max-width:860px){
   .ag-hero{padding-top:104px}.ag-stats{gap:26px}.ag-search{padding:16px 16px 18px;margin-top:26px}.ag-search input{font-size:16px}
   .ag-tiles{display:flex;overflow-x:auto;scrollbar-width:none}.ag-tiles a{flex:0 0 96px}
-  .ag-user{width:100%;justify-content:flex-end}
+  .ag-user{order:-1;width:100%;justify-content:flex-start;gap:12px;font-size:12px}.ag-user .btn{padding:6px 10px !important;font-size:10px !important}
+  .ag-stats{flex-wrap:wrap;row-gap:14px}
+  .ag-rows{grid-template-columns:1fr;padding:0 14px 6px}.ag-row{grid-template-columns:56px minmax(0,1fr) auto;font-size:13px}.ag-row .i{display:none}
   .ag-cards,.ag-two{grid-template-columns:1fr}.ag-tabs{top:56px}
 }
 </style>
@@ -2927,6 +2941,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ intraOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="아고라" data-nav="dark" class="agora {{ agoraCls }}" style="position:relative;min-height:100vh">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="agora-intro" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
+      <div class="scrim" style="opacity:0.5"></div>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Agora</h1>
+      </div>
+    </section>
     <section class="ag-hero on-photo" data-nav="dark">
       <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
       <div class="ag-shade"></div>
@@ -2942,7 +2963,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
           </div>
         </div>
-        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>43</b><span>Cohorts</span></div><div><b>68%</b><span>In finance</span></div></div>
+        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>{{ agDirN }}</b><span>In directory</span></div><div><b>43</b><span>Cohorts</span></div><div><b>{{ agFinPct }}</b><span>In finance</span></div></div>
         <div class="ag-search">
           <input type="search" placeholder="이름, 회사, 직무로 알럼나이 찾기" value="{{ dirQ }}" onChange="{{ onDirQGo }}">
           <div class="ag-tiles"><sc-for list="{{ agTiles }}" as="t" hint-placeholder-count="7"><a href="#intranet/directory" onClick="{{ t.on }}" class="{{ t.cls }}"><b>{{ t.count }}</b><span>{{ t.label }}</span></a></sc-for></div>
@@ -2968,7 +2989,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 </div>
               </sc-for>
             </div>
-            <div class="ag-two">
+            <div class="{{ agTwoCls }}">
               <div class="ag-box">
                 <div class="ag-h"><h2>게시판</h2><a href="#intranet/board" onClick="{{ goBoard }}">전체 →</a></div>
                 <sc-if value="{{ hasDashPosts }}" hint-placeholder-val="{{ true }}">
@@ -2978,12 +2999,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 </sc-if>
                 <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><p class="ag-empty">첫 글을 남겨보세요.</p></sc-if>
               </div>
+              <sc-if value="{{ hasSchedule }}" hint-placeholder-val="{{ true }}">
               <div class="ag-box">
                 <div class="ag-h"><h2>이번 학기 일정</h2></div>
                 <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="6">
                   <div class="ag-li"><span><b class="dt">{{ d.date }}</b> {{ d.title }}</span><span class="m">{{ d.meta }}</span></div>
                 </sc-for>
               </div>
+              </sc-if>
             </div>
           </sc-if>
 
@@ -2995,20 +3018,20 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <span style="font-size:13px;color:rgba(247,246,243,0.6)">{{ dirHitCount }}</span>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">기수순</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.45)"><a href="#" onClick="{{ dirAllOpen }}" style="color:inherit">모두 펼치기</a> · <a href="#" onClick="{{ dirAllClose }}" style="color:inherit">모두 접기</a></span>
             </div>
             <sc-if value="{{ hasDirHits }}" hint-placeholder-val="{{ true }}">
-              <div class="intra-cards" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                <sc-for list="{{ dirHits }}" as="a" hint-placeholder-count="6">
-                  <div style="background:rgba(247,246,243,0.05);border:1px solid rgba(247,246,243,0.18);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-                      <div style="font-size:17px;font-weight:700;color:#F7F6F3">{{ a.name }} <sc-if value="{{ a.hasCohort }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-weight:500;color:rgba(247,246,243,0.5);margin-left:4px">{{ a.cohortLabel }}</span></sc-if></div>
-                      <sc-if value="{{ a.hasInd }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;letter-spacing:0.08em;color:#8FAADC;white-space:nowrap">{{ a.industry }}</span></sc-if>
-                    </div>
-                    <sc-if value="{{ a.hasCompany }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:rgba(247,246,243,0.9)">{{ a.companyLine }}</div></sc-if>
-                    <sc-if value="{{ a.hasCompany }}" hint-placeholder-val="{{ true }}"></sc-if>
-                    <sc-if value="{{ a.hasNote }}" hint-placeholder-val="{{ false }}"><p style="margin:6px 0 0;font-size:13px;line-height:1.6;color:rgba(247,246,243,0.72)">{{ a.note }}</p></sc-if>
-                    <a href="#" onClick="{{ a.on }}" class="btn btn-photo" style="align-self:flex-start;margin-top:10px;padding:8px 14px;font-size:11px">커피챗 신청</a>
+              <div class="ag-dir">
+                <sc-for list="{{ dirGroups }}" as="g" hint-placeholder-count="3">
+                  <div class="ag-dg">
+                    <a href="#" class="ag-dgh" onClick="{{ g.toggle }}"><b>{{ g.label }}</b><span>{{ g.count }}</span><i>{{ g.mark }}</i></a>
+                    <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
+                      <div class="ag-rows">
+                        <sc-for list="{{ g.rows }}" as="a" hint-placeholder-count="4">
+                          <div class="ag-row"><b>{{ a.name }}</b><span class="c">{{ a.line }}</span><span class="i">{{ a.industry }}</span><a href="#" onClick="{{ a.on }}" class="cf">커피챗</a></div>
+                        </sc-for>
+                      </div>
+                    </sc-if>
                   </div>
                 </sc-for>
               </div>
@@ -4620,11 +4643,17 @@ class Component extends DCLogic {
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
   }
 
-  // ABOUT·FUND·RFM·PEOPLE 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
+  // 첫 화면(pg-full)이 있는 페이지 안에서 탭을 바꿀 때: 맨 위(첫 화면 사진)가 아니라 내용 첫 줄로
+  toContent() {
+    const h = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
+    window.scrollTo({ top: h ? h.getBoundingClientRect().bottom + window.scrollY : 0, behavior: 'instant' });
+  }
+
+  // ABOUT·FUND·RFM·PEOPLE·AGORA 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
-    if (!['about', 'fund', 'rfm', 'people'].includes(page)) return;
+    if (!['about', 'fund', 'rfm', 'people', 'intranet'].includes(page)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     requestAnimationFrame(() => {
       const hero = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
@@ -5580,7 +5609,8 @@ class Component extends DCLogic {
     const ID = s.intraData || { NOTICES: [], SCHEDULE: [], BOARDS: [], TEAM_BOARDS: [], OFFICERS: [], ALUMNI: [], INDUSTRIES: [], QNA: [], FUND: null };
     const FD = ID.FUND || { asOf:'', nav:0, since:'', ytd:'', bench:'', aum:'', positions:[], notes:[] };
     const dq = (s.dirQ || '').trim().toLowerCase();
-    const dirAll = (ID.ALUMNI || []).slice().sort((a, b) => (a.cohort || 999) - (b.cohort || 999) || a.name.localeCompare(b.name, 'ko'));
+    const coh = (a) => (a.cohort === 0 || a.cohort) ? a.cohort : 999;   // 0기도 있다 (기수 없음만 맨 뒤로)
+    const dirAll = (ID.ALUMNI || []).slice().sort((a, b) => coh(a) - coh(b) || a.name.localeCompare(b.name, 'ko'));
     const dirHits = dirAll.filter((a) => (s.dirInd === '전체' || (s.dirInd === '미기재' ? !a.industry : a.industry === s.dirInd)) &&(!dq || (a.name + ' ' + a.company + ' ' + a.role).toLowerCase().indexOf(dq) >= 0));
     const indCounts = {}; dirAll.forEach((a) => { indCounts[a.industry] = (indCounts[a.industry] || 0) + 1; });
     const coffeeTarget = s.coffeeFor ? dirAll.find((a) => a.name + a.cohort === s.coffeeFor) : null;
@@ -5590,7 +5620,7 @@ class Component extends DCLogic {
     const pCat = s.pCat || '자유', bCat = s.bCat || '전체';
     const dateOf = (t) => new Date(t).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
     const shown = s.posts.filter((p) => bCat === '전체' || (p.category || '자유') === bCat);
-    const setTab = (t) => (e) => { if (e) e.preventDefault(); this.setState({ intraTab: t, intraQ: '' }, () => { location.hash = 'intranet/' + t; window.scrollTo(0, 0); }); };
+    const setTab = (t) => (e) => { if (e) e.preventDefault(); this.setState({ intraTab: t, intraQ: '' }, () => { location.hash = 'intranet/' + t; this.toContent(); }); };
     const railItem = (key, label) => ({ key, label, href: '#intranet/' + key, on: setTab(key), cls: tab === key ? 'on' : '' });
 
     const iq = (s.intraQ || '').trim();
@@ -5705,11 +5735,24 @@ class Component extends DCLogic {
       agoraCls: tab === 'dashboard' ? 'ag-dash' : 'ag-sub',
       agoraBg: s.isMobile ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp', agoraBgCredit: '', agoraBgHref: '',
       agAlumniN: String(allNames.length || dirAll.length),
+      agDirN: String(dirAll.length),
+      // 금융권 비율: 회사가 적힌 알럼나이(현 임원진 제외) 중 대기업·기타가 아닌 업종
+      agFinPct: (() => { const w = dirAll.filter((a) => a.company && a.company !== 'R.F.S.' && a.industry); const f = w.filter((a) => a.industry !== '대기업' && a.industry !== '기타'); return w.length ? Math.round(100 * f.length / w.length) + '%' : '–'; })(),
+      // 디렉토리: 기수별로 묶은 명부 (기수 제목을 누르면 접고 펼침. 검색·업종 필터 중에는 모두 펼침)
+      dirGroups: (() => { const g = []; dirHits.forEach((a) => { const k = coh(a); let x = g[g.length - 1]; if (!x || x.k !== k) { x = { k, rows: [] }; g.push(x); } x.rows.push(a); });
+        const closed = s.dirClosed || {}, filtering = !!dq || s.dirInd !== '전체';
+        return g.map((x) => { const open = filtering || !closed[x.k]; return { label: x.k < 999 ? x.k + '기' : '기수 미상', count: x.rows.length + '명', open, mark: open ? '−' : '+',
+          toggle: (e) => { e.preventDefault(); this.setState({ dirClosed: { ...(this.state.dirClosed || {}), [x.k]: open } }); },
+          rows: x.rows.map((a) => ({ name: a.name, line: a.company ? a.company + (a.role ? ' · ' + a.role : '') : '—', industry: a.industry || '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })) }; }); })(),
+      dirAllOpen: (e) => { e.preventDefault(); this.setState({ dirClosed: {} }); },
+      dirAllClose: (e) => { e.preventDefault(); const c = {}; dirHits.forEach((a) => { c[coh(a)] = true; }); this.setState({ dirClosed: c }); },
+      agTwoCls: (ID.SCHEDULE || []).length ? 'ag-two' : 'ag-two one',
+      hasSchedule: (ID.SCHEDULE || []).length > 0,
       onDirQGo: (e) => { const v = e.target.value; this.setState({ dirQ: v }); if (tab !== 'directory') this.setState({ intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); },
       agTiles: [['전체', dirAll.length]].concat(Object.keys(indCounts).filter((k) => k && k !== 'undefined').map((k) => [k, indCounts[k]]).sort((x, y) => y[1] - x[1]).slice(0, 6)).map(([label, count]) => ({ label, count, cls: (label === '전체' ? (tab !== 'directory' || !s.dirInd || s.dirInd === '전체') : (tab === 'directory' && s.dirInd === label)) ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ dirInd: label, intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); } })),
-      agAlumni: (() => { const pool = dirAll.filter((a) => a.company); if (!pool.length) return []; const k = Math.floor(Date.now() / 864e5) % pool.length; return pool.slice(k).concat(pool.slice(0, k)).slice(0, 6).map((a) => ({ ...a, ini: (a.name || '?')[0], cohortLabel: a.cohort ? a.cohort + '기' : '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ intraTab: 'directory', coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })); })(),
+      agAlumni: (() => { const pool = dirAll.filter((a) => a.company); if (!pool.length) return []; const k = Math.floor(Date.now() / 864e5) % pool.length; return pool.slice(k).concat(pool.slice(0, k)).slice(0, 6).map((a) => ({ ...a, ini: (a.name || '?')[0], cohortLabel: coh(a) < 999 ? a.cohort + '기' : '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ intraTab: 'directory', coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })); })(),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
-      dirHits: dirHits.map((a) => ({ ...a, cohortLabel: a.cohort ? a.cohort + '기' : '', hasCohort: !!a.cohort, hasNote: !!a.note, hasInd: !!a.industry, hasCompany: !!a.company, companyLine: a.company + (a.role ? ' · ' + a.role : ''), on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })),
+      dirHits: dirHits.map((a) => ({ ...a, cohortLabel: coh(a) < 999 ? a.cohort + '기' : '', hasCohort: coh(a) < 999, hasNote: !!a.note, hasInd: !!a.industry, hasCompany: !!a.company, companyLine: a.company + (a.role ? ' · ' + a.role : ''), on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })),
       hasDirHits: dirHits.length > 0, noDirHits: dirHits.length === 0,
       coffeeOpen: !!coffeeTarget && !s.coffeeSent, coffeeDone: !!coffeeTarget && s.coffeeSent,
       coffeeName: coffeeTarget ? coffeeTarget.name + ' (' + coffeeTarget.cohort + '기)' : '', coffeeMeta: coffeeTarget ? [coffeeTarget.company, coffeeTarget.role].filter(Boolean).join(' · ') : '',
