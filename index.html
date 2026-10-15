@@ -1167,6 +1167,11 @@ main.pgx .pres .pres-in{padding:64px 56px}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
+.hero-cue{position:absolute;left:50%;bottom:34px;z-index:3;width:44px;height:44px;margin-left:-22px;border:0;background:none;cursor:pointer;padding:0;transition:opacity .4s ease}
+.hero-cue::before{content:'';position:absolute;left:50%;top:12px;width:13px;height:13px;margin-left:-7px;border-right:1.5px solid rgba(247,246,243,.85);border-bottom:1.5px solid rgba(247,246,243,.85);transform:rotate(45deg)}
+.pg-hero.hero-out .hero-cue{opacity:0}
+@media (prefers-reduced-motion:no-preference){.hero-cue::before{animation:cueBob 1.8s ease-in-out infinite}}
+@keyframes cueBob{0%,100%{transform:translateY(0) rotate(45deg);opacity:.9}50%{transform:translateY(7px) rotate(45deg);opacity:.45}}
 .pg-hero.pg-full .scrim{transition:opacity .9s ease}.pg-hero.pg-full.hero-out .scrim{opacity:0 !important}   /* 사진 위 남색 막도 같이 흐려져야 파란 화면이 남았다 뚝 사라지지 않는다 */
 /* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
    가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 준다 */
@@ -4727,25 +4732,18 @@ class Component extends DCLogic {
         hero.classList.add('hero-short');
         if (y0 > 0) window.scrollTo({ top: Math.max(0, y0 - (h0 - hero.offsetHeight)), behavior: 'instant' });
         hero.classList.remove('hero-out');
+        off();
       };
       const onScroll = () => {
         if (hero.classList.contains('hero-short') || hero.classList.contains('hero-lift')) return;
         if (window.scrollY >= target()) return shrink();
         hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
       };
-      const cancel = () => { clearTimeout(this._hiT); off(); };
-      // 화면을 톡 건드리기만 한 건 멈추지 않는다 (폰에서 첫 화면이 계속 남던 원인). 실제로 내렸으면 넘길 때 scrollY로 거른다
-      const evs = ['wheel', 'keydown'];
-      const off = () => evs.forEach((t) => window.removeEventListener(t, cancel, true));
-      window.addEventListener('scroll', onScroll, { passive: true });
-      this._hiStop = () => { off(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
-      let seen = false;
-      try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
-      if (seen) { shrink(); return; }
-      evs.forEach((t) => window.addEventListener(t, cancel, { capture: true, passive: true }));
-      this._hiT = setTimeout(() => {
-        off();
-        if (this.state.page !== page || window.scrollY > 10) return;
+      // 첫 화면은 그대로 두고, 접속자가 조금만 내리면(휠 한 칸·살짝 스와이프·↓키) 첫 화면이 흐려지며 내용이 겹쳐 떠오른다
+      let busy = false, ty = null, cue = null;
+      const advance = () => {
+        if (busy || hero.classList.contains('hero-short') || this.state.page !== page) return;
+        busy = true; cue && cue.remove();
         // 첫 화면을 화면에 고정해 둔 채 그 뒤로 내용 위치로 옮기고, 첫 화면이 흐려지는 동시에 내용이 떠오른다 (겹쳐 바뀜)
         const main = hero.closest('main'), ph = document.createElement('div');
         ph.className = 'pg-hero-ph';
@@ -4760,10 +4758,34 @@ class Component extends DCLogic {
           window.scrollTo({ top: y, behavior: 'instant' });
           hero.classList.remove('hero-out');
           main.classList.remove('hi-in');
+          busy = false; off();
         }, 950);
-      }, 1300);
+      };
+      const atTop = () => window.scrollY < 10 && !hero.classList.contains('hero-short');
+      const onWheel = (e) => { if (busy) { e.preventDefault(); return; } if (atTop() && e.deltaY > 0) { e.preventDefault(); advance(); } };
+      const onTs = (e) => { ty = e.touches[0].clientY; };
+      const onTm = (e) => { if (busy) { e.preventDefault(); return; } if (ty != null && atTop() && ty - e.touches[0].clientY > 12) { e.preventDefault(); ty = null; advance(); } };
+      const onKey = (e) => { if (atTop() && ['ArrowDown', 'PageDown', ' ', 'Spacebar'].includes(e.key) && !/INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || '')) { e.preventDefault(); advance(); } };
+      const off = () => {
+        window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs); window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      this._hiStop = () => { off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
+      let seen = false;
+      try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
+      if (seen || window.scrollY > 10) { shrink(); return; }
+      window.addEventListener('wheel', onWheel, { passive: false });
+      window.addEventListener('touchstart', onTs, { passive: true });
+      window.addEventListener('touchmove', onTm, { passive: false });
+      window.addEventListener('keydown', onKey);
+      // 아래로 내리라는 표시 (누르면 바로 넘어감)
+      cue = document.createElement('button');
+      cue.type = 'button'; cue.className = 'hero-cue'; cue.setAttribute('aria-label', '아래로');
+      cue.addEventListener('click', advance);
+      hero.appendChild(cue);
     });
   }
+
 
 
   componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('popstate', this._onPop); this._navIo && this._navIo.disconnect(); this._onResize && window.removeEventListener('resize', this._onResize); this._secIo && this._secIo.disconnect(); this._rvIo && this._rvIo.disconnect(); this._onScroll && window.removeEventListener('scroll', this._onScroll); this._cntIo && this._cntIo.disconnect(); this._mch && this.sb && this.sb.removeChannel(this._mch); this._onWheel && window.removeEventListener('wheel', this._onWheel); this._onResize && window.removeEventListener('resize', this._onResize); this._glideRaf && cancelAnimationFrame(this._glideRaf); this._settle && clearTimeout(this._settle); }
