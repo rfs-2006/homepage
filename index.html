@@ -472,6 +472,8 @@ html.warp-nav::view-transition-old(root){animation:rfs-warp-out .75s cubic-bezie
 html.warp-nav::view-transition-new(root){animation:rfs-warp-in .7s cubic-bezier(.35,0,.65,1) .08s both}
 @keyframes rfs-warp-out{to{opacity:0;transform:scale(1.45)}}
 @keyframes rfs-warp-in{from{opacity:0;transform:scale(1.03)}}
+html.warp-in main{animation:rfs-warp-fade .6s ease .05s both}   /* 폰(페이지 전환 효과 없음): 별을 눌러 넘어온 새 페이지가 서서히 */
+@keyframes rfs-warp-fade{from{opacity:0}}
 @keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
 /* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
 @keyframes rfs-vt-fade{from{opacity:0}}
