@@ -2696,9 +2696,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
+      <div class="scrim" style="opacity:0.78"></div>
+      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center;background:rgba(11,21,36,0.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)">
         <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:64px;height:auto;display:block;margin:0 auto">
         <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">{{ loginLabel }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">학회원 로그인</h1>
@@ -4586,7 +4586,10 @@ class Component extends DCLogic {
     const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
-      this.sb = window.supabase.createClient(SB_URL, SB_KEY);
+      // 로그인은 이 탭에서만 유지한다 (새로고침은 괜찮고, 탭·브라우저를 닫았다 다시 오면 다시 로그인). 예전처럼 브라우저에 남아 있던 로그인은 지운다
+      try { Object.keys(localStorage).forEach((k) => { if (/^sb-.*-auth-token/.test(k)) localStorage.removeItem(k); }); } catch (e) {}
+      let store; try { store = window.sessionStorage; } catch (e) {}
+      this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
       const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
