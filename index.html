@@ -1114,6 +1114,8 @@ main.pgx .pres .pres-in{padding:64px 56px}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
+main.hi-in>:not(.pg-hero){animation:hiIn .8s ease both}
+@keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
 .pg-eyebrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
 .pg-eyebrow span{text-transform:none;letter-spacing:0.06em}
@@ -2466,9 +2468,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isRecruit }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리크루팅" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="assets/hero/recruit.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:50% 45%"></image-slot></div>
+      <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
         <h1 class="pg-title">Recruiting</h1>
@@ -2553,9 +2555,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리크루팅 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
-      <div class="scrim" style="opacity:0.82"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="assets/hero/recruit-m.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:55% 50%"></image-slot></div>
+      <div class="scrim" style="opacity:0.62"></div>
       <div class="pg-hero-in">
         <p class="sec-label">{{ recruitEyebrow }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Recruiting</h1>
@@ -4488,7 +4490,7 @@ class Component extends DCLogic {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
         research: [m ? 'assets/hero/research-m.webp' : 'assets/hero/research.webp'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
-        recruit: [u + '1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=72'],
+        recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
       };
     };
@@ -4618,7 +4620,7 @@ class Component extends DCLogic {
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
   }
 
-  // ABOUT·FUND·RFM·PEOPLE 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 흐려지며 다음 내용으로 내려간다.
+  // ABOUT·FUND·RFM·PEOPLE 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
@@ -4644,7 +4646,14 @@ class Component extends DCLogic {
         off();
         if (this.state.page !== page || window.scrollY > 10) return;
         hero.classList.add('hero-out');
-        this.glideTo(target(), 1100);
+        // 다 흐려진 뒤 안 보이는 사이에 내용 위치로 옮기고, 내용을 서서히 띄운다
+        this._hiT = setTimeout(() => {
+          if (this.state.page !== page || window.scrollY > 10) return;
+          const main = hero.closest('main');
+          main.classList.add('hi-in');
+          window.scrollTo({ top: target(), behavior: 'instant' });
+          setTimeout(() => main.classList.remove('hi-in'), 900);
+        }, 900);
       }, 2600);
     });
   }
