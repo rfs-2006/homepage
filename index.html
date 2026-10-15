@@ -1159,26 +1159,26 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
 /* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
-   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 주고, 제목은 글자씩 떠오른 뒤 가운데 별에서 가는 선이 그어진다 */
+   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 주고, 제목은 글자씩 떠오른다 (Recruiting만 가운데 별에서 가는 선이 그어진다) */
 .pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
   background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
 .pg-hero.pg-full.hero-out::after{opacity:0}
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
-.pg-hero .pg-title.fx{position:relative;padding-bottom:34px}
+.pg-hero .pg-title.fx{position:relative}.pg-hero .pg-title.fx-line{padding-bottom:34px}
 .pg-title .tw{display:inline-block;white-space:nowrap}
 .pg-title .tl{display:inline-block}
-.pg-hero .pg-title.fx::after{content:'';position:absolute;left:50%;bottom:0;width:220px;height:1px;margin-left:-110px;background:linear-gradient(90deg,rgba(247,246,243,0),rgba(247,246,243,.85),rgba(247,246,243,0))}
-.pg-hero .pg-title.fx::before{content:'';position:absolute;left:50%;bottom:-5px;width:11px;height:11px;margin-left:-5.5px;background:#FFF3DA;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 7px rgba(255,236,200,.95))}
+.pg-hero .pg-title.fx-line::after{content:'';position:absolute;left:50%;bottom:0;width:220px;height:1px;margin-left:-110px;background:linear-gradient(90deg,rgba(247,246,243,0),rgba(247,246,243,.85),rgba(247,246,243,0))}
+.pg-hero .pg-title.fx-line::before{content:'';position:absolute;left:50%;bottom:-5px;width:11px;height:11px;margin-left:-5.5px;background:#FFF3DA;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 7px rgba(255,236,200,.95))}
 @media (prefers-reduced-motion:no-preference){
   .pg-hero-in .pg-title.fx{animation:none}
   .pg-title.fx .tl{animation:tlIn 1s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.12s + var(--i) * min(.055s, .8s / var(--n)))}
-  .pg-title.fx::after{animation:tlLine 1.1s cubic-bezier(.2,.7,.2,1) .75s both}
-  .pg-title.fx::before{animation:tlStar 1.1s ease .7s both}
+  .pg-title.fx-line::after{animation:tlLine 1.1s cubic-bezier(.2,.7,.2,1) .75s both}
+  .pg-title.fx-line::before{animation:tlStar 1.1s ease .7s both}
 }
 @keyframes tlIn{from{opacity:0;filter:blur(14px);transform:translateY(.18em)}}
 @keyframes tlLine{from{transform:scaleX(0);opacity:0}}
 @keyframes tlStar{from{transform:scale(0) rotate(-90deg);opacity:0}50%{transform:scale(1.6) rotate(0);opacity:1}}
-@media (max-width:760px){.pg-hero .pg-title.fx{padding-bottom:26px}.pg-hero .pg-title.fx::after{width:150px;margin-left:-75px}}
+@media (max-width:760px){.pg-hero .pg-title.fx-line{padding-bottom:26px}.pg-hero .pg-title.fx-line::after{width:150px;margin-left:-75px}}
 main.hi-in>:not(.pg-hero){animation:hiIn .8s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -2538,7 +2538,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
-        <h1 class="pg-title fx" style="--n:10" aria-label="Recruiting"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">c</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">i</span><span class="tl" style="--i:6">t</span><span class="tl" style="--i:7">i</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">g</span></span></h1>
+        <h1 class="pg-title fx fx-line" style="--n:10" aria-label="Recruiting"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">c</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">i</span><span class="tl" style="--i:6">t</span><span class="tl" style="--i:7">i</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">g</span></span></h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p style="margin:18px 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
         </sc-if>
