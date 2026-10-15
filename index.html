@@ -5927,9 +5927,9 @@ class Component extends DCLogic {
         { label:'소개', href:'#home-intro', id:'home-intro' },
         { label:'연혁', href:'#about-history', id:'about-history' },
         { label:'네트워크', href:'#home-network', id:'home-network' },
-        { label:'알럼나이', href:'#home-alumni', id:'home-alumni' },
-        { label:'프로세스', href:'#home-process', id:'home-process' },
-        { label:'리서치 일정', href:'#about-calendar', id:'about-calendar' }
+        { label:'동문', href:'#home-alumni', id:'home-alumni' },
+        { label:'활동', href:'#home-process', id:'home-process' },
+        { label:'커리큘럼', href:'#about-calendar', id:'about-calendar' }
       ].map((a) => ({ ...a, cls: s.activeSec === a.id ? 'active' : '', go: (e) => { e.preventDefault(); const el = document.getElementById(a.id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); } })),
       toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
       goHome: (e) => { e.preventDefault(); this.go('home'); },
