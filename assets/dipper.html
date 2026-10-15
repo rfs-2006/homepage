@@ -2,6 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>
+// 미리보기 주소(deploy-preview-…)나 주소 끝 ?motion=1 이면, 컴퓨터에서 애니메이션을 꺼 두었어도(동작 줄이기) 효과를 그대로 보여 준다. ?motion=0 으로 끈다. 실제 사이트에는 영향 없음
+(function(){
+  try {
+    var q = /[?&]motion=(1|0)\b/.exec(location.search), ls = window.localStorage;
+    if (q) q[1] === '1' ? ls.setItem('rfs-motion', '1') : ls.removeItem('rfs-motion');
+    if (!(/^deploy-preview-/.test(location.hostname) || ls.getItem('rfs-motion') === '1')) return;
+  } catch (e) { return; }
+  var mm = window.matchMedia.bind(window);
+  window.matchMedia = function(s){ return /prefers-reduced-motion/.test(s) ? mm(/:\s*reduce/.test(s) ? 'not all' : 'all') : mm(s); };
+  var fix = function(){
+    [].forEach.call(document.styleSheets, function(sh){ var r; try { r = sh.cssRules; } catch (e) { return; }
+      (function walk(rs){ [].forEach.call(rs, function(x){
+        if (x.media && /prefers-reduced-motion/.test(x.media.mediaText)) x.media.mediaText = /:\s*reduce/.test(x.media.mediaText) ? 'not all' : 'all';
+        else if (x.cssRules) walk(x.cssRules);
+      }); })(r);
+    });
+  };
+  document.addEventListener('DOMContentLoaded', fix); window.addEventListener('load', fix);
+  new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeName === 'STYLE' || n.nodeName === 'LINK'; }); })) setTimeout(fix, 50); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>R.F.S.</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
@@ -219,7 +241,15 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .photo.p3d #gl3d{display:block}
 .ready .photo.p3d #gl3d{opacity:1}
 .photo.p3d img{visibility:hidden}
-.p3dm .wash,.p3dm .wash2{display:none}   /* WebGL이 사진 보정·덧칠까지 직접 그린다 (아래 셰이더). 혼합 모드 층을 매 프레임 다시 합성하지 않게 */
+.p3dm .wash,.p3dm .wash2{display:none}
+/* 별을 누르면: 그 별 쪽으로 살짝 줌인하면서 다음 페이지로 크로스페이드.
+   PC는 페이지가 바뀌는 동안 이전 화면이 그 별을 향해 계속 커지며 사라지고 새 페이지가 겹쳐 나타난다 (index.html의 html.warp-nav 전환).
+   폰은 페이지 전환 효과를 쓰지 않아서, 여기서 줌인하며 어둡게 사라진 뒤 넘어간다 */
+.warp .photo{transform:scale(1.15) !important;transform-origin:var(--pwx) var(--pwy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
+.warp .dipper{transform:scale(1.4) !important;transform-origin:var(--wx) var(--wy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
+.warp .motto,.warp .lab,.warp .credit,.warp .torch,.warp .spk,.warp .ring,.warp .wave{opacity:0 !important;transition:opacity .2s ease}   /* 십자 빛줄기·고리는 전환 중 안 보이게 */
+.sky.warp-fade{opacity:0;transition:opacity .45s ease .1s}
+.warp{cursor:default}
 .p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
 </head>
@@ -405,6 +435,30 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   let tx=0, ty=0, x=0, y=0, px=-999, py=-999;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STATIC = location.hash === '#static' || q.has('static') || reduce;
+  /* ---- 별을 누르면 그 별로 확대되며 메뉴로 (새 탭 열기·동작 줄이기 설정에서는 그냥 이동) ---- */
+  dipper.querySelectorAll('.star').forEach(el => el.addEventListener('click', (e) => {
+    if (STATIC || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+    e.preventDefault();
+    if (sky.classList.contains('warp')) return;
+    const [sx, sy] = scr[el.dataset.id];
+    sky.style.setProperty('--wx', sx + 'px'); sky.style.setProperty('--wy', sy + 'px');
+    sky.style.setProperty('--pwx', (sx + 24) + 'px'); sky.style.setProperty('--pwy', (sy + 24) + 'px');   // .photo는 사방 24px 더 크다
+    sky.classList.add('warp');
+    let top = null; try { top = window.top; void top.document; } catch (_) { top = null; }
+    const vt = !!(top && top.document.startViewTransition && top.innerWidth > 1024);   // index.html withTransition과 같은 조건
+    if (top) {
+      const r = fe ? fe.getBoundingClientRect() : { left: 0, top: 0 }, root = top.document.documentElement;
+      root.style.setProperty('--wo', (r.left + sx) + 'px ' + (r.top + sy) + 'px');   // 바깥 페이지 기준 별 위치 (전환 중 확대 중심)
+      root.classList.add('warp-nav'); setTimeout(() => root.classList.remove('warp-nav'), 1500);
+    }
+    if (!vt) sky.classList.add('warp-fade');
+    setTimeout(() => {
+      // 폰: 새 페이지가 0.6초 동안 서서히 나타나게 (index.html의 html.warp-in)
+      if (!vt && top) { const root = top.document.documentElement; root.classList.add('warp-in'); setTimeout(() => root.classList.remove('warp-in'), 1500); }
+      try { top.location.href = el.href; } catch (_) { location.href = el.href; }
+    }, vt ? 300 : 520);
+    setTimeout(() => sky.classList.remove('warp', 'warp-fade'), 2600);   // 홈으로 돌아왔을 때 원래대로
+  }));
   sky.addEventListener('pointermove', e => {
     tx = e.clientX/W - .5; ty = e.clientY/H - .5; px = e.clientX; py = e.clientY;
     sky.classList.add('pointer'); wake();

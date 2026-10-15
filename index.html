@@ -2,6 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>
+// 미리보기 주소(deploy-preview-…)나 주소 끝 ?motion=1 이면, 컴퓨터에서 애니메이션을 꺼 두었어도(동작 줄이기) 효과를 그대로 보여 준다. ?motion=0 으로 끈다. 실제 사이트에는 영향 없음
+(function(){
+  try {
+    var q = /[?&]motion=(1|0)\b/.exec(location.search), ls = window.localStorage;
+    if (q) q[1] === '1' ? ls.setItem('rfs-motion', '1') : ls.removeItem('rfs-motion');
+    if (!(/^deploy-preview-/.test(location.hostname) || ls.getItem('rfs-motion') === '1')) return;
+  } catch (e) { return; }
+  var mm = window.matchMedia.bind(window);
+  window.matchMedia = function(s){ return /prefers-reduced-motion/.test(s) ? mm(/:\s*reduce/.test(s) ? 'not all' : 'all') : mm(s); };
+  var fix = function(){
+    [].forEach.call(document.styleSheets, function(sh){ var r; try { r = sh.cssRules; } catch (e) { return; }
+      (function walk(rs){ [].forEach.call(rs, function(x){
+        if (x.media && /prefers-reduced-motion/.test(x.media.mediaText)) x.media.mediaText = /:\s*reduce/.test(x.media.mediaText) ? 'not all' : 'all';
+        else if (x.cssRules) walk(x.cssRules);
+      }); })(r);
+    });
+  };
+  document.addEventListener('DOMContentLoaded', fix); window.addEventListener('load', fix);
+  new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeName === 'STYLE' || n.nodeName === 'LINK'; }); })) setTimeout(fix, 50); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <title>R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회</title>
 <meta name="description" content="중앙대학교 가치투자학회 R.F.S. 2006년 창립, 43기 활동 중. Research Team과 Asset Management Team이 기업 보고서를 쓰고 RFS 펀드를 운용합니다.">
 <meta name="keywords" content="중앙대 rfs, 중앙대rfs, 중앙대 RFS, 중앙대RFS, 중앙대학교 rfs, 중앙대학교rfs, 중앙대 금융학회, 중앙대학교 금융학회, 주식동아리, 중앙대학교, 중앙대 주식동아리, RFS, rfs, R.F.S., R.F.S, Rising Financial Stars, CAU RFS, cau rfs, caurfs, caurfs.kr, 알에프에스, 중대 rfs, 중대rfs, 중대 RFS, 중대RFS, 중앙대학교 RFS, 중앙대학교RFS, 중앙대 R.F.S., RFS 학회, RFS 가치투자학회, RFS 중앙대, 중앙대 알에프에스, 중앙대 학회 모집, 중앙대 투자학회 모집, 중앙대 가치투자학회 모집, 중앙대 주식동아리 모집, 중앙대 금융학회 모집, 중앙대 동아리 모집, RFS 신입 모집, RFS 모집, RFS 리크루팅, 중앙대 동아리 추천, 중앙대 학회 추천, 중앙대 투자학회 추천, 중앙대 신입생 동아리, 대학생 투자동아리, 대학생 주식동아리, 대학생 금융학회, 대학생 투자학회, 대학생 가치투자학회, 대학생 금융동아리, 대학생 증권동아리, 대학 투자학회, 대학 주식동아리, 가치투자학회, 가치투자, 기업분석, 기업분석 리포트, 기업분석 보고서, 리서치 보고서, 리서치 리포트, 투자제안서, 밸류에이션, Valuation, 재무모델링, 에쿼티 리서치, Equity Research, 해외기업 리포트, 해외주식 리포트, 목표주가, 투자의견, RFS 펀드, 자산운용, 대학생 펀드 운용, SOHKA, 투자학회 연합 학술제, 금융권 취업, 증권사 취업, 애널리스트, 애널리스트 취업, RFS 알럼나이, RFS 동문, 중앙대 가치투자학회, 중앙대가치투자학회, 중앙대 투자학회, 중앙대투자학회, 중앙대 투자동아리, 중앙대투자동아리, 중앙대주식동아리, 중앙대 주식학회, 중앙대주식학회, 중앙대 금융동아리, 중앙대금융동아리, 중앙대금융학회, 중앙대 증권동아리, 중앙대증권동아리, 중앙대 경제동아리, 중앙대경제동아리, 중앙대 학회, 중앙대학회, 중앙대 동아리, 중앙대동아리, 중앙대학교 가치투자학회, 중앙대학교가치투자학회, 중앙대학교 투자학회, 중앙대학교투자학회, 중앙대학교 투자동아리, 중앙대학교투자동아리, 중앙대학교 주식동아리, 중앙대학교주식동아리, 중앙대학교 주식학회, 중앙대학교주식학회, 중앙대학교 금융동아리, 중앙대학교금융동아리, 중앙대학교금융학회, 중앙대학교 증권동아리, 중앙대학교증권동아리, 중앙대학교 경제동아리, 중앙대학교경제동아리, 중앙대학교 학회, 중앙대학교학회, 중앙대학교 동아리, 중앙대학교동아리, 중대 가치투자학회, 중대가치투자학회, 중대 투자학회, 중대투자학회, 중대 투자동아리, 중대투자동아리, 중대 주식동아리, 중대주식동아리, 중대 주식학회, 중대주식학회, 중대 금융동아리, 중대금융동아리, 중대 금융학회, 중대금융학회, 중대 증권동아리, 중대증권동아리, 중대 경제동아리, 중대경제동아리, 중대 학회, 중대학회, 중대 동아리, 중대동아리, 산일전기, 산일전기 기업분석, 산일전기 리포트, 산일전기 분석 보고서, 산일전기 목표주가, 산일전기 밸류에이션, 산일전기 투자의견, 산일전기 주가 전망, 062040, 대한항공, 대한항공 기업분석, 대한항공 리포트, 대한항공 분석 보고서, 대한항공 목표주가, 대한항공 밸류에이션, 대한항공 투자의견, 대한항공 주가 전망, 003490, 인바디, 인바디 기업분석, 인바디 리포트, 인바디 분석 보고서, 인바디 목표주가, 인바디 밸류에이션, 인바디 투자의견, 인바디 주가 전망, 041830, 네패스아크, 네패스아크 기업분석, 네패스아크 리포트, 네패스아크 분석 보고서, 네패스아크 목표주가, 네패스아크 밸류에이션, 네패스아크 투자의견, 네패스아크 주가 전망, 330860, 제주반도체, 제주반도체 기업분석, 제주반도체 리포트, 제주반도체 분석 보고서, 제주반도체 목표주가, 제주반도체 밸류에이션, 제주반도체 투자의견, 제주반도체 주가 전망, 080220, Take-Two Interactive, Take-Two Interactive 기업분석, Take-Two Interactive 리포트, Take-Two Interactive 분석 보고서, Take-Two Interactive 목표주가, Take-Two Interactive 밸류에이션, Take-Two Interactive 투자의견, Take-Two Interactive 주가 전망, 테이크투 인터랙티브, 테이크투 인터랙티브 기업분석, 테이크투 인터랙티브 리포트, 테이크투 인터랙티브 분석 보고서, 테이크투 인터랙티브 목표주가, 테이크투 인터랙티브 밸류에이션, 테이크투 인터랙티브 투자의견, 테이크투 인터랙티브 주가 전망, 테이크투, 테이크투 기업분석, 테이크투 리포트, 테이크투 분석 보고서, 테이크투 목표주가, 테이크투 밸류에이션, 테이크투 투자의견, 테이크투 주가 전망, TTWO, TTWO 주가, Take-Two, Take Two Interactive, 리브스메드, 리브스메드 기업분석, 리브스메드 리포트, 리브스메드 분석 보고서, 리브스메드 목표주가, 리브스메드 밸류에이션, 리브스메드 투자의견, 리브스메드 주가 전망, 491000, 파두, 파두 기업분석, 파두 리포트, 파두 분석 보고서, 파두 목표주가, 파두 밸류에이션, 파두 투자의견, 파두 주가 전망, 440110, FADU, TORM, TORM 기업분석, TORM 리포트, TORM 분석 보고서, TORM 목표주가, TORM 밸류에이션, TORM 투자의견, TORM 주가 전망, TORM plc., TORM plc. 기업분석, TORM plc. 리포트, TORM plc. 분석 보고서, TORM plc. 목표주가, TORM plc. 밸류에이션, TORM plc. 투자의견, TORM plc. 주가 전망, 토름, 토름 기업분석, 토름 리포트, 토름 분석 보고서, 토름 목표주가, 토름 밸류에이션, 토름 투자의견, 토름 주가 전망, TRMD, TRMD 주가, OCI홀딩스, OCI홀딩스 기업분석, OCI홀딩스 리포트, OCI홀딩스 분석 보고서, OCI홀딩스 목표주가, OCI홀딩스 밸류에이션, OCI홀딩스 투자의견, OCI홀딩스 주가 전망, 010060, OCI, OCI 홀딩스, 삼성E&amp;A, 삼성E&amp;A 기업분석, 삼성E&amp;A 리포트, 삼성E&amp;A 분석 보고서, 삼성E&amp;A 목표주가, 삼성E&amp;A 밸류에이션, 삼성E&amp;A 투자의견, 삼성E&amp;A 주가 전망, 삼성엔지니어링, 삼성엔지니어링 기업분석, 삼성엔지니어링 리포트, 삼성엔지니어링 분석 보고서, 삼성엔지니어링 목표주가, 삼성엔지니어링 밸류에이션, 삼성엔지니어링 투자의견, 삼성엔지니어링 주가 전망, 028050, 삼성이앤에이, Samsung E&amp;A, 태광, 태광 기업분석, 태광 리포트, 태광 분석 보고서, 태광 목표주가, 태광 밸류에이션, 태광 투자의견, 태광 주가 전망, 023160, KCC, KCC 기업분석, KCC 리포트, KCC 분석 보고서, KCC 목표주가, KCC 밸류에이션, KCC 투자의견, KCC 주가 전망, 002380, RFHIC, RFHIC 기업분석, RFHIC 리포트, RFHIC 분석 보고서, RFHIC 목표주가, RFHIC 밸류에이션, RFHIC 투자의견, RFHIC 주가 전망, 218410, 에스티팜, 에스티팜 기업분석, 에스티팜 리포트, 에스티팜 분석 보고서, 에스티팜 목표주가, 에스티팜 밸류에이션, 에스티팜 투자의견, 에스티팜 주가 전망, 237690, ST Pharm, 인텔리안테크, 인텔리안테크 기업분석, 인텔리안테크 리포트, 인텔리안테크 분석 보고서, 인텔리안테크 목표주가, 인텔리안테크 밸류에이션, 인텔리안테크 투자의견, 인텔리안테크 주가 전망, 189300, 인텔리안테크놀로지스, 인텔리안, 테크윙, 테크윙 기업분석, 테크윙 리포트, 테크윙 분석 보고서, 테크윙 목표주가, 테크윙 밸류에이션, 테크윙 투자의견, 테크윙 주가 전망, 089030, 플리토, 플리토 기업분석, 플리토 리포트, 플리토 분석 보고서, 플리토 목표주가, 플리토 밸류에이션, 플리토 투자의견, 플리토 주가 전망, 300080, CrowdStrike, CrowdStrike 기업분석, CrowdStrike 리포트, CrowdStrike 분석 보고서, CrowdStrike 목표주가, CrowdStrike 밸류에이션, CrowdStrike 투자의견, CrowdStrike 주가 전망, 크라우드스트라이크, 크라우드스트라이크 기업분석, 크라우드스트라이크 리포트, 크라우드스트라이크 분석 보고서, 크라우드스트라이크 목표주가, 크라우드스트라이크 밸류에이션, 크라우드스트라이크 투자의견, 크라우드스트라이크 주가 전망, CRWD, CRWD 주가, 씨어스테크놀로지, 씨어스테크놀로지 기업분석, 씨어스테크놀로지 리포트, 씨어스테크놀로지 분석 보고서, 씨어스테크놀로지 목표주가, 씨어스테크놀로지 밸류에이션, 씨어스테크놀로지 투자의견, 씨어스테크놀로지 주가 전망, 458870, 씨어스, 바이넥스, 바이넥스 기업분석, 바이넥스 리포트, 바이넥스 분석 보고서, 바이넥스 목표주가, 바이넥스 밸류에이션, 바이넥스 투자의견, 바이넥스 주가 전망, 053030, 롯데관광개발, 롯데관광개발 기업분석, 롯데관광개발 리포트, 롯데관광개발 분석 보고서, 롯데관광개발 목표주가, 롯데관광개발 밸류에이션, 롯데관광개발 투자의견, 롯데관광개발 주가 전망, 032350, 코미코, 코미코 기업분석, 코미코 리포트, 코미코 분석 보고서, 코미코 목표주가, 코미코 밸류에이션, 코미코 투자의견, 코미코 주가 전망, 183300, 휴메딕스, 휴메딕스 기업분석, 휴메딕스 리포트, 휴메딕스 분석 보고서, 휴메딕스 목표주가, 휴메딕스 밸류에이션, 휴메딕스 투자의견, 휴메딕스 주가 전망, 200670, Duolingo, Duolingo 기업분석, Duolingo 리포트, Duolingo 분석 보고서, Duolingo 목표주가, Duolingo 밸류에이션, Duolingo 투자의견, Duolingo 주가 전망, 듀오링고, 듀오링고 기업분석, 듀오링고 리포트, 듀오링고 분석 보고서, 듀오링고 목표주가, 듀오링고 밸류에이션, 듀오링고 투자의견, 듀오링고 주가 전망, DUOL, DUOL 주가, 진성티이씨, 진성티이씨 기업분석, 진성티이씨 리포트, 진성티이씨 분석 보고서, 진성티이씨 목표주가, 진성티이씨 밸류에이션, 진성티이씨 투자의견, 진성티이씨 주가 전망, 036890, LS ELECTRIC, LS ELECTRIC 기업분석, LS ELECTRIC 리포트, LS ELECTRIC 분석 보고서, LS ELECTRIC 목표주가, LS ELECTRIC 밸류에이션, LS ELECTRIC 투자의견, LS ELECTRIC 주가 전망, LS일렉트릭, LS일렉트릭 기업분석, LS일렉트릭 리포트, LS일렉트릭 분석 보고서, LS일렉트릭 목표주가, LS일렉트릭 밸류에이션, LS일렉트릭 투자의견, LS일렉트릭 주가 전망, 010120, LS산전, HD현대마린솔루션, HD현대마린솔루션 기업분석, HD현대마린솔루션 리포트, HD현대마린솔루션 분석 보고서, HD현대마린솔루션 목표주가, HD현대마린솔루션 밸류에이션, HD현대마린솔루션 투자의견, HD현대마린솔루션 주가 전망, 443060, 한미반도체, 한미반도체 기업분석, 한미반도체 리포트, 한미반도체 분석 보고서, 한미반도체 목표주가, 한미반도체 밸류에이션, 한미반도체 투자의견, 한미반도체 주가 전망, 042700, 클래시스, 클래시스 기업분석, 클래시스 리포트, 클래시스 분석 보고서, 클래시스 목표주가, 클래시스 밸류에이션, 클래시스 투자의견, 클래시스 주가 전망, 214150, 삼성전기, 삼성전기 기업분석, 삼성전기 리포트, 삼성전기 분석 보고서, 삼성전기 목표주가, 삼성전기 밸류에이션, 삼성전기 투자의견, 삼성전기 주가 전망, 009150, SEMCO, 에이피알, 에이피알 기업분석, 에이피알 리포트, 에이피알 분석 보고서, 에이피알 목표주가, 에이피알 밸류에이션, 에이피알 투자의견, 에이피알 주가 전망, 278470, APR, HD현대마린엔진, HD현대마린엔진 기업분석, HD현대마린엔진 리포트, HD현대마린엔진 분석 보고서, HD현대마린엔진 목표주가, HD현대마린엔진 밸류에이션, HD현대마린엔진 투자의견, HD현대마린엔진 주가 전망, 071970, HSD엔진, 토비스, 토비스 기업분석, 토비스 리포트, 토비스 분석 보고서, 토비스 목표주가, 토비스 밸류에이션, 토비스 투자의견, 토비스 주가 전망, 051360, 파크시스템스, 파크시스템스 기업분석, 파크시스템스 리포트, 파크시스템스 분석 보고서, 파크시스템스 목표주가, 파크시스템스 밸류에이션, 파크시스템스 투자의견, 파크시스템스 주가 전망, 140860, NAVER, NAVER 기업분석, NAVER 리포트, NAVER 분석 보고서, NAVER 목표주가, NAVER 밸류에이션, NAVER 투자의견, NAVER 주가 전망, 네이버, 네이버 기업분석, 네이버 리포트, 네이버 분석 보고서, 네이버 목표주가, 네이버 밸류에이션, 네이버 투자의견, 네이버 주가 전망, 035420, Intuitive Surgical, Intuitive Surgical 기업분석, Intuitive Surgical 리포트, Intuitive Surgical 분석 보고서, Intuitive Surgical 목표주가, Intuitive Surgical 밸류에이션, Intuitive Surgical 투자의견, Intuitive Surgical 주가 전망, 인튜이티브 서지컬, 인튜이티브 서지컬 기업분석, 인튜이티브 서지컬 리포트, 인튜이티브 서지컬 분석 보고서, 인튜이티브 서지컬 목표주가, 인튜이티브 서지컬 밸류에이션, 인튜이티브 서지컬 투자의견, 인튜이티브 서지컬 주가 전망, ISRG, ISRG 주가, 인튜이티브서지컬, 더존비즈온, 더존비즈온 기업분석, 더존비즈온 리포트, 더존비즈온 분석 보고서, 더존비즈온 목표주가, 더존비즈온 밸류에이션, 더존비즈온 투자의견, 더존비즈온 주가 전망, 012510, 경동나비엔, 경동나비엔 기업분석, 경동나비엔 리포트, 경동나비엔 분석 보고서, 경동나비엔 목표주가, 경동나비엔 밸류에이션, 경동나비엔 투자의견, 경동나비엔 주가 전망, 009450, SK가스, SK가스 기업분석, SK가스 리포트, SK가스 분석 보고서, SK가스 목표주가, SK가스 밸류에이션, SK가스 투자의견, SK가스 주가 전망, 018670, 한중엔시에스, 한중엔시에스 기업분석, 한중엔시에스 리포트, 한중엔시에스 분석 보고서, 한중엔시에스 목표주가, 한중엔시에스 밸류에이션, 한중엔시에스 투자의견, 한중엔시에스 주가 전망, 107640, 한중NCS, 한화오션, 한화오션 기업분석, 한화오션 리포트, 한화오션 분석 보고서, 한화오션 목표주가, 한화오션 밸류에이션, 한화오션 투자의견, 한화오션 주가 전망, 042660, 대우조선해양, 크래프톤, 크래프톤 기업분석, 크래프톤 리포트, 크래프톤 분석 보고서, 크래프톤 목표주가, 크래프톤 밸류에이션, 크래프톤 투자의견, 크래프톤 주가 전망, 259960, KRAFTON, 파마리서치, 파마리서치 기업분석, 파마리서치 리포트, 파마리서치 분석 보고서, 파마리서치 목표주가, 파마리서치 밸류에이션, 파마리서치 투자의견, 파마리서치 주가 전망, 214450, 티앤엘, 티앤엘 기업분석, 티앤엘 리포트, 티앤엘 분석 보고서, 티앤엘 목표주가, 티앤엘 밸류에이션, 티앤엘 투자의견, 티앤엘 주가 전망, 340570, 실리콘투, 실리콘투 기업분석, 실리콘투 리포트, 실리콘투 분석 보고서, 실리콘투 목표주가, 실리콘투 밸류에이션, 실리콘투 투자의견, 실리콘투 주가 전망, 257720, 브이티, 브이티 기업분석, 브이티 리포트, 브이티 분석 보고서, 브이티 목표주가, 브이티 밸류에이션, 브이티 투자의견, 브이티 주가 전망, 018290, VT, 브이티지엠피, 하이비젼시스템, 하이비젼시스템 기업분석, 하이비젼시스템 리포트, 하이비젼시스템 분석 보고서, 하이비젼시스템 목표주가, 하이비젼시스템 밸류에이션, 하이비젼시스템 투자의견, 하이비젼시스템 주가 전망, 126700, GE Vernova, GE Vernova 기업분석, GE Vernova 리포트, GE Vernova 분석 보고서, GE Vernova 목표주가, GE Vernova 밸류에이션, GE Vernova 투자의견, GE Vernova 주가 전망, GE 버노바, GE 버노바 기업분석, GE 버노바 리포트, GE 버노바 분석 보고서, GE 버노바 목표주가, GE 버노바 밸류에이션, GE 버노바 투자의견, GE 버노바 주가 전망, GEV, GEV 주가, GE버노바, GE 베르노바, 애니플러스, 애니플러스 기업분석, 애니플러스 리포트, 애니플러스 분석 보고서, 애니플러스 목표주가, 애니플러스 밸류에이션, 애니플러스 투자의견, 애니플러스 주가 전망, 310200, 글로벌텍스프리, 글로벌텍스프리 기업분석, 글로벌텍스프리 리포트, 글로벌텍스프리 분석 보고서, 글로벌텍스프리 목표주가, 글로벌텍스프리 밸류에이션, 글로벌텍스프리 투자의견, 글로벌텍스프리 주가 전망, 204620, GTF, Arista Networks, Arista Networks 기업분석, Arista Networks 리포트, Arista Networks 분석 보고서, Arista Networks 목표주가, Arista Networks 밸류에이션, Arista Networks 투자의견, Arista Networks 주가 전망, 아리스타 네트웍스, 아리스타 네트웍스 기업분석, 아리스타 네트웍스 리포트, 아리스타 네트웍스 분석 보고서, 아리스타 네트웍스 목표주가, 아리스타 네트웍스 밸류에이션, 아리스타 네트웍스 투자의견, 아리스타 네트웍스 주가 전망, ANET, ANET 주가, 아리스타네트웍스, Arista, 하이브, 하이브 기업분석, 하이브 리포트, 하이브 분석 보고서, 하이브 목표주가, 하이브 밸류에이션, 하이브 투자의견, 하이브 주가 전망, 352820, HYBE, 빅히트, 빅히트엔터테인먼트, 셀트리온, 셀트리온 기업분석, 셀트리온 리포트, 셀트리온 분석 보고서, 셀트리온 목표주가, 셀트리온 밸류에이션, 셀트리온 투자의견, 셀트리온 주가 전망, 068270, Apple, Apple 기업분석, Apple 리포트, Apple 분석 보고서, Apple 목표주가, Apple 밸류에이션, Apple 투자의견, Apple 주가 전망, 애플, 애플 기업분석, 애플 리포트, 애플 분석 보고서, 애플 목표주가, 애플 밸류에이션, 애플 투자의견, 애플 주가 전망, AAPL, AAPL 주가, Tesla, Tesla 기업분석, Tesla 리포트, Tesla 분석 보고서, Tesla 목표주가, Tesla 밸류에이션, Tesla 투자의견, Tesla 주가 전망, 테슬라, 테슬라 기업분석, 테슬라 리포트, 테슬라 분석 보고서, 테슬라 목표주가, 테슬라 밸류에이션, 테슬라 투자의견, 테슬라 주가 전망, TSLA, TSLA 주가, 에스엠, 에스엠 기업분석, 에스엠 리포트, 에스엠 분석 보고서, 에스엠 목표주가, 에스엠 밸류에이션, 에스엠 투자의견, 에스엠 주가 전망, SM엔터테인먼트, SM엔터테인먼트 기업분석, SM엔터테인먼트 리포트, SM엔터테인먼트 분석 보고서, SM엔터테인먼트 목표주가, SM엔터테인먼트 밸류에이션, SM엔터테인먼트 투자의견, SM엔터테인먼트 주가 전망, 041510, SM, SM엔터, 에스엠엔터테인먼트, 포스코케미칼, 포스코케미칼 기업분석, 포스코케미칼 리포트, 포스코케미칼 분석 보고서, 포스코케미칼 목표주가, 포스코케미칼 밸류에이션, 포스코케미칼 투자의견, 포스코케미칼 주가 전망, 포스코퓨처엠, 포스코퓨처엠 기업분석, 포스코퓨처엠 리포트, 포스코퓨처엠 분석 보고서, 포스코퓨처엠 목표주가, 포스코퓨처엠 밸류에이션, 포스코퓨처엠 투자의견, 포스코퓨처엠 주가 전망, 003670, POSCO퓨처엠, 포스코 퓨처엠, 에코프로비엠, 에코프로비엠 기업분석, 에코프로비엠 리포트, 에코프로비엠 분석 보고서, 에코프로비엠 목표주가, 에코프로비엠 밸류에이션, 에코프로비엠 투자의견, 에코프로비엠 주가 전망, 에코프로BM, 에코프로BM 기업분석, 에코프로BM 리포트, 에코프로BM 분석 보고서, 에코프로BM 목표주가, 에코프로BM 밸류에이션, 에코프로BM 투자의견, 에코프로BM 주가 전망, 247540, 한화에어로스페이스, 한화에어로스페이스 기업분석, 한화에어로스페이스 리포트, 한화에어로스페이스 분석 보고서, 한화에어로스페이스 목표주가, 한화에어로스페이스 밸류에이션, 한화에어로스페이스 투자의견, 한화에어로스페이스 주가 전망, 012450, 한화에어로, LG에너지솔루션, LG에너지솔루션 기업분석, LG에너지솔루션 리포트, LG에너지솔루션 분석 보고서, LG에너지솔루션 목표주가, LG에너지솔루션 밸류에이션, LG에너지솔루션 투자의견, LG에너지솔루션 주가 전망, 373220, LG엔솔, 엘지에너지솔루션, LGES, 삼성바이오로직스, 삼성바이오로직스 기업분석, 삼성바이오로직스 리포트, 삼성바이오로직스 분석 보고서, 삼성바이오로직스 목표주가, 삼성바이오로직스 밸류에이션, 삼성바이오로직스 투자의견, 삼성바이오로직스 주가 전망, 207940, 삼성바이오, 삼바, 한국타이어앤테크놀로지, 한국타이어앤테크놀로지 기업분석, 한국타이어앤테크놀로지 리포트, 한국타이어앤테크놀로지 분석 보고서, 한국타이어앤테크놀로지 목표주가, 한국타이어앤테크놀로지 밸류에이션, 한국타이어앤테크놀로지 투자의견, 한국타이어앤테크놀로지 주가 전망, 한국타이어, 한국타이어 기업분석, 한국타이어 리포트, 한국타이어 분석 보고서, 한국타이어 목표주가, 한국타이어 밸류에이션, 한국타이어 투자의견, 한국타이어 주가 전망, 161390, 성광벤드, 성광벤드 기업분석, 성광벤드 리포트, 성광벤드 분석 보고서, 성광벤드 목표주가, 성광벤드 밸류에이션, 성광벤드 투자의견, 성광벤드 주가 전망, 014620, PI첨단소재, PI첨단소재 기업분석, PI첨단소재 리포트, PI첨단소재 분석 보고서, PI첨단소재 목표주가, PI첨단소재 밸류에이션, PI첨단소재 투자의견, PI첨단소재 주가 전망, 178920, 피아이첨단소재, 그린플러스, 그린플러스 기업분석, 그린플러스 리포트, 그린플러스 분석 보고서, 그린플러스 목표주가, 그린플러스 밸류에이션, 그린플러스 투자의견, 그린플러스 주가 전망, 186230, 현대차, 현대차 기업분석, 현대차 리포트, 현대차 분석 보고서, 현대차 목표주가, 현대차 밸류에이션, 현대차 투자의견, 현대차 주가 전망, 현대자동차, 현대자동차 기업분석, 현대자동차 리포트, 현대자동차 분석 보고서, 현대자동차 목표주가, 현대자동차 밸류에이션, 현대자동차 투자의견, 현대자동차 주가 전망, 005380, 엘앤에프, 엘앤에프 기업분석, 엘앤에프 리포트, 엘앤에프 분석 보고서, 엘앤에프 목표주가, 엘앤에프 밸류에이션, 엘앤에프 투자의견, 엘앤에프 주가 전망, 066970, L&amp;F, 오스템임플란트, 오스템임플란트 기업분석, 오스템임플란트 리포트, 오스템임플란트 분석 보고서, 오스템임플란트 목표주가, 오스템임플란트 밸류에이션, 오스템임플란트 투자의견, 오스템임플란트 주가 전망, 048260, 오스템, 루트로닉, 루트로닉 기업분석, 루트로닉 리포트, 루트로닉 분석 보고서, 루트로닉 목표주가, 루트로닉 밸류에이션, 루트로닉 투자의견, 루트로닉 주가 전망, 085370, LG유플러스, LG유플러스 기업분석, LG유플러스 리포트, LG유플러스 분석 보고서, LG유플러스 목표주가, LG유플러스 밸류에이션, LG유플러스 투자의견, LG유플러스 주가 전망, 032640, LGU+, 엘지유플러스, 삼성SDI, 삼성SDI 기업분석, 삼성SDI 리포트, 삼성SDI 분석 보고서, 삼성SDI 목표주가, 삼성SDI 밸류에이션, 삼성SDI 투자의견, 삼성SDI 주가 전망, 006400, 대웅제약, 대웅제약 기업분석, 대웅제약 리포트, 대웅제약 분석 보고서, 대웅제약 목표주가, 대웅제약 밸류에이션, 대웅제약 투자의견, 대웅제약 주가 전망, 069620, 현대글로비스, 현대글로비스 기업분석, 현대글로비스 리포트, 현대글로비스 분석 보고서, 현대글로비스 목표주가, 현대글로비스 밸류에이션, 현대글로비스 투자의견, 현대글로비스 주가 전망, 086280, 글로비스, 비에이치, 비에이치 기업분석, 비에이치 리포트, 비에이치 분석 보고서, 비에이치 목표주가, 비에이치 밸류에이션, 비에이치 투자의견, 비에이치 주가 전망, 090460, HMM, HMM 기업분석, HMM 리포트, HMM 분석 보고서, HMM 목표주가, HMM 밸류에이션, HMM 투자의견, HMM 주가 전망, 011200, 현대상선, BGF리테일, BGF리테일 기업분석, BGF리테일 리포트, BGF리테일 분석 보고서, BGF리테일 목표주가, BGF리테일 밸류에이션, BGF리테일 투자의견, BGF리테일 주가 전망, 282330, Intel, Intel 기업분석, Intel 리포트, Intel 분석 보고서, Intel 목표주가, Intel 밸류에이션, Intel 투자의견, Intel 주가 전망, 인텔, 인텔 기업분석, 인텔 리포트, 인텔 분석 보고서, 인텔 목표주가, 인텔 밸류에이션, 인텔 투자의견, 인텔 주가 전망, INTC, INTC 주가, 펄어비스, 펄어비스 기업분석, 펄어비스 리포트, 펄어비스 분석 보고서, 펄어비스 목표주가, 펄어비스 밸류에이션, 펄어비스 투자의견, 펄어비스 주가 전망, 263750, 테스나, 테스나 기업분석, 테스나 리포트, 테스나 분석 보고서, 테스나 목표주가, 테스나 밸류에이션, 테스나 투자의견, 테스나 주가 전망, 두산테스나, 두산테스나 기업분석, 두산테스나 리포트, 두산테스나 분석 보고서, 두산테스나 목표주가, 두산테스나 밸류에이션, 두산테스나 투자의견, 두산테스나 주가 전망, 131970, 씨에스윈드, 씨에스윈드 기업분석, 씨에스윈드 리포트, 씨에스윈드 분석 보고서, 씨에스윈드 목표주가, 씨에스윈드 밸류에이션, 씨에스윈드 투자의견, 씨에스윈드 주가 전망, 112610, CS윈드, CS Wind, 기아, 기아 기업분석, 기아 리포트, 기아 분석 보고서, 기아 목표주가, 기아 밸류에이션, 기아 투자의견, 기아 주가 전망, 000270, 기아자동차, 기아차, S-Oil, S-Oil 기업분석, S-Oil 리포트, S-Oil 분석 보고서, S-Oil 목표주가, S-Oil 밸류에이션, S-Oil 투자의견, S-Oil 주가 전망, 에쓰오일, 에쓰오일 기업분석, 에쓰오일 리포트, 에쓰오일 분석 보고서, 에쓰오일 목표주가, 에쓰오일 밸류에이션, 에쓰오일 투자의견, 에쓰오일 주가 전망, 010950, S-OIL, 에스오일, 오리온, 오리온 기업분석, 오리온 리포트, 오리온 분석 보고서, 오리온 목표주가, 오리온 밸류에이션, 오리온 투자의견, 오리온 주가 전망, 271560, 세아베스틸, 세아베스틸 기업분석, 세아베스틸 리포트, 세아베스틸 분석 보고서, 세아베스틸 목표주가, 세아베스틸 밸류에이션, 세아베스틸 투자의견, 세아베스틸 주가 전망, 001430, 세아베스틸지주, 피엔티, 피엔티 기업분석, 피엔티 리포트, 피엔티 분석 보고서, 피엔티 목표주가, 피엔티 밸류에이션, 피엔티 투자의견, 피엔티 주가 전망, 137400, 콜마비앤에이치, 콜마비앤에이치 기업분석, 콜마비앤에이치 리포트, 콜마비앤에이치 분석 보고서, 콜마비앤에이치 목표주가, 콜마비앤에이치 밸류에이션, 콜마비앤에이치 투자의견, 콜마비앤에이치 주가 전망, 200130, 콜마BNH, 롯데케미칼, 롯데케미칼 기업분석, 롯데케미칼 리포트, 롯데케미칼 분석 보고서, 롯데케미칼 목표주가, 롯데케미칼 밸류에이션, 롯데케미칼 투자의견, 롯데케미칼 주가 전망, 011170">
@@ -457,7 +479,7 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 /* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py
    글꼴이 다 받아지기 전에는 리포트 본문을 감춰 두었다가 부드럽게 보인다 (머리말 스크립트의 __rfsFont) */
 .rpt-paper{transition:opacity .35s ease}
-html:not(.rfont) .rpt-paper{opacity:0}
+html:not(.rfont) .rpt-paper,html:not(.rp1) .rpt-paper{opacity:0}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:block}
@@ -466,6 +488,14 @@ html:not(.rfont) .rpt-paper{opacity:0}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
 ::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
+/* 별자리에서 별을 눌러 넘어가는 동안: 바탕을 남색으로 (assets/dipper.html warp) */
+html.warp-nav,html.warp-nav body{background:#0B1524 !important}
+html.warp-nav::view-transition-old(root){animation:rfs-warp-out .75s cubic-bezier(.35,0,.65,1) both;transform-origin:var(--wo,50% 50%)}
+html.warp-nav::view-transition-new(root){animation:rfs-warp-in .7s cubic-bezier(.35,0,.65,1) .08s both}
+@keyframes rfs-warp-out{to{opacity:0;transform:scale(1.45)}}
+@keyframes rfs-warp-in{from{opacity:0;transform:scale(1.03)}}
+html.warp-in main{animation:rfs-warp-fade .6s ease .05s both}   /* 폰(페이지 전환 효과 없음): 별을 눌러 넘어온 새 페이지가 서서히 */
+@keyframes rfs-warp-fade{from{opacity:0}}
 @keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
 /* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
 @keyframes rfs-vt-fade{from{opacity:0}}
@@ -1128,6 +1158,27 @@ main.pgx .pres .pres-in{padding:64px 56px}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
+/* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
+   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 주고, 제목은 글자씩 떠오른다 (Recruiting만 가운데 별에서 가는 선이 그어진다) */
+.pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
+  background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
+.pg-hero.pg-full.hero-out::after{opacity:0}
+.pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
+.pg-hero .pg-title.fx{position:relative}.pg-hero .pg-title.fx-line{padding-bottom:34px}
+.pg-title .tw{display:inline-block;white-space:nowrap}
+.pg-title .tl{display:inline-block}
+.pg-hero .pg-title.fx-line::after{content:'';position:absolute;left:50%;bottom:0;width:220px;height:1px;margin-left:-110px;background:linear-gradient(90deg,rgba(247,246,243,0),rgba(247,246,243,.85),rgba(247,246,243,0))}
+.pg-hero .pg-title.fx-line::before{content:'';position:absolute;left:50%;bottom:-5px;width:11px;height:11px;margin-left:-5.5px;background:#FFF3DA;clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 7px rgba(255,236,200,.95))}
+@media (prefers-reduced-motion:no-preference){
+  .pg-hero-in .pg-title.fx{animation:none}
+  .pg-title.fx .tl{animation:tlIn 1s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(.12s + var(--i) * min(.055s, .8s / var(--n)))}
+  .pg-title.fx-line::after{animation:tlLine 1.1s cubic-bezier(.2,.7,.2,1) .75s both}
+  .pg-title.fx-line::before{animation:tlStar 1.1s ease .7s both}
+}
+@keyframes tlIn{from{opacity:0;filter:blur(14px);transform:translateY(.18em)}}
+@keyframes tlLine{from{transform:scaleX(0);opacity:0}}
+@keyframes tlStar{from{transform:scale(0) rotate(-90deg);opacity:0}50%{transform:scale(1.6) rotate(0);opacity:1}}
+@media (max-width:760px){.pg-hero .pg-title.fx-line{padding-bottom:26px}.pg-hero .pg-title.fx-line::after{width:150px;margin-left:-75px}}
 main.hi-in>:not(.pg-hero){animation:hiIn .8s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -1437,7 +1488,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1014" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1016" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
@@ -1518,7 +1569,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1014" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1016" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
@@ -1543,11 +1594,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isResearch }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Research</h1>
+        <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1622,11 +1673,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp" credit="Photo: Carol M. Highsmith, Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:LOC_Main_Reading_Room_Highsmith.jpg" style="--slot-position:center 55%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Research</h1>
+        <h1 class="pg-title fx" style="--n:8" aria-label="Research"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">s</span><span class="tl" style="--i:3">e</span><span class="tl" style="--i:4">a</span><span class="tl" style="--i:5">r</span><span class="tl" style="--i:6">c</span><span class="tl" style="--i:7">h</span></span></h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="latest" onClick="{{ tabGo }}">최신 리포트</a><a href="#" data-t="reports" onClick="{{ tabGo }}">전체 리포트</a></div></nav>
@@ -1808,7 +1859,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="about-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:center 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">About R.F.S.</h1>
+        <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span> <span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
       </div>
     </section>
     <div class="story">
@@ -2149,7 +2200,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="m-about-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1682332402542-652cb5dcf31f?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Zeb Zakovics on Unsplash" credit-href="https://unsplash.com/@zebodii94" style="--slot-position:30% 55%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">About<br>R.F.S.</h1>
+        <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span><br><span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
       </div>
     </section>
     <div class="story">
@@ -2298,7 +2349,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Our People</h1>
+        <h1 class="pg-title fx" style="--n:9" aria-label="Our People"><span class="tw"><span class="tl" style="--i:0">O</span><span class="tl" style="--i:1">u</span><span class="tl" style="--i:2">r</span></span> <span class="tw"><span class="tl" style="--i:3">P</span><span class="tl" style="--i:4">e</span><span class="tl" style="--i:5">o</span><span class="tl" style="--i:6">p</span><span class="tl" style="--i:7">l</span><span class="tl" style="--i:8">e</span></span></h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2395,7 +2446,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg" style="overflow:hidden"><image-slot id="m-people-hero" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%;transform:scale(1.45);transform-origin:50% 92%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Our<br>People</h1>
+        <h1 class="pg-title fx" style="--n:9" aria-label="Our People"><span class="tw"><span class="tl" style="--i:0">O</span><span class="tl" style="--i:1">u</span><span class="tl" style="--i:2">r</span></span><br><span class="tw"><span class="tl" style="--i:3">P</span><span class="tl" style="--i:4">e</span><span class="tl" style="--i:5">o</span><span class="tl" style="--i:6">p</span><span class="tl" style="--i:7">l</span><span class="tl" style="--i:8">e</span></span></h1>
       </div>
     </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="officers" onClick="{{ tabGo }}">임원진</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="cohorts" onClick="{{ tabGo }}">기수</a></div></nav>
@@ -2487,7 +2538,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
-        <h1 class="pg-title">Recruiting</h1>
+        <h1 class="pg-title fx fx-line" style="--n:10" aria-label="Recruiting"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">e</span><span class="tl" style="--i:2">c</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">i</span><span class="tl" style="--i:6">t</span><span class="tl" style="--i:7">i</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">g</span></span></h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p style="margin:18px 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
         </sc-if>
@@ -2645,9 +2696,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
+      <div class="scrim" style="opacity:0.78"></div>
+      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center;background:rgba(11,21,36,0.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)">
         <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:64px;height:auto;display:block;margin:0 auto">
         <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">{{ loginLabel }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">학회원 로그인</h1>
@@ -2704,11 +2755,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">AMT Fund</h1>
+          <h1 class="pg-title fx" style="--n:7" aria-label="AMT Fund"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">M</span><span class="tl" style="--i:2">T</span></span> <span class="tw"><span class="tl" style="--i:3">F</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">n</span><span class="tl" style="--i:6">d</span></span></h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <h1 class="pg-title">AMT Fund</h1>
+          <h1 class="pg-title fx" style="--n:7" aria-label="AMT Fund"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">M</span><span class="tl" style="--i:2">T</span></span> <span class="tw"><span class="tl" style="--i:3">F</span><span class="tl" style="--i:4">u</span><span class="tl" style="--i:5">n</span><span class="tl" style="--i:6">d</span></span></h1>
         </sc-if>
       </div>
     </section>
@@ -2836,7 +2887,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="assets/hero/nyse.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:NY_stock_exchange_traders_floor_LC-U9-10548-6.jpg" style="--slot-position:center 30%"></image-slot></div>
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Road to Fund Manager</h1>
+        <h1 class="pg-title fx" style="--n:17" aria-label="Road to Fund Manager"><span class="tw"><span class="tl" style="--i:0">R</span><span class="tl" style="--i:1">o</span><span class="tl" style="--i:2">a</span><span class="tl" style="--i:3">d</span></span> <span class="tw"><span class="tl" style="--i:4">t</span><span class="tl" style="--i:5">o</span></span> <span class="tw"><span class="tl" style="--i:6">F</span><span class="tl" style="--i:7">u</span><span class="tl" style="--i:8">n</span><span class="tl" style="--i:9">d</span></span> <span class="tw"><span class="tl" style="--i:10">M</span><span class="tl" style="--i:11">a</span><span class="tl" style="--i:12">n</span><span class="tl" style="--i:13">a</span><span class="tl" style="--i:14">g</span><span class="tl" style="--i:15">e</span><span class="tl" style="--i:16">r</span></span></h1>
       </div>
     </section>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
@@ -2945,7 +2996,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="agora-intro" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
       <div class="scrim" style="opacity:0.5"></div>
       <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Agora</h1>
+        <h1 class="pg-title fx" style="--n:5" aria-label="Agora"><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">g</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">r</span><span class="tl" style="--i:4">a</span></span></h1>
       </div>
     </section>
     <section class="ag-hero on-photo" data-nav="dark">
@@ -4511,7 +4562,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research-m.webp' : 'assets/hero/research.webp'],
+        research: [m ? 'assets/hero/research-m.webp?v=1017' : 'assets/hero/research.webp?v=1017'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -4526,7 +4577,7 @@ class Component extends DCLogic {
     };
     idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
       // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
-      window.__rfsFont && window.__rfsFont(); });
+      window.__rfsFont && window.__rfsFont(); this.loadP1(); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
@@ -4535,7 +4586,10 @@ class Component extends DCLogic {
     const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
-      this.sb = window.supabase.createClient(SB_URL, SB_KEY);
+      // 로그인은 이 탭에서만 유지한다 (새로고침은 괜찮고, 탭·브라우저를 닫았다 다시 오면 다시 로그인). 예전처럼 브라우저에 남아 있던 로그인은 지운다
+      try { Object.keys(localStorage).forEach((k) => { if (/^sb-.*-auth-token/.test(k)) localStorage.removeItem(k); }); } catch (e) {}
+      let store; try { store = window.sessionStorage; } catch (e) {}
+      this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
       const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
@@ -4651,9 +4705,17 @@ class Component extends DCLogic {
 
   // ABOUT·FUND·RFM·PEOPLE·AGORA 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
+  // 리포트 1페이지 본문(page1.json)은 리포트를 열기 전에 미리 받아 둔다. 받기 전에 열면 본문을 잠깐 감췄다가 한 번에 보인다 (html.rp1)
+  loadP1() {
+    if (this._p1req) return; this._p1req = true;
+    const done = () => document.documentElement.classList.add('rp1');
+    setTimeout(done, 6000);
+    fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
+  }
+
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
-    if (!['about', 'fund', 'rfm', 'people', 'intranet'].includes(page)) return;
+    if (!['about', 'research', 'fund', 'rfm', 'people', 'intranet'].includes(page)) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     requestAnimationFrame(() => {
       const hero = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
@@ -4683,7 +4745,7 @@ class Component extends DCLogic {
           window.scrollTo({ top: target(), behavior: 'instant' });
           setTimeout(() => main.classList.remove('hi-in'), 900);
         }, 900);
-      }, 2600);
+      }, 3000);
     });
   }
 
@@ -5503,10 +5565,7 @@ class Component extends DCLogic {
       this.loadRfm();
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
     }
-    if (s.page === 'report' && !this._p1req) {
-      this._p1req = true;
-      fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); }).catch(() => {});
-    }
+    if (s.page === 'report' || s.page === 'research') this.loadP1();
     const status = this.props.recruitStatus ?? '마감';
     const nextRecruit = this.props.nextRecruit ?? '27-1학기, 2027년 1월';
     const rSem = this.props.recruitSemester ?? '26-2';
