@@ -220,16 +220,13 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .ready .photo.p3d #gl3d{opacity:1}
 .photo.p3d img{visibility:hidden}
 .p3dm .wash,.p3dm .wash2{display:none}
-/* 별을 누르면: 그 별로 빨려 들어가듯 확대되고, 다른 별·글자는 사라지며 누른 별의 십자 빛줄기가 화면 끝까지 뻗는다.
-   마지막에 그 별 지점에서 남색 원이 커지며 화면을 덮고 메뉴로 넘어간다 (아래 warp) */
-.veil{position:absolute;inset:0;background:#0B1524;pointer-events:none;z-index:7;clip-path:circle(0 at var(--wx,50%) var(--wy,50%))}
-.warp .veil{clip-path:circle(150vmax at var(--wx) var(--wy));transition:clip-path .55s cubic-bezier(.7,0,.25,1) .62s}
-.warp .photo{transform:scale(1.9) !important;transform-origin:var(--pwx) var(--pwy);transition:transform 1.1s cubic-bezier(.6,0,.85,.3)}
-.warp .dipper{transform:scale(3.2) !important;transform-origin:var(--wx) var(--wy);transition:transform 1.1s cubic-bezier(.6,0,.85,.3);z-index:8}   /* 누른 별은 남색 원 위에서 끝까지 빛난다 (나머지는 투명) */
-.warp .motto,.warp .lab,.warp .credit,.warp .torch,.warp svg.lines,.warp .alcor,.warp .star:not(.on){opacity:0 !important;transition:opacity .3s ease}
-.warp .star.on .spk.h{transform:translate(-50%,-50%) scaleX(40) !important;opacity:1 !important;transition:transform .9s cubic-bezier(.55,0,.8,.3),opacity .2s}
-.warp .star.on .spk.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(40) !important;opacity:1 !important;transition:transform .9s cubic-bezier(.55,0,.8,.3),opacity .2s}
-.warp .star.on .spk.d,.warp .star.on .spk.d2,.warp .star.on .ring,.warp .star.on .wave{opacity:0 !important}
+/* 별을 누르면: 그 별 쪽으로 살짝 줌인하면서 다음 페이지로 크로스페이드.
+   PC는 페이지가 바뀌는 동안 이전 화면이 그 별을 향해 계속 커지며 사라지고 새 페이지가 겹쳐 나타난다 (index.html의 html.warp-nav 전환).
+   폰은 페이지 전환 효과를 쓰지 않아서, 여기서 줌인하며 어둡게 사라진 뒤 넘어간다 */
+.warp .photo{transform:scale(1.15) !important;transform-origin:var(--pwx) var(--pwy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
+.warp .dipper{transform:scale(1.4) !important;transform-origin:var(--wx) var(--wy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
+.warp .motto,.warp .lab,.warp .credit,.warp .torch{opacity:0 !important;transition:opacity .25s ease}
+.sky.warp-fade{opacity:0;transition:opacity .45s ease .1s}
 .warp{cursor:default}
 .p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
@@ -251,7 +248,6 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
   <div class="motto" id="motto"></div>
   <div class="credit" id="credit"></div>
-  <div class="veil"></div>
 </main>
 
 <script>
@@ -426,12 +422,16 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     sky.style.setProperty('--wx', sx + 'px'); sky.style.setProperty('--wy', sy + 'px');
     sky.style.setProperty('--pwx', (sx + 24) + 'px'); sky.style.setProperty('--pwy', (sy + 24) + 'px');   // .photo는 사방 24px 더 크다
     activate(el.dataset.id); sky.classList.add('warp');
-    setTimeout(() => {
-      // 페이지가 바뀌는 순간 사이트 바탕(밝은 베이지)이 비치지 않게, 넘어가는 동안만 바탕을 남색으로 (index.html의 html.warp-nav)
-      try { const r = window.top.document.documentElement; r.classList.add('warp-nav'); setTimeout(() => r.classList.remove('warp-nav'), 1400); } catch (_) {}
-      try { window.top.location.href = el.href; } catch (_) { location.href = el.href; }
-    }, 1150);
-    setTimeout(() => sky.classList.remove('warp'), 2600);   // 홈으로 돌아왔을 때 원래대로
+    let top = null; try { top = window.top; void top.document; } catch (_) { top = null; }
+    const vt = !!(top && top.document.startViewTransition && top.innerWidth > 1024);   // index.html withTransition과 같은 조건
+    if (top) {
+      const r = fe ? fe.getBoundingClientRect() : { left: 0, top: 0 }, root = top.document.documentElement;
+      root.style.setProperty('--wo', (r.left + sx) + 'px ' + (r.top + sy) + 'px');   // 바깥 페이지 기준 별 위치 (전환 중 확대 중심)
+      root.classList.add('warp-nav'); setTimeout(() => root.classList.remove('warp-nav'), 1500);
+    }
+    if (!vt) sky.classList.add('warp-fade');
+    setTimeout(() => { try { top.location.href = el.href; } catch (_) { location.href = el.href; } }, vt ? 300 : 520);
+    setTimeout(() => sky.classList.remove('warp', 'warp-fade'), 2600);   // 홈으로 돌아왔을 때 원래대로
   }));
   sky.addEventListener('pointermove', e => {
     tx = e.clientX/W - .5; ty = e.clientY/H - .5; px = e.clientX; py = e.clientY;

@@ -468,6 +468,10 @@ html:not(.rfont) .rpt-paper{opacity:0}
 @keyframes rfs-vt-out{to{opacity:0}}
 /* 별자리에서 별을 눌러 넘어가는 동안: 바탕을 남색으로 (assets/dipper.html warp) */
 html.warp-nav,html.warp-nav body{background:#0B1524 !important}
+html.warp-nav::view-transition-old(root){animation:rfs-warp-out .75s cubic-bezier(.35,0,.65,1) both;transform-origin:var(--wo,50% 50%)}
+html.warp-nav::view-transition-new(root){animation:rfs-warp-in .7s cubic-bezier(.35,0,.65,1) .08s both}
+@keyframes rfs-warp-out{to{opacity:0;transform:scale(1.45)}}
+@keyframes rfs-warp-in{from{opacity:0;transform:scale(1.03)}}
 @keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
 /* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
 @keyframes rfs-vt-fade{from{opacity:0}}
