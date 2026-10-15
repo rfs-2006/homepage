@@ -586,16 +586,17 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-dgh b{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700}.ag-dgh span{font-size:12px;color:rgba(247,246,243,.5)}
 .ag-dgh i{margin-left:auto;font-style:normal;font-size:18px;color:#8FAADC}.ag-dgh:hover{background:rgba(32,56,100,.35)}
 .ag-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;padding:0 18px 8px;border-top:1px solid rgba(247,246,243,.08)}
-.ag-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,.06);font-size:14px;color:rgba(247,246,243,.9)}
+.ag-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto auto;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,.06);font-size:14px;color:rgba(247,246,243,.9)}
 .ag-row b{font-weight:700;color:#F7F6F3}.ag-row .c{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ag-row .i{font-size:11px;letter-spacing:.04em;color:#8FAADC;white-space:nowrap}
+.ag-row .ph{font-size:12.5px;color:rgba(247,246,243,.75);font-variant-numeric:tabular-nums;white-space:nowrap;text-decoration:none}.ag-row .ph:hover{color:#8FAADC}
 .ag-row .cf{font-size:11px;color:rgba(247,246,243,.55);border:1px solid rgba(247,246,243,.2);padding:3px 8px;white-space:nowrap}.ag-row .cf:hover{color:#0F1B2E;background:#8FAADC;border-color:#8FAADC}
 @media (max-width:860px){
   .ag-hero{padding-top:104px}.ag-stats{gap:26px}.ag-search{padding:16px 16px 18px;margin-top:26px}.ag-search input{font-size:16px}
   .ag-tiles{display:flex;overflow-x:auto;scrollbar-width:none}.ag-tiles a{flex:0 0 96px}
   .ag-user{order:-1;width:100%;justify-content:flex-start;gap:12px;font-size:12px}.ag-user .btn{padding:6px 10px !important;font-size:10px !important}
   .ag-stats{flex-wrap:wrap;row-gap:14px}
-  .ag-rows{grid-template-columns:1fr;padding:0 14px 6px}.ag-row{grid-template-columns:56px minmax(0,1fr) auto;font-size:13px}.ag-row .i{display:none}
+  .ag-rows{grid-template-columns:1fr;padding:0 14px 6px}.ag-row{grid-template-columns:56px minmax(0,1fr) auto auto;font-size:13px}.ag-row .i{display:none}
   .ag-cards,.ag-two{grid-template-columns:1fr}.ag-tabs{top:56px}
 }
 </style>
@@ -3078,7 +3079,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                     <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
                       <div class="ag-rows">
                         <sc-for list="{{ g.rows }}" as="a" hint-placeholder-count="4">
-                          <div class="ag-row"><b>{{ a.name }}</b><span class="c">{{ a.line }}</span><span class="i">{{ a.industry }}</span><a href="#" onClick="{{ a.on }}" class="cf">커피챗</a></div>
+                          <div class="ag-row"><b>{{ a.name }}</b><span class="c">{{ a.line }}</span><span class="i">{{ a.industry }}</span><a href="{{ a.tel }}" class="ph">{{ a.phone }}</a><a href="#" onClick="{{ a.on }}" class="cf">커피챗</a></div>
                         </sc-for>
                       </div>
                     </sc-if>
@@ -5820,7 +5821,7 @@ class Component extends DCLogic {
         const closed = s.dirClosed || {}, filtering = !!dq || s.dirInd !== '전체';
         return g.map((x) => { const open = filtering || !closed[x.k]; return { label: x.k < 999 ? x.k + '기' : '기수 미상', count: x.rows.length + '명', open, mark: open ? '−' : '+',
           toggle: (e) => { e.preventDefault(); this.setState({ dirClosed: { ...(this.state.dirClosed || {}), [x.k]: open } }); },
-          rows: x.rows.map((a) => ({ name: a.name, line: a.company ? a.company + (a.role ? ' · ' + a.role : '') : '—', industry: a.industry || '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })) }; }); })(),
+          rows: x.rows.map((a) => ({ name: a.name, line: a.company ? a.company + (a.role ? ' · ' + a.role : '') : '—', industry: a.industry || '', phone: a.phone || '', tel: a.phone ? 'tel:' + a.phone.replace(/\D/g, '') : '#', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })) }; }); })(),
       dirAllOpen: (e) => { e.preventDefault(); this.setState({ dirClosed: {} }); },
       dirAllClose: (e) => { e.preventDefault(); const c = {}; dirHits.forEach((a) => { c[coh(a)] = true; }); this.setState({ dirClosed: c }); },
       agTwoCls: (ID.SCHEDULE || []).length ? 'ag-two' : 'ag-two one',
