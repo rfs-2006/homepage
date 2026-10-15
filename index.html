@@ -729,8 +729,12 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-asof i::after,.fd-foot i::after{content:'';position:absolute;left:4px;top:1.5px;width:1.5px;height:4px;background:currentColor;box-shadow:1.5px 3px 0 -0.2px currentColor}
 .fd-nav{position:sticky;top:64px;z-index:20;background:rgba(15,27,46,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(247,246,243,0.1)}
 .fd-nav .wrap{display:flex;gap:6px;padding:12px 35px}
-.fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:15px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
+.fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
 .fd-nav a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.5)}
+/* ABOUT 탭 줄: 사진 위에서 회색으로 뜨지 않게 짙은 남색 + 위아래 가는 선 */
+.fd-nav.ab-nav{background:linear-gradient(180deg,rgba(11,21,38,.95),rgba(14,26,46,.93));backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-top:1px solid rgba(247,246,243,.07);border-bottom:1px solid rgba(143,170,220,.16)}
+.fd-nav.ab-nav a{color:rgba(247,246,243,.74);letter-spacing:.02em}
+.fd-nav.ab-nav a:hover{color:#FFFFFF;border-color:rgba(143,170,220,.45);background:rgba(143,170,220,.06)}
 .fd-body{padding:28px 35px 90px}
 .fd-card{background:rgba(21,35,59,0.86);border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
 .fd-ch{display:flex;justify-content:space-between;align-items:baseline;gap:12px 28px;flex-wrap:wrap}
@@ -780,7 +784,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
 @media (max-width:860px){
   .fd-kc{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:28px}.fd-kc>div{padding:16px 16px 16px;border-left:0;border-top:1px solid rgba(247,246,243,0.08)}.fd-kc>div:nth-child(-n+2){border-top:0}.fd-kc>div:nth-child(even){border-left:1px solid rgba(247,246,243,0.08)}.fd-kc>div:last-child:nth-child(odd){grid-column:1/3}.fd-kc .kv{font-size:24px;margin-top:10px}.fd-kc .kk{font-size:11.5px}.fd-kc .ks{font-size:11.5px;margin-top:6px}
-  .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px;overflow-x:auto;scrollbar-width:none}.fd-nav .wrap::-webkit-scrollbar{display:none}.fd-nav a{font-size:13.5px;padding:8px 10px;flex:1 0 auto;white-space:nowrap}
+  .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px;overflow-x:auto;scrollbar-width:none}.fd-nav .wrap::-webkit-scrollbar{display:none}.fd-nav a{font-size:14.5px;padding:8px 10px;flex:1 0 auto;white-space:nowrap}
   .fd-body{padding:16px 12px 64px}.fd-card{padding:24px 16px 20px}
   .fd-ac{grid-template-columns:1fr;gap:28px}.fd-ring{width:260px;height:260px;margin:0 auto}.fd-ring .cv{font-size:32px}.fd-li .ln{flex-basis:84px}
   .fd-bars{height:220px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px;white-space:normal;line-height:1.3;word-break:keep-all}
@@ -944,7 +948,7 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 /* 리서치·소개·구성원·리크루팅: 펀드 페이지와 같은 구조 (히어로 → 고정 탭 → 카드) */
 .pg-tabs{position:sticky;top:64px;z-index:20;background:rgba(247,246,243,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E2E0DA}
 .pg-tabs .wrap{display:flex;gap:6px;padding:12px 35px}
-.pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:15px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
+.pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
 .pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
 main.pgx{background:#EEEDE8 !important}
 main.pgx .story h2,main.pgx .story .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(29px,2.9vw,42px) !important;font-weight:400 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
@@ -964,7 +968,7 @@ main.pgx h2,main.pgx .sec-title{font-family:'Noto Serif KR',serif !important;fon
 main.pgx .pres{margin:20px auto;max-width:1290px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx .pres .pres-in{padding:64px 56px}
 @media (max-width:860px){
-  .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:13.5px;padding:8px 0}
+  .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:14.5px;padding:8px 0}
   main.pgx>section[data-nav="light"]:not(.pres)>.wrap{width:calc(100% - 24px);padding:32px 20px !important}
   main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero),main.pgx .pres{width:calc(100% - 24px);margin:12px auto}
   main.pgx.mhome>section[data-nav="light"]:not(.pres){background:#FFFFFF !important;border:1px solid #E2E0DA !important;margin:12px;padding:32px 20px !important}
@@ -1860,7 +1864,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span> <span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
       </div>
     </section>
-    <nav class="fd-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
+    <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
     <div class="story">
     <section data-snap="" data-tab="intro" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
@@ -2202,7 +2206,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title fx" style="--n:11" aria-label="About R.F.S."><span class="tw"><span class="tl" style="--i:0">A</span><span class="tl" style="--i:1">b</span><span class="tl" style="--i:2">o</span><span class="tl" style="--i:3">u</span><span class="tl" style="--i:4">t</span></span><br><span class="tw"><span class="tl" style="--i:5">R</span><span class="tl" style="--i:6">.</span><span class="tl" style="--i:7">F</span><span class="tl" style="--i:8">.</span><span class="tl" style="--i:9">S</span><span class="tl" style="--i:10">.</span></span></h1>
       </div>
     </section>
-    <nav class="fd-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
+    <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
     <div class="story">
     <section data-tab="intro" id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
