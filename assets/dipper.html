@@ -245,10 +245,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 /* 별을 누르면: 그 별 쪽으로 살짝 줌인하면서 다음 페이지로 크로스페이드.
    PC는 페이지가 바뀌는 동안 이전 화면이 그 별을 향해 계속 커지며 사라지고 새 페이지가 겹쳐 나타난다 (index.html의 html.warp-nav 전환).
    폰은 페이지 전환 효과를 쓰지 않아서, 여기서 줌인하며 어둡게 사라진 뒤 넘어간다 */
-.warp .photo{transform:scale(1.15) !important;transform-origin:var(--pwx) var(--pwy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
-.warp .dipper{transform:scale(1.4) !important;transform-origin:var(--wx) var(--wy);transition:transform .55s cubic-bezier(.4,0,.75,.5)}
+.warp .photo{transform:scale(1.15) !important;transform-origin:var(--pwx) var(--pwy);transition:transform .6s cubic-bezier(.3,.1,.6,1)}
+.warp .dipper{transform:scale(1.4) !important;transform-origin:var(--wx) var(--wy);transition:transform .6s cubic-bezier(.3,.1,.6,1)}
 .warp .motto,.warp .lab,.warp .credit,.warp .torch,.warp .spk,.warp .ring,.warp .wave{opacity:0 !important;transition:opacity .2s ease}   /* 십자 빛줄기·고리는 전환 중 안 보이게 */
-.sky.warp-fade{opacity:0;transition:opacity .45s ease .1s}
+.sky.warp-fade{opacity:0;transition:opacity .4s ease}
 .warp{cursor:default}
 .p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
@@ -456,7 +456,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
       // 폰: 새 페이지가 0.6초 동안 서서히 나타나게 (index.html의 html.warp-in)
       if (!vt && top) { const root = top.document.documentElement; root.classList.add('warp-in'); setTimeout(() => root.classList.remove('warp-in'), 1500); }
       try { top.location.href = el.href; } catch (_) { location.href = el.href; }
-    }, vt ? 300 : 520);
+    }, vt ? 30 : 330);   // 멈춤 없이: PC는 바로 넘어가며 이전 화면이 계속 커지고 흐려진다, 폰은 확대·흐려짐 도중에 넘어간다
     setTimeout(() => sky.classList.remove('warp', 'warp-fade'), 2600);   // 홈으로 돌아왔을 때 원래대로
   }));
   sky.addEventListener('pointermove', e => {
