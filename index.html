@@ -1188,7 +1188,6 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .rlc-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}
 .rlc-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .rlc:hover .rlc-img{border-color:#0F1B2E}.rlc:hover .rlc-img img{transform:scale(1.03)}
-.rlc-meta{margin:14px 0 0;font-size:12.5px;color:rgba(26,26,26,.5)}.rlc-meta span{color:rgba(26,26,26,.25);margin:0 2px}
 .rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,.45)}
 .rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
 .rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
@@ -1829,7 +1828,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A">
           <sc-for list="{{ rRelated }}" as="r" hint-placeholder-count="3">
             <div onClick="{{ r.open }}" class="rowh" style="display:flex;justify-content:space-between;gap:16px;padding:14px 4px;border-bottom:1px solid #D0CECE;cursor:pointer">
-              <a href="{{ r.href }}" onClick="{{ r.open }}" style="font-weight:600">{{ r.name }} <span style="color:rgba(26,26,26,0.65);font-weight:400">({{ r.ticker }})</span></a>
+              <a href="{{ r.href }}" onClick="{{ r.open }}" style="font-weight:600">{{ r.name }}</a>
               <span style="font-size:13px;color:rgba(26,26,26,0.65);font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.op }} · {{ r.term }}</span>
             </div>
           </sc-for>
