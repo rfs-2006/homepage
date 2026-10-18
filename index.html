@@ -107,12 +107,11 @@
   if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) window.__rfsFont();
 })();
 </script>
-<script src="./image-slot.js"></script>
+<script src="./image-slot.js?v=2"></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
 .covrow:hover{background:rgba(32,56,100,0.035)}
-@font-face{font-family:'ChosunIlboMyungjo';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');font-weight:400;font-display:swap}
 html,body{margin:0;padding:0;background:#F7F6F3;color:#1A1A1A;font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{color:#0F1B2E}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -250,7 +249,7 @@ a:hover{color:#203864}
 /* 동작 줄이기 설정: 배경 확대는 빼고 로고·문구는 움직임 없이 페이드만, 선 채우기(진행 표시)는 유지 */
 @keyframes boot-fade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.boot-img{animation:none}.boot-seal,.boot-cap{animation-name:boot-fade}}
-@media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:10px;letter-spacing:0.14em;line-height:1.8}}
+@media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:11.5px;letter-spacing:0.14em;line-height:1.8}}
 .page-banner{position:relative;height:280px;display:flex;align-items:flex-end;overflow:hidden}
 .page-banner h1{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 35px 40px;width:100%;box-sizing:border-box;color:#F7F6F3;font-family:'Noto Serif KR',serif;font-size:42px;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
 .wrap{max-width:1360px;margin:0 auto;padding:0 35px;box-sizing:border-box}
@@ -276,7 +275,7 @@ h1,h2,h3{text-wrap:balance}
 @media (prefers-reduced-motion:reduce){.rv{transform:none;transition:opacity 300ms linear;transition-delay:0ms}.rv-left,.rv-right,.rv-up{transform:none}}
 .anchor-nav{position:fixed;right:calc((100vw - min(1240px, 100vw - 70px)) / 2 - 100px);top:50%;transform:translateY(-50%);z-index:40;opacity:0;pointer-events:none;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav.is-vis{opacity:1;pointer-events:auto}
-.anchor-nav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 0;font-size:12px;letter-spacing:0.06em;color:rgba(26,26,26,0.42);transition:color 120ms cubic-bezier(0.23,1,0.32,1)}
+.anchor-nav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 0;font-size:12px;letter-spacing:0.06em;color:rgba(26,26,26,0.68);transition:color 120ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav .dot{width:6px;height:6px;border:1px solid currentColor;flex-shrink:0;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav a.active .dot{background:currentColor}
 @media (max-width:1520px){
@@ -551,7 +550,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-stats>div>span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C9D8F5}
 .ag-search{margin-top:36px;background:rgba(15,27,46,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(247,246,243,.14);border-top:2px solid #8FAADC;padding:22px 26px 26px}
 .ag-search input{width:100%;font:inherit;font-size:20px;border:0;border-bottom:1px solid rgba(247,246,243,.2);outline:0;padding:6px 0 12px;background:transparent;color:#F7F6F3}
-.ag-search input::placeholder{color:rgba(247,246,243,.45)}
+.ag-search input::placeholder{color:rgba(247,246,243,0.62)}
 .ag-tiles{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:rgba(247,246,243,.1);border:1px solid rgba(247,246,243,.1);margin-top:16px}
 .ag-tiles a{background:rgba(15,27,46,.85);padding:14px 14px 12px;color:#F7F6F3;transition:background .2s}.ag-tiles a:hover{background:rgba(32,56,100,.7)}
 .ag-tiles b{display:block;font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:#F7F6F3;line-height:1.1}.ag-tiles a>span{font-size:12px;color:rgba(247,246,243,.55)}
@@ -576,7 +575,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-box{background:rgba(21,35,59,.86);border:1px solid rgba(247,246,243,.1);padding:24px 26px 14px}
 .ag-li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid rgba(247,246,243,.08);font-size:14px;color:#F7F6F3;transition:color .2s}
 .ag-li:last-child{border-bottom:0}a.ag-li:hover{color:#C9D8F5}
-.ag-li .m{font-size:12px;color:rgba(247,246,243,.45);white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#8FAADC;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#C9D8F5;margin-right:8px}
+.ag-li .m{font-size:12px;color:rgba(247,246,243,0.62);white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#8FAADC;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#C9D8F5;margin-right:8px}
 .ag-empty{font-size:13px;color:rgba(247,246,243,.5)}
 .ag-two.one{grid-template-columns:1fr}
 /* 알럼나이 디렉토리: 기수별 명부 */
@@ -594,7 +593,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 @media (max-width:860px){
   .ag-hero{padding-top:104px}.ag-stats{gap:26px}.ag-search{padding:16px 16px 18px;margin-top:26px}.ag-search input{font-size:16px}
   .ag-tiles{display:flex;overflow-x:auto;scrollbar-width:none}.ag-tiles a{flex:0 0 96px}
-  .ag-user{order:-1;width:100%;justify-content:flex-start;gap:12px;font-size:12px}.ag-user .btn{padding:6px 10px !important;font-size:10px !important}
+  .ag-user{order:-1;width:100%;justify-content:flex-start;gap:12px;font-size:12px}.ag-user .btn{padding:6px 10px !important;font-size:11.5px !important}
   .ag-stats{flex-wrap:wrap;row-gap:14px}
   .ag-rows{grid-template-columns:1fr;padding:0 14px 6px}.ag-row{grid-template-columns:56px minmax(0,1fr) auto auto;font-size:13px}.ag-row .i{display:none}
   .ag-cards,.ag-two{grid-template-columns:1fr}.ag-tabs{top:56px}
@@ -608,21 +607,21 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:32px;border-top:1px solid rgba(247,246,243,0.3)}
 .fd-kpis div{padding:16px 18px 4px 0;font-variant-numeric:tabular-nums}
 .fd-kpis .kv{display:block;font-family:'Noto Serif KR',serif;font-size:26px;letter-spacing:-0.02em;font-weight:700}
-.fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.42);margin-top:4px}
+.fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.62);margin-top:4px}
 .fd-h{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:56px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);color:#F7F6F3}
-.fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.42)}
+.fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.62)}
 .fd-chart{display:block;width:100%;height:280px;margin-top:28px}
 .fd-legend{display:flex;gap:18px;font-size:12px;color:rgba(247,246,243,0.68);margin-top:10px}.fd-legend i{display:inline-block;width:14px;height:2px;vertical-align:4px;margin-right:6px}
 .fd-attr{display:flex;height:34px;margin-top:18px;gap:2px}
 .fd-attr div{display:flex;align-items:center;justify-content:center;flex-basis:0;min-width:2px;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
-.fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.42);margin-top:8px}
+.fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.62);margin-top:8px}
 .fd-hold{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;align-items:center;padding:14px 0;border-top:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
 .fd-hold:first-of-type{border-top:0}
-.fd-hold .nm b{display:block;font-size:15px;font-weight:600}.fd-hold .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px}
+.fd-hold .nm b{display:block;font-size:15px;font-weight:600}.fd-hold .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px}
 .fd-hold .wbar{position:relative;height:22px}.fd-hold .wbar i{position:absolute;left:0;top:0;bottom:0;background:rgba(143,170,220,0.22)}
 .fd-hold .wv{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;white-space:nowrap}
-.fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.42);white-space:nowrap}
-.fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.42)}
+.fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.62);white-space:nowrap}
+.fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.62)}
 @keyframes fdFu0{0%{background:rgba(242,98,107,0.22)}}@keyframes fdFu1{0%{background:rgba(242,98,107,0.22)}}
 @keyframes fdFd0{0%{background:rgba(94,155,255,0.22)}}@keyframes fdFd1{0%{background:rgba(94,155,255,0.22)}}
 @media (max-width:760px){
@@ -630,23 +629,23 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
   .fd-chart{height:200px}
   .fd-hold{grid-template-columns:minmax(0,1fr) 90px;grid-template-rows:auto auto;gap:6px 12px}
   .fd-hold .wbar{grid-column:1/3;grid-row:2;height:18px}.fd-hold .c3,.fd-hold .c4{display:none}
-  .fd-attr div{font-size:10px}
+  .fd-attr div{font-size:11.5px}
 }
 
 
 .fd-wrap{padding:64px 35px 72px !important}
 
-.fd-lh{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;padding:0 0 10px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-lh{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;padding:0 0 10px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62)}
 .fd-lh .r{text-align:right}
-.fd-mh{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;padding:12px 0 8px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);border-bottom:1px solid rgba(247,246,243,0.12)}
+.fd-mh{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;padding:12px 0 8px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62);border-bottom:1px solid rgba(247,246,243,0.12)}
 .fd-mh .r{text-align:right}
 .fd-pt{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
 .fd-pr{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:12px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.10);font-size:15px;font-variant-numeric:tabular-nums;color:rgba(247,246,243,0.8)}
 .fd-pr>*:not(:first-child){text-align:right}
 .fd-pr b{font-weight:700}
-.fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);padding:12px 0 8px}
+.fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62);padding:12px 0 8px}
 .fd-h3{font-size:17px;font-weight:700;color:#F7F6F3;margin:0}
-@media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:10px}}
+@media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:11.5px}}
 
 /* 펀드·RFM 표 색과 등장 효과 */
 .fd-t{font-family:'Noto Serif KR',serif;font-weight:700 !important;letter-spacing:-0.03em !important}
@@ -784,7 +783,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-row{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
 .fd-lh{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
 .fd-card .fd-movers{margin-top:18px}
-.fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
+.fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.62)}
 @media (max-width:860px){
   .fd-kc{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:28px}.fd-kc>div{padding:16px 16px 16px;border-left:0;border-top:1px solid rgba(247,246,243,0.08)}.fd-kc>div:nth-child(-n+2){border-top:0}.fd-kc>div:nth-child(even){border-left:1px solid rgba(247,246,243,0.08)}.fd-kc>div:last-child:nth-child(odd){grid-column:1/3}.fd-kc .kv{font-size:24px;margin-top:10px}.fd-kc .kk{font-size:11.5px}.fd-kc .ks{font-size:11.5px;margin-top:6px}
   .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px;overflow-x:auto;scrollbar-width:none}.fd-nav .wrap::-webkit-scrollbar{display:none}.fd-nav a{font-size:14.5px;padding:8px 10px;flex:1 0 auto;white-space:nowrap}
@@ -826,7 +825,7 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .fd-stmt ul{list-style:none;margin:14px 0 0;padding:0}
 .fd-stmt li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.75)}
 .fd-stmt li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
-.fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.4);margin-top:48px;word-break:keep-all}
+.fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.62);margin-top:48px;word-break:keep-all}
 @media (max-width:860px){/* (unused) */.fdpage .fd-stmt-x{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
 
 :root{--up:#F2626B;--dn:#5E9BFF;--flat:rgba(247,246,243,0.45)}
@@ -848,24 +847,24 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .vc{display:flex;flex-direction:column;height:280px;margin-top:30px;padding-left:44px}
 .vc-p{position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;border-bottom:1px solid rgba(247,246,243,0.22)}
 .vc-p .gl{position:absolute;left:0;right:0;height:0;border-top:1px dashed rgba(247,246,243,0.08)}
-.vc-p .gl em{position:absolute;right:calc(100% + 12px);top:-8px;font-style:normal;font-size:11px;line-height:14px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vc-p .gl em{position:absolute;right:calc(100% + 12px);top:-8px;font-style:normal;font-size:11px;line-height:14px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums;white-space:nowrap}
 .vc-b{position:relative;flex:1;height:100%}
 .vc-b s,.vc-b i{position:absolute;bottom:0;left:50%;width:min(40px,46%);margin-left:calc(min(40px,46%) / -2);border-radius:2px 2px 0 0}
 .vc-b s{top:0;background:linear-gradient(180deg,rgba(247,246,243,0),rgba(247,246,243,0.04))}
 .vc-b i{min-height:3px;background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 40%,#0F1B2E) 100%);box-shadow:0 0 26px -6px var(--c);transform-origin:bottom;transition:filter .25s}
 .vc-b i::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:rgba(255,255,255,0.5)}
 .vc-b b{position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
-.vc-b.z b{color:rgba(247,246,243,0.28);font-family:inherit;font-size:12px;font-weight:500}
+.vc-b.z b{color:rgba(247,246,243,0.62);font-family:inherit;font-size:12px;font-weight:500}
 .vc-b.z i{box-shadow:none}.vc-b.z i::before{display:none}
 .vc-b:hover i{filter:brightness(1.15)}
 .vc-x{display:flex}
 .vc-x span{flex:1;text-align:center;padding-top:12px;font-size:12.5px;font-weight:600;color:rgba(247,246,243,0.75);word-break:keep-all;line-height:1.35}
 .vc-rfm .vc-x span{font-weight:500;font-variant-numeric:tabular-nums}
-.vc-rfm .vc-x span.k{color:#8FAADC}.vc-rfm .vc-x span.k::after{content:'KOSPI';display:block;font-size:10px;letter-spacing:0.08em;margin-top:2px}
-.vc-cap{margin-top:16px;font-size:12px;color:rgba(247,246,243,0.45)}
+.vc-rfm .vc-x span.k{color:#8FAADC}.vc-rfm .vc-x span.k::after{content:'KOSPI';display:block;font-size:11.5px;letter-spacing:0.08em;margin-top:2px}
+.vc-cap{margin-top:16px;font-size:12px;color:rgba(247,246,243,0.62)}
 .fd-sec{display:flex;flex-direction:column}
 .fd-sec .vc{flex:1;min-height:280px}
-@media (max-width:860px){.vc{height:240px;padding-left:30px}.vc-p .gl em{right:calc(100% + 8px);font-size:10px}.vc-b s,.vc-b i{width:min(30px,56%);margin-left:calc(min(30px,56%) / -2)}.vc-b b{font-size:13px}.vc-b.z b{font-size:10.5px}.vc-x span{font-size:10.5px}.fd-sec .vc{min-height:240px}}
+@media (max-width:860px){.vc{height:240px;padding-left:30px}.vc-p .gl em{right:calc(100% + 8px);font-size:11.5px}.vc-b s,.vc-b i{width:min(30px,56%);margin-left:calc(min(30px,56%) / -2)}.vc-b b{font-size:13px}.vc-b.z b{font-size:11.5px}.vc-x span{font-size:11.5px}.fd-sec .vc{min-height:240px}}
 @media (max-width:1100px){.fd-two{grid-template-columns:1fr}}
 @media (min-width:861px){.fd-two .fd-mh,.fd-two .fd-mv{grid-template-columns:minmax(72px,130px) minmax(30px,1fr) 80px 72px;gap:12px}}
 .fd-row .rt small{white-space:nowrap}
@@ -901,9 +900,9 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .kc-light{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:2px solid #203864}
 .kc-light>div{padding:22px 26px;border-left:1px solid #E2E0DA}
 .kc-light>div:first-child{border-left:0}
-.kc-light .kk{display:block;font-style:normal;font-size:12px;color:rgba(26,26,26,0.55)}
+.kc-light .kk{display:block;font-style:normal;font-size:12px;color:rgba(26,26,26,0.68)}
 .kc-light .kv{display:block;margin-top:12px;font-family:'Pretendard Variable',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;color:#0F1B2E;white-space:nowrap}
-.kc-light .ks{display:block;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.5);min-height:15px}
+.kc-light .ks{display:block;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.68);min-height:15px}
 main.pgx>section.kc-sec[data-nav="light"]:not(.pres)>.wrap{padding:0 !important}
 @media (max-width:860px){
   .pg-hero{min-height:44svh !important}.pg-hero .pg-hero-in{padding:104px 20px 56px !important}
@@ -922,8 +921,8 @@ main.pgx>section.kc-sec[data-nav="light"]:not(.pres)>.wrap{padding:0 !important}
 .oc .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .oc:hover .ph img{transform:scale(1.04)}
 .oc b{display:block;margin-top:14px;font-size:17px;font-weight:700;color:#0F1B2E;letter-spacing:-0.01em;font-family:'Pretendard Variable',sans-serif}
-.oc em{display:block;margin-top:6px;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#203864}
-.oc small{display:block;margin-top:3px;font-size:12.5px;color:rgba(26,26,26,0.55)}
+.oc em{display:block;margin-top:6px;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#203864}
+.oc small{display:block;margin-top:3px;font-size:12.5px;color:rgba(26,26,26,0.68)}
 @media (max-width:860px){.og-row{gap:22px 14px}.oc{width:calc(50% - 7px)}.oc b{font-size:15px}.og-h{margin:30px 0 16px !important}}
 /* 최신 리포트 카드는 고딕 */
 .rpaper,.rpaper *,.mfeat>*,.mfeat>* *{font-family:'Pretendard Variable',Pretendard,sans-serif !important}
@@ -1118,7 +1117,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-row .nm b{display:block;font-size:17px;font-weight:700;color:#F7F6F3;letter-spacing:-0.01em}
 .fd-row .nm small{display:block;font-size:12px;color:rgba(247,246,243,0.55);margin-top:4px}
 .fd-row .nm .rp{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#8FAADC;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:14px;font-weight:600;color:rgba(247,246,243,0.9)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
+.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:14px;font-weight:600;color:rgba(247,246,243,0.9)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px}
 .fd-row .wt{text-align:right;font-size:17px;font-weight:700;color:#F7F6F3}
 .fd-row .rt{text-align:right}.fd-row .rt b{display:block;font-size:15px;font-weight:700}.fd-row .rt small{display:block;font-size:11.5px;margin-top:3px}
 .fd-movers{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
@@ -1152,15 +1151,15 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-chips .cv{font-size:14px;font-weight:700}
 .fd-cw{display:grid;grid-template-columns:48px minmax(0,1fr) 128px;margin-top:28px}
 .fd-ya,.fd-ends{position:relative;height:280px}
-.fd-ya .yl{font-style:normal;position:absolute;right:10px;transform:translateY(-50%);font-size:11px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums}
+.fd-ya .yl{font-style:normal;position:absolute;right:10px;transform:translateY(-50%);font-size:11px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums}
 .fd-ends .el{font-style:normal;position:absolute;left:12px;transform:translateY(-50%);font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .fd-plot{position:relative}
 .fd-grid{position:absolute;left:0;right:0;top:0;height:280px;pointer-events:none}
 .fd-grid i{position:absolute;left:0;right:0;height:1px;background:rgba(247,246,243,0.08)}
 .fd-plot .fd-chart{margin-top:0 !important;height:280px !important}
 .fd-xa{position:relative;height:22px;margin-top:6px}
-.fd-xa .xl{font-style:normal;position:absolute;top:0;font-size:11px;color:rgba(247,246,243,0.45);white-space:nowrap}
-.fd-th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-xa .xl{font-style:normal;position:absolute;top:0;font-size:11px;color:rgba(247,246,243,0.62);white-space:nowrap}
+.fd-th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62)}
 .fd-th .r{text-align:right}
 .fd-hold .nm b{font-size:17px !important;font-weight:700 !important;color:#F7F6F3;letter-spacing:-0.01em}
 .fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
@@ -1191,9 +1190,24 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .rlc-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}
 .rlc-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .rlc:hover .rlc-img{border-color:#0F1B2E}.rlc:hover .rlc-img img{transform:scale(1.03)}
-.rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,.45)}
+.rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,0.68)}
 .rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
 .rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
+/* 접근성 (애플 HIG 기준 점검): 폰에서 누르는 곳은 최소 44px, 닫힌 메뉴는 키보드로도 못 들어가게 */
+.mmenu{visibility:hidden;transition:opacity 200ms ease,transform 200ms ease,visibility 0s linear 200ms}
+.mmenu.open{visibility:visible;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1),transform 260ms cubic-bezier(0.23,1,0.32,1),visibility 0s}
+@media (max-width:860px){
+  footer a{display:inline-flex;align-items:center;min-height:44px}
+  .pager,.mhome .pager{display:flex;justify-content:center}
+  .pager a,.mhome .pager a{min-width:34px !important;padding-left:0 !important;padding-right:0 !important;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .burger{min-height:44px;min-width:64px}
+  .btn,button.btn,a.btn{min-height:44px;display:inline-flex !important;align-items:center;justify-content:center}
+  .pg-tabs a,.fd-nav a{min-height:44px;display:flex;align-items:center;justify-content:center}
+  .nav>a:first-child,.nav a.logo,.nav .wordmark-block{min-height:44px}
+  .fd-tabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px}
+  .mselects select,main.pgx select{min-height:44px}
+}
+.striplab{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,246,243,.75);margin-right:9px}
 main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -1227,13 +1241,13 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 .rfm-race{position:relative}
 .rfmlane{position:absolute;left:0;right:0;top:0;height:var(--rH);display:grid;grid-template-columns:44px 168px minmax(0,1fr) 96px;gap:16px;align-items:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .rfmlane.me{background:rgba(143,170,220,0.10)}
-.rfmlane .rk{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:rgba(247,246,243,0.42);text-align:right;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.rfmlane .rk{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:rgba(247,246,243,0.62);text-align:right;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
 .rfmlane.top .rk{color:#F7F6F3}
 .rfmlane .nm{min-width:0}
 .rfmlane .nn{font-size:15px;font-weight:600;color:#F7F6F3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rfmlane .nn b{font-weight:600}
-.rfmlane .ns{font-style:normal;font-size:11.5px;font-weight:400;color:rgba(247,246,243,0.45)}
-.rfmlane .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rfmlane .ns{font-style:normal;font-size:11.5px;font-weight:400;color:rgba(247,246,243,0.62)}
+.rfmlane .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rfmlane .trk{position:relative;height:100%}
 .rfmlane .trk::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(247,246,243,0.10)}
 .rfmlane .vl{position:absolute;top:0;bottom:0;width:1px}
@@ -1242,7 +1256,7 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 .rfmlane .rt{text-align:right;font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
 .rfmlane .rt b{display:block;font-size:18px;font-weight:700}
 .rfmlane .rt small{display:block;font-size:11.5px;margin-top:2px}
-.rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:10.5px;color:rgba(247,246,243,0.42);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
+.rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:11.5px;color:rgba(247,246,243,0.62);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
 @keyframes rfmFu0{0%{background:rgba(242,98,107,0.28)}}@keyframes rfmFu1{0%{background:rgba(242,98,107,0.28)}}
 @keyframes rfmFd0{0%{background:rgba(94,155,255,0.28)}}@keyframes rfmFd1{0%{background:rgba(94,155,255,0.28)}}
 .rfm-side{position:sticky;top:96px;align-self:start}
@@ -1250,15 +1264,15 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 .rfm-pick{width:100%;background:transparent;color:#8FAADC;border:0;font:inherit;font-size:12px;letter-spacing:0.06em;padding:0;cursor:pointer}
 .rfm-pick option{color:#111c2e}
 .rfm-mine .big{font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-top:12px}
-.rfm-mine .big small{font-family:'Pretendard Variable',sans-serif;font-size:16px;color:rgba(247,246,243,0.42);margin-left:6px;font-weight:500}
+.rfm-mine .big small{font-family:'Pretendard Variable',sans-serif;font-size:16px;color:rgba(247,246,243,0.62);margin-left:6px;font-weight:500}
 .rfm-mine p{font-size:13px;line-height:1.75;color:rgba(247,246,243,0.75);margin:12px 0 0;font-variant-numeric:tabular-nums}
-.rfm-mine p.hint{color:rgba(247,246,243,0.45)}
+.rfm-mine p.hint{color:rgba(247,246,243,0.62)}
 .rfm-feed{margin-top:26px}
-.rfm-feed h3{font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.45);font-weight:500;margin:0}
+.rfm-feed h3{font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.62);font-weight:500;margin:0}
 .rfm-feed ol{list-style:none;margin:10px 0 0;padding:0}
 .rfm-feed li{font-size:13px;line-height:1.5;padding:8px 0;color:rgba(247,246,243,0.8)}
 .rfm-feed li:nth-child(n+4){opacity:0.55}
-.rfm-feed li time{display:block;font-size:11px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums}
+.rfm-feed li time{display:block;font-size:11px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums}
 .rfm-feed li b{color:#F7F6F3;margin-right:4px}
 @media (max-width:860px){
   .rfmpage{--rH:70px}
@@ -1286,7 +1300,7 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 .rfmpage .rfm-side .fd-ct{font-size:20px}
 .rfmpage .rfm-pick{margin-top:16px;padding:10px 12px;border:1px solid rgba(143,170,220,0.35);background:rgba(143,170,220,0.06);color:#F7F6F3;font-size:13px;letter-spacing:0}
 .rfmpage .rfm-mine .big{margin-top:20px}
-.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.45);margin:14px 0 0}
+.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.62);margin:14px 0 0}
 .rfm-mt{margin-top:16px;border-top:1px solid rgba(247,246,243,0.12)}
 .rfm-mt>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-size:13px;font-variant-numeric:tabular-nums}
 .rfm-mt>div:last-child{border-bottom:0}
@@ -1306,29 +1320,29 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
   .rfmpage .rfm-mine,.rfmpage .rfm-feed{padding:24px 16px 20px}
   .rfmpage .rfm-feed li:nth-child(n+6){display:none}
   .fd-pr.rfm-pr{grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(0,1fr)) !important}
-  .rfm-bars .bl{font-size:10.5px !important}
+  .rfm-bars .bl{font-size:11.5px !important}
 }
 
 .intra-rail a.on{color:#F7F6F3;font-weight:700}
-.intra-rail .sec{color:rgba(247,246,243,0.4) !important}
+.intra-rail .sec{color:rgba(247,246,243,0.62) !important}
 .intra-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);font-size:14px;color:rgba(247,246,243,0.85);text-decoration:none}
 .intra-row:hover{color:#F7F6F3}
-.intra-row .d{font-size:12px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums;white-space:nowrap}
+.intra-row .d{font-size:12px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums;white-space:nowrap}
 .intra-card{background:rgba(247,246,243,0.05);border:1px solid rgba(247,246,243,0.18);border-top:2px solid #8FAADC;padding:22px 24px 8px;color:#F7F6F3}
 .intra-card.navy{border-top-color:#8FAADC}
 .intra-card .hd{font-size:15px;font-weight:700;color:#F7F6F3}
 .intra-card .rule{border-bottom:1px solid rgba(247,246,243,0.3);padding-bottom:12px;display:flex;justify-content:space-between;align-items:baseline}
 .intra-input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid rgba(247,246,243,0.3);background:rgba(247,246,243,0.08);font:inherit;font-size:14px;color:#F7F6F3;outline:none}
-.intra-input::placeholder{color:rgba(247,246,243,0.45)}
+.intra-input::placeholder{color:rgba(247,246,243,0.62)}
 .intra-input:focus{border-color:#8FAADC}
 .coffee-form .intra-input{color:#1A1A1A;background:#FFFFFF;border-color:rgba(26,26,26,0.25)}
-.coffee-form .intra-input::placeholder{color:rgba(26,26,26,0.45)}
+.coffee-form .intra-input::placeholder{color:rgba(26,26,26,0.68)}
 .coffee-form .intra-input:focus{border-color:#203864}
 .ag-dark{color:#F7F6F3}
 .ag-dark .lo{color:rgba(247,246,243,0.6)}
 textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip{display:inline-block;padding:6px 10px;border:1px solid #D0CECE;font-size:13px;margin:0 6px 6px 0;background:#FFFFFF}
-.name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
+.name-chip .c{color:rgba(26,26,26,0.68);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
 @media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
 .wk-ch{align-items:center !important}
@@ -1355,7 +1369,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:6px 0 14px}
 .wk-imgs img{width:100%;display:block;border:1px solid rgba(247,246,243,0.1)}
 .wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
-.wk-del{font-size:13px;color:rgba(247,246,243,0.4)}
+.wk-del{font-size:13px;color:rgba(247,246,243,0.62)}
 .wk-foot{margin-top:16px;text-align:right}.wk-foot a{display:inline-block;padding:7px 12px;border:1px solid rgba(247,246,243,0.18);font-size:12.5px;color:rgba(247,246,243,0.65)}.wk-foot a:hover{color:#F7F6F3;border-color:rgba(247,246,243,0.4)}
 .wk-form{display:grid;gap:10px;margin-top:14px}
 .wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
@@ -1402,7 +1416,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-head{grid-template-columns:110px auto minmax(0,1fr) 20px !important}
 @media (max-width:860px){.wk-head{grid-template-columns:1fr 20px !important}.wk-cat{display:inline;margin:0 8px 0 0}}
 .wk-fig{margin:6px 0 18px}.wk-fig img{display:block;max-width:100%;max-height:560px;border:1px solid rgba(247,246,243,0.1)}
-.wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:10.5px;color:#F7F6F3}
+.wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:11.5px;color:#F7F6F3}
 .wk-msg{margin:0 0 16px;padding:12px 16px;border:1px solid rgba(242,210,122,0.4);background:rgba(242,210,122,0.06);font-size:13.5px;color:#F2D27A}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
@@ -1458,7 +1472,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <img class="seal seal-light" src="assets/rfs-seal-light-256.png" alt="" width="36" height="36">
       <span class="wordmark-block" style="display:flex;flex-direction:column;gap:3px;line-height:1">
         <span style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-0.02em">R.F.S.</span>
-        <span class="wordmark-sub" style="font-size:10px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
+        <span class="wordmark-sub" style="font-size:11.5px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
       </span>
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
@@ -1489,9 +1503,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div style="margin-top:14px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:rgba(247,246,243,0.85)">{{ mHeroNameOnly }} · {{ mHeroTicker }}</div>
         <h2 style="margin:8px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(30px,8.6vw,38px);font-weight:700;line-height:1.22;letter-spacing:-0.025em;color:#F7F6F3">{{ heroHeadline }}</h2>
         <div style="display:flex;align-items:baseline;gap:18px;margin-top:22px;padding-top:16px;border-top:1px solid rgba(247,246,243,0.35)">
-          <div><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
-          <div><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
-          <div style="margin-left:auto"><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
+          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
+          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
+          <div style="margin-left:auto"><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px">
           <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="padding:12px 20px;font-size:12px">READ REPORT</a>
@@ -1539,8 +1553,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
           <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
             <div class="stripcell sc1" style="padding-right:24px;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums">{{ heroOp }}</div>
-            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Target <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
-            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Upside <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
+            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Target</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
+            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Upside</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
             <div class="stripbtn" style="margin-left:auto">
               <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="pointer-events:auto">READ THE REPORT</a>
             </div>
@@ -1555,7 +1569,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
       <div class="wrap hero-tick" style="padding:0 35px;width:100%;margin-top:clamp(22px,3.4vh,40px)">
         <div style="display:flex;align-items:baseline;gap:26px;border-top:1px solid rgba(247,246,243,0.35);padding-top:16px">
-          <span style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
+          <span style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
           <div class="tickmask" style="flex:1;overflow:hidden;min-width:0">
             <div class="ticktrack" style="display:flex;width:max-content">
           <div class="tickset" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
@@ -1622,7 +1636,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="wrap" style="padding:0 35px">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:64px;margin-bottom:18px;position:relative;z-index:2">
           <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
-          <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
+          <a href="#coverage" onClick="{{ toCoverage }}" style="display:inline-flex;align-items:center;min-height:44px;font-size:11.5px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.68)">전체 보기 ↓</a>
         </div>
         <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;align-items:start;position:relative;z-index:2">
           <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
@@ -1644,10 +1658,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
-              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
               <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
@@ -1658,7 +1672,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 <span class="col-s" style="font-size:13.5px;color:#1A1A1A">{{ r.sector }}</span>
                 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
-                <span style="text-align:right;font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
+                <span style="text-align:right;font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
               </a>
               </sc-for>
             </sc-for>
@@ -1692,7 +1706,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <section data-tab="latest" data-nav="light" style="background:#F7F6F3;padding:40px 0 0">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:0 22px 14px">
         <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
-        <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
+        <a href="#coverage" onClick="{{ toCoverage }}" style="display:inline-flex;align-items:center;min-height:44px;font-size:11.5px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.68)">전체 보기 ↓</a>
       </div>
       <div class="mfeat" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 22px 26px;scroll-padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none">
         <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
@@ -1710,10 +1724,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
       <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
       <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</div>
       <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
@@ -1722,10 +1736,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:block;padding:15px 0;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
               <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b></span>
-              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
+              <span style="font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
             <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12.5px;color:#1A1A1A;font-variant-numeric:tabular-nums">
-              <span style="font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+              <span style="font-size:11.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
               <span>{{ r.sector }}</span>
               <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
             </div>
@@ -2322,7 +2336,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-for list="{{ sohka }}" as="x" hint-placeholder-count="5">
           <div>
             <div style="font-size:16px;font-weight:700;letter-spacing:0.02em;color:{{ x.color }}">{{ x.name }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.55);margin-top:4px">{{ x.school }}</div>
+            <div style="font-size:12px;color:rgba(26,26,26,0.68);margin-top:4px">{{ x.school }}</div>
           </div>
         </sc-for>
       </div>
@@ -2490,7 +2504,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;padding:24px 0;margin-top:28px">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px">
           <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums">{{ cohortLabel }}</span>
-          <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ cohortCount }}</span>
+          <span style="font-size:12px;color:rgba(26,26,26,0.68)">{{ cohortCount }}</span>
         </div>
         <div style="font-size:14px;line-height:1.9;color:rgba(26,26,26,0.8);word-break:keep-all">{{ cohortNames }}</div>
       </div>
@@ -2565,7 +2579,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="sched5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:clamp(40px,6vh,64px)">
           <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5">
             <div class="rv rv-up tl-cell">
-              <div class="tl-txt inv-soft" style="font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:0.1em;color:rgba(26,26,26,0.5);font-variant-numeric:tabular-nums">{{ d.num }}</div>
+              <div class="tl-txt inv-soft" style="font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:0.1em;color:rgba(26,26,26,0.68);font-variant-numeric:tabular-nums">{{ d.num }}</div>
               <div class="tl-txt inv" style="font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.2vw,32px);font-weight:700;letter-spacing:-0.02em;margin-top:10px;color:#0F1B2E;font-variant-numeric:tabular-nums;white-space:nowrap">{{ d.date }}</div>
               <div class="inv-line" style="position:relative;border-top:1px solid #1A1A1A;margin:22px 0 0;height:1px">
                 <span class="inv-dot" style="position:absolute;left:0;top:-6px;width:11px;height:11px;background:{{ d.bar }};outline:3px solid #FFFFFF"></span>
@@ -2714,7 +2728,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <button type="submit" class="btn btn-photo press" style="display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3">LOGIN</button>
         </form>
         <sc-if value="{{ loginBack }}" hint-placeholder-val="{{ false }}"><p style="margin:18px 0 0;font-size:13px"><a href="#" onClick="{{ loginBackGo }}" style="color:rgba(247,246,243,0.75)">← 돌아가기</a></p></sc-if>
-        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.5)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.75)">recruiting.rfs@gmail.com</a></p>
+        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.62)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="display:inline-flex;align-items:center;min-height:44px;color:rgba(247,246,243,0.85)">recruiting.rfs@gmail.com</a></p>
       </div>
     </section>
   </main>
@@ -2756,6 +2770,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
+        <sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}">
+          <h1 class="pg-title">AMT Fund</h1>
+          <p class="pg-lede" aria-live="polite">운용 현황을 불러오는 중입니다…</p>
+        </sc-if>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
           <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
@@ -2892,8 +2910,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
+    <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap" aria-live="polite">순위를 불러오는 중입니다…</p></section></div>
+    </sc-if>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">수집된 데이터가 없습니다.</p></section></div>
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">아직 수집된 순위가 없습니다. 거래일 아침에 다시 확인해 주세요.</p></section></div>
     </sc-if>
     <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
@@ -2936,7 +2957,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </sc-for>
           </div>
           <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
-            <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
+            <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.62)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
         </div>
       </section>
@@ -2976,7 +2997,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </section>
 
-      <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+      <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.62);margin-left:6px">·</a></p>
       <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:12px;max-width:520px">
           <p style="margin:0 0 8px;font-size:12px;color:rgba(247,246,243,0.5)">{{ rfmNameCount }}</p>
@@ -3071,7 +3092,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <span style="font-size:13px;color:rgba(247,246,243,0.6)">{{ dirHitCount }}</span>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)"><a href="#" onClick="{{ dirAllOpen }}" style="color:inherit">모두 펼치기</a> · <a href="#" onClick="{{ dirAllClose }}" style="color:inherit">모두 접기</a></span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)"><a href="#" onClick="{{ dirAllOpen }}" style="color:inherit">모두 펼치기</a> · <a href="#" onClick="{{ dirAllClose }}" style="color:inherit">모두 접기</a></span>
             </div>
             <sc-if value="{{ hasDirHits }}" hint-placeholder-val="{{ true }}">
               <div class="ag-dir">
@@ -3103,7 +3124,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                   </div>
                   <input class="intra-input" type="tel" name="phone" placeholder="내 휴대폰 번호 (010-0000-0000)" required="" value="{{ cPhone }}" onChange="{{ onCPhone }}" style="margin-top:10px">
                   <textarea class="intra-input" name="message" rows="4" maxlength="500" placeholder="여쭤보고 싶은 것 (직무·준비 과정·커리어 등)" required="" value="{{ cMsg }}" onChange="{{ onCMsg }}" style="margin-top:10px;resize:vertical"></textarea>
-                  <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(26,26,26,0.55)">선배님께 문자로 전달되고, 선배님이 적어주신 번호로 직접 연락하십니다. 선배님 연락처는 공개되지 않습니다.</p>
+                  <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(26,26,26,0.68)">선배님께 문자로 전달되고, 선배님이 적어주신 번호로 직접 연락하십니다. 선배님 연락처는 공개되지 않습니다.</p>
                   <sc-if value="{{ hasCoffeeErr }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;font-size:12px;color:#842029">{{ coffeeErr }}</p></sc-if>
                   <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
                     <a href="#" onClick="{{ coffeeClose }}" class="btn btn-outline" style="padding:10px 16px;font-size:11px">CANCEL</a>
@@ -3151,12 +3172,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:32px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">글</div>
               <div style="display:flex;gap:4px;flex-wrap:wrap;flex:1;justify-content:flex-end;margin-right:12px"><sc-for list="{{ boardCats }}" as="c" hint-placeholder-count="5"><a href="#" onClick="{{ c.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</a></sc-for></div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">{{ postCount }}</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ postCount }}</span>
             </div>
             <sc-if value="{{ hasPosts }}" hint-placeholder-val="{{ true }}">
               <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
                 <div style="padding:22px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.45)"><span style="color:#8FAADC">{{ p.category }}</span> · {{ p.meta }}</div>
+                  <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.62)"><span style="color:#8FAADC">{{ p.category }}</span> · {{ p.meta }}</div>
                   <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:8px">{{ p.title }}</div>
                   <p style="margin:10px 0 0;font-size:14px;line-height:1.8;color:rgba(247,246,243,0.78);white-space:pre-wrap;max-width:52em">{{ p.body }}</p>
                   <a href="#" onClick="{{ p.toggle }}" style="display:inline-block;margin-top:12px;font-size:12px;color:#8FAADC">{{ p.cLabel }}</a>
@@ -3164,7 +3185,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                     <div style="margin-top:12px;padding-left:16px;border-left:2px solid rgba(143,170,220,0.4)">
                       <sc-for list="{{ p.cmts }}" as="c" hint-placeholder-count="2">
                         <div style="padding:8px 0">
-                          <div style="font-size:11px;color:rgba(247,246,243,0.45)">{{ c.meta }}</div>
+                          <div style="font-size:11px;color:rgba(247,246,243,0.62)">{{ c.meta }}</div>
                           <div style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.85);white-space:pre-wrap">{{ c.body }}</div>
                         </div>
                       </sc-for>
@@ -3183,11 +3204,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <sc-if value="{{ hasQna }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin:44px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
                 <div style="font-size:15px;font-weight:700;color:#F7F6F3">선배님께 물었습니다</div>
-                <span style="font-size:12px;color:rgba(247,246,243,0.45)">{{ qnaCount }}</span>
+                <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ qnaCount }}</span>
               </div>
               <sc-for list="{{ qna }}" as="x" hint-placeholder-count="2">
                 <div style="padding:24px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.4)">{{ x.meta }}</div>
+                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.62)">{{ x.meta }}</div>
                   <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:10px">{{ x.q }}</div>
                   <p style="margin:12px 0 0;font-size:14px;line-height:1.85;color:rgba(247,246,243,0.78);max-width:52em">{{ x.a }}</p>
                   <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
@@ -3213,12 +3234,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">포트폴리오</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">비중순</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)">비중순</span>
             </div>
             <sc-for list="{{ fundPos }}" as="p" hint-placeholder-count="7">
               <div style="display:grid;grid-template-columns:minmax(0,1fr) 92px 78px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
                 <div>
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ p.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px;font-variant-numeric:tabular-nums">{{ p.tick }}</span></div>
+                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ p.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.62);margin-left:4px;font-variant-numeric:tabular-nums">{{ p.tick }}</span></div>
                   <div style="height:3px;background:#8FAADC;margin-top:8px;max-width:100%;width:{{ p.bar }}"></div>
                 </div>
                 <div style="text-align:right;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ p.w }}</div>
@@ -3229,7 +3250,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <div style="margin-top:34px;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:15px;font-weight:700;color:#F7F6F3">운용 노트</div>
               <sc-for list="{{ fundNotes }}" as="n" hint-placeholder-count="2">
                 <div style="display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
-                  <span style="font-size:13px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums">{{ n.date }}</span>
+                  <span style="font-size:13px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums">{{ n.date }}</span>
                   <span style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.8)">{{ n.text }}</span>
                 </div>
               </sc-for>
@@ -4906,7 +4927,7 @@ class Component extends DCLogic {
     if (!this.sb) return;
     // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
     this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); this.setState({ rfmLoaded: true }); }, () => this.setState({ rfmLoaded: true }));
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -5057,10 +5078,10 @@ class Component extends DCLogic {
     const refs = [back(7), back(30), back(91), back(182), back(365), H[0]];
     const r = (j, ref) => (ref && ref !== last && last[j] && ref[j] ? (last[j] / ref[j] - 1) * 100 : null);
     const fmt = (v, p) => (v === null ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + (p || ''));
-    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.35)' : col(v); }); return o; };
+    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.62)' : col(v); }); return o; };
     const f = refs.map((x) => r(1, x)), kp = refs.map((x) => r(2, x)), kq = refs.map((x) => r(3, x));
     const ex = f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i]));
-    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.35)' : col(v) });
+    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.62)' : col(v) });
     const fdPerCols = ['1주', '1개월', '3개월', '6개월', '1년', '설정 이후'].map((k, i) => ({ k, a: cell(f[i]), b: cell(kp[i]), q: cell(kq[i]), e: cell(ex[i], '%p'), cls: 'rr' + (i === 5 ? ' fund' : '') })).filter((x, i) => i === 5 || f[i] !== null);
     return {
       fdPerCols,
@@ -5077,7 +5098,7 @@ class Component extends DCLogic {
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
     const up = 'var(--up)', dn = 'var(--dn)', flat = 'var(--flat)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
-    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
+    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLoading: !s.fundPubLoaded && !live, fdLive: false, fdPublic: false };
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const open = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     const kospi = F.bm && F.bm.kospi ? F.bm.kospi.ret : null, kosdaq = F.bm && F.bm.kosdaq ? F.bm.kosdaq.ret : null;
@@ -5340,7 +5361,7 @@ class Component extends DCLogic {
     const nm = (m) => real(m) || m.nick;
     const pct = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
     const pp = (v) => Math.abs(v).toFixed(2) + '%p';
-    const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.45)';
+    const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.62)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
     const ret = (m) => (m.nav / 1000 - 1) * 100;
     const on = ms.filter((m) => m.found && m.nav);
@@ -5374,7 +5395,7 @@ class Component extends DCLogic {
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const live = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     return {
-      hasRfm: on.length > 0, noRfm: on.length === 0,
+      hasRfm: on.length > 0, noRfm: on.length === 0 && !!s.rfmLoaded, rfmLoading: on.length === 0 && !s.rfmLoaded,
       rfmLive: live, rfmClosed: !live,
       rfmMeta: [RF && RF.asOf ? RF.asOf.slice(0, 16).replace(/-/g, '.').replace('T', ' ') + ' 기준' : '', (RF && RF.contest) || '', on.length ? '참가 ' + on.length + '명' : '', '벤치마크 KOSPI'].filter(Boolean).join(' · '),
       rfmHeadLead: a1 ? nm(a1) : '',
@@ -5661,7 +5682,7 @@ class Component extends DCLogic {
       const items = nums.map((n) => typeof n === 'number'
         ? { label: String(n), cls: n === cur ? 'current' : '', gap: false, on: () => this.setState({ page1: n }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) }
         : { label: '…', cls: '', gap: true, on: () => {} });
-      if (cur < pageCount) items.push({ label: 'Next »', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
+      if (cur < pageCount) items.push({ label: '다음 ›', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
       return items;
     })();
     const covGroups = (() => {
@@ -5991,10 +6012,10 @@ class Component extends DCLogic {
       bandCta: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       bandCtaEn: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       fSector: s.fSector, fOp: s.fOp, fYear: s.fYear, fRegion: s.fRegion,
-      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))],
-      opOpts: ['All ratings','BUY','HOLD','SELL'],
-      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))],
-      regionOpts: ['All regions','Korea','Global'],
+      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))].map((v) => ({ v, l: v === 'All sectors' ? '전체 섹터' : v })),
+      opOpts: ['All ratings','BUY','HOLD','SELL'].map((v) => ({ v, l: v === 'All ratings' ? '전체 의견' : v })),
+      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))].map((v) => ({ v, l: v === 'All terms' ? '전체 학기' : v })),
+      regionOpts: ['All regions','Korea','Global'].map((v) => ({ v, l: { 'All regions': '국내·해외', Korea: '국내', Global: '해외' }[v] })),
       onSector: (e) => this.setState({ fSector: e.target.value, page1: 1 }),
       onOp: (e) => this.setState({ fOp: e.target.value, page1: 1 }),
       onYear: (e) => this.setState({ fYear: e.target.value, page1: 1 }),
