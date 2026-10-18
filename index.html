@@ -731,10 +731,13 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-nav .wrap{display:flex;gap:6px;padding:12px 35px}
 .fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
 .fd-nav a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.5)}
-/* ABOUT 탭 줄: 사진 위에서 회색으로 뜨지 않게 짙은 남색 + 위아래 가는 선 */
-.fd-nav.ab-nav{background:linear-gradient(180deg,rgba(11,21,38,.95),rgba(14,26,46,.93));backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);border-top:1px solid rgba(247,246,243,.07);border-bottom:1px solid rgba(143,170,220,.16)}
-.fd-nav.ab-nav a{color:rgba(247,246,243,.74);letter-spacing:.02em}
-.fd-nav.ab-nav a:hover{color:#FFFFFF;border-color:rgba(143,170,220,.45);background:rgba(143,170,220,.06)}
+/* ABOUT 탭 줄: 칸마다 화면을 꽉 채우는 페이지라 붙어 다니지 않게(고정 X) 첫 화면 띠 바로 밑에 얇은 목차 줄로만 */
+.fd-nav.ab-nav{position:relative !important;top:auto !important;background:#0B1524;backdrop-filter:none;-webkit-backdrop-filter:none;border-top:1px solid rgba(247,246,243,.08);border-bottom:1px solid rgba(247,246,243,.08)}
+.fd-nav.ab-nav .wrap{max-width:920px;margin:0 auto;padding:4px 24px;gap:0}
+.fd-nav.ab-nav a{position:relative;padding:15px 0;font-size:15px;letter-spacing:.06em;color:rgba(247,246,243,.62);border:0}
+.fd-nav.ab-nav a::after{content:'';position:absolute;left:50%;bottom:8px;width:18px;height:1px;margin-left:-9px;background:#8FAADC;opacity:0;transform:scaleX(.3);transition:opacity .2s ease,transform .2s ease}
+.fd-nav.ab-nav a:hover{color:#F7F6F3;background:none;border:0}.fd-nav.ab-nav a:hover::after{opacity:1;transform:none}
+@media (max-width:860px){.fd-nav.ab-nav .wrap{padding:2px 8px}.fd-nav.ab-nav a{padding:12px 10px;font-size:13.5px;letter-spacing:.03em}}
 .fd-body{padding:28px 35px 90px}
 .fd-card{background:rgba(21,35,59,0.86);border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
 .fd-ch{display:flex;justify-content:space-between;align-items:baseline;gap:12px 28px;flex-wrap:wrap}
@@ -4724,7 +4727,9 @@ class Component extends DCLogic {
       if (!hero || this.state.page !== page) return;
       // 첫 화면 바로 아래 탭이 메뉴 아래에 붙어 있으면(sticky) 그만큼 덜 내려가야 내용 첫 줄이 가려지지 않는다
       const stick = () => { const n = hero.nextElementSibling, cs = n && getComputedStyle(n); return cs && cs.position === 'sticky' ? parseFloat(cs.top) || 0 : 0; };
-      const target = () => hero.getBoundingClientRect().bottom + window.scrollY - stick();
+      // 첫 화면 바로 아래 탭 줄이 고정이 아니면(ABOUT) 그 줄도 지나서 내용 첫 칸이 화면 맨 위에 오게
+      const skip = () => { const n = hero.nextElementSibling; return n && n.tagName === 'NAV' && getComputedStyle(n).position !== 'sticky' ? n.offsetHeight : 0; };
+      const target = () => hero.getBoundingClientRect().bottom + window.scrollY - stick() + skip();
       // 한 번 지나간 첫 화면은 띠 높이(제목만 있는 배너)로 줄인다. 다시 올라오면 전체 화면이 아니라 이 띠가 보인다
       const shrink = () => {
         if (hero.classList.contains('hero-short')) return;
@@ -4749,7 +4754,7 @@ class Component extends DCLogic {
         ph.className = 'pg-hero-ph';
         hero.parentNode.insertBefore(ph, hero);
         hero.classList.add('hero-lift');
-        window.scrollTo({ top: ph.getBoundingClientRect().bottom + window.scrollY - stick(), behavior: 'instant' });
+        window.scrollTo({ top: ph.getBoundingClientRect().bottom + window.scrollY - stick() + skip(), behavior: 'instant' });
         main.classList.add('hi-in');
         requestAnimationFrame(() => hero.classList.add('hero-out'));
         this._hiT = setTimeout(() => {
@@ -4762,19 +4767,20 @@ class Component extends DCLogic {
         }, 950);
       };
       const atTop = () => window.scrollY < 10 && !hero.classList.contains('hero-short');
-      const onWheel = (e) => { if (busy) { e.preventDefault(); return; } if (atTop() && e.deltaY > 0) { e.preventDefault(); advance(); } };
+      // 소개 페이지의 칸 단위 휠 이동(setupSnap)보다 먼저 받아서, 첫 화면을 넘기는 휠은 그쪽으로 안 가게 막는다
+      const onWheel = (e) => { if (busy) { e.preventDefault(); e.stopImmediatePropagation(); return; } if (atTop() && e.deltaY > 0) { e.preventDefault(); e.stopImmediatePropagation(); advance(); } };
       const onTs = (e) => { ty = e.touches[0].clientY; };
       const onTm = (e) => { if (busy) { e.preventDefault(); return; } if (ty != null && atTop() && ty - e.touches[0].clientY > 12) { e.preventDefault(); ty = null; advance(); } };
       const onKey = (e) => { if (atTop() && ['ArrowDown', 'PageDown', ' ', 'Spacebar'].includes(e.key) && !/INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || '')) { e.preventDefault(); advance(); } };
       const off = () => {
-        window.removeEventListener('wheel', onWheel); window.removeEventListener('touchstart', onTs); window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey);
+        window.removeEventListener('wheel', onWheel, true); window.removeEventListener('touchstart', onTs); window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       this._hiStop = () => { off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
       let seen = false;
       try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
       if (seen || window.scrollY > 10) { shrink(); return; }
-      window.addEventListener('wheel', onWheel, { passive: false });
+      window.addEventListener('wheel', onWheel, { passive: false, capture: true });
       window.addEventListener('touchstart', onTs, { passive: true });
       window.addEventListener('touchmove', onTm, { passive: false });
       window.addEventListener('keydown', onKey);
