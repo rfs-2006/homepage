@@ -112,7 +112,6 @@
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
 .covrow:hover{background:rgba(32,56,100,0.035)}
-@font-face{font-family:'ChosunIlboMyungjo';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');font-weight:400;font-display:swap}
 html,body{margin:0;padding:0;background:#F7F6F3;color:#1A1A1A;font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{color:#0F1B2E}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -1208,6 +1207,7 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
   .fd-tabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px}
   .mselects select,main.pgx select{min-height:44px}
 }
+.striplab{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,246,243,.75);margin-right:9px}
 main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -1553,8 +1553,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
           <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
             <div class="stripcell sc1" style="padding-right:24px;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums">{{ heroOp }}</div>
-            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Target <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
-            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Upside <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
+            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Target</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
+            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Upside</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
             <div class="stripbtn" style="margin-left:auto">
               <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="pointer-events:auto">READ THE REPORT</a>
             </div>
@@ -1658,10 +1658,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
-              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
               <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
@@ -1724,10 +1724,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
       <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
       <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
       </div>
       <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</div>
       <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
@@ -2770,6 +2770,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
+        <sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}">
+          <h1 class="pg-title">AMT Fund</h1>
+          <p class="pg-lede" aria-live="polite">운용 현황을 불러오는 중입니다…</p>
+        </sc-if>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
           <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
@@ -2906,8 +2910,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
+    <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap" aria-live="polite">순위를 불러오는 중입니다…</p></section></div>
+    </sc-if>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">수집된 데이터가 없습니다.</p></section></div>
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">아직 수집된 순위가 없습니다. 거래일 아침에 다시 확인해 주세요.</p></section></div>
     </sc-if>
     <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
@@ -4920,7 +4927,7 @@ class Component extends DCLogic {
     if (!this.sb) return;
     // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
     this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); this.setState({ rfmLoaded: true }); }, () => this.setState({ rfmLoaded: true }));
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -5091,7 +5098,7 @@ class Component extends DCLogic {
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
     const up = 'var(--up)', dn = 'var(--dn)', flat = 'var(--flat)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
-    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
+    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLoading: !s.fundPubLoaded && !live, fdLive: false, fdPublic: false };
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const open = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     const kospi = F.bm && F.bm.kospi ? F.bm.kospi.ret : null, kosdaq = F.bm && F.bm.kosdaq ? F.bm.kosdaq.ret : null;
@@ -5388,7 +5395,7 @@ class Component extends DCLogic {
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const live = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     return {
-      hasRfm: on.length > 0, noRfm: on.length === 0,
+      hasRfm: on.length > 0, noRfm: on.length === 0 && !!s.rfmLoaded, rfmLoading: on.length === 0 && !s.rfmLoaded,
       rfmLive: live, rfmClosed: !live,
       rfmMeta: [RF && RF.asOf ? RF.asOf.slice(0, 16).replace(/-/g, '.').replace('T', ' ') + ' 기준' : '', (RF && RF.contest) || '', on.length ? '참가 ' + on.length + '명' : '', '벤치마크 KOSPI'].filter(Boolean).join(' · '),
       rfmHeadLead: a1 ? nm(a1) : '',
@@ -5675,7 +5682,7 @@ class Component extends DCLogic {
       const items = nums.map((n) => typeof n === 'number'
         ? { label: String(n), cls: n === cur ? 'current' : '', gap: false, on: () => this.setState({ page1: n }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) }
         : { label: '…', cls: '', gap: true, on: () => {} });
-      if (cur < pageCount) items.push({ label: 'Next »', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
+      if (cur < pageCount) items.push({ label: '다음 ›', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
       return items;
     })();
     const covGroups = (() => {
@@ -6005,10 +6012,10 @@ class Component extends DCLogic {
       bandCta: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       bandCtaEn: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       fSector: s.fSector, fOp: s.fOp, fYear: s.fYear, fRegion: s.fRegion,
-      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))],
-      opOpts: ['All ratings','BUY','HOLD','SELL'],
-      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))],
-      regionOpts: ['All regions','Korea','Global'],
+      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))].map((v) => ({ v, l: v === 'All sectors' ? '전체 섹터' : v })),
+      opOpts: ['All ratings','BUY','HOLD','SELL'].map((v) => ({ v, l: v === 'All ratings' ? '전체 의견' : v })),
+      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))].map((v) => ({ v, l: v === 'All terms' ? '전체 학기' : v })),
+      regionOpts: ['All regions','Korea','Global'].map((v) => ({ v, l: { 'All regions': '국내·해외', Korea: '국내', Global: '해외' }[v] })),
       onSector: (e) => this.setState({ fSector: e.target.value, page1: 1 }),
       onOp: (e) => this.setState({ fOp: e.target.value, page1: 1 }),
       onYear: (e) => this.setState({ fYear: e.target.value, page1: 1 }),
