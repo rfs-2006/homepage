@@ -1179,6 +1179,19 @@ main.pgx .pres .pres-in{padding:64px 56px}
   background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
 .pg-hero.pg-full.hero-out::after{opacity:0}
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
+/* RESEARCH 최신 리포트: 카드 대신 실제 리포트 첫 장(표지)을 보여 주고, 글자는 리포트와 같은 KoPub 돋움 */
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="reports"],main.pgx [data-tab="reports"] *:not(svg):not(path){font-family:'RFS Dotum UI','Pretendard Variable',Pretendard,sans-serif !important}
+.rcov{display:block;color:inherit;text-decoration:none;background:none !important;box-shadow:none !important}.rcov.rpaper:hover{transform:none;box-shadow:none !important}
+.rcov-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}
+.rcov-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.rcov:hover .rcov-img{border-color:#0F1B2E}.rcov:hover .rcov-img img{transform:scale(1.03)}
+.rcov-meta{margin:14px 0 0;font-size:12.5px;color:rgba(26,26,26,.5)}.rcov-meta span{color:rgba(26,26,26,.25);margin:0 2px}
+.rcov-name{margin:6px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rcov-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,.45)}
+.rcov-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:rgba(26,26,26,.72);line-height:1.45}
+.rcov-fig{margin:12px 0 0;font-size:13.5px;color:rgba(26,26,26,.6);font-variant-numeric:tabular-nums}.rcov-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rcov-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
 main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 @keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
@@ -1609,20 +1622,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
           <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
         </div>
-        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start;position:relative;z-index:2">
+        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;align-items:start;position:relative;z-index:2">
           <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
-            <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 14px 34px rgba(15,27,46,0.14)">
-              <div style="display:flex;justify-content:space-between;padding:12px 16px 8px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
-              <div style="background:#0F1B2E;color:#F7F6F3;margin:0 16px;padding:14px 16px 16px">
-                <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
-                <div style="margin-top:6px;font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:14px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
-              </div>
-              <div style="padding:12px 16px 0;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
-              <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 16px 0;padding:9px 0 13px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
-                <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
-                <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:15px">{{ r.tp }}</b></span>
-                <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
-              </div>
+            <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rcov">
+              <div class="rcov-img"><img src="{{ r.cover }}" alt="{{ r.name }} 리포트 표지" loading="lazy"></div>
+              <p class="rcov-meta">{{ r.sector }} <span>·</span> {{ r.teamShort }} <span>·</span> {{ r.date }}</p>
+              <p class="rcov-name">{{ r.name }} <small>{{ r.ticker }}</small></p>
+              <p class="rcov-hl">{{ r.headline }}</p>
+              <p class="rcov-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
             </a>
           </sc-for>
         </div>
@@ -1689,19 +1696,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
       <div class="mfeat" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 22px 26px;scroll-padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none">
         <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
-          <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="flex:0 0 78%;scroll-snap-align:start;display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 12px 28px rgba(15,27,46,0.14)">
-            <div style="display:flex;justify-content:space-between;padding:11px 14px 7px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
-            <div style="background:#0F1B2E;color:#F7F6F3;margin:0 14px;padding:12px 14px 14px">
-              <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
-              <div style="margin-top:5px;font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:13px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
-            </div>
-            <div style="padding:11px 14px 0;font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
-            <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 14px 0;padding:9px 0 12px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
-              <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
-              <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:14px">{{ r.tp }}</b></span>
-              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
-            </div>
-          </a>
+          <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rcov" style="flex:0 0 80%;scroll-snap-align:start">
+              <div class="rcov-img"><img src="{{ r.cover }}" alt="{{ r.name }} 리포트 표지" loading="lazy"></div>
+              <p class="rcov-meta">{{ r.sector }} <span>·</span> {{ r.teamShort }} <span>·</span> {{ r.date }}</p>
+              <p class="rcov-name">{{ r.name }} <small>{{ r.ticker }}</small></p>
+              <p class="rcov-hl">{{ r.headline }}</p>
+              <p class="rcov-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
+            </a>
         </sc-for>
       </div>
     </section>
