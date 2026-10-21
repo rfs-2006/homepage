@@ -179,8 +179,8 @@
     if (g.length < 2 && !(g.length === 1 && known < sub.length)) return null; // 고를 게 하나뿐이면 건너뜀
     if (lvl === 2 && known < 4) return null; // 일을 아는 분이 너무 적으면 바로 안내
     var q = lvl === 1
-      ? ({ '금융': '금융권 어디에 계신<br>선배님께 여쭤볼까요?', '산업': '어떤 일을 하시는<br>선배님께 여쭤볼까요?', '공공': '어디에 계신<br>선배님께 여쭤볼까요?' }[p[0]] || '어디에 계신<br>선배님께 여쭤볼까요?')
-      : esc(p[1]) + '에서 어떤 일을 하시는<br>선배님께 여쭤볼까요?';
+      ? ({ '금융': '금융권 중에서는요?', '산업': '어떤 일을 하시는<br>분이요?', '공공': '어디에 계신<br>분이요?' }[p[0]] || '그중에서는요?')
+      : esc(p[1]) + '에서는<br>어떤 일이요?';
     return { q: q, opts: g.concat([ANY]) };
   }
   function filter() {
@@ -259,7 +259,7 @@
   function write() {
     st.stage = 1; st.el.querySelector('.bk').disabled = false; prog(88);
     var needMe = !st.me.name || !st.me.cohort;
-    st.bx.innerHTML = crumbs() + '<h2 class="q">무엇을<br>여쭤볼까요?</h2><div class="wr">' +
+    st.bx.innerHTML = crumbs() + '<h2 class="q">어떤 점이<br>궁금하세요?</h2><div class="wr">' +
       (needMe ? '<div class="who"><input id="askName" placeholder="내 이름" value="' + esc(st.me.name) + '" autocomplete="name"><input id="askCoh" placeholder="기수" inputmode="numeric" value="' + esc(st.me.cohort) + '" style="width:72px"></div>' : '') +
       '<textarea id="askTx" rows="2" aria-label="여쭙고 싶은 내용" placeholder="처음 그 일을 고르실 때 무엇을 보셨나요?">' + esc(st.draft) + '</textarea>' +
       '<div class="how" role="radiogroup" aria-label="답을 받고 싶은 방법">' + ['짧은 문자', '10분 통화', '커피챗'].map(function (h) { return '<button role="radio" aria-checked="' + (h === st.how) + '" class="' + (h === st.how ? 'on' : '') + '">' + h + '</button>'; }).join('') + '</div></div>';
