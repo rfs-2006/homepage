@@ -178,7 +178,10 @@
     var known = sub.filter(function (a) { return a[field]; }).length;
     if (g.length < 2 && !(g.length === 1 && known < sub.length)) return null; // 고를 게 하나뿐이면 건너뜀
     if (lvl === 2 && known < 4) return null; // 일을 아는 분이 너무 적으면 바로 안내
-    return { q: lvl === 1 ? '어느 쪽이<br>궁금하세요?' : '어떤 일이<br>궁금하세요?', opts: g.concat([ANY]) };
+    var q = lvl === 1
+      ? ({ '금융': '금융권 어디에 계신<br>선배님께 여쭤볼까요?', '산업': '어떤 일을 하시는<br>선배님께 여쭤볼까요?', '공공': '어디에 계신<br>선배님께 여쭤볼까요?' }[p[0]] || '어디에 계신<br>선배님께 여쭤볼까요?')
+      : esc(p[1]) + '에서 어떤 일을 하시는<br>선배님께 여쭤볼까요?';
+    return { q: q, opts: g.concat([ANY]) };
   }
   function filter() {
     var p = st.path;
