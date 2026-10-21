@@ -108,6 +108,7 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
+<script src="./assets/ask.js?v=1" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -5530,6 +5531,13 @@ class Component extends DCLogic {
       .then(({ data }) => this.setState((st) => ({ cmts: { ...(st.cmts || {}), [postId]: data || [] } })));
   }
 
+  // AGORA '선배님께 여쭙기': 분야를 하나씩 골라 선배님을 안내하고 첫 문자를 만들어 준다 (assets/ask.js)
+  openAsk() {
+    if (!window.RFSAsk || !this.state.user) return;
+    const ID = this.state.intraData || {};
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c) });
+  }
+
   me() {
     try { const m = JSON.parse(localStorage.getItem('rfs_me') || 'null'); if (m && m.name) return m; } catch (e) {}
     return this.state.me || { name: '', cohort: '' };
@@ -5587,7 +5595,7 @@ class Component extends DCLogic {
     const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
-    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
+    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t === 'ask') { this.setState({ intraTab: 'dashboard' }); setTimeout(() => this.openAsk(), 400); } else this.setState({ intraTab: t || 'dashboard' }); }
     else if (h === 'fund/strategy') page = 'strategy';
     else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
@@ -5856,7 +5864,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), { key: 'ask', label: '선배님께 여쭙기', href: '#intranet/ask', on: (e) => { e.preventDefault(); this.openAsk(); }, cls: '' }, railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       // 아고라 첫 화면 (네트워크형)
