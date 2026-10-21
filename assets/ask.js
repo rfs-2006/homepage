@@ -148,7 +148,7 @@
     '교육·연구': '<path d="M6 24l26-12 26 12-26 12z"/><path d="M16 29v13c0 4 7 8 16 8s16-4 16-8V29"/>'
   };
   var STAR = '<path d="M32 16c1 10 6 15 16 16-10 1-15 6-16 16-1-10-6-15-16-16 10-1 15-6 16-16z"/>';
-  var SUB = { '금융': '증권, 은행, 운용, 회계', '산업': '재무·IR, 기획, 창업', '공공': '공무원, 공공기관', '아직 모르겠어요': '골고루 안내해 드려요' };
+  var SUB = { '금융': '증권, 은행, 운용, 회계', '산업': '재무·IR, 기획, 창업', '공공': '공무원, 공공기관', '아직 모르겠어요': '여러 분야 선배님을 보여드려요' };
   var ORDER = ['금융', '산업', '공공', '증권', '은행', '자산운용', 'IB·PE·VC', '회계법인', '금융공기업', '보험', '카드·캐피탈'];
   var ARR = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg>';
   var ANY = '상관없어요', UNSURE = '아직 모르겠어요';
@@ -170,7 +170,7 @@
   // 지금까지 고른 길로 다음 질문을 만든다. 더 좁힐 게 없으면 null
   function nextQuestion() {
     var p = st.path, pool = st.pool;
-    if (!p.length) return { q: '어떤 길을 걷는 선배님께<br>여쭤볼까요?', opts: groups(pool, 'f1').concat([UNSURE]) };
+    if (!p.length) return { q: '어느 분야 선배님을<br>찾을까요?', opts: groups(pool, 'f1').concat([UNSURE]) };
     if (p[0] === UNSURE) return null;
     var lvl = p.length, field = ['f1', 'f2', 'f3'][lvl], sub = filter();
     if (lvl >= 3 || p[lvl - 1] === ANY) return null;
@@ -179,8 +179,8 @@
     if (g.length < 2 && !(g.length === 1 && known < sub.length)) return null; // 고를 게 하나뿐이면 건너뜀
     if (lvl === 2 && known < 4) return null; // 일을 아는 분이 너무 적으면 바로 안내
     var q = lvl === 1
-      ? ({ '금융': '금융권 중에서는요?', '산업': '어떤 일을 하시는<br>분이요?', '공공': '어디에 계신<br>분이요?' }[p[0]] || '그중에서는요?')
-      : esc(p[1]) + '에서는<br>어떤 일이요?';
+      ? ({ '금융': '금융권 어디에서<br>찾을까요?', '산업': '어떤 일을 하는<br>분을 찾을까요?', '공공': '어디에서 일하는<br>분을 찾을까요?' }[p[0]] || '어디에서<br>찾을까요?')
+      : esc(p[1]) + '에서 어떤 일을 하는<br>분을 찾을까요?';
     return { q: q, opts: g.concat([ANY]) };
   }
   function filter() {
@@ -245,7 +245,7 @@
   function people() {
     var three = st.list.slice(st.off, st.off + 3);
     if (!three.length) {
-      st.bx.innerHTML = crumbs() + '<h2 class="q">아직 안내해 드릴<br>선배님이 없어요</h2><p class="empty">다른 길을 골라 보시거나, 알럼나이 디렉토리에서 직접 찾아보세요.</p>';
+      st.bx.innerHTML = crumbs() + '<h2 class="q">아직 찾을 수 있는<br>선배님이 없어요</h2><p class="empty">다른 분야를 고르거나 알럼나이 디렉토리에서 찾아보세요.</p>';
       return;
     }
     st.bx.innerHTML = crumbs() + '<h2 class="q">이 선배님들께<br>여쭤볼 수 있어요</h2><div class="Lw"><div class="L" role="list">' + three.map(function (a, i) {
@@ -259,13 +259,13 @@
   function write() {
     st.stage = 1; st.el.querySelector('.bk').disabled = false; prog(88);
     var needMe = !st.me.name || !st.me.cohort;
-    st.bx.innerHTML = crumbs() + '<h2 class="q">어떤 점이<br>궁금하세요?</h2><div class="wr">' +
+    st.bx.innerHTML = crumbs() + '<h2 class="q">어떤 게<br>궁금해요?</h2><div class="wr">' +
       (needMe ? '<div class="who"><input id="askName" placeholder="내 이름" value="' + esc(st.me.name) + '" autocomplete="name"><input id="askCoh" placeholder="기수" inputmode="numeric" value="' + esc(st.me.cohort) + '" style="width:72px"></div>' : '') +
-      '<textarea id="askTx" rows="2" aria-label="여쭙고 싶은 내용" placeholder="처음 그 일을 고르실 때 무엇을 보셨나요?">' + esc(st.draft) + '</textarea>' +
+      '<textarea id="askTx" rows="2" aria-label="여쭙고 싶은 내용" placeholder="예) 처음 맡을 섹터는 어떻게 정하셨나요?">' + esc(st.draft) + '</textarea>' +
       '<div class="how" role="radiogroup" aria-label="답을 받고 싶은 방법">' + ['짧은 문자', '10분 통화', '커피챗'].map(function (h) { return '<button role="radio" aria-checked="' + (h === st.how) + '" class="' + (h === st.how ? 'on' : '') + '">' + h + '</button>'; }).join('') + '</div></div>';
     var tx = st.bx.querySelector('#askTx'), nm = st.bx.querySelector('#askName'), ch = st.bx.querySelector('#askCoh');
     var ok = function () { return tx.value.trim().length >= 10 && (!needMe || (nm.value.trim() && /\d/.test(ch.value))); };
-    btn('다음', true, function () {
+    btn('문자 미리 보기', true, function () {
       if (!ok()) return;
       if (needMe) { st.me = { name: nm.value.trim(), cohort: ch.value.replace(/\D/g, '') }; if (st.onSaveMe) try { st.onSaveMe(st.me.name, st.me.cohort); } catch (e) {} }
       go(done);
@@ -284,24 +284,24 @@
     st.stage = 2; prog(100);
     var msg = message(), num = digits(st.pick.phone);
     var late = (function () { var h = new Date().getHours(); return h >= 22 || h < 8; })();
-    st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>인사드릴게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
-      '<div class="qr"><div class="qc" aria-label="문자 QR 코드"></div><span>휴대폰으로 찍으면<br>문자가 열려요</span><button type="button" class="cp">문구 복사</button></div></div>' +
-      (late ? '<p class="empty" style="font-size:14px">지금은 늦은 시간이에요. 내일 오전에 보내 드리는 게 좋아요.</p>' : '');
+    st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
+      '<div class="qr"><div class="qc" aria-label="문자 QR 코드"></div><span>휴대폰 카메라로 찍으면<br>문자 앱이 열려요</span><button type="button" class="cp">문구 복사</button></div></div>' +
+      (late ? '<p class="empty" style="font-size:14px">지금은 늦은 시간이에요. 내일 오전에 보내면 어때요?</p>' : '');
     var href = 'sms:' + num + (/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent) ? '&' : '?') + 'body=' + encodeURIComponent(msg);
-    if (window.innerWidth < 900) btn('문자 보내기', !num, function () { location.href = href; }); else btn();
+    if (window.innerWidth < 900) btn('문자 앱 열기', !num, function () { location.href = href; }); else btn();
     var cp = st.bx.querySelector('.cp');
     cp.onclick = function () { try { navigator.clipboard.writeText(msg).then(function () { cp.textContent = '복사했어요'; }); } catch (e) {} };
     if (window.innerWidth >= 900) qr(st.bx.querySelector('.qc'), 'SMSTO:' + num + ':' + msg);
   }
   function qr(box, text) {
     var draw = function () {
-      try { var q = window.qrcode(0, 'L'); q.addData(text, 'Byte'); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) { box.parentNode.querySelector('span').textContent = '문구를 복사해서 폰으로 보내 주세요'; box.remove(); }
+      try { var q = window.qrcode(0, 'L'); q.addData(text, 'Byte'); q.make(); box.innerHTML = q.createSvgTag({ cellSize: 3, margin: 0, scalable: true }); } catch (e) { box.parentNode.querySelector('span').textContent = '문구를 복사해서 휴대폰으로 보내 주세요'; box.remove(); }
     };
     if (window.qrcode) return draw();
     var s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
     s.onload = function () { if (window.qrcode) { window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs['UTF-8']; draw(); } };
-    s.onerror = function () { box.parentNode.querySelector('span').textContent = '문구를 복사해서 폰으로 보내 주세요'; box.remove(); };
+    s.onerror = function () { box.parentNode.querySelector('span').textContent = '문구를 복사해서 휴대폰으로 보내 주세요'; box.remove(); };
     document.head.appendChild(s);
   }
   function back() {
