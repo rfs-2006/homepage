@@ -357,6 +357,8 @@
     // right-aligns against the computed left edge); inset:auto clears the
     // base rule's top/right so the inline left/top position it alone.
     '.ctl:popover-open{position:fixed;inset:auto;transform:translateX(-100%)}' +
+    // 편집할 수 없는(공개) 화면에서는 Replace/Edit 버튼이 안 보이는 채로 키보드 포커스를 받지 않게
+    ':host(:not([data-editable]):not([data-reframe])) .ctl{visibility:hidden}' +
     ':host([data-filled][data-editable]:hover) .ctl,:host([data-reframe]) .ctl' +
     '  {opacity:1;pointer-events:auto}' +
     '.ctl button{appearance:none;border:0;border-radius:6px;padding:5px 10px;cursor:pointer;' +
@@ -388,7 +390,7 @@
     // form links the photographer AND Unsplash) — anchors style inline so
     // the overlay reads as one line of text.
     '.credit a{color:inherit;text-decoration:none}' +
-    '.credit a:hover,.credit a:focus-visible{text-decoration:underline}' +
+    '.credit a:hover,.credit a:focus-visible{text-decoration:underline}.credit a:focus-visible{outline:2px solid #8FAADC;outline-offset:2px}' +
     ':host([data-filled][data-credit]) .credit{display:block}' +
     // Exports must ship JUST the image — no hover controls, no credit chip
     // (the host marks <html data-om-exporting> for the capture window; the

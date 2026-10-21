@@ -2,6 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>
+// 미리보기 주소(deploy-preview-…)나 주소 끝 ?motion=1 이면, 컴퓨터에서 애니메이션을 꺼 두었어도(동작 줄이기) 효과를 그대로 보여 준다. ?motion=0 으로 끈다. 실제 사이트에는 영향 없음
+(function(){
+  try {
+    var q = /[?&]motion=(1|0)\b/.exec(location.search), ls = window.localStorage;
+    if (q) q[1] === '1' ? ls.setItem('rfs-motion', '1') : ls.removeItem('rfs-motion');
+    if (!(/^deploy-preview-/.test(location.hostname) || ls.getItem('rfs-motion') === '1')) return;
+  } catch (e) { return; }
+  var mm = window.matchMedia.bind(window);
+  window.matchMedia = function(s){ return /prefers-reduced-motion/.test(s) ? mm(/:\s*reduce/.test(s) ? 'not all' : 'all') : mm(s); };
+  var fix = function(){
+    [].forEach.call(document.styleSheets, function(sh){ var r; try { r = sh.cssRules; } catch (e) { return; }
+      (function walk(rs){ [].forEach.call(rs, function(x){
+        if (x.media && /prefers-reduced-motion/.test(x.media.mediaText)) x.media.mediaText = /:\s*reduce/.test(x.media.mediaText) ? 'not all' : 'all';
+        else if (x.cssRules) walk(x.cssRules);
+      }); })(r);
+    });
+  };
+  document.addEventListener('DOMContentLoaded', fix); window.addEventListener('load', fix);
+  new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeName === 'STYLE' || n.nodeName === 'LINK'; }); })) setTimeout(fix, 50); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <title>R.F.S. 중앙대학교 가치투자학회 | 중앙대 금융학회·주식 학회</title>
 <meta name="description" content="중앙대학교 가치투자학회 R.F.S. 2006년 창립, 43기 활동 중. Research Team과 Asset Management Team이 기업 보고서를 쓰고 RFS 펀드를 운용합니다.">
 <meta name="keywords" content="중앙대 rfs, 중앙대rfs, 중앙대 RFS, 중앙대RFS, 중앙대학교 rfs, 중앙대학교rfs, 중앙대 금융학회, 중앙대학교 금융학회, 주식동아리, 중앙대학교, 중앙대 주식동아리, RFS, rfs, R.F.S., R.F.S, Rising Financial Stars, CAU RFS, cau rfs, caurfs, caurfs.kr, 알에프에스, 중대 rfs, 중대rfs, 중대 RFS, 중대RFS, 중앙대학교 RFS, 중앙대학교RFS, 중앙대 R.F.S., RFS 학회, RFS 가치투자학회, RFS 중앙대, 중앙대 알에프에스, 중앙대 학회 모집, 중앙대 투자학회 모집, 중앙대 가치투자학회 모집, 중앙대 주식동아리 모집, 중앙대 금융학회 모집, 중앙대 동아리 모집, RFS 신입 모집, RFS 모집, RFS 리크루팅, 중앙대 동아리 추천, 중앙대 학회 추천, 중앙대 투자학회 추천, 중앙대 신입생 동아리, 대학생 투자동아리, 대학생 주식동아리, 대학생 금융학회, 대학생 투자학회, 대학생 가치투자학회, 대학생 금융동아리, 대학생 증권동아리, 대학 투자학회, 대학 주식동아리, 가치투자학회, 가치투자, 기업분석, 기업분석 리포트, 기업분석 보고서, 리서치 보고서, 리서치 리포트, 투자제안서, 밸류에이션, Valuation, 재무모델링, 에쿼티 리서치, Equity Research, 해외기업 리포트, 해외주식 리포트, 목표주가, 투자의견, RFS 펀드, 자산운용, 대학생 펀드 운용, SOHKA, 투자학회 연합 학술제, 금융권 취업, 증권사 취업, 애널리스트, 애널리스트 취업, RFS 알럼나이, RFS 동문, 중앙대 가치투자학회, 중앙대가치투자학회, 중앙대 투자학회, 중앙대투자학회, 중앙대 투자동아리, 중앙대투자동아리, 중앙대주식동아리, 중앙대 주식학회, 중앙대주식학회, 중앙대 금융동아리, 중앙대금융동아리, 중앙대금융학회, 중앙대 증권동아리, 중앙대증권동아리, 중앙대 경제동아리, 중앙대경제동아리, 중앙대 학회, 중앙대학회, 중앙대 동아리, 중앙대동아리, 중앙대학교 가치투자학회, 중앙대학교가치투자학회, 중앙대학교 투자학회, 중앙대학교투자학회, 중앙대학교 투자동아리, 중앙대학교투자동아리, 중앙대학교 주식동아리, 중앙대학교주식동아리, 중앙대학교 주식학회, 중앙대학교주식학회, 중앙대학교 금융동아리, 중앙대학교금융동아리, 중앙대학교금융학회, 중앙대학교 증권동아리, 중앙대학교증권동아리, 중앙대학교 경제동아리, 중앙대학교경제동아리, 중앙대학교 학회, 중앙대학교학회, 중앙대학교 동아리, 중앙대학교동아리, 중대 가치투자학회, 중대가치투자학회, 중대 투자학회, 중대투자학회, 중대 투자동아리, 중대투자동아리, 중대 주식동아리, 중대주식동아리, 중대 주식학회, 중대주식학회, 중대 금융동아리, 중대금융동아리, 중대 금융학회, 중대금융학회, 중대 증권동아리, 중대증권동아리, 중대 경제동아리, 중대경제동아리, 중대 학회, 중대학회, 중대 동아리, 중대동아리, 산일전기, 산일전기 기업분석, 산일전기 리포트, 산일전기 분석 보고서, 산일전기 목표주가, 산일전기 밸류에이션, 산일전기 투자의견, 산일전기 주가 전망, 062040, 대한항공, 대한항공 기업분석, 대한항공 리포트, 대한항공 분석 보고서, 대한항공 목표주가, 대한항공 밸류에이션, 대한항공 투자의견, 대한항공 주가 전망, 003490, 인바디, 인바디 기업분석, 인바디 리포트, 인바디 분석 보고서, 인바디 목표주가, 인바디 밸류에이션, 인바디 투자의견, 인바디 주가 전망, 041830, 네패스아크, 네패스아크 기업분석, 네패스아크 리포트, 네패스아크 분석 보고서, 네패스아크 목표주가, 네패스아크 밸류에이션, 네패스아크 투자의견, 네패스아크 주가 전망, 330860, 제주반도체, 제주반도체 기업분석, 제주반도체 리포트, 제주반도체 분석 보고서, 제주반도체 목표주가, 제주반도체 밸류에이션, 제주반도체 투자의견, 제주반도체 주가 전망, 080220, Take-Two Interactive, Take-Two Interactive 기업분석, Take-Two Interactive 리포트, Take-Two Interactive 분석 보고서, Take-Two Interactive 목표주가, Take-Two Interactive 밸류에이션, Take-Two Interactive 투자의견, Take-Two Interactive 주가 전망, 테이크투 인터랙티브, 테이크투 인터랙티브 기업분석, 테이크투 인터랙티브 리포트, 테이크투 인터랙티브 분석 보고서, 테이크투 인터랙티브 목표주가, 테이크투 인터랙티브 밸류에이션, 테이크투 인터랙티브 투자의견, 테이크투 인터랙티브 주가 전망, 테이크투, 테이크투 기업분석, 테이크투 리포트, 테이크투 분석 보고서, 테이크투 목표주가, 테이크투 밸류에이션, 테이크투 투자의견, 테이크투 주가 전망, TTWO, TTWO 주가, Take-Two, Take Two Interactive, 리브스메드, 리브스메드 기업분석, 리브스메드 리포트, 리브스메드 분석 보고서, 리브스메드 목표주가, 리브스메드 밸류에이션, 리브스메드 투자의견, 리브스메드 주가 전망, 491000, 파두, 파두 기업분석, 파두 리포트, 파두 분석 보고서, 파두 목표주가, 파두 밸류에이션, 파두 투자의견, 파두 주가 전망, 440110, FADU, TORM, TORM 기업분석, TORM 리포트, TORM 분석 보고서, TORM 목표주가, TORM 밸류에이션, TORM 투자의견, TORM 주가 전망, TORM plc., TORM plc. 기업분석, TORM plc. 리포트, TORM plc. 분석 보고서, TORM plc. 목표주가, TORM plc. 밸류에이션, TORM plc. 투자의견, TORM plc. 주가 전망, 토름, 토름 기업분석, 토름 리포트, 토름 분석 보고서, 토름 목표주가, 토름 밸류에이션, 토름 투자의견, 토름 주가 전망, TRMD, TRMD 주가, OCI홀딩스, OCI홀딩스 기업분석, OCI홀딩스 리포트, OCI홀딩스 분석 보고서, OCI홀딩스 목표주가, OCI홀딩스 밸류에이션, OCI홀딩스 투자의견, OCI홀딩스 주가 전망, 010060, OCI, OCI 홀딩스, 삼성E&amp;A, 삼성E&amp;A 기업분석, 삼성E&amp;A 리포트, 삼성E&amp;A 분석 보고서, 삼성E&amp;A 목표주가, 삼성E&amp;A 밸류에이션, 삼성E&amp;A 투자의견, 삼성E&amp;A 주가 전망, 삼성엔지니어링, 삼성엔지니어링 기업분석, 삼성엔지니어링 리포트, 삼성엔지니어링 분석 보고서, 삼성엔지니어링 목표주가, 삼성엔지니어링 밸류에이션, 삼성엔지니어링 투자의견, 삼성엔지니어링 주가 전망, 028050, 삼성이앤에이, Samsung E&amp;A, 태광, 태광 기업분석, 태광 리포트, 태광 분석 보고서, 태광 목표주가, 태광 밸류에이션, 태광 투자의견, 태광 주가 전망, 023160, KCC, KCC 기업분석, KCC 리포트, KCC 분석 보고서, KCC 목표주가, KCC 밸류에이션, KCC 투자의견, KCC 주가 전망, 002380, RFHIC, RFHIC 기업분석, RFHIC 리포트, RFHIC 분석 보고서, RFHIC 목표주가, RFHIC 밸류에이션, RFHIC 투자의견, RFHIC 주가 전망, 218410, 에스티팜, 에스티팜 기업분석, 에스티팜 리포트, 에스티팜 분석 보고서, 에스티팜 목표주가, 에스티팜 밸류에이션, 에스티팜 투자의견, 에스티팜 주가 전망, 237690, ST Pharm, 인텔리안테크, 인텔리안테크 기업분석, 인텔리안테크 리포트, 인텔리안테크 분석 보고서, 인텔리안테크 목표주가, 인텔리안테크 밸류에이션, 인텔리안테크 투자의견, 인텔리안테크 주가 전망, 189300, 인텔리안테크놀로지스, 인텔리안, 테크윙, 테크윙 기업분석, 테크윙 리포트, 테크윙 분석 보고서, 테크윙 목표주가, 테크윙 밸류에이션, 테크윙 투자의견, 테크윙 주가 전망, 089030, 플리토, 플리토 기업분석, 플리토 리포트, 플리토 분석 보고서, 플리토 목표주가, 플리토 밸류에이션, 플리토 투자의견, 플리토 주가 전망, 300080, CrowdStrike, CrowdStrike 기업분석, CrowdStrike 리포트, CrowdStrike 분석 보고서, CrowdStrike 목표주가, CrowdStrike 밸류에이션, CrowdStrike 투자의견, CrowdStrike 주가 전망, 크라우드스트라이크, 크라우드스트라이크 기업분석, 크라우드스트라이크 리포트, 크라우드스트라이크 분석 보고서, 크라우드스트라이크 목표주가, 크라우드스트라이크 밸류에이션, 크라우드스트라이크 투자의견, 크라우드스트라이크 주가 전망, CRWD, CRWD 주가, 씨어스테크놀로지, 씨어스테크놀로지 기업분석, 씨어스테크놀로지 리포트, 씨어스테크놀로지 분석 보고서, 씨어스테크놀로지 목표주가, 씨어스테크놀로지 밸류에이션, 씨어스테크놀로지 투자의견, 씨어스테크놀로지 주가 전망, 458870, 씨어스, 바이넥스, 바이넥스 기업분석, 바이넥스 리포트, 바이넥스 분석 보고서, 바이넥스 목표주가, 바이넥스 밸류에이션, 바이넥스 투자의견, 바이넥스 주가 전망, 053030, 롯데관광개발, 롯데관광개발 기업분석, 롯데관광개발 리포트, 롯데관광개발 분석 보고서, 롯데관광개발 목표주가, 롯데관광개발 밸류에이션, 롯데관광개발 투자의견, 롯데관광개발 주가 전망, 032350, 코미코, 코미코 기업분석, 코미코 리포트, 코미코 분석 보고서, 코미코 목표주가, 코미코 밸류에이션, 코미코 투자의견, 코미코 주가 전망, 183300, 휴메딕스, 휴메딕스 기업분석, 휴메딕스 리포트, 휴메딕스 분석 보고서, 휴메딕스 목표주가, 휴메딕스 밸류에이션, 휴메딕스 투자의견, 휴메딕스 주가 전망, 200670, Duolingo, Duolingo 기업분석, Duolingo 리포트, Duolingo 분석 보고서, Duolingo 목표주가, Duolingo 밸류에이션, Duolingo 투자의견, Duolingo 주가 전망, 듀오링고, 듀오링고 기업분석, 듀오링고 리포트, 듀오링고 분석 보고서, 듀오링고 목표주가, 듀오링고 밸류에이션, 듀오링고 투자의견, 듀오링고 주가 전망, DUOL, DUOL 주가, 진성티이씨, 진성티이씨 기업분석, 진성티이씨 리포트, 진성티이씨 분석 보고서, 진성티이씨 목표주가, 진성티이씨 밸류에이션, 진성티이씨 투자의견, 진성티이씨 주가 전망, 036890, LS ELECTRIC, LS ELECTRIC 기업분석, LS ELECTRIC 리포트, LS ELECTRIC 분석 보고서, LS ELECTRIC 목표주가, LS ELECTRIC 밸류에이션, LS ELECTRIC 투자의견, LS ELECTRIC 주가 전망, LS일렉트릭, LS일렉트릭 기업분석, LS일렉트릭 리포트, LS일렉트릭 분석 보고서, LS일렉트릭 목표주가, LS일렉트릭 밸류에이션, LS일렉트릭 투자의견, LS일렉트릭 주가 전망, 010120, LS산전, HD현대마린솔루션, HD현대마린솔루션 기업분석, HD현대마린솔루션 리포트, HD현대마린솔루션 분석 보고서, HD현대마린솔루션 목표주가, HD현대마린솔루션 밸류에이션, HD현대마린솔루션 투자의견, HD현대마린솔루션 주가 전망, 443060, 한미반도체, 한미반도체 기업분석, 한미반도체 리포트, 한미반도체 분석 보고서, 한미반도체 목표주가, 한미반도체 밸류에이션, 한미반도체 투자의견, 한미반도체 주가 전망, 042700, 클래시스, 클래시스 기업분석, 클래시스 리포트, 클래시스 분석 보고서, 클래시스 목표주가, 클래시스 밸류에이션, 클래시스 투자의견, 클래시스 주가 전망, 214150, 삼성전기, 삼성전기 기업분석, 삼성전기 리포트, 삼성전기 분석 보고서, 삼성전기 목표주가, 삼성전기 밸류에이션, 삼성전기 투자의견, 삼성전기 주가 전망, 009150, SEMCO, 에이피알, 에이피알 기업분석, 에이피알 리포트, 에이피알 분석 보고서, 에이피알 목표주가, 에이피알 밸류에이션, 에이피알 투자의견, 에이피알 주가 전망, 278470, APR, HD현대마린엔진, HD현대마린엔진 기업분석, HD현대마린엔진 리포트, HD현대마린엔진 분석 보고서, HD현대마린엔진 목표주가, HD현대마린엔진 밸류에이션, HD현대마린엔진 투자의견, HD현대마린엔진 주가 전망, 071970, HSD엔진, 토비스, 토비스 기업분석, 토비스 리포트, 토비스 분석 보고서, 토비스 목표주가, 토비스 밸류에이션, 토비스 투자의견, 토비스 주가 전망, 051360, 파크시스템스, 파크시스템스 기업분석, 파크시스템스 리포트, 파크시스템스 분석 보고서, 파크시스템스 목표주가, 파크시스템스 밸류에이션, 파크시스템스 투자의견, 파크시스템스 주가 전망, 140860, NAVER, NAVER 기업분석, NAVER 리포트, NAVER 분석 보고서, NAVER 목표주가, NAVER 밸류에이션, NAVER 투자의견, NAVER 주가 전망, 네이버, 네이버 기업분석, 네이버 리포트, 네이버 분석 보고서, 네이버 목표주가, 네이버 밸류에이션, 네이버 투자의견, 네이버 주가 전망, 035420, Intuitive Surgical, Intuitive Surgical 기업분석, Intuitive Surgical 리포트, Intuitive Surgical 분석 보고서, Intuitive Surgical 목표주가, Intuitive Surgical 밸류에이션, Intuitive Surgical 투자의견, Intuitive Surgical 주가 전망, 인튜이티브 서지컬, 인튜이티브 서지컬 기업분석, 인튜이티브 서지컬 리포트, 인튜이티브 서지컬 분석 보고서, 인튜이티브 서지컬 목표주가, 인튜이티브 서지컬 밸류에이션, 인튜이티브 서지컬 투자의견, 인튜이티브 서지컬 주가 전망, ISRG, ISRG 주가, 인튜이티브서지컬, 더존비즈온, 더존비즈온 기업분석, 더존비즈온 리포트, 더존비즈온 분석 보고서, 더존비즈온 목표주가, 더존비즈온 밸류에이션, 더존비즈온 투자의견, 더존비즈온 주가 전망, 012510, 경동나비엔, 경동나비엔 기업분석, 경동나비엔 리포트, 경동나비엔 분석 보고서, 경동나비엔 목표주가, 경동나비엔 밸류에이션, 경동나비엔 투자의견, 경동나비엔 주가 전망, 009450, SK가스, SK가스 기업분석, SK가스 리포트, SK가스 분석 보고서, SK가스 목표주가, SK가스 밸류에이션, SK가스 투자의견, SK가스 주가 전망, 018670, 한중엔시에스, 한중엔시에스 기업분석, 한중엔시에스 리포트, 한중엔시에스 분석 보고서, 한중엔시에스 목표주가, 한중엔시에스 밸류에이션, 한중엔시에스 투자의견, 한중엔시에스 주가 전망, 107640, 한중NCS, 한화오션, 한화오션 기업분석, 한화오션 리포트, 한화오션 분석 보고서, 한화오션 목표주가, 한화오션 밸류에이션, 한화오션 투자의견, 한화오션 주가 전망, 042660, 대우조선해양, 크래프톤, 크래프톤 기업분석, 크래프톤 리포트, 크래프톤 분석 보고서, 크래프톤 목표주가, 크래프톤 밸류에이션, 크래프톤 투자의견, 크래프톤 주가 전망, 259960, KRAFTON, 파마리서치, 파마리서치 기업분석, 파마리서치 리포트, 파마리서치 분석 보고서, 파마리서치 목표주가, 파마리서치 밸류에이션, 파마리서치 투자의견, 파마리서치 주가 전망, 214450, 티앤엘, 티앤엘 기업분석, 티앤엘 리포트, 티앤엘 분석 보고서, 티앤엘 목표주가, 티앤엘 밸류에이션, 티앤엘 투자의견, 티앤엘 주가 전망, 340570, 실리콘투, 실리콘투 기업분석, 실리콘투 리포트, 실리콘투 분석 보고서, 실리콘투 목표주가, 실리콘투 밸류에이션, 실리콘투 투자의견, 실리콘투 주가 전망, 257720, 브이티, 브이티 기업분석, 브이티 리포트, 브이티 분석 보고서, 브이티 목표주가, 브이티 밸류에이션, 브이티 투자의견, 브이티 주가 전망, 018290, VT, 브이티지엠피, 하이비젼시스템, 하이비젼시스템 기업분석, 하이비젼시스템 리포트, 하이비젼시스템 분석 보고서, 하이비젼시스템 목표주가, 하이비젼시스템 밸류에이션, 하이비젼시스템 투자의견, 하이비젼시스템 주가 전망, 126700, GE Vernova, GE Vernova 기업분석, GE Vernova 리포트, GE Vernova 분석 보고서, GE Vernova 목표주가, GE Vernova 밸류에이션, GE Vernova 투자의견, GE Vernova 주가 전망, GE 버노바, GE 버노바 기업분석, GE 버노바 리포트, GE 버노바 분석 보고서, GE 버노바 목표주가, GE 버노바 밸류에이션, GE 버노바 투자의견, GE 버노바 주가 전망, GEV, GEV 주가, GE버노바, GE 베르노바, 애니플러스, 애니플러스 기업분석, 애니플러스 리포트, 애니플러스 분석 보고서, 애니플러스 목표주가, 애니플러스 밸류에이션, 애니플러스 투자의견, 애니플러스 주가 전망, 310200, 글로벌텍스프리, 글로벌텍스프리 기업분석, 글로벌텍스프리 리포트, 글로벌텍스프리 분석 보고서, 글로벌텍스프리 목표주가, 글로벌텍스프리 밸류에이션, 글로벌텍스프리 투자의견, 글로벌텍스프리 주가 전망, 204620, GTF, Arista Networks, Arista Networks 기업분석, Arista Networks 리포트, Arista Networks 분석 보고서, Arista Networks 목표주가, Arista Networks 밸류에이션, Arista Networks 투자의견, Arista Networks 주가 전망, 아리스타 네트웍스, 아리스타 네트웍스 기업분석, 아리스타 네트웍스 리포트, 아리스타 네트웍스 분석 보고서, 아리스타 네트웍스 목표주가, 아리스타 네트웍스 밸류에이션, 아리스타 네트웍스 투자의견, 아리스타 네트웍스 주가 전망, ANET, ANET 주가, 아리스타네트웍스, Arista, 하이브, 하이브 기업분석, 하이브 리포트, 하이브 분석 보고서, 하이브 목표주가, 하이브 밸류에이션, 하이브 투자의견, 하이브 주가 전망, 352820, HYBE, 빅히트, 빅히트엔터테인먼트, 셀트리온, 셀트리온 기업분석, 셀트리온 리포트, 셀트리온 분석 보고서, 셀트리온 목표주가, 셀트리온 밸류에이션, 셀트리온 투자의견, 셀트리온 주가 전망, 068270, Apple, Apple 기업분석, Apple 리포트, Apple 분석 보고서, Apple 목표주가, Apple 밸류에이션, Apple 투자의견, Apple 주가 전망, 애플, 애플 기업분석, 애플 리포트, 애플 분석 보고서, 애플 목표주가, 애플 밸류에이션, 애플 투자의견, 애플 주가 전망, AAPL, AAPL 주가, Tesla, Tesla 기업분석, Tesla 리포트, Tesla 분석 보고서, Tesla 목표주가, Tesla 밸류에이션, Tesla 투자의견, Tesla 주가 전망, 테슬라, 테슬라 기업분석, 테슬라 리포트, 테슬라 분석 보고서, 테슬라 목표주가, 테슬라 밸류에이션, 테슬라 투자의견, 테슬라 주가 전망, TSLA, TSLA 주가, 에스엠, 에스엠 기업분석, 에스엠 리포트, 에스엠 분석 보고서, 에스엠 목표주가, 에스엠 밸류에이션, 에스엠 투자의견, 에스엠 주가 전망, SM엔터테인먼트, SM엔터테인먼트 기업분석, SM엔터테인먼트 리포트, SM엔터테인먼트 분석 보고서, SM엔터테인먼트 목표주가, SM엔터테인먼트 밸류에이션, SM엔터테인먼트 투자의견, SM엔터테인먼트 주가 전망, 041510, SM, SM엔터, 에스엠엔터테인먼트, 포스코케미칼, 포스코케미칼 기업분석, 포스코케미칼 리포트, 포스코케미칼 분석 보고서, 포스코케미칼 목표주가, 포스코케미칼 밸류에이션, 포스코케미칼 투자의견, 포스코케미칼 주가 전망, 포스코퓨처엠, 포스코퓨처엠 기업분석, 포스코퓨처엠 리포트, 포스코퓨처엠 분석 보고서, 포스코퓨처엠 목표주가, 포스코퓨처엠 밸류에이션, 포스코퓨처엠 투자의견, 포스코퓨처엠 주가 전망, 003670, POSCO퓨처엠, 포스코 퓨처엠, 에코프로비엠, 에코프로비엠 기업분석, 에코프로비엠 리포트, 에코프로비엠 분석 보고서, 에코프로비엠 목표주가, 에코프로비엠 밸류에이션, 에코프로비엠 투자의견, 에코프로비엠 주가 전망, 에코프로BM, 에코프로BM 기업분석, 에코프로BM 리포트, 에코프로BM 분석 보고서, 에코프로BM 목표주가, 에코프로BM 밸류에이션, 에코프로BM 투자의견, 에코프로BM 주가 전망, 247540, 한화에어로스페이스, 한화에어로스페이스 기업분석, 한화에어로스페이스 리포트, 한화에어로스페이스 분석 보고서, 한화에어로스페이스 목표주가, 한화에어로스페이스 밸류에이션, 한화에어로스페이스 투자의견, 한화에어로스페이스 주가 전망, 012450, 한화에어로, LG에너지솔루션, LG에너지솔루션 기업분석, LG에너지솔루션 리포트, LG에너지솔루션 분석 보고서, LG에너지솔루션 목표주가, LG에너지솔루션 밸류에이션, LG에너지솔루션 투자의견, LG에너지솔루션 주가 전망, 373220, LG엔솔, 엘지에너지솔루션, LGES, 삼성바이오로직스, 삼성바이오로직스 기업분석, 삼성바이오로직스 리포트, 삼성바이오로직스 분석 보고서, 삼성바이오로직스 목표주가, 삼성바이오로직스 밸류에이션, 삼성바이오로직스 투자의견, 삼성바이오로직스 주가 전망, 207940, 삼성바이오, 삼바, 한국타이어앤테크놀로지, 한국타이어앤테크놀로지 기업분석, 한국타이어앤테크놀로지 리포트, 한국타이어앤테크놀로지 분석 보고서, 한국타이어앤테크놀로지 목표주가, 한국타이어앤테크놀로지 밸류에이션, 한국타이어앤테크놀로지 투자의견, 한국타이어앤테크놀로지 주가 전망, 한국타이어, 한국타이어 기업분석, 한국타이어 리포트, 한국타이어 분석 보고서, 한국타이어 목표주가, 한국타이어 밸류에이션, 한국타이어 투자의견, 한국타이어 주가 전망, 161390, 성광벤드, 성광벤드 기업분석, 성광벤드 리포트, 성광벤드 분석 보고서, 성광벤드 목표주가, 성광벤드 밸류에이션, 성광벤드 투자의견, 성광벤드 주가 전망, 014620, PI첨단소재, PI첨단소재 기업분석, PI첨단소재 리포트, PI첨단소재 분석 보고서, PI첨단소재 목표주가, PI첨단소재 밸류에이션, PI첨단소재 투자의견, PI첨단소재 주가 전망, 178920, 피아이첨단소재, 그린플러스, 그린플러스 기업분석, 그린플러스 리포트, 그린플러스 분석 보고서, 그린플러스 목표주가, 그린플러스 밸류에이션, 그린플러스 투자의견, 그린플러스 주가 전망, 186230, 현대차, 현대차 기업분석, 현대차 리포트, 현대차 분석 보고서, 현대차 목표주가, 현대차 밸류에이션, 현대차 투자의견, 현대차 주가 전망, 현대자동차, 현대자동차 기업분석, 현대자동차 리포트, 현대자동차 분석 보고서, 현대자동차 목표주가, 현대자동차 밸류에이션, 현대자동차 투자의견, 현대자동차 주가 전망, 005380, 엘앤에프, 엘앤에프 기업분석, 엘앤에프 리포트, 엘앤에프 분석 보고서, 엘앤에프 목표주가, 엘앤에프 밸류에이션, 엘앤에프 투자의견, 엘앤에프 주가 전망, 066970, L&amp;F, 오스템임플란트, 오스템임플란트 기업분석, 오스템임플란트 리포트, 오스템임플란트 분석 보고서, 오스템임플란트 목표주가, 오스템임플란트 밸류에이션, 오스템임플란트 투자의견, 오스템임플란트 주가 전망, 048260, 오스템, 루트로닉, 루트로닉 기업분석, 루트로닉 리포트, 루트로닉 분석 보고서, 루트로닉 목표주가, 루트로닉 밸류에이션, 루트로닉 투자의견, 루트로닉 주가 전망, 085370, LG유플러스, LG유플러스 기업분석, LG유플러스 리포트, LG유플러스 분석 보고서, LG유플러스 목표주가, LG유플러스 밸류에이션, LG유플러스 투자의견, LG유플러스 주가 전망, 032640, LGU+, 엘지유플러스, 삼성SDI, 삼성SDI 기업분석, 삼성SDI 리포트, 삼성SDI 분석 보고서, 삼성SDI 목표주가, 삼성SDI 밸류에이션, 삼성SDI 투자의견, 삼성SDI 주가 전망, 006400, 대웅제약, 대웅제약 기업분석, 대웅제약 리포트, 대웅제약 분석 보고서, 대웅제약 목표주가, 대웅제약 밸류에이션, 대웅제약 투자의견, 대웅제약 주가 전망, 069620, 현대글로비스, 현대글로비스 기업분석, 현대글로비스 리포트, 현대글로비스 분석 보고서, 현대글로비스 목표주가, 현대글로비스 밸류에이션, 현대글로비스 투자의견, 현대글로비스 주가 전망, 086280, 글로비스, 비에이치, 비에이치 기업분석, 비에이치 리포트, 비에이치 분석 보고서, 비에이치 목표주가, 비에이치 밸류에이션, 비에이치 투자의견, 비에이치 주가 전망, 090460, HMM, HMM 기업분석, HMM 리포트, HMM 분석 보고서, HMM 목표주가, HMM 밸류에이션, HMM 투자의견, HMM 주가 전망, 011200, 현대상선, BGF리테일, BGF리테일 기업분석, BGF리테일 리포트, BGF리테일 분석 보고서, BGF리테일 목표주가, BGF리테일 밸류에이션, BGF리테일 투자의견, BGF리테일 주가 전망, 282330, Intel, Intel 기업분석, Intel 리포트, Intel 분석 보고서, Intel 목표주가, Intel 밸류에이션, Intel 투자의견, Intel 주가 전망, 인텔, 인텔 기업분석, 인텔 리포트, 인텔 분석 보고서, 인텔 목표주가, 인텔 밸류에이션, 인텔 투자의견, 인텔 주가 전망, INTC, INTC 주가, 펄어비스, 펄어비스 기업분석, 펄어비스 리포트, 펄어비스 분석 보고서, 펄어비스 목표주가, 펄어비스 밸류에이션, 펄어비스 투자의견, 펄어비스 주가 전망, 263750, 테스나, 테스나 기업분석, 테스나 리포트, 테스나 분석 보고서, 테스나 목표주가, 테스나 밸류에이션, 테스나 투자의견, 테스나 주가 전망, 두산테스나, 두산테스나 기업분석, 두산테스나 리포트, 두산테스나 분석 보고서, 두산테스나 목표주가, 두산테스나 밸류에이션, 두산테스나 투자의견, 두산테스나 주가 전망, 131970, 씨에스윈드, 씨에스윈드 기업분석, 씨에스윈드 리포트, 씨에스윈드 분석 보고서, 씨에스윈드 목표주가, 씨에스윈드 밸류에이션, 씨에스윈드 투자의견, 씨에스윈드 주가 전망, 112610, CS윈드, CS Wind, 기아, 기아 기업분석, 기아 리포트, 기아 분석 보고서, 기아 목표주가, 기아 밸류에이션, 기아 투자의견, 기아 주가 전망, 000270, 기아자동차, 기아차, S-Oil, S-Oil 기업분석, S-Oil 리포트, S-Oil 분석 보고서, S-Oil 목표주가, S-Oil 밸류에이션, S-Oil 투자의견, S-Oil 주가 전망, 에쓰오일, 에쓰오일 기업분석, 에쓰오일 리포트, 에쓰오일 분석 보고서, 에쓰오일 목표주가, 에쓰오일 밸류에이션, 에쓰오일 투자의견, 에쓰오일 주가 전망, 010950, S-OIL, 에스오일, 오리온, 오리온 기업분석, 오리온 리포트, 오리온 분석 보고서, 오리온 목표주가, 오리온 밸류에이션, 오리온 투자의견, 오리온 주가 전망, 271560, 세아베스틸, 세아베스틸 기업분석, 세아베스틸 리포트, 세아베스틸 분석 보고서, 세아베스틸 목표주가, 세아베스틸 밸류에이션, 세아베스틸 투자의견, 세아베스틸 주가 전망, 001430, 세아베스틸지주, 피엔티, 피엔티 기업분석, 피엔티 리포트, 피엔티 분석 보고서, 피엔티 목표주가, 피엔티 밸류에이션, 피엔티 투자의견, 피엔티 주가 전망, 137400, 콜마비앤에이치, 콜마비앤에이치 기업분석, 콜마비앤에이치 리포트, 콜마비앤에이치 분석 보고서, 콜마비앤에이치 목표주가, 콜마비앤에이치 밸류에이션, 콜마비앤에이치 투자의견, 콜마비앤에이치 주가 전망, 200130, 콜마BNH, 롯데케미칼, 롯데케미칼 기업분석, 롯데케미칼 리포트, 롯데케미칼 분석 보고서, 롯데케미칼 목표주가, 롯데케미칼 밸류에이션, 롯데케미칼 투자의견, 롯데케미칼 주가 전망, 011170">
@@ -67,15 +89,29 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
-// 리포트 주소로 바로 들어오면 리포트 글꼴(KoPub 돋움)을 화면 그리기 전에 받기 시작한다
-(function(){ if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); }); })();
+// 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
+// 리포트 주소로 바로 들어오면 화면 그리기 전에 받기 시작하고, 다른 화면에서는 한가할 때·리포트를 열 때 받는다. 6초 넘게 걸리면 그냥 보여 준다
+(function(){
+  var started = false, ok = function(){ document.documentElement.classList.add('rfont'); };
+  window.__rfsFont = function(){
+    if (started) return; started = true;
+    ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); });
+    if (!window.FontFace || !document.fonts) return ok();
+    setTimeout(ok, 6000);
+    // 아래 <style>의 @font-face가 읽히기 전이라 fonts.load()로는 기다릴 수 없다. 같은 파일로 글꼴을 직접 등록해 받는다
+    Promise.all([['light',300],['medium',500],['bold',700]].map(function(x){
+      var f = new FontFace('RFS Report Dotum', "url('/assets/fonts/rfs-report-dotum-"+x[0]+".woff2') format('woff2')", {weight: String(x[1]), display: 'block'});
+      document.fonts.add(f); return f.load();
+    })).then(ok, ok);
+  };
+  if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) window.__rfsFont();
+})();
 </script>
-<script src="./image-slot.js"></script>
+<script src="./image-slot.js?v=2"></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
 .covrow:hover{background:rgba(32,56,100,0.035)}
-@font-face{font-family:'ChosunIlboMyungjo';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/Chosunilbo_myungjo.woff') format('woff');font-weight:400;font-display:swap}
 html,body{margin:0;padding:0;background:#F7F6F3;color:#1A1A1A;font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{color:#0F1B2E}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -213,7 +249,7 @@ a:hover{color:#203864}
 /* 동작 줄이기 설정: 배경 확대는 빼고 로고·문구는 움직임 없이 페이드만, 선 채우기(진행 표시)는 유지 */
 @keyframes boot-fade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.boot-img{animation:none}.boot-seal,.boot-cap{animation-name:boot-fade}}
-@media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:10px;letter-spacing:0.14em;line-height:1.8}}
+@media (max-width:768px){.boot-line{bottom:92px;width:min(200px,52vw)}.boot-cap{white-space:normal;padding:0 28px;bottom:40px;font-size:11.5px;letter-spacing:0.14em;line-height:1.8}}
 .page-banner{position:relative;height:280px;display:flex;align-items:flex-end;overflow:hidden}
 .page-banner h1{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 35px 40px;width:100%;box-sizing:border-box;color:#F7F6F3;font-family:'Noto Serif KR',serif;font-size:42px;font-weight:700;letter-spacing:-0.03em;line-height:1.05}
 .wrap{max-width:1360px;margin:0 auto;padding:0 35px;box-sizing:border-box}
@@ -239,7 +275,7 @@ h1,h2,h3{text-wrap:balance}
 @media (prefers-reduced-motion:reduce){.rv{transform:none;transition:opacity 300ms linear;transition-delay:0ms}.rv-left,.rv-right,.rv-up{transform:none}}
 .anchor-nav{position:fixed;right:calc((100vw - min(1240px, 100vw - 70px)) / 2 - 100px);top:50%;transform:translateY(-50%);z-index:40;opacity:0;pointer-events:none;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav.is-vis{opacity:1;pointer-events:auto}
-.anchor-nav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 0;font-size:12px;letter-spacing:0.06em;color:rgba(26,26,26,0.42);transition:color 120ms cubic-bezier(0.23,1,0.32,1)}
+.anchor-nav a{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:8px 0;font-size:12px;letter-spacing:0.06em;color:rgba(26,26,26,0.68);transition:color 120ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav .dot{width:6px;height:6px;border:1px solid currentColor;flex-shrink:0;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1)}
 .anchor-nav a.active .dot{background:currentColor}
 @media (max-width:1520px){
@@ -439,7 +475,10 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .press:active{transform:none}
 .mmenu{transform:none}
 }
-/* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py */
+/* 리포트 화면 전용: 실제 리포트 PDF 폰트(KoPubWorld 돋움, 필요한 글자만 잘라 이름 변경). tools/build-report-font.py
+   글꼴이 다 받아지기 전에는 리포트 본문을 감춰 두었다가 부드럽게 보인다 (머리말 스크립트의 __rfsFont) */
+.rpt-paper{transition:opacity .35s ease}
+html:not(.rfont) .rpt-paper,html:not(.rp1) .rpt-paper{opacity:0}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:block}
 @font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:block}
@@ -448,6 +487,15 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
 ::view-transition-new(root){animation:rfs-vt-in 420ms cubic-bezier(.23,1,.32,1) 60ms both}
 @keyframes rfs-vt-out{to{opacity:0}}
+/* 별자리에서 별을 눌러 넘어가는 동안: 바탕을 남색으로 (assets/dipper.html warp) */
+html.warp-nav,html.warp-nav body{background:#0B1524 !important}
+html.warp-nav::view-transition-old(root){animation:rfs-warp-zoom 1s cubic-bezier(.3,.1,.5,1) both,rfs-warp-out .8s ease-in both;transform-origin:var(--wo,50% 50%)}
+html.warp-nav::view-transition-new(root){animation:rfs-warp-in .8s ease-out .2s both}
+@keyframes rfs-warp-zoom{to{transform:scale(1.7)}}
+@keyframes rfs-warp-out{to{opacity:0}}
+@keyframes rfs-warp-in{from{opacity:0;transform:scale(1.04)}}
+html.warp-in main{animation:rfs-warp-fade .6s ease both}   /* 폰(페이지 전환 효과 없음): 별을 눌러 넘어온 새 페이지가 서서히 */
+@keyframes rfs-warp-fade{from{opacity:0}}
 @keyframes rfs-vt-in{from{opacity:0;transform:translateY(16px)}}
 /* 동작 줄이기 설정에서는 움직임 없이 페이드만 */
 @keyframes rfs-vt-fade{from{opacity:0}}
@@ -502,7 +550,7 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-stats>div>span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#C9D8F5}
 .ag-search{margin-top:36px;background:rgba(15,27,46,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(247,246,243,.14);border-top:2px solid #8FAADC;padding:22px 26px 26px}
 .ag-search input{width:100%;font:inherit;font-size:20px;border:0;border-bottom:1px solid rgba(247,246,243,.2);outline:0;padding:6px 0 12px;background:transparent;color:#F7F6F3}
-.ag-search input::placeholder{color:rgba(247,246,243,.45)}
+.ag-search input::placeholder{color:rgba(247,246,243,0.62)}
 .ag-tiles{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:rgba(247,246,243,.1);border:1px solid rgba(247,246,243,.1);margin-top:16px}
 .ag-tiles a{background:rgba(15,27,46,.85);padding:14px 14px 12px;color:#F7F6F3;transition:background .2s}.ag-tiles a:hover{background:rgba(32,56,100,.7)}
 .ag-tiles b{display:block;font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:#F7F6F3;line-height:1.1}.ag-tiles a>span{font-size:12px;color:rgba(247,246,243,.55)}
@@ -527,12 +575,27 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .ag-box{background:rgba(21,35,59,.86);border:1px solid rgba(247,246,243,.1);padding:24px 26px 14px}
 .ag-li{display:flex;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid rgba(247,246,243,.08);font-size:14px;color:#F7F6F3;transition:color .2s}
 .ag-li:last-child{border-bottom:0}a.ag-li:hover{color:#C9D8F5}
-.ag-li .m{font-size:12px;color:rgba(247,246,243,.45);white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#8FAADC;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#C9D8F5;margin-right:8px}
+.ag-li .m{font-size:12px;color:rgba(247,246,243,0.62);white-space:nowrap}.ag-li .cat{font-size:11px;font-weight:600;color:#8FAADC;margin-right:6px}.ag-li .dt{font-family:'Noto Serif KR',serif;color:#C9D8F5;margin-right:8px}
 .ag-empty{font-size:13px;color:rgba(247,246,243,.5)}
+.ag-two.one{grid-template-columns:1fr}
+/* 알럼나이 디렉토리: 기수별 명부 */
+.ag-dir{display:flex;flex-direction:column;gap:10px}
+.ag-dg{border:1px solid rgba(247,246,243,.1);background:rgba(21,35,59,.6)}
+.ag-dgh{display:flex;align-items:baseline;gap:12px;padding:14px 18px;color:#F7F6F3}
+.ag-dgh b{font-family:'Noto Serif KR',serif;font-size:18px;font-weight:700}.ag-dgh span{font-size:12px;color:rgba(247,246,243,.5)}
+.ag-dgh i{margin-left:auto;font-style:normal;font-size:18px;color:#8FAADC}.ag-dgh:hover{background:rgba(32,56,100,.35)}
+.ag-rows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;padding:0 18px 8px;border-top:1px solid rgba(247,246,243,.08)}
+.ag-row{display:grid;grid-template-columns:64px minmax(0,1fr) auto auto auto;align-items:baseline;gap:12px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,.06);font-size:14px;color:rgba(247,246,243,.9)}
+.ag-row b{font-weight:700;color:#F7F6F3}.ag-row .c{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-row .i{font-size:11px;letter-spacing:.04em;color:#8FAADC;white-space:nowrap}
+.ag-row .ph{font-size:12.5px;color:rgba(247,246,243,.75);font-variant-numeric:tabular-nums;white-space:nowrap;text-decoration:none}.ag-row .ph:hover{color:#8FAADC}
+.ag-row .cf{font-size:11px;color:rgba(247,246,243,.55);border:1px solid rgba(247,246,243,.2);padding:3px 8px;white-space:nowrap}.ag-row .cf:hover{color:#0F1B2E;background:#8FAADC;border-color:#8FAADC}
 @media (max-width:860px){
   .ag-hero{padding-top:104px}.ag-stats{gap:26px}.ag-search{padding:16px 16px 18px;margin-top:26px}.ag-search input{font-size:16px}
   .ag-tiles{display:flex;overflow-x:auto;scrollbar-width:none}.ag-tiles a{flex:0 0 96px}
-  .ag-user{width:100%;justify-content:flex-end}
+  .ag-user{order:-1;width:100%;justify-content:flex-start;gap:12px;font-size:12px}.ag-user .btn{padding:6px 10px !important;font-size:11.5px !important}
+  .ag-stats{flex-wrap:wrap;row-gap:14px}
+  .ag-rows{grid-template-columns:1fr;padding:0 14px 6px}.ag-row{grid-template-columns:56px minmax(0,1fr) auto auto;font-size:13px}.ag-row .i{display:none}
   .ag-cards,.ag-two{grid-template-columns:1fr}.ag-tabs{top:56px}
 }
 </style>
@@ -544,21 +607,21 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));margin-top:32px;border-top:1px solid rgba(247,246,243,0.3)}
 .fd-kpis div{padding:16px 18px 4px 0;font-variant-numeric:tabular-nums}
 .fd-kpis .kv{display:block;font-family:'Noto Serif KR',serif;font-size:26px;letter-spacing:-0.02em;font-weight:700}
-.fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.42);margin-top:4px}
+.fd-kpis .kk{display:block;font-style:normal;font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.62);margin-top:4px}
 .fd-h{font-size:15px;font-weight:700;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:56px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);color:#F7F6F3}
-.fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.42)}
+.fd-h small{font-size:12px;font-weight:400;color:rgba(247,246,243,0.62)}
 .fd-chart{display:block;width:100%;height:280px;margin-top:28px}
 .fd-legend{display:flex;gap:18px;font-size:12px;color:rgba(247,246,243,0.68);margin-top:10px}.fd-legend i{display:inline-block;width:14px;height:2px;vertical-align:4px;margin-right:6px}
 .fd-attr{display:flex;height:34px;margin-top:18px;gap:2px}
 .fd-attr div{display:flex;align-items:center;justify-content:center;flex-basis:0;min-width:2px;font-size:11px;font-weight:600;color:#111c2e;white-space:nowrap;overflow:hidden}
-.fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.42);margin-top:8px}
+.fd-attrcap{display:flex;justify-content:space-between;font-size:12px;color:rgba(247,246,243,0.62);margin-top:8px}
 .fd-hold{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;align-items:center;padding:14px 0;border-top:1px solid rgba(247,246,243,0.10);font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
 .fd-hold:first-of-type{border-top:0}
-.fd-hold .nm b{display:block;font-size:15px;font-weight:600}.fd-hold .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px}
+.fd-hold .nm b{display:block;font-size:15px;font-weight:600}.fd-hold .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px}
 .fd-hold .wbar{position:relative;height:22px}.fd-hold .wbar i{position:absolute;left:0;top:0;bottom:0;background:rgba(143,170,220,0.22)}
 .fd-hold .wv{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:500;white-space:nowrap}
-.fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.42);white-space:nowrap}
-.fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.42)}
+.fd-hold .we{position:absolute;right:0;top:50%;transform:translateY(-50%);font-style:normal;font-size:11.5px;color:rgba(247,246,243,0.62);white-space:nowrap}
+.fd-hold .r{text-align:right}.fd-hold .r b{display:block;font-size:15px;font-weight:700}.fd-hold .r small{display:block;font-size:11.5px;margin-top:2px;color:rgba(247,246,243,0.62)}
 @keyframes fdFu0{0%{background:rgba(242,98,107,0.22)}}@keyframes fdFu1{0%{background:rgba(242,98,107,0.22)}}
 @keyframes fdFd0{0%{background:rgba(94,155,255,0.22)}}@keyframes fdFd1{0%{background:rgba(94,155,255,0.22)}}
 @media (max-width:760px){
@@ -566,23 +629,23 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
   .fd-chart{height:200px}
   .fd-hold{grid-template-columns:minmax(0,1fr) 90px;grid-template-rows:auto auto;gap:6px 12px}
   .fd-hold .wbar{grid-column:1/3;grid-row:2;height:18px}.fd-hold .c3,.fd-hold .c4{display:none}
-  .fd-attr div{font-size:10px}
+  .fd-attr div{font-size:11.5px}
 }
 
 
 .fd-wrap{padding:64px 35px 72px !important}
 
-.fd-lh{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;padding:0 0 10px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-lh{display:grid;grid-template-columns:12px minmax(0,1fr) 150px 64px 88px;gap:14px;padding:0 0 10px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62)}
 .fd-lh .r{text-align:right}
-.fd-mh{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;padding:12px 0 8px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);border-bottom:1px solid rgba(247,246,243,0.12)}
+.fd-mh{display:grid;grid-template-columns:140px minmax(0,1fr) 84px 110px;gap:16px;padding:12px 0 8px;font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62);border-bottom:1px solid rgba(247,246,243,0.12)}
 .fd-mh .r{text-align:right}
 .fd-pt{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
 .fd-pr{display:grid;grid-template-columns:120px repeat(4,minmax(0,1fr));gap:12px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.10);font-size:15px;font-variant-numeric:tabular-nums;color:rgba(247,246,243,0.8)}
 .fd-pr>*:not(:first-child){text-align:right}
 .fd-pr b{font-weight:700}
-.fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45);padding:12px 0 8px}
+.fd-pr.hd{font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62);padding:12px 0 8px}
 .fd-h3{font-size:17px;font-weight:700;color:#F7F6F3;margin:0}
-@media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:10px}}
+@media (max-width:860px){.fd-lh{grid-template-columns:12px minmax(0,1fr) 56px 76px;gap:10px}.fd-lh .c3{display:none}.fd-mh{grid-template-columns:88px minmax(0,1fr) 64px;gap:10px}.fd-mh .ma{display:none}.fd-pr{grid-template-columns:64px repeat(4,minmax(0,1fr));gap:6px;font-size:13px}.fd-pr.hd{font-size:11.5px}}
 
 /* 펀드·RFM 표 색과 등장 효과 */
 .fd-t{font-family:'Noto Serif KR',serif;font-weight:700 !important;letter-spacing:-0.03em !important}
@@ -648,13 +711,10 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
-.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
-/* RFM: 객장 사진 한 장이 맨 위부터 이어지고 아래 끝은 흐리게 사라진다 */
-.rfmpage .pg-hero .pg-bg,.rfmpage .pg-hero .scrim{display:none}
+.fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp?v=1014") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
+/* RFM·AMT Fund 첫 화면: ABOUT처럼 사진 한 장이 화면을 채우고 제목만 (pg-full) */
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
-.rfmpage::before{content:'';position:absolute;left:0;right:0;top:-4vw;height:max(66vw,820px);z-index:-1;pointer-events:none;background:url("assets/hero/nyse.webp") center top/cover no-repeat;filter:grayscale(1) contrast(1.05);-webkit-mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 55%,rgba(0,0,0,.35) 80%,transparent 100%)}
-.rfmpage::after{content:'';position:absolute;left:0;right:0;top:0;height:max(66vw,820px);z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,10,14,.5) 0,rgba(8,10,14,.62) 40vh,rgba(12,18,28,.84) 62vh,rgba(15,27,46,.9) 80%,#0F1B2E 100%);backdrop-filter:blur(0);-webkit-mask-image:none}
-@media (max-width:768px){.rfmpage::before,.rfmpage::after{height:900px}.rfmpage::before{top:-24px}.rfmpage::before{background-image:url("assets/hero/nyse-m.webp");background-position:30% top}}
+.rfmpage .pg-bg{filter:grayscale(1) contrast(1.05)}
 .pg-title.fd-name{font-size:clamp(30px,4.2vw,60px);line-height:1.12;letter-spacing:-0.035em}
 @media (max-width:560px){.pg-title.fd-name{font-size:25px;line-height:1.25}}
 .fd-kc{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin-top:40px;background:rgba(11,20,35,0.78);border:1px solid rgba(247,246,243,0.10);border-top:2px solid #8FAADC;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
@@ -668,8 +728,15 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-asof i::after,.fd-foot i::after{content:'';position:absolute;left:4px;top:1.5px;width:1.5px;height:4px;background:currentColor;box-shadow:1.5px 3px 0 -0.2px currentColor}
 .fd-nav{position:sticky;top:64px;z-index:20;background:rgba(15,27,46,0.8);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(247,246,243,0.1)}
 .fd-nav .wrap{display:flex;gap:6px;padding:12px 35px}
-.fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:15px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
+.fd-nav a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(247,246,243,0.7);border:1px solid transparent;transition:all .2s ease}
 .fd-nav a:hover{color:#F7F6F3;border-color:rgba(143,170,220,0.5)}
+/* ABOUT 탭 줄: 칸마다 화면을 꽉 채우는 페이지라 붙어 다니지 않게(고정 X) 첫 화면 띠 바로 밑에 얇은 목차 줄로만 */
+.fd-nav.ab-nav{position:relative !important;top:auto !important;background:#0B1524;backdrop-filter:none;-webkit-backdrop-filter:none;border-top:1px solid rgba(247,246,243,.08);border-bottom:1px solid rgba(247,246,243,.08)}
+.fd-nav.ab-nav .wrap{max-width:920px;margin:0 auto;padding:4px 24px;gap:0}
+.fd-nav.ab-nav a{position:relative;padding:15px 0;font-size:15px;letter-spacing:.06em;color:rgba(247,246,243,.62);border:0}
+.fd-nav.ab-nav a::after{content:'';position:absolute;left:50%;bottom:8px;width:18px;height:1px;margin-left:-9px;background:#8FAADC;opacity:0;transform:scaleX(.3);transition:opacity .2s ease,transform .2s ease}
+.fd-nav.ab-nav a:hover{color:#F7F6F3;background:none;border:0}.fd-nav.ab-nav a:hover::after{opacity:1;transform:none}
+@media (max-width:860px){.fd-nav.ab-nav .wrap{padding:2px 8px}.fd-nav.ab-nav a{padding:12px 10px;font-size:13.5px;letter-spacing:.03em}}
 .fd-body{padding:28px 35px 90px}
 .fd-card{background:rgba(21,35,59,0.86);border:1px solid rgba(247,246,243,0.08);padding:34px 38px 30px;margin-top:20px;scroll-margin-top:140px}
 .fd-ch{display:flex;justify-content:space-between;align-items:baseline;gap:12px 28px;flex-wrap:wrap}
@@ -716,10 +783,10 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 .fd-row{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
 .fd-lh{grid-template-columns:24px minmax(0,1fr) 120px 96px !important}
 .fd-card .fd-movers{margin-top:18px}
-.fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.42)}
+.fd-disc{margin:28px 0 0;font-size:12px;color:rgba(247,246,243,0.62)}
 @media (max-width:860px){
   .fd-kc{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:28px}.fd-kc>div{padding:16px 16px 16px;border-left:0;border-top:1px solid rgba(247,246,243,0.08)}.fd-kc>div:nth-child(-n+2){border-top:0}.fd-kc>div:nth-child(even){border-left:1px solid rgba(247,246,243,0.08)}.fd-kc>div:last-child:nth-child(odd){grid-column:1/3}.fd-kc .kv{font-size:24px;margin-top:10px}.fd-kc .kk{font-size:11.5px}.fd-kc .ks{font-size:11.5px;margin-top:6px}
-  .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px;overflow-x:auto;scrollbar-width:none}.fd-nav .wrap::-webkit-scrollbar{display:none}.fd-nav a{font-size:13.5px;padding:8px 10px;flex:1 0 auto;white-space:nowrap}
+  .fd-nav{top:56px}.fd-nav .wrap{padding:8px 12px;overflow-x:auto;scrollbar-width:none}.fd-nav .wrap::-webkit-scrollbar{display:none}.fd-nav a{font-size:14.5px;padding:8px 10px;flex:1 0 auto;white-space:nowrap}
   .fd-body{padding:16px 12px 64px}.fd-card{padding:24px 16px 20px}
   .fd-ac{grid-template-columns:1fr;gap:28px}.fd-ring{width:260px;height:260px;margin:0 auto}.fd-ring .cv{font-size:32px}.fd-li .ln{flex-basis:84px}
   .fd-bars{height:220px;gap:6px;padding:0}.fd-bars>div>i{width:34px}.fd-bars .bl{font-size:11px;white-space:normal;line-height:1.3;word-break:keep-all}
@@ -758,7 +825,7 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .fd-stmt ul{list-style:none;margin:14px 0 0;padding:0}
 .fd-stmt li{position:relative;padding-left:14px;font-size:15px;line-height:1.75;color:rgba(247,246,243,0.75)}
 .fd-stmt li::before{content:'';position:absolute;left:2px;top:.8em;width:4px;height:4px;border-radius:50%;background:#8FAADC}
-.fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.4);margin-top:48px;word-break:keep-all}
+.fdpage .fd-disc{max-width:860px;font-size:12px;line-height:1.75;color:rgba(247,246,243,0.62);margin-top:48px;word-break:keep-all}
 @media (max-width:860px){/* (unused) */.fdpage .fd-stmt-x{padding:44px 0 24px !important}.fd-stmt .st{font-size:24px}.fd-stmt .hl{font-size:18px}.fd-stmt .ps{margin-top:28px;padding-top:24px}}
 
 :root{--up:#F2626B;--dn:#5E9BFF;--flat:rgba(247,246,243,0.45)}
@@ -780,24 +847,24 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .vc{display:flex;flex-direction:column;height:280px;margin-top:30px;padding-left:44px}
 .vc-p{position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;border-bottom:1px solid rgba(247,246,243,0.22)}
 .vc-p .gl{position:absolute;left:0;right:0;height:0;border-top:1px dashed rgba(247,246,243,0.08)}
-.vc-p .gl em{position:absolute;right:calc(100% + 12px);top:-8px;font-style:normal;font-size:11px;line-height:14px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums;white-space:nowrap}
+.vc-p .gl em{position:absolute;right:calc(100% + 12px);top:-8px;font-style:normal;font-size:11px;line-height:14px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums;white-space:nowrap}
 .vc-b{position:relative;flex:1;height:100%}
 .vc-b s,.vc-b i{position:absolute;bottom:0;left:50%;width:min(40px,46%);margin-left:calc(min(40px,46%) / -2);border-radius:2px 2px 0 0}
 .vc-b s{top:0;background:linear-gradient(180deg,rgba(247,246,243,0),rgba(247,246,243,0.04))}
 .vc-b i{min-height:3px;background:linear-gradient(180deg,var(--c) 0%,color-mix(in srgb,var(--c) 40%,#0F1B2E) 100%);box-shadow:0 0 26px -6px var(--c);transform-origin:bottom;transition:filter .25s}
 .vc-b i::before{content:'';position:absolute;left:0;right:0;top:0;height:2px;background:rgba(255,255,255,0.5)}
 .vc-b b{position:absolute;left:0;right:0;text-align:center;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums;letter-spacing:-0.01em}
-.vc-b.z b{color:rgba(247,246,243,0.28);font-family:inherit;font-size:12px;font-weight:500}
+.vc-b.z b{color:rgba(247,246,243,0.62);font-family:inherit;font-size:12px;font-weight:500}
 .vc-b.z i{box-shadow:none}.vc-b.z i::before{display:none}
 .vc-b:hover i{filter:brightness(1.15)}
 .vc-x{display:flex}
 .vc-x span{flex:1;text-align:center;padding-top:12px;font-size:12.5px;font-weight:600;color:rgba(247,246,243,0.75);word-break:keep-all;line-height:1.35}
 .vc-rfm .vc-x span{font-weight:500;font-variant-numeric:tabular-nums}
-.vc-rfm .vc-x span.k{color:#8FAADC}.vc-rfm .vc-x span.k::after{content:'KOSPI';display:block;font-size:10px;letter-spacing:0.08em;margin-top:2px}
-.vc-cap{margin-top:16px;font-size:12px;color:rgba(247,246,243,0.45)}
+.vc-rfm .vc-x span.k{color:#8FAADC}.vc-rfm .vc-x span.k::after{content:'KOSPI';display:block;font-size:11.5px;letter-spacing:0.08em;margin-top:2px}
+.vc-cap{margin-top:16px;font-size:12px;color:rgba(247,246,243,0.62)}
 .fd-sec{display:flex;flex-direction:column}
 .fd-sec .vc{flex:1;min-height:280px}
-@media (max-width:860px){.vc{height:240px;padding-left:30px}.vc-p .gl em{right:calc(100% + 8px);font-size:10px}.vc-b s,.vc-b i{width:min(30px,56%);margin-left:calc(min(30px,56%) / -2)}.vc-b b{font-size:13px}.vc-b.z b{font-size:10.5px}.vc-x span{font-size:10.5px}.fd-sec .vc{min-height:240px}}
+@media (max-width:860px){.vc{height:240px;padding-left:30px}.vc-p .gl em{right:calc(100% + 8px);font-size:11.5px}.vc-b s,.vc-b i{width:min(30px,56%);margin-left:calc(min(30px,56%) / -2)}.vc-b b{font-size:13px}.vc-b.z b{font-size:11.5px}.vc-x span{font-size:11.5px}.fd-sec .vc{min-height:240px}}
 @media (max-width:1100px){.fd-two{grid-template-columns:1fr}}
 @media (min-width:861px){.fd-two .fd-mh,.fd-two .fd-mv{grid-template-columns:minmax(72px,130px) minmax(30px,1fr) 80px 72px;gap:12px}}
 .fd-row .rt small{white-space:nowrap}
@@ -821,7 +888,10 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 /* 히어로: 제목만 가운데, 지표 패널은 본문으로 */
 .pg-hero{min-height:56vh !important;align-items:center !important;justify-content:center}
 .pg-hero.pg-full{min-height:100vh !important}
-@media (max-width:860px){.pg-hero.pg-full{min-height:100svh !important}}
+.pg-hero.pg-full.hero-short{min-height:56vh !important}
+.pg-hero-ph{height:56vh}
+.pg-hero.pg-full.hero-lift{position:fixed !important;top:0;left:0;right:0;z-index:30;margin:0 !important}
+@media (max-width:860px){.pg-hero.pg-full{min-height:100svh !important}.pg-hero.pg-full.hero-short{min-height:48svh !important}.pg-hero-ph{height:48svh}}
 .pg-hero .pg-hero-in{text-align:center;padding:130px 35px 80px !important}
 .pg-hero .pg-eyebrow{justify-content:center}
 .pg-hero .pg-hero-in>div[style*="flex"]{justify-content:center !important}
@@ -830,9 +900,9 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 .kc-light{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border-top:2px solid #203864}
 .kc-light>div{padding:22px 26px;border-left:1px solid #E2E0DA}
 .kc-light>div:first-child{border-left:0}
-.kc-light .kk{display:block;font-style:normal;font-size:12px;color:rgba(26,26,26,0.55)}
+.kc-light .kk{display:block;font-style:normal;font-size:12px;color:rgba(26,26,26,0.68)}
 .kc-light .kv{display:block;margin-top:12px;font-family:'Pretendard Variable',sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.03em;color:#0F1B2E;white-space:nowrap}
-.kc-light .ks{display:block;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.5);min-height:15px}
+.kc-light .ks{display:block;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.68);min-height:15px}
 main.pgx>section.kc-sec[data-nav="light"]:not(.pres)>.wrap{padding:0 !important}
 @media (max-width:860px){
   .pg-hero{min-height:44svh !important}.pg-hero .pg-hero-in{padding:104px 20px 56px !important}
@@ -851,8 +921,8 @@ main.pgx>section.kc-sec[data-nav="light"]:not(.pres)>.wrap{padding:0 !important}
 .oc .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 18%;display:block;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .oc:hover .ph img{transform:scale(1.04)}
 .oc b{display:block;margin-top:14px;font-size:17px;font-weight:700;color:#0F1B2E;letter-spacing:-0.01em;font-family:'Pretendard Variable',sans-serif}
-.oc em{display:block;margin-top:6px;font-style:normal;font-size:10.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#203864}
-.oc small{display:block;margin-top:3px;font-size:12.5px;color:rgba(26,26,26,0.55)}
+.oc em{display:block;margin-top:6px;font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#203864}
+.oc small{display:block;margin-top:3px;font-size:12.5px;color:rgba(26,26,26,0.68)}
 @media (max-width:860px){.og-row{gap:22px 14px}.oc{width:calc(50% - 7px)}.oc b{font-size:15px}.og-h{margin:30px 0 16px !important}}
 /* 최신 리포트 카드는 고딕 */
 .rpaper,.rpaper *,.mfeat>*,.mfeat>* *{font-family:'Pretendard Variable',Pretendard,sans-serif !important}
@@ -880,7 +950,7 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 /* 리서치·소개·구성원·리크루팅: 펀드 페이지와 같은 구조 (히어로 → 고정 탭 → 카드) */
 .pg-tabs{position:sticky;top:64px;z-index:20;background:rgba(247,246,243,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E2E0DA}
 .pg-tabs .wrap{display:flex;gap:6px;padding:12px 35px}
-.pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:15px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
+.pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
 .pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
 main.pgx{background:#EEEDE8 !important}
 main.pgx .story h2,main.pgx .story .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(29px,2.9vw,42px) !important;font-weight:400 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
@@ -900,7 +970,7 @@ main.pgx h2,main.pgx .sec-title{font-family:'Noto Serif KR',serif !important;fon
 main.pgx .pres{margin:20px auto;max-width:1290px;width:calc(100% - 70px);box-sizing:border-box}
 main.pgx .pres .pres-in{padding:64px 56px}
 @media (max-width:860px){
-  .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:13.5px;padding:8px 0}
+  .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:14.5px;padding:8px 0}
   main.pgx>section[data-nav="light"]:not(.pres)>.wrap{width:calc(100% - 24px);padding:32px 20px !important}
   main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero),main.pgx .pres{width:calc(100% - 24px);margin:12px auto}
   main.pgx.mhome>section[data-nav="light"]:not(.pres){background:#FFFFFF !important;border:1px solid #E2E0DA !important;margin:12px;padding:32px 20px !important}
@@ -1047,7 +1117,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-row .nm b{display:block;font-size:17px;font-weight:700;color:#F7F6F3;letter-spacing:-0.01em}
 .fd-row .nm small{display:block;font-size:12px;color:rgba(247,246,243,0.55);margin-top:4px}
 .fd-row .nm .rp{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:#8FAADC;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
-.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:14px;font-weight:600;color:rgba(247,246,243,0.9)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.45);margin-top:3px}
+.fd-row .px{text-align:right}.fd-row .px b{display:block;font-size:14px;font-weight:600;color:rgba(247,246,243,0.9)}.fd-row .px small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px}
 .fd-row .wt{text-align:right;font-size:17px;font-weight:700;color:#F7F6F3}
 .fd-row .rt{text-align:right}.fd-row .rt b{display:block;font-size:15px;font-weight:700}.fd-row .rt small{display:block;font-size:11.5px;margin-top:3px}
 .fd-movers{margin-top:28px;border-top:1px solid rgba(247,246,243,0.3)}
@@ -1081,21 +1151,65 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-chips .cv{font-size:14px;font-weight:700}
 .fd-cw{display:grid;grid-template-columns:48px minmax(0,1fr) 128px;margin-top:28px}
 .fd-ya,.fd-ends{position:relative;height:280px}
-.fd-ya .yl{font-style:normal;position:absolute;right:10px;transform:translateY(-50%);font-size:11px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums}
+.fd-ya .yl{font-style:normal;position:absolute;right:10px;transform:translateY(-50%);font-size:11px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums}
 .fd-ends .el{font-style:normal;position:absolute;left:12px;transform:translateY(-50%);font-size:12px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 .fd-plot{position:relative}
 .fd-grid{position:absolute;left:0;right:0;top:0;height:280px;pointer-events:none}
 .fd-grid i{position:absolute;left:0;right:0;height:1px;background:rgba(247,246,243,0.08)}
 .fd-plot .fd-chart{margin-top:0 !important;height:280px !important}
 .fd-xa{position:relative;height:22px;margin-top:6px}
-.fd-xa .xl{font-style:normal;position:absolute;top:0;font-size:11px;color:rgba(247,246,243,0.45);white-space:nowrap}
-.fd-th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.45)}
+.fd-xa .xl{font-style:normal;position:absolute;top:0;font-size:11px;color:rgba(247,246,243,0.62);white-space:nowrap}
+.fd-th{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 100px 90px;gap:16px;margin-top:26px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:11px;letter-spacing:0.06em;color:rgba(247,246,243,0.62)}
 .fd-th .r{text-align:right}
 .fd-hold .nm b{font-size:17px !important;font-weight:700 !important;color:#F7F6F3;letter-spacing:-0.01em}
 .fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
 @media (max-width:760px){.fd-wrap{padding:48px 16px 56px !important}.fd-cw{grid-template-columns:36px minmax(0,1fr) 0}.fd-ends{display:none}.fd-ya,.fd-grid,.fd-plot .fd-chart{height:200px !important}.fd-th{display:none}.fd-chips>div{padding:8px 10px}.fd-alloc .bar i{font-size:0;padding:0}.fd-attr div{flex-basis:0}.fd-chips .cn,.fd-chips .cv{font-size:13px}}
 .pg-hero{position:relative;overflow:hidden}
 .pg-bg{position:absolute;inset:0;background:#0F1B2E}
+/* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
+.pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
+.pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
+.hero-cue{position:absolute;left:50%;bottom:34px;z-index:3;width:44px;height:44px;margin-left:-22px;border:0;background:none;cursor:pointer;padding:0;transition:opacity .4s ease}
+.hero-cue::before{content:'';position:absolute;left:50%;top:12px;width:13px;height:13px;margin-left:-7px;border-right:1.5px solid rgba(247,246,243,.85);border-bottom:1.5px solid rgba(247,246,243,.85);transform:rotate(45deg)}
+.pg-hero.hero-out .hero-cue{opacity:0}
+@media (prefers-reduced-motion:no-preference){.hero-cue::before{animation:cueBob 1.8s ease-in-out infinite}}
+@keyframes cueBob{0%,100%{transform:translateY(0) rotate(45deg);opacity:.9}50%{transform:translateY(7px) rotate(45deg);opacity:.45}}
+.pg-hero.pg-full .scrim{transition:opacity .9s ease}.pg-hero.pg-full.hero-out .scrim{opacity:0 !important}   /* 사진 위 남색 막도 같이 흐려져야 파란 화면이 남았다 뚝 사라지지 않는다 */
+/* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
+   가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 준다 */
+.pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
+  background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
+.pg-hero.pg-full.hero-out::after{opacity:0}
+.pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
+/* RESEARCH 최신 리포트: 카드 대신 실제 리포트 첫 장(표지)을 보여 주고, 글자는 리포트와 같은 KoPub 돋움 */
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="reports"],main.pgx [data-tab="reports"] *:not(svg):not(path){font-family:'RFS Dotum UI','Pretendard Variable',Pretendard,sans-serif !important}
+.rlc{display:block;color:inherit;text-decoration:none;background:none !important;box-shadow:none !important}.rlc.rpaper:hover{transform:none;box-shadow:none !important}
+.rlc-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}
+.rlc-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.rlc:hover .rlc-img{border-color:#0F1B2E}.rlc:hover .rlc-img img{transform:scale(1.03)}
+.rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,0.68)}
+.rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
+.rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
+/* 접근성 (애플 HIG 기준 점검): 폰에서 누르는 곳은 최소 44px, 닫힌 메뉴는 키보드로도 못 들어가게 */
+.mmenu{visibility:hidden;transition:opacity 200ms ease,transform 200ms ease,visibility 0s linear 200ms}
+.mmenu.open{visibility:visible;transition:opacity 260ms cubic-bezier(0.23,1,0.32,1),transform 260ms cubic-bezier(0.23,1,0.32,1),visibility 0s}
+@media (max-width:860px){
+  footer a{display:inline-flex;align-items:center;min-height:44px}
+  .pager,.mhome .pager{display:flex;justify-content:center}
+  .pager a,.mhome .pager a{min-width:34px !important;padding-left:0 !important;padding-right:0 !important;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .burger{min-height:44px;min-width:64px}
+  .btn,button.btn,a.btn{min-height:44px;display:inline-flex !important;align-items:center;justify-content:center}
+  .pg-tabs a,.fd-nav a{min-height:44px;display:flex;align-items:center;justify-content:center}
+  .nav>a:first-child,.nav a.logo,.nav .wordmark-block{min-height:44px}
+  .fd-tabs a{display:inline-flex;align-items:center;min-height:44px;padding:0 14px}
+  .mselects select,main.pgx select{min-height:44px}
+}
+.striplab{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,246,243,.75);margin-right:9px}
+main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
+@keyframes hiIn{from{opacity:0}}
 .pg-hero-in{position:relative;z-index:1;width:100%;padding:136px 35px 72px}
 .pg-eyebrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
 .pg-eyebrow span{text-transform:none;letter-spacing:0.06em}
@@ -1127,13 +1241,13 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .rfm-race{position:relative}
 .rfmlane{position:absolute;left:0;right:0;top:0;height:var(--rH);display:grid;grid-template-columns:44px 168px minmax(0,1fr) 96px;gap:16px;align-items:center;transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .rfmlane.me{background:rgba(143,170,220,0.10)}
-.rfmlane .rk{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:rgba(247,246,243,0.42);text-align:right;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.rfmlane .rk{font-family:'Noto Serif KR',serif;font-size:26px;font-weight:700;color:rgba(247,246,243,0.62);text-align:right;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
 .rfmlane.top .rk{color:#F7F6F3}
 .rfmlane .nm{min-width:0}
 .rfmlane .nn{font-size:15px;font-weight:600;color:#F7F6F3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rfmlane .nn b{font-weight:600}
-.rfmlane .ns{font-style:normal;font-size:11.5px;font-weight:400;color:rgba(247,246,243,0.45)}
-.rfmlane .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.42);margin-top:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rfmlane .ns{font-style:normal;font-size:11.5px;font-weight:400;color:rgba(247,246,243,0.62)}
+.rfmlane .nm small{display:block;font-size:11.5px;color:rgba(247,246,243,0.62);margin-top:3px;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rfmlane .trk{position:relative;height:100%}
 .rfmlane .trk::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(247,246,243,0.10)}
 .rfmlane .vl{position:absolute;top:0;bottom:0;width:1px}
@@ -1142,7 +1256,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .rfmlane .rt{text-align:right;font-variant-numeric:tabular-nums;animation-duration:1.2s;animation-timing-function:ease-out}
 .rfmlane .rt b{display:block;font-size:18px;font-weight:700}
 .rfmlane .rt small{display:block;font-size:11.5px;margin-top:2px}
-.rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:10.5px;color:rgba(247,246,243,0.42);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
+.rfmlane .gap{position:absolute;right:calc(96px + 16px);bottom:-7px;font-size:11.5px;color:rgba(247,246,243,0.62);background:#111c2e;padding:0 6px;font-variant-numeric:tabular-nums}
 @keyframes rfmFu0{0%{background:rgba(242,98,107,0.28)}}@keyframes rfmFu1{0%{background:rgba(242,98,107,0.28)}}
 @keyframes rfmFd0{0%{background:rgba(94,155,255,0.28)}}@keyframes rfmFd1{0%{background:rgba(94,155,255,0.28)}}
 .rfm-side{position:sticky;top:96px;align-self:start}
@@ -1150,15 +1264,15 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .rfm-pick{width:100%;background:transparent;color:#8FAADC;border:0;font:inherit;font-size:12px;letter-spacing:0.06em;padding:0;cursor:pointer}
 .rfm-pick option{color:#111c2e}
 .rfm-mine .big{font-family:'Noto Serif KR',serif;font-size:44px;font-weight:700;letter-spacing:-0.03em;line-height:1;margin-top:12px}
-.rfm-mine .big small{font-family:'Pretendard Variable',sans-serif;font-size:16px;color:rgba(247,246,243,0.42);margin-left:6px;font-weight:500}
+.rfm-mine .big small{font-family:'Pretendard Variable',sans-serif;font-size:16px;color:rgba(247,246,243,0.62);margin-left:6px;font-weight:500}
 .rfm-mine p{font-size:13px;line-height:1.75;color:rgba(247,246,243,0.75);margin:12px 0 0;font-variant-numeric:tabular-nums}
-.rfm-mine p.hint{color:rgba(247,246,243,0.45)}
+.rfm-mine p.hint{color:rgba(247,246,243,0.62)}
 .rfm-feed{margin-top:26px}
-.rfm-feed h3{font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.45);font-weight:500;margin:0}
+.rfm-feed h3{font-size:11px;letter-spacing:0.1em;color:rgba(247,246,243,0.62);font-weight:500;margin:0}
 .rfm-feed ol{list-style:none;margin:10px 0 0;padding:0}
 .rfm-feed li{font-size:13px;line-height:1.5;padding:8px 0;color:rgba(247,246,243,0.8)}
 .rfm-feed li:nth-child(n+4){opacity:0.55}
-.rfm-feed li time{display:block;font-size:11px;color:rgba(247,246,243,0.42);font-variant-numeric:tabular-nums}
+.rfm-feed li time{display:block;font-size:11px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums}
 .rfm-feed li b{color:#F7F6F3;margin-right:4px}
 @media (max-width:860px){
   .rfmpage{--rH:70px}
@@ -1186,7 +1300,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .rfmpage .rfm-side .fd-ct{font-size:20px}
 .rfmpage .rfm-pick{margin-top:16px;padding:10px 12px;border:1px solid rgba(143,170,220,0.35);background:rgba(143,170,220,0.06);color:#F7F6F3;font-size:13px;letter-spacing:0}
 .rfmpage .rfm-mine .big{margin-top:20px}
-.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.45);margin:14px 0 0}
+.rfmpage .hint{font-size:13px;color:rgba(247,246,243,0.62);margin:14px 0 0}
 .rfm-mt{margin-top:16px;border-top:1px solid rgba(247,246,243,0.12)}
 .rfm-mt>div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid rgba(247,246,243,0.08);font-size:13px;font-variant-numeric:tabular-nums}
 .rfm-mt>div:last-child{border-bottom:0}
@@ -1206,29 +1320,29 @@ main.pgx .pres .pres-in{padding:64px 56px}
   .rfmpage .rfm-mine,.rfmpage .rfm-feed{padding:24px 16px 20px}
   .rfmpage .rfm-feed li:nth-child(n+6){display:none}
   .fd-pr.rfm-pr{grid-template-columns:minmax(0,1.3fr) repeat(2,minmax(0,1fr)) !important}
-  .rfm-bars .bl{font-size:10.5px !important}
+  .rfm-bars .bl{font-size:11.5px !important}
 }
 
 .intra-rail a.on{color:#F7F6F3;font-weight:700}
-.intra-rail .sec{color:rgba(247,246,243,0.4) !important}
+.intra-rail .sec{color:rgba(247,246,243,0.62) !important}
 .intra-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;padding:11px 0;border-bottom:1px solid rgba(247,246,243,0.14);font-size:14px;color:rgba(247,246,243,0.85);text-decoration:none}
 .intra-row:hover{color:#F7F6F3}
-.intra-row .d{font-size:12px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums;white-space:nowrap}
+.intra-row .d{font-size:12px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums;white-space:nowrap}
 .intra-card{background:rgba(247,246,243,0.05);border:1px solid rgba(247,246,243,0.18);border-top:2px solid #8FAADC;padding:22px 24px 8px;color:#F7F6F3}
 .intra-card.navy{border-top-color:#8FAADC}
 .intra-card .hd{font-size:15px;font-weight:700;color:#F7F6F3}
 .intra-card .rule{border-bottom:1px solid rgba(247,246,243,0.3);padding-bottom:12px;display:flex;justify-content:space-between;align-items:baseline}
 .intra-input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid rgba(247,246,243,0.3);background:rgba(247,246,243,0.08);font:inherit;font-size:14px;color:#F7F6F3;outline:none}
-.intra-input::placeholder{color:rgba(247,246,243,0.45)}
+.intra-input::placeholder{color:rgba(247,246,243,0.62)}
 .intra-input:focus{border-color:#8FAADC}
 .coffee-form .intra-input{color:#1A1A1A;background:#FFFFFF;border-color:rgba(26,26,26,0.25)}
-.coffee-form .intra-input::placeholder{color:rgba(26,26,26,0.45)}
+.coffee-form .intra-input::placeholder{color:rgba(26,26,26,0.68)}
 .coffee-form .intra-input:focus{border-color:#203864}
 .ag-dark{color:#F7F6F3}
 .ag-dark .lo{color:rgba(247,246,243,0.6)}
 textarea.intra-input{font-family:inherit;line-height:1.6}
 .name-chip{display:inline-block;padding:6px 10px;border:1px solid #D0CECE;font-size:13px;margin:0 6px 6px 0;background:#FFFFFF}
-.name-chip .c{color:rgba(26,26,26,0.45);font-size:11px;margin-left:6px}
+.name-chip .c{color:rgba(26,26,26,0.68);font-size:11px;margin-left:6px}
 @media (max-width:1024px){.intra-grid{grid-template-columns:1fr !important}.intra-rail{position:static !important;display:flex;flex-wrap:wrap;gap:4px 18px}.intra-rail a{padding:6px 0}.intra-rail .sec{width:100%}}
 @media (max-width:768px){.intra-cards{grid-template-columns:1fr !important}.fundstat{grid-template-columns:repeat(2,1fr) !important}.rfmrow{grid-template-columns:22px minmax(0,1fr) 76px !important;gap:10px !important}.rfmday{display:none}.rfmpod{gap:6px !important}.rfmpodc{padding:12px 10px !important}.rfmpodr{font-size:19px !important}.rfmtoday > div{padding:12px 10px !important}.rfmtoday > div > div:nth-child(2){font-size:14px !important}}
 .wk-ch{align-items:center !important}
@@ -1255,7 +1369,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:6px 0 14px}
 .wk-imgs img{width:100%;display:block;border:1px solid rgba(247,246,243,0.1)}
 .wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
-.wk-del{font-size:13px;color:rgba(247,246,243,0.4)}
+.wk-del{font-size:13px;color:rgba(247,246,243,0.62)}
 .wk-foot{margin-top:16px;text-align:right}.wk-foot a{display:inline-block;padding:7px 12px;border:1px solid rgba(247,246,243,0.18);font-size:12.5px;color:rgba(247,246,243,0.65)}.wk-foot a:hover{color:#F7F6F3;border-color:rgba(247,246,243,0.4)}
 .wk-form{display:grid;gap:10px;margin-top:14px}
 .wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
@@ -1302,7 +1416,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-head{grid-template-columns:110px auto minmax(0,1fr) 20px !important}
 @media (max-width:860px){.wk-head{grid-template-columns:1fr 20px !important}.wk-cat{display:inline;margin:0 8px 0 0}}
 .wk-fig{margin:6px 0 18px}.wk-fig img{display:block;max-width:100%;max-height:560px;border:1px solid rgba(247,246,243,0.1)}
-.wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:10.5px;color:#F7F6F3}
+.wk-pics .pv span{position:absolute;left:0;bottom:0;padding:1px 5px;background:rgba(11,21,36,.8);font-size:11.5px;color:#F7F6F3}
 .wk-msg{margin:0 0 16px;padding:12px 16px;border:1px solid rgba(242,210,122,0.4);background:rgba(242,210,122,0.06);font-size:13.5px;color:#F2D27A}
 /* RFM 팀별 순위 */
 .tm-list{margin-top:18px}
@@ -1358,7 +1472,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <img class="seal seal-light" src="assets/rfs-seal-light-256.png" alt="" width="36" height="36">
       <span class="wordmark-block" style="display:flex;flex-direction:column;gap:3px;line-height:1">
         <span style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-0.02em">R.F.S.</span>
-        <span class="wordmark-sub" style="font-size:10px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
+        <span class="wordmark-sub" style="font-size:11.5px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
       </span>
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
@@ -1389,9 +1503,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div style="margin-top:14px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:rgba(247,246,243,0.85)">{{ mHeroNameOnly }} · {{ mHeroTicker }}</div>
         <h2 style="margin:8px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(30px,8.6vw,38px);font-weight:700;line-height:1.22;letter-spacing:-0.025em;color:#F7F6F3">{{ heroHeadline }}</h2>
         <div style="display:flex;align-items:baseline;gap:18px;margin-top:22px;padding-top:16px;border-top:1px solid rgba(247,246,243,0.35)">
-          <div><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
-          <div><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
-          <div style="margin-left:auto"><div style="font-size:10px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
+          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
+          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
+          <div style="margin-left:auto"><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px">
           <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="padding:12px 20px;font-size:12px">READ REPORT</a>
@@ -1403,7 +1517,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1017" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
@@ -1439,8 +1553,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
           <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
             <div class="stripcell sc1" style="padding-right:24px;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums">{{ heroOp }}</div>
-            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Target <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
-            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px">Upside <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
+            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Target</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
+            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Upside</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
             <div class="stripbtn" style="margin-left:auto">
               <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="pointer-events:auto">READ THE REPORT</a>
             </div>
@@ -1455,7 +1569,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
       <div class="wrap hero-tick" style="padding:0 35px;width:100%;margin-top:clamp(22px,3.4vh,40px)">
         <div style="display:flex;align-items:baseline;gap:26px;border-top:1px solid rgba(247,246,243,0.35);padding-top:16px">
-          <span style="font-size:10px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
+          <span style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
           <div class="tickmask" style="flex:1;overflow:hidden;min-width:0">
             <div class="ticktrack" style="display:flex;width:max-content">
           <div class="tickset" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
@@ -1484,7 +1598,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1017" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
@@ -1509,9 +1623,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isResearch }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
       </div>
@@ -1522,22 +1636,15 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="wrap" style="padding:0 35px">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:64px;margin-bottom:18px;position:relative;z-index:2">
           <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
-          <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
+          <a href="#coverage" onClick="{{ toCoverage }}" style="display:inline-flex;align-items:center;min-height:44px;font-size:11.5px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.68)">전체 보기 ↓</a>
         </div>
-        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start;position:relative;z-index:2">
+        <div class="rfeat" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:32px;align-items:start;position:relative;z-index:2">
           <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
-            <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 14px 34px rgba(15,27,46,0.14)">
-              <div style="display:flex;justify-content:space-between;padding:12px 16px 8px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
-              <div style="background:#0F1B2E;color:#F7F6F3;margin:0 16px;padding:14px 16px 16px">
-                <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
-                <div style="margin-top:6px;font-family:'Noto Serif KR',serif;font-size:21px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:14px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
-              </div>
-              <div style="padding:12px 16px 0;font-family:'Noto Serif KR',serif;font-size:16px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
-              <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 16px 0;padding:9px 0 13px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
-                <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
-                <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:15px">{{ r.tp }}</b></span>
-                <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
-              </div>
+            <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rlc">
+              <div class="rlc-img"><img src="{{ r.cover }}" alt="{{ r.name }} 리포트 표지" loading="lazy"></div>
+              <p class="rlc-name">{{ r.name }}</p>
+              <p class="rlc-hl">{{ r.headline }}</p>
+              <p class="rlc-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
             </a>
           </sc-for>
         </div>
@@ -1551,22 +1658,21 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
-              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-              <span style="margin-left:auto;font-size:13px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }} reports</span>
+              <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+              <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
               <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
-              <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:58px minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
-                <span style="font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">{{ r.term }}</span>
-                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
-                <span class="col-s" style="font-size:13px;color:rgba(26,26,26,0.6)">{{ r.sector }}</span>
+              <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
+                <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b></span>
+                <span class="col-s" style="font-size:13.5px;color:#1A1A1A">{{ r.sector }}</span>
                 <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
-                <span style="text-align:right;font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
+                <span style="text-align:right;font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
               </a>
               </sc-for>
             </sc-for>
@@ -1588,9 +1694,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1470219556762-1771e7f9427d?auto=format&amp;fit=crop&amp;w=1200&amp;q=72" credit="Photo by Anders Jildén on Unsplash" credit-href="https://unsplash.com/@andersjilden"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
       </div>
@@ -1600,23 +1706,16 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <section data-tab="latest" data-nav="light" style="background:#F7F6F3;padding:40px 0 0">
       <div style="display:flex;justify-content:space-between;align-items:flex-end;margin:0 22px 14px">
         <p class="sec-label" style="margin:0">Latest · {{ latestTerm }}</p>
-        <a href="#coverage" onClick="{{ toCoverage }}" style="font-size:11px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.55)">전체 보기 ↓</a>
+        <a href="#coverage" onClick="{{ toCoverage }}" style="display:inline-flex;align-items:center;min-height:44px;font-size:11.5px;font-weight:600;letter-spacing:0.14em;color:rgba(26,26,26,0.68)">전체 보기 ↓</a>
       </div>
       <div class="mfeat" style="display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 22px 26px;scroll-padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none">
         <sc-for list="{{ latestCards }}" as="r" hint-placeholder-count="4">
-          <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper" style="flex:0 0 78%;scroll-snap-align:start;display:block;background:#FFFFFF;color:inherit;text-decoration:none;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 12px 28px rgba(15,27,46,0.14)">
-            <div style="display:flex;justify-content:space-between;padding:11px 14px 7px;font-size:10.5px;color:rgba(26,26,26,0.6)"><span><b style="color:#1A1A1A;font-weight:600">{{ r.date }}</b> | {{ r.type }}</span><span>{{ r.teamShort }}</span></div>
-            <div style="background:#0F1B2E;color:#F7F6F3;margin:0 14px;padding:12px 14px 14px">
-              <div style="font-size:10px;color:rgba(247,246,243,0.7)">| {{ r.sector }} |</div>
-              <div style="margin-top:5px;font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;letter-spacing:-0.02em;line-height:1.2;color:#F7F6F3">{{ r.name }} <span style="font-weight:400;font-size:13px;color:rgba(247,246,243,0.7)">({{ r.ticker }})</span></div>
-            </div>
-            <div style="padding:11px 14px 0;font-family:'Noto Serif KR',serif;font-size:15px;font-weight:700;color:#203864;line-height:1.4">{{ r.headline }}</div>
-            <div style="display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:baseline;margin:10px 14px 0;padding:9px 0 12px;border-top:1px solid #E2E0DA;font-size:12px;color:rgba(26,26,26,0.6)">
-              <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:#203864">{{ r.op }}</span>
-              <span>목표 <b style="color:#1A1A1A;font-family:'Noto Serif KR',serif;font-size:14px">{{ r.tp }}</b></span>
-              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
-            </div>
-          </a>
+          <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rlc" style="flex:0 0 80%;scroll-snap-align:start">
+              <div class="rlc-img"><img src="{{ r.cover }}" alt="{{ r.name }} 리포트 표지" loading="lazy"></div>
+              <p class="rlc-name">{{ r.name }}</p>
+              <p class="rlc-hl">{{ r.headline }}</p>
+              <p class="rlc-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
+            </a>
         </sc-for>
       </div>
     </section>
@@ -1625,23 +1724,23 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
       <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
       <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
-        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o }}">{{ o }}</option></sc-for></select>
+        <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fYear }}" onChange="{{ onYear }}"><sc-for list="{{ yearOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
+        <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
       </div>
-      <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:rgba(26,26,26,0.6);font-variant-numeric:tabular-nums">{{ covCount }}&nbsp;reports</div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;padding-bottom:12px;border-bottom:2px solid #0F1B2E;font-size:12px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</div>
       <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
         <div style="margin-top:26px;padding:0 0 7px;font-size:11px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
         <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
           <a href="{{ r.href }}" onClick="{{ r.open }}" style="display:block;padding:15px 0;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
             <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-              <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b> <span style="font-size:11px;color:rgba(26,26,26,0.55)">{{ r.ticker }}</span></span>
-              <span style="font-weight:700;color:#b9821f;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
+              <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:17px;letter-spacing:-0.02em">{{ r.name }}</b></span>
+              <span style="font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
-            <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12px;color:rgba(26,26,26,0.55);font-variant-numeric:tabular-nums">
-              <span style="font-size:10.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
-              <span>{{ r.sector }}</span><span>{{ r.term }}</span>
+            <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12.5px;color:#1A1A1A;font-variant-numeric:tabular-nums">
+              <span style="font-size:11.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+              <span>{{ r.sector }}</span>
               <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
             </div>
           </a>
@@ -1746,7 +1845,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A">
           <sc-for list="{{ rRelated }}" as="r" hint-placeholder-count="3">
             <div onClick="{{ r.open }}" class="rowh" style="display:flex;justify-content:space-between;gap:16px;padding:14px 4px;border-bottom:1px solid #D0CECE;cursor:pointer">
-              <a href="{{ r.href }}" onClick="{{ r.open }}" style="font-weight:600">{{ r.name }} <span style="color:rgba(26,26,26,0.65);font-weight:400">({{ r.ticker }})</span></a>
+              <a href="{{ r.href }}" onClick="{{ r.open }}" style="font-weight:600">{{ r.name }}</a>
               <span style="font-size:13px;color:rgba(26,26,26,0.65);font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.op }} · {{ r.term }}</span>
             </div>
           </sc-for>
@@ -1777,6 +1876,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">About R.F.S.</h1>
       </div>
     </section>
+    <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
     <div class="story">
     <section data-snap="" data-tab="intro" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
@@ -1819,6 +1919,108 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
 
 
+
+    <section data-snap="" data-tab="history" class="on-photo" id="about-history" data-about-sec="" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-mid" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
+      <div class="scrim" style="opacity:0.86"></div>
+      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px">
+        <div class="rv rv-up">
+          <h2 class="sec-title">R.F.S. HISTORY</h2>
+          <p class="sec-sub" style="max-width:52em">R.F.S.는 2006년 발족한 이후 총 43기, 608명의 학회원을 배출하였습니다.<br>리서치로 시작한 R.F.S.는 이제 수천만원의 자체 펀드를 운용하는 Asset Management Team을 함께 갖추고 있습니다.&nbsp;</p>
+        </div>
+        <div class="hist4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:clamp(40px,6vh,64px)">
+          <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+            <div class="rv rv-up tl-cell">
+              <div class="tl-txt inv-soft" style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:{{ h.eyebrowColor }}">{{ h.eyebrow }}</div>
+              <div class="tl-txt inv" style="font-family:'Noto Serif KR',serif;font-size:clamp(34px,3.6vw,56px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:{{ h.ink }};margin-top:12px;font-variant-numeric:tabular-nums">{{ h.year }}</div>
+              <div class="inv-line" style="position:relative;border-top:1px solid #1A1A1A;margin-top:24px;height:1px">
+                <span class="inv-dot" style="position:absolute;left:0;top:-6px;width:11px;height:11px;background:{{ h.ink }};outline:3px solid #F7F6F3"></span>
+              </div>
+              <div class="tl-txt inv" style="font-size:16px;font-weight:700;margin-top:24px;color:#0F1B2E">{{ h.title }}</div>
+              <p class="tl-txt inv-soft" style="margin:8px 0 0;font-size:14px;line-height:1.75;color:rgba(26,26,26,0.7)">{{ h.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    
+
+    
+
+    <nav class="anchor-nav is-vis {{ navCls }}">
+      <sc-for list="{{ aboutSecs }}" as="a" hint-placeholder-count="3">
+        <a href="{{ a.href }}" onClick="{{ a.go }}" class="{{ a.cls }}"><span class="lab">{{ a.label }}</span><span class="dot"></span></a>
+      </sc-for>
+    </nav>
+    <section data-snap="" data-tab="network" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
+      <div class="secpad" style="position:relative;z-index:1;width:100%">
+        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
+        </div></div>
+        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
+        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-snap="" data-tab="alumni" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="alumni-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Nastuh Abootalebi on Unsplash" credit-href="https://unsplash.com/@sunday_digital"></image-slot></div>
+      <div class="scrim" style="opacity:0.9"></div>
+      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
+        <div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
+          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni</p>
+          <h2 class="sec-title" style="color: #F7F6F3; font-weight: 500">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
+          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">20년의 역사, 608명의 네트워크</p>
+        </div>
+        <div class="chartwrap" onMouseLeave="{{ sliceLeave }}" style="margin:clamp(20px,3vh,40px) auto 0;max-width:min(500px,50vh);position:relative;width:100%">
+          <div style="position:relative;width:100%;aspect-ratio:1/1">
+            <svg viewBox="0 0 480 480" class="donutsvg {{ drawnCls }}" style="position:absolute;inset:0;width:100%;height:100%" role="img" aria-label="알럼나이 진출 분야 분포">
+              <g transform="rotate(-90 240 240)">
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="{{ d.r }}" fill="none" stroke="{{ d.color }}" stroke-width="{{ d.w }}" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" opacity="{{ d.opacity }}" style="transition-delay:{{ d.delay }}" onMouseEnter="{{ d.onEnter }}"></circle>
+                </sc-for>
+                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+                  <circle class="seg" cx="240" cy="240" r="134" fill="none" stroke="{{ d.color }}" stroke-width="6" stroke-dasharray="{{ d.echoDash }}" stroke-dashoffset="{{ d.echoOffset }}" opacity="{{ d.echoOpacity }}" style="transition-delay:{{ d.delay }}"></circle>
+                </sc-for>
+              </g>
+              <circle cx="240" cy="240" r="130" fill="rgba(17,28,46,0.55)"></circle>
+              <text x="240" y="292" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="0.16em" fill="#6b7a91">ALUMNI</text>
+            </svg>
+            <img src="assets/rfs-seal-light-640.png" alt="R.F.S." style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:19%;opacity:0.34">
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <sc-if value="{{ d.big }}" hint-placeholder-val="{{ true }}">
+                <div style="position:absolute;left:{{ d.lx }};top:{{ d.ly }};transform:translate(-50%,-50%);text-align:center;line-height:1.25;color:{{ d.ink }};white-space:nowrap;pointer-events:none">
+                  <div style="font-size:12px;letter-spacing:0.02em">{{ d.text }}</div>
+                  <div style="font-size:{{ d.size }};font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</div>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <div class="legstrip" style="display:flex;justify-content:center;gap:clamp(16px,3vw,34px);flex-wrap:nowrap;margin-top:clamp(18px,2.6vh,30px);padding-top:16px;border-top:1px solid rgba(247,246,243,0.18)">
+            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
+              <sc-if value="{{ d.small }}" hint-placeholder-val="{{ true }}">
+                <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(247,246,243,0.8);white-space:nowrap;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
+                  <span style="width:8px;height:8px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
+                  <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span>
+                  <span>{{ d.text }}</span>
+                </div>
+              </sc-if>
+            </sc-for>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
+          <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
+        </div>
+      </div>
+    </section>
 
     <section data-snap="" data-tab="process" id="home-process" data-about-sec="" class="on-photo bigsec tight" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="home-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Annie Spratt on Unsplash" credit-href="https://unsplash.com/@anniespratt"></image-slot></div>
@@ -1917,108 +2119,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
     </section>
 
-    <section data-snap="" data-tab="alumni" id="home-alumni" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#111c2e">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="alumni-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Nastuh Abootalebi on Unsplash" credit-href="https://unsplash.com/@sunday_digital"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
-      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px;width:100%">
-        <div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni</p>
-          <h2 class="sec-title" style="color: #F7F6F3; font-weight: 500">당신의 <strong>자부심</strong>이 계속될 수 있도록</h2>
-          <p class="sec-sub" style="color:rgba(247,246,243,0.78);max-width:42em">20년의 역사, 608명의 네트워크</p>
-        </div>
-        <div class="chartwrap" onMouseLeave="{{ sliceLeave }}" style="margin:clamp(20px,3vh,40px) auto 0;max-width:min(500px,50vh);position:relative;width:100%">
-          <div style="position:relative;width:100%;aspect-ratio:1/1">
-            <svg viewBox="0 0 480 480" class="donutsvg {{ drawnCls }}" style="position:absolute;inset:0;width:100%;height:100%" role="img" aria-label="알럼나이 진출 분야 분포">
-              <g transform="rotate(-90 240 240)">
-                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-                  <circle class="seg" cx="240" cy="240" r="{{ d.r }}" fill="none" stroke="{{ d.color }}" stroke-width="{{ d.w }}" stroke-dasharray="{{ d.dash }}" stroke-dashoffset="{{ d.offset }}" opacity="{{ d.opacity }}" style="transition-delay:{{ d.delay }}" onMouseEnter="{{ d.onEnter }}"></circle>
-                </sc-for>
-                <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-                  <circle class="seg" cx="240" cy="240" r="134" fill="none" stroke="{{ d.color }}" stroke-width="6" stroke-dasharray="{{ d.echoDash }}" stroke-dashoffset="{{ d.echoOffset }}" opacity="{{ d.echoOpacity }}" style="transition-delay:{{ d.delay }}"></circle>
-                </sc-for>
-              </g>
-              <circle cx="240" cy="240" r="130" fill="rgba(17,28,46,0.55)"></circle>
-              <text x="240" y="292" text-anchor="middle" font-size="13" font-weight="600" letter-spacing="0.16em" fill="#6b7a91">ALUMNI</text>
-            </svg>
-            <img src="assets/rfs-seal-light-640.png" alt="R.F.S." style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:19%;opacity:0.34">
-            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-              <sc-if value="{{ d.big }}" hint-placeholder-val="{{ true }}">
-                <div style="position:absolute;left:{{ d.lx }};top:{{ d.ly }};transform:translate(-50%,-50%);text-align:center;line-height:1.25;color:{{ d.ink }};white-space:nowrap;pointer-events:none">
-                  <div style="font-size:12px;letter-spacing:0.02em">{{ d.text }}</div>
-                  <div style="font-size:{{ d.size }};font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</div>
-                </div>
-              </sc-if>
-            </sc-for>
-          </div>
-          <div class="legstrip" style="display:flex;justify-content:center;gap:clamp(16px,3vw,34px);flex-wrap:nowrap;margin-top:clamp(18px,2.6vh,30px);padding-top:16px;border-top:1px solid rgba(247,246,243,0.18)">
-            <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
-              <sc-if value="{{ d.small }}" hint-placeholder-val="{{ true }}">
-                <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(247,246,243,0.8);white-space:nowrap;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
-                  <span style="width:8px;height:8px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
-                  <span style="font-weight:700;font-variant-numeric:tabular-nums">{{ d.val }}</span>
-                  <span>{{ d.text }}</span>
-                </div>
-              </sc-if>
-            </sc-for>
-          </div>
-        </div>
-        <div style="text-align:center;margin-top:clamp(18px,2.8vh,36px)">
-          <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo">SEE PEOPLE</a>
-        </div>
-      </div>
-    </section>
-
-    <section data-snap="" data-tab="network" id="home-network" data-about-sec="" class="bigsec tight on-photo" data-nav="dark" style="position:relative;overflow:hidden;background:#0B1524">
-      <div class="secpad" style="position:relative;z-index:1;width:100%">
-        <div class="wrap"><div class="sec-head rv rv-up" style="text-align:center;display:flex;flex-direction:column;align-items:center">
-          <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
-          <h2 class="sec-title nettitle" style="color:#F7F6F3;font-weight:700;max-width:none">Where We Work</h2>
-        </div></div>
-        <div class="rv rv-up" style="margin-top:clamp(24px,4vh,52px)">
-        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
-          <sc-for list="{{ netRows }}" as="row" hint-placeholder-count="3">
-            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
-            </div></div>
-          </sc-for>
-        </div></div>
-        </div>
-      </div>
-    </section>
-
-    <section data-snap="" data-tab="history" class="on-photo" id="about-history" data-about-sec="" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="about-mid" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1444653614773-995cb1ef9efa?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div class="wrap secpad" style="position:relative;z-index:1;padding:110px 35px">
-        <div class="rv rv-up">
-          <h2 class="sec-title">R.F.S. HISTORY</h2>
-          <p class="sec-sub" style="max-width:52em">R.F.S.는 2006년 발족한 이후 총 43기, 608명의 학회원을 배출하였습니다.<br>리서치로 시작한 R.F.S.는 이제 수천만원의 자체 펀드를 운용하는 Asset Management Team을 함께 갖추고 있습니다.&nbsp;</p>
-        </div>
-        <div class="hist4" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;margin-top:clamp(40px,6vh,64px)">
-          <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
-            <div class="rv rv-up tl-cell">
-              <div class="tl-txt inv-soft" style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:{{ h.eyebrowColor }}">{{ h.eyebrow }}</div>
-              <div class="tl-txt inv" style="font-family:'Noto Serif KR',serif;font-size:clamp(34px,3.6vw,56px);font-weight:700;letter-spacing:-0.03em;line-height:1;color:{{ h.ink }};margin-top:12px;font-variant-numeric:tabular-nums">{{ h.year }}</div>
-              <div class="inv-line" style="position:relative;border-top:1px solid #1A1A1A;margin-top:24px;height:1px">
-                <span class="inv-dot" style="position:absolute;left:0;top:-6px;width:11px;height:11px;background:{{ h.ink }};outline:3px solid #F7F6F3"></span>
-              </div>
-              <div class="tl-txt inv" style="font-size:16px;font-weight:700;margin-top:24px;color:#0F1B2E">{{ h.title }}</div>
-              <p class="tl-txt inv-soft" style="margin:8px 0 0;font-size:14px;line-height:1.75;color:rgba(26,26,26,0.7)">{{ h.text }}</p>
-            </div>
-          </sc-for>
-        </div>
-      </div>
-    </section>
-
-    
-
-    
-
-    <nav class="anchor-nav is-vis {{ navCls }}">
-      <sc-for list="{{ aboutSecs }}" as="a" hint-placeholder-count="3">
-        <a href="{{ a.href }}" onClick="{{ a.go }}" class="{{ a.cls }}"><span class="lab">{{ a.label }}</span><span class="dot"></span></a>
-      </sc-for>
-    </nav>
     <section data-snap="" data-tab="calendar" id="about-calendar" data-about-sec="" class="on-photo cur-sec" data-nav="dark" style="position:relative;overflow:hidden;background:#060B16;min-height:100vh;display:flex;align-items:center">
       <div class="rv cur-bg" aria-hidden="true"></div><div class="cur-tw" aria-hidden="true"></div><div class="cur-tw cur-tw2" aria-hidden="true"></div>
       <div class="scrim" style="opacity:0.35"></div>
@@ -2118,6 +2218,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">About<br>R.F.S.</h1>
       </div>
     </section>
+    <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
     <div class="story">
     <section data-tab="intro" id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
       <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
@@ -2139,20 +2240,39 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
     </section>
 
-    <section data-tab="process" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
-      <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
-      <div class="scrim" style="opacity:0.82"></div>
-      <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%;box-sizing:border-box">
-        <p class="sec-label">Process</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><strong>가격의 너머</strong>를 위하여</h2>
+    <section data-tab="history" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:64px 24px 56px">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-history-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
+      <div class="scrim" style="opacity:0.86"></div>
+      <div style="position:relative;z-index:1">
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.025em;color:#F7F6F3">R.F.S. HISTORY</h2>
         <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
-          <sc-for list="{{ mProcess }}" as="p" hint-placeholder-count="4">
-            <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
-              <div style="font-family:'Noto Serif KR',serif;font-size:13px;color:rgba(247,246,243,0.55);padding-top:3px">{{ p.n }}</div>
-              <div><div style="font-size:16px;font-weight:700;color:#F7F6F3">{{ p.t }}</div><div style="font-size:13px;color:rgba(247,246,243,0.72);margin-top:4px;line-height:1.6">{{ p.d }}</div></div>
+          <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
+            <div style="padding:20px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
+              <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.55)">{{ h.eyebrow }}</div>
+              <div style="display:flex;align-items:baseline;gap:14px;margin-top:8px">
+                <span style="font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ h.year }}</span>
+                <span style="font-size:15px;font-weight:700;color:#F7F6F3">{{ h.title }}</span>
+              </div>
+              <p style="margin:10px 0 0;font-size:13px;line-height:1.7;color:rgba(247,246,243,0.75)">{{ h.text }}</p>
             </div>
           </sc-for>
         </div>
+      </div>
+    </section>
+
+    <section data-tab="network" id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
+      <div style="padding:0 24px">
+        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
+      </div>
+      <div style="margin-top:30px">
+        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
+          <sc-for list="{{ mNetRows }}" as="row" hint-placeholder-count="3">
+            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
+              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
+            </div></div>
+          </sc-for>
+        </div></div>
       </div>
     </section>
 
@@ -2175,36 +2295,17 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <a href="#people" onClick="{{ goPeoplePage }}" class="btn btn-photo" style="display:inline-block;margin-top:30px;padding:13px 22px;font-size:12px">SEE PEOPLE</a>
     </section>
 
-    <section data-tab="network" id="home-network" data-nav="dark" style="background:#0B1524;padding:60px 0 56px">
-      <div style="padding:0 24px">
-        <p class="sec-label" style="color:rgba(247,246,243,0.8)">Alumni Network</p>
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;line-height:1.1;letter-spacing:-0.03em;color:#F7F6F3">Where We Work</h2>
-      </div>
-      <div style="margin-top:30px">
-        <div class="netwall"><div class="netrows" style="display:grid;gap:0">
-          <sc-for list="{{ mNetRows }}" as="row" hint-placeholder-count="3">
-            <div class="netmask"><div class="nettrack" style="animation-duration:{{ row.dur }};animation-direction:{{ row.dir }}">
-              <sc-for list="{{ row.items }}" as="l" hint-placeholder-count="12"><span class="netlogo"><img src="{{ l.src }}" alt="{{ l.name }}" title="{{ l.name }}" width="{{ l.w }}" height="{{ l.h }}" style="--h:{{ l.hpx }}" loading="lazy" decoding="async"></span></sc-for>
-            </div></div>
-          </sc-for>
-        </div></div>
-      </div>
-    </section>
-
-    <section data-tab="history" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;padding:64px 24px 56px">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-history-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div style="position:relative;z-index:1">
-        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.025em;color:#F7F6F3">R.F.S. HISTORY</h2>
+    <section data-tab="process" class="on-photo" data-nav="dark" style="position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0"><image-slot id="m-process-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Sean Pollock on Unsplash" credit-href="https://unsplash.com/@seanpollock"></image-slot></div>
+      <div class="scrim" style="opacity:0.82"></div>
+      <div style="position:relative;z-index:1;padding:80px 24px 56px;width:100%;box-sizing:border-box">
+        <p class="sec-label">Process</p>
+        <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:400;line-height:1.3;letter-spacing:-0.025em;color:#F7F6F3"><strong>가격의 너머</strong>를 위하여</h2>
         <div style="margin-top:34px;border-top:1px solid rgba(247,246,243,0.35)">
-          <sc-for list="{{ history }}" as="h" hint-placeholder-count="4">
-            <div style="padding:20px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
-              <div style="font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.55)">{{ h.eyebrow }}</div>
-              <div style="display:flex;align-items:baseline;gap:14px;margin-top:8px">
-                <span style="font-family:'Noto Serif KR',serif;font-size:32px;font-weight:700;letter-spacing:-0.03em;line-height:1;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ h.year }}</span>
-                <span style="font-size:15px;font-weight:700;color:#F7F6F3">{{ h.title }}</span>
-              </div>
-              <p style="margin:10px 0 0;font-size:13px;line-height:1.7;color:rgba(247,246,243,0.75)">{{ h.text }}</p>
+          <sc-for list="{{ mProcess }}" as="p" hint-placeholder-count="4">
+            <div style="display:grid;grid-template-columns:36px minmax(0,1fr);gap:14px;padding:16px 0;border-bottom:1px solid rgba(247,246,243,0.2)">
+              <div style="font-family:'Noto Serif KR',serif;font-size:13px;color:rgba(247,246,243,0.55);padding-top:3px">{{ p.n }}</div>
+              <div><div style="font-size:16px;font-weight:700;color:#F7F6F3">{{ p.t }}</div><div style="font-size:13px;color:rgba(247,246,243,0.72);margin-top:4px;line-height:1.6">{{ p.d }}</div></div>
             </div>
           </sc-for>
         </div>
@@ -2235,7 +2336,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-for list="{{ sohka }}" as="x" hint-placeholder-count="5">
           <div>
             <div style="font-size:16px;font-weight:700;letter-spacing:0.02em;color:{{ x.color }}">{{ x.name }}</div>
-            <div style="font-size:12px;color:rgba(26,26,26,0.55);margin-top:4px">{{ x.school }}</div>
+            <div style="font-size:12px;color:rgba(26,26,26,0.68);margin-top:4px">{{ x.school }}</div>
           </div>
         </sc-for>
       </div>
@@ -2260,9 +2361,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isPeople }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="구성원" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="people-photo" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our People</h1>
       </div>
@@ -2357,9 +2458,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="구성원 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-people-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=70" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg" style="overflow:hidden"><image-slot id="m-people-hero" shape="rect" fit="cover" src="assets/people-group.webp" style="--slot-position:center 40%;transform:scale(1.45);transform-origin:50% 92%"></image-slot></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Our<br>People</h1>
       </div>
@@ -2403,7 +2504,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div style="border-top:1px solid #1A1A1A;border-bottom:1px solid #1A1A1A;padding:24px 0;margin-top:28px">
         <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px">
           <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:20px;font-variant-numeric:tabular-nums">{{ cohortLabel }}</span>
-          <span style="font-size:12px;color:rgba(26,26,26,0.55)">{{ cohortCount }}</span>
+          <span style="font-size:12px;color:rgba(26,26,26,0.68)">{{ cohortCount }}</span>
         </div>
         <div style="font-size:14px;line-height:1.9;color:rgba(26,26,26,0.8);word-break:keep-all">{{ cohortNames }}</div>
       </div>
@@ -2448,9 +2549,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isRecruit }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리크루팅" class="pgx">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Scott Graham on Unsplash" credit-href="https://unsplash.com/@homajob"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="assets/hero/recruit.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:50% 45%"></image-slot></div>
+      <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
         <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
         <h1 class="pg-title">Recruiting</h1>
@@ -2478,7 +2579,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="sched5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:clamp(40px,6vh,64px)">
           <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5">
             <div class="rv rv-up tl-cell">
-              <div class="tl-txt inv-soft" style="font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:0.1em;color:rgba(26,26,26,0.5);font-variant-numeric:tabular-nums">{{ d.num }}</div>
+              <div class="tl-txt inv-soft" style="font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:0.1em;color:rgba(26,26,26,0.68);font-variant-numeric:tabular-nums">{{ d.num }}</div>
               <div class="tl-txt inv" style="font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.2vw,32px);font-weight:700;letter-spacing:-0.02em;margin-top:10px;color:#0F1B2E;font-variant-numeric:tabular-nums;white-space:nowrap">{{ d.date }}</div>
               <div class="inv-line" style="position:relative;border-top:1px solid #1A1A1A;margin:22px 0 0;height:1px">
                 <span class="inv-dot" style="position:absolute;left:0;top:-6px;width:11px;height:11px;background:{{ d.bar }};outline:3px solid #FFFFFF"></span>
@@ -2535,9 +2636,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리크루팅 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
-    <section class="on-photo pg-hero pg-big" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1541354329998-f4d9a9f9297f?auto=format&fit=crop&w=1200&q=70" credit="Photo by Aditya Vyas on Unsplash" credit-href="https://unsplash.com/@aditya1702"></image-slot></div>
-      <div class="scrim" style="opacity:0.82"></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="assets/hero/recruit-m.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:55% 50%"></image-slot></div>
+      <div class="scrim" style="opacity:0.62"></div>
       <div class="pg-hero-in">
         <p class="sec-label">{{ recruitEyebrow }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Recruiting</h1>
@@ -2611,9 +2712,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1920&amp;q=80" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
-      <div class="scrim" style="opacity:0.86"></div>
-      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center">
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="intra-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
+      <div class="scrim" style="opacity:0.78"></div>
+      <div style="position:relative;z-index:1;width:min(440px,calc(100% - 48px));padding:48px 44px;border:1px solid rgba(247,246,243,0.35);text-align:center;background:rgba(11,21,36,0.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)">
         <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:64px;height:auto;display:block;margin:0 auto">
         <p class="sec-label" style="margin-top:28px;color:rgba(247,246,243,0.7)">{{ loginLabel }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-0.02em;color:#F7F6F3">학회원 로그인</h1>
@@ -2627,7 +2728,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <button type="submit" class="btn btn-photo press" style="display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3">LOGIN</button>
         </form>
         <sc-if value="{{ loginBack }}" hint-placeholder-val="{{ false }}"><p style="margin:18px 0 0;font-size:13px"><a href="#" onClick="{{ loginBackGo }}" style="color:rgba(247,246,243,0.75)">← 돌아가기</a></p></sc-if>
-        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.5)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.75)">recruiting.rfs@gmail.com</a></p>
+        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.62)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="display:inline-flex;align-items:center;min-height:44px;color:rgba(247,246,243,0.85)">recruiting.rfs@gmail.com</a></p>
       </div>
     </section>
   </main>
@@ -2665,16 +2766,19 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
-    <section class="on-photo pg-hero" data-nav="dark">
-      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
+        <sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}">
+          <h1 class="pg-title">AMT Fund</h1>
+          <p class="pg-lede" aria-live="polite">운용 현황을 불러오는 중입니다…</p>
+        </sc-if>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
           <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
         <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <p class="sec-label pg-eyebrow"><sc-if value="{{ fdLiveDot }}" hint-placeholder-val="{{ false }}"><span class="rfm-live"><i></i>장중</span></sc-if><span>RFS Asset Management · 국내·미국 상장주식 · 일반사모</span></p>
           <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
@@ -2799,15 +2903,18 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ rfmOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="RFM 순위" data-nav="dark" class="rfmpage fdpage" style="position:relative;background:#0F1B2E;color:#F7F6F3">
-    <section class="on-photo pg-hero" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="rfm-photo" shape="rect" fit="cover" src="assets/hero/nyse.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:NY_stock_exchange_traders_floor_LC-U9-10548-6.jpg" style="--slot-position:center 30%"></image-slot></div>
-      <div class="scrim" style="opacity:0.9"></div>
+      <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
+    <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap" aria-live="polite">순위를 불러오는 중입니다…</p></section></div>
+    </sc-if>
     <sc-if value="{{ noRfm }}" hint-placeholder-val="{{ false }}">
-      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">수집된 데이터가 없습니다.</p></section></div>
+      <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap">아직 수집된 순위가 없습니다. 거래일 아침에 다시 확인해 주세요.</p></section></div>
     </sc-if>
     <sc-if value="{{ hasRfm }}" hint-placeholder-val="{{ true }}">
     <nav class="fd-nav"><div class="wrap"><sc-for list="{{ rfmNav }}" as="n" hint-placeholder-count="4"><a href="#" onClick="{{ n.on }}">{{ n.t }}</a></sc-for></div></nav>
@@ -2850,7 +2957,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </sc-for>
           </div>
           <sc-if value="{{ hasRfmMissing }}" hint-placeholder-val="{{ false }}">
-            <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.45)">순위표에 없는 별칭: {{ rfmMissing }}</p>
+            <p style="margin-top:24px;font-size:12px;color:rgba(247,246,243,0.62)">순위표에 없는 별칭: {{ rfmMissing }}</p>
           </sc-if>
         </div>
       </section>
@@ -2890,7 +2997,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </section>
 
-      <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.25);margin-left:6px">·</a></p>
+      <p class="fd-disc">자료: 타임폴리오 RFM 순위표 · 별칭 기준 <a href="#" onClick="{{ rfmNameToggle }}" style="color:rgba(247,246,243,0.62);margin-left:6px">·</a></p>
       <sc-if value="{{ rfmNameOpen }}" hint-placeholder-val="{{ false }}">
         <div style="margin-top:12px;max-width:520px">
           <p style="margin:0 0 8px;font-size:12px;color:rgba(247,246,243,0.5)">{{ rfmNameCount }}</p>
@@ -2908,6 +3015,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
   <sc-if value="{{ intraOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="아고라" data-nav="dark" class="agora {{ agoraCls }}" style="position:relative;min-height:100vh">
+    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+      <div class="pg-bg"><image-slot id="agora-intro" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
+      <div class="scrim" style="opacity:0.5"></div>
+      <div class="wrap pg-hero-in">
+        <h1 class="pg-title">Agora</h1>
+      </div>
+    </section>
     <section class="ag-hero on-photo" data-nav="dark">
       <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
       <div class="ag-shade"></div>
@@ -2923,7 +3037,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
           </div>
         </div>
-        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>43</b><span>Cohorts</span></div><div><b>68%</b><span>In finance</span></div></div>
+        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>{{ agDirN }}</b><span>In directory</span></div><div><b>43</b><span>Cohorts</span></div><div><b>{{ agFinPct }}</b><span>In finance</span></div></div>
         <div class="ag-search">
           <input type="search" placeholder="이름, 회사, 직무로 알럼나이 찾기" value="{{ dirQ }}" onChange="{{ onDirQGo }}">
           <div class="ag-tiles"><sc-for list="{{ agTiles }}" as="t" hint-placeholder-count="7"><a href="#intranet/directory" onClick="{{ t.on }}" class="{{ t.cls }}"><b>{{ t.count }}</b><span>{{ t.label }}</span></a></sc-for></div>
@@ -2949,7 +3063,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 </div>
               </sc-for>
             </div>
-            <div class="ag-two">
+            <div class="{{ agTwoCls }}">
               <div class="ag-box">
                 <div class="ag-h"><h2>게시판</h2><a href="#intranet/board" onClick="{{ goBoard }}">전체 →</a></div>
                 <sc-if value="{{ hasDashPosts }}" hint-placeholder-val="{{ true }}">
@@ -2959,12 +3073,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 </sc-if>
                 <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><p class="ag-empty">첫 글을 남겨보세요.</p></sc-if>
               </div>
+              <sc-if value="{{ hasSchedule }}" hint-placeholder-val="{{ true }}">
               <div class="ag-box">
                 <div class="ag-h"><h2>이번 학기 일정</h2></div>
                 <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="6">
                   <div class="ag-li"><span><b class="dt">{{ d.date }}</b> {{ d.title }}</span><span class="m">{{ d.meta }}</span></div>
                 </sc-for>
               </div>
+              </sc-if>
             </div>
           </sc-if>
 
@@ -2976,20 +3092,20 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <span style="font-size:13px;color:rgba(247,246,243,0.6)">{{ dirHitCount }}</span>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">기수순</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)"><a href="#" onClick="{{ dirAllOpen }}" style="color:inherit">모두 펼치기</a> · <a href="#" onClick="{{ dirAllClose }}" style="color:inherit">모두 접기</a></span>
             </div>
             <sc-if value="{{ hasDirHits }}" hint-placeholder-val="{{ true }}">
-              <div class="intra-cards" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-                <sc-for list="{{ dirHits }}" as="a" hint-placeholder-count="6">
-                  <div style="background:rgba(247,246,243,0.05);border:1px solid rgba(247,246,243,0.18);padding:20px 22px;display:flex;flex-direction:column;gap:6px">
-                    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
-                      <div style="font-size:17px;font-weight:700;color:#F7F6F3">{{ a.name }} <sc-if value="{{ a.hasCohort }}" hint-placeholder-val="{{ true }}"><span style="font-size:12px;font-weight:500;color:rgba(247,246,243,0.5);margin-left:4px">{{ a.cohortLabel }}</span></sc-if></div>
-                      <sc-if value="{{ a.hasInd }}" hint-placeholder-val="{{ true }}"><span style="font-size:11px;letter-spacing:0.08em;color:#8FAADC;white-space:nowrap">{{ a.industry }}</span></sc-if>
-                    </div>
-                    <sc-if value="{{ a.hasCompany }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:rgba(247,246,243,0.9)">{{ a.companyLine }}</div></sc-if>
-                    <sc-if value="{{ a.hasCompany }}" hint-placeholder-val="{{ true }}"></sc-if>
-                    <sc-if value="{{ a.hasNote }}" hint-placeholder-val="{{ false }}"><p style="margin:6px 0 0;font-size:13px;line-height:1.6;color:rgba(247,246,243,0.72)">{{ a.note }}</p></sc-if>
-                    <a href="#" onClick="{{ a.on }}" class="btn btn-photo" style="align-self:flex-start;margin-top:10px;padding:8px 14px;font-size:11px">커피챗 신청</a>
+              <div class="ag-dir">
+                <sc-for list="{{ dirGroups }}" as="g" hint-placeholder-count="3">
+                  <div class="ag-dg">
+                    <a href="#" class="ag-dgh" onClick="{{ g.toggle }}"><b>{{ g.label }}</b><span>{{ g.count }}</span><i>{{ g.mark }}</i></a>
+                    <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
+                      <div class="ag-rows">
+                        <sc-for list="{{ g.rows }}" as="a" hint-placeholder-count="4">
+                          <div class="ag-row"><b>{{ a.name }}</b><span class="c">{{ a.line }}</span><span class="i">{{ a.industry }}</span><a href="{{ a.tel }}" class="ph">{{ a.phone }}</a><a href="#" onClick="{{ a.on }}" class="cf">커피챗</a></div>
+                        </sc-for>
+                      </div>
+                    </sc-if>
                   </div>
                 </sc-for>
               </div>
@@ -3008,7 +3124,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                   </div>
                   <input class="intra-input" type="tel" name="phone" placeholder="내 휴대폰 번호 (010-0000-0000)" required="" value="{{ cPhone }}" onChange="{{ onCPhone }}" style="margin-top:10px">
                   <textarea class="intra-input" name="message" rows="4" maxlength="500" placeholder="여쭤보고 싶은 것 (직무·준비 과정·커리어 등)" required="" value="{{ cMsg }}" onChange="{{ onCMsg }}" style="margin-top:10px;resize:vertical"></textarea>
-                  <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(26,26,26,0.55)">선배님께 문자로 전달되고, 선배님이 적어주신 번호로 직접 연락하십니다. 선배님 연락처는 공개되지 않습니다.</p>
+                  <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(26,26,26,0.68)">선배님께 문자로 전달되고, 선배님이 적어주신 번호로 직접 연락하십니다. 선배님 연락처는 공개되지 않습니다.</p>
                   <sc-if value="{{ hasCoffeeErr }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;font-size:12px;color:#842029">{{ coffeeErr }}</p></sc-if>
                   <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
                     <a href="#" onClick="{{ coffeeClose }}" class="btn btn-outline" style="padding:10px 16px;font-size:11px">CANCEL</a>
@@ -3056,12 +3172,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:32px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">글</div>
               <div style="display:flex;gap:4px;flex-wrap:wrap;flex:1;justify-content:flex-end;margin-right:12px"><sc-for list="{{ boardCats }}" as="c" hint-placeholder-count="5"><a href="#" onClick="{{ c.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</a></sc-for></div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">{{ postCount }}</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ postCount }}</span>
             </div>
             <sc-if value="{{ hasPosts }}" hint-placeholder-val="{{ true }}">
               <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
                 <div style="padding:22px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.45)"><span style="color:#8FAADC">{{ p.category }}</span> · {{ p.meta }}</div>
+                  <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.62)"><span style="color:#8FAADC">{{ p.category }}</span> · {{ p.meta }}</div>
                   <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:8px">{{ p.title }}</div>
                   <p style="margin:10px 0 0;font-size:14px;line-height:1.8;color:rgba(247,246,243,0.78);white-space:pre-wrap;max-width:52em">{{ p.body }}</p>
                   <a href="#" onClick="{{ p.toggle }}" style="display:inline-block;margin-top:12px;font-size:12px;color:#8FAADC">{{ p.cLabel }}</a>
@@ -3069,7 +3185,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                     <div style="margin-top:12px;padding-left:16px;border-left:2px solid rgba(143,170,220,0.4)">
                       <sc-for list="{{ p.cmts }}" as="c" hint-placeholder-count="2">
                         <div style="padding:8px 0">
-                          <div style="font-size:11px;color:rgba(247,246,243,0.45)">{{ c.meta }}</div>
+                          <div style="font-size:11px;color:rgba(247,246,243,0.62)">{{ c.meta }}</div>
                           <div style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.85);white-space:pre-wrap">{{ c.body }}</div>
                         </div>
                       </sc-for>
@@ -3088,11 +3204,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <sc-if value="{{ hasQna }}" hint-placeholder-val="{{ true }}">
               <div style="display:flex;justify-content:space-between;align-items:baseline;margin:44px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
                 <div style="font-size:15px;font-weight:700;color:#F7F6F3">선배님께 물었습니다</div>
-                <span style="font-size:12px;color:rgba(247,246,243,0.45)">{{ qnaCount }}</span>
+                <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ qnaCount }}</span>
               </div>
               <sc-for list="{{ qna }}" as="x" hint-placeholder-count="2">
                 <div style="padding:24px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.4)">{{ x.meta }}</div>
+                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.62)">{{ x.meta }}</div>
                   <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:10px">{{ x.q }}</div>
                   <p style="margin:12px 0 0;font-size:14px;line-height:1.85;color:rgba(247,246,243,0.78);max-width:52em">{{ x.a }}</p>
                   <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
@@ -3118,12 +3234,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
               <div style="font-size:15px;font-weight:700;color:#F7F6F3">포트폴리오</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.45)">비중순</span>
+              <span style="font-size:12px;color:rgba(247,246,243,0.62)">비중순</span>
             </div>
             <sc-for list="{{ fundPos }}" as="p" hint-placeholder-count="7">
               <div style="display:grid;grid-template-columns:minmax(0,1fr) 92px 78px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
                 <div>
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ p.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.45);margin-left:4px;font-variant-numeric:tabular-nums">{{ p.tick }}</span></div>
+                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ p.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.62);margin-left:4px;font-variant-numeric:tabular-nums">{{ p.tick }}</span></div>
                   <div style="height:3px;background:#8FAADC;margin-top:8px;max-width:100%;width:{{ p.bar }}"></div>
                 </div>
                 <div style="text-align:right;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ p.w }}</div>
@@ -3134,7 +3250,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <div style="margin-top:34px;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:15px;font-weight:700;color:#F7F6F3">운용 노트</div>
               <sc-for list="{{ fundNotes }}" as="n" hint-placeholder-count="2">
                 <div style="display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
-                  <span style="font-size:13px;color:rgba(247,246,243,0.45);font-variant-numeric:tabular-nums">{{ n.date }}</span>
+                  <span style="font-size:13px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums">{{ n.date }}</span>
                   <span style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.8)">{{ n.text }}</span>
                 </div>
               </sc-for>
@@ -4468,10 +4584,10 @@ class Component extends DCLogic {
     this._menuHeroes = () => {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
-        fund: ['assets/hero/sky.webp'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [u + '1470219556762-1771e7f9427d?auto=format&fit=crop&w=' + (m ? 1200 : 1600) + '&q=72'],
+        fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
+        research: [m ? 'assets/hero/research-m.webp?v=1017' : 'assets/hero/research.webp?v=1017'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
-        recruit: [u + '1450101499163-c8848c66ca85?auto=format&fit=crop&w=1600&q=72'],
+        recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
       };
     };
@@ -4483,8 +4599,8 @@ class Component extends DCLogic {
       });
     };
     idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
-      // 리포트 글꼴은 리포트를 처음 열 때 받기 시작해 잠깐 다른 글꼴로 보였다가 바뀌었다. 미리 받아 둔다
-      if (document.fonts && document.fonts.load) [300, 500, 700].forEach((w) => document.fonts.load(w + " 16px 'RFS Report Dotum'").catch(() => {})); });
+      // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
+      window.__rfsFont && window.__rfsFont(); this.loadP1(); });
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
     // 리포트 개별 주소와 메인 사이를 뒤로/앞으로 가기로 오갈 때는 hashchange가 안 날 수 있다
@@ -4493,7 +4609,10 @@ class Component extends DCLogic {
     const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
     const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
     if (window.supabase) {
-      this.sb = window.supabase.createClient(SB_URL, SB_KEY);
+      // 로그인은 이 탭에서만 유지한다 (새로고침은 괜찮고, 탭·브라우저를 닫았다 다시 오면 다시 로그인). 예전처럼 브라우저에 남아 있던 로그인은 지운다
+      try { Object.keys(localStorage).forEach((k) => { if (/^sb-.*-auth-token/.test(k)) localStorage.removeItem(k); }); } catch (e) {}
+      let store; try { store = window.sessionStorage; } catch (e) {}
+      this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
       const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
@@ -4598,7 +4717,100 @@ class Component extends DCLogic {
   }
   componentDidUpdate(pp, ps) {
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
+    if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
   }
+
+  // 첫 화면(pg-full)이 있는 페이지 안에서 탭을 바꿀 때: 맨 위(첫 화면 사진)가 아니라 내용 첫 줄로
+  toContent() {
+    const h = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
+    window.scrollTo({ top: h ? h.getBoundingClientRect().bottom + window.scrollY : 0, behavior: 'instant' });
+  }
+
+  // ABOUT·FUND·RFM·PEOPLE·AGORA 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
+  // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
+  // 리포트 1페이지 본문(page1.json)은 리포트를 열기 전에 미리 받아 둔다. 받기 전에 열면 본문을 잠깐 감췄다가 한 번에 보인다 (html.rp1)
+  loadP1() {
+    if (this._p1req) return; this._p1req = true;
+    const done = () => document.documentElement.classList.add('rp1');
+    setTimeout(done, 6000);
+    fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
+  }
+
+  heroIntro(page) {
+    clearTimeout(this._hiT); this._hiStop && this._hiStop();
+    // 컴퓨터에서 애니메이션을 꺼 두었어도 같은 순서로 보여 준다 (움직임 없이 흐려지기만 한다)
+    if (!['about', 'research', 'fund', 'rfm', 'people', 'recruit', 'intranet'].includes(page)) return;
+    requestAnimationFrame(() => {
+      const hero = [...document.querySelectorAll('main .pg-hero.pg-full')].find((n) => n.offsetParent !== null);
+      if (!hero || this.state.page !== page) return;
+      // 첫 화면 바로 아래 탭이 메뉴 아래에 붙어 있으면(sticky) 그만큼 덜 내려가야 내용 첫 줄이 가려지지 않는다
+      const stick = () => { const n = hero.nextElementSibling, cs = n && getComputedStyle(n); return cs && cs.position === 'sticky' ? parseFloat(cs.top) || 0 : 0; };
+      // 첫 화면 바로 아래 탭 줄이 고정이 아니면(ABOUT) 그 줄도 지나서 내용 첫 칸이 화면 맨 위에 오게
+      const skip = () => { const n = hero.nextElementSibling; return n && n.tagName === 'NAV' && getComputedStyle(n).position !== 'sticky' ? n.offsetHeight : 0; };
+      const target = () => hero.getBoundingClientRect().bottom + window.scrollY - stick() + skip();
+      // 한 번 지나간 첫 화면은 띠 높이(제목만 있는 배너)로 줄인다. 다시 올라오면 전체 화면이 아니라 이 띠가 보인다
+      const shrink = () => {
+        if (hero.classList.contains('hero-short')) return;
+        const h0 = hero.offsetHeight, y0 = window.scrollY;
+        hero.classList.add('hero-short');
+        if (y0 > 0) window.scrollTo({ top: Math.max(0, y0 - (h0 - hero.offsetHeight)), behavior: 'instant' });
+        hero.classList.remove('hero-out');
+        off();
+      };
+      const onScroll = () => {
+        if (hero.classList.contains('hero-short') || hero.classList.contains('hero-lift')) return;
+        if (window.scrollY >= target()) return shrink();
+        hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
+      };
+      // 첫 화면은 그대로 두고, 접속자가 조금만 내리면(휠 한 칸·살짝 스와이프·↓키) 첫 화면이 흐려지며 내용이 겹쳐 떠오른다
+      let busy = false, ty = null, cue = null;
+      const advance = () => {
+        if (busy || hero.classList.contains('hero-short') || this.state.page !== page) return;
+        busy = true; cue && cue.remove();
+        // 첫 화면을 화면에 고정해 둔 채 그 뒤로 내용 위치로 옮기고, 첫 화면이 흐려지는 동시에 내용이 떠오른다 (겹쳐 바뀜)
+        const main = hero.closest('main'), ph = document.createElement('div');
+        ph.className = 'pg-hero-ph';
+        hero.parentNode.insertBefore(ph, hero);
+        hero.classList.add('hero-lift');
+        window.scrollTo({ top: ph.getBoundingClientRect().bottom + window.scrollY - stick() + skip(), behavior: 'instant' });
+        main.classList.add('hi-in');
+        requestAnimationFrame(() => hero.classList.add('hero-out'));
+        this._hiT = setTimeout(() => {
+          const y = window.scrollY;
+          ph.remove(); hero.classList.remove('hero-lift'); hero.classList.add('hero-short');
+          window.scrollTo({ top: y, behavior: 'instant' });
+          hero.classList.remove('hero-out');
+          main.classList.remove('hi-in');
+          busy = false; off();
+        }, 950);
+      };
+      const atTop = () => window.scrollY < 10 && !hero.classList.contains('hero-short');
+      // 소개 페이지의 칸 단위 휠 이동(setupSnap)보다 먼저 받아서, 첫 화면을 넘기는 휠은 그쪽으로 안 가게 막는다
+      const onWheel = (e) => { if (busy) { e.preventDefault(); e.stopImmediatePropagation(); return; } if (atTop() && e.deltaY > 0) { e.preventDefault(); e.stopImmediatePropagation(); advance(); } };
+      const onTs = (e) => { ty = e.touches[0].clientY; };
+      const onTm = (e) => { if (busy) { e.preventDefault(); return; } if (ty != null && atTop() && ty - e.touches[0].clientY > 12) { e.preventDefault(); ty = null; advance(); } };
+      const onKey = (e) => { if (atTop() && ['ArrowDown', 'PageDown', ' ', 'Spacebar'].includes(e.key) && !/INPUT|TEXTAREA|SELECT/.test((e.target && e.target.tagName) || '')) { e.preventDefault(); advance(); } };
+      const off = () => {
+        window.removeEventListener('wheel', onWheel, true); window.removeEventListener('touchstart', onTs); window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      this._hiStop = () => { off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
+      let seen = false;
+      try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
+      if (seen || window.scrollY > 10) { shrink(); return; }
+      window.addEventListener('wheel', onWheel, { passive: false, capture: true });
+      window.addEventListener('touchstart', onTs, { passive: true });
+      window.addEventListener('touchmove', onTm, { passive: false });
+      window.addEventListener('keydown', onKey);
+      // 아래로 내리라는 표시 (누르면 바로 넘어감)
+      cue = document.createElement('button');
+      cue.type = 'button'; cue.className = 'hero-cue'; cue.setAttribute('aria-label', '아래로');
+      cue.addEventListener('click', advance);
+      hero.appendChild(cue);
+    });
+  }
+
+
 
   componentWillUnmount() { window.removeEventListener('hashchange', this._onHash); window.removeEventListener('popstate', this._onPop); this._navIo && this._navIo.disconnect(); this._onResize && window.removeEventListener('resize', this._onResize); this._secIo && this._secIo.disconnect(); this._rvIo && this._rvIo.disconnect(); this._onScroll && window.removeEventListener('scroll', this._onScroll); this._cntIo && this._cntIo.disconnect(); this._mch && this.sb && this.sb.removeChannel(this._mch); this._onWheel && window.removeEventListener('wheel', this._onWheel); this._onResize && window.removeEventListener('resize', this._onResize); this._glideRaf && cancelAnimationFrame(this._glideRaf); this._settle && clearTimeout(this._settle); }
 
@@ -4715,7 +4927,7 @@ class Component extends DCLogic {
     if (!this.sb) return;
     // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
     this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
-      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); });
+      .then(({ data }) => { if (data && data.data) this.setRfm(data.data); this.setState({ rfmLoaded: true }); }, () => this.setState({ rfmLoaded: true }));
   }
 
   // 새 데이터가 오면 직전 데이터와 비교해 추월·50위 진입/이탈을 변동 목록에 쌓는다 (페이지를 열어 둔 동안만)
@@ -4866,10 +5078,10 @@ class Component extends DCLogic {
     const refs = [back(7), back(30), back(91), back(182), back(365), H[0]];
     const r = (j, ref) => (ref && ref !== last && last[j] && ref[j] ? (last[j] / ref[j] - 1) * 100 : null);
     const fmt = (v, p) => (v === null ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + (p || ''));
-    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.35)' : col(v); }); return o; };
+    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.62)' : col(v); }); return o; };
     const f = refs.map((x) => r(1, x)), kp = refs.map((x) => r(2, x)), kq = refs.map((x) => r(3, x));
     const ex = f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i]));
-    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.35)' : col(v) });
+    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.62)' : col(v) });
     const fdPerCols = ['1주', '1개월', '3개월', '6개월', '1년', '설정 이후'].map((k, i) => ({ k, a: cell(f[i]), b: cell(kp[i]), q: cell(kq[i]), e: cell(ex[i], '%p'), cls: 'rr' + (i === 5 ? ' fund' : '') })).filter((x, i) => i === 5 || f[i] !== null);
     return {
       fdPerCols,
@@ -4886,7 +5098,7 @@ class Component extends DCLogic {
     const won = (v) => Math.round(Math.abs(v)).toLocaleString('ko-KR');
     const up = 'var(--up)', dn = 'var(--dn)', flat = 'var(--flat)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
-    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLive: false, fdPublic: false };
+    if (!F) return { fdHas: false, fdNone: !!s.fundPubLoaded || !!live, fdLoading: !s.fundPubLoaded && !live, fdLive: false, fdPublic: false };
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const open = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     const kospi = F.bm && F.bm.kospi ? F.bm.kospi.ret : null, kosdaq = F.bm && F.bm.kosdaq ? F.bm.kosdaq.ret : null;
@@ -5149,7 +5361,7 @@ class Component extends DCLogic {
     const nm = (m) => real(m) || m.nick;
     const pct = (v, d = 2) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d) + '%';
     const pp = (v) => Math.abs(v).toFixed(2) + '%p';
-    const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.45)';
+    const up = '#F2626B', dn = '#5E9BFF', flat = 'rgba(247,246,243,0.62)';
     const col = (v) => (v > 0 ? up : v < 0 ? dn : flat);
     const ret = (m) => (m.nav / 1000 - 1) * 100;
     const on = ms.filter((m) => m.found && m.nav);
@@ -5183,7 +5395,7 @@ class Component extends DCLogic {
     const k = new Date(Date.now() + 9 * 3600e3), hm = k.getUTCHours() * 60 + k.getUTCMinutes(), wd = k.getUTCDay();
     const live = wd >= 1 && wd <= 5 && hm >= 540 && hm <= 930;
     return {
-      hasRfm: on.length > 0, noRfm: on.length === 0,
+      hasRfm: on.length > 0, noRfm: on.length === 0 && !!s.rfmLoaded, rfmLoading: on.length === 0 && !s.rfmLoaded,
       rfmLive: live, rfmClosed: !live,
       rfmMeta: [RF && RF.asOf ? RF.asOf.slice(0, 16).replace(/-/g, '.').replace('T', ' ') + ' 기준' : '', (RF && RF.contest) || '', on.length ? '참가 ' + on.length + '명' : '', '벤치마크 KOSPI'].filter(Boolean).join(' · '),
       rfmHeadLead: a1 ? nm(a1) : '',
@@ -5354,6 +5566,7 @@ class Component extends DCLogic {
   }
 
   setTitle(page, reportId) {
+    if (page === 'report' && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
     const r = REPORTS.find((x) => x.id === reportId);
     document.title = page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
@@ -5380,14 +5593,20 @@ class Component extends DCLogic {
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;
-    if (changed && Date.now() - (this._navAt || 0) > 600) this.withTransition(update); else update();
+    if (changed && Date.now() - (this._navAt || 0) > 600) this.withTransition(update, page); else update();
   }
 
   // 화면 전환 효과: 지원 브라우저에서만 View Transitions로 감싸고, 아니면 바로 바꾼다 (동작 줄이기 설정은 CSS에서 페이드만)
-  withTransition(update) {
+  withTransition(update, to) {
     // 모바일 브라우저(특히 iOS Safari)는 전환 중 주소창이 접히고 펴지며 화면 스냅샷이 찌그러져 보여서 PC에서만 쓴다
     if (!document.startViewTransition || window.innerWidth <= 1024) return update();
-    document.startViewTransition(() => new Promise((res) => update(res)));
+    // 메뉴끼리 오갈 때는 전환 효과 없이 바로 (홈 ↔ 메뉴만 효과)
+    if (to && to !== 'home' && this.state.page !== 'home') return update();
+    // 해시 변경·뒤로가기 이벤트가 한 번에 두 번 와도 전환은 한 번만
+    if (this._vtBusy) return update();
+    this._vtBusy = true;
+    const vt = document.startViewTransition(() => new Promise((res) => update(res)));
+    vt.finished.finally(() => { this._vtBusy = false; });
   }
 
   go(page, id) {
@@ -5395,7 +5614,7 @@ class Component extends DCLogic {
     const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page === 'strategy' ? 'fund/strategy' : page;
     // 리포트 개별 주소에서 다른 화면으로 갈 때는 주소를 메인(/#...)으로 바꾼다
     if (location.pathname !== '/') history.pushState(null, '', '/#' + nh); else location.hash = nh;
-    this.withTransition((done) => this.setState({ page, reportId: id || this.state.reportId, menuOpen:false }, () => { window.scrollTo(0, 0); this.setupReveal(); this.observeSentinel(); done && done(); }));
+    this.withTransition((done) => this.setState({ page, reportId: id || this.state.reportId, menuOpen:false }, () => { window.scrollTo(0, 0); this.setupReveal(); this.observeSentinel(); done && done(); }), page);
   }
 
   renderVals() {
@@ -5415,10 +5634,7 @@ class Component extends DCLogic {
       this.loadRfm();
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
     }
-    if (s.page === 'report' && !this._p1req) {
-      this._p1req = true;
-      fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); }).catch(() => {});
-    }
+    if (s.page === 'report' || s.page === 'research') this.loadP1();
     const status = this.props.recruitStatus ?? '마감';
     const nextRecruit = this.props.nextRecruit ?? '27-1학기, 2027년 1월';
     const rSem = this.props.recruitSemester ?? '26-2';
@@ -5466,7 +5682,7 @@ class Component extends DCLogic {
       const items = nums.map((n) => typeof n === 'number'
         ? { label: String(n), cls: n === cur ? 'current' : '', gap: false, on: () => this.setState({ page1: n }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) }
         : { label: '…', cls: '', gap: true, on: () => {} });
-      if (cur < pageCount) items.push({ label: 'Next »', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
+      if (cur < pageCount) items.push({ label: '다음 ›', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
       return items;
     })();
     const covGroups = (() => {
@@ -5521,7 +5737,8 @@ class Component extends DCLogic {
     const ID = s.intraData || { NOTICES: [], SCHEDULE: [], BOARDS: [], TEAM_BOARDS: [], OFFICERS: [], ALUMNI: [], INDUSTRIES: [], QNA: [], FUND: null };
     const FD = ID.FUND || { asOf:'', nav:0, since:'', ytd:'', bench:'', aum:'', positions:[], notes:[] };
     const dq = (s.dirQ || '').trim().toLowerCase();
-    const dirAll = (ID.ALUMNI || []).slice().sort((a, b) => (a.cohort || 999) - (b.cohort || 999) || a.name.localeCompare(b.name, 'ko'));
+    const coh = (a) => (a.cohort === 0 || a.cohort) ? a.cohort : 999;   // 0기도 있다 (기수 없음만 맨 뒤로)
+    const dirAll = (ID.ALUMNI || []).slice().sort((a, b) => coh(a) - coh(b) || a.name.localeCompare(b.name, 'ko'));
     const dirHits = dirAll.filter((a) => (s.dirInd === '전체' || (s.dirInd === '미기재' ? !a.industry : a.industry === s.dirInd)) &&(!dq || (a.name + ' ' + a.company + ' ' + a.role).toLowerCase().indexOf(dq) >= 0));
     const indCounts = {}; dirAll.forEach((a) => { indCounts[a.industry] = (indCounts[a.industry] || 0) + 1; });
     const coffeeTarget = s.coffeeFor ? dirAll.find((a) => a.name + a.cohort === s.coffeeFor) : null;
@@ -5531,7 +5748,7 @@ class Component extends DCLogic {
     const pCat = s.pCat || '자유', bCat = s.bCat || '전체';
     const dateOf = (t) => new Date(t).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
     const shown = s.posts.filter((p) => bCat === '전체' || (p.category || '자유') === bCat);
-    const setTab = (t) => (e) => { if (e) e.preventDefault(); this.setState({ intraTab: t, intraQ: '' }, () => { location.hash = 'intranet/' + t; window.scrollTo(0, 0); }); };
+    const setTab = (t) => (e) => { if (e) e.preventDefault(); this.setState({ intraTab: t, intraQ: '' }, () => { location.hash = 'intranet/' + t; this.toContent(); }); };
     const railItem = (key, label) => ({ key, label, href: '#intranet/' + key, on: setTab(key), cls: tab === key ? 'on' : '' });
 
     const iq = (s.intraQ || '').trim();
@@ -5646,11 +5863,24 @@ class Component extends DCLogic {
       agoraCls: tab === 'dashboard' ? 'ag-dash' : 'ag-sub',
       agoraBg: s.isMobile ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp', agoraBgCredit: '', agoraBgHref: '',
       agAlumniN: String(allNames.length || dirAll.length),
+      agDirN: String(dirAll.length),
+      // 금융권 비율: 회사가 적힌 알럼나이(현 임원진 제외) 중 대기업·기타가 아닌 업종
+      agFinPct: (() => { const w = dirAll.filter((a) => a.company && a.company !== 'R.F.S.' && a.industry); const f = w.filter((a) => a.industry !== '대기업' && a.industry !== '기타'); return w.length ? Math.round(100 * f.length / w.length) + '%' : '–'; })(),
+      // 디렉토리: 기수별로 묶은 명부 (기수 제목을 누르면 접고 펼침. 검색·업종 필터 중에는 모두 펼침)
+      dirGroups: (() => { const g = []; dirHits.forEach((a) => { const k = coh(a); let x = g[g.length - 1]; if (!x || x.k !== k) { x = { k, rows: [] }; g.push(x); } x.rows.push(a); });
+        const closed = s.dirClosed || {}, filtering = !!dq || s.dirInd !== '전체';
+        return g.map((x) => { const open = filtering || !closed[x.k]; return { label: x.k < 999 ? x.k + '기' : '기수 미상', count: x.rows.length + '명', open, mark: open ? '−' : '+',
+          toggle: (e) => { e.preventDefault(); this.setState({ dirClosed: { ...(this.state.dirClosed || {}), [x.k]: open } }); },
+          rows: x.rows.map((a) => ({ name: a.name, line: a.company ? a.company + (a.role ? ' · ' + a.role : '') : '—', industry: a.industry || '', phone: a.phone || '', tel: a.phone ? 'tel:' + a.phone.replace(/\D/g, '') : '#', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })) }; }); })(),
+      dirAllOpen: (e) => { e.preventDefault(); this.setState({ dirClosed: {} }); },
+      dirAllClose: (e) => { e.preventDefault(); const c = {}; dirHits.forEach((a) => { c[coh(a)] = true; }); this.setState({ dirClosed: c }); },
+      agTwoCls: (ID.SCHEDULE || []).length ? 'ag-two' : 'ag-two one',
+      hasSchedule: (ID.SCHEDULE || []).length > 0,
       onDirQGo: (e) => { const v = e.target.value; this.setState({ dirQ: v }); if (tab !== 'directory') this.setState({ intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); },
       agTiles: [['전체', dirAll.length]].concat(Object.keys(indCounts).filter((k) => k && k !== 'undefined').map((k) => [k, indCounts[k]]).sort((x, y) => y[1] - x[1]).slice(0, 6)).map(([label, count]) => ({ label, count, cls: (label === '전체' ? (tab !== 'directory' || !s.dirInd || s.dirInd === '전체') : (tab === 'directory' && s.dirInd === label)) ? 'on' : '', on: (e) => { e.preventDefault(); this.setState({ dirInd: label, intraTab: 'directory' }, () => { history.replaceState(null, '', '#intranet/directory'); }); } })),
-      agAlumni: (() => { const pool = dirAll.filter((a) => a.company); if (!pool.length) return []; const k = Math.floor(Date.now() / 864e5) % pool.length; return pool.slice(k).concat(pool.slice(0, k)).slice(0, 6).map((a) => ({ ...a, ini: (a.name || '?')[0], cohortLabel: a.cohort ? a.cohort + '기' : '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ intraTab: 'directory', coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })); })(),
+      agAlumni: (() => { const pool = dirAll.filter((a) => a.company); if (!pool.length) return []; const k = Math.floor(Date.now() / 864e5) % pool.length; return pool.slice(k).concat(pool.slice(0, k)).slice(0, 6).map((a) => ({ ...a, ini: (a.name || '?')[0], cohortLabel: coh(a) < 999 ? a.cohort + '기' : '', on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ intraTab: 'directory', coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })); })(),
       dirInds: ['전체', ...(ID.INDUSTRIES || []), '미기재'].map((i) => ({ label: i, count: i === '전체' ? dirAll.length : i === '미기재' ? dirAll.filter((a) => !a.industry).length : (indCounts[i] || 0), on: (e) => { e.preventDefault(); this.setState({ dirInd: i }); }, bg: s.dirInd === i ? '#8FAADC' : 'transparent', color: s.dirInd === i ? '#111c2e' : 'rgba(247,246,243,0.8)' })),
-      dirHits: dirHits.map((a) => ({ ...a, cohortLabel: a.cohort ? a.cohort + '기' : '', hasCohort: !!a.cohort, hasNote: !!a.note, hasInd: !!a.industry, hasCompany: !!a.company, companyLine: a.company + (a.role ? ' · ' + a.role : ''), on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })),
+      dirHits: dirHits.map((a) => ({ ...a, cohortLabel: coh(a) < 999 ? a.cohort + '기' : '', hasCohort: coh(a) < 999, hasNote: !!a.note, hasInd: !!a.industry, hasCompany: !!a.company, companyLine: a.company + (a.role ? ' · ' + a.role : ''), on: (e) => { e.preventDefault(); const m = this.me(); this.setState({ coffeeFor: a.name + a.cohort, coffeeSent: false, coffeeErr: '', cName: m.name, cCohort: m.cohort }); } })),
       hasDirHits: dirHits.length > 0, noDirHits: dirHits.length === 0,
       coffeeOpen: !!coffeeTarget && !s.coffeeSent, coffeeDone: !!coffeeTarget && s.coffeeSent,
       coffeeName: coffeeTarget ? coffeeTarget.name + ' (' + coffeeTarget.cohort + '기)' : '', coffeeMeta: coffeeTarget ? [coffeeTarget.company, coffeeTarget.role].filter(Boolean).join(' · ') : '',
@@ -5735,11 +5965,11 @@ class Component extends DCLogic {
       navItems, menuCls: s.menuOpen ? 'open' : '', navCls: s.navMode === 'dark' ? 'on-dark' : 'on-light',
       aboutSecs: [
         { label:'소개', href:'#home-intro', id:'home-intro' },
-        { label:'프로세스', href:'#home-process', id:'home-process' },
-        { label:'알럼나이', href:'#home-alumni', id:'home-alumni' },
-        { label:'네트워크', href:'#home-network', id:'home-network' },
         { label:'연혁', href:'#about-history', id:'about-history' },
-        { label:'리서치 일정', href:'#about-calendar', id:'about-calendar' }
+        { label:'네트워크', href:'#home-network', id:'home-network' },
+        { label:'동문', href:'#home-alumni', id:'home-alumni' },
+        { label:'활동', href:'#home-process', id:'home-process' },
+        { label:'커리큘럼', href:'#about-calendar', id:'about-calendar' }
       ].map((a) => ({ ...a, cls: s.activeSec === a.id ? 'active' : '', go: (e) => { e.preventDefault(); const el = document.getElementById(a.id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); } })),
       toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
       goHome: (e) => { e.preventDefault(); this.go('home'); },
@@ -5782,10 +6012,10 @@ class Component extends DCLogic {
       bandCta: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       bandCtaEn: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       fSector: s.fSector, fOp: s.fOp, fYear: s.fYear, fRegion: s.fRegion,
-      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))],
-      opOpts: ['All ratings','BUY','HOLD','SELL'],
-      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))],
-      regionOpts: ['All regions','Korea','Global'],
+      sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))].map((v) => ({ v, l: v === 'All sectors' ? '전체 섹터' : v })),
+      opOpts: ['All ratings','BUY','HOLD','SELL'].map((v) => ({ v, l: v === 'All ratings' ? '전체 의견' : v })),
+      yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))].map((v) => ({ v, l: v === 'All terms' ? '전체 학기' : v })),
+      regionOpts: ['All regions','Korea','Global'].map((v) => ({ v, l: { 'All regions': '국내·해외', Korea: '국내', Global: '해외' }[v] })),
       onSector: (e) => this.setState({ fSector: e.target.value, page1: 1 }),
       onOp: (e) => this.setState({ fOp: e.target.value, page1: 1 }),
       onYear: (e) => this.setState({ fYear: e.target.value, page1: 1 }),
