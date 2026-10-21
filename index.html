@@ -108,7 +108,7 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=4" defer></script>
+<script src="./assets/ask.js?v=6" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -3015,259 +3015,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
 
   <sc-if value="{{ intraOpen }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="아고라" data-nav="dark" class="agora {{ agoraCls }}" style="position:relative;min-height:100vh">
-    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="agora-intro" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%"></image-slot></div>
-      <div class="scrim" style="opacity:0.5"></div>
-      <div class="wrap pg-hero-in">
-        <h1 class="pg-title">Agora</h1>
-      </div>
-    </section>
-    <section class="ag-hero on-photo" data-nav="dark">
-      <div class="ag-bg"><image-slot id="agora-bg" shape="rect" fit="cover" src="{{ agoraBg }}" style="--slot-position:center 70%" credit="{{ agoraBgCredit }}" credit-href="{{ agoraBgHref }}"></image-slot></div>
-      <div class="ag-shade"></div>
-      <div class="wrap ag-in">
-        <div class="ag-top">
-          <div>
-            <p class="sec-label" style="color:#C9D8F5">Agora · 43기</p>
-            <h1>R.F.S. Network</h1>
-          </div>
-          <div class="ag-user">
-            <span>{{ intraUser }}</span>
-            <a href="#" onClick="{{ editMe }}">변경</a>
-            <a href="#home" onClick="{{ intraLogout }}" class="btn btn-solid" style="padding:9px 14px;font-size:11px">LOGOUT</a>
-          </div>
-        </div>
-        <div class="ag-stats"><div><b>{{ agAlumniN }}</b><span>Alumni</span></div><div><b>{{ agDirN }}</b><span>In directory</span></div><div><b>43</b><span>Cohorts</span></div><div><b>{{ agFinPct }}</b><span>In finance</span></div></div>
-        <div class="ag-search">
-          <input type="search" placeholder="이름, 회사, 직무로 알럼나이 찾기" value="{{ dirQ }}" onChange="{{ onDirQGo }}">
-          <div class="ag-tiles"><sc-for list="{{ agTiles }}" as="t" hint-placeholder-count="7"><a href="#intranet/directory" onClick="{{ t.on }}" class="{{ t.cls }}"><b>{{ t.count }}</b><span>{{ t.label }}</span></a></sc-for></div>
-        </div>
-      </div>
-    </section>
-    <nav class="ag-tabs" data-nav="light"><div class="wrap">
-      <sc-for list="{{ intraRailMain }}" as="r" hint-placeholder-count="5"><a href="{{ r.href }}" onClick="{{ r.on }}" class="{{ r.cls }}">{{ r.label }}</a></sc-for>
-      <a href="{{ cafeUrl }}" target="_blank" rel="noopener">네이버 카페 ↗</a>
-    </div></nav>
-    <div style="position:relative;z-index:1">
-    <div class="wrap ag-body">
-      <div>
-        <div style="min-width:0">
-          <sc-if value="{{ isIntraDash }}" hint-placeholder-val="{{ true }}">
-            <div class="ag-h"><h2>Alumni</h2><a href="#intranet/directory" onClick="{{ goDirectory }}">{{ dirTotal }} 전체 →</a></div>
-            <div class="ag-cards">
-              <sc-for list="{{ agAlumni }}" as="a" hint-placeholder-count="6">
-                <div class="ag-card">
-                  <div class="r"><span class="av">{{ a.ini }}</span><div><b>{{ a.name }}</b> <small>{{ a.cohortLabel }}</small><div class="ind">{{ a.industry }}</div></div></div>
-                  <div><div class="co">{{ a.company }}</div><div class="ro">{{ a.role }}</div></div>
-                  <div class="bt"><span>커피챗</span><a href="#" onClick="{{ a.on }}" class="btn btn-outline">커피챗 신청</a></div>
-                </div>
-              </sc-for>
-            </div>
-            <div class="{{ agTwoCls }}">
-              <div class="ag-box">
-                <div class="ag-h"><h2>게시판</h2><a href="#intranet/board" onClick="{{ goBoard }}">전체 →</a></div>
-                <sc-if value="{{ hasDashPosts }}" hint-placeholder-val="{{ true }}">
-                  <sc-for list="{{ dashPostTop }}" as="p" hint-placeholder-count="4">
-                    <a href="#intranet/board" onClick="{{ goBoard }}" class="ag-li"><span><span class="cat">{{ p.category }}</span> {{ p.title }}</span><span class="m">{{ p.meta }}</span></a>
-                  </sc-for>
-                </sc-if>
-                <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}"><p class="ag-empty">첫 글을 남겨보세요.</p></sc-if>
-              </div>
-              <sc-if value="{{ hasSchedule }}" hint-placeholder-val="{{ true }}">
-              <div class="ag-box">
-                <div class="ag-h"><h2>이번 학기 일정</h2></div>
-                <sc-for list="{{ intraSchedule }}" as="d" hint-placeholder-count="6">
-                  <div class="ag-li"><span><b class="dt">{{ d.date }}</b> {{ d.title }}</span><span class="m">{{ d.meta }}</span></div>
-                </sc-for>
-              </div>
-              </sc-if>
-            </div>
-          </sc-if>
-
-          <sc-if value="{{ isIntraDirectory }}" hint-placeholder-val="{{ false }}">
-            <div style="display:flex;flex-wrap:wrap;gap:4px">
-              <sc-for list="{{ dirInds }}" as="i" hint-placeholder-count="10">
-                <a href="#" onClick="{{ i.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ i.bg }};color:{{ i.color }}">{{ i.label }} <span style="opacity:0.6">{{ i.count }}</span></a>
-              </sc-for>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:26px 0 14px;padding-bottom:10px;border-bottom:1px solid rgba(247,246,243,0.3)">
-              <span style="font-size:13px;color:rgba(247,246,243,0.6)">{{ dirHitCount }}</span>
-              <span style="font-size:12px;color:rgba(247,246,243,0.62)"><a href="#" onClick="{{ dirAllOpen }}" style="color:inherit">모두 펼치기</a> · <a href="#" onClick="{{ dirAllClose }}" style="color:inherit">모두 접기</a></span>
-            </div>
-            <sc-if value="{{ hasDirHits }}" hint-placeholder-val="{{ true }}">
-              <div class="ag-dir">
-                <sc-for list="{{ dirGroups }}" as="g" hint-placeholder-count="3">
-                  <div class="ag-dg">
-                    <a href="#" class="ag-dgh" onClick="{{ g.toggle }}"><b>{{ g.label }}</b><span>{{ g.count }}</span><i>{{ g.mark }}</i></a>
-                    <sc-if value="{{ g.open }}" hint-placeholder-val="{{ true }}">
-                      <div class="ag-rows">
-                        <sc-for list="{{ g.rows }}" as="a" hint-placeholder-count="4">
-                          <div class="ag-row"><b>{{ a.name }}</b><span class="c">{{ a.line }}</span><span class="i">{{ a.industry }}</span><a href="{{ a.tel }}" class="ph">{{ a.phone }}</a><a href="#" onClick="{{ a.on }}" class="cf">커피챗</a></div>
-                        </sc-for>
-                      </div>
-                    </sc-if>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-            <sc-if value="{{ noDirHits }}" hint-placeholder-val="{{ false }}"><p style="font-size:13px;color:rgba(247,246,243,0.55)">조건에 맞는 선배가 없습니다.</p></sc-if>
-
-            <sc-if value="{{ coffeeOpen }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ coffeeClose }}" style="position:fixed;inset:0;background:rgba(15,27,46,0.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:24px">
-                <form class="coffee-form" onSubmit="{{ submitCoffee }}" onClick="{{ stopProp }}" style="background:#F7F6F3;width:min(480px,100%);padding:36px 36px 32px;border:1px solid #D0CECE">
-                  <p class="sec-label" style="margin:0">Coffee chat</p>
-                  <h3 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;letter-spacing:-0.02em;color:#0F1B2E">{{ coffeeName }}</h3>
-                  <p style="margin:4px 0 0;font-size:13px;color:rgba(26,26,26,0.6)">{{ coffeeMeta }}</p>
-                  <div style="display:grid;grid-template-columns:1fr 100px;gap:10px;margin-top:22px">
-                    <input class="intra-input" name="name" placeholder="이름" required="" value="{{ cName }}" onChange="{{ onCName }}">
-                    <input class="intra-input" name="cohort" placeholder="기수" required="" value="{{ cCohort }}" onChange="{{ onCCohort }}">
-                  </div>
-                  <input class="intra-input" type="tel" name="phone" placeholder="내 휴대폰 번호 (010-0000-0000)" required="" value="{{ cPhone }}" onChange="{{ onCPhone }}" style="margin-top:10px">
-                  <textarea class="intra-input" name="message" rows="4" maxlength="500" placeholder="여쭤보고 싶은 것 (직무·준비 과정·커리어 등)" required="" value="{{ cMsg }}" onChange="{{ onCMsg }}" style="margin-top:10px;resize:vertical"></textarea>
-                  <p style="margin:14px 0 0;font-size:12px;line-height:1.6;color:rgba(26,26,26,0.68)">선배님께 문자로 전달되고, 선배님이 적어주신 번호로 직접 연락하십니다. 선배님 연락처는 공개되지 않습니다.</p>
-                  <sc-if value="{{ hasCoffeeErr }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;font-size:12px;color:#842029">{{ coffeeErr }}</p></sc-if>
-                  <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
-                    <a href="#" onClick="{{ coffeeClose }}" class="btn btn-outline" style="padding:10px 16px;font-size:11px">CANCEL</a>
-                    <button type="submit" class="btn btn-solid press" style="padding:10px 18px;font-size:11px;cursor:pointer;border:1px solid #203864">{{ coffeeBtn }}</button>
-                  </div>
-                </form>
-              </div>
-            </sc-if>
-            <sc-if value="{{ coffeeDone }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ coffeeClose }}" style="position:fixed;inset:0;background:rgba(15,27,46,0.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:24px">
-                <div style="background:#F7F6F3;width:min(420px,100%);padding:36px;border:1px solid #D0CECE;text-align:center">
-                  <p class="sec-label" style="margin:0">Sent</p>
-                  <h3 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:22px;font-weight:600;color:#0F1B2E">문자를 보냈어요.</h3>
-                  <p style="margin:10px 0 0;font-size:13px;line-height:1.7;color:rgba(26,26,26,0.65)">선배님이 직접 연락하실 거예요.</p>
-                  <a href="#" onClick="{{ coffeeClose }}" class="btn btn-solid" style="display:inline-block;margin-top:22px;padding:10px 18px;font-size:11px">CLOSE</a>
-                </div>
-              </div>
-            </sc-if>
-          </sc-if>
-
-          <sc-if value="{{ needsName }}" hint-placeholder-val="{{ false }}">
-            <form onSubmit="{{ saveName }}" class="intra-card" style="margin:0 0 20px;padding:20px 22px">
-              <div style="font-size:14px;font-weight:700;color:#F7F6F3">표시할 이름을 정해주세요</div>
-              <p style="margin:6px 0 0;font-size:13px;color:rgba(247,246,243,0.65)">게시판·댓글·커피챗에 이 이름으로 표시됩니다. 한 번만 설정하면 됩니다.</p>
-              <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
-                <input class="intra-input" placeholder="이름" required="" value="{{ nmName }}" onChange="{{ onNmName }}" style="flex:1 1 180px">
-                <input class="intra-input" placeholder="기수" value="{{ nmCohort }}" onChange="{{ onNmCohort }}" style="width:100px">
-                <button type="submit" class="btn btn-photo press" style="padding:0 18px;font-size:11px;cursor:pointer">SAVE</button>
-              </div>
-            </form>
-          </sc-if>
-          <sc-if value="{{ hasAgoraErr }}" hint-placeholder-val="{{ false }}">
-            <p style="margin:0 0 18px;padding:13px 16px;background:#FBEAEA;border:1px solid #E0B4B4;font-size:13px;line-height:1.6;color:#842029">{{ agoraErr }}</p>
-          </sc-if>
-          <sc-if value="{{ isIntraBoard }}" hint-placeholder-val="{{ false }}">
-            <form onSubmit="{{ submitPost }}" class="intra-card" style="padding:24px 26px">
-              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><sc-for list="{{ pCats }}" as="c" hint-placeholder-count="4"><a href="#" onClick="{{ c.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</a></sc-for></div>
-              <input class="intra-input" placeholder="제목" required="" value="{{ pTitle }}" onChange="{{ onPTitle }}">
-              <textarea class="intra-input" rows="3" placeholder="취업 준비, 면접 후기, 채용 공고… 선배님도 후배도 자유롭게." required="" value="{{ pBody }}" onChange="{{ onPBody }}" style="margin-top:10px;resize:vertical"></textarea>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;gap:12px">
-                <span style="font-size:12px;color:rgba(247,246,243,0.5)">작성자 {{ intraUser }}</span>
-                <button type="submit" class="btn btn-photo press" style="padding:11px 18px;font-size:11px;cursor:pointer">POST</button>
-              </div>
-            </form>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:32px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
-              <div style="font-size:15px;font-weight:700;color:#F7F6F3">글</div>
-              <div style="display:flex;gap:4px;flex-wrap:wrap;flex:1;justify-content:flex-end;margin-right:12px"><sc-for list="{{ boardCats }}" as="c" hint-placeholder-count="5"><a href="#" onClick="{{ c.on }}" style="padding:6px 11px;font-size:12px;border:1px solid rgba(247,246,243,0.3);background:{{ c.bg }};color:{{ c.color }}">{{ c.label }}</a></sc-for></div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ postCount }}</span>
-            </div>
-            <sc-if value="{{ hasPosts }}" hint-placeholder-val="{{ true }}">
-              <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
-                <div style="padding:22px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.08em;color:rgba(247,246,243,0.62)"><span style="color:#8FAADC">{{ p.category }}</span> · {{ p.meta }}</div>
-                  <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:8px">{{ p.title }}</div>
-                  <p style="margin:10px 0 0;font-size:14px;line-height:1.8;color:rgba(247,246,243,0.78);white-space:pre-wrap;max-width:52em">{{ p.body }}</p>
-                  <a href="#" onClick="{{ p.toggle }}" style="display:inline-block;margin-top:12px;font-size:12px;color:#8FAADC">{{ p.cLabel }}</a>
-                  <sc-if value="{{ p.open }}" hint-placeholder-val="{{ false }}">
-                    <div style="margin-top:12px;padding-left:16px;border-left:2px solid rgba(143,170,220,0.4)">
-                      <sc-for list="{{ p.cmts }}" as="c" hint-placeholder-count="2">
-                        <div style="padding:8px 0">
-                          <div style="font-size:11px;color:rgba(247,246,243,0.62)">{{ c.meta }}</div>
-                          <div style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.85);white-space:pre-wrap">{{ c.body }}</div>
-                        </div>
-                      </sc-for>
-                      <form onSubmit="{{ p.submitC }}" style="display:flex;gap:8px;margin-top:8px">
-                        <input class="intra-input" placeholder="댓글" value="{{ p.draft }}" onChange="{{ p.onDraft }}" style="flex:1">
-                        <button type="submit" class="btn btn-photo press" style="padding:0 14px;font-size:11px;cursor:pointer">등록</button>
-                      </form>
-                    </div>
-                  </sc-if>
-                </div>
-              </sc-for>
-            </sc-if>
-            <sc-if value="{{ noPosts }}" hint-placeholder-val="{{ false }}">
-              <p style="padding:26px 0;font-size:13px;color:rgba(247,246,243,0.55)">첫 글을 남겨보세요.</p>
-            </sc-if>
-            <sc-if value="{{ hasQna }}" hint-placeholder-val="{{ true }}">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;margin:44px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
-                <div style="font-size:15px;font-weight:700;color:#F7F6F3">선배님께 물었습니다</div>
-                <span style="font-size:12px;color:rgba(247,246,243,0.62)">{{ qnaCount }}</span>
-              </div>
-              <sc-for list="{{ qna }}" as="x" hint-placeholder-count="2">
-                <div style="padding:24px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                  <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.62)">{{ x.meta }}</div>
-                  <div style="font-family:'Noto Serif KR',serif;font-size:18px;font-weight:600;line-height:1.5;color:#F7F6F3;margin-top:10px">{{ x.q }}</div>
-                  <p style="margin:12px 0 0;font-size:14px;line-height:1.85;color:rgba(247,246,243,0.78);max-width:52em">{{ x.a }}</p>
-                  <div style="display:flex;align-items:center;gap:10px;margin-top:14px">
-                    <span style="width:18px;height:1px;background:#8FAADC"></span>
-                    <span style="font-size:13px;font-weight:600;color:#8FAADC">{{ x.by }}</span>
-                  </div>
-                </div>
-              </sc-for>
-            </sc-if>
-          </sc-if>
-
-          <sc-if value="{{ isIntraFund }}" hint-placeholder-val="{{ false }}">
-            <div class="intra-card navy" style="background:#203864;border-color:#203864;color:#F7F6F3;padding:30px 32px">
-              <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px">
-                <div style="font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.6)">RFS Fund</div>
-                <div style="font-size:12px;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ fundAsOf }}</div>
-              </div>
-              <div class="fundstat" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:22px">
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ fundNav }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">기준가</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums">{{ fundSince }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">설정 이후</div></div>
-                <div><div style="font-family:'Noto Serif KR',serif;font-size:clamp(26px,2.6vw,38px);font-weight:700;letter-spacing:-0.03em;line-height:1;font-variant-numeric:tabular-nums;color:rgba(247,246,243,0.7)">{{ fundBench }}</div><div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(247,246,243,0.6);margin-top:8px">KOSPI 동기간</div></div>
-              </div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 0;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3)">
-              <div style="font-size:15px;font-weight:700;color:#F7F6F3">포트폴리오</div>
-              <span style="font-size:12px;color:rgba(247,246,243,0.62)">비중순</span>
-            </div>
-            <sc-for list="{{ fundPos }}" as="p" hint-placeholder-count="7">
-              <div style="display:grid;grid-template-columns:minmax(0,1fr) 92px 78px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14)">
-                <div>
-                  <div style="font-size:15px;font-weight:600;color:#F7F6F3">{{ p.name }} <span style="font-size:12px;font-weight:400;color:rgba(247,246,243,0.62);margin-left:4px;font-variant-numeric:tabular-nums">{{ p.tick }}</span></div>
-                  <div style="height:3px;background:#8FAADC;margin-top:8px;max-width:100%;width:{{ p.bar }}"></div>
-                </div>
-                <div style="text-align:right;font-size:14px;font-weight:700;color:#F7F6F3;font-variant-numeric:tabular-nums">{{ p.w }}</div>
-                <div style="text-align:right;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;color:{{ p.retColor }}">{{ p.retText }}</div>
-              </div>
-            </sc-for>
-            <sc-if value="{{ hasFundNotes }}" hint-placeholder-val="{{ true }}">
-              <div style="margin-top:34px;padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.3);font-size:15px;font-weight:700;color:#F7F6F3">운용 노트</div>
-              <sc-for list="{{ fundNotes }}" as="n" hint-placeholder-count="2">
-                <div style="display:grid;grid-template-columns:104px minmax(0,1fr);gap:16px;padding:14px 0;border-bottom:1px solid rgba(247,246,243,0.14);align-items:baseline">
-                  <span style="font-size:13px;color:rgba(247,246,243,0.62);font-variant-numeric:tabular-nums">{{ n.date }}</span>
-                  <span style="font-size:14px;line-height:1.7;color:rgba(247,246,243,0.8)">{{ n.text }}</span>
-                </div>
-              </sc-for>
-            </sc-if>
-          </sc-if>
-
-          </sc-if>
-
-
-            </div>
-          
-
-
-        </div>
-      </div>
-    </div></main></sc-if></div>
+  <main data-screen-label="아고라" data-nav="dark" class="agora" style="position:relative;min-height:100vh;background:#0B1526"></main></sc-if></div>
   
   
 
@@ -4719,6 +4467,11 @@ class Component extends DCLogic {
   componentDidUpdate(pp, ps) {
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
+    // AGORA는 '선배님께 여쭙기' 하나만 보여 준다. 로그인하고 명부를 받으면 바로 열고, 다른 페이지로 가면 닫는다
+    const onAgora = this.state.page === 'intranet' && !!this.state.user;
+    if (!onAgora) this._askShut = false;
+    if (onAgora && !this._askShut && this.state.intraData && window.RFSAsk && !window.RFSAsk.isOpen()) this.openAsk();
+    else if (!onAgora && window.RFSAsk && window.RFSAsk.isOpen()) window.RFSAsk.close(true);
   }
 
   // 첫 화면(pg-full)이 있는 페이지 안에서 탭을 바꿀 때: 맨 위(첫 화면 사진)가 아니라 내용 첫 줄로
@@ -5535,7 +5288,7 @@ class Component extends DCLogic {
   openAsk() {
     if (!window.RFSAsk || !this.state.user) return;
     const ID = this.state.intraData || {};
-    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c) });
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c), onClose: () => { this._askShut = true; if (this.state.page === 'intranet') this.go('home'); } });
   }
 
   me() {
@@ -5595,7 +5348,7 @@ class Component extends DCLogic {
     const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
-    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; if (t === 'ask') { this.setState({ intraTab: 'dashboard' }); setTimeout(() => this.openAsk(), 400); } else this.setState({ intraTab: t || 'dashboard' }); }
+    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
     else if (h === 'fund/strategy') page = 'strategy';
     else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)

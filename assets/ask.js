@@ -46,9 +46,9 @@
 .ask .o:hover .sym *{animation:askDraw2 1s cubic-bezier(.5,0,.2,1) forwards}\
 @keyframes askDraw2{0%{stroke-dashoffset:1}100%{stroke-dashoffset:0}}\
 .ask .o:hover .sym,.ask .o.on .sym{color:#fff}\
-.ask .pp .cy{font-family:var(--ser);font-size:15px;color:var(--ac);font-weight:600;min-width:34px}\
+.ask .pp .cy{font-family:var(--ser);font-size:15px;color:var(--ac);font-weight:600;margin-left:auto;padding-left:10px;white-space:nowrap}\
 .ask .pp .nm{display:flex;flex-direction:column;gap:3px}\
-.ask .pp .co{font-size:13px;color:var(--t2)}\
+.ask .pp .co{font-size:13.5px;color:var(--t2);line-height:1.5}\
 .ask .more{align-self:flex-start;margin-top:18px;background:none;border:0;color:var(--t2);font:inherit;font-size:14px;cursor:pointer;box-shadow:inset 0 -1px 0 var(--hair);padding:6px 0;transition:color .2s,box-shadow .2s}\
 .ask .more:hover{color:var(--tx);box-shadow:inset 0 -1px 0 var(--ac)}\
 .ask .empty{margin-top:32px;font-size:16px;color:var(--t2);line-height:1.7}\
@@ -68,7 +68,12 @@
  .ask .o:hover .key{opacity:1}\
  .ask .sym{width:clamp(52px,4.2vw,68px);height:clamp(52px,4.2vw,68px);margin-bottom:auto;margin-top:58px;transition:transform .45s var(--e),color .3s}\
  .ask .o:hover .sym{transform:translateY(-6px)}\
- .ask .pp .cy{font-size:clamp(64px,6vw,104px);font-weight:400;line-height:.9;color:var(--tx);letter-spacing:-.05em;margin-bottom:auto;margin-top:62px}\
+ .ask .pp{justify-content:flex-start}\
+ .ask .pp .nm{margin-top:64px;gap:10px}\
+ .ask .pp .nm .lb{font-size:clamp(30px,2.6vw,42px)}\
+ .ask .pp .co{font-size:15px;max-width:22em}\
+ .ask .pp .cy{margin:auto 0 0;padding:0;font-size:clamp(56px,5vw,88px);font-weight:400;line-height:.9;color:rgba(242,239,232,.38);letter-spacing:-.05em;transition:color .3s}\
+ .ask .pp:hover .cy,.ask .pp.on .cy{color:var(--tx)}\
  .ask .pp .cy small{font-size:18px;color:var(--t3);letter-spacing:0;margin-left:6px}\
  .ask .more{position:absolute;right:var(--pad);top:-52px;margin:0}\
  .ask .Lw{position:relative;margin-top:auto}\
@@ -250,7 +255,7 @@
     }
     st.bx.innerHTML = crumbs() + '<h2 class="q">이 선배님들께<br>여쭤볼 수 있어요</h2><div class="Lw"><div class="L" role="list">' + three.map(function (a, i) {
       var co = [a.company, a.role].filter(Boolean).join(' · ');
-      return '<button class="o pp" role="listitem" data-i="' + (st.off + i) + '"><span class="key">' + (i + 1) + '</span><span class="cy">' + (coh(a) < 999 ? esc(a.cohort) + '<small>기</small>' : '') + '</span><span class="nm"><span class="lb">' + esc(a.name) + '</span><span class="co">' + esc(co) + '</span></span></button>';
+      return '<button class="o pp" role="listitem" data-i="' + (st.off + i) + '"><span class="key">' + (i + 1) + '</span><span class="nm"><span class="lb">' + esc(a.name) + '</span><span class="co">' + esc(co) + '</span></span><span class="cy">' + (coh(a) < 999 ? esc(a.cohort) + '<small>기</small>' : '') + '</span></button>';
     }).join('') + '</div>' + (st.list.length > 3 ? '<button class="more">다른 선배님 보기</button>' : '') + '</div>';
     st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { st.pick = st.list[+b.getAttribute('data-i')]; write(); }); }; });
     var m = st.bx.querySelector('.more');
@@ -308,7 +313,7 @@
     if (!st) return;
     if (st.stage === 2) return go(write);
     if (st.stage === 1) return go(function () { st.stage = 0; st.pick = null; prog(72); st.el.querySelector('.bk').disabled = !st.path.length; btn(); people(); });
-    if (!st.path.length) return close();
+    if (!st.path.length) return;
     st.path.pop(); go(render);
   }
   function onKey(e) {
@@ -320,13 +325,14 @@
     var n = +e.key, os = st.bx.querySelectorAll('.L .o');
     if (n >= 1 && n <= os.length && !st.bx.querySelector('.picked')) { e.preventDefault(); os[n - 1].click(); }
   }
-  function close() {
+  function close(silent) {
     if (!st) return;
-    var el = st.el; el.classList.remove('show');
+    var el = st.el, cb = st.onClose; el.classList.remove('show');
     document.removeEventListener('keydown', onKey, true);
     document.documentElement.style.overflow = st.ov;
     var ret = st.ret; st = null;
     setTimeout(function () { el.remove(); if (ret && ret.focus) ret.focus(); }, 450);
+    if (cb && silent !== true) try { cb(); } catch (e) {}
   }
 
   function open(o) {
@@ -339,10 +345,10 @@
       '<div class="ask-top"><button class="ib bk" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="sl"><img src="/assets/rfs-seal-light-256.png" alt="">AGORA</span><button class="ib cl" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
       '<main class="ask-wrap"></main><button class="nx" type="button"></button>';
     document.body.appendChild(el);
-    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
+    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
     document.documentElement.style.overflow = 'hidden';
     el.querySelector('.bk').onclick = back;
-    el.querySelector('.cl').onclick = close;
+    el.querySelector('.cl').onclick = function () { close(); };
     st.bx.addEventListener('click', function (e) { var a = e.target.closest('.meta a'); if (!a) return; st.path = st.path.slice(0, +a.getAttribute('data-d')); go(render); });
     st.bx.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.matches('.meta a')) e.target.click(); });
     document.addEventListener('keydown', onKey, true);
@@ -350,5 +356,5 @@
     requestAnimationFrame(function () { el.classList.add('show'); });
   }
 
-  window.RFSAsk = { open: open, close: close };
+  window.RFSAsk = { open: open, close: close, isOpen: function () { return !!st; } };
 })();
