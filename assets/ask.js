@@ -108,6 +108,15 @@
 .ask .out>*{opacity:0;transform:translateY(-14px);transition:all .3s ease}\
 @keyframes askRise{from{opacity:0;transform:translateY(28px)}}\
 @media (min-width:900px){.ask .in .L>*{animation-name:askCol}@keyframes askCol{from{opacity:0;transform:translateY(60px)}}}\
+@media (min-width:900px){\
+ .ask .L.many{flex-wrap:wrap;height:auto;margin:auto 0 40px;border-top:0;background:none}\
+ .ask .L.many .o{flex:0 0 calc(100% / var(--cols));max-width:calc(100% / var(--cols));height:min(22vh,200px);padding:0 22px 28px;box-shadow:inset 0 1px 0 var(--hair),inset 1px 0 0 var(--hair)}\
+ .ask .L.many .o:first-child{padding-left:22px}.ask .L.many .o:first-child .k{left:22px}.ask .L.many .o:last-child{padding-right:22px}\
+ .ask .L.many .sym{width:44px;height:44px;margin-top:48px}\
+ .ask .L.many .o .lb{font-size:clamp(20px,1.6vw,26px)}\
+}\
+.ask .ttl{margin:auto 0;font-family:var(--ser);font-weight:700;font-size:clamp(48px,5.6vw,80px);letter-spacing:-.035em;line-height:1;color:var(--tx) !important;text-shadow:0 6px 28px rgba(4,8,16,.45);animation:askTtl 2s cubic-bezier(.2,.8,.2,1) both}\
+@keyframes askTtl{0%{opacity:0;transform:translateY(14px)}25%,72%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-10px)}}\
 @media (prefers-reduced-motion:reduce){.ask *,.ask{animation:none !important;transition:none !important}.ask .sym *{stroke-dashoffset:0}}\
 ";
 
@@ -131,7 +140,7 @@
     '트레이딩·채권': '<path d="M20 52V12M11 21l9-9 9 9"/><path d="M44 12v40M35 43l9 9 9-9"/>',
     '법인영업': '<path d="M8 22h48v30H8z"/><path d="M24 22v-6h16v6M8 34h48"/>',
     '기업금융·IB': '<path d="M10 56V24h18v32M28 56V12h26v44M6 56h52"/><path d="M34 20h4M44 20h4M34 28h4M44 28h4M34 36h4M44 36h4"/>',
-    '자금·FX': '<circle cx="24" cy="28" r="14"/><circle cx="40" cy="36" r="14"/>',
+    'FX·자금시장': '<circle cx="24" cy="28" r="14"/><circle cx="40" cy="36" r="14"/>',
     '정책금융': '<path d="M8 22L32 10l24 12z"/><path d="M13 26v22M23 26v22M32 26v22M41 26v22M51 26v22M6 54h52"/>',
     '금융 인프라': '<circle cx="14" cy="32" r="5"/><circle cx="50" cy="16" r="5"/><circle cx="50" cy="48" r="5"/><path d="M19 30l26-12M19 34l26 12M50 21v22"/>',
     '감사': '<circle cx="28" cy="28" r="16"/><path d="M40 40l14 14M21 28l5 5 9-10"/>',
@@ -153,7 +162,7 @@
     '교육·연구': '<path d="M6 24l26-12 26 12-26 12z"/><path d="M16 29v13c0 4 7 8 16 8s16-4 16-8V29"/>'
   };
   var STAR = '<path d="M32 16c1 10 6 15 16 16-10 1-15 6-16 16-1-10-6-15-16-16 10-1 15-6 16-16z"/>';
-  var SUB = { '금융': '증권, 은행, 운용, 회계', '산업': '재무·IR, 기획, 창업', '공공': '공무원, 공공기관', '아직 모르겠어요': '여러 분야 선배님을 보여드려요' };
+  var SUB = { '금융': '증권, 은행, 운용, 회계', '산업': '전자, IT, 자동차, 유통', '공공': '공무원, 공공기관', '아직 모르겠어요': '여러 분야 선배님을 보여드려요' };
   var ORDER = ['금융', '산업', '공공', '증권', '은행', '자산운용', 'IB·PE·VC', '회계법인', '금융공기업', '보험', '카드·캐피탈'];
   var ARR = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg>';
   var ANY = '상관없어요', UNSURE = '아직 모르겠어요';
@@ -166,39 +175,43 @@
 
   var st = null; // 열려 있는 동안의 상태
 
-  function groups(pool, field) { // 값별 인원, 많이 있는 순 (정해 둔 순서 우선)
+  var FIELDS = ['f1', 'f2', 'f3'], OTHER = '그 밖의 회사', SHOW_ALL = 6, MAX_OPTS = 8;
+  function groups(pool, field) { // 값별 인원 [값, 명], 정해 둔 순서가 있으면 그 순서, 없으면 많은 순
     var m = {};
     pool.forEach(function (a) { var v = a[field]; if (v) m[v] = (m[v] || 0) + 1; });
-    return Object.keys(m).sort(function (x, y) { var a = ORDER.indexOf(x), b = ORDER.indexOf(y); if (a >= 0 || b >= 0) return (a < 0 ? 99 : a) - (b < 0 ? 99 : b); return m[y] - m[x] || x.localeCompare(y, 'ko'); });
+    return Object.keys(m).sort(function (x, y) { var lx = /^그 밖의/.test(x), ly = /^그 밖의/.test(y); if (lx !== ly) return lx ? 1 : -1; var a = ORDER.indexOf(x), b = ORDER.indexOf(y); if (field !== 'org' && (a >= 0 || b >= 0)) return (a < 0 ? 99 : a) - (b < 0 ? 99 : b); return m[y] - m[x] || x.localeCompare(y, 'ko'); }).map(function (k) { return [k, m[k]]; });
   }
+  function match(a, step) {
+    if (step.v === ANY) return true;
+    if (step.v === OTHER) return a.org && step.ex.indexOf(a.org) < 0;
+    return a[step.f] === step.v;
+  }
+  function filter() { return st.pool.filter(function (a) { return st.path.every(function (s) { return match(a, s); }); }); }
+  function label(s) { return s.v === ANY ? '전체' : s.v; }
 
-  // 지금까지 고른 길로 다음 질문을 만든다. 더 좁힐 게 없으면 null
+  // 지금까지 고른 길로 다음 질문을 만든다. 남은 선배님이 몇 분 안 되거나 더 좁힐 게 없으면 null
   function nextQuestion() {
-    var p = st.path, pool = st.pool;
-    if (!p.length) return { q: '어느 분야 선배님을<br>찾을까요?', opts: groups(pool, 'f1').concat([UNSURE]) };
-    if (p[0] === UNSURE) return null;
-    var lvl = p.length, field = ['f1', 'f2', 'f3'][lvl], sub = filter();
-    if (lvl >= 3 || p[lvl - 1] === ANY) return null;
-    var g = groups(sub, field);
-    var known = sub.filter(function (a) { return a[field]; }).length;
-    if (g.length < 2 && !(g.length === 1 && known < sub.length)) return null; // 고를 게 하나뿐이면 건너뜀
-    if (lvl === 2 && known < 4) return null; // 일을 아는 분이 너무 적으면 바로 안내
-    var q = lvl === 1
-      ? ({ '금융': '금융권 어디에서<br>찾을까요?', '산업': '어떤 일을 하는<br>분을 찾을까요?', '공공': '어디에서 일하는<br>분을 찾을까요?' }[p[0]] || '어디에서<br>찾을까요?')
-      : esc(p[1]) + '에서 어떤 일을 하는<br>분을 찾을까요?';
-    return { q: q, opts: g.concat([ANY]) };
-  }
-  function filter() {
-    var p = st.path;
-    return st.pool.filter(function (a) {
-      for (var i = 0; i < p.length; i++) { if (p[i] === ANY) break; if (a[['f1', 'f2', 'f3'][i]] !== p[i]) return false; }
-      return true;
-    });
+    var p = st.path, last = p[p.length - 1];
+    if (!p.length) return { f: 'f1', q: '어느 분야 선배님을<br>찾을까요?', opts: groups(st.pool, 'f1').concat([[UNSURE, 0]]) };
+    if (p[0].v === UNSURE || last.f === 'f3' || last.v === ANY) return null;
+    var sub = filter();
+    if (sub.length <= SHOW_ALL) return null;
+    var f1 = p[0].v, f2 = (p[1] && p[1].v !== ANY) ? p[1].v : '';
+    for (var i = FIELDS.indexOf(last.f) + 1; i < FIELDS.length; i++) {
+      var f = FIELDS[i], g = groups(sub, f), known = g.reduce(function (n, x) { return n + x[1]; }, 0);
+      if (g.length < 2 && !(g.length === 1 && known < sub.length)) continue; // 고를 게 하나뿐이면 건너뜀
+      if (f === 'f3' && known < 6) continue; // 일을 아는 분이 너무 적으면 회사로
+      var q = f === 'f2'
+        ? ({ '금융': '금융권 어디에서<br>찾을까요?', '산업': '어떤 업종에서<br>찾을까요?', '공공': '어디에서 일하는<br>분을 찾을까요?' }[f1] || '어디에서<br>찾을까요?')
+        : (f2 ? esc(f2) + '에서 ' : '') + '어떤 일을 하는<br>분을 찾을까요?';
+      return { f: f, q: q, opts: known < sub.length ? g.concat([[ANY, sub.length]]) : g };
+    }
+    return null;
   }
   function seniors() { // 기수가 가까운 분부터, 같은 거리면 섞어서
     var my = parseInt(st.me.cohort, 10) || 43, list;
     var shuffle = function (arr) { return arr.map(function (a) { return [Math.abs(coh(a) - my) + Math.random() * 1.5, a]; }).sort(function (x, y) { return x[0] - y[0]; }).map(function (x) { return x[1]; }); };
-    if (st.path[0] === UNSURE) { // 금융·산업·공공에서 골고루
+    if (st.path[0].v === UNSURE) { // 금융·산업·공공에서 골고루
       var by = {}; shuffle(st.pool).forEach(function (a) { (by[a.f1] = by[a.f1] || []).push(a); });
       list = []; var keys = Object.keys(by), i = 0;
       while (keys.some(function (k) { return by[k].length; })) { var k = keys[i++ % keys.length]; if (by[k].length) list.push(by[k].shift()); }
@@ -207,7 +220,7 @@
   }
 
   function crumbs() {
-    var p = st.path.slice(); if (st.pick) p.push(st.pick.name + ' 선배님');
+    var p = st.path.map(label); if (st.pick) p.push(st.pick.name + ' 선배님');
     if (!p.length) return '';
     return '<div class="meta">' + p.map(function (x, i) { return i < st.path.length ? '<a tabindex="0" data-d="' + i + '">' + esc(x) + '</a>' : esc(x); }).join('<i>·</i>') + '</div>';
   }
@@ -234,12 +247,13 @@
     st.stage = 0; st.pick = null; st.el.querySelector('.bk').disabled = !st.path.length; btn();
     var n = nextQuestion();
     if (n) {
-      prog(12 + st.path.length * 20);
-      st.bx.innerHTML = crumbs() + '<h2 class="q">' + n.q + '</h2><div class="L" role="list">' + n.opts.map(function (k, i) {
-        var s = st.path.length ? '' : (SUB[k] || '');
-        return '<button class="o" role="listitem" data-k="' + esc(k) + '"><span class="k">' + pad(i) + '</span>' + (i < 9 ? '<span class="key">' + (i + 1) + '</span>' : '') + sym(k) + '<span class="lb">' + esc(k) + '</span>' + (s ? '<span class="s">' + esc(s) + '</span>' : '') + '</button>';
+      prog(Math.min(12 + st.path.length * 18, 66));
+      var many = n.opts.length > 6 ? ' many' : '';
+      st.bx.innerHTML = crumbs() + '<h2 class="q">' + n.q + '</h2><div class="L' + many + '" role="list"' + (many ? ' style="--cols:' + Math.ceil(n.opts.length / 2) + '"' : '') + '>' + n.opts.map(function (o, i) {
+        var k = o[0], s = !st.path.length ? (SUB[k] || '') : (o[1] ? o[1] + '명' : '');
+        return '<button class="o" role="listitem" data-k="' + esc(k) + '"><span class="k">' + pad(i) + '</span>' + (i < 9 ? '<span class="key">' + (i + 1) + '</span>' : '') + (n.f === 'org' ? '' : sym(k)) + '<span class="lb">' + esc(k) + '</span>' + (s ? '<span class="s">' + esc(s) + '</span>' : '') + '</button>';
       }).join('') + '</div>';
-      st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { st.path.push(b.getAttribute('data-k')); render(); }); }; });
+      st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { var v = b.getAttribute('data-k'); st.path.push({ f: n.f, v: v, ex: v === OTHER ? n.ex : null }); render(); }); }; });
       return;
     }
     // 선배님 안내
@@ -248,7 +262,7 @@
     people();
   }
   function people() {
-    var three = st.list.slice(st.off, st.off + 3);
+    var per = st.list.length <= SHOW_ALL ? st.list.length : 3, three = st.list.slice(st.off, st.off + per);
     if (!three.length) {
       st.bx.innerHTML = crumbs() + '<h2 class="q">아직 찾을 수 있는<br>선배님이 없어요</h2><p class="empty">다른 분야를 고르거나 알럼나이 디렉토리에서 찾아보세요.</p>';
       return;
@@ -256,7 +270,7 @@
     st.bx.innerHTML = crumbs() + '<h2 class="q">이 선배님들께<br>여쭤볼 수 있어요</h2><div class="Lw"><div class="L" role="list">' + three.map(function (a, i) {
       var co = [a.company, a.role].filter(Boolean).join(' · ');
       return '<button class="o pp" role="listitem" data-i="' + (st.off + i) + '"><span class="key">' + (i + 1) + '</span><span class="nm"><span class="lb">' + esc(a.name) + '</span><span class="co">' + esc(co) + '</span></span><span class="cy">' + (coh(a) < 999 ? esc(a.cohort) + '<small>기</small>' : '') + '</span></button>';
-    }).join('') + '</div>' + (st.list.length > 3 ? '<button class="more">다른 선배님 보기</button>' : '') + '</div>';
+    }).join('') + '</div>' + (st.list.length > per ? '<button class="more">다른 선배님 보기</button>' : '') + '</div>';
     st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { st.pick = st.list[+b.getAttribute('data-i')]; write(); }); }; });
     var m = st.bx.querySelector('.more');
     if (m) m.onclick = function () { st.off = st.off + 3 >= st.list.length ? 0 : st.off + 3; go(people); };
@@ -352,7 +366,10 @@
     st.bx.addEventListener('click', function (e) { var a = e.target.closest('.meta a'); if (!a) return; st.path = st.path.slice(0, +a.getAttribute('data-d')); go(render); });
     st.bx.addEventListener('keydown', function (e) { if (e.key === 'Enter' && e.target.matches('.meta a')) e.target.click(); });
     document.addEventListener('keydown', onKey, true);
-    render(); st.bx.classList.add('in'); stagger();
+    var first = function () { render(); st.bx.classList.add('in'); stagger(); };
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (o.intro && !still) { st.bx.innerHTML = '<h1 class="ttl">Agora</h1>'; setTimeout(function () { if (st && st.el === el) first(); }, 2000); }
+    else first();
     requestAnimationFrame(function () { el.classList.add('show'); });
   }
 
