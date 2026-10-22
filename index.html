@@ -241,7 +241,7 @@ a:hover{color:#203864}
 .boot.out{opacity:0;pointer-events:none}
 .boot.gone{display:none}
 .boot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;animation:boot-zoom 2400ms cubic-bezier(0.23,1,0.32,1) both}
-.boot-seal{position:relative;width:clamp(96px,10vw,148px);height:auto;animation:boot-in 900ms cubic-bezier(0.23,1,0.32,1) 150ms both}
+.boot-seal{position:relative;width:clamp(80px,7vw,112px);height:auto;animation:boot-in 900ms cubic-bezier(0.23,1,0.32,1) 150ms both}
 /* 로딩 화면 깊이: 로고·문구 뒤 가운데에 짙은 그늘을 깔고 은은한 빛, 하늘은 천천히 다가오고 별똥별 하나가 지나간다 */
 .boot::before{content:'';position:absolute;left:50%;top:50%;z-index:1;width:min(1100px,110vw);height:min(420px,60vh);transform:translate(-50%,-50%);pointer-events:none;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(4,9,20,.9) 0%,rgba(4,9,20,.65) 45%,rgba(4,9,20,0) 100%);filter:blur(8px)}
 .boot-lock{z-index:2;filter:drop-shadow(0 6px 24px rgba(0,0,0,.55))}
@@ -256,9 +256,9 @@ a:hover{color:#203864}
 /* 로고가 가운데 뜬 뒤, 오른쪽으로 'with Claude for Nonprofits'가 펼쳐지며 로고가 살짝 왼쪽으로 비켜선다 */
 .boot-lock{position:relative;display:flex;align-items:center;justify-content:center}
 .boot-cfn{overflow:hidden;max-width:0;opacity:0;animation:boot-open 1000ms cubic-bezier(0.65,0,0.35,1) 1000ms both}
-.boot-cfn>div{display:flex;flex-direction:column;justify-content:center;gap:7px;margin-left:clamp(22px,2.4vw,34px);padding-left:clamp(22px,2.4vw,34px);border-left:1px solid rgba(247,246,243,.4);white-space:nowrap;color:#F7F6F3;height:clamp(62px,6vw,92px);animation:boot-slide 1000ms cubic-bezier(0.23,1,0.32,1) 1150ms both}
+.boot-cfn>div{display:flex;flex-direction:column;justify-content:center;gap:7px;margin-left:clamp(22px,2.4vw,34px);padding-left:clamp(22px,2.4vw,34px);border-left:1px solid rgba(247,246,243,.4);white-space:nowrap;color:#F7F6F3;height:clamp(52px,4.6vw,72px);animation:boot-slide 1000ms cubic-bezier(0.23,1,0.32,1) 1150ms both}
 .boot-cfn small{font-size:clamp(10px,.8vw,12px);font-weight:600;letter-spacing:.32em;color:rgba(247,246,243,.65)}
-.boot-cfn span{font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(24px,2.6vw,38px);letter-spacing:-.01em;line-height:1}
+.boot-cfn span{font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(20px,2vw,30px);letter-spacing:-.01em;line-height:1}
 @keyframes boot-open{from{max-width:0;opacity:0}to{max-width:560px;opacity:1}}
 @keyframes boot-slide{from{transform:translateX(-18px);opacity:0}to{transform:none;opacity:1}}
 @media (max-width:768px){.boot-seal{width:72px !important}.boot-cfn>div{margin-left:16px;padding-left:16px;height:52px;gap:5px}.boot-cfn span{font-size:19px}.boot-cfn small{font-size:9.5px}}
@@ -1011,14 +1011,21 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .bvis{transition:border-color .4s ease,background .4s ease}.perk:hover .bvis{border-color:rgba(160,130,255,.45);background:rgba(128,82,255,.06)}
 .bvis img{transition:transform .5s cubic-bezier(.2,.8,.2,1),box-shadow .5s ease}.perk:hover .bvis img{transform:translateY(-4px) scale(1.04);box-shadow:0 30px 70px rgba(128,82,255,.45)}
 .bvis small{transition:opacity .3s ease}
-.bvis>div{position:relative}
-.bft{position:absolute;left:0;top:calc(100% - 13px);display:block;white-space:nowrap;pointer-events:none}
-.bft i{position:absolute;left:0;top:-2px;font-style:normal;font-size:15px;font-weight:500;letter-spacing:.02em;color:#CFC2FF;opacity:0}
-.perk:hover .bvis small{opacity:0}
-.perk:hover .bft i{animation:bft 9s linear infinite;animation-delay:calc(var(--i) * 1.8s)}
-@keyframes bft{0%{opacity:0;transform:translateY(6px)}3%,17%{opacity:1;transform:none}20%,100%{opacity:0;transform:translateY(-6px)}}
-@media (hover:none){.bft{display:none}}
-@media (prefers-reduced-motion:reduce){.perk:hover .bft i{animation:none}.perk:hover .bft i:first-child{opacity:1}.mcard::after{display:none}}
+.bvis{position:relative;overflow:hidden}
+.bid{display:flex;align-items:center;gap:clamp(18px,2vw,28px);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
+.bid>span{display:block}
+.perk:hover .bid{transform:translateX(-58%) scale(.82)}
+.perk:hover .bid small{opacity:0}
+.bvis .bss b,.bvis .bss small{white-space:nowrap}
+.bss{position:absolute;left:48%;right:6%;top:50%;height:96px;transform:translateY(-50%);opacity:0;transition:opacity .5s ease .2s;pointer-events:none}
+.perk:hover .bss{opacity:1}
+.bss>span{position:absolute;left:0;right:0;top:0;opacity:0;padding-left:22px;border-left:1px solid rgba(207,194,255,.4)}
+.bvis .bss b{display:block;margin:0;font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(20px,1.9vw,28px);color:#F7F6F3;letter-spacing:-.02em;line-height:1.3}
+.bvis .bss small{display:block;letter-spacing:0 !important;margin-top:10px;font-size:clamp(12.5px,1vw,14px);color:#CFC2FF;letter-spacing:0;line-height:1.5}
+.perk:hover .bss>span{animation:bss 15.4s linear infinite;animation-delay:calc(var(--i) * 2.2s)}
+@keyframes bss{0%{opacity:0;transform:translateY(8px)}3%,12%{opacity:1;transform:none}14.3%,100%{opacity:0;transform:translateY(-8px)}}
+@media (hover:none){.bss{display:none}}
+@media (prefers-reduced-motion:reduce){.perk:hover .bss>span{animation:none}.perk:hover .bss>span:first-child{opacity:1}.mcard::after{display:none}}
 .bvis{aspect-ratio:1.586;display:flex;align-items:center;justify-content:center;gap:clamp(18px,2vw,28px);border:1px solid rgba(242,239,232,.14);border-radius:clamp(16px,1.6vw,24px);background:rgba(242,239,232,.025)}
 .bvis img{width:clamp(72px,7vw,104px);height:auto;border-radius:22%;box-shadow:0 24px 60px rgba(128,82,255,.28)}
 .bvis b{display:block;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);letter-spacing:-.02em;color:#F7F6F3;line-height:1}
@@ -2796,7 +2803,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small><span class="bft"><i style="--i:0">증권사 리포트 요약</i><i style="--i:1">주요 공시 모아보기</i><i style="--i:2">재무·밸류에이션 그래프</i><i style="--i:3">여러 계좌 포트폴리오</i><i style="--i:4">기업분석 매거진</i></span></div></div>
+            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><b>증권사 리포트 요약</b><small>국내 증권사 기업분석 리포트를 요약해서</small></span><span style="--i:1"><b>목표주가 컨센서스</b><small>증권사별 투자의견과 목표주가를 한눈에</small></span><span style="--i:2"><b>공시 모아보기</b><small>실적 · 배당 · 자사주 · 공급계약</small></span><span style="--i:3"><b>수출실적 · 수주잔고</b><small>기업별 수출 데이터와 수주잔고를 그래프로</small></span><span style="--i:4"><b>부문별 · 지역별 실적</b><small>사업부별 매출과 이익 흐름까지</small></span><span style="--i:5"><b>밸류에이션</b><small>PER · PBR · PSR 추이로 싼지 비싼지</small></span><span style="--i:6"><b>미국 주식까지</b><small>국내 중소형주부터 미국 기업 분석까지</small></span></span></div>
             <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
           </figure>
         </div>
@@ -2896,7 +2903,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small><span class="bft"><i style="--i:0">증권사 리포트 요약</i><i style="--i:1">주요 공시 모아보기</i><i style="--i:2">재무·밸류에이션 그래프</i><i style="--i:3">여러 계좌 포트폴리오</i><i style="--i:4">기업분석 매거진</i></span></div></div>
+            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><b>증권사 리포트 요약</b><small>국내 증권사 기업분석 리포트를 요약해서</small></span><span style="--i:1"><b>목표주가 컨센서스</b><small>증권사별 투자의견과 목표주가를 한눈에</small></span><span style="--i:2"><b>공시 모아보기</b><small>실적 · 배당 · 자사주 · 공급계약</small></span><span style="--i:3"><b>수출실적 · 수주잔고</b><small>기업별 수출 데이터와 수주잔고를 그래프로</small></span><span style="--i:4"><b>부문별 · 지역별 실적</b><small>사업부별 매출과 이익 흐름까지</small></span><span style="--i:5"><b>밸류에이션</b><small>PER · PBR · PSR 추이로 싼지 비싼지</small></span><span style="--i:6"><b>미국 주식까지</b><small>국내 중소형주부터 미국 기업 분석까지</small></span></span></div>
             <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
           </figure>
         </div>
@@ -4725,8 +4732,6 @@ class Component extends DCLogic {
 
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
-    // 메뉴 페이지 첫 화면은 다른 내용처럼 그냥 스크롤로 내린다 (휠 한 칸에 넘기던 전환·띠로 줄이기는 쓰지 않음)
-    if (this._heroIntroOn !== true) return;
     // 컴퓨터에서 애니메이션을 꺼 두었어도 같은 순서로 보여 준다 (움직임 없이 흐려지기만 한다)
     if (!['about', 'research', 'fund', 'rfm', 'people', 'recruit', 'intranet'].includes(page)) return;
     requestAnimationFrame(() => {
@@ -4784,9 +4789,8 @@ class Component extends DCLogic {
       };
       window.addEventListener('scroll', onScroll, { passive: true });
       this._hiStop = () => { off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
-      let seen = false;
-      try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
-      if (seen || window.scrollY > 10) { shrink(); return; }
+      // 들어올 때마다 같은 방식: 첫 화면 + 아래 화살표, 휠·스와이프·화살표로 한 칸 내려간다
+      if (window.scrollY > 10) { shrink(); return; }
       window.addEventListener('wheel', onWheel, { passive: false, capture: true });
       window.addEventListener('touchstart', onTs, { passive: true });
       window.addEventListener('touchmove', onTm, { passive: false });
@@ -4831,8 +4835,7 @@ class Component extends DCLogic {
   }
 
   setupSnap() {
-    // 홈·소개의 칸 단위 휠 이동은 끄고 그냥 스크롤한다
-    if (this._onWheel || this._snapOn !== true) return;
+    if (this._onWheel) return;
     this._onWheel = (e) => {
       if ((this.state.page !== 'home' && this.state.page !== 'about') || this.state.menuOpen) return;
       if (window.innerWidth < 900 || window.matchMedia('(pointer: coarse)').matches) return;
