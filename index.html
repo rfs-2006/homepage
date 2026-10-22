@@ -4754,29 +4754,16 @@ class Component extends DCLogic {
       const onScroll = () => {
         if (hero.classList.contains('hero-short') || hero.classList.contains('hero-lift')) return;
         if (window.scrollY >= target()) return shrink();
-        hero.classList.toggle('hero-out', window.scrollY > target() - window.innerHeight * 0.45);
+        // 흐려지지 않고 그대로 밀려 올라간다
       };
-      // 첫 화면은 그대로 두고, 접속자가 조금만 내리면(휠 한 칸·살짝 스와이프·↓키) 첫 화면이 흐려지며 내용이 겹쳐 떠오른다
+      // 첫 화면은 그대로 두고, 접속자가 조금만 내리면(휠 한 칸·살짝 스와이프·↓키·화살표) 한 칸 스르륵 내려간다
       let busy = false, ty = null, cue = null;
       const advance = () => {
         if (busy || hero.classList.contains('hero-short') || this.state.page !== page) return;
         busy = true; cue && cue.remove();
-        // 첫 화면을 화면에 고정해 둔 채 그 뒤로 내용 위치로 옮기고, 첫 화면이 흐려지는 동시에 내용이 떠오른다 (겹쳐 바뀜)
-        const main = hero.closest('main'), ph = document.createElement('div');
-        ph.className = 'pg-hero-ph';
-        hero.parentNode.insertBefore(ph, hero);
-        hero.classList.add('hero-lift');
-        window.scrollTo({ top: ph.getBoundingClientRect().bottom + window.scrollY - stick() + skip(), behavior: 'instant' });
-        main.classList.add('hi-in');
-        requestAnimationFrame(() => hero.classList.add('hero-out'));
-        this._hiT = setTimeout(() => {
-          const y = window.scrollY;
-          ph.remove(); hero.classList.remove('hero-lift'); hero.classList.add('hero-short');
-          window.scrollTo({ top: y, behavior: 'instant' });
-          hero.classList.remove('hero-out');
-          main.classList.remove('hi-in');
-          busy = false; off();
-        }, 950);
+        // 첫 화면이 위로 밀려 올라가며 다음 섹션이 아래에서 올라온다 (실제 스크롤로 한 칸 내려감, 흐려지지 않음)
+        this.glideTo(target(), 800);
+        this._hiT = setTimeout(() => { busy = false; off(); }, 860);
       };
       const atTop = () => window.scrollY < 10 && !hero.classList.contains('hero-short');
       // 소개 페이지의 칸 단위 휠 이동(setupSnap)보다 먼저 받아서, 첫 화면을 넘기는 휠은 그쪽으로 안 가게 막는다
