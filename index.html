@@ -4709,6 +4709,8 @@ class Component extends DCLogic {
 
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
+    // 메뉴 페이지 첫 화면은 다른 내용처럼 그냥 스크롤로 내린다 (휠 한 칸에 넘기던 전환·띠로 줄이기는 쓰지 않음)
+    if (this._heroIntroOn !== true) return;
     // 컴퓨터에서 애니메이션을 꺼 두었어도 같은 순서로 보여 준다 (움직임 없이 흐려지기만 한다)
     if (!['about', 'research', 'fund', 'rfm', 'people', 'recruit', 'intranet'].includes(page)) return;
     requestAnimationFrame(() => {
@@ -4813,7 +4815,8 @@ class Component extends DCLogic {
   }
 
   setupSnap() {
-    if (this._onWheel) return;
+    // 홈·소개의 칸 단위 휠 이동은 끄고 그냥 스크롤한다
+    if (this._onWheel || this._snapOn !== true) return;
     this._onWheel = (e) => {
       if ((this.state.page !== 'home' && this.state.page !== 'about') || this.state.menuOpen) return;
       if (window.innerWidth < 900 || window.matchMedia('(pointer: coarse)').matches) return;
