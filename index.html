@@ -405,7 +405,7 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .cfn::before{content:'';position:absolute;left:0;top:50%;height:26px;margin-top:-13px;width:1px;background:currentColor;opacity:.28}
 .nav a .cfn.wordmark-block>span.cfn-w{font-size:9.5px !important;font-weight:600 !important;letter-spacing:.24em !important;opacity:.62;line-height:1 !important}
 .nav a .cfn.wordmark-block>span.cfn-t{font-family:'Noto Serif KR',serif !important;font-size:15px !important;font-weight:600 !important;letter-spacing:-.01em !important;line-height:1 !important;white-space:nowrap}
-@media (max-width:1180px){.nav .cfn{display:none !important}}
+.nav .cfn.cfn-off{display:none !important}
 .cfn-foot{white-space:nowrap}.cfn-foot b{font-weight:600;letter-spacing:.2em;font-size:10px;opacity:.75;margin-right:6px}.cfn-foot i{font-style:normal;font-family:'Noto Serif KR',serif}
 @media (max-width:1024px){
 .hero-grid{grid-template-columns:1fr !important}
@@ -5976,6 +5976,25 @@ class Component extends DCLogic {
     };
   }
 }
+</script>
+<script>
+// 메뉴 로고 옆 'with Claude for Nonprofits'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
+(function(){
+  var raf=0;
+  function fit(){ raf=0;
+    var c=document.querySelector('.nav .cfn'), n=document.querySelector('.nav .navlinks'); if(!c) return;
+    c.classList.remove('cfn-off');
+    if(!n || getComputedStyle(n).display==='none'){ c.classList.add('cfn-off'); return; }
+    var cr=c.getBoundingClientRect(), first=n.firstElementChild, nl=(first||n).getBoundingClientRect().left;
+    if(cr.right > nl-28) c.classList.add('cfn-off');
+  }
+  function later(){ if(!raf) raf=requestAnimationFrame(fit); }
+  addEventListener('resize',later); addEventListener('load',later);
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(later);
+  // 메뉴가 다시 그려질 때만 다시 잰다
+  new MutationObserver(function(ms){ for(var i=0;i<ms.length;i++){ var t=ms[i].target; if(t.nodeType===1&&(t.closest('nav.nav')||t.querySelector&&t.querySelector('nav.nav'))){ later(); return; } } }).observe(document.body,{childList:true,subtree:true,characterData:false});
+  later();
+})();
 </script>
 </body>
 </html>
