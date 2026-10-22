@@ -18,7 +18,7 @@
 @keyframes askDrift{to{transform:scale(1.1) translateX(-1.5%)}}\
 .ask-grain{position:fixed;inset:0;background:url(/assets/grain.png);opacity:.1;mix-blend-mode:overlay;pointer-events:none}\
 .ask-bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--ac);z-index:5;transition:width .7s var(--e)}\
-.ask-top{position:fixed;top:0;left:0;right:0;z-index:4;height:64px;background:linear-gradient(180deg,rgba(9,17,31,.94) 55%,rgba(9,17,31,0));display:flex;align-items:center;justify-content:space-between;padding:0 clamp(10px,3vw,40px)}\
+.ask-top{position:fixed;top:0;left:0;right:0;z-index:4;height:64px;background:transparent;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(10px,3vw,40px)}\
 .ask-top .sl{display:flex;align-items:center;gap:10px;font-family:var(--ser);font-size:12.5px;letter-spacing:.2em}\
 .ask-top .sl img{width:24px;height:24px;opacity:.9}\
 .ask .ib{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;transition:opacity .25s,color .2s}\
@@ -43,8 +43,6 @@
 .ask .sym *{fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;stroke-dasharray:1;stroke-dashoffset:1}\
 .ask .in .sym *{animation:askDraw 1.3s cubic-bezier(.5,0,.2,1) forwards}\
 @keyframes askDraw{to{stroke-dashoffset:0}}\
-.ask .o:hover .sym *{animation:askDraw2 1s cubic-bezier(.5,0,.2,1) forwards}\
-@keyframes askDraw2{0%{stroke-dashoffset:1}100%{stroke-dashoffset:0}}\
 .ask .o:hover .sym,.ask .o.on .sym{color:#fff}\
 .ask .pp .cy{font-family:var(--ser);font-size:15px;color:var(--ac);font-weight:600;margin-left:auto;padding-left:10px;white-space:nowrap}\
 .ask .pp .nm{display:flex;flex-direction:column;gap:3px}\
@@ -78,6 +76,10 @@
  .ask .more{position:absolute;right:var(--pad);top:-52px;margin:0}\
  .ask .Lw{position:relative;margin-top:auto}\
  .ask .Lw .L{margin-top:0}\
+ .ask .L.Lp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));height:auto;margin-top:36px}\
+ .ask .L.Lp .o{height:min(42vh,380px);padding-left:clamp(16px,1.6vw,26px);padding-right:clamp(16px,1.6vw,26px);border-bottom:1px solid var(--hair)}\
+ .ask .L.Lp .o:nth-child(3n+1){padding-left:var(--pad);box-shadow:none}.ask .L.Lp .o:nth-child(3n+1) .k{left:var(--pad)}.ask .L.Lp .o:nth-child(3n){padding-right:var(--pad)}\
+ .ask .Lw:has(.Lp){margin-top:0}\
 }\
 .ask .wr{margin-top:34px;max-width:900px}\
 .ask .who{display:flex;gap:10px;margin-bottom:22px}\
@@ -250,7 +252,7 @@
       prog(Math.min(12 + st.path.length * 18, 66));
       var many = n.opts.length > 6 ? ' many' : '';
       st.bx.innerHTML = crumbs() + '<h2 class="q">' + n.q + '</h2><div class="L' + many + '" role="list"' + (many ? ' style="--cols:' + Math.ceil(n.opts.length / 2) + '"' : '') + '>' + n.opts.map(function (o, i) {
-        var k = o[0], s = !st.path.length ? (SUB[k] || '') : (o[1] ? o[1] + '명' : '');
+        var k = o[0], s = !st.path.length ? (SUB[k] || '') : '';
         return '<button class="o" role="listitem" data-k="' + esc(k) + '"><span class="k">' + pad(i) + '</span>' + (i < 9 ? '<span class="key">' + (i + 1) + '</span>' : '') + (n.f === 'org' ? '' : sym(k)) + '<span class="lb">' + esc(k) + '</span>' + (s ? '<span class="s">' + esc(s) + '</span>' : '') + '</button>';
       }).join('') + '</div>';
       st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { var v = b.getAttribute('data-k'); st.path.push({ f: n.f, v: v, ex: v === OTHER ? n.ex : null }); render(); }); }; });
@@ -262,13 +264,13 @@
     people();
   }
   function people() {
-    // 폰은 넘기지 않고 전부 이어서 보여 준다 (아래로 내려서 보기). PC는 한 줄에 세 분씩
-    var per = (st.list.length <= SHOW_ALL || window.innerWidth < 900) ? st.list.length : 3, three = st.list.slice(st.off, st.off + per);
+    // 넘기지 않고 전부 이어서 보여 준다 (아래로 내려서 보기). PC는 한 줄에 세 분씩 쌓인다
+    var per = st.list.length, three = st.list.slice(0, per); st.off = 0;
     if (!three.length) {
       st.bx.innerHTML = crumbs() + '<h2 class="q">아직 찾을 수 있는<br>선배님이 없어요</h2><p class="empty">다른 분야를 고르거나 알럼나이 디렉토리에서 찾아보세요.</p>';
       return;
     }
-    st.bx.innerHTML = crumbs() + '<h2 class="q">이 선배님들께<br>여쭤볼 수 있어요</h2><div class="Lw"><div class="L" role="list">' + three.map(function (a, i) {
+    st.bx.innerHTML = crumbs() + '<h2 class="q">이 선배님들께<br>여쭤볼 수 있어요</h2><div class="Lw"><div class="L Lp" role="list">' + three.map(function (a, i) {
       var co = [a.company, a.role].filter(Boolean).join(' · ');
       return '<button class="o pp" role="listitem" data-i="' + (st.off + i) + '"><span class="key">' + (i + 1) + '</span><span class="nm"><span class="lb">' + esc(a.name) + '</span><span class="co">' + esc(co) + '</span></span><span class="cy">' + (coh(a) < 999 ? esc(a.cohort) + '<small>기</small>' : '') + '</span></button>';
     }).join('') + '</div>' + (st.list.length > per ? '<button class="more">다른 선배님 보기</button>' : '') + '</div>';
