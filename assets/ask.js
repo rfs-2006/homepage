@@ -18,7 +18,7 @@
 @keyframes askDrift{to{transform:scale(1.1) translateX(-1.5%)}}\
 .ask-grain{position:fixed;inset:0;background:url(/assets/grain.png);opacity:.1;mix-blend-mode:overlay;pointer-events:none}\
 .ask-bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--ac);z-index:5;transition:width .7s var(--e)}\
-.ask-top{position:fixed;top:0;left:0;right:0;z-index:4;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(10px,3vw,40px)}\
+.ask-top{position:fixed;top:0;left:0;right:0;z-index:4;height:64px;background:linear-gradient(180deg,rgba(9,17,31,.94) 55%,rgba(9,17,31,0));display:flex;align-items:center;justify-content:space-between;padding:0 clamp(10px,3vw,40px)}\
 .ask-top .sl{display:flex;align-items:center;gap:10px;font-family:var(--ser);font-size:12.5px;letter-spacing:.2em}\
 .ask-top .sl img{width:24px;height:24px;opacity:.9}\
 .ask .ib{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;transition:opacity .25s,color .2s}\
@@ -262,7 +262,8 @@
     people();
   }
   function people() {
-    var per = st.list.length <= SHOW_ALL ? st.list.length : 3, three = st.list.slice(st.off, st.off + per);
+    // 폰은 넘기지 않고 전부 이어서 보여 준다 (아래로 내려서 보기). PC는 한 줄에 세 분씩
+    var per = (st.list.length <= SHOW_ALL || window.innerWidth < 900) ? st.list.length : 3, three = st.list.slice(st.off, st.off + per);
     if (!three.length) {
       st.bx.innerHTML = crumbs() + '<h2 class="q">아직 찾을 수 있는<br>선배님이 없어요</h2><p class="empty">다른 분야를 고르거나 알럼나이 디렉토리에서 찾아보세요.</p>';
       return;
