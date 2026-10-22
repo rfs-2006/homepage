@@ -81,7 +81,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
 <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-<link rel="preload" as="image" href="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero/boot-dipper.webp" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
 <link rel="preload" as="image" href="assets/torm-fleet.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1622,8 +1622,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
   <div class="boot {{ bootCls }}" aria-hidden="true">
-    <img class="boot-img" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" alt="" data-credit="Photo by Vincentiu Solomon on Unsplash" data-credit-href="https://unsplash.com/@vincentiu">
-    <div class="scrim" style="opacity:0.7"></div>
+    <img class="boot-img" src="assets/hero/boot-dipper.webp" alt="" data-credit="Ursa Major: A. Fujii / ESA/Hubble (CC BY 4.0)" data-credit-href="https://esahubble.org/images/heic0901d/">
+    <div class="scrim" style="opacity:0.35"></div>
     <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></div></div></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
@@ -4517,7 +4517,7 @@ class Component extends DCLogic {
       new MutationObserver(() => { scan(); scanHero(); }).observe(document.body, { childList: true, subtree: true });
     }
     // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
-    const t0 = performance.now(), minHold = 2800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude for Nonprofits'가 펼쳐질 시간
+    const t0 = performance.now(), minHold = 3800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude for Nonprofits'가 펼쳐질 시간
     const finish = () => {
       if (this._bootFinished) return;
       this._bootFinished = true;
@@ -4527,8 +4527,8 @@ class Component extends DCLogic {
         setTimeout(() => this.setState({ boot: 'gone' }), 750);
       }, wait);
     };
-    const img = new Image(); img.onload = finish; img.onerror = finish; img.src = 'https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&fit=crop&w=1600&q=72';
-    setTimeout(finish, 3200);
+    const img = new Image(); img.onload = finish; img.onerror = finish; img.src = 'assets/hero/boot-dipper.webp';
+    setTimeout(finish, 4200);
     this._prefetch = () => {
       const urls = [...document.querySelectorAll('image-slot[src]')].map((el) => el.getAttribute('src')).filter((u) => u && !u.startsWith('{'));
       urls.slice(0, 12).forEach((u) => { const i = new Image(); i.decoding = 'async'; i.src = u; });
