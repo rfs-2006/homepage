@@ -721,6 +721,8 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
+/* 글이 적어도 화면 끝까지 어두운 바탕 (밝은 페이지 바탕이 비치지 않게) */
+.wkpage{min-height:100vh;min-height:100svh}
 .fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp?v=1014") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 /* RFM·AMT Fund 첫 화면: ABOUT처럼 사진 한 장이 화면을 채우고 제목만 (pg-full) */
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
