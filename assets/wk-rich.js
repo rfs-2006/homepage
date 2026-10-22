@@ -142,7 +142,9 @@
   // 리포트 양식으로 꾸미기: 글 맨 앞 큰 제목(노션 H1)은 남색 헤드라인으로 올리고(없으면 글 제목), 나머지 소제목은 [ ]로 감싸 오른쪽에 목차를 만든다
   function sheet(sh, body) {
     if (!sh || !body) return;
-    var hl = sh.querySelector('.wkp-hl'), toc = sh.querySelector('.wkp-toc');
+    var hl = sh.querySelector('.wkp-hl'), toc = sh.querySelector('.wkp-toc'), side = sh.querySelector('.wkp-side');
+    // 오른쪽 칸이 화면보다 길면 아래쪽이 보이는 위치에서 따라오게 한다 (sticky top을 칸 높이에 맞춤)
+    if (side) { var fit = function () { if (!side.isConnected) return window.removeEventListener('resize', fit); side.style.top = Math.min(88, window.innerHeight - side.offsetHeight - 16) + 'px'; }; setTimeout(fit, 0); window.addEventListener('resize', fit); }
     var first = body.firstElementChild;
     if (hl) {
       if (first && first.nodeName === 'H2' && first.className === 'h1') { hl.textContent = first.textContent.trim(); first.remove(); }
