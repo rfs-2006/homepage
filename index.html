@@ -86,7 +86,7 @@
 <link rel="preload" as="image" href="assets/torm-fleet.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
 // 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
@@ -242,6 +242,8 @@ a:hover{color:#203864}
 .boot.gone{display:none}
 .boot-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;animation:boot-zoom 2400ms cubic-bezier(0.23,1,0.32,1) both}
 .boot-seal{position:relative;width:clamp(96px,10vw,148px);height:auto;animation:boot-in 900ms cubic-bezier(0.23,1,0.32,1) 150ms both}
+.boot-cfn{position:absolute;left:0;right:0;top:calc(50% + clamp(66px,7vw,96px));display:flex;align-items:center;justify-content:center;gap:12px;color:#F7F6F3;animation:boot-in 900ms cubic-bezier(0.23,1,0.32,1) 550ms both}
+.boot-cfn small{font-size:10.5px;font-weight:600;letter-spacing:.3em;color:rgba(247,246,243,.6)}.boot-cfn span{font-family:'Source Serif 4','Noto Serif KR',serif;font-size:clamp(17px,1.5vw,21px);letter-spacing:-.005em}
 .boot-line{position:absolute;left:50%;bottom:clamp(48px,9vh,96px);width:min(280px,60vw);height:1px;background:rgba(247,246,243,0.22);transform:translateX(-50%);overflow:hidden}
 .boot-line::after{content:"";position:absolute;left:0;top:0;height:100%;width:100%;background:#F7F6F3;transform-origin:left;animation:boot-fill 1300ms cubic-bezier(0.23,1,0.32,1) 200ms both}
 .boot-cap{position:absolute;left:0;right:0;bottom:clamp(24px,5vh,60px);text-align:center;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;animation:boot-in 900ms cubic-bezier(0.23,1,0.32,1) 400ms both}
@@ -960,6 +962,22 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 
 
 /* 리서치·소개·구성원·리크루팅: 펀드 페이지와 같은 구조 (히어로 → 고정 탭 → 카드) */
+/* 리크루팅: 첫 화면 다음 전체 화면 '학회원 혜택' (사진 위 큰 세리프 두 단어) */
+.perx{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;color:#F7F6F3;overflow:hidden;background:#0B1524}
+main.pgx>section.perx{margin:0 !important;max-width:none !important;width:100% !important}
+main.pgx>section.perx>.wrap.perx-in{padding-left:max(35px,calc((100% - 1290px) / 2 + 56px)) !important;padding-right:35px !important}
+.perx-bg{position:absolute;inset:0}.perx-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,14,26,.94) 0%,rgba(8,14,26,.78) 48%,rgba(8,14,26,.45) 100%)}
+.perx-in{position:relative;width:100%;padding-top:96px;padding-bottom:72px}
+.perx .sec-label{color:rgba(247,246,243,.6)}
+.perx-g{margin-top:clamp(28px,5vh,52px);display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:clamp(36px,5vw,80px);row-gap:clamp(18px,3.4vh,34px);align-items:end}
+.perx-w{font-family:'Source Serif 4',serif;font-weight:300;font-size:clamp(84px,10.5vw,164px);line-height:.86;letter-spacing:-.04em}
+.perx-w.it{font-style:italic;color:#C9D8F5}
+.perx-c{padding-bottom:16px;border-bottom:1px solid rgba(247,246,243,.3);max-width:560px}
+.perx-c small{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,246,243,.55);margin-bottom:10px}
+.perx-c b{display:block;font-size:clamp(24px,2.4vw,34px);font-weight:600;letter-spacing:-.02em;line-height:1.2;color:#F7F6F3}
+.perx-c em{font-family:'Source Serif 4',serif;font-style:italic;font-weight:400;font-size:1.35em;color:#C9D8F5;margin:0 2px;letter-spacing:-.02em}
+.perx-ft{margin-top:clamp(36px,6vh,64px);font-size:14px;color:rgba(247,246,243,.6);letter-spacing:.02em}
+@media (max-width:860px){main.pgx>section.perx>.wrap.perx-in{padding:88px 24px 56px !important}.perx-g{grid-template-columns:1fr;row-gap:10px}.perx-w{font-size:76px}.perx-c{margin-bottom:26px;padding-bottom:14px}.perx-c b{font-size:22px}.perx-bg::after{background:linear-gradient(180deg,rgba(8,14,26,.7),rgba(8,14,26,.92))}}
 /* 리크루팅: 학회원 혜택 (학회원 카드) */
 .perks{position:relative;background:radial-gradient(110% 90% at 50% 0%,#1B2F52 0%,#0B1526 58%,#070D18 100%);color:#F2EFE8;overflow:hidden}
 .perks .sec-label{color:rgba(242,239,232,.6)}.perks .sec-title{color:#F7F6F3}.perks .sec-sub{color:rgba(242,239,232,.7)}
@@ -1613,6 +1631,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <img class="boot-img" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" alt="" data-credit="Photo by Pedro Lastra on Unsplash" data-credit-href="https://unsplash.com/@peterlaster">
     <div class="scrim" style="opacity:0.7"></div>
     <img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S.">
+    <div class="boot-cfn"><small>WITH</small><span>Claude for Nonprofits</span></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
   </div>
@@ -2719,6 +2738,19 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </div>
     </section>
+    <section data-tab="perks" class="perx on-photo" data-nav="dark">
+      <div class="perx-bg"><image-slot id="perks-bg" shape="rect" fit="cover" src="assets/hero/perks.webp" credit="Photo on Unsplash" credit-href="https://unsplash.com/photos/1481627834876-b7833e8f5570"></image-slot></div>
+      <div class="wrap perx-in">
+        <p class="sec-label">Member Benefits</p>
+        <div class="perx-g">
+          <span class="perx-w">Claude</span>
+          <div class="perx-c"><small>AI Research · with Claude for Nonprofits</small><b>Pro · Max <em>60%</em> 할인</b></div>
+          <span class="perx-w it">Butler</span>
+          <div class="perx-c"><small>Company Data · 정식 제휴</small><b>유료 플랜 <em>제공</em></b></div>
+        </div>
+        <p class="perx-ft">R.F.S.의 모든 학회원에게 제공됩니다.</p>
+      </div>
+    </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="perks" onClick="{{ tabGo }}">혜택</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
 
 
@@ -2744,24 +2776,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
 
-    <section data-tab="perks" class="perks" data-nav="dark">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          <p class="sec-label">Member Benefits</p>
-          <h2 class="sec-title">학회원 혜택</h2>
-        </div>
-        <div class="perks-g">
-          <figure class="perk rv rv-up">
-            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
-            <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
-          </figure>
-          <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small></div></div>
-            <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
 
     <section data-tab="faq" data-nav="light" style="background:#FFFFFF">
       <div class="wrap secpad faq-grid" style="padding:110px 35px;display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.6fr);gap:clamp(40px,5vw,80px);align-items:start">
@@ -2825,6 +2839,19 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </sc-if>
       </div>
     </section>
+    <section data-tab="perks" class="perx on-photo" data-nav="dark">
+      <div class="perx-bg"><image-slot id="m-perks-bg" shape="rect" fit="cover" src="assets/hero/perks-m.webp" credit="Photo on Unsplash" credit-href="https://unsplash.com/photos/1481627834876-b7833e8f5570"></image-slot></div>
+      <div class="wrap perx-in">
+        <p class="sec-label">Member Benefits</p>
+        <div class="perx-g">
+          <span class="perx-w">Claude</span>
+          <div class="perx-c"><small>AI Research · with Claude for Nonprofits</small><b>Pro · Max <em>60%</em> 할인</b></div>
+          <span class="perx-w it">Butler</span>
+          <div class="perx-c"><small>Company Data · 정식 제휴</small><b>유료 플랜 <em>제공</em></b></div>
+        </div>
+        <p class="perx-ft">R.F.S.의 모든 학회원에게 제공됩니다.</p>
+      </div>
+    </section>
     <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="perks" onClick="{{ tabGo }}">혜택</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
 
 
@@ -2844,24 +2871,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
 
-    <section data-tab="perks" class="perks" data-nav="dark" style="padding:56px 24px 64px">
-      <div class="">
-        <div class="rv rv-up">
-          <p class="sec-label">Member Benefits</p>
-          <h2 class="sec-title" style="font-family:&#39;Noto Serif KR&#39;,serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;margin:0">학회원 혜택</h2>
-        </div>
-        <div class="perks-g">
-          <figure class="perk rv rv-up">
-            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
-            <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
-          </figure>
-          <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small></div></div>
-            <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
-          </figure>
-        </div>
-      </div>
-    </section>
 
     <section data-tab="faq" data-nav="light" style="background:#F7F6F3;padding:52px 24px 52px">
       <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">FAQ</h2>
@@ -4685,7 +4694,7 @@ class Component extends DCLogic {
   }
 
   heroIntro(page) {
-    clearTimeout(this._hiT); this._hiStop && this._hiStop();
+    clearTimeout(this._hiT); clearTimeout(this._hiAuto); this._hiStop && this._hiStop();
     // 컴퓨터에서 애니메이션을 꺼 두었어도 같은 순서로 보여 준다 (움직임 없이 흐려지기만 한다)
     if (!['about', 'research', 'fund', 'rfm', 'people', 'recruit', 'intranet'].includes(page)) return;
     requestAnimationFrame(() => {
@@ -4742,7 +4751,7 @@ class Component extends DCLogic {
         window.removeEventListener('wheel', onWheel, true); window.removeEventListener('touchstart', onTs); window.removeEventListener('touchmove', onTm); window.removeEventListener('keydown', onKey);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
-      this._hiStop = () => { off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
+      this._hiStop = () => { clearTimeout(this._hiAuto); off(); cue && cue.remove(); window.removeEventListener('scroll', onScroll); document.querySelectorAll('.pg-hero-ph').forEach((n) => n.remove()); hero.classList.remove('hero-out', 'hero-lift'); };
       let seen = false;
       try { seen = !!sessionStorage.getItem('rfs-hero-' + page); sessionStorage.setItem('rfs-hero-' + page, '1'); } catch (e) {}
       if (seen || window.scrollY > 10) { shrink(); return; }
@@ -4755,6 +4764,8 @@ class Component extends DCLogic {
       cue.type = 'button'; cue.className = 'hero-cue'; cue.setAttribute('aria-label', '아래로');
       cue.addEventListener('click', advance);
       hero.appendChild(cue);
+      // 리크루팅은 가만히 있어도 잠시 뒤 다음 화면(학회원 혜택)으로 넘어간다
+      if (page === 'recruit') this._hiAuto = setTimeout(() => { if (window.scrollY < 10) advance(); }, 4200);
     });
   }
 
