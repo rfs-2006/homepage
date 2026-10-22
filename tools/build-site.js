@@ -243,6 +243,7 @@ function indexPage(sorted, groups) {
     `<li><a href="/research/${r.id}/"><span>${esc(`${r.name} (${r.ticker}) — ${r.headline}`)}</span><span class="meta">${esc(`${r.op} · ${r.tp} · ${r.date}`)}</span></a></li>`).join('')}</ul></section>`).join('\n');
   return docStart(seo) +
 `<script type="application/ld+json">${json(ld)}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
