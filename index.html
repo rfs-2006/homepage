@@ -81,7 +81,7 @@
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
 <link rel="icon" href="/favicon.ico?v=2" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
-<link rel="preload" as="image" href="assets/hero/boot-dipper.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero/sky.webp?v=1014" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
 <link rel="preload" as="image" href="assets/torm-fleet.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1622,8 +1622,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
   <div class="boot {{ bootCls }}" aria-hidden="true">
-    <img class="boot-img" src="assets/hero/boot-dipper.webp" alt="" data-credit="Ursa Major: A. Fujii / ESA/Hubble (CC BY 4.0)" data-credit-href="https://esahubble.org/images/heic0901d/">
-    <div class="scrim" style="opacity:0.35"></div>
+    <img class="boot-img" src="assets/hero/sky.webp?v=1014" alt="">
+    <div class="scrim" style="opacity:0.55"></div>
     <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></div></div></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
@@ -4527,7 +4527,7 @@ class Component extends DCLogic {
         setTimeout(() => this.setState({ boot: 'gone' }), 750);
       }, wait);
     };
-    const img = new Image(); img.onload = finish; img.onerror = finish; img.src = 'assets/hero/boot-dipper.webp';
+    const img = new Image(); img.onload = finish; img.onerror = finish; img.src = 'assets/hero/sky.webp?v=1014';
     setTimeout(finish, 4200);
     this._prefetch = () => {
       const urls = [...document.querySelectorAll('image-slot[src]')].map((el) => el.getAttribute('src')).filter((u) => u && !u.startsWith('{'));
