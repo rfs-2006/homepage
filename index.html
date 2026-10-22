@@ -1470,6 +1470,42 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-rich details>*:not(summary){margin-left:1.6em}.wk-rich details[open]>*:last-child{margin-bottom:16px}
 .wk-rich summary.h{font-size:1.15em;font-weight:600}
 .wk-body .wk-rich{margin-bottom:12px}
+/* 리포트 양식: 노션식 글을 R.F.S. 기업분석 보고서 첫 장처럼 (흰 종이, 회색 제목 띠, 남색 #002060, KoPub 돋움) */
+.wkp-sheet{background:#FFFFFF;color:#1A1A1A;max-width:860px;margin:4px 0 18px;box-shadow:0 30px 70px rgba(0,0,0,0.45);font-family:'RFS Dotum UI','Pretendard Variable',sans-serif}
+.wkp-top{display:flex;align-items:center;gap:10px;padding:22px 44px 12px;font-size:12.5px;font-weight:500;color:#404040;font-variant-numeric:tabular-nums}.wkp-top i{width:1px;height:11px;background:#7F7F7F}
+.wkp-band{display:flex;align-items:center;justify-content:space-between;gap:20px;background:#7F7F7F;color:#FFFFFF;padding:26px 44px 24px}
+.wkp-band small{display:block;font-size:13px;font-weight:500;letter-spacing:.02em;opacity:.95}.wkp-band small::before,.wkp-band small::after{content:'|';margin:0 6px;opacity:.7}.wkp-band small::before{margin-left:0}
+.wkp-band b{display:block;margin-top:6px;font-size:clamp(22px,2.5vw,32px);font-weight:500;letter-spacing:-0.01em;line-height:1.25}
+.wkp-logo{display:flex;align-items:center;gap:10px;flex-shrink:0}.wkp-logo img{width:46px;height:46px}.wkp-logo span{display:flex;flex-direction:column;line-height:1}.wkp-logo b{font-family:'RFS Dotum UI',sans-serif;font-size:20px;font-weight:700;letter-spacing:.18em}.wkp-logo em{font-style:normal;font-size:8.5px;letter-spacing:.06em;opacity:.85;margin-top:4px}
+.wkp-foot{display:flex;justify-content:space-between;gap:12px;margin:0 44px;padding:14px 0 22px;border-top:1px solid #BFBFBF;font-size:11.5px;color:#7F7F7F}
+.wk-rich.wkp{--ac:#002060;--ln:#D9D9D9;max-width:none;padding:30px 44px 26px;font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;font-size:14.5px;line-height:1.85;color:#262626;text-align:justify}
+.wk-rich.wkp h2,.wk-rich.wkp h3,.wk-rich.wkp summary.h{font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;color:#1A1A1A;letter-spacing:-0.01em}
+.wk-rich.wkp h2{font-size:17px;font-weight:700;margin:30px 0 12px;padding:0 0 7px;border-top:0;border-bottom:1px solid #1A1A1A;text-align:left}
+.wk-rich.wkp h2::before{content:'['}.wk-rich.wkp h2::after{content:']'}
+.wk-rich.wkp>h2:first-child{padding-top:0}
+.wk-rich.wkp>p:first-child,.wk-rich.wkp>h2:first-child+p{font-size:20px;line-height:1.5;font-weight:700;color:#002060;text-align:left;margin-bottom:18px;letter-spacing:-0.01em}
+.wk-rich.wkp>h2:first-child+p{font-size:15px;font-weight:500;color:#262626;line-height:1.85;text-align:justify}
+.wk-rich.wkp h3{font-size:15px;font-weight:700;color:#002060;margin:22px 0 8px;text-align:left}
+.wk-rich.wkp strong{color:#000;font-weight:700}
+.wk-rich.wkp mark{background:linear-gradient(transparent 58%,rgba(0,32,96,0.14) 58%);color:inherit}
+.wk-rich.wkp a{color:#002060;border-bottom-color:rgba(0,32,96,0.35)}.wk-rich.wkp a:hover{color:#000;border-bottom-color:#000}
+.wk-rich.wkp ul>li::before{background:#002060}.wk-rich.wkp ul ul>li::before{background:transparent;border-color:#002060}
+.wk-rich.wkp code{background:#F2F2F2;color:#262626}.wk-rich.wkp pre{background:#F7F7F7;border-color:#E3E3E3;color:#262626}
+.wk-rich.wkp blockquote{border-left-color:#7F7F7F;color:#404040;font-family:'RFS Dotum UI',sans-serif;font-size:1em}
+.wk-rich.wkp aside.callout{background:#002060;border-left:0;color:#FFFFFF;padding:16px 22px;font-weight:500;text-align:left}.wk-rich.wkp aside.callout strong{color:#FFFFFF}.wk-rich.wkp aside.callout a{color:#FFFFFF;border-bottom-color:rgba(255,255,255,0.5)}
+.wk-rich.wkp hr{background:#BFBFBF}
+.wk-rich.wkp figure img{box-shadow:none;border:1px solid #E3E3E3;margin:0 auto}
+.wk-rich.wkp .tbl{margin:16px 0 20px}.wk-rich.wkp table{font-size:12.5px;border-top:1.5px solid #1A1A1A;border-bottom:1.5px solid #1A1A1A}
+.wk-rich.wkp th,.wk-rich.wkp td{border-bottom:1px solid #D9D9D9;padding:7px 10px;text-align:center;color:#262626}
+.wk-rich.wkp tr:first-child th,.wk-rich.wkp tr:first-child td{background:#F2F2F2;color:#1A1A1A;font-size:12.5px;letter-spacing:0;text-transform:none;font-weight:700;border-bottom:1px solid #7F7F7F;padding:8px 10px}
+.wk-rich.wkp td:first-child{color:#1A1A1A;font-weight:500;text-align:left}.wk-rich.wkp th:first-child{text-align:left}
+.wk-rich.wkp details{border-color:#D9D9D9}.wk-rich.wkp summary{color:#1A1A1A;font-weight:700}.wk-rich.wkp summary:hover{color:#002060}.wk-rich.wkp summary::before{border-color:#002060}
+.wk-rich.wkp .chk{border-color:#7F7F7F}.wk-rich.wkp .chk.on{background:#002060;border-color:#002060}.wk-rich.wkp .chk.on::after{border-color:#FFFFFF}
+.wk-rich.wkp ol>li::marker{color:#002060}
+.wk-ed.wkp{background:#FFFFFF;border-color:#BFBFBF;padding:26px 30px}.wk-ed.wkp:focus{border-color:#002060}.wk-ed.wkp.empty::before{color:#9A9A9A}
+.wk-ed.wkp figure.wait::after{color:#1A1A1A}.wk-ed.wkp figure.miss::after{color:#B42318}.wk-ed.wkp figure.miss{outline-color:#B42318}
+@media (max-width:860px){.wkp-top{padding:16px 18px 10px}.wkp-band{padding:18px 18px 16px}.wkp-logo img{width:34px;height:34px}.wkp-logo span{display:none}.wk-rich.wkp{padding:22px 18px 18px;font-size:14px;text-align:left}.wkp-foot{margin:0 18px;flex-direction:column;gap:4px}.wk-rich.wkp>p:first-child{font-size:18px}}
+
 .wk-ed{min-height:280px;max-height:70vh;overflow-y:auto;padding:16px 18px;border:1px solid rgba(247,246,243,0.3);background:rgba(247,246,243,0.06);outline:none;cursor:text}
 .wk-ed:focus{border-color:rgba(143,170,220,0.8)}
 .wk-ed.empty::before{content:attr(data-ph);color:rgba(247,246,243,0.4);pointer-events:none;display:block}
@@ -2869,7 +2905,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
         <sc-if value="{{ wkIsNotice }}" hint-placeholder-val="{{ false }}"><input class="intra-input" placeholder="공지 제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></sc-if>
-        <div class="wk-ed wk-rich empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
+        <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
         <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
@@ -2879,7 +2915,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><div class="wk-rich" data-wk="{{ w.id }}"></div></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top"><span>{{ w.date }}</span><i></i><span>{{ w.kind }}</span></div><div class="wkp-band"><div><small>AMT Fund</small><b>{{ w.title }}</b></div><span class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S</b><em>Rising Financial Stars</em></span></span></div><div class="wk-rich wkp" data-wk="{{ w.id }}"></div><div class="wkp-foot"><span>중앙대학교 가치투자학회 R.F.S.</span><span>Asset Management Team</span></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -2919,7 +2955,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><div class="wk-rich" data-wk="{{ w.id }}"></div></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top"><span>{{ w.date }}</span><i></i><span>{{ w.kind }}</span></div><div class="wkp-band"><div><small>AMT Fund</small><b>{{ w.title }}</b></div><span class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S</b><em>Rising Financial Stars</em></span></span></div><div class="wk-rich wkp" data-wk="{{ w.id }}"></div><div class="wkp-foot"><span>중앙대학교 가치투자학회 R.F.S.</span><span>Asset Management Team</span></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -5169,7 +5205,7 @@ class Component extends DCLogic {
       const rich = body.indexOf('<!--rich-->') === 0;
       if (rich) this._wkBodies[w.id] = body;
       return {
-        id: w.id, rich: open && rich,
+        id: w.id, rich: open && rich, kind: (w.category || '투자전략') === '공지' ? 'Notice' : 'Weekly Strategy',
         date: fmt(w.week), title: w.title, cat: w.category || '투자전략', catCls: 'wk-cat' + ((w.category || '투자전략') === '공지' ? ' n' : ''), open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
         excerpt: (() => { const x = rich ? plain(body) : body.replace(TOK, '').replace(/\s+/g, ' ').trim(); return x.slice(0, 120) + (x.length > 120 ? '…' : ''); })(),
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
