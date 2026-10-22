@@ -86,7 +86,7 @@
 <link rel="preload" as="image" href="assets/torm-fleet.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
 // 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
@@ -109,6 +109,7 @@
 </script>
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=10" defer></script>
+<script src="./assets/wk-rich.js?v=3" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -720,6 +721,8 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 
 .fdpage .pg-hero-in{padding-bottom:56px}
 .fdpage{isolation:isolate}
+/* 글이 적어도 화면 끝까지 어두운 바탕 (밝은 페이지 바탕이 비치지 않게) */
+.wkpage{min-height:100vh;min-height:100svh}
 .fdpage:not(.rfmpage)::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:url("assets/hero/sky.webp?v=1014") center 30%/cover no-repeat;opacity:.16;filter:saturate(.8)}
 /* RFM·AMT Fund 첫 화면: ABOUT처럼 사진 한 장이 화면을 채우고 제목만 (pg-full) */
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
@@ -957,6 +960,34 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 
 
 /* 리서치·소개·구성원·리크루팅: 펀드 페이지와 같은 구조 (히어로 → 고정 탭 → 카드) */
+/* 리크루팅: 학회원 혜택 (학회원 카드) */
+.perks{position:relative;background:radial-gradient(110% 90% at 50% 0%,#1B2F52 0%,#0B1526 58%,#070D18 100%);color:#F2EFE8;overflow:hidden}
+.perks .sec-label{color:rgba(242,239,232,.6)}.perks .sec-title{color:#F7F6F3}.perks .sec-sub{color:rgba(242,239,232,.7)}
+.perks-g{display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,96px);margin-top:clamp(56px,8vh,96px)}
+.perk{margin:0}
+.mcard{position:relative;aspect-ratio:1.586;border-radius:clamp(16px,1.6vw,24px);overflow:hidden;background:linear-gradient(135deg,#203864 0%,#16294A 45%,#0F1B2E 100%);box-shadow:0 40px 80px rgba(0,0,0,.5),inset 0 0 0 1px rgba(201,216,245,.32);transform:rotate(-3deg);transition:transform .6s cubic-bezier(.2,.8,.2,1);container-type:inline-size}
+.perk:nth-child(2) .mcard{transform:rotate(2deg)}
+.perk:hover .mcard{transform:rotate(0) translateY(-6px)}
+.mcard::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.12) 45%,transparent 60%);z-index:1}
+.mcard .seal{position:absolute;right:-8%;top:-12%;width:44%;opacity:.12}
+.mcard .hd{position:absolute;left:7%;top:10%;display:flex;align-items:center;gap:2.2cqw}
+.mcard .hd img{width:7.8cqw}.mcard .hd b{font-family:'Noto Serif KR',serif;font-size:4.2cqw;letter-spacing:.04em;color:#F2EFE8}
+.mcard .chip{position:absolute;left:7%;top:36%;width:11.7cqw;height:9cqw;border-radius:1.7cqw;background:linear-gradient(135deg,#d9c79a,#a8925e);opacity:.9}
+.mcard .big{position:absolute;right:7%;top:26%;font-family:'Source Serif 4',serif;font-style:italic;font-weight:300;font-size:24cqw;line-height:1;color:#C9D8F5;letter-spacing:-.04em}
+.mcard .big.w{font-size:17cqw;top:32%}
+.mcard .ft{position:absolute;left:7%;right:7%;bottom:9%;display:flex;justify-content:space-between;align-items:flex-end}
+.mcard .no{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:2.9cqw;letter-spacing:.18em;color:rgba(242,239,232,.8)}
+.mcard .no small{display:block;font-size:1.8cqw;letter-spacing:.24em;color:rgba(242,239,232,.5);margin-bottom:1.2cqw}
+.mcard .cf{text-align:right;line-height:1.1}.mcard .cf small{display:block;font-size:1.6cqw;letter-spacing:.3em;color:rgba(242,239,232,.6);margin-bottom:.6cqw}
+.mcard .cf span{font-family:'Source Serif 4',serif;font-style:italic;font-size:3.7cqw;color:#F2EFE8}
+.bvis{aspect-ratio:1.586;display:flex;align-items:center;justify-content:center;gap:clamp(18px,2vw,28px);border:1px solid rgba(242,239,232,.14);border-radius:clamp(16px,1.6vw,24px);background:rgba(242,239,232,.025)}
+.bvis img{width:clamp(72px,7vw,104px);height:auto;border-radius:22%;box-shadow:0 24px 60px rgba(128,82,255,.28)}
+.bvis b{display:block;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);letter-spacing:-.02em;color:#F7F6F3;line-height:1}
+.bvis small{display:block;margin-top:10px;font-size:13px;letter-spacing:.14em;color:rgba(242,239,232,.55)}
+.perk figcaption{margin-top:clamp(36px,5vh,56px);border-top:1px solid rgba(242,239,232,.28);padding-top:24px}
+.perk figcaption b{display:block;font-family:'Noto Serif KR',serif;font-size:clamp(20px,1.7vw,26px);font-weight:600;letter-spacing:-.02em;color:#F7F6F3}
+.perk figcaption span{display:block;margin-top:10px;font-size:15px;line-height:1.75;color:rgba(242,239,232,.68);max-width:34em}
+@media (max-width:860px){.perks-g{grid-template-columns:1fr;gap:56px}.perk figcaption{margin-top:30px;padding-top:20px}.perk figcaption span{font-size:14px}}
 .pg-tabs{position:sticky;top:64px;z-index:20;background:rgba(247,246,243,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E2E0DA}
 .pg-tabs .wrap{display:flex;gap:6px;padding:12px 35px}
 .pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
@@ -1404,6 +1435,116 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-new{padding:10px 18px;border:1px solid rgba(143,170,220,0.5);color:#F7F6F3 !important;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
 .wk-new:hover{background:rgba(143,170,220,0.12)}
 .wk-form.fd-card{margin:0 0 20px}
+/* 위클리 노션식 글 (assets/wk-rich.js): 편집기와 본문이 같은 모양. 읽기 좋은 한 단 칼럼, 장식은 선과 남색 포인트만 */
+.wk-rich{--ac:#8FAADC;--ln:rgba(247,246,243,0.12);font-size:15.5px;line-height:1.85;color:rgba(247,246,243,0.82);word-break:keep-all;overflow-wrap:anywhere;max-width:760px}
+.wk-rich>*:first-child{margin-top:0 !important}.wk-rich>h2:first-child{border-top:0;padding-top:4px}
+.wk-rich p{margin:0 0 14px}
+.wk-rich h2,.wk-rich h3,.wk-rich summary.h{font-family:'Noto Serif KR',serif;color:#F7F6F3;letter-spacing:-0.02em;line-height:1.45}
+.wk-rich h2{font-size:1.5em;font-weight:600;margin:44px 0 14px;padding-top:22px;border-top:1px solid var(--ln)}
+.wk-rich h3{font-size:1.15em;font-weight:600;margin:30px 0 10px}
+.wk-rich ul,.wk-rich ol{margin:0 0 16px;padding-left:1.5em}.wk-rich li{margin:4px 0;padding-left:.2em}.wk-rich li>ul,.wk-rich li>ol{margin:4px 0 6px}
+.wk-rich ul{list-style:none}.wk-rich ul>li{position:relative}.wk-rich ul>li::before{content:'';position:absolute;left:-1.05em;top:.78em;width:5px;height:5px;background:var(--ac)}
+.wk-rich ul ul>li::before{background:transparent;border:1px solid var(--ac);width:4px;height:4px}
+.wk-rich ol{padding-left:1.7em}.wk-rich ol>li::marker{color:var(--ac);font-weight:600;font-variant-numeric:tabular-nums}
+.wk-rich ul.todo{padding-left:0}.wk-rich ul.todo>li{padding-left:0}.wk-rich ul.todo>li::before{display:none}
+.wk-rich .chk{display:inline-block;width:15px;height:15px;margin:0 10px 0 0;border:1.5px solid rgba(247,246,243,0.45);font-size:0;line-height:0;vertical-align:middle;position:relative;top:-2px}
+.wk-rich .chk.on{background:var(--ac);border-color:var(--ac)}.wk-rich .chk.on::after{content:'';position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #0F1B2E;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.wk-rich strong{color:#F7F6F3;font-weight:700}.wk-rich em{font-style:italic}
+.wk-rich mark{background:linear-gradient(transparent 55%,rgba(143,170,220,0.35) 55%);color:#F7F6F3;padding:0 1px}
+.wk-rich a{color:#C9D8F5;text-decoration:none;border-bottom:1px solid rgba(201,216,245,0.4);transition:border-color .2s,color .2s}.wk-rich a:hover{color:#F7F6F3;border-bottom-color:#F7F6F3}
+.wk-rich code{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:.86em;background:rgba(247,246,243,0.08);padding:2px 6px;color:#E8E4D8}
+.wk-rich pre{font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:13px;line-height:1.65;background:rgba(5,10,20,0.45);border:1px solid var(--ln);padding:16px 18px;overflow-x:auto;white-space:pre;margin:0 0 18px}
+.wk-rich blockquote{margin:22px 0;padding:2px 0 2px 22px;border-left:2px solid var(--ac);font-family:'Noto Serif KR',serif;font-size:1.06em;color:rgba(247,246,243,0.9)}.wk-rich blockquote p:last-child{margin-bottom:0}
+.wk-rich aside.callout{margin:22px 0;padding:16px 20px 16px 22px;background:rgba(143,170,220,0.08);border-left:2px solid var(--ac);color:rgba(247,246,243,0.9)}.wk-rich aside.callout>*:last-child{margin-bottom:0}
+.wk-rich hr{border:0;height:1px;background:var(--ln);margin:34px 0}
+.wk-rich figure{margin:24px 0 26px}.wk-rich figure img{display:block;max-width:100%;max-height:680px;box-shadow:0 18px 40px rgba(0,0,0,0.35)}
+.wk-rich .tbl{overflow-x:auto;margin:20px 0 22px}.wk-rich table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.wk-rich th,.wk-rich td{border:0;border-bottom:1px solid var(--ln);padding:11px 14px 11px 0;text-align:left;vertical-align:top;line-height:1.55}
+.wk-rich tr:first-child th,.wk-rich tr:first-child td{border-bottom:1px solid rgba(247,246,243,0.4);font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:rgba(247,246,243,0.55);padding-bottom:9px}
+.wk-rich td:first-child{color:#F7F6F3;font-weight:500}
+.wk-rich details{margin:8px 0;border-top:1px solid var(--ln);border-bottom:1px solid var(--ln)}.wk-rich details+details{border-top:0;margin-top:-8px}
+.wk-rich summary{cursor:pointer;list-style:none;position:relative;padding:12px 0 12px 1.6em;color:#F7F6F3;font-weight:500;transition:color .2s}.wk-rich summary::-webkit-details-marker{display:none}
+.wk-rich summary:hover{color:var(--ac)}
+.wk-rich summary::before{content:'';position:absolute;left:.2em;top:50%;margin-top:-6px;width:7px;height:7px;border:solid var(--ac);border-width:0 1.5px 1.5px 0;transform:rotate(-45deg);transition:transform .25s ease}
+.wk-rich details[open]>summary::before{transform:rotate(45deg);margin-top:-7px}
+.wk-rich details>*:not(summary){margin-left:1.6em}.wk-rich details[open]>*:last-child{margin-bottom:16px}
+.wk-rich summary.h{font-size:1.15em;font-weight:600}
+.wk-body .wk-rich{margin-bottom:12px}
+/* 리포트 양식: 노션식 글을 리포트 상세(.rpt-paper)와 같은 틀로. 날짜 줄, 회색 띠(로고), 남색 헤드라인, 오른쪽 남색 정보 박스와 목차 */
+.wk-body:has(.wkp-sheet){padding-left:0}
+.wkp-sheet{background:#FFFFFF;color:#000;max-width:920px;margin:6px auto 20px;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(0,0,0,0.4)}
+.wkp-top{display:flex;align-items:center;padding:18px 20px 9px;font-size:14px;font-weight:500;color:#595959;font-variant-numeric:tabular-nums}.wkp-x{margin-left:auto;font-size:12.5px;color:#7F7F7F;text-decoration:none}.wkp-x:hover{color:#002060}
+.wk-item.open:has(.wkp-sheet)>.wk-head{display:none}.wk-item.open:has(.wkp-sheet){padding-top:4px}.wkp-top span{color:#A6A6A6;margin:0 7px}
+.wkp-head{position:relative;background:#808080;color:#F2F2F2;margin:0 20px;min-height:128px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:flex-end;padding:0 44px 16px}
+.wkp-logo{position:absolute;top:24px;right:30px;display:flex;align-items:center;gap:10px;color:#FFFFFF}.wkp-logo img{width:52px;height:auto}.wkp-logo>div{line-height:1}.wkp-logo>div>div:first-child{font-size:22px;font-weight:700;letter-spacing:.12em}.wkp-logo>div>div:last-child{font-size:9.5px;font-weight:300;margin-top:4px;letter-spacing:.01em}
+.wkp-sec{font-size:15px;font-weight:500;color:#FFFFFF}.wkp-sec span{font-weight:300;color:rgba(255,255,255,0.75)}
+.wkp-name{color:#F2F2F2;margin:6px 0 0;font-family:'RFS Report Dotum',sans-serif;font-size:40px;font-weight:700;letter-spacing:-0.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.wkp-grid{display:grid;grid-template-columns:minmax(0,1fr) 226px;grid-template-rows:auto 1fr;column-gap:24px;padding:24px 22px 34px 37px}.wkp-grid>.wkp-hl{grid-column:1 / -1}.wkp-grid>.wkp-main{grid-column:1;grid-row:2}
+.wkp-main{min-width:0}
+.wkp-hl{margin:0 0 4px;font-family:'RFS Report Dotum',sans-serif;font-size:30px;font-weight:700;color:#002060;letter-spacing:-0.02em;line-height:1.3;padding:0 0 12px 14px;border-bottom:1px solid #1F3864;overflow:hidden}
+/* 오른쪽 박스는 띄워 두고 글이 옆과 아래로 흘러 빈 칸이 생기지 않게 */
+/* 오른쪽 칸은 스크롤해도 화면에 따라온다 */
+.wkp-side{grid-column:2;grid-row:2;align-self:start;position:sticky;top:88px;margin-top:2px}
+.wkp-facts{background:#001F5F;color:#FFFFFF;padding:2px 0}
+.wkp-fact{display:grid;grid-template-columns:1fr 1.15fr;align-items:center;margin:0 5px;min-height:31px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,0.55);font-size:11.5px}.wkp-fact:last-child{border-bottom:0}
+.wkp-fact span{font-weight:300}.wkp-fact b{font-family:'RFS Report Dotum',sans-serif;font-size:15px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.wkp-blk{margin-top:15px}
+.wkp-bt{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13px;font-weight:700;color:#000;padding-bottom:5px;border-bottom:1.5px solid #404040}.wkp-bt small{font-size:10.5px;font-weight:300;color:#595959}
+.wkp-dt{width:100%;border-collapse:collapse;font-size:11px;font-variant-numeric:tabular-nums}.wkp-dt th{font-weight:500;background:#F2F2F2;border-bottom:1px solid #A6A6A6;padding:3px 3px;text-align:center}.wkp-dt th:first-child,.wkp-dt td:first-child{text-align:left;padding-left:4px}
+.wkp-dt td{padding:2px 3px;text-align:center;font-weight:300;border-bottom:1px solid #E4E2DC}.wkp-dt td:first-child{font-weight:500}
+.wkp-kv>div{display:flex;justify-content:space-between;font-size:11px;padding:2px 4px;border-bottom:1px solid #E4E2DC;font-variant-numeric:tabular-nums}.wkp-kv span{font-weight:300}.wkp-kv b{font-weight:500}
+.wkp-lg{font-size:10px;font-weight:300;color:#595959;display:flex;align-items:center;gap:4px}.wkp-lg i{display:inline-block;width:10px;height:2px;margin-left:6px}.wkp-lg i.f{background:#002060}.wkp-lg i.k{background:#A6A6A6}
+.wkp-ch{display:block;width:100%;height:78px;margin-top:6px;overflow:visible}.wkp-ch polyline{fill:none;vector-effect:non-scaling-stroke}.wkp-ch .f{stroke:#002060;stroke-width:1.6}.wkp-ch .k{stroke:#A6A6A6;stroke-width:1.2}.wkp-ch .b{stroke:#D9D9D9;stroke-width:1;stroke-dasharray:3 3}
+.wkp-ax{display:flex;justify-content:space-between;font-size:10px;color:#7F7F7F;margin-top:4px;font-variant-numeric:tabular-nums}
+.wkp-hd{display:grid;grid-template-columns:1fr 52px 40px;align-items:center;gap:6px;font-size:11.5px;padding:3px 4px;border-bottom:1px solid #E4E2DC}.wkp-hd i{height:5px;background:#002060;justify-self:start}.wkp-hd b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+html.wk-solid .nav{background:rgba(11,21,36,0.94) !important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);transition:background .25s ease}
+.wkp-btn{display:block;margin-top:14px;padding:12px 0;text-align:center;font-size:12px;font-weight:700;letter-spacing:.04em;color:#FFFFFF;background:#001F5F;text-decoration:none}.wkp-btn:hover{background:#203864}
+.wkp-toc:empty{display:none}.wkp-toc{margin-top:15px}
+.wkp-toc>b{display:block;font-size:13px;font-weight:700;color:#002060;padding-bottom:6px;border-bottom:1.5px solid #404040}
+.wkp-toc a{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #E4E2DC;font-size:12.5px;line-height:1.45;color:#262626;text-decoration:none}.wkp-toc a:hover{color:#002060}.wkp-toc a i{font-style:normal;color:#002060;font-weight:700;font-variant-numeric:tabular-nums;min-width:1.4em}
+@media (max-width:860px){
+.wkp-top{padding:16px 14px 8px;font-size:12.5px}
+.wkp-head{margin:0 14px;padding:48px 18px 18px;min-height:0}.wkp-logo{top:12px;right:14px}.wkp-logo img{width:30px}.wkp-logo>div>div:first-child{font-size:15px}.wkp-logo>div>div:last-child{font-size:7.5px}
+.wkp-name{font-size:28px}
+.wkp-grid{padding:20px 14px 28px;display:flex;flex-direction:column}.wkp-side{position:static;width:auto;margin:26px 0 0;order:3}.wkp-toc{display:none}.wk-ed.wkp{padding:20px 16px}.wkp-sheet{margin-left:-16px;margin-right:-16px}.wkp-hl{font-size:24px;padding-left:0}
+}
+.wk-rich.wkp{--ac:#002060;--ln:#D9D9D9;max-width:none;padding:0;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;font-size:16px;font-weight:300;line-height:1.5;color:#000;text-align:justify}
+/* KoPub 돋움은 300·500·700뿐이라 본문은 리포트 PDF처럼 Light, 강조는 Bold */
+.wk-rich.wkp li{margin:1px 0}.wk-rich.wkp summary,.wk-rich.wkp td:first-child,.wk-rich.wkp th{font-weight:500}
+.wk-rich.wkp p{margin:5px 0 0}.wk-rich.wkp>p:first-child{margin-top:10px}
+.wk-rich.wkp h2,.wk-rich.wkp h3,.wk-rich.wkp summary.h{font-family:'RFS Report Dotum',sans-serif;color:#000;letter-spacing:-0.01em;text-align:left}
+.wk-rich.wkp h2{margin:20px 0 4px;padding:0;border:0;font-size:19px;font-weight:700;line-height:1.45}
+.wk-rich.wkp h3{margin:20px 0 6px;font-size:16.5px;font-weight:700;color:#002060}
+.wk-rich.wkp strong{color:#000;font-weight:700}
+.wk-rich.wkp mark{background:linear-gradient(transparent 60%,rgba(0,32,96,0.14) 60%);color:inherit}
+.wk-rich.wkp a{color:#002060;border-bottom-color:rgba(0,32,96,0.35)}.wk-rich.wkp a:hover{color:#000;border-bottom-color:#000}
+.wk-rich.wkp ul,.wk-rich.wkp ol{margin:6px 0 0}.wk-rich.wkp ul>li::before{background:#000;width:4px;height:4px;top:.8em}.wk-rich.wkp ul ul>li::before{background:transparent;border-color:#000}
+.wk-rich.wkp ol>li::marker{color:#000}
+.wk-rich.wkp code{background:#F2F2F2;color:#000}.wk-rich.wkp pre{background:#F7F7F7;border-color:#E3E3E3;color:#000;margin-top:10px}
+.wk-rich.wkp blockquote{margin:14px 0;border-left:2px solid #A6A6A6;color:#404040;font-family:'RFS Report Dotum',sans-serif;font-size:1em}
+.wk-rich.wkp aside.callout{margin:16px 0;background:#001F5F;border-left:0;color:#FFFFFF;padding:14px 18px;font-size:15.5px;font-weight:500;text-align:left}.wk-rich.wkp aside.callout p{margin:0}.wk-rich.wkp aside.callout strong{color:#FFFFFF}.wk-rich.wkp aside.callout a{color:#FFFFFF;border-bottom-color:rgba(255,255,255,0.5)}
+.wk-rich.wkp hr{background:#A6A6A6;margin:24px 0;overflow:hidden}
+.wk-rich.wkp details,.wk-rich.wkp aside.callout,.wk-rich.wkp blockquote,.wk-rich.wkp figure,.wk-rich.wkp pre{overflow:hidden}.wk-rich.wkp .tbl{overflow-x:auto}
+.wk-rich.wkp figure{margin:16px 0 6px}.wk-rich.wkp figure img{box-shadow:none;border:0;max-height:560px}
+.wk-rich.wkp .tbl{margin:16px 0 4px;border-top:1.5px solid #404040;border-bottom:1.5px solid #404040}.wk-rich.wkp table{font-size:13.5px;border:0;white-space:nowrap}
+.wk-rich.wkp th,.wk-rich.wkp td{border:0;padding:4px 10px;text-align:center;color:#000;font-weight:300}
+.wk-rich.wkp tr:first-child th,.wk-rich.wkp tr:first-child td{background:#F2F2F2;color:#000;font-size:13.5px;letter-spacing:0;text-transform:none;font-weight:500;border-bottom:1px solid #A6A6A6;padding:6px 10px}
+.wk-rich.wkp td:first-child{color:#000;font-weight:500}
+.wk-rich.wkp details{margin:10px 0 0;border-color:#D9D9D9}.wk-rich.wkp details+details{margin-top:-1px}.wk-rich.wkp summary{color:#000;font-weight:700;padding:10px 0 10px 1.5em}.wk-rich.wkp summary:hover{color:#002060}.wk-rich.wkp summary::before{border-color:#002060}
+.wk-rich.wkp .chk{border-color:#7F7F7F}.wk-rich.wkp .chk.on{background:#001F5F;border-color:#001F5F}.wk-rich.wkp .chk.on::after{border-color:#FFFFFF}
+@media (max-width:860px){.wk-rich.wkp{font-size:15px;text-align:left}.wk-rich.wkp h2{font-size:17.5px}}
+.wk-ed.wkp{background:#FFFFFF;border-color:#BFBFBF;padding:26px 30px}.wk-ed.wkp:focus{border-color:#002060}.wk-ed.wkp.empty::before{color:#9A9A9A}
+.wk-ed.wkp figure.wait::after{color:#1A1A1A}.wk-ed.wkp figure.miss::after{color:#B42318}.wk-ed.wkp figure.miss{outline-color:#B42318}
+
+.wk-ed{min-height:280px;max-height:70vh;overflow-y:auto;padding:16px 18px;border:1px solid rgba(247,246,243,0.3);background:rgba(247,246,243,0.06);outline:none;cursor:text}
+.wk-ed:focus{border-color:rgba(143,170,220,0.8)}
+.wk-ed.empty::before{content:attr(data-ph);color:rgba(247,246,243,0.4);pointer-events:none;display:block}
+.wk-ed figure.wait img{opacity:.35}.wk-ed figure.wait{position:relative}.wk-ed figure.wait::after{content:'노션 사진 불러오는 중…';position:absolute;left:12px;top:10px;font-size:12px;color:#F7F6F3}
+.wk-ed figure.miss{position:relative;cursor:pointer;outline:1px dashed #E8A1A1;min-height:80px}.wk-ed figure.miss img{opacity:.25}
+.wk-ed figure.miss::after{content:'이 사진은 노션에서 가져오지 못했습니다 · 눌러서 다시 올리기';position:absolute;left:12px;top:10px;right:12px;font-size:12.5px;color:#F2C6C6}
+.wk-tip{font-size:12px;color:rgba(247,246,243,0.5)}
+.wk-pics .wk-add{width:auto;height:auto;padding:9px 14px;text-decoration:none}
+
 .wk-note{margin:0;font-size:13px;color:rgba(247,246,243,0.6)}
 .wk-pics{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .wk-pics .pv{position:relative;width:96px;height:72px}
@@ -2578,7 +2719,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </div>
     </section>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
+    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="perks" onClick="{{ tabGo }}">혜택</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
 
 
     <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
@@ -2598,6 +2739,26 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <div class="tl-txt inv-soft" style="font-size:13px;color:rgba(26,26,26,0.65);margin-top:6px;line-height:1.6">{{ d.note }}</div>
             </div>
           </sc-for>
+        </div>
+      </div>
+    </section>
+
+
+    <section data-tab="perks" class="perks" data-nav="dark">
+      <div class="wrap secpad" style="padding:110px 35px">
+        <div class="rv rv-up">
+          <p class="sec-label">Member Benefits</p>
+          <h2 class="sec-title">학회원 혜택</h2>
+        </div>
+        <div class="perks-g">
+          <figure class="perk rv rv-up">
+            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <figcaption><b>Claude 60% 할인</b><span>R.F.S.는 Anthropic의 Claude for Nonprofits 프로그램 승인을 받았습니다. 이에 따라 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
+          </figure>
+          <figure class="perk rv rv-up" style="--rv-delay:120ms">
+            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small></div></div>
+            <figcaption><b>Butler 유료 플랜</b><span>R.F.S.는 기업분석 플랫폼 Butler와 정식 제휴를 체결하였습니다. 이에 따라 모든 학회원은 R.F.S. 제휴 조건으로 Butler 유료 플랜을 이용할 수 있습니다.</span></figcaption>
+          </figure>
         </div>
       </div>
     </section>
@@ -2664,7 +2825,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </sc-if>
       </div>
     </section>
-    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
+    <nav class="pg-tabs" data-nav="light"><div class="wrap"><a href="#" data-t="schedule" onClick="{{ tabGo }}">전형 일정</a><a href="#" data-t="perks" onClick="{{ tabGo }}">혜택</a><a href="#" data-t="faq" onClick="{{ tabGo }}">FAQ</a><a href="#" data-t="apply" onClick="{{ tabGo }}">지원</a></div></nav>
 
 
     <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
@@ -2679,6 +2840,26 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </div>
           </div>
         </sc-for>
+      </div>
+    </section>
+
+
+    <section data-tab="perks" class="perks" data-nav="dark" style="padding:56px 24px 64px">
+      <div class="">
+        <div class="rv rv-up">
+          <p class="sec-label">Member Benefits</p>
+          <h2 class="sec-title" style="font-family:&#39;Noto Serif KR&#39;,serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;margin:0">학회원 혜택</h2>
+        </div>
+        <div class="perks-g">
+          <figure class="perk rv rv-up">
+            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <figcaption><b>Claude 60% 할인</b><span>R.F.S.는 Anthropic의 Claude for Nonprofits 프로그램 승인을 받았습니다. 이에 따라 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
+          </figure>
+          <figure class="perk rv rv-up" style="--rv-delay:120ms">
+            <div class="bvis"><img src="assets/partners/butler.webp" alt="Butler"><div><b>Butler</b><small>투자 비서</small></div></div>
+            <figcaption><b>Butler 유료 플랜</b><span>R.F.S.는 기업분석 플랫폼 Butler와 정식 제휴를 체결하였습니다. 이에 따라 모든 학회원은 R.F.S. 제휴 조건으로 Butler 유료 플랜을 이용할 수 있습니다.</span></figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
@@ -2754,8 +2935,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
         <sc-if value="{{ wkIsNotice }}" hint-placeholder-val="{{ false }}"><input class="intra-input" placeholder="공지 제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></sc-if>
-        <textarea class="intra-input" rows="12" placeholder="본문. 노션에서 복사해 붙여넣어도 됩니다. 빈 줄로 문단을 나눕니다. 사진을 넣을 자리에 커서를 두고 ‘사진 추가’를 누르면 그 자리에 [사진 1]이 들어갑니다." value="{{ wkBody }}" onChange="{{ onWkBody }}"></textarea>
-        <div class="wk-pics"><sc-for list="{{ wkPreviews }}" as="pv"><div class="pv"><img src="{{ pv.u }}" alt=""><span>{{ pv.n }}</span><a href="#" onClick="{{ pv.rm }}">×</a></div></sc-for><label class="wk-add">＋ 사진 추가<input type="file" accept="image/*" multiple="multiple" onChange="{{ onWkFiles }}"></label></div>
+        <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
+        <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
       </form></sc-if>
@@ -2764,9 +2945,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top">{{ w.date }}<span>|</span>{{ w.kind }}<a href="#" class="wkp-x" onClick="{{ w.toggle }}">접기 −</a></div><div class="wkp-head"><div class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><div><div>R.F.S</div><div>Rising Financial Stars</div></div></div><div class="wkp-sec"><span>|</span> {{ w.kind }} <span>|</span></div><h1 class="wkp-name">{{ w.bandName }}</h1></div><div class="wkp-grid"><h2 class="wkp-hl" data-t="{{ w.title }}"></h2><aside class="wkp-side"><div class="wkp-facts"><sc-for list="{{ w.facts }}" as="f"><div class="wkp-fact"><span>{{ f.l }}</span><b>{{ f.v }}</b></div></sc-for></div><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Fund Data</div><table class="wkp-dt"><tr><th>수익률(%)</th><th>1주</th><th>1개월</th><th>3개월</th></tr><sc-for list="{{ w.fdRows }}" as="r"><tr><td>{{ r.n }}</td><td>{{ r.a }}</td><td>{{ r.b }}</td><td>{{ r.c }}</td></tr></sc-for></table><div class="wkp-kv"><sc-for list="{{ w.fdKv }}" as="k"><div><span>{{ k.l }}</span><b>{{ k.v }}</b></div></sc-for></div></div><div class="wkp-blk"><div class="wkp-bt">Fund Price<span class="wkp-lg"><i class="f"></i>AMT<i class="k"></i>KOSPI</span></div><svg class="wkp-ch" viewBox="0 0 237 104" preserveAspectRatio="none"><polyline class="b" points="{{ w.chB }}"></polyline><polyline class="k" points="{{ w.chK }}"></polyline><polyline class="f" points="{{ w.chF }}"></polyline></svg><div class="wkp-ax"><span>{{ w.chFrom }}</span><span>{{ w.chTo }}</span></div></div></sc-if><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Top Holdings<small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.top }}" as="t"><div class="wkp-hd"><span>{{ t.n }}</span><i style="width:{{ t.bw }}"></i><b>{{ t.w }}</b></div></sc-for></div></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wkp-btn" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if><div class="wkp-toc"></div></aside><div class="wkp-main"><div class="wk-rich wkp" data-wk="{{ w.id }}"></div></div></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
-            <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
+            <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
           </div></sc-if>
         </article></sc-for></div>
@@ -2804,9 +2985,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top">{{ w.date }}<span>|</span>{{ w.kind }}<a href="#" class="wkp-x" onClick="{{ w.toggle }}">접기 −</a></div><div class="wkp-head"><div class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><div><div>R.F.S</div><div>Rising Financial Stars</div></div></div><div class="wkp-sec"><span>|</span> {{ w.kind }} <span>|</span></div><h1 class="wkp-name">{{ w.bandName }}</h1></div><div class="wkp-grid"><h2 class="wkp-hl" data-t="{{ w.title }}"></h2><aside class="wkp-side"><div class="wkp-facts"><sc-for list="{{ w.facts }}" as="f"><div class="wkp-fact"><span>{{ f.l }}</span><b>{{ f.v }}</b></div></sc-for></div><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Fund Data</div><table class="wkp-dt"><tr><th>수익률(%)</th><th>1주</th><th>1개월</th><th>3개월</th></tr><sc-for list="{{ w.fdRows }}" as="r"><tr><td>{{ r.n }}</td><td>{{ r.a }}</td><td>{{ r.b }}</td><td>{{ r.c }}</td></tr></sc-for></table><div class="wkp-kv"><sc-for list="{{ w.fdKv }}" as="k"><div><span>{{ k.l }}</span><b>{{ k.v }}</b></div></sc-for></div></div><div class="wkp-blk"><div class="wkp-bt">Fund Price<span class="wkp-lg"><i class="f"></i>AMT<i class="k"></i>KOSPI</span></div><svg class="wkp-ch" viewBox="0 0 237 104" preserveAspectRatio="none"><polyline class="b" points="{{ w.chB }}"></polyline><polyline class="k" points="{{ w.chK }}"></polyline><polyline class="f" points="{{ w.chF }}"></polyline></svg><div class="wkp-ax"><span>{{ w.chFrom }}</span><span>{{ w.chTo }}</span></div></div></sc-if><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Top Holdings<small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.top }}" as="t"><div class="wkp-hd"><span>{{ t.n }}</span><i style="width:{{ t.bw }}"></i><b>{{ t.w }}</b></div></sc-for></div></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wkp-btn" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if><div class="wkp-toc"></div></aside><div class="wkp-main"><div class="wk-rich wkp" data-wk="{{ w.id }}"></div></div></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
-            <sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
+            <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
           </div></sc-if>
         </article></sc-for></div>
@@ -4294,6 +4475,9 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    window.__wkReady = () => this.wkDom(); this.wkDom();
+    // Weekly Strategy: 흰 리포트 종이 위로 내려가면 메뉴 글자가 묻히지 않게 메뉴에 어두운 바탕을 깐다
+    window.addEventListener('scroll', () => document.documentElement.classList.toggle('wk-solid', this.state.page === 'strategy' && window.scrollY > 160), { passive: true });
     // 카드가 화면에 들어오면 in 클래스를 붙여 등장 효과를 한 번 재생한다
     if ('IntersectionObserver' in window && 'MutationObserver' in window) {
       document.documentElement.classList.add('fx');
@@ -4474,6 +4658,7 @@ class Component extends DCLogic {
     });
   }
   componentDidUpdate(pp, ps) {
+    this.wkDom();
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
     // AGORA는 '선배님께 여쭙기' 하나만 보여 준다. 로그인하고 명부를 받으면 바로 열고, 다른 페이지로 가면 닫는다
@@ -4994,6 +5179,13 @@ class Component extends DCLogic {
     return this.sb.auth.signInWithPassword({ email, password: pw || '' }).then(({ error }) => ({ error, email }));
   }
 
+  // 위클리: 글쓰기 칸을 노션식 편집기로 붙이고, 노션식 글은 HTML로 채운다 (assets/wk-rich.js)
+  wkDom() {
+    const W = window.RFSWk; if (!W) return;
+    const ed = document.querySelector('.wk-form .wk-ed'); if (ed) W.attach(ed);
+    document.querySelectorAll('.wk-rich[data-wk]').forEach((n) => { const id = n.getAttribute('data-wk'); const b = (this._wkBodies || {})[id]; if (b && n.__wk !== b) { n.__wk = b; W.render(n, b); W.sheet(n.closest('.wkp-sheet'), n); } });
+  }
+
   // FUND 위클리: 누구나 읽고, 운용팀 계정(AMT_EMAIL)만 쓴다. 표는 Supabase fund_weekly, 사진은 Storage fund-weekly
   loadWeekly() {
     if (!this.sb) return;
@@ -5037,13 +5229,55 @@ class Component extends DCLogic {
       }
       return urls;
     };
+    // 노션식 글(<!--rich-->로 시작)은 HTML로 저장된다. 목록에는 글자만 뽑아 보여 준다
+    const plain = (b) => (new DOMParser().parseFromString(String(b || '').replace(/</g, ' <'), 'text/html').body.textContent || '').replace(/\s+/g, ' ').trim();
+    this._wkBodies = this._wkBodies || {};
+    // 리포트 양식 오른쪽 칸: 글의 기준일(투자전략은 그 주 월요일 전 마지막 거래일) 펀드 기준가·수익률·추이를 자동으로.
+    // 리포트 1페이지의 투자의견 박스·Stock Data·Stock Price 자리. 보유 상위 종목은 지금 것이라 가장 최근 글에만
+    const FD = s.fundLive || s.fundPub;
+    const FH = ((FD && FD.history) || []).filter((h) => h[1] && h[2]);
+    const sg = (v, d = 1) => (v === null || v === undefined || isNaN(v) ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(d));
+    const fundSide = (w, newest) => {
+      const isN = (w.category || '투자전략') === '공지';
+      const a = new Date(w.week + 'T00:00:00'), f = new Date(a); f.setDate(a.getDate() + 4);
+      const base = isN ? [{ l: '구분', v: '공지' }, { l: '게시일', v: fmt(w.week).slice(2) }] : [{ l: '구분', v: '투자전략' }, { l: '적용 기간', v: isNaN(a) ? '-' : md(a) + ' ~ ' + md(f) }];
+      let i = -1; FH.forEach((h, k) => { if (isN ? h[0] <= w.week : h[0] < w.week) i = k; });
+      if (i < 1) return { facts: base.concat([{ l: '작성', v: '운용팀' }]), hasFd: false, hasTop: false };
+      const H = FH.slice(0, i + 1), L = H[i], d0 = L[0];
+      const back = (days) => { const t = new Date(d0 + 'T00:00:00'); t.setDate(t.getDate() - days); const c = t.toISOString().slice(0, 10); return H.filter((h) => h[0] <= c).pop() || null; };
+      const r = (ref, col) => (ref ? (L[col] / ref[col] - 1) * 100 : null);
+      const w1 = back(7), m1 = back(30), m3 = back(91);
+      const sinceF = (L[1] / 1000 - 1) * 100, sinceK = (L[2] / H[0][2] - 1) * 100;
+      // 추이: 설정일 = 100으로 맞춘 펀드·KOSPI 두 선
+      const fs = H.map((h) => h[1] / H[0][1] * 100), ks = H.map((h) => h[2] / H[0][2] * 100);
+      const lo = Math.min(...fs, ...ks, 100) * 0.98, hi = Math.max(...fs, ...ks, 100) * 1.02;
+      const pt = (arr) => arr.map((v, k) => (k / Math.max(1, arr.length - 1) * 237).toFixed(1) + ',' + (100 - (v - lo) / (hi - lo) * 96).toFixed(1)).join(' ');
+      const yb = (100 - (100 - lo) / (hi - lo) * 96).toFixed(1);
+      const hs = newest ? ((FD.holdings || []).slice().sort((x, y) => y.weight - x.weight).slice(0, 5)) : [];
+      const wm = Math.max(1, ...hs.map((h) => h.weight || 0));
+      return {
+        facts: base.concat([{ l: '기준가 (' + d0.slice(5).replace('-', '.') + ')', v: Number(L[1]).toFixed(2) }, { l: '설정 이후', v: sg(sinceF) + '%' }, { l: 'KOSPI 대비', v: sg(sinceF - sinceK) + '%p' }]),
+        hasFd: true,
+        fdRows: [{ n: 'AMT Fund', a: sg(r(w1, 1)), b: sg(r(m1, 1)), c: sg(r(m3, 1)) }, { n: 'KOSPI', a: sg(r(w1, 2)), b: sg(r(m1, 2)), c: sg(r(m3, 2)) }],
+        fdKv: [{ l: '설정일', v: (FD.start || H[0][0]).replace(/-/g, '.') }, { l: 'KOSPI (' + d0.slice(5).replace('-', '.') + ')', v: Number(L[2]).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) }],
+        chF: pt(fs), chK: pt(ks), chB: '0,' + yb + ' 237,' + yb, chFrom: H[0][0].slice(2).replace(/-/g, '.'), chTo: d0.slice(2).replace(/-/g, '.'),
+        hasTop: hs.length > 0, topAsOf: (FD.asOf || '').slice(5).replace('-', '.') + ' 기준',
+        top: hs.map((h) => ({ n: h.name, w: (h.weight || 0).toFixed(1) + '%', bw: ((h.weight || 0) / wm * 100).toFixed(0) + '%' })),
+      };
+    };
     const item = (w, open) => {
       const body = String(w.body || '');
+      const rich = body.indexOf('<!--rich-->') === 0;
+      if (rich) this._wkBodies[w.id] = body;
       return {
+        id: w.id, rich: open && rich, kind: (w.category || '투자전략') === '공지' ? 'Notice' : 'Weekly Strategy',
+        // 리포트 양식 머리: 회색 띠는 리포트의 회사명 자리에 'AMT Fund', 위 칸은 Weekly Strategy/Notice. 오른쪽 남색 박스는 글 정보
+        bandName: 'AMT Fund',
+        ...(open && rich ? fundSide(w, w === list[0]) : {}),
         date: fmt(w.week), title: w.title, cat: w.category || '투자전략', catCls: 'wk-cat' + ((w.category || '투자전략') === '공지' ? ' n' : ''), open, closed: !open, cls: 'wk-item' + (open ? ' open' : ''),
-        excerpt: body.replace(TOK, '').replace(/\s+/g, ' ').trim().slice(0, 120) + (body.length > 120 ? '…' : ''),
-        paras: open ? parasImg(body, w.images || []) : [], imgs: open ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
-        hasLink: open && !!w.link, link: w.link || '',
+        excerpt: (() => { const x = rich ? plain(body) : body.replace(TOK, '').replace(/\s+/g, ' ').trim(); return x.slice(0, 120) + (x.length > 120 ? '…' : ''); })(),
+        paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
+        hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
         toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
         canDel: open && isAmt,
         del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
@@ -5065,7 +5299,7 @@ class Component extends DCLogic {
       } })),
       hasWkLatest: true,
       wkLatestShort: list[0] ? fmt(list[0].week).slice(5) : '', wkLatestDate: list[0] ? fmt(list[0].week) : '', wkLatestTitle: list[0] ? list[0].title : '',
-      wkLatestEx: list[0] ? String(list[0].body || '').replace(/\s+/g, ' ').slice(0, 90) + (String(list[0].body || '').length > 90 ? '…' : '') : '',
+      wkLatestEx: list[0] ? (() => { const x = plain(list[0].body); return x.slice(0, 90) + (x.length > 90 ? '…' : ''); })() : '',
       wkGo: (e) => { e.preventDefault(); this.setState({ wkOpen: list[0] ? list[0].id : undefined }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 130, behavior: 'smooth' }); }); },
       hasWkMsg: !!s.wkErr && !s.wkWrite,
       wkIsAmt: isAmt, wkWriteOpen: !!s.wkWrite, wkLoginOpen: !!s.wkLogin && !isAmt,
@@ -5096,21 +5330,26 @@ class Component extends DCLogic {
         const next = body.slice(0, at).replace(/\s*$/, '') + (at ? '\n\n' : '') + toks + '\n\n' + body.slice(at).replace(/^\s*/, '');
         this.setState({ wkFiles: [...cur, ...add], wkBody: next });
       },
+      wkPick: (e) => { e.preventDefault(); window.RFSWk && window.RFSWk.pick(); },
       wkFileNote: (s.wkFiles || []).length ? '사진 ' + s.wkFiles.length + '장' : '',
       wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
       wkSubmit: async (e) => {
         e.preventDefault();
         if (s.wkBusy) return;
         if (!strat && !(s.wkTitle || '').trim()) { this.setState({ wkErr: '제목을 입력하세요' }); return; }
+        const ed = document.querySelector('.wk-form .wk-ed');
+        if (!ed || !window.RFSWk) { this.setState({ wkErr: '편집기를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요' }); return; }
         this.setState({ wkBusy: true, wkErr: '' });
         try {
-          const images = await upload(s.wkFiles || []);
+          // 본문 속 사진은 저장소에 올리고 그 주소로 바꿔 HTML로 저장한다
+          const body = await window.RFSWk.collect(ed, upload);
           const link = (s.wkLink || '').trim();
-          const { error } = await this.sb.from('fund_weekly').insert({ category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body: (s.wkBody || '').trim(), images, link: /^https?:\/\//.test(link) ? link : '' });
+          const { error } = await this.sb.from('fund_weekly').insert({ category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' });
           if (error) throw error;
+          window.RFSWk.reset();
           this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined });
           this.loadWeekly();
-        } catch (x) { this.setState({ wkBusy: false, wkErr: '올리지 못했습니다: ' + ((x && x.message) || x) }); }
+        } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^노션/.test(m) ? m : '올리지 못했습니다: ' + m }); }
       },
     };
   }
@@ -5352,9 +5591,10 @@ class Component extends DCLogic {
   }
 
   applyHash() {
-    // 리포트 개별 주소(/research/<id>/)로 들어온 경우 해시 없이도 그 리포트 화면을 연다
+    // 검색용 정적 주소(/research/<id>/, /research/, /about/, /recruiting/)로 들어온 경우 해시 없이도 그 화면을 연다
     const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
-    const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
+    const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit' }[location.pathname.replace(/\/?$/, '/')];
+    const h = (location.hash || (pm ? '#research/' + pm[1] : pp ? '#' + pp : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
@@ -5391,7 +5631,11 @@ class Component extends DCLogic {
     const s = this.state;
     // 리포트 1페이지 원문(tools/extract-page1.py가 만든 파일)은 리포트 화면을 처음 열 때 한 번 받아 온다
     // 펀드 공개분(장 마감 확정치)은 누구나 읽는 public_content에서 받는다
-    if (s.page === 'strategy' && !this._wkReq && this.sb) { this._wkReq = true; this.loadWeekly(); }
+    if (s.page === 'strategy' && !this._wkReq && this.sb) {
+      this._wkReq = true; this.loadWeekly();
+      // 리포트 양식 오른쪽 칸(기준가·수익률·추이)에 쓰는 펀드 공개분
+      if (!this._fundPubReq) this.sb.from('public_content').select('data').eq('id', 'fund').maybeSingle().then(({ data }) => this.setState({ fundPub: (data && data.data) || null }), () => {});
+    }
     if (s.page === 'fund' && !this._fundPubReq && this.sb) {
       this._fundPubReq = true;
       this.loadFundLive();

@@ -126,6 +126,7 @@ function aboutPage() {
   return head({ title, desc, url, keywords }) +
 `<script type="application/ld+json">${json(ld)}</script>
 <script type="application/ld+json">${json(crumbLd('About', url))}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
@@ -162,6 +163,7 @@ function recruitingPage() {
   return head({ title, desc, url, keywords }) +
 `<script type="application/ld+json">${json(ld)}</script>
 <script type="application/ld+json">${json(crumbLd('Recruiting', url))}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
