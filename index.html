@@ -992,7 +992,7 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .perk:nth-child(2) .mcard{transform:rotate(2deg)}
 .perk:hover .mcard{transform:rotate(0) translateY(-6px)}
 .mcard::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.12) 45%,transparent 60%);z-index:1}
-.mcard .seal{position:absolute;right:-8%;top:-12%;width:44%;opacity:.12}
+.mcard .mseal{position:absolute;right:-8%;top:-12%;width:44%;height:auto;opacity:.14;pointer-events:none}
 .mcard .hd{position:absolute;left:7%;top:10%;display:flex;align-items:center;gap:2.2cqw}
 .mcard .hd img{width:7.8cqw}.mcard .hd b{font-family:'Noto Serif KR',serif;font-size:4.2cqw;letter-spacing:.04em;color:#F2EFE8}
 .mcard .chip{position:absolute;left:7%;top:36%;width:11.7cqw;height:9cqw;border-radius:1.7cqw;background:linear-gradient(135deg,#d9c79a,#a8925e);opacity:.9}
@@ -1004,8 +1004,6 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .mcard .cf{text-align:right;line-height:1.1}.mcard .cf small{display:block;font-size:1.6cqw;letter-spacing:.3em;color:rgba(242,239,232,.6);margin-bottom:.6cqw}
 .mcard .cf span{font-family:'Source Serif 4',serif;font-style:italic;font-size:3.7cqw;color:#F2EFE8}
 /* 카드에 올리면: Claude 카드는 바로 서면서 빛이 지나가고 60%가 밝아짐, Butler는 '투자 비서' 자리에 기능이 하나씩 바뀌어 나옴 (각 1.8초) */
-.mcard::after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%) 160% 0/250% 100% no-repeat;transition:background-position 0s}
-.perk:hover .mcard::after{background-position:-60% 0;transition:background-position 1.1s cubic-bezier(.4,0,.2,1)}
 .perk:hover .mcard{transform:rotate(0) translateY(-10px) scale(1.02);box-shadow:0 50px 100px rgba(0,0,0,.6),0 0 60px rgba(143,170,220,.22),inset 0 0 0 1px rgba(201,216,245,.5)}
 .mcard .big{transition:color .5s ease,text-shadow .5s ease}.perk:hover .mcard .big{color:#E4ECFB;text-shadow:0 0 30px rgba(143,170,220,.55)}
 .bvis{transition:border-color .4s ease,background .4s ease}.perk:hover .bvis{border-color:rgba(160,130,255,.45);background:rgba(128,82,255,.06)}
@@ -1014,18 +1012,18 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .bvis{position:relative;overflow:hidden}
 .bid{display:flex;align-items:center;gap:clamp(18px,2vw,28px);transition:transform .7s cubic-bezier(.2,.8,.2,1)}
 .bid>span{display:block}
-.perk:hover .bid{transform:translateX(-58%) scale(.82)}
-.perk:hover .bid small{opacity:0}
-.bvis .bss b,.bvis .bss small{white-space:nowrap}
-.bss{position:absolute;left:48%;right:6%;top:50%;height:96px;transform:translateY(-50%);opacity:0;transition:opacity .5s ease .2s;pointer-events:none}
-.perk:hover .bss{opacity:1}
-.bss>span{position:absolute;left:0;right:0;top:0;opacity:0;padding-left:22px;border-left:1px solid rgba(207,194,255,.4)}
-.bvis .bss b{display:block;margin:0;font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(20px,1.9vw,28px);color:#F7F6F3;letter-spacing:-.02em;line-height:1.3}
-.bvis .bss small{display:block;letter-spacing:0 !important;margin-top:10px;font-size:clamp(12.5px,1vw,14px);color:#CFC2FF;letter-spacing:0;line-height:1.5}
-.perk:hover .bss>span{animation:bss 15.4s linear infinite;animation-delay:calc(var(--i) * 2.2s)}
-@keyframes bss{0%{opacity:0;transform:translateY(8px)}3%,12%{opacity:1;transform:none}14.3%,100%{opacity:0;transform:translateY(-8px)}}
+.bid{transition:opacity .4s ease}.perk:hover .bid{opacity:0}
+.bss{position:absolute;inset:0;border-radius:inherit;overflow:hidden;background:#fff;opacity:0;transform:scale(1.03);transition:opacity .5s ease,transform .7s cubic-bezier(.2,.8,.2,1);pointer-events:none}
+.perk:hover .bss{opacity:1;transform:none;transition-delay:.15s}
+.bss>span{position:absolute;inset:0;opacity:0}
+.bvis .bss img{display:block;width:100%;height:100%;max-width:none;border-radius:0;box-shadow:none;transform:none !important;object-fit:cover;object-position:left top}
+.bss em{position:absolute;left:0;right:0;bottom:0;display:block;font-style:normal;padding:40px 22px 16px;background:linear-gradient(0deg,rgba(18,14,40,.92),rgba(18,14,40,0))}
+.bvis .bss b{display:block;margin:0;font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(14px,1.25vw,18px);color:#fff;letter-spacing:-.01em;line-height:1.3;white-space:nowrap}
+.bvis .bss small{display:block;margin-top:4px;font-size:12px;color:#CFC2FF;letter-spacing:0 !important;white-space:nowrap}
+.perk:hover .bss>span{animation:bss 10s linear infinite;animation-delay:calc(var(--i) * 2.5s)}
+@keyframes bss{0%{opacity:0}4%,25%{opacity:1}29%,100%{opacity:0}}
 @media (hover:none){.bss{display:none}}
-@media (prefers-reduced-motion:reduce){.perk:hover .bss>span{animation:none}.perk:hover .bss>span:first-child{opacity:1}.mcard::after{display:none}}
+@media (prefers-reduced-motion:reduce){.perk:hover .bss>span{animation:none}.perk:hover .bss>span:first-child{opacity:1}}
 .bvis{aspect-ratio:1.586;display:flex;align-items:center;justify-content:center;gap:clamp(18px,2vw,28px);border:1px solid rgba(242,239,232,.14);border-radius:clamp(16px,1.6vw,24px);background:rgba(242,239,232,.025)}
 .bvis img{width:clamp(72px,7vw,104px);height:auto;border-radius:22%;box-shadow:0 24px 60px rgba(128,82,255,.28)}
 .bvis b{display:block;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(34px,3.4vw,52px);letter-spacing:-.02em;color:#F7F6F3;line-height:1}
@@ -2799,11 +2797,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><b>증권사 리포트 요약</b><small>국내 증권사 기업분석 리포트를 요약해서</small></span><span style="--i:1"><b>목표주가 컨센서스</b><small>증권사별 투자의견과 목표주가를 한눈에</small></span><span style="--i:2"><b>공시 모아보기</b><small>실적 · 배당 · 자사주 · 공급계약</small></span><span style="--i:3"><b>수출실적 · 수주잔고</b><small>기업별 수출 데이터와 수주잔고를 그래프로</small></span><span style="--i:4"><b>부문별 · 지역별 실적</b><small>사업부별 매출과 이익 흐름까지</small></span><span style="--i:5"><b>밸류에이션</b><small>PER · PBR · PSR 추이로 싼지 비싼지</small></span><span style="--i:6"><b>미국 주식까지</b><small>국내 중소형주부터 미국 기업 분석까지</small></span></span></div>
+            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><img src="assets/partners/butler-report.webp" alt="" loading="lazy"><em><b>증권사 리포트 요약</b><small>목표주가 추이 · 투자의견</small></em></span><span style="--i:1"><img src="assets/partners/butler-dash.webp" alt="" loading="lazy"><em><b>실적 · 공시 한눈에</b><small>연간 실적 · 최근 공시</small></em></span><span style="--i:2"><img src="assets/partners/butler-seg.webp" alt="" loading="lazy"><em><b>사업부문 분석</b><small>부문별 매출 · 이익 비중</small></em></span><span style="--i:3"><img src="assets/partners/butler-fin.webp" alt="" loading="lazy"><em><b>재무 그래프</b><small>분기 실적 · YoY</small></em></span></span></div>
             <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
           </figure>
         </div>
@@ -2899,11 +2897,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="seal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
-            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><b>증권사 리포트 요약</b><small>국내 증권사 기업분석 리포트를 요약해서</small></span><span style="--i:1"><b>목표주가 컨센서스</b><small>증권사별 투자의견과 목표주가를 한눈에</small></span><span style="--i:2"><b>공시 모아보기</b><small>실적 · 배당 · 자사주 · 공급계약</small></span><span style="--i:3"><b>수출실적 · 수주잔고</b><small>기업별 수출 데이터와 수주잔고를 그래프로</small></span><span style="--i:4"><b>부문별 · 지역별 실적</b><small>사업부별 매출과 이익 흐름까지</small></span><span style="--i:5"><b>밸류에이션</b><small>PER · PBR · PSR 추이로 싼지 비싼지</small></span><span style="--i:6"><b>미국 주식까지</b><small>국내 중소형주부터 미국 기업 분석까지</small></span></span></div>
+            <div class="bvis"><span class="bid"><img src="assets/partners/butler.webp" alt="Butler"><span><b>Butler</b><small>투자 비서</small></span></span><span class="bss" aria-hidden="true"><span style="--i:0"><img src="assets/partners/butler-report.webp" alt="" loading="lazy"><em><b>증권사 리포트 요약</b><small>목표주가 추이 · 투자의견</small></em></span><span style="--i:1"><img src="assets/partners/butler-dash.webp" alt="" loading="lazy"><em><b>실적 · 공시 한눈에</b><small>연간 실적 · 최근 공시</small></em></span><span style="--i:2"><img src="assets/partners/butler-seg.webp" alt="" loading="lazy"><em><b>사업부문 분석</b><small>부문별 매출 · 이익 비중</small></em></span><span style="--i:3"><img src="assets/partners/butler-fin.webp" alt="" loading="lazy"><em><b>재무 그래프</b><small>분기 실적 · YoY</small></em></span></span></div>
             <figcaption><b>Butler 유료 플랜</b><span>R.F.S.의 모든 학회원은 기업분석 플랫폼 Butler의 유료 플랜을 이용할 수 있습니다.</span></figcaption>
           </figure>
         </div>
