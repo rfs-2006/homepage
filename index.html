@@ -410,6 +410,9 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .roster-row{grid-template-columns:1fr !important;gap:6px !important}}
 @media (max-width:900px){.donut-wrap{grid-template-columns:1fr !important;gap:32px !important}.legend2{grid-template-columns:1fr !important}.proc-grid{grid-template-columns:1fr !important;gap:40px !important}}
 .numblock{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+/* 'Claude for Nonprofits' 표기: Claude는 크게 세리프 이탤릭, for Nonprofits는 작게 (메뉴·푸터·로딩 화면 공통) */
+.cfc{font-family:'Source Serif 4','Noto Serif KR',serif;font-style:italic;font-weight:400;font-size:1.32em;letter-spacing:-.015em;line-height:1}
+.cfx{font-size:.74em;letter-spacing:.01em;opacity:.82}
 /* 메뉴 로고 옆 'with Claude for Nonprofits' (우리 글꼴로, 상표 모양은 흉내 내지 않음). 폰처럼 좁은 화면에서는 숨기고 푸터에 한 줄로 */
 .cfn{display:flex;flex-direction:column;justify-content:center;gap:4px;margin-left:7px;padding-left:18px;position:relative;line-height:1}
 .cfn::before{content:'';position:absolute;left:0;top:50%;height:26px;margin-top:-13px;width:1px;background:currentColor;opacity:.28}
@@ -1637,7 +1640,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <div class="boot {{ bootCls }}" aria-hidden="true">
     <img class="boot-img" src="https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" alt="" data-credit="Photo by Vincentiu Solomon on Unsplash" data-credit-href="https://unsplash.com/@vincentiu">
     <div class="scrim" style="opacity:0.7"></div>
-    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></div></div></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
   </div>
@@ -1649,7 +1652,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <span style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-0.02em">R.F.S.</span>
         <span class="wordmark-sub" style="font-size:11.5px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
       </span>
-      <span class="wordmark-block cfn" aria-label="with Claude for Nonprofits"><span class="cfn-w">WITH</span><span class="cfn-t">Claude for Nonprofits</span></span>
+      <span class="wordmark-block cfn" aria-label="with Claude for Nonprofits"><span class="cfn-w">WITH</span><span class="cfn-t"><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></span>
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
       <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="5">
@@ -3244,7 +3247,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </div>
       <p style="border-top:1px solid rgba(247,246,243,0.25);margin:48px 0 0;padding-top:20px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.55);max-width:72em">본 사이트의 리포트는 중앙대학교 가치투자학회 R.F.S. 학회원이 교육 목적으로 작성한 자료입니다. 투자의견과 목표주가는 학회원의 분석에 기반한 의견이며 특정 종목의 매수·매도를 권유하지 않습니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</p>
-      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span> · <span class="cfn-foot"><b>WITH</b><i>Claude for Nonprofits</i></span></div>
+      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span> · <span class="cfn-foot"><b>WITH</b><i><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></i></span></div>
     </div>
   </footer>
 
