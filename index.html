@@ -1506,15 +1506,17 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wkp-name{font-size:28px}
 .wkp-grid{padding:20px 14px 28px;display:flex;flex-direction:column}.wkp-side{float:none;width:auto;margin:26px 0 0;order:3}.wkp-toc{display:none}.wk-ed.wkp{padding:20px 16px}.wkp-sheet{margin-left:-16px;margin-right:-16px}.wkp-hl{font-size:24px;padding-left:0}
 }
-.wk-rich.wkp{--ac:#002060;--ln:#D9D9D9;max-width:none;padding:0;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;font-size:16px;line-height:1.8;color:#000;text-align:justify}
-.wk-rich.wkp p{margin:8px 0 0}.wk-rich.wkp>p:first-child{margin-top:16px}
+.wk-rich.wkp{--ac:#002060;--ln:#D9D9D9;max-width:none;padding:0;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;font-size:16px;font-weight:300;line-height:1.62;color:#000;text-align:justify}
+/* KoPub 돋움은 300·500·700뿐이라 본문은 리포트 PDF처럼 Light, 강조는 Bold */
+.wk-rich.wkp li{margin:1px 0}.wk-rich.wkp summary,.wk-rich.wkp td:first-child,.wk-rich.wkp th{font-weight:500}
+.wk-rich.wkp p{margin:6px 0 0}.wk-rich.wkp>p:first-child{margin-top:12px}
 .wk-rich.wkp h2,.wk-rich.wkp h3,.wk-rich.wkp summary.h{font-family:'RFS Report Dotum',sans-serif;color:#000;letter-spacing:-0.01em;text-align:left}
-.wk-rich.wkp h2{margin:26px 0 8px;padding:0;border:0;font-size:19px;font-weight:700;line-height:1.45}
+.wk-rich.wkp h2{margin:22px 0 6px;padding:0;border:0;font-size:19px;font-weight:700;line-height:1.45}
 .wk-rich.wkp h3{margin:20px 0 6px;font-size:16.5px;font-weight:700;color:#002060}
 .wk-rich.wkp strong{color:#000;font-weight:700}
 .wk-rich.wkp mark{background:linear-gradient(transparent 60%,rgba(0,32,96,0.14) 60%);color:inherit}
 .wk-rich.wkp a{color:#002060;border-bottom-color:rgba(0,32,96,0.35)}.wk-rich.wkp a:hover{color:#000;border-bottom-color:#000}
-.wk-rich.wkp ul,.wk-rich.wkp ol{margin:8px 0 0}.wk-rich.wkp ul>li::before{background:#000;width:4px;height:4px;top:.8em}.wk-rich.wkp ul ul>li::before{background:transparent;border-color:#000}
+.wk-rich.wkp ul,.wk-rich.wkp ol{margin:6px 0 0}.wk-rich.wkp ul>li::before{background:#000;width:4px;height:4px;top:.8em}.wk-rich.wkp ul ul>li::before{background:transparent;border-color:#000}
 .wk-rich.wkp ol>li::marker{color:#000}
 .wk-rich.wkp code{background:#F2F2F2;color:#000}.wk-rich.wkp pre{background:#F7F7F7;border-color:#E3E3E3;color:#000;margin-top:10px}
 .wk-rich.wkp blockquote{margin:14px 0;border-left:2px solid #A6A6A6;color:#404040;font-family:'RFS Report Dotum',sans-serif;font-size:1em}
@@ -5585,9 +5587,10 @@ class Component extends DCLogic {
   }
 
   applyHash() {
-    // 리포트 개별 주소(/research/<id>/)로 들어온 경우 해시 없이도 그 리포트 화면을 연다
+    // 검색용 정적 주소(/research/<id>/, /research/, /about/, /recruiting/)로 들어온 경우 해시 없이도 그 화면을 연다
     const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
-    const h = (location.hash || (pm ? '#research/' + pm[1] : '#home')).slice(1);
+    const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit' }[location.pathname.replace(/\/?$/, '/')];
+    const h = (location.hash || (pm ? '#research/' + pm[1] : pp ? '#' + pp : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
     else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
