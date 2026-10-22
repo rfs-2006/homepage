@@ -58,6 +58,7 @@
     if (t === 'H2' || t === 'H3') {
       // 노션의 '토글 제목'은 details 안 summary에 제목이 들어온다
       var hh = el(t.toLowerCase(), kids(n).filter(isInline));
+      if (n.nodeName.toUpperCase() === 'H1' || /(^|\s)h1(\s|$)/.test(cls)) hh.className = 'h1'; // 노션 페이지 제목·큰 제목은 리포트 헤드라인 후보
       return (hh.textContent || '').trim() ? [hh] : [];
     }
     if (t === 'P') { var pk = kids(n); var flat = []; pk.forEach(function (k) { if (isInline(k)) flat.push(k); }); var blocks = pk.filter(function (k) { return !isInline(k); }); return (hasText(flat) ? [el('p', flat)] : []).concat(blocks); }
@@ -136,6 +137,33 @@
   function isRich(body) { return String(body || '').indexOf(MARK) === 0; }
   function render(node, body) { node.innerHTML = clean(String(body || '').slice(MARK.length)); }
   function text(body) { var d = new DOMParser().parseFromString(String(body || '').slice(MARK.length), 'text/html'); return (d.body.textContent || '').replace(/\s+/g, ' ').trim(); }
+
+
+  // 리포트 양식으로 꾸미기: 글 맨 앞 큰 제목(노션 H1)은 남색 헤드라인으로 올리고(없으면 글 제목), 나머지 소제목은 [ ]로 감싸 오른쪽에 목차를 만든다
+  function sheet(sh, body) {
+    if (!sh || !body) return;
+    var hl = sh.querySelector('.wkp-hl'), toc = sh.querySelector('.wkp-toc');
+    var first = body.firstElementChild;
+    if (hl) {
+      if (first && first.nodeName === 'H2' && first.className === 'h1') { hl.textContent = first.textContent.trim(); first.remove(); }
+      else hl.textContent = hl.getAttribute('data-t') || '';
+    }
+    var hs = Array.prototype.slice.call(body.querySelectorAll(':scope > h2'));
+    hs.forEach(function (h) { var t = h.textContent.trim(); if (t && t.charAt(0) !== '[') h.textContent = '[' + t + ']'; });
+    if (toc) {
+      toc.innerHTML = '';
+      if (hs.length >= 2) {
+        var b = document.createElement('b'); b.textContent = 'Contents'; toc.appendChild(b);
+        hs.forEach(function (h, i) {
+          var a = document.createElement('a'); a.href = '#';
+          var n = document.createElement('i'); n.textContent = (i + 1) + '.';
+          a.appendChild(n); a.appendChild(document.createTextNode(h.textContent.replace(/^\[|\]$/g, '')));
+          a.addEventListener('click', function (e) { e.preventDefault(); window.scrollTo({ top: h.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' }); });
+          toc.appendChild(a);
+        });
+      }
+    }
+  }
 
   // ── 편집기 ──
   var files = new Map(); // blob 주소 → File
@@ -228,6 +256,6 @@
   }
   function reset() { draft = ''; lastRange = null; files.forEach(function (_, u) { URL.revokeObjectURL(u); }); files.clear(); if (cur) { cur.innerHTML = ''; sync(); } }
 
-  window.RFSWk = { clean: clean, isRich: isRich, render: render, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset };
+  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset };
   if (window.__wkReady) window.__wkReady();
 })();
