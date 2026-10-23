@@ -70,7 +70,7 @@
     cnt.forEach(function (n, b) { var lat = Math.PI * (b + .5) / B, y = Math.cos(lat), r = Math.sin(lat), o0 = rnd() * 6.28; for (var q = 0; q < n; q++) { var t = o0 + 6.2832 * q / n + (rnd() - .5) * .25; P.push({ x: Math.cos(t) * r, y: y, z: Math.sin(t) * r, j: rnd(), lab: null, rk: 0 }); } });
     // 기관 이름은 순서(선호도)대로 구 전체에 고르게, 세 번씩 (같은 이름이 화면에 동시에 두 번 뜨지는 않는다)
     var CO = o.names || [];
-    for (j = 0; j < Math.min(CO.length * 5, N * .4); j++) { var q2 = Math.floor((j * 0.618034 % 1) * N); while (P[q2].lab) q2 = (q2 + 1) % N; P[q2].lab = CO[j % CO.length]; P[q2].rk = j % CO.length; }
+    for (j = 0; j < Math.min(CO.length * 8, N * .65); j++) { var q2 = Math.floor((j * 0.618034 % 1) * N); while (P[q2].lab) q2 = (q2 + 1) % N; P[q2].lab = CO[j % CO.length]; P[q2].rk = j % CO.length; }
     var E = [];
     for (var a = 0; a < N; a++) { var b1 = -1, b2 = -1, d1 = 9, d2 = 9; for (var b = 0; b < N; b++) { if (a === b) continue; var p = P[a], q = P[b], d = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y) + (p.z - q.z) * (p.z - q.z); if (d < d1) { d2 = d1; b2 = b1; d1 = d; b1 = b; } else if (d < d2) { d2 = d; b2 = b; } } if (a < b1) E.push([a, b1]); if (a < b2) E.push([a, b2]); }
     var BG = []; for (i = 0; i < 260; i++) BG.push({ x: rnd(), y: rnd(), r: rnd() * 1.1 + .2, a: rnd() * .5 + .15, j: rnd() });
@@ -138,13 +138,15 @@
         var on = {}, n = 0, used = [], shown = {};
         x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         var fits = function (k, keep) { var pp = pr[k], w = x.measureText(P[k].lab).width + 30, rt = keep ? SIDE[k] === 1 : pp.X > cx; return rt ? pp.X + w < W - 6 : pp.X - w > 6; };
-        for (i = 0; i < N; i++) if (P[i].lab && LA[i] > .3 && pr[i].Z > .02 && ok(i) && fits(i, 1)) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push([pr[i].X, pr[i].Y]); }
-        var cand = []; for (i = 0; i < N; i++) { if (!P[i].lab || on[i]) continue; if (pr[i].Z < .12 || !ok(i) || !fits(i)) continue; cand.push(i); }
+        var Rv2 = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), mid = function (k, lim) { return Math.hypot(pr[k].X - cx, pr[k].Y - cy) < Rv2 * lim; };
+        var cell = {}, ck = function (k) { return Math.floor(pr[k].X / (W / 6)) + ':' + Math.floor(pr[k].Y / (H / 4)); };
+        for (i = 0; i < N; i++) if (P[i].lab && LA[i] > .3 && pr[i].Z > .02 && mid(i, .86) && ok(i) && fits(i, 1)) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push([pr[i].X, pr[i].Y]); cell[ck(i)] = (cell[ck(i)] || 0) + 1; }
+        var cand = []; for (i = 0; i < N; i++) { if (!P[i].lab || on[i]) continue; if (pr[i].Z < .02 || !mid(i, .72) || !ok(i) || !fits(i)) continue; cand.push(i); }
         cand.sort(function (a2, b2) { return P[a2].rk - P[b2].rk; });
         for (var c2 = 0; c2 < cand.length && n < max; c2++) {
-          i = cand[c2]; p = pr[i]; if (shown[P[i].lab]) continue;
+          i = cand[c2]; p = pr[i]; if (shown[P[i].lab] || (cell[ck(i)] || 0) >= 3) continue;
           if (used.some(function (u) { return Math.abs(u[1] - p.Y) < 26 && (u[0] > cx) === (p.X > cx) && Math.abs(u[0] - p.X) < 190; })) continue;
-          on[i] = 1; n++; shown[P[i].lab] = 1; used.push([p.X, p.Y]); if (LA[i] < .01) SIDE[i] = p.X > cx ? 1 : 0;
+          on[i] = 1; n++; shown[P[i].lab] = 1; cell[ck(i)] = (cell[ck(i)] || 0) + 1; used.push([p.X, p.Y]); if (LA[i] < .01) SIDE[i] = p.X > cx ? 1 : 0;
         }
         x.textBaseline = "middle"; x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         for (i = 0; i < N; i++) {
