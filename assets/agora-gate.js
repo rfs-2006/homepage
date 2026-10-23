@@ -27,7 +27,8 @@
 .ag-lg button:disabled{opacity:.6;cursor:default}\
 .ag-lg .er{margin:4px 0 0;font-size:12px;color:#E8A9A9;min-height:0}\
 .ag-lg .hp{margin:16px 0 0;font-size:12px;color:rgba(247,246,243,.6)}.ag-lg .hp a{color:rgba(247,246,243,.85);display:inline-flex;align-items:center;min-height:44px}\
-.ag-gate .on{opacity:1}.ag-gate .ag-ttl.on{transform:none}.ag-gate .ag-lg.on{transform:translate(-50%,-50%)}\
+.ag-gate .on{opacity:1}\
+@media (min-width:900px){.ag-lg{left:27%;top:56%}}.ag-gate .ag-ttl.on{transform:none}.ag-gate .ag-lg.on{transform:translate(-50%,-50%)}\
 .ag-gate.dive .ag-lg,.ag-gate.dive .ag-ttl{opacity:0;transition:opacity .5s ease}\
 ';
   var g = null;
@@ -54,7 +55,7 @@
     };
 
     var cv = el.querySelector('canvas'), x = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 2), W, H, small;
-    function rs() { W = innerWidth; H = innerHeight; small = W < 700; cv.width = W * dpr; cv.height = H * dpr; }
+    var wide; function rs() { W = innerWidth; H = innerHeight; small = W < 700; wide = W >= 900; cv.width = W * dpr; cv.height = H * dpr; }
     rs(); addEventListener('resize', rs);
     var mx = 0, my = 0, tmx = 0, tmy = 0;
     function pm(e) { tmx = e.clientX / W - .5; tmy = e.clientY / H - .5; }
@@ -69,7 +70,7 @@
     cnt.forEach(function (n, b) { var lat = Math.PI * (b + .5) / B, y = Math.cos(lat), r = Math.sin(lat), o0 = rnd() * 6.28; for (var q = 0; q < n; q++) { var t = o0 + 6.2832 * q / n + (rnd() - .5) * .25; P.push({ x: Math.cos(t) * r, y: y, z: Math.sin(t) * r, j: rnd(), lab: null, rk: 0 }); } });
     // 기관 이름은 순서(선호도)대로 구 전체에 고르게, 세 번씩 (같은 이름이 화면에 동시에 두 번 뜨지는 않는다)
     var CO = o.names || [];
-    for (j = 0; j < CO.length * 3; j++) { var q2 = Math.floor((j * 0.618034 % 1) * N); while (P[q2].lab) q2 = (q2 + 1) % N; P[q2].lab = CO[j % CO.length]; P[q2].rk = j % CO.length; }
+    for (j = 0; j < Math.min(CO.length * 5, N * .4); j++) { var q2 = Math.floor((j * 0.618034 % 1) * N); while (P[q2].lab) q2 = (q2 + 1) % N; P[q2].lab = CO[j % CO.length]; P[q2].rk = j % CO.length; }
     var E = [];
     for (var a = 0; a < N; a++) { var b1 = -1, b2 = -1, d1 = 9, d2 = 9; for (var b = 0; b < N; b++) { if (a === b) continue; var p = P[a], q = P[b], d = (p.x - q.x) * (p.x - q.x) + (p.y - q.y) * (p.y - q.y) + (p.z - q.z) * (p.z - q.z); if (d < d1) { d2 = d1; b2 = b1; d1 = d; b1 = b; } else if (d < d2) { d2 = d; b2 = b; } } if (a < b1) E.push([a, b1]); if (a < b2) E.push([a, b2]); }
     var BG = []; for (i = 0; i < 260; i++) BG.push({ x: rnd(), y: rnd(), r: rnd() * 1.1 + .2, a: rnd() * .5 + .15, j: rnd() });
@@ -88,8 +89,8 @@
       mx += (tmx - mx) * .05; my += (tmy - my) * .05;
       x.globalCompositeOperation = 'source-over'; x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
       sky.classList.toggle('on', t > .05);
-      var cx = W / 2, cy = H * (small ? .6 : .58), R = small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
-      var burst = 1 - Math.pow(2, -9 * cl((t - .05) / 1.05)), s = .04 + .96 * burst, camZ = 2.15 - .9 * dvE;
+      var cz0 = wide ? 1.8 : 2.15, cx = wide ? W * .62 : W / 2, cy = H * (small ? .6 : .58), R = wide ? Math.min(H * .6, W * .38) * cz0 / 1.75 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
+      var burst = 1 - Math.pow(2, -9 * cl((t - .05) / 1.05)), s = .04 + .96 * burst, camZ = cz0 - .9 * dvE;
       var rot = t * .1 + (1 - eo((t - .05) / 1.5)) * 1.8 + mx * .5 + dvE * .35, tilt = .3 + my * .35;
       var cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt), i, p, q;
       var bgA = eo((t - .9) / 1.2) * (1 - dv);
@@ -108,6 +109,16 @@
         [[1.32, .22], [1.38, .1]].forEach(function (rk) { x.beginPath(); x.ellipse(0, 0, R * rk[0] * 1.25, R * rk[0] * .3, 0, 0, 7); var lg2 = x.createLinearGradient(-R * 1.6, 0, R * 1.6, 0); lg2.addColorStop(0, 'rgba(150,195,255,0)'); lg2.addColorStop(.5, 'rgba(150,195,255,' + rk[1] * ringA + ')'); lg2.addColorStop(1, 'rgba(150,195,255,0)'); x.strokeStyle = lg2; x.stroke(); });
         var oa = t * .35; x.fillStyle = 'rgba(220,235,255,' + .9 * ringA + ')'; x.beginPath(); x.arc(Math.cos(oa) * R * 1.32 * 1.25, Math.sin(oa) * R * 1.32 * .3, 2.2, 0, 7); x.fill(); x.restore();
       }
+      var wfa = eo((t - .3) / 1.2) * (1 - dv);
+      if (wfa > 0) {
+        var pj = function (X0, Y0, Z0) { var X = X0 * cr + Z0 * sr, Z = -X0 * sr + Z0 * cr, Y = Y0 * ct - Z * st; Z = Y0 * st + Z * ct; var sc = 1 / (camZ - Z); return [cx + X * R * s * sc * 1.75, cy + Y * R * s * sc * 1.75, Z]; };
+        var line = function (fn) { var pv = null; for (var k = 0; k <= 72; k++) { var qq = fn(k / 72 * 6.2832); if (pv) { x.strokeStyle = 'rgba(140,190,255,' + wfa * (.03 + .09 * ((pv[2] + qq[2]) / 2 + 1) / 2) + ')'; x.beginPath(); x.moveTo(pv[0], pv[1]); x.lineTo(qq[0], qq[1]); x.stroke(); } pv = qq; } };
+        x.lineWidth = .7;
+        for (var bb2 = 1; bb2 < 43; bb2 += 2) (function (lat) { var y0 = Math.cos(lat), r0 = Math.sin(lat); line(function (th) { return pj(Math.cos(th) * r0, y0, Math.sin(th) * r0); }); })(Math.PI * bb2 / 43);
+        for (var m = 0; m < 24; m++) (function (ph) { line(function (th) { return pj(Math.sin(th) * Math.cos(ph), Math.cos(th), Math.sin(th) * Math.sin(ph)); }); })(m / 24 * Math.PI);
+        var Rv = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), rg = x.createRadialGradient(cx, cy, Rv * .86, cx, cy, Rv * 1.06);
+        rg.addColorStop(0, 'rgba(90,150,255,0)'); rg.addColorStop(.75, 'rgba(110,165,255,' + .16 * wfa + ')'); rg.addColorStop(1, 'rgba(90,150,255,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
+      }
       var lt = eo((t - .35) / .9); x.lineWidth = .6;
       if (lt > 0) for (i = 0; i < E.length; i++) { p = pr[E[i][0]]; q = pr[E[i][1]]; if (p.hid || q.hid) continue; x.strokeStyle = 'rgba(130,185,255,' + (.08 + .34 * ((p.Z + q.Z) / 2 + 1) / 2) * lt * (1 - dv * .6) + ')'; x.beginPath(); x.moveTo(p.X, p.Y); x.lineTo(q.X, q.Y); x.stroke(); }
       for (i = 0; i < N; i++) {
@@ -122,12 +133,12 @@
       // 기관 이름: 정면 쪽 별 몇 개만, 순서가 앞선 곳부터. 스며들듯 켜지고 꺼지며, 켜질 때 정한 쪽(왼/오른)에 끝까지 붙어 간다
       var la = eo((t - 1.1) / .8) * (1 - dv * 3);
       if (la > 0 || LA.some(function (v) { return v > .01; })) {
-        var L = lg.getBoundingClientRect(), TB = ttl.getBoundingClientRect().bottom + 16, max = small ? 7 : 14;
-        var ok = function (k) { var pp = pr[k]; if (pp.hid || pp.Y < TB || pp.X < 8 || pp.X > W - 8) return false; return !(pp.X > L.left - 30 && pp.X < L.right + 30 && pp.Y > L.top - 20 && pp.Y < L.bottom + 20); };
+        var L = lg.getBoundingClientRect(), TB = ttl.getBoundingClientRect().bottom + 16, max = small ? 7 : wide ? 22 : 14;
+        var ok = function (k) { var pp = pr[k]; if (pp.hid || pp.Y < TB || pp.Y > H - 24 || pp.X < 8 || pp.X > W - 8) return false; return !(pp.X > L.left - 30 && pp.X < L.right + 30 && pp.Y > L.top - 20 && pp.Y < L.bottom + 20); };
         var on = {}, n = 0, used = [], shown = {};
-        for (i = 0; i < N; i++) if (P[i].lab && LA[i] > .3 && pr[i].Z > .02 && ok(i)) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push([pr[i].X, pr[i].Y]); }
         x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
-        var fits = function (k) { var pp = pr[k], w = x.measureText(P[k].lab).width + 30; return pp.X > cx ? pp.X + w < W - 6 : pp.X - w > 6; };
+        var fits = function (k, keep) { var pp = pr[k], w = x.measureText(P[k].lab).width + 30, rt = keep ? SIDE[k] === 1 : pp.X > cx; return rt ? pp.X + w < W - 6 : pp.X - w > 6; };
+        for (i = 0; i < N; i++) if (P[i].lab && LA[i] > .3 && pr[i].Z > .02 && ok(i) && fits(i, 1)) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push([pr[i].X, pr[i].Y]); }
         var cand = []; for (i = 0; i < N; i++) { if (!P[i].lab || on[i]) continue; if (pr[i].Z < .12 || !ok(i) || !fits(i)) continue; cand.push(i); }
         cand.sort(function (a2, b2) { return P[a2].rk - P[b2].rk; });
         for (var c2 = 0; c2 < cand.length && n < max; c2++) {
@@ -135,7 +146,7 @@
           if (used.some(function (u) { return Math.abs(u[1] - p.Y) < 26 && (u[0] > cx) === (p.X > cx) && Math.abs(u[0] - p.X) < 190; })) continue;
           on[i] = 1; n++; shown[P[i].lab] = 1; used.push([p.X, p.Y]); if (LA[i] < .01) SIDE[i] = p.X > cx ? 1 : 0;
         }
-        x.textBaseline = 'middle'; x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
+        x.textBaseline = "middle"; x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         for (i = 0; i < N; i++) {
           if (!P[i].lab) continue; var tg = on[i] ? la : 0; LA[i] += (tg - LA[i]) * (tg > LA[i] ? .035 : .06); var aa = LA[i]; if (aa < .01) continue;
           p = pr[i]; if (p.hid) continue; var right = SIDE[i] === 1; x.textAlign = right ? 'left' : 'right';

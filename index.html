@@ -111,7 +111,7 @@
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=13" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
-<script src="./assets/agora-gate.js?v=1" defer></script>
+<script src="./assets/agora-gate.js?v=2" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -4465,8 +4465,8 @@ const NETWORK = [
   { n:'한화큐셀', f:'qcells', r:4, a:4.23 },
   { n:'KCC', f:'kcc', r:4, a:1.81 },
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
-// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 첫 화면(줄마다 앞 6곳)에 나오는 기관, 그 순서대로
-const GATE_NAMES = [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(0, 6).map((x) => x.n));
+// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
+const GATE_NAMES = [[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n)));
 // lead: 이 줄에서 맨 앞으로 올릴 로고(모바일은 화면이 좁아 첫 줄에 J.P.Morgan·PwC부터)
 const netRows = (lead = []) => [0, 1, 2, 3, 4].map((r) => {
   const row = NETWORK.filter((x) => x.r === r);
