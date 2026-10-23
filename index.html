@@ -109,7 +109,7 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=13" defer></script>
+<script src="./assets/ask.js?v=14" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
 <script src="./assets/agora-gate.js?v=4" defer></script>
 <style>
@@ -5619,7 +5619,13 @@ class Component extends DCLogic {
   openAsk() {
     if (!window.RFSAsk || !this.state.user) return;
     const ID = this.state.intraData || {};
-    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c), intro: true, onClose: () => { this._askShut = true; if (this.state.page === 'intranet') this.go('home'); } });
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+      // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
+      sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
+        if (!error) return { ok: true };
+        let j = {}; try { j = await error.context.json(); } catch (x) {}
+        return { error: j.error || 'send' };
+      }, () => ({ error: 'send' })), intro: true, onClose: () => { this._askShut = true; if (this.state.page === 'intranet') this.go('home'); } });
   }
 
   me() {
