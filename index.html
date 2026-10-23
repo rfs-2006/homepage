@@ -3021,7 +3021,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="{{ fundBg.src }}" credit="{{ fundBg.credit }}" credit-href="{{ fundBg.href }}" style="--slot-position:{{ fundBg.pos }}"></image-slot></div>
-      <div class="scrim" style="opacity:0.62"></div>
+      <div class="scrim" style="opacity:{{ fundBg.scrim }}"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">AMT Fund</h1>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
@@ -4467,10 +4467,10 @@ const NETWORK = [
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
 // FUND 첫 화면 사진: 들어올 때마다 넷 중 하나 (눈 덮인 긴 언덕 = 버핏의 '스노볼', 여의도 = 국내 운용의 무대)
 const FUND_BG = [
-  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' },
-  { src: 'assets/hero/fund-snow_path.webp', pos: 'center 55%', credit: 'Photo: Steven Brown, CC BY-SA 2.0', href: 'https://commons.wikimedia.org/w/index.php?curid=164765170' },
-  { src: 'assets/hero/fund-yeouido.webp', pos: 'center 45%', credit: 'Photo: S h y numis, CC BY 4.0', href: 'https://commons.wikimedia.org/wiki/File:Skyline_of_Yeouido,_a_prominent_finance_district_in_Seoul.jpg' },
-  { src: 'assets/hero/fund-building63.webp', pos: 'center 60%', credit: 'Photo: Pixabay (CC0)', href: 'https://commons.wikimedia.org/wiki/File:Han_River_Seoul_skyline_Pixabay_1214950.jpg' }];
+  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.3', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' },
+  { src: 'assets/hero/fund-snow_path.webp', pos: 'center 55%', scrim: '0.12', credit: 'Photo: Steven Brown, CC BY-SA 2.0', href: 'https://commons.wikimedia.org/w/index.php?curid=164765170' },
+  { src: 'assets/hero/fund-yeouido.webp', pos: 'center 0%', scrim: '0.25', credit: 'Photo: S h y numis, CC BY 4.0', href: 'https://commons.wikimedia.org/wiki/File:Skyline_of_Yeouido,_a_prominent_finance_district_in_Seoul.jpg' },
+  { src: 'assets/hero/fund-building63.webp', pos: 'center 60%', scrim: '0.28', credit: 'Photo: Pixabay (CC0)', href: 'https://commons.wikimedia.org/wiki/File:Han_River_Seoul_skyline_Pixabay_1214950.jpg' }];
 // AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
 const GATE_TOP = ['J.P. Morgan', 'PwC', '타임폴리오자산운용', 'NH-Amundi자산운용'];   // 로그인 칸 바로 옆 가장 눈에 띄는 자리에 먼저
 const GATE_NAMES = [...GATE_TOP, ...[[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n))).filter((n) => !GATE_TOP.includes(n))];
