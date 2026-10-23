@@ -178,7 +178,7 @@ ${RECRUIT.schedule.map((d) => `<div><dt>${esc(d.step)}</dt><dd>${esc(d.date)}</d
 <section><h2>들어오면 하는 일</h2>${dl(commitments)}${dl(procNotes)}</section>
 <section><h2>자주 묻는 질문</h2>${faqs.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('\n')}</section>
 <div class="btns"><a class="btn solid" href="/#recruit">모집 페이지 열기</a><a class="btn" href="/about/">학회 소개</a><a class="btn" href="/research/">보고서 보기</a></div>
-<p class="note">문의: recruiting.rfs@gmail.com</p>
+<p class="note">문의: recruiting@caurfs.kr</p>
 </main>
 ${FOOTER}`;
 }
