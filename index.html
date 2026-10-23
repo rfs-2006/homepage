@@ -1277,6 +1277,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
   background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
 .pg-hero.pg-full.hero-out::after{opacity:0}
+.pg-hero.pg-raw::after{display:none}   /* FUND: 사진 그대로 (덮개 없음) */
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
 /* RESEARCH 최신 리포트: 카드 대신 실제 리포트 첫 장(표지)을 보여 주고, 글자는 리포트와 같은 KoPub 돋움 */
 @font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
@@ -3019,7 +3020,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
-    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
+    <section class="on-photo pg-hero pg-big pg-full pg-raw" data-nav="dark">
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="{{ fundBg.src }}" credit="{{ fundBg.credit }}" credit-href="{{ fundBg.href }}" style="--slot-position:{{ fundBg.pos }}"></image-slot></div>
       <div class="scrim" style="opacity:{{ fundBg.scrim }}"></div>
       <div class="wrap pg-hero-in">
@@ -4467,7 +4468,7 @@ const NETWORK = [
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
 // FUND 첫 화면 사진: 겨울 산 (눈 덮인 긴 언덕 = 버핏의 '스노볼')
 const FUND_BG = [
-  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.3', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
+  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
 // AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
 const GATE_TOP = ['J.P. Morgan', 'PwC', '타임폴리오자산운용', 'NH-Amundi자산운용'];   // 로그인 칸 바로 옆 가장 눈에 띄는 자리에 먼저
 const GATE_NAMES = [...GATE_TOP, ...[[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n))).filter((n) => !GATE_TOP.includes(n))];
