@@ -6,7 +6,7 @@
 //
 // 필요한 Secrets: 솔라피 API Key·Secret·발신번호 (커피챗이 쓰는 것을 그대로 찾아 쓴다. 기본 이름 SOLAPI_API_KEY, SOLAPI_API_SECRET, SOLAPI_SENDER)
 // SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY 는 Supabase가 자동으로 넣어 준다.
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
+import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
