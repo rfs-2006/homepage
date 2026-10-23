@@ -139,17 +139,22 @@
         x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         var fits = function (k, keep) { var pp = pr[k], w = x.measureText(P[k].lab).width + 30, rt = keep ? SIDE[k] === 1 : pp.X > cx; return rt ? pp.X + w < W - 6 : pp.X - w > 6; };
         var Rv2 = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), mid = function (k, lim) { return Math.hypot(pr[k].X - cx, pr[k].Y - cy) < Rv2 * lim; };
+        var fx = wide ? L.right + (cx - L.right) * .45 : cx, fy = wide ? (L.top + L.bottom) / 2 : cy;
+        var top = o.top || 0, near = function (k) { return Math.hypot(pr[k].X - fx, pr[k].Y - fy) < Rv2 * .42; };
+        // 글자 상자끼리 겹치지 않게
+        var box = function (k, side) { var w = x.measureText(P[k].lab).width, X0 = side ? pr[k].X + 24 : pr[k].X - 24 - w; return [X0 - 6, X0 + w + 6, pr[k].Y]; };
+        var hit = function (b) { return used.some(function (u) { return Math.abs(u[2] - b[2]) < 24 && b[0] < u[1] && u[0] < b[1]; }); };
         var cell = {}, ck = function (k) { return Math.floor(pr[k].X / (W / 6)) + ':' + Math.floor(pr[k].Y / (H / 4)); };
-        for (i = 0; i < N; i++) if (P[i].lab && ON[i] && pr[i].Z > .02 && mid(i, .86) && ok(i) && fits(i, 1)) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push([pr[i].X, pr[i].Y]); cell[ck(i)] = (cell[ck(i)] || 0) + 1; }
+        for (i = 0; i < N; i++) if (P[i].lab && ON[i] && pr[i].Z > .02 && mid(i, .86) && ok(i) && fits(i, 1) && (CO.indexOf(P[i].lab) >= top || near(i))) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push(box(i, SIDE[i] === 1)); cell[ck(i)] = (cell[ck(i)] || 0) + 1; }
         // 비어 있는 자리: 구 한가운데에 가까운 별부터, 아직 안 보이는 이름 중 순서가 앞선 것을 붙인다 (처음엔 J.P. Morgan·PwC 등 첫 화면 기관이 먼저)
         var free = CO.filter(function (nm) { return !shown[nm]; }), fi = 0;
         var cand = []; for (i = 0; i < N; i++) { if (!P[i].nm || on[i] || P[i].lab) continue; if (pr[i].Z < .02 || !mid(i, .72) || !ok(i)) continue; cand.push(i); }
-        cand.sort(function (a2, b2) { return Math.hypot(pr[a2].X - cx, pr[a2].Y - cy) - Math.hypot(pr[b2].X - cx, pr[b2].Y - cy); });
+        // 가장 눈에 띄는 자리(넓은 화면에서는 로그인 칸 바로 오른쪽)에 가까운 별부터 순위가 높은 이름을 받는다
+        cand.sort(function (a2, b2) { return Math.hypot(pr[a2].X - fx, pr[a2].Y - fy) - Math.hypot(pr[b2].X - fx, pr[b2].Y - fy); });
         for (var c2 = 0; c2 < cand.length && n < max && fi < free.length; c2++) {
           i = cand[c2]; p = pr[i]; if ((cell[ck(i)] || 0) >= 3) continue;
-          if (used.some(function (u) { return Math.abs(u[1] - p.Y) < 28 && (u[0] > cx) === (p.X > cx) && Math.abs(u[0] - p.X) < 190; })) continue;
-          P[i].lab = free[fi]; if (!fits(i)) { P[i].lab = null; continue; }
-          fi++; on[i] = 1; n++; cell[ck(i)] = (cell[ck(i)] || 0) + 1; used.push([p.X, p.Y]); LA[i] = 0; SIDE[i] = p.X > cx ? 1 : 0;
+          P[i].lab = free[fi]; var bx = box(i, p.X > cx); if (!fits(i) || hit(bx)) { P[i].lab = null; continue; }
+          fi++; on[i] = 1; n++; cell[ck(i)] = (cell[ck(i)] || 0) + 1; used.push(bx); LA[i] = 0; SIDE[i] = p.X > cx ? 1 : 0;
         }
         x.textBaseline = "middle"; x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         for (i = 0; i < N; i++) {
