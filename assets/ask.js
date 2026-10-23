@@ -328,7 +328,7 @@
         try { localStorage.setItem('rfs_my_phone', me.value.trim()); } catch (e) {}
         Promise.resolve(st.sendSms({ toPhone: digits(me.value), alumniName: st.pick.name, alumniCohort: String(st.pick.cohort || ''), message: msg })).then(function (r) {
           if (r && r.ok) return sent();
-          er.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '휴대폰 번호를 확인해 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 문구를 복사해서 보내 주세요.' })[r && r.error] || '문자를 보내지 못했어요. 잠시 후 다시 시도해 주세요.';
+          er.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '휴대폰 번호를 확인해 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 문구를 복사해서 보내 주세요.' })[r && r.error] || '문자를 보내지 못했어요. 잠시 후 다시 시도하거나 문구를 복사해서 직접 보내 주세요.';
           btn('문자로 받기', !good(), send);
         });
       };
