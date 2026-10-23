@@ -4753,8 +4753,9 @@ class Component extends DCLogic {
         off();
       };
       const onScroll = () => {
-        if (hero.classList.contains('hero-short') || hero.classList.contains('hero-lift')) return;
-        if (window.scrollY >= target()) return shrink();
+        // 화살표로 내려가는 중에는 줄이지 않는다. 도중에 줄이면 남은 이동이 옛 위치로 끌고 가서 마지막에 화면이 탁 튄다
+        if (busy || hero.classList.contains('hero-short') || hero.classList.contains('hero-lift')) return;
+        if (window.scrollY >= target() - 1) return shrink();
         // 흐려지지 않고 그대로 밀려 올라간다
       };
       // 첫 화면은 그대로 두고, 접속자가 조금만 내리면(휠 한 칸·살짝 스와이프·↓키·화살표) 한 칸 스르륵 내려간다
@@ -4764,7 +4765,8 @@ class Component extends DCLogic {
         busy = true; cue && cue.remove();
         // 첫 화면이 위로 밀려 올라가며 다음 섹션이 아래에서 올라온다 (실제 스크롤로 한 칸 내려감, 흐려지지 않음)
         this.glideTo(target(), 800);
-        this._hiT = setTimeout(() => { busy = false; off(); }, 860);
+        // 다 내려간 뒤에 첫 화면을 띠 높이로 줄이고 그만큼 스크롤을 당겨서, 보이는 화면은 그대로다
+        this._hiT = setTimeout(() => { busy = false; if (window.scrollY >= target() - 1) shrink(); off(); }, 860);
       };
       const atTop = () => window.scrollY < 10 && !hero.classList.contains('hero-short');
       // 소개 페이지의 칸 단위 휠 이동(setupSnap)보다 먼저 받아서, 첫 화면을 넘기는 휠은 그쪽으로 안 가게 막는다
