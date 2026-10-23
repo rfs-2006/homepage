@@ -78,6 +78,7 @@ Deno.serve(async (req) => {
     `${fmt(phone)}`,
     ``,
     `선배님께서 학회를 믿고 남겨 주신 연락처입니다.`,
+    `정중히 연락드려 주십시오.`,
   ].join('\n');
 
   const log = { user_id: u.user.id, user_email: u.user.email, alumni_name: name, alumni_cohort: cohort, to_phone: to, status: 'sent', error: null as string | null };
