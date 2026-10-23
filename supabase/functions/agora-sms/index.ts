@@ -4,7 +4,7 @@
 // - 누가 언제 어느 선배님 번호를 받았는지 agora_sms_log에 남긴다 (RLS로 관리자만 열람)
 // - 한 사람당 하루 5건까지
 //
-// 필요한 Secrets: SOLAPI_API_KEY, SOLAPI_API_SECRET, SOLAPI_SENDER (솔라피에 등록한 발신번호, 숫자만)
+// 필요한 Secrets: 솔라피 API Key·Secret·발신번호 (커피챗이 쓰는 것을 그대로 찾아 쓴다. 기본 이름 SOLAPI_API_KEY, SOLAPI_API_SECRET, SOLAPI_SENDER)
 // SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY 는 Supabase가 자동으로 넣어 준다.
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.45.4';
 
@@ -25,7 +25,11 @@ async function hmac(secret: string, text: string) {
 }
 
 async function solapiSend(to: string, text: string) {
-  const apiKey = Deno.env.get('SOLAPI_API_KEY'), secret = Deno.env.get('SOLAPI_API_SECRET'), from = digits(Deno.env.get('SOLAPI_SENDER'));
+  // 커피챗 함수가 이미 쓰는 솔라피 Secrets를 그대로 쓴다 (이름이 조금 달라도 찾도록)
+  const env = (...names: string[]) => names.map((n) => Deno.env.get(n)).find((v) => !!v) || '';
+  const apiKey = env('SOLAPI_API_KEY', 'SOLAPI_KEY', 'SOLAPI_APIKEY');
+  const secret = env('SOLAPI_API_SECRET', 'SOLAPI_SECRET', 'SOLAPI_SECRET_KEY', 'SOLAPI_API_SECRET_KEY');
+  const from = digits(env('SOLAPI_SENDER', 'SOLAPI_FROM', 'SOLAPI_SENDER_NUMBER', 'SOLAPI_SENDER_PHONE', 'SMS_SENDER', 'SENDER_PHONE', 'SMS_FROM'));
   if (!apiKey || !secret || !from) throw new Error('solapi_not_configured');
   const date = new Date().toISOString(), salt = crypto.randomUUID().replace(/-/g, '');
   const auth = `HMAC-SHA256 apiKey=${apiKey}, date=${date}, salt=${salt}, signature=${await hmac(secret, date + salt)}`;
