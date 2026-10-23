@@ -109,8 +109,9 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=12" defer></script>
+<script src="./assets/ask.js?v=13" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
+<script src="./assets/agora-gate.js?v=1" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -2957,6 +2958,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   </sc-if>
 
+  <sc-if value="{{ agoraGate }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="AGORA 로그인" data-nav="dark" style="min-height:100vh;background:#02050C"></main>
+  </sc-if>
+
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
@@ -4466,6 +4471,8 @@ const NETWORK = [
   { n:'한화큐셀', f:'qcells', r:4, a:4.23 },
   { n:'KCC', f:'kcc', r:4, a:1.81 },
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
+// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 첫 화면(줄마다 앞 6곳)에 나오는 기관, 그 순서대로
+const GATE_NAMES = [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(0, 6).map((x) => x.n));
 // lead: 이 줄에서 맨 앞으로 올릴 로고(모바일은 화면이 좁아 첫 줄에 J.P.Morgan·PwC부터)
 const netRows = (lead = []) => [0, 1, 2, 3, 4].map((r) => {
   const row = NETWORK.filter((x) => x.r === r);
@@ -4741,6 +4748,19 @@ class Component extends DCLogic {
     if (!onAgora) this._askShut = false;
     if (onAgora && !this._askShut && this.state.intraData && window.RFSAsk && !window.RFSAsk.isOpen()) this.openAsk();
     else if (!onAgora && window.RFSAsk && window.RFSAsk.isOpen()) window.RFSAsk.close(true);
+    this.syncGate();
+  }
+
+  // AGORA 로그인 전 화면(별 608개의 구, assets/agora-gate.js). 로그인하면 구 쪽으로 다가가며 AGORA 화면과 겹쳐 바뀐다
+  syncGate() {
+    const want = this.state.page === 'intranet' && !this.state.user && !(this.props.intranetPreview ?? false);
+    if (want && !this._gate) {
+      if (!window.AgoraGate) { clearTimeout(this._gateT); this._gateT = setTimeout(() => this.syncGate(), 150); return; }
+      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, login: (id, pw) => this.signIn(id, pw) });
+    } else if (!want && this._gate) {
+      if (this.state.page === 'intranet' && this.state.user) this._gate.dive(); else this._gate.destroy();
+      this._gate = null;
+    }
   }
 
   // 첫 화면(pg-full)이 있는 페이지 안에서 탭을 바꿀 때: 맨 위(첫 화면 사진)가 아니라 내용 첫 줄로
@@ -5844,7 +5864,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' && !authed) || (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
+      isIntranet: s.page === 'intranet', agoraGate: s.page === 'intranet' && !authed, intraLocked: (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : s.page === 'strategy' ? 'Weekly Strategy 글쓰기' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
