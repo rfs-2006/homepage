@@ -4468,7 +4468,7 @@ const NETWORK = [
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
 // FUND 첫 화면 사진: 겨울 산 (눈 덮인 긴 언덕 = 버핏의 '스노볼')
 const FUND_BG = [
-  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
+  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.12', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
 // AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
 const GATE_TOP = ['J.P. Morgan', 'PwC', '타임폴리오자산운용', 'NH-Amundi자산운용'];   // 로그인 칸 바로 옆 가장 눈에 띄는 자리에 먼저
 const GATE_NAMES = [...GATE_TOP, ...[[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n))).filter((n) => !GATE_TOP.includes(n))];
