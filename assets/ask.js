@@ -117,7 +117,7 @@
  .ask .L.many .sym{width:44px;height:44px;margin-top:48px}\
  .ask .L.many .o .lb{font-size:clamp(20px,1.6vw,26px)}\
 }\
-.ask .ttl{margin:auto 0;font-family:var(--ser);font-weight:700;font-size:clamp(48px,5.6vw,80px);letter-spacing:-.035em;line-height:1;color:var(--tx) !important;text-shadow:0 6px 28px rgba(4,8,16,.45);animation:askTtl 2s cubic-bezier(.2,.8,.2,1) both}\
+.ask .ttl{margin:auto;text-align:center;font-family:var(--ser);font-weight:700;font-size:clamp(48px,5.6vw,80px);letter-spacing:-.035em;line-height:1;color:var(--tx) !important;text-shadow:0 6px 28px rgba(4,8,16,.45);animation:askTtl 2s cubic-bezier(.2,.8,.2,1) both}\
 @keyframes askTtl{0%{opacity:0;transform:translateY(14px)}25%,72%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-10px)}}\
 @media (prefers-reduced-motion:reduce){.ask *,.ask{animation:none !important;transition:none !important}.ask .sym *{stroke-dashoffset:0}}\
 ";

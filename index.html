@@ -109,8 +109,9 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=12" defer></script>
+<script src="./assets/ask.js?v=13" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
+<script src="./assets/agora-gate.js?v=1" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -1250,6 +1251,17 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
 @media (max-width:760px){.fd-wrap{padding:48px 16px 56px !important}.fd-cw{grid-template-columns:36px minmax(0,1fr) 0}.fd-ends{display:none}.fd-ya,.fd-grid,.fd-plot .fd-chart{height:200px !important}.fd-th{display:none}.fd-chips>div{padding:8px 10px}.fd-alloc .bar i{font-size:0;padding:0}.fd-attr div{flex-basis:0}.fd-chips .cn,.fd-chips .cv{font-size:13px}}
 .pg-hero{position:relative;overflow:hidden}
+.rfm-lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;background:radial-gradient(70% 60% at 50% 45%,#16284A,#0B1526 75%)}
+.rfm-lock-in{width:min(400px,100%);padding:46px 40px;border:1px solid rgba(247,246,243,.28);background:rgba(11,21,36,.55);text-align:center}
+.rfm-lock-in img{width:60px;height:auto;display:block;margin:0 auto}
+.rfm-lock-in .sec-label{margin:26px 0 0;color:rgba(247,246,243,.65)}
+.rfm-lock-in h2{margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:28px;font-weight:400;letter-spacing:-.02em;color:#F7F6F3}
+.rfm-lock-sub{margin:12px 0 0;font-size:14px;line-height:1.7;color:rgba(247,246,243,.72)}
+.rfm-lock-in form{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+.rfm-lock-in .intra-input{background:rgba(247,246,243,.1);border-color:rgba(247,246,243,.4);color:#F7F6F3;text-align:center}
+.rfm-lock-in button{display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3}
+.rfm-lock-err{margin:2px 0 0;font-size:12px;color:#E8A9A9}
+.rfm-lock-help{margin:20px 0 0;font-size:12px;color:rgba(247,246,243,.62)}.rfm-lock-help a{color:rgba(247,246,243,.85)}
 .pg-bg{position:absolute;inset:0;background:#0F1B2E}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
@@ -2946,6 +2958,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   </sc-if>
 
+  <sc-if value="{{ agoraGate }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="AGORA 로그인" data-nav="dark" style="min-height:100vh;background:#02050C"></main>
+  </sc-if>
+
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
@@ -3146,6 +3162,23 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
+    <sc-if value="{{ rfmLocked }}" hint-placeholder-val="{{ false }}">
+    <section class="rfm-lock" data-nav="dark">
+      <div class="rfm-lock-in">
+        <img src="assets/rfs-seal-light-256.png" alt="R.F.S.">
+        <p class="sec-label">MEMBERS ONLY</p>
+        <h2>학회원만 볼 수 있어요</h2>
+        <p class="rfm-lock-sub">RFM 순위는 로그인한 학회원에게만 공개됩니다.</p>
+        <form onSubmit="{{ intraLogin }}">
+          <input class="intra-input" type="text" name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required="" value="{{ loginId }}" onChange="{{ onLoginId }}">
+          <input class="intra-input" type="password" name="password" autocomplete="current-password" placeholder="비밀번호" required="" value="{{ loginPw }}" onChange="{{ onLoginPw }}">
+          <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}"><p class="rfm-lock-err">{{ loginErr }}</p></sc-if>
+          <button type="submit" class="btn btn-photo press">LOGIN</button>
+        </form>
+        <p class="rfm-lock-help">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p>
+      </div>
+    </section>
+    </sc-if>
     <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
       <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap" aria-live="polite">순위를 불러오는 중입니다…</p></section></div>
     </sc-if>
@@ -4438,6 +4471,8 @@ const NETWORK = [
   { n:'한화큐셀', f:'qcells', r:4, a:4.23 },
   { n:'KCC', f:'kcc', r:4, a:1.81 },
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
+// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 첫 화면(줄마다 앞 6곳)에 나오는 기관, 그 순서대로
+const GATE_NAMES = [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(0, 6).map((x) => x.n));
 // lead: 이 줄에서 맨 앞으로 올릴 로고(모바일은 화면이 좁아 첫 줄에 J.P.Morgan·PwC부터)
 const netRows = (lead = []) => [0, 1, 2, 3, 4].map((r) => {
   const row = NETWORK.filter((x) => x.r === r);
@@ -4602,7 +4637,7 @@ class Component extends DCLogic {
       this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
       // 학회원으로 로그인한 기기는 GA에서 내부 방문(traffic_type=internal)으로 표시해 외부 방문 지표와 섞이지 않게 한다
       const markMember = (ses) => { if (!ses) return; try { localStorage.setItem('rfs_member', '1'); } catch (e) {} try { window.gtag && window.gtag('set', { traffic_type: 'internal' }); } catch (e) {} };
-      const setU = (ses) => markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
+      const setU = (ses) => markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -4713,6 +4748,19 @@ class Component extends DCLogic {
     if (!onAgora) this._askShut = false;
     if (onAgora && !this._askShut && this.state.intraData && window.RFSAsk && !window.RFSAsk.isOpen()) this.openAsk();
     else if (!onAgora && window.RFSAsk && window.RFSAsk.isOpen()) window.RFSAsk.close(true);
+    this.syncGate();
+  }
+
+  // AGORA 로그인 전 화면(별 608개의 구, assets/agora-gate.js). 로그인하면 구 쪽으로 다가가며 AGORA 화면과 겹쳐 바뀐다
+  syncGate() {
+    const want = this.state.page === 'intranet' && !this.state.user && !(this.props.intranetPreview ?? false);
+    if (want && !this._gate) {
+      if (!window.AgoraGate) { clearTimeout(this._gateT); this._gateT = setTimeout(() => this.syncGate(), 150); return; }
+      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, login: (id, pw) => this.signIn(id, pw) });
+    } else if (!want && this._gate) {
+      if (this.state.page === 'intranet' && this.state.user) this._gate.dive(); else this._gate.destroy();
+      this._gate = null;
+    }
   }
 
   // 첫 화면(pg-full)이 있는 페이지 안에서 탭을 바꿀 때: 맨 위(첫 화면 사진)가 아니라 내용 첫 줄로
@@ -4908,8 +4956,9 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
-    this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
+    // 학회원만 본다 (intranet_content). 로그인 전에는 불러오지 않는다
+    if (!this.state.user) return this.setState({ rfmData: null, rfmLoaded: true });
+    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
       .then(({ data }) => { if (data && data.data) this.setRfm(data.data); this.setState({ rfmLoaded: true }); }, () => this.setState({ rfmLoaded: true }));
   }
 
@@ -5815,7 +5864,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', intraLocked: (s.page === 'intranet' && !authed) || (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
+      isIntranet: s.page === 'intranet', agoraGate: s.page === 'intranet' && !authed, intraLocked: (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : s.page === 'strategy' ? 'Weekly Strategy 글쓰기' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),
@@ -5887,6 +5936,8 @@ class Component extends DCLogic {
       fundPos: FD.positions.map((p) => ({ ...p, w: p.weight.toFixed(1) + '%', bar: (p.weight * 2.6).toFixed(0) + 'px', tick: p.ticker || '—', retColor: p.ret ? (p.up ? '#0F5132' : '#842029') : 'rgba(26,26,26,0.4)', retText: p.ret || '—' })),
       fundNotes: FD.notes, hasFundNotes: FD.notes.length > 0,
       ...this.rfmProps(s.rfmData),
+      // RFM은 학회원만 본다: 로그인 전에는 첫 화면 아래에 로그인 칸만 보인다
+      ...(authed ? { rfmLocked: false } : { rfmLocked: true, hasRfm: false, noRfm: false, rfmLoading: false }),
       ...this.weeklyProps(),
       ...this.fundProps(authed),
       stopProp: (e) => e.stopPropagation(),
