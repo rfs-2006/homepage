@@ -3023,15 +3023,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="wrap pg-hero-in">
-        <sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">AMT Fund</h1>
-        </sc-if>
+        <h1 class="pg-title">AMT Fund</h1>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
-        </sc-if>
-        <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
     </section>
