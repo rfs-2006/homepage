@@ -77,8 +77,7 @@ Deno.serve(async (req) => {
     `${cohort}기${a.company ? ' · ' + a.company : ''}`,
     `${fmt(phone)}`,
     ``,
-    `이 연락처는 20년 동안 이어진 R.F.S.의 신뢰로 전해집니다.`,
-    `그 무게를 기억해 주십시오.`,
+    `선배님께서 학회를 믿고 남겨 주신 연락처입니다.`,
   ].join('\n');
 
   const log = { user_id: u.user.id, user_email: u.user.email, alumni_name: name, alumni_cohort: cohort, to_phone: to, status: 'sent', error: null as string | null };
