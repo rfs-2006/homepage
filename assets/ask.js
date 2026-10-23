@@ -316,7 +316,7 @@
     if (st.sendSms) {
       var saved = ''; try { saved = localStorage.getItem('rfs_my_phone') || ''; } catch (e) {}
       st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
-        '<div class="mine"><label for="askMe">선배님 연락처와 이 문구를 내 휴대폰으로 보내 드릴게요</label>' +
+        '<div class="mine"><label for="askMe">선배님 연락처를 내 휴대폰으로 보내 드릴게요</label>' +
         '<input id="askMe" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" value="' + esc(saved) + '">' +
         '<p class="er" aria-live="polite"></p><button type="button" class="cp">문구만 복사</button></div></div>';
       var me = st.bx.querySelector('#askMe'), er = st.bx.querySelector('.er');
@@ -354,8 +354,8 @@
   function sent() {
     st.stage = 3;
     var late = (function () { var h = new Date().getHours(); return h >= 22 || h < 8; })();
-    st.bx.innerHTML = crumbs() + '<h2 class="q">문자를<br>보냈어요</h2><div class="ms"><p class="ok">' + esc(st.pick.name) + ' 선배님 연락처와 보낼 문구가 곧 도착해요.<br>' +
-      (late ? '지금은 늦은 시간이니 내일 오전에 연락드려 주세요.' : '공손하게, 편하실 때 답해 주시라고 연락드려 주세요.') + '</p></div>';
+    st.bx.innerHTML = crumbs() + '<h2 class="q">문자를<br>보냈어요</h2><div class="ms"><p class="ok">' + esc(st.pick.name) + ' 선배님 연락처가 곧 도착해요.<br>' +
+      (late ? '지금은 늦은 시간이니 내일 연락드려 주세요.' : '') + '</p></div>';
     btn('처음으로', false, function () { st.path = []; st.pick = null; st.draft = ''; go(render); });
     stagger();
   }

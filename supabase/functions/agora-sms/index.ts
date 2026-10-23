@@ -55,9 +55,7 @@ Deno.serve(async (req) => {
   const to = digits(b.toPhone);
   if (!/^01[016789]\d{7,8}$/.test(to)) return json(400, { error: 'toPhone' });
   const name = String(b.alumniName ?? '').trim(), cohort = digits(b.alumniCohort);
-  const text = String(b.message ?? '').trim();
   if (!name || !cohort) return json(400, { error: 'alumni' });
-  if (text.length < 10 || text.length > 900) return json(400, { error: 'message' });
 
   // 하루 한도
   const since = new Date(Date.now() - 24 * 3600e3).toISOString();
@@ -71,22 +69,16 @@ Deno.serve(async (req) => {
   const phone = digits(a?.phone);
   if (!a || phone.length < 10) return json(404, { error: 'no_phone' });
 
+  // 문구·매너는 학회원에게 맡긴다. 연락처와 한 줄의 무게만
   const sms = [
     `[R.F.S. AGORA]`,
-    `${a.name} 선배님 (${cohort}기${a.company ? ' · ' + a.company : ''})`,
-    `연락처 ${fmt(phone)}`,
     ``,
-    `아래 문구로 연락드려 주세요.`,
-    `──────────`,
-    text,
-    `──────────`,
-    `· 평일 낮 시간에 보내 주세요. (밤 10시~아침 8시는 피해 주세요)`,
-    `· 첫 연락은 문자로 드리고, 통화는 선배님께서 괜찮다고 하실 때만 부탁드립니다.`,
-    `· 답장이 늦거나 없더라도 재촉하지 말아 주세요.`,
-    `· 선배님 연락처는 이번 연락에만 사용하고, 다른 곳에 공유하지 말아 주세요.`,
+    `${a.name} 선배님`,
+    `${cohort}기${a.company ? ' · ' + a.company : ''}`,
+    `${fmt(phone)}`,
     ``,
-    `선배님께서 시간을 내어 주시는 만큼, 예의를 갖춰 연락드려 주세요.`,
-    `- 중앙대학교 가치투자학회 R.F.S.`,
+    `이 연락처는 20년 동안 이어진 R.F.S.의 신뢰로 전해집니다.`,
+    `그 무게를 기억해 주십시오.`,
   ].join('\n');
 
   const log = { user_id: u.user.id, user_email: u.user.email, alumni_name: name, alumni_cohort: cohort, to_phone: to, status: 'sent', error: null as string | null };
