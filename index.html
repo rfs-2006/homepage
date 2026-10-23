@@ -63,7 +63,8 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-VZ0W77LZBS');
+  var rfsMember = false; try { rfsMember = localStorage.getItem('rfs_member') === '1'; } catch (e) {}
+  gtag('config', 'G-VZ0W77LZBS', rfsMember ? { traffic_type: 'internal' } : {});
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
@@ -4599,7 +4600,9 @@ class Component extends DCLogic {
       try { Object.keys(localStorage).forEach((k) => { if (/^sb-.*-auth-token/.test(k)) localStorage.removeItem(k); }); } catch (e) {}
       let store; try { store = window.sessionStorage; } catch (e) {}
       this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
-      const setU = (ses) => this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
+      // 학회원으로 로그인한 기기는 GA에서 내부 방문(traffic_type=internal)으로 표시해 외부 방문 지표와 섞이지 않게 한다
+      const markMember = (ses) => { if (!ses) return; try { localStorage.setItem('rfs_member', '1'); } catch (e) {} try { window.gtag && window.gtag('set', { traffic_type: 'internal' }); } catch (e) {} };
+      const setU = (ses) => markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -5621,9 +5624,9 @@ class Component extends DCLogic {
   }
 
   applyHash() {
-    // 검색용 정적 주소(/research/<id>/, /research/, /about/, /recruiting/)로 들어온 경우 해시 없이도 그 화면을 연다
+    // 검색용 정적 주소(/research/<id>/, /research/, /about/, /recruiting/, /fund/, /people/)로 들어온 경우 해시 없이도 그 화면을 연다
     const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
-    const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit' }[location.pathname.replace(/\/?$/, '/')];
+    const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit', '/fund/': 'fund', '/people/': 'people' }[location.pathname.replace(/\/?$/, '/')];
     const h = (location.hash || (pm ? '#research/' + pm[1] : pp ? '#' + pp : '#home')).slice(1);
     let page = 'home', reportId = this.state.reportId;
     if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
@@ -6246,7 +6249,14 @@ class Component extends DCLogic {
       nextNote: '다음 모집은 ' + nextRecruit + '로 예정되어 있습니다. 모집이 열리면 이메일로 알려드립니다.',
       email: s.email, onEmail: (e) => this.setState({ email: e.target.value }),
       notified: s.notified, notNotified: !s.notified,
-      submitNotify: () => { if (s.email.trim()) this.setState({ notified: true }); },
+      // 모집 알림 신청: Supabase recruit_notify 표에 저장(누구나 넣기만 가능, 읽기는 운영진만)하고 GA 전환(generate_lead)으로 잡는다
+      submitNotify: () => {
+        const em = (s.email || '').trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { window.alert('이메일 주소를 확인해 주세요'); return; }
+        const done = () => { this.setState({ notified: true }); try { window.gtag && window.gtag('event', 'generate_lead', { method: 'recruit_notify' }); } catch (e) {} };
+        if (!this.sb) return done();
+        this.sb.from('recruit_notify').insert({ email: em, semester: this.props.nextRecruit ?? '' }).then(({ error }) => { if (error && error.code !== '23505') window.alert('신청을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요'); else done(); });
+      },
     };
   }
 }
