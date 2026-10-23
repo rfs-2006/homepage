@@ -48,7 +48,7 @@
   "logo": "https://caurfs.kr/assets/rfs-seal-navy.png",
   "description": "2006년 창립한 중앙대학교 가치투자학회. 기업 분석 보고서를 발간하고 RFS 펀드를 운용합니다.",
   "foundingDate": "2006",
-  "email": "recruiting.rfs@gmail.com",
+  "email": "contact@caurfs.kr",
   "parentOrganization": { "@type": "CollegeOrUniversity", "name": "중앙대학교" },
   "sameAs": ["https://www.instagram.com/cau_rfs/", "https://cafe.naver.com/caurfs"]
 }
@@ -74,7 +74,7 @@
 <h1>R.F.S. | 중앙대학교 가치투자학회</h1>
 <p>R.F.S.(Rising Financial Stars)는 2006년 창립한 중앙대학교 가치투자학회입니다. 현재 43기가 활동 중이며, Research Team과 Asset Management Team이 기업 분석 보고서를 쓰고 RFS 펀드를 운용합니다.</p>
 <p>Vita contemplativa — 사색하는 삶을 기반으로 금융과 경제를 탐구합니다. 20년의 역사, 608명의 알럼나이 네트워크.</p>
-<p>신입 학회원 모집: 1년 이상 활동 가능한 중앙인이면 전공·학번·나이 제한 없이 지원할 수 있습니다. 문의 recruiting.rfs@gmail.com</p>
+<p>신입 학회원 모집: 1년 이상 활동 가능한 중앙인이면 전공·학번·나이 제한 없이 지원할 수 있습니다. 문의 recruiting@caurfs.kr</p>
 <p><a href="https://www.instagram.com/cau_rfs/">인스타그램 @cau_rfs</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <a href="/about/">학회 소개</a> · <a href="/recruiting/">신입 학회원 모집</a> · <a href="/research/">R.F.S. 기업분석 보고서 전체 목록</a></p>
 </noscript>
 <x-dc>
@@ -2965,7 +2965,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <button type="submit" class="btn btn-photo press" style="display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3">LOGIN</button>
         </form>
         <sc-if value="{{ loginBack }}" hint-placeholder-val="{{ false }}"><p style="margin:18px 0 0;font-size:13px"><a href="#" onClick="{{ loginBackGo }}" style="color:rgba(247,246,243,0.75)">← 돌아가기</a></p></sc-if>
-        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.62)">비밀번호 문의 · <a href="mailto:recruiting.rfs@gmail.com" style="display:inline-flex;align-items:center;min-height:44px;color:rgba(247,246,243,0.85)">recruiting.rfs@gmail.com</a></p>
+        <p style="margin:22px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,0.62)">비밀번호 문의 · <a href="mailto:contact@caurfs.kr" style="display:inline-flex;align-items:center;min-height:44px;color:rgba(247,246,243,0.85)">contact@caurfs.kr</a></p>
       </div>
     </section>
   </main>
@@ -3270,7 +3270,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">
           <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(247,246,243,0.6);margin-bottom:12px">CONTACT</div>
-          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br><a href="mailto:recruiting.rfs@gmail.com" style="color:rgba(247,246,243,0.9)">recruiting.rfs@gmail.com</a>
+          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br><a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
         </div>
       </div>
       <p style="border-top:1px solid rgba(247,246,243,0.25);margin:48px 0 0;padding-top:20px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.55);max-width:72em">본 사이트의 리포트는 중앙대학교 가치투자학회 R.F.S. 학회원이 교육 목적으로 작성한 자료입니다. 투자의견과 목표주가는 학회원의 분석에 기반한 의견이며 특정 종목의 매수·매도를 권유하지 않습니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</p>
@@ -5944,7 +5944,7 @@ class Component extends DCLogic {
         this.saveMe(s.cName, s.cCohort);
         this.setState({ coffeeBusy: true, coffeeErr: '' });
         const body = { alumniKey: coffeeTarget.cohort + '-' + coffeeTarget.name, fromName: s.cName, fromCohort: String(s.cCohort || '').replace(/\D/g, ''), fromPhone: s.cPhone, message: s.cMsg };
-        const MSG = { no_phone: '이 선배님은 연락처가 등록되지 않았어요. 임원진(recruiting.rfs@gmail.com)에게 문의해 주세요.', fromPhone: '휴대폰 번호를 010-0000-0000 형식으로 입력해 주세요.', message: '메시지를 1~500자로 입력해 주세요.', fromName: '이름을 20자 이내로 입력해 주세요.', fromCohort: '기수는 숫자로 입력해 주세요.', auth: '로그인이 만료됐어요. 다시 로그인해 주세요.' };
+        const MSG = { no_phone: '이 선배님은 연락처가 등록되지 않았어요. 임원진(contact@caurfs.kr)에게 문의해 주세요.', fromPhone: '휴대폰 번호를 010-0000-0000 형식으로 입력해 주세요.', message: '메시지를 1~500자로 입력해 주세요.', fromName: '이름을 20자 이내로 입력해 주세요.', fromCohort: '기수는 숫자로 입력해 주세요.', auth: '로그인이 만료됐어요. 다시 로그인해 주세요.' };
         this.sb.functions.invoke('coffee-chat', { body }).then(async ({ error }) => {
           if (!error) return this.setState({ coffeeBusy: false, coffeeSent: true, cMsg: '' });
           let j = {}; try { j = await error.context.json(); } catch (x) {}
