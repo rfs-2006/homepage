@@ -75,7 +75,7 @@ const COHORT = stat('Cohort').target, ALUMNI = stat('Alumni').target, REPORTS_N 
 const ORG = { '@type': 'Organization', name: C.SITE_NAME, url: `${C.SITE}/` };
 const NAV = `<header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
 <nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>`;
-const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a></footer>
+const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span> · <span style="white-space:nowrap">with Claude for Nonprofits</span></footer>
 </body>
 </html>
 `;
@@ -126,6 +126,7 @@ function aboutPage() {
   return head({ title, desc, url, keywords }) +
 `<script type="application/ld+json">${json(ld)}</script>
 <script type="application/ld+json">${json(crumbLd('About', url))}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
@@ -162,6 +163,7 @@ function recruitingPage() {
   return head({ title, desc, url, keywords }) +
 `<script type="application/ld+json">${json(ld)}</script>
 <script type="application/ld+json">${json(crumbLd('Recruiting', url))}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
@@ -176,20 +178,73 @@ ${RECRUIT.schedule.map((d) => `<div><dt>${esc(d.step)}</dt><dd>${esc(d.date)}</d
 <section><h2>들어오면 하는 일</h2>${dl(commitments)}${dl(procNotes)}</section>
 <section><h2>자주 묻는 질문</h2>${faqs.map((f) => `<h3>${esc(f.q)}</h3><p>${esc(f.a)}</p>`).join('\n')}</section>
 <div class="btns"><a class="btn solid" href="/#recruit">모집 페이지 열기</a><a class="btn" href="/about/">학회 소개</a><a class="btn" href="/research/">보고서 보기</a></div>
-<p class="note">문의: recruiting.rfs@gmail.com</p>
+<p class="note">문의: recruiting@caurfs.kr</p>
+</main>
+${FOOTER}`;
+}
+
+
+// ---------- /fund/ (검색엔진용. 브라우저에서는 spa.js가 메인 앱의 FUND 화면을 띄운다) ----------
+
+function fundPage() {
+  const url = `${C.SITE}/fund/`;
+  const title = 'AMT Fund · Weekly Strategy | 중앙대학교 가치투자학회 R.F.S. 운용팀';
+  const desc = '중앙대학교 가치투자학회 R.F.S. Asset Management Team이 2020년부터 실제 자금으로 운용하는 RFS 펀드. 매주 투자전략(Weekly Strategy)을 공개하고, 보유종목·자산구성·기여도를 투명하게 기록합니다.';
+  const keywords = ['RFS 펀드', 'AMT Fund', '중앙대 가치투자학회 펀드', '대학생 펀드 운용', '학회 펀드', '주간 투자전략', 'Weekly Strategy', '중앙대 RFS'];
+  return head({ title, desc, url, keywords }) +
+`<script type="application/ld+json">${json(crumbLd('Fund', url))}</script>
+<script src="/research/spa.js"></script>
+</head>
+<body>
+${NAV}
+<main>
+<div class="crumb"><a href="/">R.F.S.</a> › Fund</div>
+<h1>AMT Fund</h1>
+<p class="headline">Asset Management Team · 2020년부터 실제 자금으로 운용</p>
+<p>R.F.S. Asset Management Team은 2020년 신설된 운용팀입니다. 학회원이 직접 투자전략을 세우고 포트폴리오를 구성해 RFS 펀드를 운용하며, 운용 성과를 분석해 운용 보고서와 매크로 보고서를 씁니다. 모든 운용은 교육 목적이며 특정 종목의 매수·매도를 권유하지 않습니다.</p>
+<section><h2>Weekly Strategy</h2><p>운용팀은 매주 다음 주의 시장 판단과 대응 계획을 Weekly Strategy로 공개합니다. 지난주 리뷰, 섹터별 근거, 매매 계획을 담습니다.</p></section>
+<section><h2>공개하는 것</h2><ul class="list"><li style="padding:12px 0"><strong>기준가와 수익률</strong><br><span style="color:var(--muted)">설정일 기준가 1,000에서 출발한 기준가 추이와 KOSPI·KOSDAQ 비교</span></li><li style="padding:12px 0"><strong>자산구성과 보유종목</strong><br><span style="color:var(--muted)">종목별 비중, 업종 구성, 현금 비중</span></li><li style="padding:12px 0"><strong>기여도</strong><br><span style="color:var(--muted)">종목별로 수익률에 얼마나 기여했는지</span></li></ul></section>
+<div class="btns"><a class="btn solid" href="/#fund">운용 현황 보기</a><a class="btn" href="/#fund/strategy">Weekly Strategy 보기</a><a class="btn" href="/research/">기업분석 보고서</a></div>
+</main>
+${FOOTER}`;
+}
+
+// ---------- /people/ ----------
+
+function peoplePage() {
+  const url = `${C.SITE}/people/`;
+  const title = 'People · 알럼나이 네트워크 | 중앙대학교 가치투자학회 R.F.S.';
+  const careers = CHART.map((x) => `${x.label} ${x.pct}%`).join(' · ');
+  const desc = `중앙대학교 가치투자학회 R.F.S.의 조직과 알럼나이 ${ALUMNI}명. 진로: ${careers}.`;
+  const keywords = ['중앙대 가치투자학회 알럼나이', 'RFS 동문', '중앙대 금융권 취업', '중앙대 증권사', '중앙대 학회 진로', '중앙대 RFS'];
+  return head({ title, desc, url, keywords }) +
+`<script type="application/ld+json">${json(crumbLd('People', url))}</script>
+<script src="/research/spa.js"></script>
+</head>
+<body>
+${NAV}
+<main>
+<div class="crumb"><a href="/">R.F.S.</a> › People</div>
+<h1>People</h1>
+<p class="headline">${COHORT}기까지 이어진 알럼나이 ${ALUMNI}명</p>
+<section><h2>조직</h2>${dl(teams)}</section>
+<section><h2>알럼나이 진로</h2><p>${esc(careers)}</p><p>증권사, 자산운용사, 은행, IB·PE·VC, 회계법인 등 금융권 전반에 R.F.S. 동문이 있습니다. 현역 학회원은 직무 세미나와 선배님 멘토링으로 진로를 준비합니다.</p></section>
+<div class="btns"><a class="btn solid" href="/#people">People 페이지 열기</a><a class="btn" href="/about/">학회 소개</a><a class="btn" href="/recruiting/">신입 학회원 모집</a></div>
 </main>
 ${FOOTER}`;
 }
 
 write('about/index.html', aboutPage());
+write('fund/index.html', fundPage());
+write('people/index.html', peoplePage());
 write('recruiting/index.html', recruitingPage());
 
 // sitemap에 두 페이지를 넣는다 (build-site.js가 sitemap을 새로 쓰므로 그 다음에 실행)
 let sm = read('sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
-for (const p of ['about', 'recruiting']) {
+for (const p of ['about', 'recruiting', 'fund', 'people']) {
   const loc = `${C.SITE}/${p}/`;
   if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>\n</urlset>`);
 }
 write('sitemap.xml', sm);
-console.log(`about/, recruiting/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);
+console.log(`about/, recruiting/, fund/, people/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);

@@ -3,13 +3,14 @@
   python3 -I tools/rag/embed.py /home/user/rfs-cafe-data [모델]
 입력  parsed/chunks.jsonl
 출력  vectors/<모델>.f16.npy (청크 순서대로, float16), vectors/<모델>.ids.json
-키    Voyage 키는 실행 환경의 네트워크 시크릿이 api.voyageai.com 요청에 붙인다. 코드에는 키가 없다.
+키    Voyage 키는 이 개발 환경에서는 네트워크 프록시가 api.voyageai.com 요청에 붙인다. 프록시가 없는 서버에서는 환경변수 VOYAGE_API_KEY.
 
 - 문서 쪽은 input_type=document, 질문 쪽은 input_type=query로 넣는다. Voyage는 둘을 다르게 처리해서 검색 정확도가 오른다.
 - 머리글(종목·학기·종류·섹션)을 본문 앞에 붙여서 임베딩한다.
 - 배치마다 중간 저장해서, 끊겨도 다시 실행하면 이어서 한다.
 """
 import json
+import os
 import sys
 import time
 import urllib.error
@@ -26,10 +27,18 @@ OUT = CAFE / 'vectors'
 PART = OUT / f'{MODEL}.parts'
 
 
+def voyage_headers():
+    # 이 개발 환경은 프록시가 api.voyageai.com 요청에 키를 붙여 준다. 서버처럼 프록시가 없는 곳은 VOYAGE_API_KEY로 넣는다
+    h = {'content-type': 'application/json'}
+    if os.environ.get('VOYAGE_API_KEY'):
+        h['Authorization'] = f"Bearer {os.environ['VOYAGE_API_KEY']}"
+    return h
+
+
 def embed(texts, input_type='document', model=MODEL, tries=6):
     body = json.dumps({'input': texts, 'model': model, 'input_type': input_type, 'truncation': True}).encode()
     for k in range(tries):
-        req = urllib.request.Request('https://api.voyageai.com/v1/embeddings', data=body, headers={'content-type': 'application/json'})
+        req = urllib.request.Request('https://api.voyageai.com/v1/embeddings', data=body, headers=voyage_headers())
         try:
             with urllib.request.urlopen(req, timeout=180) as r:
                 j = json.load(r)
