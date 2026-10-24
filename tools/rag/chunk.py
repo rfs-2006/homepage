@@ -157,6 +157,23 @@ def chunks_of(d):
             yield sec, None, None, c
 
 
+def rows_of(d):
+    """문서 하나의 청크 레코드들 (add_docs.py도 같이 쓴다)"""
+    sem = semester(d)
+    title = title_of(d)
+    for k, (sec, p0, p1, text) in enumerate(chunks_of(d)):
+        if len(text) < MIN:
+            continue
+        pages = (f'p.{p0}' if p0 == p1 else f'p.{p0}-{p1}') if p0 else ''
+        head = ' | '.join(x for x in [title, sem and f'{sem}학기', LABEL[d['doc_type']], sec, pages] if x)
+        yield {
+            'chunk_id': f"{d['doc_id']}-{k:03d}", 'doc_id': d['doc_id'], 'title': title, 'semester': sem,
+            'doc_type': d['doc_type'], 'grade': d['grade'], 'source': d['source'], 'board': d['board'],
+            'file': d['file'], 'article_id': d.get('article_id'), 'section': sec, 'page_start': p0, 'page_end': p1,
+            'header': head, 'text': text,
+        }
+
+
 def main():
     docs = [json.loads(l) for l in open(SRC)]
     live = [d for d in docs if 'duplicate_of' not in d and d['chars'] >= 200]
@@ -165,21 +182,10 @@ def main():
     by_type = Counter()
     with open(OUT / 'chunks.jsonl', 'w') as f:
         for d in live:
-            sem = semester(d)
-            title = title_of(d)
-            for k, (sec, p0, p1, text) in enumerate(chunks_of(d)):
-                if len(text) < MIN:
-                    continue
-                pages = (f'p.{p0}' if p0 == p1 else f'p.{p0}-{p1}') if p0 else ''
-                head = ' | '.join(x for x in [title, sem and f'{sem}학기', LABEL[d['doc_type']], sec, pages] if x)
-                f.write(json.dumps({
-                    'chunk_id': f"{d['doc_id']}-{k:03d}", 'doc_id': d['doc_id'], 'title': title, 'semester': sem,
-                    'doc_type': d['doc_type'], 'grade': d['grade'], 'source': d['source'], 'board': d['board'],
-                    'file': d['file'], 'article_id': d.get('article_id'), 'section': sec, 'page_start': p0, 'page_end': p1,
-                    'header': head, 'text': text,
-                }, ensure_ascii=False) + '\n')
+            for r in rows_of(d):
+                f.write(json.dumps(r, ensure_ascii=False) + '\n')
                 n += 1
-                lens.append(len(text))
+                lens.append(len(r['text']))
                 by_type[d['doc_type']] += 1
     lens.sort()
     q = lambda p: lens[int(len(lens) * p)]
