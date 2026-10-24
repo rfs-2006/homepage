@@ -1,8 +1,13 @@
-// 리포트 개별 페이지(/research/<id>/)에서 홈의 리포트 화면을 그대로 띄운다.
+// 검색용 정적 페이지(/research/<id>/, /research/, /about/, /recruiting/)에서 메인 앱의 같은 화면을 그대로 띄운다.
 // 이 페이지의 정적 HTML은 검색엔진용으로 남겨 두고, 브라우저에서는 메인(/)의 HTML을 받아
 // 이 페이지의 제목·설명·canonical·구조화 데이터로 머리말을 바꿔 끼운 뒤 문서를 통째로 교체한다.
-// 메인 앱은 주소(/research/<id>/)를 읽어 해당 리포트 화면을 연다. 실패하면 정적 페이지를 그대로 보여 준다.
+// 메인 앱은 주소(/research/<id>/ 등)를 읽어 해당 화면을 연다. 실패하면 정적 페이지를 그대로 보여 준다.
 (function () {
+  // 리포트 글꼴은 메인 HTML을 받는 동안 같이 받기 시작한다 (메인 HTML이 다 와서야 받기 시작하면 늦다)
+  ['light', 'medium', 'bold'].forEach(function (w) {
+    var l = document.createElement('link'); l.rel = 'preload'; l.as = 'font'; l.type = 'font/woff2'; l.crossOrigin = 'anonymous';
+    l.href = '/assets/fonts/rfs-report-dotum-' + w + '.woff2'; document.head.appendChild(l);
+  });
   var root = document.documentElement;
   root.style.visibility = 'hidden';
   var show = function () { root.style.visibility = ''; };

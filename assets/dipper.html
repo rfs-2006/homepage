@@ -2,6 +2,28 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
+<script>
+// 미리보기 주소(deploy-preview-…)나 주소 끝 ?motion=1 이면, 컴퓨터에서 애니메이션을 꺼 두었어도(동작 줄이기) 효과를 그대로 보여 준다. ?motion=0 으로 끈다. 실제 사이트에는 영향 없음
+(function(){
+  try {
+    var q = /[?&]motion=(1|0)\b/.exec(location.search), ls = window.localStorage;
+    if (q) q[1] === '1' ? ls.setItem('rfs-motion', '1') : ls.removeItem('rfs-motion');
+    if (!(/^deploy-preview-/.test(location.hostname) || ls.getItem('rfs-motion') === '1')) return;
+  } catch (e) { return; }
+  var mm = window.matchMedia.bind(window);
+  window.matchMedia = function(s){ return /prefers-reduced-motion/.test(s) ? mm(/:\s*reduce/.test(s) ? 'not all' : 'all') : mm(s); };
+  var fix = function(){
+    [].forEach.call(document.styleSheets, function(sh){ var r; try { r = sh.cssRules; } catch (e) { return; }
+      (function walk(rs){ [].forEach.call(rs, function(x){
+        if (x.media && /prefers-reduced-motion/.test(x.media.mediaText)) x.media.mediaText = /:\s*reduce/.test(x.media.mediaText) ? 'not all' : 'all';
+        else if (x.cssRules) walk(x.cssRules);
+      }); })(r);
+    });
+  };
+  document.addEventListener('DOMContentLoaded', fix); window.addEventListener('load', fix);
+  new MutationObserver(function(ms){ if (ms.some(function(m){ return [].some.call(m.addedNodes, function(n){ return n.nodeName === 'STYLE' || n.nodeName === 'LINK'; }); })) setTimeout(fix, 50); }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>R.F.S.</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
@@ -109,7 +131,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.75),0 0 22px rgba(0,0,0,.5)}
 .lab b{display:block;font-weight:600;font-size:13px;letter-spacing:.22em;color:#e9edf6;
   transition:color .4s, letter-spacing .6s var(--ease)}
-.lab i{display:block;font-style:normal;font-size:12.5px;font-weight:500;letter-spacing:.02em;color:#ffffff;
+.lab i{display:block;font-style:normal;font-size:15.5px;font-weight:500;letter-spacing:.02em;color:#ffffff;
   opacity:0;transform:translateY(-5px);transition:opacity .45s ease, transform .6s var(--ease);margin-top:6px}
 .lab small{display:block;font-size:10.5px;letter-spacing:.14em;color:#aab3c4;opacity:0;margin-top:3px;
   transform:translateY(-4px);transition:opacity .45s ease .08s, transform .6s var(--ease) .08s;font-weight:500}
@@ -170,7 +192,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 @media (max-width:760px){
   .brand{left:16px;top:18px}.brand span{display:none}
   .copy{left:16px;right:16px;bottom:30px}.copy h1{font-size:21px}
-  .lab b{font-size:11px;letter-spacing:.16em}.lab i{font-size:11px}
+  .lab b{font-size:11px;letter-spacing:.16em}.lab i{font-size:13px}
   .hint{display:none}
   .tall .polaris .seal{width:40px;height:40px;top:calc(50% + 20px);left:calc(50% - 20px)}
   .tall .polaris .lab{left:50%;top:calc(50% + 68px);transform:translateX(-50%);text-align:center}
@@ -189,10 +211,13 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .motto .sp{display:inline-block;width:.9em}
 .motto.on .ch{opacity:1;filter:none;transform:none}
 .motto.solo .ch{color:rgba(240,244,252,.88);text-shadow:0 0 10px rgba(190,210,255,.45);transition:opacity .7s ease calc(var(--i)*30ms), filter .7s ease calc(var(--i)*30ms), transform .7s var(--ease) calc(var(--i)*30ms), color 1.6s ease, text-shadow 1.6s ease}
-.motto.live .ch{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
-@keyframes glint{0%,5%,100%{color:rgba(223,230,245,var(--a));text-shadow:none}
-  2.2%{color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5)}}
+.motto .ch{position:relative}
+/* 반짝임: 빛나는 글자 사본(::after)의 불투명도만 움직인다. 색·그림자를 직접 움직이면 매 프레임 스타일 계산·다시 그리기가 일어난다 */
+.motto .ch::after{content:attr(data-c);position:absolute;left:0;top:0;color:rgba(255,255,255,.95);text-shadow:0 0 6px rgba(220,232,255,.85),0 0 18px rgba(160,190,255,.5);opacity:0;pointer-events:none}
+.motto.live .ch::after{animation:glint 9s ease-in-out calc(var(--i)*90ms) infinite}
+@keyframes glint{0%,5%,100%{opacity:0}2.2%{opacity:1}}
 .motto.on:hover{letter-spacing:.7em}
+.motto.on:hover .ch::after{animation:none;opacity:0}
 .motto.on:hover .ch{animation:none;color:#fff;text-shadow:0 0 8px rgba(220,232,255,.9),0 0 22px rgba(170,195,255,.6),0 0 46px rgba(140,170,255,.35);transition-delay:calc(var(--i)*25ms)}
 .sky.shine .seg{stroke-opacity:.75;stroke-width:1.1;transition:stroke-opacity .8s var(--ease), stroke-width .8s var(--ease)}
 .sky.shine .star.lit .glow{transform:translate(-50%,-50%) scale(1.35);opacity:1}
@@ -216,6 +241,15 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 .photo.p3d #gl3d{display:block}
 .ready .photo.p3d #gl3d{opacity:1}
 .photo.p3d img{visibility:hidden}
+.p3dm .wash,.p3dm .wash2{display:none}
+/* 별을 누르면: 그 별 쪽으로 살짝 줌인하면서 다음 페이지로 크로스페이드.
+   PC는 페이지가 바뀌는 동안 이전 화면이 그 별을 향해 계속 커지며 사라지고 새 페이지가 겹쳐 나타난다 (index.html의 html.warp-nav 전환).
+   폰은 페이지 전환 효과를 쓰지 않아서, 여기서 줌인하며 어둡게 사라진 뒤 넘어간다 */
+.warp .photo{transform:scale(1.15) !important;transform-origin:var(--pwx) var(--pwy);transition:transform .6s cubic-bezier(.3,.1,.6,1)}
+.warp .dipper{transform:scale(1.4) !important;transform-origin:var(--wx) var(--wy);transition:transform .6s cubic-bezier(.3,.1,.6,1)}
+.warp .motto,.warp .lab,.warp .credit,.warp .torch,.warp .spk,.warp .ring,.warp .wave{opacity:0 !important;transition:opacity .2s ease}   /* 십자 빛줄기·고리는 전환 중 안 보이게 */
+.sky.warp-fade{opacity:0;transition:opacity .4s ease}
+.warp{cursor:default}
 .p3dm.v-zoom .shade{background:radial-gradient(ellipse 100% 80% at 50% 48%, rgba(0,0,0,0) 45%, rgba(0,0,0,.6) 100%),linear-gradient(180deg, rgba(2,3,8,.45) 0%, rgba(2,3,8,0) 25%, rgba(2,3,8,0) 75%, rgba(2,3,8,.35) 100%)}
 </style>
 </head>
@@ -241,7 +275,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 <script>
 (() => {
   /* ---- photo choice (?photo=1|2|3) ---- */
-  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp':'hero/sky.webp'), flip:false, pos:'50% 40%', credit:'Photo: Unsplash'}};
+  // 사진을 바꾸면 ?v= 를 올린다 (assets는 브라우저가 하루 동안 저장해 두어서, 이름이 같으면 예전 사진이 계속 보인다)
+  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp?v=1014':'hero/sky.webp?v=1014'), flip:false, pos:'50% 40%', credit:'Photo: Unsplash'}};
   const q = new URLSearchParams(location.search);
   const P = PHOTOS[q.get('photo')] || PHOTOS[1];
   const img = document.getElementById('photoImg');
@@ -400,26 +435,72 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   let tx=0, ty=0, x=0, y=0, px=-999, py=-999;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STATIC = location.hash === '#static' || q.has('static') || reduce;
+  /* ---- 별을 누르면 그 별로 확대되며 메뉴로 (새 탭 열기·동작 줄이기 설정에서는 그냥 이동) ---- */
+  dipper.querySelectorAll('.star').forEach(el => el.addEventListener('click', (e) => {
+    if (STATIC || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
+    e.preventDefault();
+    if (sky.classList.contains('warp')) return;
+    const [sx, sy] = scr[el.dataset.id];
+    sky.style.setProperty('--wx', sx + 'px'); sky.style.setProperty('--wy', sy + 'px');
+    sky.style.setProperty('--pwx', (sx + 24) + 'px'); sky.style.setProperty('--pwy', (sy + 24) + 'px');   // .photo는 사방 24px 더 크다
+    sky.classList.add('warp');
+    let top = null; try { top = window.top; void top.document; } catch (_) { top = null; }
+    const vt = !!(top && top.document.startViewTransition && top.innerWidth > 1024);   // index.html withTransition과 같은 조건
+    if (top) {
+      const r = fe ? fe.getBoundingClientRect() : { left: 0, top: 0 }, root = top.document.documentElement;
+      root.style.setProperty('--wo', (r.left + sx) + 'px ' + (r.top + sy) + 'px');   // 바깥 페이지 기준 별 위치 (전환 중 확대 중심)
+      root.classList.add('warp-nav'); setTimeout(() => root.classList.remove('warp-nav'), 1500);
+    }
+    if (!vt) sky.classList.add('warp-fade');
+    setTimeout(() => {
+      // 폰: 새 페이지가 0.6초 동안 서서히 나타나게 (index.html의 html.warp-in)
+      if (!vt && top) { const root = top.document.documentElement; root.classList.add('warp-in'); setTimeout(() => root.classList.remove('warp-in'), 1500); }
+      try { top.location.href = el.href; } catch (_) { location.href = el.href; }
+    }, vt ? 30 : 330);   // 멈춤 없이: PC는 바로 넘어가며 이전 화면이 계속 커지고 흐려진다, 폰은 확대·흐려짐 도중에 넘어간다
+    setTimeout(() => sky.classList.remove('warp', 'warp-fade'), 2600);   // 홈으로 돌아왔을 때 원래대로
+  }));
   sky.addEventListener('pointermove', e => {
     tx = e.clientX/W - .5; ty = e.clientY/H - .5; px = e.clientX; py = e.clientY;
-    sky.classList.add('pointer');
+    sky.classList.add('pointer'); wake();
   });
-  sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); });
+  sky.addEventListener('pointerleave', () => { tx = 0; ty = 0; sky.classList.remove('pointer'); wake(); });
+  // 화면에 보일 때만 그린다 (스크롤해서 지나가거나 탭을 숨기면 멈춤)
+  // 홈 iframe 안에서는 IntersectionObserver가 바깥 페이지 스크롤을 못 따라가서, 바깥에서 iframe 위치를 직접 본다 (같은 출처)
+  let tickOn = false, lastPx = -1, lastPy = -1;
+  const loops = [];
+  const fe = (() => { try { return window.frameElement; } catch (e) { return null; } })();
+  const live = () => {
+    if (document.hidden) return false;
+    if (!fe) return true;
+    const r = fe.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < parent.innerHeight;
+  };
+  const resume = () => { if (live()) loops.forEach(f => f()); };
+  function wake() { resume(); }
+  document.addEventListener('visibilitychange', resume);
+  if (fe) { parent.addEventListener('scroll', resume, { passive: true }); parent.addEventListener('resize', resume); }
   function tick(){
-    x += (tx-x)*.06; y += (ty-y)*.06;
-    photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
-    dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
-    torch.style.transform = `translate3d(${px}px, ${py}px, 0)`;
+    if (!live()) { tickOn = false; return; }
+    const moving = Math.abs(tx-x) > .0005 || Math.abs(ty-y) > .0005;
+    if (moving) {
+      x += (tx-x)*.06; y += (ty-y)*.06;
+      photo.style.transform = `translate3d(${(-x*12).toFixed(2)}px, ${(-y*9).toFixed(2)}px, 0)`;
+      dipper.style.transform = `translate3d(${(-x*26).toFixed(2)}px, ${(-y*18).toFixed(2)}px, 0)`;
+    }
+    const torchMoved = px !== lastPx || py !== lastPy;
+    if (torchMoved) { torch.style.transform = `translate3d(${px}px, ${py}px, 0)`; lastPx = px; lastPy = py; }
+    if (!moving && !torchMoved) { tickOn = false; return; }   // 다 멎으면 쉰다. 마우스가 움직이면 다시 시작
     requestAnimationFrame(tick);
   }
-  if (!STATIC) requestAnimationFrame(tick);
+  const startTick = () => { if (!tickOn) { tickOn = true; requestAnimationFrame(tick); } };
+  if (!STATIC) { loops.push(startTick); startTick(); }
 
   /* ---- 사진 입체: 깊이 지도로 하늘·구름·산을 따로 움직인다 (?p=3d) ---- */
   (() => {
     const cv = document.getElementById('gl3d');
     const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
     if (!g) return;
-    const dimg = new Image(); dimg.src = 'hero/sky-depth.png';
+    const dimg = new Image(); dimg.src = innerWidth < 760 ? 'hero/sky-depth-m.png?v=1014' : 'hero/sky-depth.png?v=1014';   // 모바일 사진은 가운데 40%만 잘라 쓴다 (세로 화면에서는 가운데만 보여서)
     const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
     const fs = `precision highp float;
       uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z;
@@ -432,7 +513,23 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
         for(int i=0;i<4;i++){ float d=texture2D(D,q).r;
           float s=1.+Z*(.25+.75*d);
           q=c+(uv-c)/s - M*(d-.3)*.05; }
-        gl_FragColor=texture2D(I,clamp(q,.001,.999));
+        vec3 col=texture2D(I,clamp(q,.001,.999)).rgb;
+        // CSS filter: brightness(.74) saturate(.8) contrast(1.05)
+        col*=.74;
+        col=mat3(.2126+.7874*.8,.2126-.2126*.8,.2126-.2126*.8, .7152-.7152*.8,.7152+.2848*.8,.7152-.7152*.8, .0722-.0722*.8,.0722-.0722*.8,.0722+.9278*.8)*col;
+        col=clamp((col-.5)*1.05+.5,0.,1.);
+        // .wash: multiply, 위 rgba(15,27,46,.55) · 55% rgba(20,38,72,.38) · 아래 rgba(11,21,36,.7)
+        float y=1.-gl_FragCoord.y/R.y;
+        vec3 f0=1.-.55+.55*vec3(15.,27.,46.)/255., f1=1.-.38+.38*vec3(20.,38.,72.)/255., f2=1.-.7+.7*vec3(11.,21.,36.)/255.;
+        col*= y<.55 ? mix(f0,f1,y/.55) : mix(f1,f2,(y-.55)/.45);
+        // .wash2: color 혼합 rgba(32,56,100,.16) (색조·채도는 덧칠 색, 밝기는 사진)
+        vec3 tc=vec3(32.,56.,100.)/255., L=vec3(.3,.59,.11);
+        vec3 cc=tc+(dot(col,L)-dot(tc,L));
+        float l=dot(cc,L), n=min(min(cc.r,cc.g),cc.b), x=max(max(cc.r,cc.g),cc.b);
+        if(n<0.) cc=l+(cc-l)*l/(l-n);
+        if(x>1.) cc=l+(cc-l)*(1.-l)/(x-l);
+        col=mix(col,cc,.16);
+        gl_FragColor=vec4(col,1.);
       }`;
     const sh = (t, src) => { const o = g.createShader(t); g.shaderSource(o, src); g.compileShader(o); return o; };
     const pr = g.createProgram(); g.attachShader(pr, sh(g.VERTEX_SHADER, vs)); g.attachShader(pr, sh(g.FRAGMENT_SHADER, fs)); g.linkProgram(pr);
@@ -449,20 +546,25 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     const start = () => {
       tex(0, img); tex(1, dimg); g.uniform1i(U('I'), 0); g.uniform1i(U('D'), 1);
       g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight);
-      photo.classList.add('p3d'); sky.classList.add('p3dm'); photo.style.filter = getComputedStyle(img).filter;
-      t0 = performance.now(); requestAnimationFrame(draw);
+      photo.classList.add('p3d'); sky.classList.add('p3dm');
+      t0 = performance.now(); loops.push(startDraw); startDraw();
     };
+    let drawOn = false;
+    const startDraw = () => { if (!drawOn) { drawOn = true; requestAnimationFrame(draw); } };
     const draw = (now) => {
+      if (!live()) { drawOn = false; return; }
       const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
       const t = (now - t0) / 1000;
-      // 마우스가 없으면 아주 느리게 저절로 흔들린다
-      const ax = Math.sin(t * .16) * .55, ay = Math.cos(t * .11) * .35;
-      const on = sky.classList.contains('pointer');
-      mx += ((on ? x * 2 : ax) - mx) * .05; my += ((on ? -y * 2 : ay) - my) * .05;
+      // 처음 14초(확대 연출) 동안은 마우스가 없어도 천천히 흔들리고, 그 뒤로는 마우스를 따라서만 움직인다
+      const on = sky.classList.contains('pointer'), intro = t < 14;
+      const gx = intro && !on ? Math.sin(t * .16) * .55 : x * 2, gy = intro && !on ? Math.cos(t * .11) * .35 : -y * 2;
+      mx += (gx - mx) * .05; my += (gy - my) * .05;
       const z = .18 * Math.pow(Math.max(0, 1 - t / 14), 2.2);
       g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), z);
       g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
+      // 움직임이 다 멎으면 그리기를 멈춘다 (마지막 장면이 그대로 남는다). 마우스가 움직이면 다시 시작
+      if (!intro && Math.abs(gx - mx) < .002 && Math.abs(gy - my) < .002) { drawOn = false; return; }
       requestAnimationFrame(draw);
     };
     let n = 0; const one = () => { if (++n === 2) start(); };
@@ -475,7 +577,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const motto = document.getElementById('motto');
   let ci = 0;
   motto.setAttribute('aria-label','Rising Financial Stars');
-  motto.innerHTML = 'RISING FINANCIAL STARS'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" style="--i:${ci++}">${c}</span>`).join('');
+  motto.innerHTML = 'RISING FINANCIAL STARS'.split('').map(c => c === ' ' ? '<span class="sp"></span>' : `<span class="ch" aria-hidden="true" data-c="${c}" style="--i:${ci++}">${c}</span>`).join('');
   motto.addEventListener('pointerenter', () => sky.classList.add('shine'));
   motto.addEventListener('pointerleave', () => sky.classList.remove('shine'));
   const copy = motto, hint = {classList:{add(){}}};

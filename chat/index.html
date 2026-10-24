@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리서치 챗봇 | 중앙대 가치투자학회 R.F.S.</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+<style>
+:root{--bg:#F7F6F3;--ink:#1A1A1A;--sub:rgba(26,26,26,0.6);--line:#E2E0DA;--navy:#203864;--dark:#0F1B2E;--accent:#8FAADC;--card:#FFFFFF}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',sans-serif;font-size:15px;line-height:1.7}
+a{color:var(--navy)}
+header{background:var(--dark);color:#F7F6F3;padding:18px 16px}
+header .in{max-width:760px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+header h1{margin:0;font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:-0.02em}
+header a{color:rgba(247,246,243,0.75);font-size:13px;text-decoration:none}
+header button{background:none;border:1px solid rgba(247,246,243,0.35);color:#F7F6F3;font:inherit;font-size:13px;padding:4px 10px;cursor:pointer}
+main{max-width:760px;margin:0 auto;padding:20px 16px 140px}
+.intro{color:var(--sub);font-size:14px;margin:4px 0 20px}
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
+.ex button{background:var(--card);border:1px solid var(--line);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink);text-align:left}
+.ex button:hover{border-color:var(--navy)}
+.msg{margin:18px 0}
+.q{display:flex;justify-content:flex-end}
+.q div{background:var(--navy);color:#F7F6F3;padding:10px 14px;max-width:85%;white-space:pre-wrap;word-break:break-word}
+.a{background:var(--card);border:1px solid var(--line);padding:16px 18px;word-break:break-word}
+.a p{margin:0 0 10px}.a p:last-child{margin-bottom:0}
+.a ul,.a ol{margin:0 0 10px;padding-left:20px}
+.cite{display:inline-block;font-size:11px;line-height:1;vertical-align:super;margin:0 1px;padding:2px 4px;border:1px solid var(--accent);color:var(--navy);background:none;cursor:pointer;font-family:inherit}
+.cite[aria-expanded=true]{background:var(--accent);color:var(--dark)}
+.src{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:13px;color:var(--sub)}
+.src summary{cursor:pointer}
+.src ol{margin:8px 0 0;padding-left:20px}
+.src li{margin:4px 0}
+.src li.on{color:var(--ink)}
+.src blockquote{margin:4px 0 0;padding:6px 10px;border-left:2px solid var(--accent);background:var(--bg);color:var(--ink);font-size:13px;white-space:pre-wrap}
+.wait{color:var(--sub);font-size:14px}
+.wait span{display:inline-block;animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.wait span{animation:none}}
+.err{color:#8A2E2E;font-size:14px}
+form{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+form .in{max-width:760px;margin:0 auto;display:flex;gap:8px}
+textarea{flex:1;resize:none;height:48px;max-height:160px;padding:12px 14px;border:1px solid rgba(26,26,26,0.25);background:var(--card);font:inherit;font-size:15px;color:var(--ink);outline:none}
+textarea:focus{border-color:var(--navy)}
+form button{background:var(--navy);color:#F7F6F3;border:none;font:inherit;padding:0 18px;cursor:pointer}
+form button:disabled{opacity:.5;cursor:default}
+.gate{background:var(--card);border:1px solid var(--line);padding:24px;text-align:center}
+.note{font-size:12px;color:var(--sub);margin-top:6px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="in"><h1>리서치 챗봇</h1><span><button type="button" id="reset" hidden>새 대화</button> <a href="/#intranet/">인트라넷 →</a></span></div></header>
+<main>
+  <div id="gate" class="gate" hidden>
+    <p style="margin:0 0 12px">학회원만 쓸 수 있습니다.</p>
+    <a href="/#intranet/">학회원 로그인 →</a>
+  </div>
+  <div id="app" hidden>
+    <p class="intro">학회 리포트·세미나·엑셀 모델·가이드에서 찾아 출처와 함께 답합니다. 자료에 없는 내용은 없다고 말합니다. 투자 조언은 하지 않습니다.</p>
+    <div class="ex" id="ex"></div>
+    <div id="log" aria-live="polite"></div>
+  </div>
+</main>
+<form id="f" hidden>
+  <div class="in">
+    <textarea id="t" placeholder="질문을 입력하세요" maxlength="1000" aria-label="질문"></textarea>
+    <button id="b" type="submit">보내기</button>
+  </div>
+  <p class="note">답은 학회원이 쓴 자료를 바탕으로 하며 틀릴 수 있습니다. 출처 번호를 눌러 원문을 확인하세요.</p>
+</form>
+<script>
+// 챗봇 서버 주소. 서버를 띄운 뒤 여기에 적는다 (tools/rag/server.py). 비어 있으면 '준비 중'으로 보인다.
+// 주소를 화면 주소창 값으로 바꾸지 못하게 상수로만 둔다 (로그인 토큰이 다른 곳으로 새지 않게).
+const API = '';
+const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
+const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', 'WACC에서 타인자본비용 잡는 법 알려줘', '투자포인트 제목은 어떻게 짓는 게 좋아?'];
+
+const $ = (id) => document.getElementById(id);
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+let cid = null, busy = false;
+
+const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+// 답은 짧은 마크다운(굵게, 목록)과 [1] 같은 출처 번호만 쓴다. 먼저 이스케이프하고 그 위에서만 바꾼다.
+function render(text, mid) {
+  const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
+    .replace(/\[(\d{1,2})\]/g, (_, n) => `<button type="button" class="cite" data-m="${mid}" data-n="${n}" aria-expanded="false">${n}</button>`);
+  const out = [];
+  let list = null;
+  for (const raw of text.split('\n')) {
+    const line = raw.trimEnd();
+    const ul = line.match(/^\s*[-•]\s+(.*)/), ol = line.match(/^\s*\d+[.)]\s+(.*)/);
+    const kind = ul ? 'ul' : ol ? 'ol' : null;
+    if (kind) {
+      if (!list || list.kind !== kind) { if (list) out.push(`</${list.kind}>`); out.push(`<${kind}>`); list = { kind }; }
+      out.push(`<li>${inline((ul || ol)[1])}</li>`);
+      continue;
+    }
+    if (list) { out.push(`</${list.kind}>`); list = null; }
+    if (line.trim()) out.push(`<p>${inline(line)}</p>`);
+  }
+  if (list) out.push(`</${list.kind}>`);
+  return out.join('');
+}
+
+function addQ(text) {
+  const d = document.createElement('div');
+  d.className = 'msg q';
+  d.innerHTML = `<div>${esc(text)}</div>`;
+  $('log').appendChild(d);
+}
+
+function addA(res, mid) {
+  const d = document.createElement('div');
+  d.className = 'msg';
+  // source는 '청크ID p.쪽'이다. 학회원에게는 쪽만 보여준다
+  const src = (res.sources || []).map((s) => `<li id="s-${mid}-${s.n}">${esc(s.title)}${s.source.includes(' p.') ? `<br><small>${esc(s.source.replace(/^\S+\s+/, ''))}</small>` : ''}`
+    + (s.cited || []).slice(0, 2).map((c) => `<blockquote hidden>${esc(c.length > 600 ? c.slice(0, 600) + '…' : c)}</blockquote>`).join('') + '</li>').join('');
+  d.innerHTML = `<div class="a">${render(res.answer, mid)}${src ? `<details class="src"><summary>출처 ${res.sources.length}개</summary><ol>${src}</ol></details>` : ''}</div>`;
+  $('log').appendChild(d);
+}
+
+// 출처 번호를 누르면 아래 출처 목록을 펼치고 그 항목의 인용 원문을 보여준다
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.cite');
+  if (!b) return;
+  const li = $(`s-${b.dataset.m}-${b.dataset.n}`);
+  if (!li) return;
+  const open = b.getAttribute('aria-expanded') !== 'true';
+  b.setAttribute('aria-expanded', String(open));
+  li.closest('details').open = true;
+  li.classList.toggle('on', open);
+  li.querySelectorAll('blockquote').forEach((q) => { q.hidden = !open; });
+  if (open) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+});
+
+async function ask(text) {
+  if (busy || !text.trim()) return;
+  if (!API) { addQ(text); const d = document.createElement('div'); d.className = 'msg err'; d.textContent = '챗봇 서버를 준비 중입니다.'; $('log').appendChild(d); return; }
+  busy = true; $('b').disabled = true; $('ex').hidden = true; $('reset').hidden = false;
+  addQ(text);
+  const w = document.createElement('div');
+  w.className = 'msg wait';
+  w.innerHTML = '<span>자료를 찾고 답을 쓰는 중… (20초~1분)</span>';
+  $('log').appendChild(w);
+  w.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  try {
+    const { data } = await sb.auth.getSession();
+    if (!data.session) { location.href = '/#intranet/'; return; }
+    const r = await fetch(API.replace(/\/$/, '') + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.session.access_token },
+      body: JSON.stringify({ conversation_id: cid, message: text }),
+    });
+    const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
+    w.remove();
+    if (res.conversation_id) cid = res.conversation_id;
+    if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
+    addA(res, Date.now().toString(36));
+  } catch (err) {
+    w.remove();
+    const d = document.createElement('div');
+    d.className = 'msg err';
+    d.textContent = err.message || '연결하지 못했습니다.';
+    $('log').appendChild(d);
+  } finally {
+    busy = false; $('b').disabled = false; $('t').focus();
+  }
+}
+
+$('f').addEventListener('submit', (e) => { e.preventDefault(); const t = $('t').value; $('t').value = ''; ask(t); });
+$('t').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('f').requestSubmit(); } });
+$('reset').addEventListener('click', () => { cid = null; $('log').innerHTML = ''; $('ex').hidden = false; $('reset').hidden = true; });
+EXAMPLES.forEach((q) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = q; b.onclick = () => ask(q); $('ex').appendChild(b); });
+
+sb.auth.getSession().then(({ data }) => {
+  const ok = !!data.session;
+  $('gate').hidden = ok; $('app').hidden = !ok; $('f').hidden = !ok;
+});
+</script>
+</body>
+</html>

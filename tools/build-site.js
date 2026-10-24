@@ -75,7 +75,7 @@ function resolveAsset(rel) {
 const ORG = { '@type': 'Organization', name: C.SITE_NAME, url: `${C.SITE}/` };
 const NAV = `<header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
 <nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>`;
-const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a></footer>
+const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></footer>
 </body>
 </html>
 `;
@@ -243,6 +243,7 @@ function indexPage(sorted, groups) {
     `<li><a href="/research/${r.id}/"><span>${esc(`${r.name} (${r.ticker}) — ${r.headline}`)}</span><span class="meta">${esc(`${r.op} · ${r.tp} · ${r.date}`)}</span></a></li>`).join('')}</ul></section>`).join('\n');
   return docStart(seo) +
 `<script type="application/ld+json">${json(ld)}</script>
+<script src="/research/spa.js"></script>
 </head>
 <body>
 ${NAV}
