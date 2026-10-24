@@ -65,7 +65,10 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 질문을 "무엇을(기업·산업·상품, 특정 대상이 없으면 일반)"과 "어떻게(밸류에이션, 매출 추정, 산업 구조, 리스크, 글쓰기 등)"로 나눠 본다.
 - 해석이 두 갈래 이상이면 첫 줄에 "A로 이해했다. B를 물은 거면 말해 줘."라고 한 줄로 밝히고, 가장 가능성 높은 해석으로 답한다.
 2. 항상 전체를 먼저, 부분은 그다음 (모든 질문, 이어지는 질문 포함)
-- 답을 시작할 때 이 질문이 전체 흐름의 어디에 붙는지 먼저 한두 줄로 말한다. 좁은 질문일수록 꼭 한다.
+- 답의 중심은 질문한 것 자체다. 위치는 이렇게 가른다:
+  질문 대상이 무엇의 일부면(NWC는 FCF의 한 항목) 그 위치를 먼저 한두 줄로 말한다.
+  질문 대상이 그 자체로 하는 작업이고 다른 데 쓰이는 것이면(Peer 찾기 → 상대가치 평가에 씀) 쓰임새는 끝에 한 줄로만 붙인다.
+  다음 단계의 내용(Peer 질문에 배수 계산 설명 등)을 섞지 않는다.
   예) "NWC가 뭐야?" → "NWC는 DCF에서 FCF를 구할 때 빼는 항목 중 하나예요. FCF = … 중 '영업에 새로 묶인 돈'이 이거예요." 그다음 뜻.
   예) "매출 추정은 매출 → 비용 → 이익 → 밸류에이션 중 첫 단계예요."
 - 본문의 각 단계도 그 단계가 전체에서 맡는 역할을 먼저 말하고 세부로 들어간다.
@@ -107,6 +110,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 무엇을 했는지만 쓰지 말고 왜 그렇게 했는지까지 쓴다. "자료에 없음"으로 끝내지 않는다.
   이유나 비교 기준이 안 보이면 먼저 더 찾는다 (같은 회사의 다른 학기 리포트, 리포트 첫 장의 실적 표, Peer 표, 교육자료).
   그래도 없으면 일반 개념으로 왜 그런지 설명하고, 리포트 작성자의 의도를 짐작한 부분은 "(추정)"을 붙인다.
+- 사례는 정규 학기 리포트에서만 든다. 근거 없이 정한 숫자(감으로 준 가중치 등)는 모범 사례로 보여주지 않는다.
 - 리포트끼리 숫자가 다르면 둘 다 보여주고 기준 시점·가정 차이를 적는다. 사례에는 학기를 붙인다 (오래된 자료인지 보이게).
 5. 쓰기 전에 속으로 반박 점검 (점검 과정은 답에 쓰지 않고 고친 결과만 쓴다)
 - 가장 자세한 리포트 하나에 끌려가지 않았나? 이름은 같지만 다른 대상·다른 업무를 섞지 않았나? 흐름의 양쪽이 다 채워졌나?
@@ -164,6 +168,14 @@ class Answerer:
         self.chunks = self.s.r.chunks
         self.mode = mode
         self.ask = ask  # 애매한 코칭 질문에 먼저 되묻기 (서버만 켠다. 평가는 한 번 묻고 끝이라 끈다)
+
+    def regular_only(self, ids, question):
+        """사례는 정규 학기 리포트·교육자료·모델에서만 쓴다. 신입 투자제안서와 하계·동계 리포트는 뺀다.
+        질문에 "제안서", "하계", "동계"가 있으면 그대로 둔다 (사용자가 직접 찾는 경우)."""
+        if re.search(r'제안서|하계|동계', question):
+            return ids
+        return [i for i in ids if self.chunks[i]['doc_type'] != 'proposal'
+                and not re.search(r'하계|동계', self.chunks[i]['header'])]
 
     def result_block(self, i):
         c = self.chunks[i]
@@ -225,6 +237,7 @@ class Chat:
         else:
             kind = kind if self.a.mode == 'routed' else 'basic'
             found = s.multiquery(standalone, queries=queries)[:PREFETCH]
+        found = self.a.regular_only(found, question)
         return [i for i in found if i not in self.shown], kind, standalone
 
     def turn(self, question, given=None):
@@ -261,7 +274,7 @@ class Chat:
                 n += 1
                 searches.append(b.input['query'])
                 q = b.input['query']
-                found = [i for i in s.r.rerank(q, s.r.hybrid(q), top=30) if i not in self.shown][:PER_SEARCH]
+                found = [i for i in a.regular_only(s.r.rerank(q, s.r.hybrid(q), top=30), question) if i not in self.shown][:PER_SEARCH]
                 self.shown += found
                 results.append({'type': 'tool_result', 'tool_use_id': b.id,
                                 'content': [a.result_block(i) for i in found] or [{'type': 'text', 'text': '새 결과 없음'}]})
