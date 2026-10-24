@@ -1,7 +1,7 @@
 // 타임폴리오 RFM(Road To Fund Manager) 학회원 순위 수집기
 // 타임폴리오 허가 범위(조회·CSV 다운로드, 홈페이지 공개)에서만 실행한다. 일정은 .github/workflows/rfm.yml
 // 일반 사용자와 같은 화면 조작(로그인 → 대회 → 수익률 순위 → CSV 다운로드)만 사용하고 API는 호출하지 않는다.
-// 결과는 Supabase intranet_content 의 id='rfm' 행에 저장되며, 홈페이지 #rfm 에서 로그인한 학회원만 본다. 실명은 올리지 않는다.
+// 결과는 Supabase intranet_content·public_content 의 id='rfm' 행에 저장되며, 홈페이지 #rfm 에서 누구나 본다. 실명은 올리지 않는다.
 //
 // 환경 변수 (GitHub Actions Secrets)
 //   TF_EMAIL, TF_PASSWORD        타임폴리오 계정
@@ -342,6 +342,13 @@ async function save(data) {
     body: JSON.stringify({ id: 'rfm', data }),
   });
   if (!r.ok) throw new Error('supabase write ' + r.status + ' ' + (await r.text()));
+  // 로그인 없이 보는 공개용 (별칭·팀·수익률만, 실명 없음)
+  const p = await fetch(SB_URL + '/rest/v1/public_content', {
+    method: 'POST',
+    headers: { ...sbHeaders(), Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({ id: 'rfm', data }),
+  });
+  if (!p.ok) console.error('public rfm skipped: ' + p.status);
 }
 
 // ---------- main ----------
