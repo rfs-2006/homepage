@@ -36,6 +36,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
   무엇을 찾아봤는지 한 줄로 알려준다. 그 자리를 일반 지식으로 메우지 않는다.
 - 검색 결과 제목 끝의 [등급]을 반영한다. A는 모범 사례로 써도 된다. C(신입 투자제안서)는 "아이디어 참고용"이라고 밝히고 쓴다.
 - 같은 내용이 여러 학기에 있으면 최근 자료를 앞에 둔다.
+- 개념·용어 설명은 학회 교육자료(신입생 가이드북, 세미나 자료)가 검색 결과에 있으면 그 설명을 쓰고 출처를 단다.
 - 특정 종목을 사라/팔라는 투자 조언은 하지 않는다. 대신 학회 자료에 그 종목 분석이 있으면 알려준다.
 {search}
 답변 구조: 질문 종류에 맞춘다.
@@ -49,6 +50,13 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 사례 모음 질문("~한 리포트 예시", "~ 관련 리포트 있어?"): 사례를 목록으로 주되, 각 사례에서 볼 점을 한 줄로 붙인다.
 - 방법을 묻는 코칭 질문이면 끝에 상대 회사 상황을 묻는 질문을 하나 붙여 다음 대화를 연다
   (예: "분석하는 회사가 FSC야 LCC야?").
+읽는 사람은 신입 학회원이다. 아는 사람만 이해하는 답을 쓰지 않는다.
+- 전문 용어는 처음 나올 때 괄호로 한 줄 뜻을 붙인다 (예: NOPLAT(세후 영업이익), NWC(순운전자본, 영업에 묶인 돈)).
+  두 번째부터는 붙이지 않는다.
+- 숫자는 높은지 낮은지 알 수 있게 비교 기준을 같이 쓴다 (예: "Peer 평균 25배인데 142배").
+  기준은 같은 리포트의 Peer 평균·과거 평균이나 다른 학회 자료에서 찾는다. 자료에 기준이 없으면 기준 숫자를 지어내지 말고,
+  리포트가 그 숫자를 어떻게 평가했는지(예: "리포트는 비정상적으로 높다고 봤다")로 쓴다.
+- 사례는 무엇을 했는지만 쓰지 말고 왜 그렇게 했는지 이어서 쓴다 ("멀티플이 너무 높아 Peer 배수를 곱하는 게 의미가 없어서 DCF로 갔다").
 - 질문 종류는 속으로만 판단하고 답에 쓰지 않는다. 바로 답부터 쓴다.
 - 한국어, 짧고 구체적으로. 마크다운 제목(#)은 쓰지 않는다. 단계 번호와 짧은 굵은 글씨는 써도 된다."""
 
@@ -57,6 +65,7 @@ SEARCH = """
 - 처음에 넣어준 결과로 충분하면 바로 답한다.
 - 부족하면 search 도구로 더 찾는다 (최대 {max}번). 질문 표현보다 리포트에 나올 용어·회사 이름으로 바꿔 찾는 게 잘 된다.
   방법 질문은 단계마다 근거가 될 사례를 서로 다른 리포트에서 2~4개 모은다.
+- 핵심 용어의 뜻이나 숫자의 비교 기준이 결과에 없으면, 검색어에 "가이드북"이나 "세미나"를 붙여 학회 교육자료에서 찾는다.
 """
 
 TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관련 높은 청크를 검색 결과로 돌려준다.',
@@ -67,13 +76,15 @@ TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관
 
 class Answerer:
     """mode: routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery, 10절의 처음 버전)
-    search_model: 검색어 재작성·agent 검색 모델, answer_model: 답변 모델 (기본 둘 다 Sonnet 5.5)"""
+    search_model: 검색어 재작성·agent 검색 모델, answer_model: 답변 모델 (기본 둘 다 Sonnet 5.5)
+    ask: 답이 회사·업종에 따라 갈리는데 정보가 없는 코칭 질문이면, 검색 전에 보기를 붙여 먼저 되묻는다. 한 대화에 한 번만"""
 
-    def __init__(self, cafe, searcher=None, mode='routed', search_model=LLM, answer_model=LLM):
+    def __init__(self, cafe, searcher=None, mode='routed', search_model=LLM, answer_model=LLM, ask=False):
         self.s = searcher or AgentSearch(cafe, model=search_model)
         self.answer_model = answer_model
         self.chunks = self.s.r.chunks
         self.mode = mode
+        self.ask = ask  # 애매한 코칭 질문에 먼저 되묻기 (서버만 켠다. 평가는 한 번 묻고 끝이라 끈다)
 
     def result_block(self, i):
         c = self.chunks[i]
@@ -126,7 +137,10 @@ class Chat:
 
     def _retrieve(self, question):
         s = self.a.s
-        queries, kind, standalone = s.rewrite(question, self._context())
+        allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
+        queries, kind, standalone, ask = s.rewrite(question, self._context(), allow_ask=allow)
+        if ask:
+            return ask, 'clarify', standalone
         if self.a.mode == 'routed' and kind == 'open':
             found = s.agent(standalone)[:OPEN_PREFETCH]
         else:
@@ -139,6 +153,8 @@ class Chat:
         a, s = self.a, self.a.s
         if given is None:
             first, kind, standalone = self._retrieve(question)
+            if kind == 'clarify':
+                return self._clarify(question, first, standalone)
             system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH)), {'tools': [TOOL]}
         else:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
@@ -173,18 +189,27 @@ class Chat:
             self.msgs.append({'role': 'user', 'content': results})
         out = a.render(resp, self.shown, searches)
         out.update(kind=kind, standalone=standalone)
-        self.turns.append({'question': question, 'answer': out['answer']})
+        self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})
         return out
+
+    def _clarify(self, question, ask, standalone):
+        """검색 없이 되묻는다. 다음 턴 답변 호출도 이 문답을 보도록 msgs에 남긴다 (뒤에 붙이기만)."""
+        text = ask['question']
+        self.msgs += [{'role': 'user', 'content': [{'type': 'text', 'text': f'질문: {question}'}]},
+                      {'role': 'assistant', 'content': [{'type': 'text', 'text': text + ' (' + ' / '.join(ask['options']) + ')'}]}]
+        self.turns.append({'question': question, 'answer': text, 'kind': 'clarify'})
+        return {'answer': text, 'options': ask['options'], 'sources': [], 'searches': [], 'shown': [],
+                'stop_reason': None, 'kind': 'clarify', 'standalone': standalone}
 
 
 
 if __name__ == '__main__':
-    a = Answerer(sys.argv[1])
+    a = Answerer(sys.argv[1], ask=True)
     chat = Chat(a)
     for q in sys.argv[2:]:
         out = chat.turn(q)
         print(f"######## {q}  ({out['kind']}: {out['standalone']})")
-        print(out['answer'])
+        print(out['answer'], out.get('options', ''))
         print()
         for src in out['sources']:
             print(f"[{src['n']}] {src['title']} ({src['source']})")

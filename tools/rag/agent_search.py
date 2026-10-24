@@ -43,12 +43,22 @@ MQ_SYSTEM = CORPUS + """
 - kind: 특정 문서·회사의 사실이나 용어 뜻을 묻는 질문은 fact, 방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘",
   "목차는 보통", "~관련 리포트 있어?")은 open."""
 
+# 서버(대화)에서만 붙인다. 평가는 한 번 묻고 끝이라 되물으면 채점이 안 된다
+ASK_RULE = """
+- kind clarify: 답이 회사·업종·상황에 따라 크게 갈리는 코칭 질문인데, 그 정보가 질문과 앞 대화 어디에도 없을 때만.
+  예) "밸류에이션 뭘로 해?", "매출 추정 어떻게 시작해?" → 어떤 회사인지 모르면 답의 절반이 쓸모없다.
+  clarify가 아닌 것: "DCF 어떻게 해?"처럼 순서가 정해진 방법, 특정 리포트·용어를 묻는 질문, 이미 회사·업종을 말한 질문.
+  애매하면 clarify로 하지 않는다. 되묻기는 짜증 나기 쉽다.
+- ask_question / ask_options: clarify일 때만. 짧은 질문 하나와 고를 보기 2~5개(각각 짧게, 예: "제조업", "플랫폼·SaaS", "바이오", "금융").
+  clarify가 아니면 빈 문자열과 빈 목록."""
+
 AGENT_SYSTEM = CORPUS + """
 
 너는 검색 담당이다. 사용자 질문에 답하는 데 필요한 청크를 찾아라. 답변은 쓰지 않는다.
 - search 도구로 찾는다. 질문 표현 그대로보다 리포트에 나올 용어·회사 이름으로 바꿔서 찾는 게 잘 된다.
 - 결과를 읽고 부족하면 검색어를 바꿔 다시 찾는다. search는 최대 {max}번.
 - "사례 알려줘"류 질문은 서로 다른 리포트의 사례를 여러 개 모은다.
+- 방법 질문이면 핵심 개념을 설명한 학회 교육자료(신입생 가이드북, 세미나 자료) 청크도 1~2개 찾아 넣는다.
 - 다 찾았으면 finish 도구에 관련 있는 chunk_id를 관련 높은 순서로 넣는다 (최대 20개). 질문에 대한 방법·근거·사례가 청크 안에 직접 있는 것만.
   관련 청크가 없으면 빈 목록을 낸다."""
 
@@ -97,18 +107,25 @@ class AgentSearch:
         self.usage['cache_read'] += u.cache_read_input_tokens or 0
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
 
-    def rewrite(self, question, context=''):
-        """검색어 3~5개, 질문 종류(fact/open), 앞 대화 없이 통하는 질문을 돌려준다. context는 여러 턴 대화의 앞선 대화."""
+    def rewrite(self, question, context='', allow_ask=False):
+        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문을 돌려준다.
+        context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
-        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
-            'type': 'object', 'properties': {'queries': {'type': 'array', 'items': {'type': 'string'}},
-                                             'kind': {'type': 'string', 'enum': ['fact', 'open']},
-                                             'standalone': {'type': 'string'}},
-            'required': ['queries', 'kind', 'standalone'], 'additionalProperties': False}}},
-            messages=[{'role': 'user', 'content': user}])
+        props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
+                 'kind': {'type': 'string', 'enum': ['fact', 'open'] + (['clarify'] if allow_ask else [])},
+                 'standalone': {'type': 'string'}}
+        if allow_ask:
+            props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
+        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else ''),
+                   output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
+                       'type': 'object', 'properties': props, 'required': list(props), 'additionalProperties': False}}},
+                   messages=[{'role': 'user', 'content': user}])
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
-        return out['queries'][:5], out['kind'], out['standalone'] or question
+        ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
+            if out['kind'] == 'clarify' and out.get('ask_question') else None
+        kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']
+        return out['queries'][:5], kind, out['standalone'] or question, ask_
 
     def multiquery(self, question, rerank_top=100, queries=None):
         qs = queries if queries is not None else self.rewrite(question)[0]

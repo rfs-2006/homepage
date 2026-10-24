@@ -12,7 +12,8 @@
 API
   GET  /health                   준비됐는지
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token>
-       → {conversation_id, answer, sources:[{n, title, source, cited}], kind}
+       → {conversation_id, answer, sources:[{n, title, source, cited}], kind, options}
+         kind가 clarify면 검색 없이 되묻는 턴이고, options는 화면에 버튼으로 보일 보기다 (아니면 빈 목록)
 
 - 데이터(청크·벡터)는 비공개 저장소에만 있으므로 이 서버도 비공개로 띄워야 한다. 메모리 약 1.5GB, 시작 때 BM25 색인에 30초쯤 걸린다.
 - 학회원 계정이 공용(member@caurfs.kr)이라 사람별 제한은 못 한다. 대신 IP별·전체 하루 상한을 둔다.
@@ -158,7 +159,7 @@ class Handler(BaseHTTPRequestHandler):
                 f.write(json.dumps({'t': time.strftime('%Y-%m-%dT%H:%M:%S'), 'conv': cid, 'q': msg, 'kind': out['kind'],
                                     'answer': out['answer'], 'sources': [s['source'] for s in out['sources']]},
                                    ensure_ascii=False) + '\n')
-        self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'],
+        self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'options': out.get('options', []),
                          'sources': [{k: s[k] for k in ('n', 'title', 'source', 'cited')} for s in out['sources']]})
 
     def log_message(self, fmt, *args):  # 접속 로그에 토큰·질문이 남지 않게 경로만
@@ -171,7 +172,7 @@ def main():
     port = int(os.environ.get('PORT', 8787))
     print('자료 불러오는 중 (BM25 색인 30초쯤)', flush=True)
     # 12절: 검색은 Haiku로 바꿔도 품질이 그대로, 답변은 Sonnet이어야 한다
-    answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=MODELS['sonnet'])
+    answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=MODELS['sonnet'], ask=True)
     print(f'준비됨 :{port}, 허용 주소 {ORIGINS}', flush=True)
     ThreadingHTTPServer(('0.0.0.0', port), Handler).serve_forever()
 

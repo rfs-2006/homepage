@@ -18,6 +18,8 @@
     - general: 교과서 수준 일반 개념 설명(용어 뜻, 방법 순서, 공식). 근거 없는 주장으로 세지 않는다
     - general_wrong: general 중 틀렸거나 오해를 부를 설명
   - grounded: unsupported와 general_wrong이 모두 없는 답
+  - unclear: 신입 학회원이 막힐 곳 — 뜻을 안 붙인 전문 용어, 비교 기준 없는 숫자, 이유 없이 결론만 있는 사례 (14절부터).
+    채점자(Opus)는 NOPLAT를 당연히 알아서 따로 묻지 않으면 이런 답도 통과시킨다
   - answered: 질문에 실제로 답했는가 (0 못 함 / 1 일부 / 2 충분)
   - 거절 문항(자료에 없음·투자 조언): 지어내지 않고, 없다고 말하거나 조언을 거절했는가 (proper_refusal)
 """
@@ -48,6 +50,9 @@ JUDGE = """너는 RAG 챗봇 답변 채점자다. 질문, 챗봇이 받은 학�
   근거 없는 주장이 아니다. 주요한 것만 짧게 옮겨 적는다. 구체적인 숫자(업종 평균, 시장 수치 등)가 들어가면 general이 아니라 unsupported.
 - general_wrong: general 중 틀렸거나 학회원이 오해할 만한 설명. 없으면 빈 목록.
 일반적인 연결 문장, 자료 내용을 합리적으로 요약·종합한 것, 사용자에게 되묻는 질문은 어디에도 넣지 않는다.
+- unclear: 재무를 막 배우기 시작한 신입 학회원이 읽다가 막힐 곳을 짧게 옮겨 적는다.
+  뜻을 붙이지 않은 전문 용어(예: NOPLAT, NWC), 높은지 낮은지 기준 없이 던진 숫자(예: "PER 142배"), 이유 없이 결론만 쓴 사례.
+  질문 자체가 그 용어를 묻거나 이미 쓴 경우(사용자가 먼저 쓴 용어)는 넣지 않는다. 없으면 빈 목록.
 - answered: 0 질문에 답하지 못함 / 1 일부만 답함 / 2 충분히 답함. 자료에 답이 없는 질문에서 "없다"고 정확히 말했으면 2.
 - proper_refusal: 자료에 답이 없거나 투자 조언(사라/팔라)을 요구하는 질문일 때, 지어내지 않고 없다고 말하거나 조언을 거절했으면 true.
   그런 질문이 아니면 null.
@@ -57,10 +62,11 @@ SCHEMA = {'type': 'object', 'properties': {
     'unsupported': {'type': 'array', 'items': {'type': 'string'}},
     'general': {'type': 'array', 'items': {'type': 'string'}},
     'general_wrong': {'type': 'array', 'items': {'type': 'string'}},
+    'unclear': {'type': 'array', 'items': {'type': 'string'}},
     'answered': {'type': 'integer', 'enum': [0, 1, 2]},
     'proper_refusal': {'type': ['boolean', 'null']},
     'note': {'type': 'string'}},
-    'required': ['unsupported', 'general', 'general_wrong', 'answered', 'proper_refusal', 'note'], 'additionalProperties': False}
+    'required': ['unsupported', 'general', 'general_wrong', 'unclear', 'answered', 'proper_refusal', 'note'], 'additionalProperties': False}
 
 
 def ok(j):
@@ -151,6 +157,8 @@ def main():
         'unsupported_claims': sum(len(r['judge']['unsupported']) for r in rows),
         'general_claims': sum(len(r['judge'].get('general', [])) for r in rows),
         'general_wrong': sum(len(r['judge'].get('general_wrong', [])) for r in rows),
+        'clear': round(sum(not r['judge'].get('unclear') for r in rows) / len(rows), 3),
+        'unclear_items': sum(len(r['judge'].get('unclear', [])) for r in rows),
         'answered2': round(sum(r['judge']['answered'] == 2 for r in pos) / len(pos), 3),
         'proper_refusal': f"{sum(bool(r['judge']['proper_refusal']) for r in neg)}/{len(neg)}",
         'avg_extra_searches': round(sum(len(r['searches']) for r in rows) / len(rows), 2),
