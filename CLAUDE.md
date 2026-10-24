@@ -9,5 +9,5 @@
 # RFS 챗봇 (RAG)
 - 진행 상황과 결정은 `tools/rag/NOTES.md`. 코드는 `tools/rag/`(parse → chunk → embed → eval_retrieval).
 - 원문·파싱 결과·벡터·평가셋은 비공개 저장소 `rfs-2006/rfs-cafe-data`(parsed/*.gz, vectors/, eval/). 공개 저장소에 원문 텍스트를 올리지 않는다.
-- Voyage 키는 네트워크 시크릿(api.voyageai.com), Anthropic 키는 환경 변수 `ANTHROPIC_API_KEY`.
-- 다음 할 일: Claude로 질문→검색어 재작성(에이전트형 검색), 코칭 문항 정답 넓히기 + LLM 채점, 엑셀 모델 밸류에이션 DB 추출.
+- Voyage 키는 네트워크 시크릿(api.voyageai.com), Anthropic 키는 환경 변수 `RAG_ANTHROPIC_API_KEY`.
+- 다음 할 일: 답이 문서별 나열이라 읽기 어렵다 → 단계별 설명 + 사례로 프롬프트·채점 바꾸고 나란히 비교 (NOTES 13절). 서버 띄울 곳 정하기, 엑셀 모델 밸류에이션 DB 추출.
