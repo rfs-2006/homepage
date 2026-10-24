@@ -28,7 +28,7 @@
 .ag-lg .er{margin:4px 0 0;font-size:12px;color:#E8A9A9;min-height:0}\
 .ag-lg .hp{margin:16px 0 0;font-size:12px;color:rgba(247,246,243,.6)}.ag-lg .hp a{color:rgba(247,246,243,.85);display:inline-flex;align-items:center;min-height:44px}\
 .ag-gate .on{opacity:1}\
-@media (min-width:900px){.ag-lg{left:27%;top:56%}}.ag-gate .ag-ttl.on{transform:none}.ag-gate .ag-lg.on{transform:translate(-50%,-50%)}\
+@media (min-width:900px){.ag-lg{top:60%}}.ag-gate .ag-ttl.on{transform:none}.ag-gate .ag-lg.on{transform:translate(-50%,-50%)}\
 .ag-gate.dive .ag-lg,.ag-gate.dive .ag-ttl{opacity:0;transition:opacity .5s ease}\
 ';
   var g = null;
@@ -89,7 +89,8 @@
       mx += (tmx - mx) * .05; my += (tmy - my) * .05;
       x.globalCompositeOperation = 'source-over'; x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
       sky.classList.toggle('on', t > .05);
-      var cz0 = wide ? 1.8 : 2.15, cx = wide ? W * .62 : W / 2, cy = H * (small ? .6 : .58), R = wide ? Math.min(H * .6, W * .38) * cz0 / 1.75 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
+      // 넓은 화면에서는 구를 화면 아래로 크게 내려 윗부분만 지평선처럼 보이게 한다
+      var cz0 = wide ? 1.8 : 2.15, cx = W / 2, cy = wide ? H * 1.22 : H * (small ? .6 : .58), R = wide ? Math.max(W * .62, H * .9) / 1.17 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
       var burst = 1 - Math.pow(2, -9 * cl((t - .05) / 1.05)), s = .04 + .96 * burst, camZ = cz0 - .9 * dvE;
       var rot = t * .1 + (1 - eo((t - .05) / 1.5)) * 1.8 + mx * .5 + dvE * .35, tilt = .3 + my * .35;
       var cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt), i, p, q;
@@ -133,22 +134,22 @@
       // 기관 이름: 정면 쪽 별 몇 개만, 순서가 앞선 곳부터. 스며들듯 켜지고 꺼지며, 켜질 때 정한 쪽(왼/오른)에 끝까지 붙어 간다
       var la = eo((t - 1.1) / .8) * (1 - dv * 3);
       if (la > 0 || LA.some(function (v) { return v > .01; })) {
-        var L = lg.getBoundingClientRect(), TB = ttl.getBoundingClientRect().bottom + 16, max = small ? 7 : wide ? 22 : 14;
+        var L = lg.getBoundingClientRect(), TB = ttl.getBoundingClientRect().bottom + 16, max = small ? 7 : wide ? 12 : 14;
         var ok = function (k) { var pp = pr[k]; if (pp.hid || pp.Y < TB || pp.Y > H - 24 || pp.X < 8 || pp.X > W - 8) return false; return !(pp.X > L.left - 30 && pp.X < L.right + 30 && pp.Y > L.top - 20 && pp.Y < L.bottom + 20); };
         var on = {}, n = 0, used = [], shown = {};
         x.font = (small ? '500 12px' : '500 15px') + ' "Pretendard Variable",Pretendard,sans-serif';
         var fits = function (k, keep) { var pp = pr[k], w = x.measureText(P[k].lab).width + 30, rt = keep ? SIDE[k] === 1 : pp.X > cx; return rt ? pp.X + w < W - 6 : pp.X - w > 6; };
         var Rv2 = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), mid = function (k, lim) { return Math.hypot(pr[k].X - cx, pr[k].Y - cy) < Rv2 * lim; };
-        var fx = wide ? L.right + (cx - L.right) * .45 : cx, fy = wide ? (L.top + L.bottom) / 2 : cy;
+        var fx = cx, fy = wide ? (TB + L.top) / 2 : cy;
         var top = o.top || 0, near = function (k) { return Math.hypot(pr[k].X - fx, pr[k].Y - fy) < Rv2 * .42; };
         // 글자 상자끼리 겹치지 않게
         var box = function (k, side) { var w = x.measureText(P[k].lab).width, X0 = side ? pr[k].X + 24 : pr[k].X - 24 - w; return [X0 - 6, X0 + w + 6, pr[k].Y]; };
         var hit = function (b) { return used.some(function (u) { return Math.abs(u[2] - b[2]) < 24 && b[0] < u[1] && u[0] < b[1]; }); };
         var cell = {}, ck = function (k) { return Math.floor(pr[k].X / (W / 6)) + ':' + Math.floor(pr[k].Y / (H / 4)); };
-        for (i = 0; i < N; i++) if (P[i].lab && ON[i] && pr[i].Z > .02 && mid(i, .86) && ok(i) && fits(i, 1) && (CO.indexOf(P[i].lab) >= top || near(i))) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push(box(i, SIDE[i] === 1)); cell[ck(i)] = (cell[ck(i)] || 0) + 1; }
+        for (i = 0; i < N; i++) if (P[i].lab && ON[i] && pr[i].Z > .02 && mid(i, wide ? .97 : .86) && ok(i) && fits(i, 1) && (CO.indexOf(P[i].lab) >= top || near(i))) { on[i] = 1; n++; shown[P[i].lab] = 1; used.push(box(i, SIDE[i] === 1)); cell[ck(i)] = (cell[ck(i)] || 0) + 1; }
         // 비어 있는 자리: 구 한가운데에 가까운 별부터, 아직 안 보이는 이름 중 순서가 앞선 것을 붙인다 (처음엔 J.P. Morgan·PwC 등 첫 화면 기관이 먼저)
         var free = CO.filter(function (nm) { return !shown[nm]; }), fi = 0;
-        var cand = []; for (i = 0; i < N; i++) { if (!P[i].nm || on[i] || P[i].lab) continue; if (pr[i].Z < .02 || !mid(i, .72) || !ok(i)) continue; cand.push(i); }
+        var cand = []; for (i = 0; i < N; i++) { if (!P[i].nm || on[i] || P[i].lab) continue; if (pr[i].Z < .02 || !mid(i, wide ? .95 : .72) || !ok(i)) continue; cand.push(i); }
         // 가장 눈에 띄는 자리(넓은 화면에서는 로그인 칸 바로 오른쪽)에 가까운 별부터 순위가 높은 이름을 받는다
         cand.sort(function (a2, b2) { return Math.hypot(pr[a2].X - fx, pr[a2].Y - fy) - Math.hypot(pr[b2].X - fx, pr[b2].Y - fy); });
         for (var c2 = 0; c2 < cand.length && n < max && fi < free.length; c2++) {
