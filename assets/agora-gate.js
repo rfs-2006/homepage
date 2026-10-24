@@ -10,9 +10,9 @@
 .ag-sky.on{opacity:.42;transform:none}\
 .ag-sky::after{content:"";position:absolute;inset:0;background:radial-gradient(46% 52% at 50% 50%,rgba(2,5,12,.15),rgba(2,5,12,.55) 70%,rgba(2,5,12,.9)),linear-gradient(180deg,rgba(2,5,12,.5),rgba(2,5,12,0) 30%,rgba(2,5,12,0) 70%,rgba(2,5,12,.7))}\
 .ag-gate canvas{position:absolute;inset:0;width:100%;height:100%}\
-.ag-ttl{position:absolute;left:0;right:0;top:104px;text-align:center;font-size:12px;letter-spacing:.32em;color:rgba(200,220,255,.65);opacity:0;transform:translateY(-8px);transition:opacity 1.2s,transform 1.2s;padding:0 16px}\
-.ag-ttl em{display:block;font:300 clamp(22px,2.3vw,34px) "Noto Serif KR",serif;font-style:normal;color:#fff;margin-top:10px;text-shadow:0 2px 24px rgba(0,0,0,.6);letter-spacing:-.01em}\
-.ag-ttl em u{text-decoration:none;font-family:"Source Serif 4",serif}\
+.ag-ttl{position:absolute;left:0;right:0;top:92px;text-align:center;opacity:0;transform:translateY(-8px);transition:opacity 1.2s,transform 1.2s;padding:0 16px}\
+.ag-ttl b{display:block;font:300 clamp(56px,6.2vw,92px)/1 "Source Serif 4",serif;letter-spacing:-.02em;color:#fff;text-shadow:0 2px 30px rgba(0,0,0,.55)}\
+.ag-ttl small{display:block;margin-top:14px;font-size:11.5px;font-weight:500;letter-spacing:.32em;color:rgba(200,220,255,.7)}\
 .ag-lg{position:absolute;left:50%;top:58%;width:min(330px,calc(100% - 32px));transform:translate(-50%,-50%) scale(.94);padding:34px 30px;border:1px solid rgba(170,205,255,.26);background:rgba(5,10,22,.5);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);text-align:center;opacity:0;transition:opacity 1s,transform 1.1s cubic-bezier(.2,.8,.2,1);box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 120px rgba(70,130,255,.16)}\
 @media (max-width:699px){.ag-lg{padding:26px 22px;background:rgba(5,10,22,.42)}.ag-lg p{font-size:12.5px}}\
 .ag-lg img{width:48px;height:auto;display:block;margin:0 auto}\
@@ -39,7 +39,7 @@
     var el = document.createElement('div');
     el.className = 'ag-gate'; el.setAttribute('data-nav', 'dark');
     el.innerHTML = '<div class="ag-sky"></div><canvas aria-hidden="true"></canvas>' +
-      '<div class="ag-ttl">AGORA · SINCE 2006<em><u>' + (o.total || 608) + '</u>명의 R.F.S.가 연결되어 있어요</em></div>' +
+      '<div class="ag-ttl"><b>' + (o.total || 608) + '</b><small>RISEN FINANCIAL STARS</small></div>' +
       '<div class="ag-lg" role="dialog" aria-label="학회원 로그인"><img src="/assets/rfs-seal-light-256.png" alt="R.F.S."><small>MEMBERS ONLY</small><h1>학회원 로그인</h1>' +
       '<form><input name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required><input name="password" type="password" autocomplete="current-password" placeholder="비밀번호" required><p class="er" aria-live="polite"></p><button type="submit">LOGIN</button></form>' +
       '<p class="hp">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p></div>';
