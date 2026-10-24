@@ -33,6 +33,7 @@ main{max-width:760px;margin:0 auto;padding:20px 16px 140px}
 .a{background:var(--card);border:1px solid var(--line);padding:16px 18px;word-break:break-word}
 .a p{margin:0 0 10px}.a p:last-child{margin-bottom:0}
 .a ul,.a ol{margin:0 0 10px;padding-left:20px}
+.a li>ul,.a li>ol{margin:2px 0 4px}
 .cite{display:inline-block;font-size:11px;line-height:1;vertical-align:super;margin:0 1px;padding:2px 4px;border:1px solid var(--accent);color:var(--navy);background:none;cursor:pointer;font-family:inherit}
 .cite[aria-expanded=true]{background:var(--accent);color:var(--dark)}
 .src{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:13px;color:var(--sub)}
@@ -42,6 +43,9 @@ main{max-width:760px;margin:0 auto;padding:20px 16px 140px}
 .src li.on{color:var(--ink)}
 .src blockquote{margin:4px 0 0;padding:6px 10px;border-left:2px solid var(--accent);background:var(--bg);color:var(--ink);font-size:13px;white-space:pre-wrap}
 .wait{color:var(--sub);font-size:14px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.opts button{background:var(--bg);border:1px solid var(--line);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink)}
+.opts button:hover{border-color:var(--navy)}
 .wait span{display:inline-block;animation:blink 1.4s infinite}
 @keyframes blink{50%{opacity:.3}}
 @media (prefers-reduced-motion:reduce){.wait span{animation:none}}
@@ -64,7 +68,7 @@ form button:disabled{opacity:.5;cursor:default}
     <a href="/#intranet/">학회원 로그인 →</a>
   </div>
   <div id="app" hidden>
-    <p class="intro">학회 리포트·세미나·엑셀 모델·가이드에서 찾아 출처와 함께 답합니다. 자료에 없는 내용은 없다고 말합니다. 투자 조언은 하지 않습니다.</p>
+    <p class="intro">학회 리포트·세미나·엑셀 모델·가이드에서 찾아 출처와 함께 답합니다. 자료에 없는 내용은 없다고 말합니다. 리포트를 대신 써 드리지는 않고, 고치는 방법과 학회 예시를 알려 드립니다. 투자 조언은 하지 않습니다.</p>
     <div class="ex" id="ex"></div>
     <div id="log" aria-live="polite"></div>
   </div>
@@ -91,24 +95,30 @@ let cid = null, busy = false;
 const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 // 답은 짧은 마크다운(굵게, 목록)과 [1] 같은 출처 번호만 쓴다. 먼저 이스케이프하고 그 위에서만 바꾼다.
+// 목록은 공백 2칸 들여쓰기마다 한 단계 안으로 들어간다 (로직트리를 들여쓴 목록으로 그린다)
 function render(text, mid) {
   const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
     .replace(/\[(\d{1,2})\]/g, (_, n) => `<button type="button" class="cite" data-m="${mid}" data-n="${n}" aria-expanded="false">${n}</button>`);
-  const out = [];
-  let list = null;
+  const out = [], stack = [];
+  const close = (depth) => { while (stack.length > depth) out.push(`</li></${stack.pop()}>`); };
   for (const raw of text.split('\n')) {
     const line = raw.trimEnd();
-    const ul = line.match(/^\s*[-•]\s+(.*)/), ol = line.match(/^\s*\d+[.)]\s+(.*)/);
-    const kind = ul ? 'ul' : ol ? 'ol' : null;
-    if (kind) {
-      if (!list || list.kind !== kind) { if (list) out.push(`</${list.kind}>`); out.push(`<${kind}>`); list = { kind }; }
-      out.push(`<li>${inline((ul || ol)[1])}</li>`);
+    const m = line.match(/^(\s*)(?:([-•])|\d+[.)])\s+(.*)/);
+    if (m) {
+      const depth = Math.min(Math.floor(m[1].replace(/\t/g, '  ').length / 2), 3) + 1, kind = m[2] ? 'ul' : 'ol';
+      if (depth > stack.length) {
+        while (stack.length < depth) { out.push(`<${kind}>`); stack.push(kind); }
+      } else {
+        close(depth);
+        if (stack[depth - 1] !== kind) { out.push(`</li></${stack.pop()}><${kind}>`); stack.push(kind); } else out.push('</li>');
+      }
+      out.push(`<li>${inline(m[3])}`);
       continue;
     }
-    if (list) { out.push(`</${list.kind}>`); list = null; }
+    close(0);
     if (line.trim()) out.push(`<p>${inline(line)}</p>`);
   }
-  if (list) out.push(`</${list.kind}>`);
+  close(0);
   return out.join('');
 }
 
@@ -126,6 +136,13 @@ function addA(res, mid) {
   const src = (res.sources || []).map((s) => `<li id="s-${mid}-${s.n}">${esc(s.title)}${s.source.includes(' p.') ? `<br><small>${esc(s.source.replace(/^\S+\s+/, ''))}</small>` : ''}`
     + (s.cited || []).slice(0, 2).map((c) => `<blockquote hidden>${esc(c.length > 600 ? c.slice(0, 600) + '…' : c)}</blockquote>`).join('') + '</li>').join('');
   d.innerHTML = `<div class="a">${render(res.answer, mid)}${src ? `<details class="src"><summary>출처 ${res.sources.length}개</summary><ol>${src}</ol></details>` : ''}</div>`;
+  // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)
+  if ((res.options || []).length) {
+    const o = document.createElement('div');
+    o.className = 'opts';
+    res.options.forEach((t) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = () => { if (busy) return; o.remove(); ask(t); }; o.appendChild(b); });
+    d.querySelector('.a').appendChild(o);
+  }
   $('log').appendChild(d);
 }
 
