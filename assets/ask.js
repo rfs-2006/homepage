@@ -96,6 +96,13 @@
 @media (min-width:900px){.ask .ms{flex-direction:row;align-items:flex-end;gap:64px}}\
 .ask .bub{max-width:560px;background:#F2EFE8;color:#121C2C;padding:18px 20px;border-radius:20px 20px 20px 4px;font-size:15.5px;line-height:1.72;white-space:pre-line;transform-origin:bottom left;animation:askBub .7s cubic-bezier(.34,1.3,.5,1) .3s both}\
 @keyframes askBub{from{opacity:0;transform:scale(.9) translateY(10px)}}\
+.ask .mine{display:flex;flex-direction:column;gap:10px;max-width:560px}\
+.ask .mine label{font-size:14px;color:var(--t2);line-height:1.6}\
+.ask .mine input{background:none;border:0;border-bottom:1px solid var(--hair);color:var(--tx);font:inherit;font-size:22px;letter-spacing:.02em;padding:8px 0;outline:0;width:min(320px,100%);font-variant-numeric:tabular-nums}\
+.ask .mine input:focus{border-bottom-color:var(--ac)}.ask .mine input::placeholder{color:var(--t3)}\
+.ask .mine .er{margin:0;font-size:13px;color:#E8A9A9;min-height:0}\
+.ask .mine button{align-self:flex-start;background:none;border:0;color:var(--t2);font:inherit;font-size:14px;cursor:pointer;box-shadow:inset 0 -1px 0 var(--hair);padding:4px 0}\
+.ask .ok{margin:0;font-size:17px;line-height:1.8;color:var(--t2)}\
 .ask .qr{display:none;flex-direction:column;gap:12px;font-size:14px;color:var(--t2);line-height:1.6}\
 .ask .qr .qc{background:#F2EFE8;padding:8px;width:max-content}.ask .qr .qc img,.ask .qr .qc svg{display:block;width:132px;height:132px}\
 .ask .qr button{align-self:flex-start;background:none;border:0;color:var(--t2);font:inherit;font-size:14px;cursor:pointer;box-shadow:inset 0 -1px 0 var(--hair);padding:4px 0}\
@@ -304,7 +311,36 @@
   }
   function done() {
     st.stage = 2; prog(100);
-    var msg = message(), num = digits(st.pick.phone);
+    var msg = message();
+    // 문자 받기가 연결돼 있으면(로그인한 학회원): 내 번호를 넣으면 선배님 연락처와 이 문구가 문자로 온다
+    if (st.sendSms) {
+      var saved = ''; try { saved = localStorage.getItem('rfs_my_phone') || ''; } catch (e) {}
+      st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
+        '<div class="mine"><label for="askMe">선배님 연락처를 내 휴대폰으로 보내 드릴게요</label>' +
+        '<input id="askMe" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" value="' + esc(saved) + '">' +
+        '<p class="er" aria-live="polite"></p><button type="button" class="cp">문구만 복사</button></div></div>';
+      var me = st.bx.querySelector('#askMe'), er = st.bx.querySelector('.er');
+      var good = function () { return /^01[016789]\d{7,8}$/.test(digits(me.value)); };
+      var send = function () {
+        if (!good()) return;
+        btn('보내는 중', true);
+        er.textContent = '';
+        try { localStorage.setItem('rfs_my_phone', me.value.trim()); } catch (e) {}
+        Promise.resolve(st.sendSms({ toPhone: digits(me.value), alumniName: st.pick.name, alumniCohort: String(st.pick.cohort || ''), message: msg })).then(function (r) {
+          if (r && r.ok) return sent();
+          er.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '휴대폰 번호를 확인해 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 문구를 복사해서 보내 주세요.' })[r && r.error] || '문자를 보내지 못했어요. 잠시 후 다시 시도하거나 문구를 복사해서 직접 보내 주세요.';
+          btn('문자로 받기', !good(), send);
+        });
+      };
+      me.oninput = function () { st.el.querySelector('.nx').disabled = !good(); };
+      me.onkeydown = function (e) { if (e.key === 'Enter') send(); };
+      btn('문자로 받기', !good(), send);
+      var cp0 = st.bx.querySelector('.cp');
+      cp0.onclick = function () { try { navigator.clipboard.writeText(msg).then(function () { cp0.textContent = '복사했어요'; }); } catch (e) {} };
+      setTimeout(function () { if (!good()) me.focus({ preventScroll: true }); }, 700);
+      return;
+    }
+    var num = digits(st.pick.phone);
     var late = (function () { var h = new Date().getHours(); return h >= 22 || h < 8; })();
     st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
       '<div class="qr"><div class="qc" aria-label="문자 QR 코드"></div><span>휴대폰 카메라로 찍으면<br>문자 앱이 열려요</span><button type="button" class="cp">문구 복사</button></div></div>' +
@@ -314,6 +350,14 @@
     var cp = st.bx.querySelector('.cp');
     cp.onclick = function () { try { navigator.clipboard.writeText(msg).then(function () { cp.textContent = '복사했어요'; }); } catch (e) {} };
     if (window.innerWidth >= 900) qr(st.bx.querySelector('.qc'), 'SMSTO:' + num + ':' + msg);
+  }
+  function sent() {
+    st.stage = 3;
+    var late = (function () { var h = new Date().getHours(); return h >= 22 || h < 8; })();
+    st.bx.innerHTML = crumbs() + '<h2 class="q">문자를<br>보냈어요</h2><div class="ms"><p class="ok">' + esc(st.pick.name) + ' 선배님 연락처가 곧 도착해요.<br>' +
+      (late ? '지금은 늦은 시간이니 내일 연락드려 주세요.' : '') + '</p></div>';
+    btn('처음으로', false, function () { st.path = []; st.pick = null; st.draft = ''; go(render); });
+    stagger();
   }
   function qr(box, text) {
     var draw = function () {
@@ -328,6 +372,7 @@
   }
   function back() {
     if (!st) return;
+    if (st.stage === 3) return go(done);
     if (st.stage === 2) return go(write);
     if (st.stage === 1) return go(function () { st.stage = 0; st.pick = null; prog(72); st.el.querySelector('.bk').disabled = !st.path.length; btn(); people(); });
     if (!st.path.length) return;
@@ -362,7 +407,7 @@
       '<div class="ask-top"><button class="ib bk" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="sl"><img src="/assets/rfs-seal-light-256.png" alt="">AGORA</span><button class="ib cl" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
       '<main class="ask-wrap"></main><button class="nx" type="button"></button>';
     document.body.appendChild(el);
-    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
+    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, sendSms: o.sendSms, onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
     document.documentElement.style.overflow = 'hidden';
     el.querySelector('.bk').onclick = back;
     el.querySelector('.cl').onclick = function () { close(); };

@@ -109,9 +109,9 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=13" defer></script>
+<script src="./assets/ask.js?v=16" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
-<script src="./assets/agora-gate.js?v=1" defer></script>
+<script src="./assets/agora-gate.js?v=6" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -1277,6 +1277,7 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-big::after{content:'';position:absolute;inset:0;pointer-events:none;transition:opacity .9s ease;
   background:radial-gradient(ellipse 46% 34% at 50% 50%,rgba(6,11,22,.42),rgba(6,11,22,0) 72%),radial-gradient(ellipse 125% 110% at 50% 50%,rgba(0,0,0,0) 52%,rgba(4,8,16,.5) 100%)}
 .pg-hero.pg-full.hero-out::after{opacity:0}
+.pg-hero.pg-raw::after{display:none}   /* FUND: 사진 그대로 (덮개 없음) */
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
 /* RESEARCH 최신 리포트: 카드 대신 실제 리포트 첫 장(표지)을 보여 주고, 글자는 리포트와 같은 KoPub 돋움 */
 @font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
@@ -3019,19 +3020,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   </sc-if>
   <sc-if value="{{ fundOpen }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="AMT Fund" data-nav="dark" class="fdpage" style="position:relative;background:#0B1524;color:#F7F6F3">
-    <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="assets/hero/sky.webp?v=1014" credit="Photo: Unsplash" credit-href="https://unsplash.com" style="--slot-position:center 40%"></image-slot></div>
-      <div class="scrim" style="opacity:0.62"></div>
+    <section class="on-photo pg-hero pg-big pg-full pg-raw" data-nav="dark">
+      <div class="pg-bg"><image-slot id="fund-photo" shape="rect" fit="cover" src="{{ fundBg.src }}" credit="{{ fundBg.credit }}" credit-href="{{ fundBg.href }}" style="--slot-position:{{ fundBg.pos }}"></image-slot></div>
+      <div class="scrim" style="opacity:{{ fundBg.scrim }}"></div>
       <div class="wrap pg-hero-in">
-        <sc-if value="{{ fdLoading }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">AMT Fund</h1>
-        </sc-if>
+        <h1 class="pg-title">AMT Fund</h1>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
-          <h1 class="pg-title">AMT Fund</h1>
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
-        </sc-if>
-        <sc-if value="{{ fdHas }}" hint-placeholder-val="{{ true }}">
-          <h1 class="pg-title">AMT Fund</h1>
         </sc-if>
       </div>
     </section>
@@ -3307,7 +3302,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
       </div>
       <p style="border-top:1px solid rgba(247,246,243,0.25);margin:48px 0 0;padding-top:20px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.55);max-width:72em">본 사이트의 리포트는 중앙대학교 가치투자학회 R.F.S. 학회원이 교육 목적으로 작성한 자료입니다. 투자의견과 목표주가는 학회원의 분석에 기반한 의견이며 특정 종목의 매수·매도를 권유하지 않습니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</p>
-      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span> · <span class="cfn-foot"><b>WITH</b><i><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></i></span></div>
+      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
     </div>
   </footer>
 
@@ -4471,8 +4466,12 @@ const NETWORK = [
   { n:'한화큐셀', f:'qcells', r:4, a:4.23 },
   { n:'KCC', f:'kcc', r:4, a:1.81 },
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
-// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 첫 화면(줄마다 앞 6곳)에 나오는 기관, 그 순서대로
-const GATE_NAMES = [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(0, 6).map((x) => x.n));
+// FUND 첫 화면 사진: 겨울 산 (눈 덮인 긴 언덕 = 버핏의 '스노볼')
+const FUND_BG = [
+  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.12', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
+// AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
+const GATE_TOP = ['J.P. Morgan', 'PwC', '타임폴리오자산운용', 'NH-Amundi자산운용'];   // 로그인 칸 바로 옆 가장 눈에 띄는 자리에 먼저
+const GATE_NAMES = [...GATE_TOP, ...[[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n))).filter((n) => !GATE_TOP.includes(n))];
 // lead: 이 줄에서 맨 앞으로 올릴 로고(모바일은 화면이 좁아 첫 줄에 J.P.Morgan·PwC부터)
 const netRows = (lead = []) => [0, 1, 2, 3, 4].map((r) => {
   const row = NETWORK.filter((x) => x.r === r);
@@ -4756,7 +4755,7 @@ class Component extends DCLogic {
     const want = this.state.page === 'intranet' && !this.state.user && !(this.props.intranetPreview ?? false);
     if (want && !this._gate) {
       if (!window.AgoraGate) { clearTimeout(this._gateT); this._gateT = setTimeout(() => this.syncGate(), 150); return; }
-      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, login: (id, pw) => this.signIn(id, pw) });
+      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, top: GATE_TOP.length, login: (id, pw) => this.signIn(id, pw) });
     } else if (!want && this._gate) {
       if (this.state.page === 'intranet' && this.state.user) this._gate.dive(); else this._gate.destroy();
       this._gate = null;
@@ -5620,7 +5619,14 @@ class Component extends DCLogic {
   openAsk() {
     if (!window.RFSAsk || !this.state.user) return;
     const ID = this.state.intraData || {};
-    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c), intro: true, onClose: () => { this._askShut = true; if (this.state.page === 'intranet') this.go('home'); } });
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+      // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
+      sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
+        if (!error) return { ok: true };
+        if (error.context && error.context.status === 404) return { error: 'not_configured' };   // 함수를 아직 안 올렸을 때
+        let j = {}; try { j = await error.context.json(); } catch (x) {}
+        return { error: j.error || 'send' };
+      }, () => ({ error: 'send' })), intro: true, onClose: () => { this._askShut = true; if (this.state.page === 'intranet') this.go('home'); } });
   }
 
   me() {
@@ -5961,6 +5967,7 @@ class Component extends DCLogic {
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       // 아고라 첫 화면 (네트워크형)
       agoraCls: tab === 'dashboard' ? 'ag-dash' : 'ag-sub',
+      fundBg: FUND_BG[0],
       agoraBg: s.isMobile ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp', agoraBgCredit: '', agoraBgHref: '',
       agAlumniN: String(allNames.length || dirAll.length),
       agDirN: String(dirAll.length),
