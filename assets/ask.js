@@ -281,7 +281,7 @@
       var co = [a.company, a.role].filter(Boolean).join(' · ');
       return '<button class="o pp" role="listitem" data-i="' + (st.off + i) + '"><span class="key">' + (i + 1) + '</span><span class="nm"><span class="lb">' + esc(a.name) + '</span><span class="co">' + esc(co) + '</span></span><span class="cy">' + (coh(a) < 999 ? esc(a.cohort) + '<small>기</small>' : '') + '</span></button>';
     }).join('') + '</div>' + (st.list.length > per ? '<button class="more">다른 선배님 보기</button>' : '') + '</div>';
-    st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { st.pick = st.list[+b.getAttribute('data-i')]; write(); }); }; });
+    st.bx.querySelectorAll('.o').forEach(function (b) { b.onclick = function () { tap(b, function () { st.pick = st.list[+b.getAttribute('data-i')]; if (st.sendSms) done(); else write(); }); }; });
     var m = st.bx.querySelector('.more');
     if (m) m.onclick = function () { st.off = st.off + 3 >= st.list.length ? 0 : st.off + 3; go(people); };
   }
@@ -311,14 +311,13 @@
   }
   function done() {
     st.stage = 2; prog(100);
-    var msg = message();
-    // 문자 받기가 연결돼 있으면(로그인한 학회원): 내 번호를 넣으면 선배님 연락처와 이 문구가 문자로 온다
+    // 문자 받기가 연결돼 있으면(로그인한 학회원): 내 번호만 넣으면 선배님 연락처가 문자로 온다. 연락 문구는 학회원이 직접 쓴다
     if (st.sendSms) {
+      st.el.querySelector('.bk').disabled = false;
       var saved = ''; try { saved = localStorage.getItem('rfs_my_phone') || ''; } catch (e) {}
-      st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
-        '<div class="mine"><label for="askMe">선배님 연락처를 내 휴대폰으로 보내 드릴게요</label>' +
+      st.bx.innerHTML = crumbs() + '<h2 class="q">' + esc(st.pick.name) + ' 선배님 연락처를<br>문자로 보내 드릴게요</h2><div class="ms"><div class="mine"><label for="askMe">내 휴대폰 번호</label>' +
         '<input id="askMe" type="tel" inputmode="numeric" autocomplete="tel" placeholder="010-0000-0000" value="' + esc(saved) + '">' +
-        '<p class="er" aria-live="polite"></p><button type="button" class="cp">문구만 복사</button></div></div>';
+        '<p class="er" aria-live="polite"></p></div></div>';
       var me = st.bx.querySelector('#askMe'), er = st.bx.querySelector('.er');
       var good = function () { return /^01[016789]\d{7,8}$/.test(digits(me.value)); };
       var send = function () {
@@ -326,21 +325,19 @@
         btn('보내는 중', true);
         er.textContent = '';
         try { localStorage.setItem('rfs_my_phone', me.value.trim()); } catch (e) {}
-        Promise.resolve(st.sendSms({ toPhone: digits(me.value), alumniName: st.pick.name, alumniCohort: String(st.pick.cohort || ''), message: msg })).then(function (r) {
+        Promise.resolve(st.sendSms({ toPhone: digits(me.value), alumniName: st.pick.name, alumniCohort: String(st.pick.cohort || '') })).then(function (r) {
           if (r && r.ok) return sent();
-          er.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '휴대폰 번호를 확인해 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 문구를 복사해서 보내 주세요.' })[r && r.error] || '문자를 보내지 못했어요. 잠시 후 다시 시도하거나 문구를 복사해서 직접 보내 주세요.';
+          er.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '휴대폰 번호를 확인해 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 잠시 후 다시 시도해 주세요.' })[r && r.error] || '문자를 보내지 못했어요. 잠시 후 다시 시도해 주세요.';
           btn('문자로 받기', !good(), send);
         });
       };
       me.oninput = function () { st.el.querySelector('.nx').disabled = !good(); };
       me.onkeydown = function (e) { if (e.key === 'Enter') send(); };
       btn('문자로 받기', !good(), send);
-      var cp0 = st.bx.querySelector('.cp');
-      cp0.onclick = function () { try { navigator.clipboard.writeText(msg).then(function () { cp0.textContent = '복사했어요'; }); } catch (e) {} };
       setTimeout(function () { if (!good()) me.focus({ preventScroll: true }); }, 700);
       return;
     }
-    var num = digits(st.pick.phone);
+    var msg = message(), num = digits(st.pick.phone);
     var late = (function () { var h = new Date().getHours(); return h >= 22 || h < 8; })();
     st.bx.innerHTML = crumbs() + '<h2 class="q">이렇게<br>보낼게요</h2><div class="ms"><div class="bub">' + esc(msg) + '</div>' +
       '<div class="qr"><div class="qc" aria-label="문자 QR 코드"></div><span>휴대폰 카메라로 찍으면<br>문자 앱이 열려요</span><button type="button" class="cp">문구 복사</button></div></div>' +
@@ -370,11 +367,12 @@
     s.onerror = function () { box.parentNode.querySelector('span').textContent = '문구를 복사해서 휴대폰으로 보내 주세요'; box.remove(); };
     document.head.appendChild(s);
   }
+  function toPeople() { st.stage = 0; st.pick = null; prog(72); st.el.querySelector('.bk').disabled = !st.path.length; btn(); people(); }
   function back() {
     if (!st) return;
     if (st.stage === 3) return go(done);
-    if (st.stage === 2) return go(write);
-    if (st.stage === 1) return go(function () { st.stage = 0; st.pick = null; prog(72); st.el.querySelector('.bk').disabled = !st.path.length; btn(); people(); });
+    if (st.stage === 2) return go(st.sendSms ? toPeople : write);
+    if (st.stage === 1) return go(toPeople);
     if (!st.path.length) return;
     st.path.pop(); go(render);
   }

@@ -109,7 +109,7 @@
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=16" defer></script>
+<script src="./assets/ask.js?v=17" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
 <script src="./assets/agora-gate.js?v=6" defer></script>
 <style>
@@ -1251,17 +1251,6 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
 @media (max-width:760px){.fd-wrap{padding:48px 16px 56px !important}.fd-cw{grid-template-columns:36px minmax(0,1fr) 0}.fd-ends{display:none}.fd-ya,.fd-grid,.fd-plot .fd-chart{height:200px !important}.fd-th{display:none}.fd-chips>div{padding:8px 10px}.fd-alloc .bar i{font-size:0;padding:0}.fd-attr div{flex-basis:0}.fd-chips .cn,.fd-chips .cv{font-size:13px}}
 .pg-hero{position:relative;overflow:hidden}
-.rfm-lock{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 24px;background:radial-gradient(70% 60% at 50% 45%,#16284A,#0B1526 75%)}
-.rfm-lock-in{width:min(400px,100%);padding:46px 40px;border:1px solid rgba(247,246,243,.28);background:rgba(11,21,36,.55);text-align:center}
-.rfm-lock-in img{width:60px;height:auto;display:block;margin:0 auto}
-.rfm-lock-in .sec-label{margin:26px 0 0;color:rgba(247,246,243,.65)}
-.rfm-lock-in h2{margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:28px;font-weight:400;letter-spacing:-.02em;color:#F7F6F3}
-.rfm-lock-sub{margin:12px 0 0;font-size:14px;line-height:1.7;color:rgba(247,246,243,.72)}
-.rfm-lock-in form{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-.rfm-lock-in .intra-input{background:rgba(247,246,243,.1);border-color:rgba(247,246,243,.4);color:#F7F6F3;text-align:center}
-.rfm-lock-in button{display:block;width:100%;margin-top:6px;padding:15px 0;font-size:12px;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3}
-.rfm-lock-err{margin:2px 0 0;font-size:12px;color:#E8A9A9}
-.rfm-lock-help{margin:20px 0 0;font-size:12px;color:rgba(247,246,243,.62)}.rfm-lock-help a{color:rgba(247,246,243,.85)}
 .pg-bg{position:absolute;inset:0;background:#0F1B2E}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
@@ -3157,23 +3146,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h1 class="pg-title">Road to Fund Manager</h1>
       </div>
     </section>
-    <sc-if value="{{ rfmLocked }}" hint-placeholder-val="{{ false }}">
-    <section class="rfm-lock" data-nav="dark">
-      <div class="rfm-lock-in">
-        <img src="assets/rfs-seal-light-256.png" alt="R.F.S.">
-        <p class="sec-label">MEMBERS ONLY</p>
-        <h2>학회원만 볼 수 있어요</h2>
-        <p class="rfm-lock-sub">RFM 순위는 로그인한 학회원에게만 공개됩니다.</p>
-        <form onSubmit="{{ intraLogin }}">
-          <input class="intra-input" type="text" name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required="" value="{{ loginId }}" onChange="{{ onLoginId }}">
-          <input class="intra-input" type="password" name="password" autocomplete="current-password" placeholder="비밀번호" required="" value="{{ loginPw }}" onChange="{{ onLoginPw }}">
-          <sc-if value="{{ hasLoginErr }}" hint-placeholder-val="{{ false }}"><p class="rfm-lock-err">{{ loginErr }}</p></sc-if>
-          <button type="submit" class="btn btn-photo press">LOGIN</button>
-        </form>
-        <p class="rfm-lock-help">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p>
-      </div>
-    </section>
-    </sc-if>
     <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
       <div class="wrap fd-body"><section class="fd-card"><p class="fd-cap" aria-live="polite">순위를 불러오는 중입니다…</p></section></div>
     </sc-if>
@@ -4955,9 +4927,8 @@ class Component extends DCLogic {
 
   loadRfm() {
     if (!this.sb) return;
-    // 학회원만 본다 (intranet_content). 로그인 전에는 불러오지 않는다
-    if (!this.state.user) return this.setState({ rfmData: null, rfmLoaded: true });
-    this.sb.from('intranet_content').select('data').eq('id', 'rfm').maybeSingle()
+    // 학회원은 intranet_content, 로그인 안 했으면 공개용 public_content (둘 다 별칭만 있고 실명은 없음)
+    this.sb.from(this.state.user ? 'intranet_content' : 'public_content').select('data').eq('id', 'rfm').maybeSingle()
       .then(({ data }) => { if (data && data.data) this.setRfm(data.data); this.setState({ rfmLoaded: true }); }, () => this.setState({ rfmLoaded: true }));
   }
 
@@ -5942,8 +5913,6 @@ class Component extends DCLogic {
       fundPos: FD.positions.map((p) => ({ ...p, w: p.weight.toFixed(1) + '%', bar: (p.weight * 2.6).toFixed(0) + 'px', tick: p.ticker || '—', retColor: p.ret ? (p.up ? '#0F5132' : '#842029') : 'rgba(26,26,26,0.4)', retText: p.ret || '—' })),
       fundNotes: FD.notes, hasFundNotes: FD.notes.length > 0,
       ...this.rfmProps(s.rfmData),
-      // RFM은 학회원만 본다: 로그인 전에는 첫 화면 아래에 로그인 칸만 보인다
-      ...(authed ? { rfmLocked: false } : { rfmLocked: true, hasRfm: false, noRfm: false, rfmLoading: false }),
       ...this.weeklyProps(),
       ...this.fundProps(authed),
       stopProp: (e) => e.stopPropagation(),
