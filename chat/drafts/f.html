@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hebbia형 · 대화 | 챗봇 시안</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--ink:#F4F1EB;--black:#0E0B0B;--paper:#F4F1EB;--card:#FFFFFF;--text:#141210;--sub:#6F6A62;--hair:#E3DED4;--band:#ECE8E0;--accent:#8FAADC;--navy:#203864;--hl:#F3E3B0;--pdf:#C9483B}
+*{box-sizing:border-box}html,body{margin:0}
+body{font-family:'Pretendard Variable',sans-serif;-webkit-font-smoothing:antialiased}
+.serif{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em}
+.lab{font-size:10.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.draftbar{position:fixed;right:12px;bottom:12px;z-index:99;font-size:12px;background:var(--black);color:var(--ink);padding:6px 10px;border-radius:4px;opacity:.85}
+.draftbar a{color:var(--accent);text-decoration:none;margin-left:8px}
+
+body{background:var(--paper);color:var(--text);font-size:15px;line-height:1.8;height:100vh;display:flex;flex-direction:column}
+header{background:var(--black);color:var(--ink);display:flex;align-items:center;gap:12px;padding:12px 24px;font-size:13px;flex:none}
+header img{width:24px}header b{font-weight:600}
+header .r{margin-left:auto;display:flex;gap:18px;color:rgba(244,241,235,.7)}
+.wrap{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 420px;min-height:0}
+.main{overflow:auto;padding:0 0 30px}
+.col{max-width:720px;margin:0 auto;padding:0 28px}
+.band{background:var(--band);border-bottom:1px solid var(--hair);padding:9px 28px;color:var(--sub)}
+.q{font-family:'Noto Serif KR',serif;font-weight:300;font-size:30px;letter-spacing:-.025em;line-height:1.35;margin:34px 0 14px}
+.ask{background:var(--card);border:1px solid var(--hair);border-radius:8px;padding:16px 18px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.opts button{background:var(--paper);border:1px solid var(--hair);border-radius:999px;font:inherit;font-size:13.5px;padding:5px 13px;cursor:pointer;color:var(--text)}
+.opts button:hover{border-color:var(--text)}
+.ans{background:var(--card);border:1px solid var(--hair);border-radius:8px;padding:6px 24px 14px}
+.ans .lab{color:var(--sub);border-bottom:1px solid var(--hair);margin:0 -24px 12px;padding:10px 24px;display:flex;justify-content:space-between}
+.ans h4{font-family:'Noto Serif KR',serif;font-weight:400;font-size:17.5px;letter-spacing:-.02em;margin:22px 0 4px}
+.ans p{margin:0 0 10px}
+.tree{border:1px solid var(--hair);border-radius:6px;background:var(--paper);padding:10px 16px 10px 32px;font-size:14px;margin:12px 0}
+.tree ul{padding-left:18px;margin:2px 0}
+.tail{color:var(--sub)}
+.chip{display:inline-flex;align-items:center;gap:5px;vertical-align:1px;font:500 12px 'Pretendard Variable';color:var(--text);background:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:1px 7px;cursor:pointer;white-space:nowrap}
+.chip i{width:9px;height:11px;background:var(--pdf);border-radius:1px;display:inline-block}
+.chip:hover,.chip.on{border-color:var(--text);background:var(--hl)}
+form{flex:none;border-top:1px solid var(--hair);background:var(--paper);padding:12px 28px 16px}
+form .in{max-width:720px;margin:0 auto;background:var(--card);border:1px solid var(--hair);border-radius:10px;display:flex;align-items:center;padding:6px 6px 6px 16px}
+form textarea{flex:1;border:0;resize:none;height:42px;padding:10px 0;font:inherit;outline:none;background:none}
+form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--text);color:#fff}
+.panel{background:var(--card);border-left:1px solid var(--hair);display:flex;flex-direction:column;min-height:0}
+.panel .top{display:flex;align-items:center;padding:12px 18px;border-bottom:1px solid var(--hair)}
+.panel .top .lab{color:var(--sub)}
+.panel .top button{margin-left:auto;border:0;background:none;font-size:18px;color:var(--sub);cursor:pointer;display:none}
+.list{display:flex;flex-direction:column;border-bottom:1px solid var(--hair)}
+.list button{display:flex;align-items:center;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--band);background:none;padding:10px 18px;font:inherit;font-size:13px;cursor:pointer;color:var(--text)}
+.list button:last-child{border-bottom:0}
+.list button i{width:11px;height:14px;background:var(--pdf);border-radius:1px;flex:none}
+.list button small{margin-left:auto;color:var(--sub);white-space:nowrap}
+.list button.on{background:var(--paper)}
+.doc{padding:18px;overflow:auto}
+.doc .lab{color:var(--sub)}
+.doc h3{font-family:'Noto Serif KR',serif;font-weight:400;font-size:22px;letter-spacing:-.02em;margin:6px 0 2px}
+.doc .meta{font-size:12.5px;color:var(--sub);margin-bottom:14px}
+.doc .tag{display:inline-block;font-size:11px;font-weight:600;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
+.sheet{border:1px solid var(--hair);border-radius:4px;padding:18px;font-size:13.5px;line-height:1.85;background:#FCFBF8}
+.sheet .dim{color:#A8A296}
+.sheet mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl)}
+.doc .note{font-size:11.5px;color:var(--sub);margin-top:10px}
+.doc .open{display:inline-block;margin-top:14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
+.scrim{display:none}
+@media (max-width:960px){
+ .wrap{grid-template-columns:1fr}
+ .panel{position:fixed;left:0;right:0;bottom:0;max-height:78vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);box-shadow:0 -20px 50px rgba(0,0,0,.25);transform:translateY(105%);transition:transform .25s;z-index:20}
+ .panel.open{transform:none}
+ .panel .top button{display:block}
+ .list{display:none}
+ .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
+ .q{font-size:24px}.col{padding:0 16px}.band{padding:9px 16px}form{padding:10px 16px 14px}.ans{padding:6px 16px 12px}.ans .lab{margin:0 -16px 12px;padding:10px 16px}
+}
+@media (prefers-reduced-motion:reduce){.panel{transition:none}}
+
+</style>
+</head>
+<body>
+
+<header><img src="/assets/rfs-seal-light-256.png" alt=""><b>R.F.S. Research</b><div class="r"><span>새 대화</span><span>인트라넷</span></div></header>
+<div class="wrap">
+<section class="main">
+<div class="band lab">Research Chatbot · 학회 자료에서 찾아 답해요</div>
+<div class="col">
+<div class="q">밸류에이션 뭘로 해?</div>
+<div class="ask">업종에 따라 쓰는 방법이 달라져요. 어떤 회사를 분석하시나요?<div class="opts"><button>제조업</button><button>인터넷·소프트웨어</button><button>바이오</button><button>은행·증권</button><button>잘 모르겠어요</button></div></div>
+<div class="q">Peer 어떻게 골라?</div>
+<article class="ans"><div class="lab"><span>Answer</span><span>학회 자료 3건</span></div><p>Peer는 내가 분석하는 회사와 <b>돈 버는 구조가 비슷해서 비교 기준으로 삼는 상장사</b>예요. 기준은 두 가지이고, 둘 다 봐야 해요.</p>
+<ul class="tree"><li>Peer 고르기<ul><li>사업 유사성: 같은 사업에서 돈을 버는가</li><li>재무 유사성: 규모와 이익 수준이 비슷한가</li></ul></li></ul>
+<h4>사업 유사성 — 업종 이름이 아니라 이익 구조가 같은 회사</h4>
+<p>후보를 넓게 모은 뒤 매출 비중 같은 숫자로 하나씩 거르고, 탈락 이유까지 적는 게 핵심이에요. 대한항공 리포트는 글로벌 대형 항공사 6곳을 화물 비중으로 걸렀고, 델타항공은 화물 매출이 1.4%뿐이라 뺐어요. <button class="chip" data-k="1"><i></i>대한항공 26-2 · p.19</button></p>
+<p>사업부가 여럿이면 사업부마다 Peer를 따로 골라요. <button class="chip" data-k="2"><i></i>OCI 26-1 · p.20</button></p>
+<h4>재무 유사성 — 규모 차이가 비교를 흐리지 않는지</h4>
+<p>학회 세미나 자료는 EBITDA(상각 전 영업이익) 규모로 먼저 거르고, 그다음 매출 구성으로 다시 걸렀어요. <button class="chip" data-k="3"><i></i>밸류에이션 세미나 22-1 · p.296</button></p>
+<p class="tail">고른 Peer의 배수는 상대가치 평가에서 목표 배수를 정할 때 쓰여요.</p>
+<p>분석 중인 회사는 사업부가 하나인가요, 여러 개인가요?</p></article>
+</div>
+</section>
+<aside class="panel" id="panel"><div class="top"><span class="lab">출처 원문</span><button id="x" aria-label="닫기">✕</button></div>
+<div class="list"><button data-k="1"><i></i>대한항공 <small>26-2 · p.19</small></button><button data-k="2"><i></i>OCI <small>26-1 · p.20</small></button><button data-k="3"><i></i>밸류에이션 세미나 <small>22-1 · p.296</small></button></div>
+<div class="doc" id="doc"></div></aside>
+</div>
+<div class="scrim" id="scrim"></div>
+<form onsubmit="return false"><div class="in"><textarea placeholder="이어서 물어보기"></textarea><button>↑</button></div></form>
+
+<div class="draftbar">시안 F · Hebbia형 · 대화<a href="./">목록 ←</a></div>
+<script>
+const S = {"1": {"n": "대한항공", "sem": "26-2", "kind": "기업 리포트 · Ⅵ. Valuation", "pg": "p.19", "tag": "학회 추천 사례 · Peer", "pre": "글로벌 대형 항공사 여섯 곳을 Peer 후보로 놓았다.", "quote": "후보마다 화물 매출 비중을 확인해 걸렀고, 화물 비중이 매우 낮아 이익 구조가 다른 회사는 이유를 적어 제외했다.", "post": "남은 두 회사의 12개월 선행 배수 평균을 목표 배수로 썼다."}, "2": {"n": "OCI", "sem": "26-1", "kind": "기업 리포트 · 매출 추정 종합", "pg": "p.20", "tag": null, "pre": "사업부별 가치를 따로 구해 더하는 방식을 택했다.", "quote": "폴리실리콘 사업과 에너지 사업은 이익을 내는 방식이 달라, 사업부마다 다른 Peer 그룹을 골랐다.", "post": "각 Peer 그룹의 배수를 사업부 이익에 곱했다."}, "3": {"n": "밸류에이션 세미나", "sem": "22-1", "kind": "세미나 · EV/EBITDA", "pg": "p.296", "tag": "교육자료", "pre": "Peer 선정은 재무 기준과 사업 기준 두 단계로 진행한다.", "quote": "먼저 EBITDA 규모로 비교 가능한 회사를 추리고, 그다음 매출 구성이 비슷한지로 다시 거른다.", "post": "완전히 같은 회사는 없으므로 남는 차이를 함께 적는다."}};
+const $ = (s) => document.querySelectorAll(s);
+const doc = document.getElementById('doc'), panel = document.getElementById('panel'), scrim = document.getElementById('scrim');
+function show(k, open) {
+  const s = S[k];
+  doc.innerHTML = `<div class="lab">${s.sem}학기 · ${s.kind}</div><h3>${s.n}</h3><div class="meta">${s.pg} · 정규 리포트·교육자료</div>`
+    + (s.tag ? `<span class="tag">${s.tag}</span>` : '')
+    + `<div class="sheet"><span class="dim">… ${s.pre}</span><br><br><mark>${s.quote}</mark><br><br><span class="dim">${s.post} …</span></div>`
+    + `<div class="note">시안이라 원문 대신 지어 쓴 예시 문장이에요.</div><a class="open" href="#">리포트 ${s.pg} 열기 →</a>`;
+  $('.chip,.list button').forEach((b) => b.classList.toggle('on', b.dataset.k == k));
+  if (open) { panel.classList.add('open'); scrim.classList.add('open'); }
+}
+$('.chip,.list button').forEach((b) => b.addEventListener('click', () => show(b.dataset.k, true)));
+const close = () => { panel.classList.remove('open'); scrim.classList.remove('open'); };
+document.getElementById('x').onclick = close; scrim.onclick = close;
+show(1, false);
+</script>
+</body>
+</html>
