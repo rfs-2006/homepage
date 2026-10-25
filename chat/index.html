@@ -344,7 +344,7 @@ async function ask(text) {
     if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
     addA(res);
   } catch (err) {
-    w.done(); addNote(err.message || '연결하지 못했습니다.', 'err');
+    w.done(); addNote(err instanceof TypeError ? '서버에 연결하지 못했어요. 잠시 뒤 다시 해 주세요.' : (err.message || '연결하지 못했습니다.'), 'err');
   } finally {
     busy = false; $('b').disabled = false; $('t').focus();
   }
