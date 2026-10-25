@@ -26,6 +26,7 @@ LLM = 'claude-sonnet-5-5'
 JUDGE_LLM = 'claude-opus-5-5'
 MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
+AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 점수를 못 믿어 뺐다, NOTES 14절)
 SNIPPET = 350
 
 CORPUS = """자료: 중앙대 투자학회 RFS의 학회 자료 (2019~2026). 기업·산업 리포트, 세미나·교육 자료, 엑셀 밸류에이션 모델, 스터디, 투자제안서.
@@ -41,7 +42,9 @@ MQ_SYSTEM = CORPUS + """
 - 앞선 대화가 같이 오면, 마지막 질문이 무엇을 가리키는지 앞 대화로 풀어서 검색어를 만든다 (예: "LCC면?" → "저비용항공사 밸류에이션").
 - standalone: 마지막 질문을 앞 대화 없이도 뜻이 통하는 한 문장으로 다시 쓴다. 앞선 대화가 없으면 질문 그대로.
 - kind: 특정 문서·회사의 사실이나 용어 뜻을 묻는 질문은 fact, 방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘",
-  "목차는 보통", "~관련 리포트 있어?")은 open."""
+  "목차는 보통", "~관련 리포트 있어?")은 open.
+- axis: 질문이 리포트의 어느 부분에 관한 것인지. 투자포인트 / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
+  추정(매출·비용 추정) / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목) / 없음(사실 질문, 용어 뜻, 밸류에이션 등 그 밖)."""
 
 # 서버(대화)에서만 붙인다. 평가는 한 번 묻고 끝이라 되물으면 채점이 안 된다
 ASK_RULE = """
@@ -110,12 +113,14 @@ class AgentSearch:
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
 
     def rewrite(self, question, context='', allow_ask=False):
-        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문을 돌려준다.
-        context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None."""
+        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
+        context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
+        축은 rubric.md의 평가 축 (축별 추천 리포트를 고를 때 쓴다)."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
         props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
                  'kind': {'type': 'string', 'enum': ['fact', 'open'] + (['clarify'] if allow_ask else [])},
-                 'standalone': {'type': 'string'}}
+                 'standalone': {'type': 'string'},
+                 'axis': {'type': 'string', 'enum': AXES + ['없음']}}
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
         resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else ''),
@@ -127,7 +132,7 @@ class AgentSearch:
         ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
             if out['kind'] == 'clarify' and out.get('ask_question') else None
         kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']
-        return out['queries'][:5], kind, out['standalone'] or question, ask_
+        return out['queries'][:5], kind, out['standalone'] or question, ask_, out['axis']
 
     def multiquery(self, question, rerank_top=100, queries=None):
         qs = queries if queries is not None else self.rewrite(question)[0]

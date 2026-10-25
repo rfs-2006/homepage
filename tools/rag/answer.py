@@ -23,7 +23,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import LLM, AgentSearch, ask  # noqa: E402
 
-PREFETCH, OPEN_PREFETCH, MAX_SEARCH, PER_SEARCH = 8, 10, 3, 6
+PREFETCH, OPEN_PREFETCH, MAX_SEARCH, PER_SEARCH, REC_N = 8, 10, 3, 6, 3
 GRADE = {'A': 'A 정규 리포트·가이드·모델', 'B': 'B 스터디·운용 보고·게시글', 'C': 'C 신입 투자제안서'}
 
 SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원이 리포트를 쓰고 모델을 만들 때 옆에서 돕는다.
@@ -41,6 +41,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 학회 자료 주장(숫자, 리포트 이름, "학회는 이렇게 했다")은 검색 결과에 있는 것만, 출처가 달리게 쓴다. 없으면 지어내지 않고 "학회 자료에서는 찾지 못했다"고 말한다.
 - 교과서 수준 개념(용어 뜻, 순서, 공식)은 출처 없이 써도 된다. 교육자료(가이드북·세미나)에 있으면 그걸 쓴다.
 - 리포트가 실제로 쓴 것과 내 해석·짐작을 나눠 쓴다. 해석에는 "(추정)"을 붙인다.
+- 제목에 [학회 추천 사례: 축]이 붙은 자료는 그 축에서 학회가 잘한 리포트다. 그 축의 사례로 먼저 고려한다.
 - 사례는 정규 학기 리포트에서만 들고 학기를 붙인다. 같은 내용이면 최근 학기를 앞에 둔다. 근거 없이 정한 숫자는 모범 사례로 보이지 않는다. 리포트끼리 숫자가 다르면 둘 다 보이고 왜 다른지 적는다.
 {search}
 2. 질문한 것이 중심, 전체에서 부분으로
@@ -102,6 +103,31 @@ class Answerer:
         self.chunks = self.s.r.chunks
         self.mode = mode
         self.ask = ask  # 애매한 코칭 질문에 먼저 되묻기 (서버만 켠다. 평가는 한 번 묻고 끝이라 끈다)
+        # 축별 추천 리포트(rubric_merge.py): 축마다 3점 받은 리포트의 청크 번호. 질문의 축에 맞는 추천 리포트를 검색 결과에 섞는다
+        self.rec = {}
+        p = Path(cafe) / 'eval' / 'rubric_recommend.json'
+        if p.exists():
+            top = json.loads(p.read_text())['top']
+            by_doc = {}
+            for i, c in enumerate(self.chunks):
+                by_doc.setdefault(c['doc_id'], []).append(i)
+            # 축 → {청크 번호: 리포트 번호}. 같은 리포트의 PDF·워드·사이트판·엑셀을 한 리포트로 묶는다
+            self.rec = {ax: {i: k for k, r in enumerate(v) for d in r['search_doc_ids'] for i in by_doc.get(d, [])}
+                        for ax, v in top.items() if v}
+
+    def recommended(self, question, axis, n=REC_N):
+        """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
+        비슷한 글만 찾는 검색은 평범한 리포트를 먼저 올리기 쉬워서, 참고할 만한 리포트를 따로 찾아 섞는다."""
+        pool = self.rec.get(axis)
+        if not pool:
+            return []
+        cand = [i for i in self.s.r.hybrid(question, n=3000) if i in pool][:30]
+        out, seen = [], set()
+        for i in (self.s.r.rerank(question, cand, top=len(cand)) if cand else []):
+            if pool[i] not in seen:  # 서로 다른 리포트에서 하나씩
+                seen.add(pool[i])
+                out.append(i)
+        return out[:n]
 
     def regular_only(self, ids, question):
         """사례는 정규 학기 리포트·교육자료·모델에서만 쓴다. 신입 투자제안서와 하계·동계 리포트는 뺀다.
@@ -111,14 +137,15 @@ class Answerer:
         return [i for i in ids if self.chunks[i]['doc_type'] != 'proposal'
                 and not re.search(r'하계|동계|투자제안서', self.chunks[i]['header'])]
 
-    def result_block(self, i):
+    def result_block(self, i, axis=None):
         c = self.chunks[i]
         pages = f"p.{c['page_start']}" + (f"-{c['page_end']}" if c.get('page_end') not in (None, c['page_start']) else '') \
             if c.get('page_start') else ''
         # 문단 단위로 나눠 넣으면 인용 범위가 문단 단위로 잡힌다 (통째로 넣으면 늘 청크 전체가 인용된다)
         paras = [p for p in c['text'].split('\n') if p.strip()] or [c['text']]
+        tag = f" [학회 추천 사례: {axis}]" if axis else ''
         return {'type': 'search_result', 'source': f"{c['chunk_id']} {pages}".strip(),
-                'title': f"{c['header']} [{GRADE[c['grade']]}]",
+                'title': f"{c['header']} [{GRADE[c['grade']]}]{tag}",
                 'content': [{'type': 'text', 'text': p} for p in paras],
                 'citations': {'enabled': True}}
 
@@ -156,6 +183,7 @@ class Chat:
     def __init__(self, answerer):
         self.a = answerer
         self.msgs, self.shown, self.turns = [], [], []
+        self.axis, self.rec_shown = '없음', set()
 
     def _context(self):
         return '\n'.join(f"Q: {t['question']}\nA: {t['answer'][:600]}" for t in self.turns[-3:])
@@ -163,7 +191,8 @@ class Chat:
     def _retrieve(self, question):
         s = self.a.s
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
-        queries, kind, standalone, ask = s.rewrite(question, self._context(), allow_ask=allow)
+        queries, kind, standalone, ask, axis = s.rewrite(question, self._context(), allow_ask=allow)
+        self.axis = axis
         if ask:
             return ask, 'clarify', standalone
         if self.a.mode == 'routed' and kind == 'open':
@@ -172,6 +201,10 @@ class Chat:
             kind = kind if self.a.mode == 'routed' else 'basic'
             found = s.multiquery(standalone, queries=queries)[:PREFETCH]
         found = self.a.regular_only(found, question)
+        rec = [i for i in self.a.recommended(standalone, axis) if i not in self.shown]
+        if rec:  # 가장 관련 높은 2개 다음에 추천 리포트를 넣고, 전체 개수는 그대로
+            found = (found[:2] + rec + [i for i in found[2:] if i not in rec])[:len(found)]
+        self.rec_shown = set(rec)
         return [i for i in found if i not in self.shown], kind, standalone
 
     def turn(self, question, given=None):
@@ -186,7 +219,8 @@ class Chat:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
             system, tools = SYSTEM.format(search=''), {}
         self.shown += first
-        content = [a.result_block(i) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]
+        rec = getattr(self, 'rec_shown', set()) if given is None else set()
+        content = [a.result_block(i, self.axis if i in rec else None) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]
         self.msgs.append({'role': 'user', 'content': content})
         searches, n = [], 0
         for _ in range(MAX_SEARCH + 2):
