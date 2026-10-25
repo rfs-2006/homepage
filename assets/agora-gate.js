@@ -54,7 +54,7 @@
       }, function () { btn.disabled = false; btn.textContent = 'LOGIN'; er.textContent = '연결에 실패했습니다. 잠시 후 다시 시도해 주세요.'; });
     };
 
-    var cv = el.querySelector('canvas'), x = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 2), W, H, small;
+    var cv = el.querySelector('canvas'), x = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 1.5), W, H, small;
     // 별 모양 한 장을 미리 그려 두고 찍는다: 가운데 빛 + 번짐 + 십자 빛살 (점 대신 별처럼)
     var sprite = function (rgb) {
       var c = document.createElement('canvas'), S = 96, h = S / 2, g; c.width = c.height = S; g = c.getContext('2d');
@@ -122,15 +122,22 @@
       var wfa = eo((t - .3) / 1.2) * (1 - dv);
       if (wfa > 0) {
         var pj = function (X0, Y0, Z0) { var X = X0 * cr + Z0 * sr, Z = -X0 * sr + Z0 * cr, Y = Y0 * ct - Z * st; Z = Y0 * st + Z * ct; var sc = 1 / (camZ - Z); return [cx + X * R * s * sc * 1.75, cy + Y * R * s * sc * 1.75, Z]; };
-        var line = function (fn) { var pv = null; for (var k = 0; k <= 72; k++) { var qq = fn(k / 72 * 6.2832); if (pv) { x.strokeStyle = 'rgba(140,190,255,' + wfa * (.03 + .09 * ((pv[2] + qq[2]) / 2 + 1) / 2) + ')'; x.beginPath(); x.moveTo(pv[0], pv[1]); x.lineTo(qq[0], qq[1]); x.stroke(); } pv = qq; } };
+        // 격자 조각을 깊이(밝기) 4단계로 나눠 단계마다 한 번에 그린다 (조각마다 따로 그리면 한 프레임에 3천 번이 넘어 버벅였다)
+        var WB = [[], [], [], []];
+        var line = function (fn) { var pv = null; for (var k = 0; k <= 72; k++) { var qq = fn(k / 72 * 6.2832); if (pv) WB[Math.min(3, ((pv[2] + qq[2]) / 2 + 1) * 2 | 0)].push(pv[0], pv[1], qq[0], qq[1]); pv = qq; } };
         x.lineWidth = .7;
         for (var bb2 = 1; bb2 < 43; bb2 += 2) (function (lat) { var y0 = Math.cos(lat), r0 = Math.sin(lat); line(function (th) { return pj(Math.cos(th) * r0, y0, Math.sin(th) * r0); }); })(Math.PI * bb2 / 43);
         for (var m = 0; m < 24; m++) (function (ph) { line(function (th) { return pj(Math.sin(th) * Math.cos(ph), Math.cos(th), Math.sin(th) * Math.sin(ph)); }); })(m / 24 * Math.PI);
+        WB.forEach(function (seg, lv) { if (!seg.length) return; x.strokeStyle = 'rgba(140,190,255,' + wfa * (.03 + .09 * (lv + .5) / 4) + ')'; x.beginPath(); for (var k = 0; k < seg.length; k += 4) { x.moveTo(seg[k], seg[k + 1]); x.lineTo(seg[k + 2], seg[k + 3]); } x.stroke(); });
         var Rv = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), rg = x.createRadialGradient(cx, cy, Rv * .86, cx, cy, Rv * 1.06);
         rg.addColorStop(0, 'rgba(90,150,255,0)'); rg.addColorStop(.75, 'rgba(110,165,255,' + .16 * wfa + ')'); rg.addColorStop(1, 'rgba(90,150,255,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
       }
       var lt = eo((t - .35) / .9); x.lineWidth = small ? 1 : 1.3;
-      if (lt > 0) for (i = 0; i < E.length; i++) { p = pr[E[i][0]]; q = pr[E[i][1]]; if (p.hid || q.hid) continue; x.strokeStyle = 'rgba(140,190,255,' + (.12 + .46 * ((p.Z + q.Z) / 2 + 1) / 2) * lt * (1 - dv * .6) + ')'; x.beginPath(); x.moveTo(p.X, p.Y); x.lineTo(q.X, q.Y); x.stroke(); }
+      if (lt > 0) {   // 별 연결선도 깊이 5단계로 묶어 그린다
+        var EB = [[], [], [], [], []];
+        for (i = 0; i < E.length; i++) { p = pr[E[i][0]]; q = pr[E[i][1]]; if (p.hid || q.hid) continue; EB[Math.min(4, ((p.Z + q.Z) / 2 + 1) * 2.5 | 0)].push(p.X, p.Y, q.X, q.Y); }
+        EB.forEach(function (seg, lv) { if (!seg.length) return; x.strokeStyle = 'rgba(140,190,255,' + (.12 + .46 * (lv + .5) / 5) * lt * (1 - dv * .6) + ')'; x.beginPath(); for (var k = 0; k < seg.length; k += 4) { x.moveTo(seg[k], seg[k + 1]); x.lineTo(seg[k + 2], seg[k + 3]); } x.stroke(); });
+      }
       for (i = 0; i < N; i++) {
         p = pr[i]; if (p.hid) continue;
         var dd = (p.Z + 1) / 2, tw = .75 + .25 * Math.sin(t * 2.4 + P[i].j * 20), hot = LA[i] > .05;
