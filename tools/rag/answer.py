@@ -74,7 +74,8 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - "○○ 지금 어때?": 학회 리포트의 그 학기 기준 판단까지만, 최신 상황은 공시로 확인하라고 한다.
 
 6. 이번 질문의 형식
-{form}
+- 질문 뒤에 붙은 [답 형식]을 따른다. 형식은 질문마다 바뀔 수 있다.
+
 보내기 전에 다시 읽는다: 약어를 다 풀었나, 형식대로 썼나, 한 덩어리에 요점 하나인가, 리포트가 쓴 것과 내 해석이 섞이지 않았나."""
 
 # 질문 유형별 답 형식 (agent_search.KINDS). 유형은 검색 단계에서 정한다. given(평가에서 자료를 고정할 때)은 유형을 모르니 explain + fact
@@ -113,6 +114,17 @@ TYPE = {
   (필요하면 "그건 추정 섹션에서 보여 주면 된다"고 한 줄만). 투자포인트 축은 주장끼리 겹치는지를 문단 단위로도 본다.
 - 이 지시문의 표현("두 문장으로", "축", "기준 항목")을 답에 그대로 쓰지 않는다.
 - 끝은 "고쳐서 다시 보내 주시면 이어서 봐 드릴게요." 한 줄.""",
+    'summary': """리포트 한 편 요약. 리포트 자체의 구조를 따르고, 리포트에 없는 칸을 만들지 않는다.
+- 첫 줄: 어느 리포트인지(회사, 학기, 팀)와 리포트의 핵심 주장 한 문장.
+- 투자의견 · 목표주가 · 상승여력 (리포트에 있는 숫자 그대로).
+- 투자포인트 1~N: 포인트마다 리포트의 주장 한 줄 + 핵심 숫자 1~2개. Check Point 같은 추가 장이 있으면 같은 방식으로.
+- 밸류에이션: 방법, Peer, 배수, 계산 흐름을 짧게.
+- 리스크: 리포트가 든 것만.
+- 받은 자료의 목차(CONTENTS)와 비교해 빠진 장(투자포인트, 밸류에이션, 리스크 등)이 있으면, search 도구로 "<회사> <장 이름>"을 찾아 채운 뒤 쓴다.
+  찾아도 없으면 그 장이 자료에 없다고 한 줄로 밝힌다.
+- 요약이라 짧게 쓴다. 용어 풀이는 꼭 필요한 것만 괄호로 짧게. "볼 점", 시장 상황 확인 안내 같은 꼬리 문장은 쓰지 않는다.
+- 끝에 더 자세히 볼 수 있는 장을 한 줄로 묻는다.""",
+    'file': """리포트 파일 요청. 파일 버튼은 화면이 따로 붙인다. 한두 문장으로 어떤 리포트인지만 말한다.""",
 }
 TYPE['given'] = TYPE['explain'] + '\n사실·용어 질문이면 대신: ' + TYPE['fact']
 
@@ -194,13 +206,18 @@ class Answerer:
         self.mode = mode
         self.ask = ask  # 애매한 코칭 질문에 먼저 되묻기 (서버만 켠다. 평가는 한 번 묻고 끝이라 끈다)
         # 축별 추천 리포트(rubric_merge.py): 축마다 3점 받은 리포트의 청크 번호. 질문의 축에 맞는 추천 리포트를 검색 결과에 섞는다
+        self.by_doc = {}
+        for i, c in enumerate(self.chunks):
+            self.by_doc.setdefault(c['doc_id'], []).append(i)
+        for v in self.by_doc.values():
+            v.sort(key=lambda i: int(self.chunks[i]['chunk_id'].rsplit('-', 1)[1]))
+        self.dup = self.find_dups()
+        self.site = self.site_reports(cafe)   # 문서 → 홈페이지 정규 리포트 {name, pdf, page}
         self.rec = {}
         p = Path(cafe) / 'eval' / 'rubric_recommend.json'
         if p.exists():
             top = json.loads(p.read_text())['top']
-            by_doc = {}
-            for i, c in enumerate(self.chunks):
-                by_doc.setdefault(c['doc_id'], []).append(i)
+            by_doc = self.by_doc
             # 축 → {청크 번호: 리포트 번호}. 같은 리포트의 PDF·워드·사이트판·엑셀을 한 리포트로 묶는다
             self.rec = {ax: {i: k for k, r in enumerate(v) for d in r['search_doc_ids'] for i in by_doc.get(d, [])}
                         for ax, v in top.items() if v}
@@ -219,12 +236,92 @@ class Answerer:
                 out.append(i)
         return out[:n]
 
+    def find_dups(self):
+        """같은 리포트가 두 벌 들어간 경우(카페 PDF와 사이트판 'sanil' 등): 청크 절반 이상이 다른 문서와 글자까지 같으면 사본으로 친다.
+        제목이 한글인 쪽을 남기고 파일 이름 같은 제목(영문 소문자) 쪽을 뺀다. 검색 결과 자리를 같은 내용이 차지하지 않게."""
+        owner, dup = {}, set()
+        for d, idx in self.by_doc.items():
+            for i in idx:
+                owner.setdefault(hash(self.chunks[i]['text']), set()).add(d)
+        for d, idx in self.by_doc.items():
+            others = {}
+            for i in idx:
+                for o in owner[hash(self.chunks[i]['text'])] - {d}:
+                    others[o] = others.get(o, 0) + 1
+            for o, n in others.items():
+                if n >= len(idx) / 2 and o not in dup:
+                    t = self.chunks[idx[0]]['header'].split(' | ')[0]
+                    if not re.search('[가-힣]', t):
+                        dup.add(d)
+        return dup
+
+    def site_reports(self, cafe):
+        """홈페이지에 올라간 정규 리포트(research/<id>/index.html + assets/reports/<학기>_<id>.pdf)를 데이터 문서에 잇는다.
+        사이트판 문서(source site)는 파일 이름으로, 카페 PDF 같은 다른 판은 청크 절반 이상이 사이트판과 같으면 같은 리포트로 본다.
+        쓰임: 답에 원본 PDF 받기 버튼을 달고(정규 리포트만), 파일 이름 제목('inbody') 대신 한글 회사명을 보여 준다."""
+        root = Path(__file__).resolve().parents[2]
+        by_file = {}
+        for f in (root / 'research').glob('*/index.html'):
+            h = f.read_text(errors='ignore')
+            t = re.search(r'<title>([^<|]+?)\s*(?:기업분석|산업분석)?\s*리포트', h)
+            m = re.search(r'/assets/reports/([^"\']+\.pdf)', h)
+            if t and m and (root / 'assets' / 'reports' / m.group(1)).exists():
+                by_file[m.group(1)] = {'name': t.group(1).strip(), 'pdf': '/assets/reports/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
+        docs = {}
+        p = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
+        if p.exists():
+            import gzip
+            for line in gzip.open(p, 'rt'):
+                d = json.loads(line)
+                if d.get('source') == 'site' and d.get('file') in by_file:
+                    docs[d['doc_id']] = by_file[d['file']]
+        site_hash = {hash(self.chunks[i]['text']): d for d in docs for i in self.by_doc.get(d, [])}
+        for d, idx in self.by_doc.items():
+            if d in docs or not idx or self.chunks[idx[0]]['doc_type'] not in ('company', 'industry'):
+                continue
+            hits = {}
+            for i in idx:
+                o = site_hash.get(hash(self.chunks[i]['text']))
+                if o:
+                    hits[o] = hits.get(o, 0) + 1
+            o = max(hits, key=hits.get) if hits else None
+            if o and hits[o] >= len(idx) / 2:
+                docs[d] = docs[o]
+        return docs
+
+    def find_doc(self, name, log=None):
+        """요약할 리포트 찾기: 이름으로 검색해서 가장 위에 나온 기업·산업 리포트 (사본 제외)."""
+        hits = self.s.multiquery(name, queries=[name + ' 리포트', name + ' Investment Point'], log=log)[:30]
+        for i in hits:
+            c = self.chunks[i]
+            if c['doc_type'] in ('company', 'industry') and c['doc_id'] not in self.dup:
+                return c['doc_id']
+        return next((self.chunks[i]['doc_id'] for i in hits if self.chunks[i]['doc_id'] not in self.dup), None)
+
+    def outline(self, doc, n=18):
+        """리포트 요약 재료: 1~2쪽(요약 페이지·목차) 전부 + 장마다 첫 청크 + 밸류에이션·리스크 앞 두 청크, 문서 순서대로."""
+        idx = self.by_doc.get(doc, [])
+        sec = lambda i: (self.chunks[i]['header'].split(' | ') + ['', '', '', ''])[3]
+        pick, seen = [], set()
+        for i in idx:
+            if (self.chunks[i].get('page_start') or 99) <= 2:
+                pick.append(i)
+        cnt = {}
+        for i in idx:
+            k = sec(i)
+            cnt[k] = cnt.get(k, 0) + 1
+            if k and (k not in seen or (re.search(r'Valuation|밸류에이션|Risk|리스크', k) and cnt[k] <= 2)):
+                seen.add(k)
+                pick.append(i)
+        out = list(dict.fromkeys(pick))
+        return sorted(out[:n], key=idx.index)
+
     def regular_only(self, ids, question):
         """사례는 정규 학기 리포트·교육자료·모델에서만 쓴다. 신입 투자제안서와 하계·동계 리포트는 뺀다.
         질문에 "제안서", "하계", "동계"가 있으면 그대로 둔다 (사용자가 직접 찾는 경우)."""
         if re.search(r'제안서|하계|동계', question):
             return ids
-        return [i for i in ids if self.chunks[i]['doc_type'] != 'proposal'
+        return [i for i in ids if self.chunks[i]['doc_type'] != 'proposal' and self.chunks[i]['doc_id'] not in self.dup
                 and not re.search(r'하계|동계|투자제안서', self.chunks[i]['header'])]
 
     def result_block(self, i, axis=None):
@@ -234,8 +331,12 @@ class Answerer:
         # 문단 단위로 나눠 넣으면 인용 범위가 문단 단위로 잡힌다 (통째로 넣으면 늘 청크 전체가 인용된다)
         paras = [p for p in c['text'].split('\n') if p.strip()] or [c['text']]
         tag = f" [학회 추천 사례: {axis}]" if axis else ''
+        head = c['header']
+        site = self.site.get(c['doc_id'])
+        if site:   # 홈페이지 정규 리포트면 회사명만: 'inbody | …', '산일전기 Research Team 4 PER | …' → '인바디 | …', '산일전기 | …'
+            head = site['name'] + head[len(head.split(' | ')[0]):]
         return {'type': 'search_result', 'source': f"{c['chunk_id']} {pages}".strip(),
-                'title': f"{c['header']} [{GRADE[c['grade']]}]{tag}",
+                'title': f"{head} [{GRADE[c['grade']]}]{tag}",
                 'content': [{'type': 'text', 'text': p} for p in paras],
                 'citations': {'enabled': True}}
 
@@ -272,8 +373,10 @@ class Answerer:
                 key = getattr(c, 'source', None) or c.url  # 학회 자료는 '청크ID p.쪽', 웹 검색은 URL
                 if key not in num:
                     num[key] = len(num) + 1
+                    doc = None if key.startswith('http') else key.split()[0].rsplit('-', 1)[0]
                     sources.append({'n': num[key], 'source': key, 'title': c.title or key, 'cited': [],
-                                    'context': None if key.startswith('http') else self.context(key.split()[0])})
+                                    'context': None if doc is None else self.context(key.split()[0]),
+                                    'pdf': (self.site.get(doc) or {}).get('pdf')})
                 src = sources[num[key] - 1]
                 if c.cited_text not in src['cited']:
                     src['cited'].append(c.cited_text)
@@ -294,6 +397,10 @@ class Chat:
         self.msgs, self.shown, self.turns = [], [], []
         self.rec_axis = {}  # 추천 리포트 청크 → 축 (제목에 [학회 추천 사례: 축]을 붙인다)
         self.axes, self.section = [], ''
+        # 지시문(system)은 대화 내내 그대로 둔다. 바뀌면 이전 턴의 thinking 블록이 무효가 돼 400이 난다 (Opus 5.5 시험에서 확인).
+        # 그래서 날짜도 대화를 시작할 때 한 번만 정하고, 질문마다 바뀌는 답 형식·피드백 기준은 그 턴의 질문 옆에 붙인다
+        self.today = TODAY()
+        self.trace = []   # 이번 턴의 검색 기록 (서버 로그용, 대화마다 따로)
 
     def _context(self):
         return '\n'.join(f"Q: {t['question']}\nA: {t['answer'][:600]}" for t in self.turns[-3:])
@@ -302,7 +409,8 @@ class Chat:
         s = self.a.s
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
         t0 = time.perf_counter()
-        queries, kind, standalone, ask, axes, section = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
+        self.trace = []
+        queries, kind, standalone, ask, axes, section, target, self.want_file = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
         self.timing = {'분석': round(time.perf_counter() - t0, 1)}
         t0 = time.perf_counter()
         # 문장·글을 봐 달라고 했으면 글 축을 맨 앞에 (검색 단계가 순서를 자주 안 지킨다)
@@ -314,10 +422,19 @@ class Chat:
             return ask, kind, standalone
         if ask:
             return ask, 'clarify', standalone
-        if self.a.mode == 'routed' and kind != 'fact':  # 설명·피드백·사례 모음은 agent 검색 (9절)
-            found = s.agent(standalone)[:OPEN_PREFETCH]
+        doc = self.a.find_doc(target or standalone, log=self.trace) if kind in ('summary', 'file') or self.want_file else None
+        self.summary_doc = doc
+        if kind == 'file':   # 파일만 달라는 요청: 검색·답변 없이 PDF 버튼만
+            return doc, 'file', standalone
+        if kind != 'summary':
+            doc = None
+        if doc:   # 리포트 요약: 검색 운에 맡기지 않고 그 리포트의 요약 페이지·목차·장 첫머리를 문서 순서대로
+            found = self.a.outline(doc)
+            self.trace.append({'summary_doc': self.a.chunks[found[0]]['header'] if found else doc})
+        elif self.a.mode == 'routed' and kind != 'fact':  # 설명·피드백·사례 모음은 agent 검색 (9절)
+            found = s.agent(standalone, log=self.trace)[:OPEN_PREFETCH]
         else:
-            found = s.multiquery(standalone, queries=queries)[:PREFETCH]
+            found = s.multiquery(standalone, queries=queries, log=self.trace)[:PREFETCH]
         found = self.a.regular_only(found, question)
         # 축마다 추천 리포트. 축이 여럿이면 축마다 나눠서 모두 REC_N개 안쪽
         self.timing['검색'] = round(time.perf_counter() - t0, 1)
@@ -337,22 +454,26 @@ class Chat:
     def turn(self, question, given=None, on_text=None, on_stage=None):
         """given: 검색 대신 넣을 청크 번호 목록 (평가에서 예전 답과 같은 자료로 프롬프트만 바꿔 비교할 때). 이때는 추가 검색도 없다."""
         a, s = self.a, self.a.s
+        n0 = len(self.shown)   # 이번 턴에 새로 보여 준 청크만 로그에 남기려고
         if given is None:
             first, kind, standalone = self._retrieve(question)
-            if on_stage and kind in TYPE:
+            if on_stage and kind in TYPE and kind != 'file':
                 on_stage('answer')
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
             if kind.startswith('decline:'):
                 return self._decline(question, kind.split(':')[1], first['better'], standalone)
-            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH), today=TODAY(), form=self.form(kind)), {'tools': [TOOL, WEB]}
+            if kind == 'file':
+                return self._file(question, first, standalone)
+            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH), today=self.today), {'tools': [TOOL, WEB]}
+            form = self.form(kind)
         else:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
             self.rec_axis = {}
-            system, tools = SYSTEM.format(search='', today=TODAY(), form=TYPE['given']), {}
+            system, tools, form = SYSTEM.format(search='', today=self.today), {}, TYPE['given']
         self.shown += first
         sec = f' (사용자 글의 섹션: {self.section})' if kind == 'feedback' and getattr(self, 'section', '') else ''
-        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + [{'type': 'text', 'text': f'질문{sec}: {question}'}]
+        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + [{'type': 'text', 'text': f'질문{sec}: {question}\n\n[답 형식]\n{form}'}]
         self.msgs.append({'role': 'user', 'content': content})
         searches, n = [], 0
         calls = []
@@ -387,9 +508,26 @@ class Chat:
             self.msgs.append({'role': 'user', 'content': results})
         out = a.render(resp, self.shown, searches)
         out['timing'] = dict(getattr(self, 'timing', {}), 답변=calls, 추가검색=len(searches))
+        out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]   # 이번 턴에 모델이 받은 청크 (순서대로)
+        # 원본 PDF는 달라고 할 때만: 그 리포트 (홈페이지에 올라간 정규 리포트만)
+        out['files'] = self.files() if getattr(self, 'want_file', False) else []
+        out['trace'] = self.trace
         out.update(kind=kind, standalone=standalone, axes=self.axes if given is None else [], section=self.section if given is None else '')
         self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})
         return out
+
+    def files(self):
+        site = self.a.site.get(getattr(self, 'summary_doc', None))
+        return [{'name': site['name'], 'pdf': site['pdf'], 'page': site['page']}] if site else []
+
+    def _file(self, question, doc, standalone):
+        """파일만 달라는 요청: 홈페이지에 올라간 정규 리포트면 PDF 버튼, 아니면 없다고 말한다. 답변 모델 대화(msgs)에는 남기지 않는다."""
+        f = self.files()
+        text = (f"{f[0]['name']} 리포트 PDF예요. 아래 버튼으로 받을 수 있어요." if f else
+                '죄송해요, 그 리포트는 홈페이지에 올라간 정규 리포트가 아니라서 파일을 드릴 수 없어요. 정규 리포트만 받을 수 있고, 내용은 물어보시면 설명해 드릴게요.')
+        self.turns.append({'question': question, 'answer': text, 'kind': 'file'})
+        return {'answer': text, 'options': [], 'sources': [], 'searches': [], 'shown': [], 'files': f, 'trace': self.trace,
+                'stop_reason': None, 'kind': 'file', 'standalone': standalone}
 
     def form(self, kind):
         """답 형식 블록. 피드백이면 고른 축의 rubric 기준을 붙인다."""

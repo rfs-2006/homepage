@@ -605,3 +605,22 @@ DCF를 모르는 사람이 답을 읽으며 짚은 곳과 그걸 일반 규칙�
 - 프롬프트 캐싱이 항상 비용을 줄이나?
 - 검색 지표가 좋은데 답이 읽기 어려웠던 이유는? 답변 평가 지표에서 무엇이 빠져 있었나?
 - 비용을 줄이려고 작은 모델을 쓸 때 어느 단계에 써도 되는지 어떻게 정했나?
+
+## 15. 서버 띄움 + 질문 유형별 답 + 스트리밍 (2026-10-25)
+- 서버: 펀드 서버(rfs-fund, 211.233.206.66)에 같이 올림. `api.caurfs.kr` → Caddy → 127.0.0.1:8787. 설치는 deploy/README.md.
+  코드 갱신은 서버에서 `polaris-update [브랜치]` (/usr/local/bin, 기본 PR 브랜치, 머지 뒤엔 `polaris-update main`).
+  저장소 기본 브랜치가 main이 아니라서 clone은 `-b main`.
+- 키: 서버 /etc/polaris.env에만. 지금 Anthropic 키는 개인 조직 것. 10/31 이후 Team(비영리) 결제 → API 크레딧 칸에서 콘솔 조직을 연결하고 RFS 키로 바꾼다 (월 최대 $500).
+- 질문 처리 (agent_search.rewrite → answer.TYPE)
+  - 유형 explain / fact / feedback / cases (+ clarify, decline). 애매하면 explain.
+  - decline: 뜻 불명·너무 넓음·무관·종목 매수매도·인사 → 검색 없이 정해진 문구 + 바꿔 쓴 질문 버튼. 하루 질문 수에서 빼 준다.
+  - feedback: 고른 축의 rubric.md 절을 그대로 프롬프트에 넣는다. 섹션 이름은 축이 아니다. 글 축은 구성/짓기. 여러 축, 문장을 봐 달라면 글 축 먼저.
+  - explain: 2~3단계 로직트리 → 단계마다 원칙·하는 법·사례·자주 틀리는 점.
+- 시험: `eval_cases.py <cafe> https://api.caurfs.kr <tag> [id,...]` (사례 eval/cases_v3.jsonl, 결과 eval/cases_run_<tag>.jsonl).
+  서버를 그대로 부르니 시험할 땐 /etc/polaris.env의 ANON_DAILY를 잠깐 올리고 끝나면 5로 되돌린다. 13개 사례 유형·축 전부 맞음 (v3a~v3e).
+- 속도 (응답의 timing): 분석 2초, 검색 5~12초(agent), 답 7~45초. 설명 질문 첫 글자 26초 → 스트리밍(/chat/stream)으로 글이 흘러나오게 함.
+  더 줄이려면: 진행 상황 표시, 빠른 답/깊은 답 나누기, effort low(품질 비교 먼저).
+- 화면: 출처 패널(문단 앞뒤 문맥 + 형광펜), 로직트리 가지 선, 첫 화면 사진 입체(깊이 지도 세 판, Depth Anything V2 small), 로그인은 홈 AGORA 하나로.
+- 보안 점검: X-Forwarded-For 첫 값으로 하루 제한을 우회할 수 있었음 → 마지막 값 + Caddy에서 덮어쓰기. 전체 상한은 비로그인만.
+  남은 것: SSH 비밀번호 로그인 끄기(열쇠 등록은 됨), ACG 3389 닫기, 공용 학회원 비밀번호로 선배님 명부 전체가 열리는 구조.
+- 다음: 출처 칩 이름(파일명 "inbody" 대신 회사·학기), 피드백에서 문단끼리 겹침 잡기, 속도.

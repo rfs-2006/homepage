@@ -27,7 +27,7 @@ JUDGE_LLM = 'claude-opus-5-5'
 MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
 AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', '밸류에이션', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 추천 리포트가 없고 기준만 쓴다, NOTES 14절)
-KINDS = ['explain', 'fact', 'feedback', 'cases']  # 질문 유형. 유형마다 검색과 답 형식이 다르다 (answer.py TYPE)
+KINDS = ['explain', 'fact', 'feedback', 'cases', 'summary', 'file']  # 질문 유형. 유형마다 검색과 답 형식이 다르다 (answer.py TYPE)
 SNIPPET = 350
 
 CORPUS = """자료: 중앙대 투자학회 RFS의 학회 자료 (2019~2026). 기업·산업 리포트, 세미나·교육 자료, 엑셀 밸류에이션 모델, 스터디, 투자제안서.
@@ -47,7 +47,12 @@ MQ_SYSTEM = CORPUS + """
   fact: 용어 뜻이나 특정 문서·회사의 사실 한 가지 ("WACC가 뭐야", "대한항공 목표주가 얼마였어?").
   feedback: 사용자가 쓴 글·모델·생각을 봐 달라 ("내 문장 봐줘", "이거 괜찮아?", 리포트 문단을 붙여 넣은 경우).
   cases: 사례·리포트를 모아 달라 ("예시 알려줘", "~관련 리포트 있어?", "다른 리포트들은 어떻게 했어?").
+  summary: 특정 리포트·자료 하나를 요약하거나 그 내용을 정리해 달라 ("산일전기 리포트 요약좀", "대한항공 리포트 무슨 내용이야?",
+  "TORM 리포트 투자포인트 뭐였어?", "OCI 리포트 정리해줘").
+  file: 리포트 파일(PDF)만 달라는 요청 ("산일전기 리포트 pdf 줘", "대한항공 리포트 원본 받을 수 있어?"). 다른 질문이 같이 있으면 그 질문의 유형으로.
   애매하면 explain.
+- want_file: 리포트 파일(PDF)·원본을 받고 싶다는 말이 있으면 true ("pdf", "파일", "원본 줘", "다운로드"). 없으면 false.
+- target: summary·file이거나 want_file일 때 그 리포트를 찾을 이름 (회사·자료 이름, 학기를 말했으면 같이. 예: "산일전기", "대한항공 26-2"). 아니면 빈 문자열.
 - axes: 리포트의 어느 부분·기준에 관한 질문인지. 여러 개 가능. 해당 없으면 빈 목록.
   투자포인트(주장 자체: 시장과 다른 점, 겹침, 목표주가 연결) / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
   추정(매출·비용 추정) / 밸류에이션 / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목·표현).
@@ -148,7 +153,7 @@ class AgentSearch:
         self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
     def rewrite(self, question, context='', allow_ask=False, allow_decline=False):
-        """검색어 3~5개, 질문 유형(KINDS, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축 목록, 섹션을 돌려준다.
+        """검색어 3~5개, 질문 유형(KINDS, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축 목록, 섹션, 요약할 자료 이름을 돌려준다.
         context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
         allow_decline이면 거를 질문일 때 kind가 decline:<이유>이고, 되물을 질문 자리에 {'better': 바꿔 쓴 질문들}을 준다.
         축(axes)은 rubric.md의 평가 축 목록 (축별 추천 리포트와 피드백 기준을 고를 때 쓴다), section은 피드백할 글의 섹션."""
@@ -157,7 +162,9 @@ class AgentSearch:
                  'kind': {'type': 'string', 'enum': KINDS + (['clarify'] if allow_ask else [])},
                  'standalone': {'type': 'string'},
                  'axes': {'type': 'array', 'items': {'type': 'string', 'enum': AXES}},
-                 'section': {'type': 'string'}}
+                 'section': {'type': 'string'},
+                 'target': {'type': 'string'},
+                 'want_file': {'type': 'boolean'}}
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
         if allow_decline:
@@ -170,16 +177,18 @@ class AgentSearch:
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
         if out.get('decline'):
-            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, [], ''
+            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, [], '', '', False
         ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
             if out['kind'] == 'clarify' and out.get('ask_question') else None
         kind = 'explain' if out['kind'] == 'clarify' and not ask_ else out['kind']
         axes = list(dict.fromkeys(out['axes']))
-        return out['queries'][:5], kind, out['standalone'] or question, ask_, axes, out['section']
+        return out['queries'][:5], kind, out['standalone'] or question, ask_, axes, out['section'], out.get('target', ''), \
+            bool(out.get('want_file')) or kind == 'file'
 
-    def multiquery(self, question, rerank_top=100, queries=None):
+    def multiquery(self, question, rerank_top=100, queries=None, log=None):
+        """log: 검색 기록을 남길 목록 (서버는 대화마다 따로 준다. 없으면 self.log)"""
         qs = queries if queries is not None else self.rewrite(question)[0]
-        self.log.append({'question': question, 'queries': qs})
+        (self.log if log is None else log).append({'question': question, 'queries': qs})
         self.r.embed_queries([question] + qs)
         fused = rrf(*[self.r.hybrid(q) for q in [question] + qs])
         return self.r.rerank(question, fused, top=rerank_top)
@@ -192,7 +201,7 @@ class AgentSearch:
             out.append(f"[{c['chunk_id']}] {c['header']}\n{c['text'][:SNIPPET]}")
         return res, '\n\n'.join(out)
 
-    def agent(self, question):
+    def agent(self, question, log=None):
         msgs = [{'role': 'user', 'content': question}]
         found, picked, n = [], None, 0
         trace = {'question': question, 'queries': []}
@@ -223,7 +232,7 @@ class AgentSearch:
                 break
             msgs.append({'role': 'user', 'content': results})
         trace['picked'] = picked
-        self.log.append(trace)
+        (self.log if log is None else log).append(trace)
         # 최종 순위: Claude가 고른 청크 → 나머지는 찾은 것 전부를 원 질문으로 리랭크
         head = [self.id2i[x] for x in dict.fromkeys(picked or [])]
         rest = [i for i in self.r.rerank(question, rrf(*found), top=50) if i not in set(head)] if found else []
