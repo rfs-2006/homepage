@@ -260,17 +260,6 @@ a:hover{color:#203864}
 @keyframes hbRingA{to{stroke-dashoffset:0}}@keyframes hbRingB{to{stroke-dashoffset:0}}
 .hb-down{position:absolute;z-index:2;left:50%;bottom:3.5vh;transform:translateX(-50%);color:#F7F6F3;opacity:.85;animation:hbBob 2.2s ease-in-out infinite}
 @keyframes hbBob{50%{transform:translate(-50%,6px)}}
-/* 홈 히어로 A안 (2026-10): 덜 어둡게(왼쪽만 짙게), 리포트 제목을 크게, 리포트 1쪽을 기울여 화면 밖으로 걸친다. 휠로 내려 읽기는 그대로 */
-.hero .ha-scrim{background:linear-gradient(90deg,rgba(11,21,36,.82) 0%,rgba(11,21,36,.52) 45%,rgba(11,21,36,.12) 100%);mix-blend-mode:normal;opacity:1}
-.ha-eb{font-size:14px;letter-spacing:.08em;color:rgba(247,246,243,.85);font-variant-numeric:tabular-nums}
-.hero .ha-title{font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;font-size:clamp(44px,4.6vw,68px);font-weight:700;letter-spacing:-.03em;line-height:1.18;margin:clamp(12px,2vh,20px) 0 clamp(16px,2.6vh,26px);max-width:9.5em;word-break:keep-all}
-.ha-k{display:flex;gap:22px;align-items:baseline;font-size:16px;color:rgba(247,246,243,.9);font-variant-numeric:tabular-nums}.ha-k b{font-size:24px;color:#F7F6F3;margin-left:4px}.ha-k .op{font-weight:700;color:#F7F6F3}
-.ha-btn{display:inline-block;margin-top:clamp(22px,4vh,36px);border:1px solid rgba(247,246,243,.8);border-radius:999px;padding:13px 30px;font-size:14px;font-weight:600;color:#F7F6F3;text-decoration:none;transition:background .2s,color .2s}
-.ha-btn:hover{background:#F7F6F3;color:#0B1524}
-.hero .ha-cover{position:absolute;right:-2vw;top:27vh;width:39vw;max-width:620px;z-index:1}
-.ha-paper{position:relative;height:96vh;transform:rotate(-7deg);transform-origin:0 0;background:#fff;box-shadow:0 40px 80px -20px rgba(0,0,0,.6);overflow:hidden}
-.ha-paper .hs-hint{top:14px;bottom:auto}
-.ha-paper .hero-scroll{padding-bottom:42vh}   /* 아래가 화면 밖으로 걸쳐 있어서, 휠로 올려야 1쪽 끝까지 보인다 */
 /* 히어로 표지: 마우스를 올리고 휠을 굴리면 리포트 1쪽을 직접 내려 읽는다. 올려 둔 동안은 자동 넘김을 멈춘다 */
 .hero-scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(15,27,46,.35) transparent}
 .hero-scroll img{display:block;width:100%;height:auto}
@@ -280,6 +269,10 @@ a:hover{color:#203864}
 .hero:has(.hero-cover-wrap:hover) .hb-ring .fg{animation-play-state:paused}
 section.hero{cursor:grab;touch-action:pan-y}section.hero.dragging{cursor:grabbing;user-select:none}section.hero.dragging *{cursor:grabbing !important}
 section.hero img{-webkit-user-drag:none}
+/* 홈 히어로 아래 줄: 투자의견·목표주가·상승여력을 크게 한 줄로, 그 아래 네모 '리포트 읽기' 버튼 */
+.ha-k{display:flex;flex-wrap:wrap;gap:8px 26px;align-items:baseline;font-size:16px;color:rgba(247,246,243,.85);font-variant-numeric:tabular-nums;margin-top:clamp(6px,1.4vh,14px)}.ha-k b{font-size:28px;font-weight:700;color:#F7F6F3;margin-left:6px;letter-spacing:-.01em}.ha-k .op{font-size:18px;font-weight:700;color:#F7F6F3}
+.ha-btn{display:inline-block;margin-top:clamp(20px,3.6vh,34px);border:1px solid rgba(247,246,243,.8);padding:14px 32px;font-size:14px;font-weight:600;letter-spacing:.02em;color:#F7F6F3;text-decoration:none;transition:background .2s,color .2s}
+.ha-btn:hover{background:#F7F6F3;color:#0B1524}
 @media (prefers-reduced-motion:reduce){.hb-down{animation:none}.hb-ring .fg{animation:none !important}}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
@@ -1792,20 +1785,23 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
     <section data-snap="" class="hero on-photo" data-nav="dark" data-screen-label="히어로">
       <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
-      <div class="scrim ha-scrim"></div>
+      <div class="scrim" style="opacity:{{ heroScrim }}"></div>
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
-          <div class="ha-eb">{{ heroEyebrow }}</div>
-          <h2 class="hero-title ha-title"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroHeadline }}</a></h2>
+          <div style="font-size:13px;letter-spacing:0.08em;color:rgba(247,246,243,0.75);font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
+          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
+          <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
           <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
           <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="ha-btn" style="pointer-events:auto">리포트 읽기</a>
         </div>
-      </div>
-      <div class="hero-cover-wrap ha-cover {{ heroFadeCls }}">
-        <div class="ha-paper">
-          <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
-          <span class="hs-hint">스크롤해서 읽기</span>
+        <div class="hero-cover-wrap">
+          <div style="aspect-ratio:16/9;border:1px solid rgba(247,246,243,0.4);position:relative;overflow:hidden;background:#FFFFFF">
+            <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
+            <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
+            <span class="hs-hint">스크롤해서 읽기</span>
+          </div>
+          <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
         </div>
       </div>
       <div class="wrap" style="padding:0 35px;width:100%;margin-top:clamp(18px,3vh,30px)">
@@ -4554,7 +4550,7 @@ class Component extends DCLogic {
     // 홈 히어로를 잡고 좌우로 끌면 화면이 따라오고, 충분히 끌면 다음/이전 리포트로 넘어간다 (조금만 끌면 제자리로)
     {
       let drag = null;
-      const els = () => document.querySelectorAll('section.hero .hero-bgwrap, section.hero .hero-grid, section.hero .ha-cover');
+      const els = () => document.querySelectorAll('section.hero .hero-bgwrap, section.hero .hero-grid');
       const put = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
       document.addEventListener('pointerdown', (e) => {
         if (e.button !== 0 || e.pointerType !== 'mouse' || this._heroBusy) return;
@@ -5814,21 +5810,43 @@ class Component extends DCLogic {
       if (HERO_LIST.length < 2 || this._heroBusy) return;
       this._heroBusy = true;
       const L = HERO_LIST.length, to = heroIdx + d, nx = HERO_LIST[((to % L) + L) % L];
-      const els = () => [...document.querySelectorAll('.hero-bgwrap, .hero-grid, .ha-cover')];
-      const move = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
-      let done = false;
-      const finish = () => { if (done) return; done = true; els().forEach((el) => { el.style.transition = ''; el.style.transform = ''; }); this._heroBusy = false; preloadNear(to); };
+      const els = () => [...document.querySelectorAll('section.hero .hero-bgwrap:not(.hero-ghost), section.hero .hero-grid:not(.hero-ghost)')];
+      const xOf = (el) => { const m = /translate3d\((-?[\d.]+)px/.exec(el.style.transform); return m ? parseFloat(m[1]) : 0; };   // 끌던 거리
+      const tx = (el, x, ms) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; };
+      let done = false, ghosts = [];
+      const finish = () => { if (done) return; done = true; ghosts.forEach((g) => g.remove()); els().forEach((el) => tx(el, 0, 0)); requestAnimationFrame(() => els().forEach((el) => { el.style.transition = ''; })); this._heroBusy = false; preloadNear(to); };
       setTimeout(finish, 2600);   // 어떤 경우에도 화면이 옆으로 밀린 채 멈추지 않게
       const sec = els()[0] && els()[0].closest('section');
       if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ heroIdx: to }, finish); return; }
       const W = sec.clientWidth;
-      // 들어올 리포트 사진이 받아진 뒤에 들어오게 (최대 0.7초 기다림). 미리 받아 두므로 보통 바로다
-      const ready = new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = nx.heroBg; if (im.complete) res(); setTimeout(res, 700); });
-      move(-d * W, 380);
-      Promise.all([ready, new Promise((res) => setTimeout(res, 380))]).then(() => this.setState({ heroIdx: to }, () => {
-        move(d * W, 0); void sec.offsetWidth;
-        setTimeout(() => { move(0, 460); setTimeout(finish, 500); }, 30);
-      }));
+      // 들어올 리포트 사진이 받아질 때까지는 끈 자리에 그대로 둔다 (최대 0.7초). 미리 받아 두므로 보통 바로다
+      const ready = new Promise((res) => { const im = new Image(); im.src = nx.heroBg; (im.decode ? im.decode() : Promise.resolve()).then(res, res); setTimeout(res, 700); });
+      ready.then(() => {
+        if (done) return;
+        // 지금 화면을 그대로 복사해 두고(나가는 쪽), 원래 화면은 반대편 밖으로 옮긴 뒤 새 리포트로 바꾼다(들어오는 쪽). 둘이 같이 움직여서 중간에 빈 화면이 없다
+        const box = sec.getBoundingClientRect();
+        ghosts = els().map((el) => {
+          const r = el.getBoundingClientRect(), g = el.cloneNode(true);
+          g.classList.add('hero-ghost'); g.removeAttribute('id'); g.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+          // image-slot은 복사하면 사진이 비어서, 지금 보이는 사진을 그냥 img로 바꿔 끼운다
+          const slots = el.querySelectorAll('image-slot');
+          g.querySelectorAll('image-slot').forEach((n, i) => {
+            const src = slots[i] && slots[i].shadowRoot && slots[i].shadowRoot.querySelector('img'), im = document.createElement('img');
+            im.src = (src && src.currentSrc) || slots[i].getAttribute('src') || '';
+            Object.assign(im.style, { width: '100%', height: '100%', display: 'block', objectFit: 'cover', objectPosition: src ? getComputedStyle(src).objectPosition : '50% 50%' });
+            n.replaceWith(im);
+          });
+          Object.assign(g.style, { position: 'absolute', margin: '0', left: (r.left - box.left - xOf(el)) + 'px', top: (r.top - box.top) + 'px', width: r.width + 'px', height: r.height + 'px', pointerEvents: 'none', zIndex: el.classList.contains('hero-grid') ? '1' : '' });
+          el.classList.contains('hero-grid') ? sec.appendChild(g) : el.after(g);
+          return g;
+        });
+        const off = xOf(els()[0]);
+        els().forEach((el) => tx(el, d * W + off, 0));
+        this.setState({ heroIdx: to }, () => {
+          void sec.offsetWidth;
+          requestAnimationFrame(() => { ghosts.forEach((g) => tx(g, -d * W, 460)); els().forEach((el) => tx(el, 0, 460)); setTimeout(finish, 500); });
+        });
+      });
     };
     // 앞뒤 리포트의 배경 사진과 표지 1쪽을 미리 받아 둔다 (끌어서 넘길 때 빈 화면이 안 보이게)
     const preloadNear = (i) => [i - 1, i + 1].forEach((k) => {
@@ -6169,7 +6187,6 @@ class Component extends DCLogic {
       goPeoplePage: (e) => { e.preventDefault(); this.go('people'); },
       goPeople: (e) => { e.preventDefault(); this.go('people'); },
       heroMeta: hero.sector + ' · ' + hero.type + ' · ' + hero.date,
-      heroEyebrow: hero.name + ' · ' + hero.sector + ' · ' + hero.date,
       heroName: hero.name + ' (' + hero.ticker + ')', heroHeadline: hero.headline, heroSummary: hero.heroSummary,
       heroOp: hero.op, heroTp: hero.tp, heroUpside: hero.upside, heroOpen: (e) => { e.preventDefault(); this.go('report', hero.id); },
       numbers: [
