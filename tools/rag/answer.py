@@ -15,6 +15,7 @@
 4. 자료 등급을 제목에 붙인다. A(정규 리포트·가이드)는 모범 사례, C(신입 투자제안서)는 아이디어 사례로만 쓰게 한다.
 5. 대화는 앞부분을 바꾸지 않고 뒤에 붙이기만 한다. 그래서 프롬프트 캐싱이 턴마다 앞부분을 다시 읽지 않게 해 준다.
 """
+import datetime
 import json
 import re
 import sys
@@ -43,6 +44,8 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 시장 관행·업계 사실("증권사들은 보통 PBR을 쓴다", 최근 사건)은 출처(학회 자료나 웹)가 있을 때만 쓴다.
 - 리포트가 실제로 쓴 것과 내 해석·짐작을 나눠 쓴다. 해석에는 "(추정)"을 붙인다.
 - 제목에 [학회 추천 사례: 축]이 붙은 자료는 그 축에서 학회가 잘한 리포트다. 그 축의 사례로 먼저 고려한다.
+- 오늘은 {today}다. 학기 'YY-1'은 20YY년 상반기, 'YY-2'는 하반기에 쓴 자료다. 업황·시장 관행·실적·주가는 그 시점 얘기라서,
+  지금 얘기(웹 검색 결과 포함)와 나란히 둘 때는 몇 년 전 자료인지 밝힌다. 방법·원칙은 학기와 상관없이 쓴다.
 - 사례는 정규 학기 리포트에서만 들고 학기를 붙인다. 같은 내용이면 최근 학기를 앞에 둔다. 근거 없이 정한 숫자는 모범 사례로 보이지 않는다. 리포트끼리 숫자가 다르면 둘 다 보이고 왜 다른지 적는다.
 {search}
 2. 질문한 것이 중심, 전체에서 부분으로
@@ -94,6 +97,7 @@ TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관
                          'required': ['query'], 'additionalProperties': False}}
 # 학회 자료에 없는 시장 관행·업계 사실 확인용 (검색 1번에 1센트 + 결과 토큰). 서버가 검색하고 결과에 출처(URL)가 달린다.
 # 기본판을 쓴다: 새 판(20260209)은 결과를 코드로 걸러 넣어서 답에 웹 인용이 달리지 않았다 (2026-10-25 시험)
+TODAY = lambda: datetime.date.today().strftime('%Y년 %-m월 %-d일')  # 학기 자료가 몇 년 전 것인지 알게 한다
 WEB = {'type': 'web_search_20250305', 'name': 'web_search', 'max_uses': 2}
 
 
@@ -219,10 +223,10 @@ class Chat:
             first, kind, standalone = self._retrieve(question)
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
-            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH)), {'tools': [TOOL, WEB]}
+            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH), today=TODAY()), {'tools': [TOOL, WEB]}
         else:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
-            system, tools = SYSTEM.format(search=''), {}
+            system, tools = SYSTEM.format(search='', today=TODAY()), {}
         self.shown += first
         rec = getattr(self, 'rec_shown', set()) if given is None else set()
         content = [a.result_block(i, self.axis if i in rec else None) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]
