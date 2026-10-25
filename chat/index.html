@@ -101,6 +101,23 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .a ul,.a ol{margin:6px 0 14px;padding-left:22px}
 .a li{margin:2px 0}
 .a li>ul,.a li>ol{margin:2px 0 4px}
+/* 로직트리: 안에 하위 목록이 있는 목록은 가지 선을 그린 상자로 (답의 '전체 그림') */
+.a .tree{list-style:none;margin:10px 0 18px;padding:16px 18px 14px;background:var(--card);border:1px solid var(--hair);border-radius:10px}
+.a .tree ul,.a .tree ol{list-style:none;margin:4px 0 0;padding-left:0}
+.a .tree li{position:relative;margin:0;padding:3px 0 3px 22px}
+.a .tree>li{padding-left:0;font-weight:500}
+.a .tree>li>ul>li,.a .tree>li>ol>li{font-weight:300}
+.a .tree li li::before{content:'';position:absolute;left:7px;top:0;bottom:0;border-left:1.5px solid #C4CAD4}
+.a .tree li li:last-child::before{bottom:auto;height:15px}
+.a .tree li li::after{content:'';position:absolute;left:7px;top:15px;width:10px;border-top:1.5px solid #C4CAD4}
+.a .tree li ul,.a .tree li ol{margin-left:0}
+.a .tree>li>ul,.a .tree>li>ol{margin-top:6px}
+.a .tree.flat>li{padding-left:22px;font-weight:300}
+.a .tree.flat>li::before{content:'';position:absolute;left:7px;top:0;bottom:0;border-left:1.5px solid #C4CAD4}
+.a .tree.flat>li:first-child::before{top:15px}.a .tree.flat>li:last-child::before{bottom:auto;height:15px}.a .tree.flat>li:only-child::before{display:none}
+.a .tree.flat>li::after{content:'';position:absolute;left:7px;top:15px;width:10px;border-top:1.5px solid #C4CAD4}
+.a .tree.flat>li>ul>li,.a .tree.flat>li>ol>li{font-weight:300}
+.a .tree.flat>li{font-weight:500}
 .chip{display:inline-flex;align-items:center;gap:5px;vertical-align:1px;font:500 12px 'RFS Dotum UI','Pretendard Variable',sans-serif;color:var(--text);background:#fff;border:1px solid var(--hair);border-radius:4px;padding:0 7px;line-height:20px;cursor:pointer;white-space:nowrap;margin:0 1px}
 .chip i{width:8px;height:10px;background:var(--navy);border-radius:1px;display:inline-block}
 .chip.web i{border-radius:50%;width:9px;height:9px;background:none;border:1.5px solid var(--navy)}
@@ -256,7 +273,13 @@ function render(text, mid) {
     else if (line.trim()) out.push(`<p>${inline(line)}</p>`);
   }
   close(0);
-  return out.join('');
+  // 하위 목록이 있는 맨 바깥 목록은 로직트리로 그린다. 뿌리가 하나면 그 아래로 가지, 여럿이면 형제끼리 가지(flat)
+  const box = document.createElement('div'); box.innerHTML = out.join('');
+  box.querySelectorAll(':scope > ul, :scope > ol').forEach((l) => {
+    if (!l.querySelector('li > ul, li > ol')) return;
+    l.classList.add('tree'); if (l.children.length > 1) l.classList.add('flat');
+  });
+  return box.innerHTML;
 }
 
 function toConv() {
