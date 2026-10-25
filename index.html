@@ -260,6 +260,17 @@ a:hover{color:#203864}
 @keyframes hbRingA{to{stroke-dashoffset:0}}@keyframes hbRingB{to{stroke-dashoffset:0}}
 .hb-down{position:absolute;z-index:2;left:50%;bottom:3.5vh;transform:translateX(-50%);color:#F7F6F3;opacity:.85;animation:hbBob 2.2s ease-in-out infinite}
 @keyframes hbBob{50%{transform:translate(-50%,6px)}}
+/* 홈 히어로 A안 (2026-10): 덜 어둡게(왼쪽만 짙게), 리포트 제목을 크게, 리포트 1쪽을 기울여 화면 밖으로 걸친다. 휠로 내려 읽기는 그대로 */
+.hero .ha-scrim{background:linear-gradient(90deg,rgba(11,21,36,.82) 0%,rgba(11,21,36,.52) 45%,rgba(11,21,36,.12) 100%);mix-blend-mode:normal;opacity:1}
+.ha-eb{font-size:14px;letter-spacing:.08em;color:rgba(247,246,243,.85);font-variant-numeric:tabular-nums}
+.hero .ha-title{font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;font-size:clamp(44px,4.6vw,68px);font-weight:700;letter-spacing:-.03em;line-height:1.18;margin:clamp(12px,2vh,20px) 0 clamp(16px,2.6vh,26px);max-width:9.5em;word-break:keep-all}
+.ha-k{display:flex;gap:22px;align-items:baseline;font-size:16px;color:rgba(247,246,243,.9);font-variant-numeric:tabular-nums}.ha-k b{font-size:24px;color:#F7F6F3;margin-left:4px}.ha-k .op{font-weight:700;color:#F7F6F3}
+.ha-btn{display:inline-block;margin-top:clamp(22px,4vh,36px);border:1px solid rgba(247,246,243,.8);border-radius:999px;padding:13px 30px;font-size:14px;font-weight:600;color:#F7F6F3;text-decoration:none;transition:background .2s,color .2s}
+.ha-btn:hover{background:#F7F6F3;color:#0B1524}
+.hero .ha-cover{position:absolute;right:-2vw;top:27vh;width:39vw;max-width:620px;z-index:1}
+.ha-paper{position:relative;height:96vh;transform:rotate(-7deg);transform-origin:0 0;background:#fff;box-shadow:0 40px 80px -20px rgba(0,0,0,.6);overflow:hidden}
+.ha-paper .hs-hint{top:14px;bottom:auto}
+.ha-paper .hero-scroll{padding-bottom:42vh}   /* 아래가 화면 밖으로 걸쳐 있어서, 휠로 올려야 1쪽 끝까지 보인다 */
 /* 히어로 표지: 마우스를 올리고 휠을 굴리면 리포트 1쪽을 직접 내려 읽는다. 올려 둔 동안은 자동 넘김을 멈춘다 */
 .hero-scroll{position:absolute;inset:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:rgba(15,27,46,.35) transparent}
 .hero-scroll img{display:block;width:100%;height:auto}
@@ -1781,30 +1792,20 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
     <section data-snap="" class="hero on-photo" data-nav="dark" data-screen-label="히어로">
       <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
-      <div class="scrim" style="opacity:{{ heroScrim }}"></div>
+      <div class="scrim ha-scrim"></div>
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
-          <div style="font-size:13px;letter-spacing:0.08em;color:rgba(247,246,243,0.75);font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
-          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
-          <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
-          <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
-          <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
-            <div class="stripcell sc1" style="padding-right:24px;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums">{{ heroOp }}</div>
-            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Target</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
-            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Upside</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
-            <div class="stripbtn" style="margin-left:auto">
-              <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="pointer-events:auto">READ THE REPORT</a>
-            </div>
-          </div>
+          <div class="ha-eb">{{ heroEyebrow }}</div>
+          <h2 class="hero-title ha-title"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroHeadline }}</a></h2>
+          <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
+          <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="ha-btn" style="pointer-events:auto">리포트 읽기</a>
         </div>
-        <div class="hero-cover-wrap">
-          <div style="aspect-ratio:16/9;border:1px solid rgba(247,246,243,0.4);position:relative;overflow:hidden;background:#FFFFFF">
-            <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
-            <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
-            <span class="hs-hint">스크롤해서 읽기</span>
-          </div>
-          <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
+      </div>
+      <div class="hero-cover-wrap ha-cover {{ heroFadeCls }}">
+        <div class="ha-paper">
+          <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
+          <span class="hs-hint">스크롤해서 읽기</span>
         </div>
       </div>
       <div class="wrap" style="padding:0 35px;width:100%;margin-top:clamp(18px,3vh,30px)">
@@ -4553,7 +4554,7 @@ class Component extends DCLogic {
     // 홈 히어로를 잡고 좌우로 끌면 화면이 따라오고, 충분히 끌면 다음/이전 리포트로 넘어간다 (조금만 끌면 제자리로)
     {
       let drag = null;
-      const els = () => document.querySelectorAll('section.hero .hero-bgwrap, section.hero .hero-grid');
+      const els = () => document.querySelectorAll('section.hero .hero-bgwrap, section.hero .hero-grid, section.hero .ha-cover');
       const put = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
       document.addEventListener('pointerdown', (e) => {
         if (e.button !== 0 || e.pointerType !== 'mouse' || this._heroBusy) return;
@@ -5812,7 +5813,7 @@ class Component extends DCLogic {
     const heroStep = (d) => {
       if (HERO_LIST.length < 2 || this._heroBusy) return;
       this._heroBusy = true;
-      const els = () => [...document.querySelectorAll('.hero-bgwrap, .hero-grid')];
+      const els = () => [...document.querySelectorAll('.hero-bgwrap, .hero-grid, .ha-cover')];
       const move = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
       const sec = els()[0] && els()[0].closest('section');
       if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ heroIdx: heroIdx + d }, () => { this._heroBusy = false; }); return; }
@@ -6156,6 +6157,7 @@ class Component extends DCLogic {
       goPeoplePage: (e) => { e.preventDefault(); this.go('people'); },
       goPeople: (e) => { e.preventDefault(); this.go('people'); },
       heroMeta: hero.sector + ' · ' + hero.type + ' · ' + hero.date,
+      heroEyebrow: hero.name + ' · ' + hero.sector + ' · ' + hero.date,
       heroName: hero.name + ' (' + hero.ticker + ')', heroHeadline: hero.headline, heroSummary: hero.heroSummary,
       heroOp: hero.op, heroTp: hero.tp, heroUpside: hero.upside, heroOpen: (e) => { e.preventDefault(); this.go('report', hero.id); },
       numbers: [
