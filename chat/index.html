@@ -499,7 +499,7 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   location.href = '/#intranet';
 }));
 
-// 첫 화면 사진 입체: 깊이 지도(1=가까움)로 앞 소나무·도시·하늘을 다른 속도로 움직인다 (assets/dipper.html과 같은 방식)
+// 첫 화면 사진 입체: 깊이 지도(1=가까움, 잎 사이로 일렁이지 않게 앞쪽을 넓히고 크게 뭉갬)로 앞 소나무·도시·하늘을 다른 속도로 움직인다 (assets/dipper.html과 같은 방식)
 // 처음 12초는 천천히 다가서며 저절로 흔들리고, 그 뒤로는 마우스를 따라서만 움직인다. 동작 줄이기 설정이면 사진 그대로
 (() => {
   const hero = $('hero'), cv = $('hero3d');
@@ -512,12 +512,12 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   dimg.src = mob ? '/assets/hero/polaris-depth-m.png' : '/assets/hero/polaris-depth.png';
   const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const fs = `precision highp float;
-    uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z,Y;
+    uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z,Y,A;
     vec2 cover(vec2 f){ float sr=R.x/R.y, ir=S.x/S.y; vec2 uv=f/R; uv.y=1.-uv.y;
       if(sr>ir){ float h=ir/sr; uv.y=uv.y*h+(1.-h)*Y; } else { float w=sr/ir; uv.x=uv.x*w+(1.-w)*.5; } return uv; }
     void main(){
       vec2 uv=cover(gl_FragCoord.xy), c=vec2(.5,.5), q=uv;
-      for(int i=0;i<4;i++){ float d=texture2D(D,q).r; float s=1.04+Z*(.25+.75*d); q=c+(uv-c)/s - M*(d-.25)*.035; }
+      for(int i=0;i<4;i++){ float d=texture2D(D,q).r; float s=1.03+Z*(.3+.7*d); q=c+(uv-c)/s - M*(d-.25)*A; }
       vec3 col=texture2D(I,clamp(q,.001,.999)).rgb*.78;          // CSS filter: brightness(.78) contrast(1.06)
       gl_FragColor=vec4(clamp((col-.5)*1.06+.5,0.,1.),1.);
     }`;
@@ -544,7 +544,7 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
     const t = (now - t0) / 1000, intro = t < 12;
     const gx = intro && !on ? Math.sin(t * .2) * .6 : tx * 2, gy = intro && !on ? Math.cos(t * .14) * .35 : -ty * 2;
     mx += (gx - mx) * .05; my += (gy - my) * .05;
-    g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), .14 * Math.pow(Math.max(0, 1 - t / 12), 2.2));
+    g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), (mob ? .06 : .09) * Math.pow(Math.max(0, 1 - t / 12), 2.2));
     g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
     if (!intro && Math.abs(gx - mx) < .002 && Math.abs(gy - my) < .002) { drawing = false; return; }   // 다 멎으면 쉰다
     requestAnimationFrame(draw);
@@ -553,7 +553,8 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   const one = () => {
     if (++n < 2) return;
     tex(0, img); tex(1, dimg); g.uniform1i(U('I'), 0); g.uniform1i(U('D'), 1);
-    g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight); g.uniform1f(U('Y'), mob ? .35 : .38);   // CSS background-position과 같게
+    g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight); g.uniform1f(U('Y'), mob ? .35 : .38);
+    g.uniform1f(U('A'), mob ? .014 : .022);   // 밀어내는 폭. 폰은 사진을 크게 잘라 보여서 더 작게 (크면 잎 가장자리가 일렁인다)   // CSS background-position과 같게
     hero.classList.add('p3d'); t0 = performance.now(); wake();
   };
   [img, dimg].forEach((im) => (im.complete && im.naturalWidth ? one() : im.addEventListener('load', one, { once: true })));
