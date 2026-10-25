@@ -124,6 +124,7 @@ TYPE = {
   찾아도 없으면 그 장이 자료에 없다고 한 줄로 밝힌다.
 - 요약이라 짧게 쓴다. 용어 풀이는 꼭 필요한 것만 괄호로 짧게. "볼 점", 시장 상황 확인 안내 같은 꼬리 문장은 쓰지 않는다.
 - 끝에 더 자세히 볼 수 있는 장을 한 줄로 묻는다.""",
+    'file': """리포트 파일 요청. 파일 버튼은 화면이 따로 붙인다. 한두 문장으로 어떤 리포트인지만 말한다.""",
 }
 TYPE['given'] = TYPE['explain'] + '\n사실·용어 질문이면 대신: ' + TYPE['fact']
 
@@ -409,7 +410,7 @@ class Chat:
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
         t0 = time.perf_counter()
         self.trace = []
-        queries, kind, standalone, ask, axes, section, target = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
+        queries, kind, standalone, ask, axes, section, target, self.want_file = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
         self.timing = {'분석': round(time.perf_counter() - t0, 1)}
         t0 = time.perf_counter()
         # 문장·글을 봐 달라고 했으면 글 축을 맨 앞에 (검색 단계가 순서를 자주 안 지킨다)
@@ -421,8 +422,12 @@ class Chat:
             return ask, kind, standalone
         if ask:
             return ask, 'clarify', standalone
-        doc = self.a.find_doc(target or standalone, log=self.trace) if kind == 'summary' else None
+        doc = self.a.find_doc(target or standalone, log=self.trace) if kind in ('summary', 'file') or self.want_file else None
         self.summary_doc = doc
+        if kind == 'file':   # 파일만 달라는 요청: 검색·답변 없이 PDF 버튼만
+            return doc, 'file', standalone
+        if kind != 'summary':
+            doc = None
         if doc:   # 리포트 요약: 검색 운에 맡기지 않고 그 리포트의 요약 페이지·목차·장 첫머리를 문서 순서대로
             found = self.a.outline(doc)
             self.trace.append({'summary_doc': self.a.chunks[found[0]]['header'] if found else doc})
@@ -452,12 +457,14 @@ class Chat:
         n0 = len(self.shown)   # 이번 턴에 새로 보여 준 청크만 로그에 남기려고
         if given is None:
             first, kind, standalone = self._retrieve(question)
-            if on_stage and kind in TYPE:
+            if on_stage and kind in TYPE and kind != 'file':
                 on_stage('answer')
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
             if kind.startswith('decline:'):
                 return self._decline(question, kind.split(':')[1], first['better'], standalone)
+            if kind == 'file':
+                return self._file(question, first, standalone)
             system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH), today=self.today), {'tools': [TOOL, WEB]}
             form = self.form(kind)
         else:
@@ -502,18 +509,25 @@ class Chat:
         out = a.render(resp, self.shown, searches)
         out['timing'] = dict(getattr(self, 'timing', {}), 답변=calls, 추가검색=len(searches))
         out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]   # 이번 턴에 모델이 받은 청크 (순서대로)
-        # 원본 PDF 받기: 요약한 리포트, 아니면 출처로 단 정규 리포트 (홈페이지에 올라간 것만, 최대 3개)
-        docs = [getattr(self, 'summary_doc', None)] if kind == 'summary' else [x['source'].split()[0].rsplit('-', 1)[0] for x in out['sources'] if not x['source'].startswith('http')]
-        files = {}
-        for d in docs:
-            site = a.site.get(d)
-            if site and site['pdf'] not in files:
-                files[site['pdf']] = {'name': site['name'], 'pdf': site['pdf'], 'page': site['page']}
-        out['files'] = list(files.values())[:3]
+        # 원본 PDF는 달라고 할 때만: 그 리포트 (홈페이지에 올라간 정규 리포트만)
+        out['files'] = self.files() if getattr(self, 'want_file', False) else []
         out['trace'] = self.trace
         out.update(kind=kind, standalone=standalone, axes=self.axes if given is None else [], section=self.section if given is None else '')
         self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})
         return out
+
+    def files(self):
+        site = self.a.site.get(getattr(self, 'summary_doc', None))
+        return [{'name': site['name'], 'pdf': site['pdf'], 'page': site['page']}] if site else []
+
+    def _file(self, question, doc, standalone):
+        """파일만 달라는 요청: 홈페이지에 올라간 정규 리포트면 PDF 버튼, 아니면 없다고 말한다. 답변 모델 대화(msgs)에는 남기지 않는다."""
+        f = self.files()
+        text = (f"{f[0]['name']} 리포트 PDF예요. 아래 버튼으로 받을 수 있어요." if f else
+                '죄송해요, 그 리포트는 홈페이지에 올라간 정규 리포트가 아니라서 파일을 드릴 수 없어요. 정규 리포트만 받을 수 있고, 내용은 물어보시면 설명해 드릴게요.')
+        self.turns.append({'question': question, 'answer': text, 'kind': 'file'})
+        return {'answer': text, 'options': [], 'sources': [], 'searches': [], 'shown': [], 'files': f, 'trace': self.trace,
+                'stop_reason': None, 'kind': 'file', 'standalone': standalone}
 
     def form(self, kind):
         """답 형식 블록. 피드백이면 고른 축의 rubric 기준을 붙인다."""
