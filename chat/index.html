@@ -237,8 +237,9 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel
 
 async function ask(text) {
   if (busy || !text.trim()) return;
-  toConv(); addQ(text);
-  if (DEMO) { addA(DEMO); return; }
+  toConv();
+  if (DEMO) { addQ('Peer 어떻게 골라?'); addA(DEMO); return; }   // 데모 답은 하나뿐이라 질문도 그 답에 맞춘다
+  addQ(text);
   if (!API) { addNote('챗봇 서버를 준비 중입니다.', 'err'); return; }
   busy = true; $('b').disabled = true;
   const w = addNote('', 'wait'); w.innerHTML = '<span>자료를 찾고 답을 쓰는 중… (20초~1분)</span>';
