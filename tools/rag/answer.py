@@ -300,9 +300,11 @@ class Answerer:
         for r in picks:
             good = [a for a, v in r['scores'].items() if v == 3 and (not axes or a in axes)] or \
                    sorted([a for a, v in r['scores'].items() if isinstance(v, (int, float)) and (not axes or a in axes)], key=lambda a: -r['scores'][a])[:2]
-            lines.append(f"- {r['name']} ({r['sem']}학기): " + ' / '.join(f"{a}: {r['reasons'].get(a, '')}" for a in good))
+            # 약점·지적은 뺀다: 평가표 이유는 "잘한 점. 약점: ..." 꼴이라 '약점' 앞까지만, 그리고 지적 문장('다만', '그러나'로 시작)도 자른다
+            cut = lambda t: re.split(r'\s*(?:약점|단점|다만,?|그러나|하지만|아쉬운|지적)\b', t)[0].strip()
+            lines.append(f"- {r['name']} ({r['sem']}학기): " + ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good))
         return {'type': 'text', 'text': '[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. '
-                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다.\n' + '\n'.join(lines)}
+                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
 
     def recommended(self, question, axis, n=REC_N):
         """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
