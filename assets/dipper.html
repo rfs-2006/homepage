@@ -79,8 +79,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
 .guide{stroke:#e8edff;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:0 8;fill:none;stroke-opacity:0;
   transition:stroke-opacity 1s ease}
-.guide.on{stroke-opacity:.28}
-.guide.hot{stroke-opacity:.7}
+.guide.on{stroke-opacity:0}
+.guide.hot{stroke-opacity:0}
 .guide-flow{stroke:#fff;stroke-width:1.4;stroke-linecap:round;fill:none;opacity:0;stroke-dasharray:.08 1}
 .guide-flow.run{animation:flow 1.4s cubic-bezier(.5,0,.3,1) forwards}
 @keyframes flow{0%{opacity:0;stroke-dashoffset:.08}15%{opacity:1}100%{opacity:0;stroke-dashoffset:-1}}
@@ -289,7 +289,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
   /* ---- real positions (J2000 RA/Dec, degrees) ---- */
   const STARS = [
-    {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:null, lab:'r'},   // 메뉴 없음: 북극성을 가리키는 별 (RFM은 FUND로 합침)
+    {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:'POLARIS', ko:'리서치 챗봇',      href:'/chat/', lab:'r'},   // 예전 RFM 자리 (RFM은 FUND로 합침)
     {id:'merak',  name:'Merak',  bayer:'β UMa', ra:165.460, de:56.383, mag:2.37, tint:'236,242,255', menu:'RECRUITING',       ko:'신입 모집',         href:'/#recruit',     lab:'r'},
     {id:'phecda', name:'Phecda', bayer:'γ UMa', ra:178.457, de:53.695, mag:2.44, tint:'236,242,255', menu:'AGORA',      ko:'학회원 공간',           href:'/#intranet',    lab:'b'},
     {id:'megrez', name:'Megrez', bayer:'δ UMa', ra:183.857, de:57.033, mag:3.31, tint:'240,244,255', menu:'PEOPLE',     ko:'임원진 · 동문',          href:'/#people',   lab:'bl'},
@@ -335,14 +335,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   });
   const alcor = document.createElement('span'); alcor.className = 'alcor'; dipper.appendChild(alcor);
 
-  // 북극성: 북두칠성 앞 두 별(Merak→Dubhe)이 가리키는 별 = 리서치 챗봇 Polaris
-  const pol = document.createElement('a');
-  pol.className = 'star polaris'; pol.href = '/chat/'; pol.target = '_top'; pol.dataset.id = 'polaris';
-  pol.setAttribute('aria-label', 'POLARIS — 리서치 챗봇');
-  pol.style.setProperty('--s', '1.15'); pol.style.setProperty('--tint', '226,234,255');
-  pol.innerHTML = `<span class="glow"></span><span class="wave"></span><span class="ring"></span><span class="spk h"></span><span class="spk v"></span><span class="spk d"></span><span class="spk d2"></span><span class="core"></span>
-      <span class="lab r"><b>POLARIS</b><i>리서치 챗봇</i><small>POLARIS · α UMi</small></span>`;
-  dipper.appendChild(pol); byId.polaris = { id: 'polaris', el: pol };
+  const pol = document.createElement('span'); pol.style.display='none';
 
   const segs = EDGES.map(([a,b]) => {
     const l = document.createElementNS(NS,'line'); l.setAttribute('class','seg'); l.setAttribute('pathLength','1');
@@ -380,10 +373,9 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     // Polaris: on the true Merak→Dubhe pointer line, distance compressed to fit the frame
     const [mx,my]=scr.merak, [dx,dy]=scr.dubhe;
     let ux=dx-mx, uy=dy-my; const L=Math.hypot(ux,uy); ux/=L; uy/=L;
-    const t = narrow ? (dx - W*.13)/(-ux) : (dy - H*.17)/(-uy);
+    const t = narrow ? (dx - W*.13)/(-ux) : (dy - H*.12)/(-uy);
     polScr = [dx+ux*t, dy+uy*t];
-    pol.style.left=polScr[0]+'px'; pol.style.top=polScr[1]+'px'; scr.polaris = polScr;
-    pol.querySelector('.lab').className = 'lab ' + (narrow ? 'b' : 'r');
+    pol.style.left=polScr[0]+'px'; pol.style.top=polScr[1]+'px';
     segs.forEach(s => {
       const [x1,y1]=scr[s.a],[x2,y2]=scr[s.b];
       const len=Math.hypot(x2-x1,y2-y1), gx=(x2-x1)/len, gy=(y2-y1)/len, G=9;   // leave a hair of dark sky around each star
@@ -612,11 +604,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     copy.classList.add('solo'); setTimeout(() => copy.classList.add('on'), 80);
     setTimeout(() => copy.classList.remove('solo'), 1700);
     setTimeout(() => copy.classList.add('live'), 4200);
-    setTimeout(() => {                                              // 2.6s 앞 두 별에서 북극성(Polaris)으로 길잡이 선, 북극성 켜짐
-      guide.classList.add('on'); gflow.classList.add('run');
-      pol.classList.add('lit','igniting'); setTimeout(() => pol.classList.remove('igniting'), 1000);
-    }, 2600);
-    setTimeout(() => window.__done = true, 3000);
+    setTimeout(() => window.__done = true, 2600);
   };
   let seen = false, loaded = false, started = false;
   const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
