@@ -287,6 +287,10 @@ class Chat:
         s = self.a.s
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
         queries, kind, standalone, ask, axes, section = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
+        # 문장·글을 봐 달라고 했으면 글 축을 맨 앞에 (검색 단계가 순서를 자주 안 지킨다)
+        asked = question + ' ' + ' '.join(t['question'] for t in self.turns[-2:])
+        if kind == 'feedback' and '글' in axes and re.search(r'문장|문단|글|표현|제목|문체', asked):
+            axes = ['글'] + [x for x in axes if x != '글']
         self.axes, self.section = axes, section
         if kind.startswith('decline:'):
             return ask, kind, standalone
