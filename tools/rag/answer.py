@@ -211,6 +211,7 @@ class Answerer:
         for v in self.by_doc.values():
             v.sort(key=lambda i: int(self.chunks[i]['chunk_id'].rsplit('-', 1)[1]))
         self.dup = self.find_dups()
+        self.site = self.site_reports(cafe)   # 문서 → 홈페이지 정규 리포트 {name, pdf, page}
         self.rec = {}
         p = Path(cafe) / 'eval' / 'rubric_recommend.json'
         if p.exists():
@@ -252,6 +253,40 @@ class Answerer:
                     if not re.search('[가-힣]', t):
                         dup.add(d)
         return dup
+
+    def site_reports(self, cafe):
+        """홈페이지에 올라간 정규 리포트(research/<id>/index.html + assets/reports/<학기>_<id>.pdf)를 데이터 문서에 잇는다.
+        사이트판 문서(source site)는 파일 이름으로, 카페 PDF 같은 다른 판은 청크 절반 이상이 사이트판과 같으면 같은 리포트로 본다.
+        쓰임: 답에 원본 PDF 받기 버튼을 달고(정규 리포트만), 파일 이름 제목('inbody') 대신 한글 회사명을 보여 준다."""
+        root = Path(__file__).resolve().parents[2]
+        by_file = {}
+        for f in (root / 'research').glob('*/index.html'):
+            h = f.read_text(errors='ignore')
+            t = re.search(r'<title>([^<|]+?)\s*(?:기업분석|산업분석)?\s*리포트', h)
+            m = re.search(r'/assets/reports/([^"\']+\.pdf)', h)
+            if t and m and (root / 'assets' / 'reports' / m.group(1)).exists():
+                by_file[m.group(1)] = {'name': t.group(1).strip(), 'pdf': '/assets/reports/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
+        docs = {}
+        p = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
+        if p.exists():
+            import gzip
+            for line in gzip.open(p, 'rt'):
+                d = json.loads(line)
+                if d.get('source') == 'site' and d.get('file') in by_file:
+                    docs[d['doc_id']] = by_file[d['file']]
+        site_hash = {hash(self.chunks[i]['text']): d for d in docs for i in self.by_doc.get(d, [])}
+        for d, idx in self.by_doc.items():
+            if d in docs or not idx or self.chunks[idx[0]]['doc_type'] not in ('company', 'industry'):
+                continue
+            hits = {}
+            for i in idx:
+                o = site_hash.get(hash(self.chunks[i]['text']))
+                if o:
+                    hits[o] = hits.get(o, 0) + 1
+            o = max(hits, key=hits.get) if hits else None
+            if o and hits[o] >= len(idx) / 2:
+                docs[d] = docs[o]
+        return docs
 
     def find_doc(self, name, log=None):
         """요약할 리포트 찾기: 이름으로 검색해서 가장 위에 나온 기업·산업 리포트 (사본 제외)."""
@@ -295,8 +330,12 @@ class Answerer:
         # 문단 단위로 나눠 넣으면 인용 범위가 문단 단위로 잡힌다 (통째로 넣으면 늘 청크 전체가 인용된다)
         paras = [p for p in c['text'].split('\n') if p.strip()] or [c['text']]
         tag = f" [학회 추천 사례: {axis}]" if axis else ''
+        head = c['header']
+        site = self.site.get(c['doc_id'])
+        if site:   # 홈페이지 정규 리포트면 회사명만: 'inbody | …', '산일전기 Research Team 4 PER | …' → '인바디 | …', '산일전기 | …'
+            head = site['name'] + head[len(head.split(' | ')[0]):]
         return {'type': 'search_result', 'source': f"{c['chunk_id']} {pages}".strip(),
-                'title': f"{c['header']} [{GRADE[c['grade']]}]{tag}",
+                'title': f"{head} [{GRADE[c['grade']]}]{tag}",
                 'content': [{'type': 'text', 'text': p} for p in paras],
                 'citations': {'enabled': True}}
 
@@ -333,8 +372,10 @@ class Answerer:
                 key = getattr(c, 'source', None) or c.url  # 학회 자료는 '청크ID p.쪽', 웹 검색은 URL
                 if key not in num:
                     num[key] = len(num) + 1
+                    doc = None if key.startswith('http') else key.split()[0].rsplit('-', 1)[0]
                     sources.append({'n': num[key], 'source': key, 'title': c.title or key, 'cited': [],
-                                    'context': None if key.startswith('http') else self.context(key.split()[0])})
+                                    'context': None if doc is None else self.context(key.split()[0]),
+                                    'pdf': (self.site.get(doc) or {}).get('pdf')})
                 src = sources[num[key] - 1]
                 if c.cited_text not in src['cited']:
                     src['cited'].append(c.cited_text)
@@ -381,6 +422,7 @@ class Chat:
         if ask:
             return ask, 'clarify', standalone
         doc = self.a.find_doc(target or standalone, log=self.trace) if kind == 'summary' else None
+        self.summary_doc = doc
         if doc:   # 리포트 요약: 검색 운에 맡기지 않고 그 리포트의 요약 페이지·목차·장 첫머리를 문서 순서대로
             found = self.a.outline(doc)
             self.trace.append({'summary_doc': self.a.chunks[found[0]]['header'] if found else doc})
@@ -460,6 +502,14 @@ class Chat:
         out = a.render(resp, self.shown, searches)
         out['timing'] = dict(getattr(self, 'timing', {}), 답변=calls, 추가검색=len(searches))
         out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]   # 이번 턴에 모델이 받은 청크 (순서대로)
+        # 원본 PDF 받기: 요약한 리포트, 아니면 출처로 단 정규 리포트 (홈페이지에 올라간 것만, 최대 3개)
+        docs = [getattr(self, 'summary_doc', None)] if kind == 'summary' else [x['source'].split()[0].rsplit('-', 1)[0] for x in out['sources'] if not x['source'].startswith('http')]
+        files = {}
+        for d in docs:
+            site = a.site.get(d)
+            if site and site['pdf'] not in files:
+                files[site['pdf']] = {'name': site['name'], 'pdf': site['pdf'], 'page': site['page']}
+        out['files'] = list(files.values())[:3]
         out['trace'] = self.trace
         out.update(kind=kind, standalone=standalone, axes=self.axes if given is None else [], section=self.section if given is None else '')
         self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})

@@ -149,7 +149,14 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .q{animation:rise .35s ease-out both}
 .a>*{animation:rise .45s ease-out both;animation-delay:calc(var(--i,0) * 70ms)}
 /* 답을 쓰는 대로 보일 때(live)는 다시 그릴 때마다 움직이지 않게. 다 쓴 뒤 붙는 출처·보기만 올라온다 */
-.a.live>*{animation:none}.a.live>.srcs,.a.live>.opts{animation:rise .45s ease-out both}
+.a.live>*{animation:none}.a.live>.srcs,.a.live>.opts,.a.live>.files{animation:rise .45s ease-out both}
+/* 원본 PDF 받기 (홈페이지에 올라간 정규 리포트만) */
+.files{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+.files a{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--text);text-decoration:none;border:1px solid var(--hair);border-radius:8px;padding:8px 12px;background:#fff}
+.files a:hover{border-color:var(--text)}
+.files a i{width:14px;height:17px;border:1.5px solid var(--navy);border-radius:2px;position:relative;flex:none}
+.files a i::after{content:'PDF';position:absolute;left:-3px;right:-3px;bottom:2px;font:700 6px/1 'Pretendard Variable',sans-serif;color:var(--navy);text-align:center;letter-spacing:0}
+.files a small{color:var(--sub)}
 .caret{display:inline-block;width:7px;height:1.05em;margin-left:2px;vertical-align:-2px;background:var(--navy);animation:blink 1s steps(2,start) infinite}
 @keyframes blink{to{visibility:hidden}}
 .err{color:var(--err)}
@@ -258,7 +265,7 @@ function meta(s) {
   const parts = s.title.replace(/\s*\[[^\]]*\]/g, '').split('|').map((x) => x.trim()).filter(Boolean);
   const name = parts[0] || '자료', sem = parts.find((x) => /^\d{2}-\d학기$/.test(x)) || '', kind = parts[2] || '';
   const pg = (s.source.match(/p\.[\d-]+/) || [''])[0];
-  return { web: false, name, sem, kind, pg, ctx: s.context || null, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
+  return { web: false, name, sem, kind, pg, ctx: s.context || null, pdf: s.pdf || null, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
 }
 const chip = (mid, n) => { const m = SRC[mid] && SRC[mid][n]; return m ? `<button type="button" class="chip${m.web ? ' web' : ''}" data-m="${mid}" data-n="${n}"><i></i>${esc(m.chip)}</button>` : ''; };
 
@@ -345,6 +352,13 @@ function addA(res, live) {
   d.className = live ? 'a live' : 'a';
   const nums = Object.keys(SRC[mid]);
   d.innerHTML = render(res.answer, mid) + (nums.length ? `<div class="srcs"><span class="lab">출처 ${nums.length}</span>${nums.map((n) => chip(mid, n)).join('')}</div>` : '');
+  // 정규 리포트 원본 PDF 받기 (서버가 홈페이지 /assets/reports/의 파일만 준다)
+  const files = (res.files || []).filter((f) => /^\/assets\/reports\/[\w.-]+\.pdf$/.test(f.pdf));
+  if (files.length) {
+    const fl = document.createElement('div'); fl.className = 'files';
+    fl.innerHTML = files.map((f) => `<a href="${esc(f.pdf)}" target="_blank" rel="noopener" download><i></i>${esc(f.name)} 리포트 PDF <small>받기</small></a>`).join('');
+    d.appendChild(fl);
+  }
   // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)
   if ((res.options || []).length) {
     const o = document.createElement('div'); o.className = 'opts';
@@ -386,7 +400,8 @@ function openPanel(mid, n, from) {
       + `<div class="ctx">${ctxHTML()}</div>`
     : m.cited.slice(0, 3).map((x) => `<blockquote><mark>${esc(x.length > 700 ? x.slice(0, 700) + '…' : x)}</mark></blockquote>`).join('')
       + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
-  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + body
+  const pdfLink = m.pdf && /^\/assets\/reports\/[\w.-]+\.pdf$/.test(m.pdf) ? `<p><a class="open" href="${esc(m.pdf)}" target="_blank" rel="noopener">리포트 PDF 열기 →</a></p>` : '';
+  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + body + pdfLink
     + (ns.length > 1 ? `<div class="nav"><button type="button" data-go="${ns[k - 1] || ''}"${k ? '' : ' disabled'}>← 이전 출처</button><button type="button" data-go="${ns[k + 1] || ''}"${k < ns.length - 1 ? '' : ' disabled'}>다음 출처 →</button></div>` : '');
   $('doc').querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => b.dataset.go && openPanel(mid, b.dataset.go); });
   document.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b.dataset.m === mid && b.dataset.n === String(n)));

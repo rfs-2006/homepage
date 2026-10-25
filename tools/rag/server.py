@@ -219,7 +219,8 @@ class Handler(BaseHTTPRequestHandler):
                                    ensure_ascii=False) + '\n')
         body = {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''),
                 'timing': out.get('timing'), 'options': out.get('options', []), 'left': left,
-                'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context')} for s in out['sources']]}
+                'files': out.get('files', []),
+                'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context', 'pdf')} for s in out['sources']]}
         if stream:
             send(dict(body, type='done'))
         else:
