@@ -62,8 +62,8 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
   - read_guide: 학회가 정한 기준 문서를 펼쳐 읽는다. 아래가 목록이다.
   - web_search: 학회 자료에 없는 최근 사실·시장 관행 확인 (최대 2번).
 
-기준 문서 (read_guide로 읽는다. 학회 교육자료·산업 가이드라인·정규 리포트 평가표를 전부 읽고 만든 것이라 학회 자료가 실제로 뭐라고 하는지와 쪽수가 적혀 있다)
-- 개념 지도: 뼈대(P×Q−C), 리포트 흐름과 연결, 밸류에이션 판단 순서(회사 상황 → 방법 → 왜 다른 방법은 아닌가), 자료의 오기. 개념·방법 질문이면 먼저 읽는다(검색과 같이 불러도 된다).
+기준 문서 (read_guide로 읽는다. 학회 교육자료·산업 가이드라인·정규 리포트 평가표를 전부 읽고 만든 것이라 학회 자료가 실제로 뭐라고 하는지와 쪽수가 적혀 있다.
+  아래 [개념 지도]는 늘 붙어 있다. 방법 하나를 깊이 설명하거나 비교할 때는 '밸류에이션 방법별'을, 배수·Peer 얘기면 '적정 배수와 Peer'를, 업종이 정해졌으면 '업종별 관행'을 읽고 그 내용으로 답한다. 미리 찾은 자료만으로 끝내지 않는다.)
 - 밸류에이션 방법별: PER·EV/EBITDA·PBR·PSR·DCF·RIM·DDM·SOTP마다 맞을 때/못 쓸 때, 실행 순서(입력값을 어디서), 학회 리포트 사례, 평가표가 짚는 실수.
 - 적정 배수와 Peer: Peer/Historical/Historical Peer/Band, 시점, 할인·할증, Peer 고르는 기준, 마무리 처리(희석·순차입금·민감도).
 - 업종별 관행: 업종마다 가이드라인이 권하는 방법과 이유, P·Q·C 분해, 학회 리포트가 실제로 쓴 것, 예외.
@@ -95,6 +95,9 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
 - 뜻이 여러 가지로 읽히면 첫 줄에 "A로 이해했어요. B면 말해 주세요"라고 하고 답한다. 정말 답할 수 없을 만큼 정보가 없을 때만 되묻는다 (보기를 들어 짧게).
 - 학회 자료에서 못 찾은 것은 지어내지 않고 못 찾았다고 말한다.
 
+[개념 지도]
+{concept_map}
+
 보내기 전에 다시 읽는다: 이 사람이 하려는 일에 맞는 전체 그림인가, 질문에 바로 답했나, 모양이 질문에 맞나, 약어를 풀었나, 학회 자료와 일반 지식이 섞여 학회가 하지 않은 걸 했다고 쓰지 않았나."""
 
 
@@ -119,7 +122,7 @@ SUMMARY_GUIDE = """리포트 요약하는 법 (read_report로 '요약'과 '전�
 #   개념 지도(뼈대·리포트 흐름·밸류에이션 판단 순서) / 밸류에이션 방법별 / 적정 배수와 Peer / 업종별 관행 / 추정 / 산업·기업 분석 / 재무제표 읽기 / 자료 찾기
 _MAP = (Path(__file__).parent / 'guides' / 'concept_map.md').read_text()
 MAP_GUIDES = {m.group(1).strip(): m.group(0).strip() for m in re.finditer(r'^# (.+?)\n(?:(?!^# ).*\n?)*', _MAP, re.M)}
-GUIDES = {**MAP_GUIDES, **{a: RUBRIC[RUBRIC_AXIS[a]] for a in AXES if RUBRIC_AXIS[a] in RUBRIC},
+GUIDES = {**{k: v for k, v in MAP_GUIDES.items() if k != '개념 지도'}, **{a: RUBRIC[RUBRIC_AXIS[a]] for a in AXES if RUBRIC_AXIS[a] in RUBRIC},
           '피드백 하는 법': FEEDBACK_GUIDE, '리포트 요약하는 법': SUMMARY_GUIDE, '학회 안내': None}   # 학회 안내는 처음 읽을 때 만든다
 
 PARTS = {'요약': None, '전체 흐름': None,
@@ -161,7 +164,7 @@ class Chat:
     def __init__(self, answerer):
         self.a = answerer
         self.msgs, self.shown, self.turns = [], [], []
-        self.system = SYSTEM.format(today=TODAY())
+        self.system = SYSTEM.format(today=TODAY(), concept_map=MAP_GUIDES['개념 지도'])
         self.trace, self.timing, self.file_out = [], {}, []
 
     # ------------------------------------------------------------ 문지기
