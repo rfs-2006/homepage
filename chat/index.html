@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 <style>
+/* 홈(index.html)과 같은 페이지 전환: 메뉴 POLARIS를 누르면 부드럽게 넘어온다 (지원 브라우저·PC만) */
+@media (min-width:1025px){@view-transition{navigation:auto}}
 :root{--bg:#F7F6F3;--ink:#1A1A1A;--sub:rgba(26,26,26,0.6);--line:#E2E0DA;--navy:#203864;--dark:#0F1B2E;--accent:#8FAADC;--card:#FFFFFF}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -60,7 +62,7 @@ form button:disabled{opacity:.5;cursor:default}
 </style>
 </head>
 <body>
-<header><div class="in"><h1>Polaris <small style="font-family:'Pretendard Variable';font-size:12px;opacity:.65;margin-left:6px">R.F.S. 리서치 챗봇</small></h1><span><button type="button" id="reset" hidden>새 대화</button> <a href="/#intranet/">인트라넷 →</a></span></div></header>
+<header><div class="in"><h1>Polaris <small style="font-family:'Pretendard Variable';font-size:12px;opacity:.65;margin-left:6px">R.F.S. 리서치 챗봇</small></h1><span><button type="button" id="reset" hidden>새 대화</button> <a href="/">R.F.S. 홈 →</a></span></div></header>
 <main>
   <div id="app">
     <p class="intro">학회 리포트·세미나·엑셀 모델·가이드에서 찾아 출처와 함께 답합니다. 자료에 없는 내용은 없다고 말합니다. 리포트를 대신 써 드리지는 않고, 고치는 방법과 학회 예시를 알려 드립니다. 투자 조언은 하지 않습니다.</p>

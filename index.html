@@ -749,6 +749,11 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 /* 글이 적어도 화면 끝까지 어두운 바탕 (밝은 페이지 바탕이 비치지 않게) */
 .wkpage{min-height:100vh;min-height:100svh}
 /* FUND·Weekly Strategy 본문 뒤에 깔던 은하수 사진은 뺐다 (2026-10, 맨 위 첫 화면 사진만 남김) */
+/* FUND 안의 AMT Fund | RFM 전환 (RFM을 메뉴에서 빼고 FUND로 합침) */
+.fd-switch{display:inline-flex;gap:4px;margin-top:22px;padding:4px;border:1px solid rgba(247,246,243,0.28);border-radius:999px;background:rgba(11,21,36,0.35);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.fd-switch a{color:rgba(247,246,243,0.78);text-decoration:none;font-size:13px;letter-spacing:.08em;padding:7px 16px;border-radius:999px;transition:background-color .2s,color .2s}
+.fd-switch a.on{background:#F7F6F3;color:#0F1B2E}
+.fd-switch a:not(.on):hover{color:#F7F6F3;background:rgba(247,246,243,0.12)}
 /* RFM·AMT Fund 첫 화면: ABOUT처럼 사진 한 장이 화면을 채우고 제목만 (pg-full) */
 .rfmpage .fd-nav{background:rgba(10,13,19,0.72)}
 .rfmpage .pg-bg{filter:grayscale(1) contrast(1.05)}
@@ -1716,7 +1721,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1017" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1019" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
@@ -1797,7 +1802,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1017" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1019" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
@@ -2079,7 +2084,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <div class="story">
     <section data-snap="" data-tab="intro" id="home-intro" data-about-sec="" data-count-root="" data-nav="dark" class="on-photo bigsec" style="position:relative;overflow:hidden;min-height:100vh">
       <div style="position:absolute;inset:0;overflow:hidden;background:#0F1B2E">
-        <image-slot id="intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1600&amp;q=72" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot>
+        <image-slot id="intro-bg" shape="rect" fit="cover" src="assets/hero/cau.webp" style="--slot-position:center 70%"></image-slot>
       </div>
       <div class="scrim" style="opacity:0.86"></div>
       <div class="wrap ident-grid secpad" style="position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,0.88fr) minmax(0,1.12fr);gap:clamp(36px,4.6vw,72px);align-items:center;padding:110px 35px;width:100%">
@@ -2420,7 +2425,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <nav class="fd-nav ab-nav"><div class="wrap"><a href="#" data-t="intro" onClick="{{ tabGo }}">소개</a><a href="#" data-t="history" onClick="{{ tabGo }}">연혁</a><a href="#" data-t="network" onClick="{{ tabGo }}">네트워크</a><a href="#" data-t="alumni" onClick="{{ tabGo }}">동문</a><a href="#" data-t="process" onClick="{{ tabGo }}">활동</a><a href="#" data-t="calendar" onClick="{{ tabGo }}">커리큘럼</a></div></nav>
     <div class="story">
     <section data-tab="intro" id="home-intro" class="on-photo" data-count-root="" data-nav="dark" style="position:relative;overflow:hidden;padding:80px 24px 60px">
-      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?auto=format&amp;fit=crop&amp;w=1200&amp;q=70" credit="Photo by Pedro Lastra on Unsplash" credit-href="https://unsplash.com/@peterlaster"></image-slot></div>
+      <div style="position:absolute;inset:0;background:#0F1B2E"><image-slot id="m-intro-bg" shape="rect" fit="cover" src="assets/hero/cau-m.webp" style="--slot-position:40% 60%"></image-slot></div>
       <div class="scrim" style="opacity:0.86"></div>
       <div style="position:relative;z-index:1">
       <img src="assets/rfs-seal-light-256.png" alt="R.F.S." style="width:72px;height:auto;display:block">
@@ -3014,6 +3019,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:{{ fundBg.scrim }}"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">AMT Fund</h1>
+        <div class="fd-switch"><a href="#fund" class="on" aria-current="page">AMT Fund</a><a href="#rfm" onClick="{{ goRfm }}">RFM</a></div>
         <sc-if value="{{ fdNone }}" hint-placeholder-val="{{ false }}">
           <p class="pg-lede">운용 현황을 준비하고 있습니다.</p>
         </sc-if>
@@ -3144,6 +3150,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="scrim" style="opacity:0.55"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Road to Fund Manager</h1>
+        <div class="fd-switch"><a href="#fund" onClick="{{ goFund }}">AMT Fund</a><a href="#rfm" class="on" aria-current="page">RFM</a></div>
       </div>
     </section>
     <sc-if value="{{ rfmLoading }}" hint-placeholder-val="{{ false }}">
@@ -5788,16 +5795,16 @@ class Component extends DCLogic {
     const related = REPORTS.filter((r) => r.sector === active.sector && r.id !== active.id).slice(0, 3).map(vm);
     const isPh = !active.summary;
     const opc = opStyle(active.op);
-    // 세 번째 값이 있으면 별도 페이지로 이동하는 링크
-    const navDefs = [['ABOUT','about'], ['RESEARCH','research'], ['FUND','fund'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['RFM','rfm'], ['AGORA','intranet']];
+    // 세 번째 값이 있으면 별도 페이지로 이동하는 링크. RFM은 FUND 안으로 합쳤다 (FUND 첫 화면의 AMT Fund | RFM 전환)
+    const navDefs = [['ABOUT','about'], ['POLARIS','polaris','/chat/'], ['RESEARCH','research'], ['FUND','fund'], ['PEOPLE','people'], ['RECRUITING','recruit'], ['AGORA','intranet']];
     const navActive = s.page === 'report' ? 'research'
-      : s.page === 'activity' ? 'about' : s.page === 'strategy' ? 'fund' : s.page;
+      : s.page === 'activity' ? 'about' : (s.page === 'strategy' || s.page === 'rfm') ? 'fund' : s.page;
     const navItems = navDefs.map(([label, page, url]) => ({
       label, href: url || '#' + page,
       on: url ? () => {} : (e) => { e.preventDefault(); this.preloadHero && this.preloadHero(page); this.go(page); },
       pre: () => { this.preloadHero && this.preloadHero(page); },
-      cls: (navActive === page ? 'on' : '') + (url ? ' hide-m' : ''),
-      hideM: !!url,
+      cls: navActive === page ? 'on' : '',
+      hideM: false,
       mcolor: navActive === page ? '#203864' : '#1A1A1A' }));
     const recruiting = status === '모집 중';
     const statusText = recruiting
@@ -5842,6 +5849,7 @@ class Component extends DCLogic {
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
       isIntranet: s.page === 'intranet', agoraGate: s.page === 'intranet' && !authed, intraLocked: (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
+      goFund: (e) => { e.preventDefault(); this.go('fund'); }, goRfm: (e) => { e.preventDefault(); this.go('rfm'); },
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : s.page === 'strategy' ? 'Weekly Strategy 글쓰기' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,
       onLoginPw: (e) => this.setState({ loginPw: e.target.value }),

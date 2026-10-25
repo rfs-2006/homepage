@@ -79,8 +79,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
 .guide{stroke:#e8edff;stroke-width:1.6;stroke-linecap:round;stroke-dasharray:0 8;fill:none;stroke-opacity:0;
   transition:stroke-opacity 1s ease}
-.guide.on{stroke-opacity:0}
-.guide.hot{stroke-opacity:0}
+.guide.on{stroke-opacity:.28}
+.guide.hot{stroke-opacity:.7}
 .guide-flow{stroke:#fff;stroke-width:1.4;stroke-linecap:round;fill:none;opacity:0;stroke-dasharray:.08 1}
 .guide-flow.run{animation:flow 1.4s cubic-bezier(.5,0,.3,1) forwards}
 @keyframes flow{0%{opacity:0;stroke-dashoffset:.08}15%{opacity:1}100%{opacity:0;stroke-dashoffset:-1}}
@@ -126,6 +126,8 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 @keyframes wave{0%{transform:translate(-50%,-50%) scale(.6);opacity:.55}100%{transform:translate(-50%,-50%) scale(3.4);opacity:0}}
 @keyframes twinkle{0%,100%{opacity:1}18%{opacity:.78}31%{opacity:1}52%{opacity:.86}70%{opacity:1}}
 
+/* 메뉴 없는 별(Dubhe)은 누를 수 없다 */
+.star.mute{pointer-events:none}
 /* labels */
 .lab{position:absolute;white-space:nowrap;pointer-events:none;
   text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.75),0 0 22px rgba(0,0,0,.5)}
@@ -287,7 +289,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 
   /* ---- real positions (J2000 RA/Dec, degrees) ---- */
   const STARS = [
-    {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:'RFM',   ko:'Road to Fund Manager',      href:'/#rfm', lab:'r'},
+    {id:'dubhe',  name:'Dubhe',  bayer:'α UMa', ra:165.932, de:61.751, mag:1.79, tint:'255,222,186', menu:null, lab:'r'},   // 메뉴 없음: 북극성을 가리키는 별 (RFM은 FUND로 합침)
     {id:'merak',  name:'Merak',  bayer:'β UMa', ra:165.460, de:56.383, mag:2.37, tint:'236,242,255', menu:'RECRUITING',       ko:'신입 모집',         href:'/#recruit',     lab:'r'},
     {id:'phecda', name:'Phecda', bayer:'γ UMa', ra:178.457, de:53.695, mag:2.44, tint:'236,242,255', menu:'AGORA',      ko:'학회원 공간',           href:'/#intranet',    lab:'b'},
     {id:'megrez', name:'Megrez', bayer:'δ UMa', ra:183.857, de:57.033, mag:3.31, tint:'240,244,255', menu:'PEOPLE',     ko:'임원진 · 동문',          href:'/#people',   lab:'bl'},
@@ -322,18 +324,25 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const NS = 'http://www.w3.org/2000/svg';
   const byId = {};
   STARS.forEach(s => {
-    const a = document.createElement('a');
-    a.className = 'star'; a.href = s.href; a.target = '_top'; a.dataset.id = s.id;
-    a.setAttribute('aria-label', `${s.menu} — ${s.ko}`);
+    const a = document.createElement(s.menu ? 'a' : 'span');
+    a.className = s.menu ? 'star' : 'star mute'; a.dataset.id = s.id;
+    if (s.menu) { a.href = s.href; a.target = '_top'; a.setAttribute('aria-label', `${s.menu} — ${s.ko}`); } else a.setAttribute('aria-hidden', 'true');
     const size = Math.max(.86, Math.min(1.3, 1.3 - (s.mag-1.77)*0.38));
     a.style.setProperty('--s', size.toFixed(2)); a.style.setProperty('--tint', s.tint);
     a.innerHTML = `<span class="glow"></span><span class="wave"></span><span class="ring"></span><span class="spk h"></span><span class="spk v"></span><span class="spk d"></span><span class="spk d2"></span><span class="core"></span>
-      <span class="lab ${s.lab}"><b>${s.menu}</b><i>${s.ko}</i><small>${s.name.toUpperCase()} · ${s.bayer}</small></span>`;
+      ${s.menu ? `<span class="lab ${s.lab}"><b>${s.menu}</b><i>${s.ko}</i><small>${s.name.toUpperCase()} · ${s.bayer}</small></span>` : ''}`;
     dipper.appendChild(a); s.el = a; byId[s.id] = s;
   });
   const alcor = document.createElement('span'); alcor.className = 'alcor'; dipper.appendChild(alcor);
 
-  const pol = document.createElement('span'); pol.style.display='none';
+  // 북극성: 북두칠성 앞 두 별(Merak→Dubhe)이 가리키는 별 = 리서치 챗봇 Polaris
+  const pol = document.createElement('a');
+  pol.className = 'star polaris'; pol.href = '/chat/'; pol.target = '_top'; pol.dataset.id = 'polaris';
+  pol.setAttribute('aria-label', 'POLARIS — 리서치 챗봇');
+  pol.style.setProperty('--s', '1.15'); pol.style.setProperty('--tint', '226,234,255');
+  pol.innerHTML = `<span class="glow"></span><span class="wave"></span><span class="ring"></span><span class="spk h"></span><span class="spk v"></span><span class="spk d"></span><span class="spk d2"></span><span class="core"></span>
+      <span class="lab r"><b>POLARIS</b><i>리서치 챗봇</i><small>POLARIS · α UMi</small></span>`;
+  dipper.appendChild(pol); byId.polaris = { id: 'polaris', el: pol };
 
   const segs = EDGES.map(([a,b]) => {
     const l = document.createElementNS(NS,'line'); l.setAttribute('class','seg'); l.setAttribute('pathLength','1');
@@ -354,7 +363,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     W = innerWidth; H = innerHeight;
     const narrow = W < 760 && H > W;
     const deg = narrow ? TALL_ROT : WIDE_ROT;
-    STARS.forEach(s => { s.p = rot(s.raw, deg); s.el.querySelector('.lab').className = 'lab ' + (narrow ? LABELS_TALL[s.id] : (s.id === 'megrez' ? 't' : s.lab)); });
+    STARS.forEach(s => { s.p = rot(s.raw, deg); const lb = s.el.querySelector('.lab'); if (lb) lb.className = 'lab ' + (narrow ? LABELS_TALL[s.id] : (s.id === 'megrez' ? 't' : s.lab)); });
     const alcorP = rot(alcorRaw, deg);
     sky.classList.toggle('tall', narrow);
     const xs = STARS.map(s=>s.p[0]), ys = STARS.map(s=>s.p[1]);
@@ -371,9 +380,10 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     // Polaris: on the true Merak→Dubhe pointer line, distance compressed to fit the frame
     const [mx,my]=scr.merak, [dx,dy]=scr.dubhe;
     let ux=dx-mx, uy=dy-my; const L=Math.hypot(ux,uy); ux/=L; uy/=L;
-    const t = narrow ? (dx - W*.13)/(-ux) : (dy - H*.12)/(-uy);
+    const t = narrow ? (dx - W*.13)/(-ux) : (dy - H*.17)/(-uy);
     polScr = [dx+ux*t, dy+uy*t];
-    pol.style.left=polScr[0]+'px'; pol.style.top=polScr[1]+'px';
+    pol.style.left=polScr[0]+'px'; pol.style.top=polScr[1]+'px'; scr.polaris = polScr;
+    pol.querySelector('.lab').className = 'lab ' + (narrow ? 'b' : 'r');
     segs.forEach(s => {
       const [x1,y1]=scr[s.a],[x2,y2]=scr[s.b];
       const len=Math.hypot(x2-x1,y2-y1), gx=(x2-x1)/len, gy=(y2-y1)/len, G=9;   // leave a hair of dark sky around each star
@@ -423,7 +433,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     segs.forEach(s => { s.l.style.transitionDelay='0ms'; s.l.classList.remove('hi1','hi2','hi3'); });
     current = null;
   }
-  dipper.querySelectorAll('.star').forEach(el => {
+  dipper.querySelectorAll('.star:not(.mute)').forEach(el => {
     el.addEventListener('pointerenter', () => activate(el.dataset.id));
     el.addEventListener('pointerleave', deactivate);
     el.addEventListener('focus', () => activate(el.dataset.id));
@@ -436,7 +446,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const STATIC = location.hash === '#static' || q.has('static') || reduce;
   /* ---- 별을 누르면 그 별로 확대되며 메뉴로 (새 탭 열기·동작 줄이기 설정에서는 그냥 이동) ---- */
-  dipper.querySelectorAll('.star').forEach(el => el.addEventListener('click', (e) => {
+  dipper.querySelectorAll('.star:not(.mute)').forEach(el => el.addEventListener('click', (e) => {
     if (STATIC || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button) return;
     e.preventDefault();
     if (sky.classList.contains('warp')) return;
@@ -602,7 +612,11 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
     copy.classList.add('solo'); setTimeout(() => copy.classList.add('on'), 80);
     setTimeout(() => copy.classList.remove('solo'), 1700);
     setTimeout(() => copy.classList.add('live'), 4200);
-    setTimeout(() => window.__done = true, 2600);
+    setTimeout(() => {                                              // 2.6s 앞 두 별에서 북극성(Polaris)으로 길잡이 선, 북극성 켜짐
+      guide.classList.add('on'); gflow.classList.add('run');
+      pol.classList.add('lit','igniting'); setTimeout(() => pol.classList.remove('igniting'), 1000);
+    }, 2600);
+    setTimeout(() => window.__done = true, 3000);
   };
   let seen = false, loaded = false, started = false;
   const start = () => { if (seen && loaded && !started) { started = true; requestAnimationFrame(go); } };
