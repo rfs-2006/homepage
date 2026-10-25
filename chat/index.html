@@ -101,22 +101,6 @@ body.start .convv{display:none}
 .top .login{margin-left:30px;color:var(--ink);border:1px solid rgba(244,241,235,.45)}.top .login:hover{border-color:var(--ink)}
 .head .login{margin-left:10px;color:var(--text);border:1px solid var(--hair);letter-spacing:0;font-weight:400;font-size:12.5px;padding:4px 12px}.head .login:hover{border-color:var(--text)}
 .login.on::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#4F9D69;margin-right:6px;vertical-align:1px}
-.lgbox{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;background:rgba(6,10,18,.62);padding:16px}
-.lgbox[hidden]{display:none}
-/* 홈페이지 학회원 로그인 카드와 같은 모양 (index.html intraLocked) */
-.lgbox form{position:relative;width:min(440px,100%);padding:48px 44px 30px;border:1px solid rgba(247,246,243,.35);text-align:center;background:rgba(11,21,36,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#F7F6F3;display:flex;flex-direction:column;gap:10px}
-.lgbox img{width:64px;height:auto;display:block;margin:0 auto}
-.lgbox .sl{margin:18px 0 0;font-family:'Pretendard Variable',sans-serif;font-size:11px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:rgba(247,246,243,.7)}
-.lgbox h2{margin:2px 0 0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:400;letter-spacing:-.02em}
-.lgbox .ds{margin:4px 0 14px;font-size:14px;line-height:1.7;color:rgba(247,246,243,.72)}
-.lgbox input{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid rgba(247,246,243,.4);background:rgba(247,246,243,.1);font:inherit;font-size:14px;color:#F7F6F3;outline:none;text-align:center}
-.lgbox input::placeholder{color:rgba(247,246,243,.62)}.lgbox input:focus{border-color:#8FAADC}
-.lgbox .err{margin:2px 0 0;font-size:12px;color:#E8A9A9;min-height:1em}
-.lgbox .go{display:block;width:100%;margin-top:4px;padding:15px 0;font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:500;letter-spacing:.18em;cursor:pointer;background:#F7F6F3;color:#0F1B2E;border:1px solid #F7F6F3}
-.lgbox .go:hover{background:#fff}
-.lgbox .ct{margin:14px 0 0;font-size:12px;line-height:1.7;color:rgba(247,246,243,.62)}.lgbox .ct a{color:rgba(247,246,243,.85)}
-.lgbox .cancel{position:absolute;top:12px;right:14px;width:36px;height:36px;font-size:18px;background:none;border:0;color:rgba(247,246,243,.7);cursor:pointer}
-@media (max-width:760px){.lgbox form{padding:40px 24px 24px}.lgbox h2{font-size:26px}}
 .embed .login{display:none}
 main{max-width:700px;margin:0 auto;padding:10px 24px 170px;transition:margin .25s}
 body.reading main{margin-left:max(24px,calc(50vw - 560px))}
@@ -246,13 +230,6 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
   <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab" id="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
   <div class="scrim" id="scrim"></div>
 </div>
-<div class="lgbox" id="lgbox" hidden><form id="lgf"><button class="cancel" type="button" id="lgx" aria-label="닫기">✕</button>
-  <img src="/assets/rfs-seal-light-256.png" alt="R.F.S."><p class="sl">Polaris</p><h2>학회원 로그인</h2>
-  <p class="ds">카톡방 공지의 아이디와 비밀번호를 입력하세요.<br>로그인하면 하루에 더 많이 물어볼 수 있어요.</p>
-  <input id="lgid" name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required>
-  <input id="lgpw" name="password" type="password" autocomplete="current-password" placeholder="비밀번호" required>
-  <p class="err" id="lgerr"></p><button class="go" type="submit">LOGIN</button>
-  <p class="ct">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p></form></div>
 <div class="mnav" id="mnav" hidden><button type="button" class="mx" aria-label="메뉴 닫기">✕</button><nav><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></nav></div>
 <script>
 // 챗봇 서버 주소. 서버를 띄운 뒤 여기에 적는다 (tools/rag/server.py). 비어 있으면 '준비 중'으로 보인다.
@@ -510,27 +487,17 @@ const DEMO = new URLSearchParams(location.search).has('demo') ? {
   ], options: [],
 } : null;
 
-// 학회원 로그인: 홈페이지와 같은 계정 (아이디는 '@' 앞만 써도 된다: member → member@caurfs.kr)
-const lg = $('lgbox');
+// 학회원 로그인: 로그인 화면은 홈페이지(AGORA) 하나만 쓴다. 다녀오면 이 탭의 로그인(sessionStorage)이 그대로 보인다
+// 홈은 rfs_after_login이 있으면 로그인하자마자 그 주소로 돌려보낸다 (index.html setU)
 const setLogin = (ses) => document.querySelectorAll('.login').forEach((b) => { b.textContent = ses ? '로그아웃' : '로그인'; b.classList.toggle('on', !!ses); b.title = ses ? '학회원으로 로그인됨' : ''; });
 sb.auth.getSession().then(({ data }) => setLogin(data.session));
 sb.auth.onAuthStateChange((_e, ses) => setLogin(ses));
 document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', async () => {
   const { data } = await sb.auth.getSession();
   if (data.session) { await sb.auth.signOut(); return; }
-  $('lgerr').textContent = ''; lg.hidden = false; $('lgid').focus();
+  try { sessionStorage.setItem('rfs_after_login', JSON.stringify({ to: '/chat/', at: Date.now() })); } catch (e) {}
+  location.href = '/#intranet';
 }));
-$('lgx').onclick = () => { lg.hidden = true; };
-lg.addEventListener('click', (e) => { if (e.target === lg) lg.hidden = true; });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !lg.hidden) lg.hidden = true; });
-$('lgf').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const raw = $('lgid').value.trim().toLowerCase(), email = raw.includes('@') ? raw : raw + '@caurfs.kr';
-  const { error } = await sb.auth.signInWithPassword({ email, password: $('lgpw').value });
-  if (error) { $('lgerr').textContent = '아이디나 비밀번호가 맞지 않아요.'; return; }
-  $('lgpw').value = ''; lg.hidden = true;
-  if ($('left').textContent) $('left').textContent = ' 학회원으로 로그인했어요.';
-});
 
 // 첫 화면 사진 입체: 깊이 지도(1=가까움)로 앞 소나무·도시·하늘을 다른 속도로 움직인다 (assets/dipper.html과 같은 방식)
 // 처음 12초는 천천히 다가서며 저절로 흔들리고, 그 뒤로는 마우스를 따라서만 움직인다. 동작 줄이기 설정이면 사진 그대로
