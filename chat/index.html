@@ -132,8 +132,8 @@ function addQ(text) {
 function addA(res, mid) {
   const d = document.createElement('div');
   d.className = 'msg';
-  // source는 '청크ID p.쪽'이다. 학회원에게는 쪽만 보여준다
-  const src = (res.sources || []).map((s) => `<li id="s-${mid}-${s.n}">${esc(s.title)}${s.source.includes(' p.') ? `<br><small>${esc(s.source.replace(/^\S+\s+/, ''))}</small>` : ''}`
+  // source는 '청크ID p.쪽'(학회 자료) 또는 URL(웹 검색)이다. 학회원에게는 쪽만 보여준다
+  const src = (res.sources || []).map((s) => `<li id="s-${mid}-${s.n}">${/^https?:/.test(s.source) ? `<a href="${esc(s.source)}" target="_blank" rel="noopener">${esc(s.title)}</a> <small>(웹)</small>` : esc(s.title)}${s.source.includes(' p.') ? `<br><small>${esc(s.source.replace(/^\S+\s+/, ''))}</small>` : ''}`
     + (s.cited || []).slice(0, 2).map((c) => `<blockquote hidden>${esc(c.length > 600 ? c.slice(0, 600) + '…' : c)}</blockquote>`).join('') + '</li>').join('');
   d.innerHTML = `<div class="a">${render(res.answer, mid)}${src ? `<details class="src"><summary>출처 ${res.sources.length}개</summary><ol>${src}</ol></details>` : ''}</div>`;
   // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)

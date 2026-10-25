@@ -40,6 +40,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 1. 근거
 - 학회 자료 주장(숫자, 리포트 이름, "학회는 이렇게 했다")은 검색 결과에 있는 것만, 출처가 달리게 쓴다. 없으면 지어내지 않고 "학회 자료에서는 찾지 못했다"고 말한다.
 - 교과서 수준 개념(용어 뜻, 순서, 공식)은 출처 없이 써도 된다. 교육자료(가이드북·세미나)에 있으면 그걸 쓴다.
+- 시장 관행·업계 사실("증권사들은 보통 PBR을 쓴다", 최근 사건)은 출처(학회 자료나 웹)가 있을 때만 쓴다.
 - 리포트가 실제로 쓴 것과 내 해석·짐작을 나눠 쓴다. 해석에는 "(추정)"을 붙인다.
 - 제목에 [학회 추천 사례: 축]이 붙은 자료는 그 축에서 학회가 잘한 리포트다. 그 축의 사례로 먼저 고려한다.
 - 사례는 정규 학기 리포트에서만 들고 학기를 붙인다. 같은 내용이면 최근 학기를 앞에 둔다. 근거 없이 정한 숫자는 모범 사례로 보이지 않는다. 리포트끼리 숫자가 다르면 둘 다 보이고 왜 다른지 적는다.
@@ -84,12 +85,16 @@ SEARCH = """
 - 핵심 용어의 뜻이나 숫자의 비교 기준이 결과에 없으면, 검색어에 "가이드북"이나 "세미나"를 붙여 학회 교육자료에서 찾는다.
 - 사례의 이유나 비교 기준(예: "PER 142배"가 높은 이유)이 결과에 없으면 같은 회사의 다른 리포트나 업종 평균을 찾는다.
 - 문장·모델 피드백 요청이면, 같은 원칙이 잘 적용된 리포트 문장이나 모델을 찾는다 (같은 섹션: 투자포인트, 밸류에이션 등).
+- 학회 자료에 없는 시장 관행·업계 사실이 답에 꼭 필요할 때만 web_search로 확인한다 (최대 2번). 학회 자료로 되는 건 웹에서 찾지 않는다.
 """
 
 TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관련 높은 청크를 검색 결과로 돌려준다.',
         'strict': True,
         'input_schema': {'type': 'object', 'properties': {'query': {'type': 'string', 'description': '검색어'}},
                          'required': ['query'], 'additionalProperties': False}}
+# 학회 자료에 없는 시장 관행·업계 사실 확인용 (검색 1번에 1센트 + 결과 토큰). 서버가 검색하고 결과에 출처(URL)가 달린다.
+# 기본판을 쓴다: 새 판(20260209)은 결과를 코드로 걸러 넣어서 답에 웹 인용이 달리지 않았다 (2026-10-25 시험)
+WEB = {'type': 'web_search_20250305', 'name': 'web_search', 'max_uses': 2}
 
 
 class Answerer:
@@ -161,10 +166,10 @@ class Answerer:
             text += b.text
             marks = []
             for c in b.citations or []:
-                key = c.source
+                key = getattr(c, 'source', None) or c.url  # 학회 자료는 '청크ID p.쪽', 웹 검색은 URL
                 if key not in num:
                     num[key] = len(num) + 1
-                    sources.append({'n': num[key], 'source': c.source, 'title': c.title, 'cited': []})
+                    sources.append({'n': num[key], 'source': key, 'title': c.title or key, 'cited': []})
                 src = sources[num[key] - 1]
                 if c.cited_text not in src['cited']:
                     src['cited'].append(c.cited_text)
@@ -214,7 +219,7 @@ class Chat:
             first, kind, standalone = self._retrieve(question)
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
-            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH)), {'tools': [TOOL]}
+            system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH)), {'tools': [TOOL, WEB]}
         else:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
             system, tools = SYSTEM.format(search=''), {}
@@ -229,6 +234,8 @@ class Chat:
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             self.msgs.append({'role': 'assistant', 'content': resp.content})
+            if resp.stop_reason == 'pause_turn':  # 서버 쪽 웹 검색이 도중에 멈춤. 그대로 다시 보내면 이어서 한다
+                continue
             if resp.stop_reason != 'tool_use':
                 break
             results = []

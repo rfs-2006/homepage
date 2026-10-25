@@ -103,7 +103,7 @@ class AgentSearch:
         self.cl = client()
         self.model = model
         self.id2i = {c['chunk_id']: i for i, c in enumerate(self.r.chunks)}
-        self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0}
+        self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0, 'web_search': 0}
         self.log = []
 
     def _count(self, resp):
@@ -112,6 +112,7 @@ class AgentSearch:
         self.usage['output'] += u.output_tokens
         self.usage['cache_read'] += u.cache_read_input_tokens or 0
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
+        self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
     def rewrite(self, question, context='', allow_ask=False):
         """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
