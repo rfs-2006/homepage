@@ -6347,6 +6347,17 @@ class Component extends DCLogic {
 .rfs-bot span{white-space:nowrap}
 .rfs-bot:hover{background:#1A1614;border-color:rgba(244,241,235,.35)}
 @media (max-width:640px){.rfs-bot{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:48px;gap:0;padding-right:4px}.rfs-bot img{width:38px;height:38px}.rfs-bot span{display:none}}
+.rfs-chat{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:61;width:min(420px,calc(100vw - 48px));height:min(680px,calc(100vh - 120px));background:#0E0B0B;border:1px solid rgba(244,241,235,.16);border-radius:16px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.65);display:flex;flex-direction:column;transform-origin:bottom right;animation:rfsChatIn .28s cubic-bezier(.2,.8,.2,1)}
+.rfs-chat[hidden]{display:none}
+@keyframes rfsChatIn{from{opacity:0;transform:translateY(12px) scale(.96)}}
+.rc-bar{flex:none;display:flex;align-items:center;gap:8px;padding:11px 12px 11px 16px;color:#F4F1EB;font:500 13px 'Pretendard Variable',sans-serif;border-bottom:1px solid rgba(244,241,235,.12)}
+.rc-bar b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:16px}
+.rc-bar span{opacity:.55;font-size:11.5px}
+.rc-bar a{margin-left:auto;color:rgba(244,241,235,.75) !important;text-decoration:none;font-size:12px}
+.rc-bar a:hover{color:#F4F1EB !important}
+.rc-bar button{border:0;background:none;color:rgba(244,241,235,.75);font-size:14px;cursor:pointer;padding:4px 6px}
+.rfs-chat iframe{flex:1;width:100%;border:0;background:#0E0B0B}
+@media (prefers-reduced-motion:reduce){.rfs-chat{animation:none}}
 .rfs-bot-tip{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:60;width:260px;background:#F4F1EB;color:#141210;border-radius:12px;padding:14px 34px 14px 16px;box-shadow:0 18px 40px -18px rgba(0,0,0,.55);font:400 13px/1.55 'Pretendard Variable',sans-serif;animation:rfsTip .35s ease-out}
 .rfs-bot-tip::after{content:'';position:absolute;right:26px;bottom:-6px;width:12px;height:12px;background:#F4F1EB;transform:rotate(45deg)}
 .rfs-bot-tip a{color:#141210 !important;text-decoration:none;display:block}
@@ -6358,8 +6369,24 @@ class Component extends DCLogic {
 @media (prefers-reduced-motion:reduce){.rfs-bot{transition:none}.rfs-bot-tip{animation:none}}
 </style>
 <a class="rfs-bot" href="/chat/" aria-label="Polaris 리서치 챗봇"><img src="/assets/rfs-seal-light-256.png" alt=""><span>Polaris</span></a>
+<div class="rfs-chat" id="rfsChat" hidden><div class="rc-bar"><b>Polaris</b><span>R.F.S. 리서치 챗봇</span><a href="/chat/" title="전체 화면으로">전체 화면 ↗</a><button type="button" aria-label="닫기">✕</button></div><iframe title="Polaris 리서치 챗봇"></iframe></div>
 <div class="rfs-bot-tip" id="rfsBotTip" hidden><a href="/chat/"><small>Polaris</small><b>궁금한 게 있으세요?</b>학회 리포트에서 찾아 출처와 함께 답해 드려요.</a><button type="button" aria-label="닫기">✕</button></div>
 <script>
+// Polaris 버튼: 누르면 페이지를 떠나지 않고 오른쪽 아래에 챗봇 창(/chat/?embed)을 연다. 폰은 화면이 좁아 그냥 /chat/ 페이지로
+(function () {
+  var box = document.getElementById('rfsChat'), btn = document.querySelector('.rfs-bot'), fr = box.querySelector('iframe');
+  var close = function () { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  btn.setAttribute('aria-controls', 'rfsChat'); btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', function (e) {
+    if (window.innerWidth <= 640 || e.metaKey || e.ctrlKey || e.shiftKey) return;
+    e.preventDefault();
+    if (!fr.src) fr.src = '/chat/?embed';
+    box.hidden = !box.hidden; btn.setAttribute('aria-expanded', String(!box.hidden));
+    var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true;
+  });
+  box.querySelector('.rc-bar button').onclick = close;
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
+})();
 // 챗봇이 있는 줄 모를 수 있어서 말풍선을 띄운다. 탭(세션)마다 한 번, 인트로가 끝나고 1.5초 뒤. 닫거나 누르면 이 탭에서는 다시 안 띄운다
 (function () {
   var tip = document.getElementById('rfsBotTip'), K = 'rfsBotTipSeen';
