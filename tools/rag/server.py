@@ -24,6 +24,7 @@ API
 """
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -44,6 +45,8 @@ SB_ANON = ('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
            '.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c')
 ALLOWED_DOMAIN = '@caurfs.kr'
 ORIGINS = [o.strip() for o in os.environ.get('ALLOW_ORIGIN', 'https://caurfs.kr').split(',')]
+# Netlify PR 미리보기 주소도 받는다 (미리보기에서 바로 질문해 보려고)
+PREVIEW = re.compile(r'https://deploy-preview-\d+--remarkable-starlight-e4bf02\.netlify\.app')
 PER_IP_DAILY = int(os.environ.get('PER_IP_DAILY', 40))
 ANON_DAILY = int(os.environ.get('ANON_DAILY', 5))
 DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', 100))
@@ -115,7 +118,7 @@ def get_conv(cid):
 class Handler(BaseHTTPRequestHandler):
     def _cors(self):
         origin = self.headers.get('Origin', '')
-        if origin in ORIGINS:
+        if origin in ORIGINS or PREVIEW.fullmatch(origin):
             self.send_header('Access-Control-Allow-Origin', origin)
             self.send_header('Vary', 'Origin')
             self.send_header('Access-Control-Allow-Headers', 'Authorization, Content-Type')
