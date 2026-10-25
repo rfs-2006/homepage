@@ -26,7 +26,8 @@ LLM = 'claude-sonnet-5-5'
 JUDGE_LLM = 'claude-opus-5-5'
 MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
-AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 점수를 못 믿어 뺐다, NOTES 14절)
+AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', '밸류에이션', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 추천 리포트가 없고 기준만 쓴다, NOTES 14절)
+KINDS = ['explain', 'fact', 'feedback', 'cases']  # 질문 유형. 유형마다 검색과 답 형식이 다르다 (answer.py TYPE)
 SNIPPET = 350
 
 CORPUS = """자료: 중앙대 투자학회 RFS의 학회 자료 (2019~2026). 기업·산업 리포트, 세미나·교육 자료, 엑셀 밸류에이션 모델, 스터디, 투자제안서.
@@ -41,11 +42,20 @@ MQ_SYSTEM = CORPUS + """
 - 검색어마다 다른 각도로. 3~5개, 각각 짧게 (2~8단어).
 - 앞선 대화가 같이 오면, 마지막 질문이 무엇을 가리키는지 앞 대화로 풀어서 검색어를 만든다 (예: "LCC면?" → "저비용항공사 밸류에이션").
 - standalone: 마지막 질문을 앞 대화 없이도 뜻이 통하는 한 문장으로 다시 쓴다. 앞선 대화가 없으면 질문 그대로.
-- kind: 특정 문서·회사의 사실이나 용어 뜻을 묻는 질문은 fact, 방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘",
-  "목차는 보통", "~관련 리포트 있어?")은 open.
-- axis: 질문이 리포트의 어느 부분에 관한 것인지. 투자포인트 / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
-  추정(매출·비용 추정) / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목) / 없음(그 밖).
-  축은 리포트를 쓰거나 피드백받는 질문일 때만 고른다. 사실 질문, 용어 뜻, 밸류에이션, 종목을 사도 되냐는 질문은 없음."""
+- kind: 질문 유형.
+  explain: 방법·개념을 설명해 달라 ("DCF 어떻게 해?", "설명해줘", "아무것도 몰라", "처음 해봐", "어디서부터 시작해?", "왜 ~를 써?").
+  fact: 용어 뜻이나 특정 문서·회사의 사실 한 가지 ("WACC가 뭐야", "대한항공 목표주가 얼마였어?").
+  feedback: 사용자가 쓴 글·모델·생각을 봐 달라 ("내 문장 봐줘", "이거 괜찮아?", 리포트 문단을 붙여 넣은 경우).
+  cases: 사례·리포트를 모아 달라 ("예시 알려줘", "~관련 리포트 있어?", "다른 리포트들은 어떻게 했어?").
+  애매하면 explain.
+- axes: 리포트의 어느 부분·기준에 관한 질문인지. 여러 개 가능. 해당 없으면 빈 목록.
+  투자포인트(주장 자체: 시장과 다른 점, 겹침, 목표주가 연결) / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
+  추정(매출·비용 추정) / 밸류에이션 / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목·표현).
+  feedback이면 무엇을 봐 달라고 했는지로 고른다. "문장 봐줘", "글 어때?"는 글이 투자포인트 섹션이어도 글.
+  사용자가 직접 말한 축을 맨 앞에 둔다 ("문장 봐줘" + 투자포인트 문단이면 글, 투자포인트 순서).
+  무엇을 볼지 말이 없으면 붙인 글의 섹션에 맞는 내용 축 + 글 (투자포인트 문단이면 투자포인트, 글).
+  explain·cases는 리포트의 한 부분을 쓰는 법을 묻는 질문일 때만 그 축 ("투자포인트 어떻게 써?" → 투자포인트). 사실 질문, 용어 뜻, 종목을 사도 되냐는 질문은 빈 목록.
+- section: feedback에서 붙인 글이 리포트의 어느 섹션인지 (투자포인트, 산업분석, 기업개요, 실적 추정, 밸류에이션, 리스크 등). 모르면 빈 문자열."""
 
 # 서버(대화)에서만 붙인다. 평가는 한 번 묻고 끝이라 되물으면 채점이 안 된다
 ASK_RULE = """
@@ -57,6 +67,20 @@ ASK_RULE = """
   (예: "업종에 따라 쓰는 밸류에이션 방법이 달라져요. 어떤 회사를 분석하시나요?").
   ask_options는 신입도 고를 수 있는 쉬운 말로 2~5개, 마지막은 "잘 모르겠어요" (예: "제조업", "인터넷·소프트웨어", "바이오", "은행·증권", "잘 모르겠어요").
   clarify가 아니면 빈 문자열과 빈 목록."""
+
+# 서버에서만. 검색·답변 없이 정해진 문구로 정중하게 돌려보낸다 (답변 비용이 안 들고 하루 질문 수도 안 깎는다)
+DECLINE_RULE = """
+- decline: 학회 자료로 답할 수 없거나 답할 거리가 없는 질문을 거른다. 해당 없으면 빈 문자열.
+  vague: 무엇을 묻는지 알 수 없다 ("이거 뭐임", "그거 어케함", 뜻이 안 통하는 문장, 앞 대화로도 안 풀리는 지시어).
+  broad: 아무 조건 없이 뭔가 내놓으라는 요청 ("괜찮은 거 갖고와봐", "아무거나 알려줘", "재밌는 거", "리포트 하나 줘").
+  offtopic: 투자·리서치·학회와 무관 (날씨, 연애, 코딩 숙제, 맛집 등).
+  stock: 종목 매수·매도·보유 판단이나 종목 추천 ("지금 사도 돼?", "오를 종목 추천", "삼전 팔까?").
+  hello: 인사나 잡담만 있는 경우 ("안녕", "ㅎㅇ", "고마워").
+  짧아도 뜻이 통하면 거르지 않는다 ("WACC가 뭐야", "PER", "대한항공 리포트 있어?"는 정상 질문). 애매하면 거르지 않는다.
+  글·모델을 봐 달라는 요청("내 리포트 문장 좀 봐줄래?")은 글이 아직 없어도 거르지 않는다 (feedback으로 두면 글을 붙여 달라고 한다).
+- better: decline일 때만. 이 사람이 실제로 궁금했을 법한 것을 학회 자료로 답할 수 있는 구체적인 질문 2~3개로 바꿔 쓴다.
+  짧게, 사용자가 그대로 눌러 물을 수 있는 반말 질문체 (예: "항공사 리포트 투자포인트 사례 보여줘", "PER과 EV/EBITDA 언제 써?").
+  stock이면 그 회사를 분석하는 방법 질문으로 (예: "삼성전자 밸류에이션은 어떻게 해?"). decline이 아니면 빈 목록."""
 
 AGENT_SYSTEM = CORPUS + """
 
@@ -85,9 +109,18 @@ def client():
     return anthropic.Anthropic(api_key=os.environ['RAG_ANTHROPIC_API_KEY'], base_url='https://api.anthropic.com')
 
 
-def ask(cl, model=LLM, **kw):
+def ask(cl, model=LLM, on_text=None, **kw):
+    """on_text가 있으면 스트리밍으로 받으면서 답 글자를 바로 넘긴다 (화면에 쓰는 대로 보이게)."""
     if 'haiku' in model:  # Haiku 5.5는 서버 쪽 대체 모델(fallbacks)이 없다
         r = cl.messages.create(model=model, max_tokens=16000, **kw)
+    elif on_text:
+        # 대체 모델로 넘어가도 같은 스트림에서 이어진다 (이미 받은 글자는 그대로)
+        with cl.beta.messages.stream(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
+                                     fallbacks='default', **kw) as st:
+            for ev in st:
+                if ev.type == 'text':
+                    on_text(ev.text)
+            r = st.get_final_message()
     else:
         # 안전 분류기가 거절하면 서버가 다른 모델로 다시 돌린다 (fallbacks: default)
         r = cl.beta.messages.create(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
@@ -114,27 +147,35 @@ class AgentSearch:
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
         self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
-    def rewrite(self, question, context='', allow_ask=False):
-        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
+    def rewrite(self, question, context='', allow_ask=False, allow_decline=False):
+        """검색어 3~5개, 질문 유형(KINDS, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축 목록, 섹션을 돌려준다.
         context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
-        축은 rubric.md의 평가 축 (축별 추천 리포트를 고를 때 쓴다)."""
+        allow_decline이면 거를 질문일 때 kind가 decline:<이유>이고, 되물을 질문 자리에 {'better': 바꿔 쓴 질문들}을 준다.
+        축(axes)은 rubric.md의 평가 축 목록 (축별 추천 리포트와 피드백 기준을 고를 때 쓴다), section은 피드백할 글의 섹션."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
         props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
-                 'kind': {'type': 'string', 'enum': ['fact', 'open'] + (['clarify'] if allow_ask else [])},
+                 'kind': {'type': 'string', 'enum': KINDS + (['clarify'] if allow_ask else [])},
                  'standalone': {'type': 'string'},
-                 'axis': {'type': 'string', 'enum': AXES + ['없음']}}
+                 'axes': {'type': 'array', 'items': {'type': 'string', 'enum': AXES}},
+                 'section': {'type': 'string'}}
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
-        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else ''),
+        if allow_decline:
+            props |= {'decline': {'type': 'string', 'enum': ['', 'vague', 'broad', 'offtopic', 'stock', 'hello']},
+                      'better': {'type': 'array', 'items': {'type': 'string'}}}
+        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else '') + (DECLINE_RULE if allow_decline else ''),
                    output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
                        'type': 'object', 'properties': props, 'required': list(props), 'additionalProperties': False}}},
                    messages=[{'role': 'user', 'content': user}])
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
+        if out.get('decline'):
+            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, [], ''
         ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
             if out['kind'] == 'clarify' and out.get('ask_question') else None
-        kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']
-        return out['queries'][:5], kind, out['standalone'] or question, ask_, out['axis']
+        kind = 'explain' if out['kind'] == 'clarify' and not ask_ else out['kind']
+        axes = list(dict.fromkeys(out['axes']))
+        return out['queries'][:5], kind, out['standalone'] or question, ask_, axes, out['section']
 
     def multiquery(self, question, rerank_top=100, queries=None):
         qs = queries if queries is not None else self.rewrite(question)[0]

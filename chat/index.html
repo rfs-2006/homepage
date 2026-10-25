@@ -55,10 +55,11 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;padding:16px 36px;height:72px}
 /* 홈페이지와 같은 위 메뉴 (ABOUT … AGORA, 지금 화면은 POLARIS) */
 .brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
-.top .brand img{width:40px}
+.brand img{width:36px;height:36px;object-fit:contain}
 .brand span{display:flex;flex-direction:column;line-height:1.15}
-.brand b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:.02em}
-.brand small{font-size:11px;opacity:.85}
+.brand span{gap:3px;line-height:1}
+.brand b{font-family:'Noto Serif KR',serif;font-weight:700;font-size:17px;letter-spacing:-.02em}
+.brand small{font-size:11.5px;font-weight:500;letter-spacing:.06em;opacity:.8}
 .menu{margin-left:auto;display:flex;gap:36px}
 .menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;opacity:.85;padding:6px 0;border-bottom:2px solid transparent}
 .menu a:hover{opacity:1}
@@ -66,9 +67,12 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 /* 사진은 화면 끝까지, 위는 메뉴가 읽히게 살짝, 아래는 길게 검정으로 녹여 경계가 안 보이게 */
 /* 첫 화면은 한 화면 안에: 사진은 뒤에 깔고(위 68%), 글과 입력창은 아래에 붙인다 */
 .startv{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
-.hero{position:absolute;left:0;right:0;top:0;height:68vh;height:68svh;overflow:hidden;background:var(--black)}
-.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp) center 38%/cover;filter:brightness(.78) contrast(1.06)}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 18%,rgba(14,11,11,0) 26%,rgba(14,11,11,.5) 46%,rgba(14,11,11,.88) 66%,var(--black) 84%)}
+.hero{position:absolute;left:0;right:0;top:0;height:82vh;height:82svh;overflow:hidden;background:var(--black)}
+.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp) center 38%/cover;filter:brightness(.78) contrast(1.06)}
+/* 사진 입체 (홈 별자리 화면과 같은 방식): 깊이 지도로 앞 소나무·도시·하늘을 다른 속도로. 준비되면 위 사진 대신 보인다 */
+.hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .6s}
+.hero.p3d canvas{opacity:1}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 15%,rgba(14,11,11,0) 22%,rgba(14,11,11,.35) 48%,rgba(14,11,11,.72) 68%,rgba(14,11,11,.9) 82%,var(--black) 97%)}
 .intro{max-width:760px;width:100%;margin:auto auto 0;position:relative;text-align:center;padding:0 16px clamp(20px,4.5vh,48px)}
 .intro .lab{color:rgba(244,241,235,.6)}
 .intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:clamp(34px,5.4vh,50px);line-height:1.25;margin:clamp(8px,1.4vh,14px) 0 clamp(10px,1.6vh,16px)}
@@ -88,10 +92,16 @@ body.conv{background:var(--bg);color:var(--text);font-size:15.5px;line-height:1.
 body.conv .startv{display:none}
 body.start .convv{display:none}
 .head{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
-.head img{width:24px}.head .brand b{font-size:17px}
+
 .head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--text)}
 .head .new{margin-left:28px;font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:4px 12px;cursor:pointer}
 .head .new:hover{border-color:var(--text)}
+/* 학회원 로그인 (하루 질문 수가 늘어난다) */
+.login{font:inherit;font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:500;letter-spacing:.08em;background:none;cursor:pointer;border-radius:999px;padding:5px 13px;white-space:nowrap}
+.top .login{margin-left:30px;color:var(--ink);border:1px solid rgba(244,241,235,.45)}.top .login:hover{border-color:var(--ink)}
+.head .login{margin-left:10px;color:var(--text);border:1px solid var(--hair);letter-spacing:0;font-weight:400;font-size:12.5px;padding:4px 12px}.head .login:hover{border-color:var(--text)}
+.login.on::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#4F9D69;margin-right:6px;vertical-align:1px}
+.embed .login{display:none}
 main{max-width:700px;margin:0 auto;padding:10px 24px 170px;transition:margin .25s}
 body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .q{font-weight:500;font-size:21px;letter-spacing:-.03em;line-height:1.5;margin:44px 0 14px;padding-left:14px;border-left:2px solid var(--text);white-space:pre-wrap}
@@ -100,6 +110,23 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .a ul,.a ol{margin:6px 0 14px;padding-left:22px}
 .a li{margin:2px 0}
 .a li>ul,.a li>ol{margin:2px 0 4px}
+/* 로직트리: 안에 하위 목록이 있는 목록은 가지 선을 그린 상자로 (답의 '전체 그림') */
+.a .tree{list-style:none;margin:10px 0 18px;padding:16px 18px 14px;background:var(--card);border:1px solid var(--hair);border-radius:10px}
+.a .tree ul,.a .tree ol{list-style:none;margin:4px 0 0;padding-left:0}
+.a .tree li{position:relative;margin:0;padding:3px 0 3px 22px}
+.a .tree>li{padding-left:0;font-weight:500}
+.a .tree>li>ul>li,.a .tree>li>ol>li{font-weight:300}
+.a .tree li li::before{content:'';position:absolute;left:7px;top:0;bottom:0;border-left:1.5px solid #C4CAD4}
+.a .tree li li:last-child::before{bottom:auto;height:15px}
+.a .tree li li::after{content:'';position:absolute;left:7px;top:15px;width:10px;border-top:1.5px solid #C4CAD4}
+.a .tree li ul,.a .tree li ol{margin-left:0}
+.a .tree>li>ul,.a .tree>li>ol{margin-top:6px}
+.a .tree.flat>li{padding-left:22px;font-weight:300}
+.a .tree.flat>li::before{content:'';position:absolute;left:7px;top:0;bottom:0;border-left:1.5px solid #C4CAD4}
+.a .tree.flat>li:first-child::before{top:15px}.a .tree.flat>li:last-child::before{bottom:auto;height:15px}.a .tree.flat>li:only-child::before{display:none}
+.a .tree.flat>li::after{content:'';position:absolute;left:7px;top:15px;width:10px;border-top:1.5px solid #C4CAD4}
+.a .tree.flat>li>ul>li,.a .tree.flat>li>ol>li{font-weight:300}
+.a .tree.flat>li{font-weight:500}
 .chip{display:inline-flex;align-items:center;gap:5px;vertical-align:1px;font:500 12px 'RFS Dotum UI','Pretendard Variable',sans-serif;color:var(--text);background:#fff;border:1px solid var(--hair);border-radius:4px;padding:0 7px;line-height:20px;cursor:pointer;white-space:nowrap;margin:0 1px}
 .chip i{width:8px;height:10px;background:var(--navy);border-radius:1px;display:inline-block}
 .chip.web i{border-radius:50%;width:9px;height:9px;background:none;border:1.5px solid var(--navy)}
@@ -121,6 +148,10 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}}
 .q{animation:rise .35s ease-out both}
 .a>*{animation:rise .45s ease-out both;animation-delay:calc(var(--i,0) * 70ms)}
+/* 답을 쓰는 대로 보일 때(live)는 다시 그릴 때마다 움직이지 않게. 다 쓴 뒤 붙는 출처·보기만 올라온다 */
+.a.live>*{animation:none}.a.live>.srcs,.a.live>.opts{animation:rise .45s ease-out both}
+.caret{display:inline-block;width:7px;height:1.05em;margin-left:2px;vertical-align:-2px;background:var(--navy);animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
 .err{color:var(--err)}
 .foot{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 14px;background:linear-gradient(rgba(255,255,255,0),var(--bg) 40%)}
 .foot .in{max-width:700px;margin:0 auto;background:#fff;border:1px solid var(--hair);border-radius:12px;display:flex;align-items:flex-end;gap:8px;padding:7px 7px 7px 16px;box-shadow:0 12px 30px -18px rgba(20,23,28,.35);transition:margin .25s}
@@ -138,6 +169,13 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .doc .tag{display:inline-block;font-size:11px;font-weight:500;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
 .doc blockquote{margin:0 0 14px;font-size:14px;line-height:1.9}
 .doc mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.doc .meta{display:grid;grid-template-columns:52px 1fr;gap:6px 10px;font-size:12.5px;line-height:1.55;padding:12px 14px;background:#fff;border:1px solid var(--hair);border-radius:8px;margin:2px 0 18px}
+.doc .meta dt{color:var(--sub)}.doc .meta dd{margin:0}
+.doc .crumb{font-size:12px;color:var(--navy);font-weight:500;margin:0 0 8px}
+.doc .ctx{font-size:13.5px;line-height:1.85;border-left:2px solid var(--hair);padding-left:14px;margin:0 0 18px}
+.doc .ctx p{margin:0 0 6px}.doc .ctx summary{font-size:12.5px;color:var(--sub);cursor:pointer;margin:0 0 8px;list-style:none}.doc .ctx summary::-webkit-details-marker{display:none}.doc .ctx details[open] summary{display:none}.doc .ctx .fade{color:var(--dim)}.doc .ctx .sh{font-weight:500;margin-top:12px}
+.doc .nav{display:flex;gap:16px}.doc .nav button{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);cursor:pointer}
+.doc .nav button:disabled{opacity:.3;cursor:default}
 .doc .open{display:inline-block;margin-top:6px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
 .scrim{display:none}
 /* 폰: ☰ 누르면 화면 전체 메뉴 */
@@ -161,7 +199,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .embed .foot{padding:10px 12px 10px}
 @media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
 @media (max-width:760px){
- .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:58vh;height:58svh}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+ .top{padding:12px 16px;height:auto}.brand img{width:32px;height:32px}.brand small{font-size:10.5px}.menu{display:none}.burger{display:flex}.hero{height:62vh;height:62svh}.hero::after{background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 18%,rgba(14,11,11,0) 26%,rgba(14,11,11,.5) 46%,rgba(14,11,11,.88) 66%,var(--black) 84%)}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
  .intro{margin-top:auto}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
  .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
@@ -173,8 +211,8 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 <body class="start">
 <!-- 첫 화면 -->
 <div class="startv">
-  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></nav>
-  <div class="hero"></div>
+  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" class="login">로그인</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></nav>
+  <div class="hero" id="hero"><canvas id="hero3d" aria-hidden="true"></canvas></div>
   <div class="intro">
     <div class="lab">R.F.S. Database from 2006</div>
     <h1>POLARIS와 함께 공부하세요</h1>
@@ -186,23 +224,25 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 </div>
 <!-- 대화 화면 -->
 <div class="convv">
-  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
+  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="login">로그인</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
   <main id="log" aria-live="polite"></main>
   <form class="foot" id="f"><div class="in"><textarea id="t" placeholder="이어서 물어보기" maxlength="1000" aria-label="질문"></textarea><button class="send" id="b" type="submit" aria-label="보내기">↑</button></div><p class="note">답은 틀릴 수 있어요. 출처를 눌러 원문을 확인하세요.<span id="left"></span></p></form>
-  <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
+  <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab" id="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
   <div class="scrim" id="scrim"></div>
 </div>
 <div class="mnav" id="mnav" hidden><button type="button" class="mx" aria-label="메뉴 닫기">✕</button><nav><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></nav></div>
 <script>
 // 챗봇 서버 주소. 서버를 띄운 뒤 여기에 적는다 (tools/rag/server.py). 비어 있으면 '준비 중'으로 보인다.
 // 주소를 화면 주소창 값으로 바꾸지 못하게 상수로만 둔다 (로그인 토큰이 다른 곳으로 새지 않게).
-const API = '';
+const API = 'https://api.caurfs.kr';
 const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
 const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', '내 리포트 문장 좀 봐줄래?', '산업 리서치는 어디서부터 시작하면 돼?', 'WACC에서 타인자본비용 잡는 법 알려줘'];
 
 const $ = (id) => document.getElementById(id);
-const sb = window.supabase.createClient(SB_URL, SB_KEY);
+// 로그인은 홈페이지와 같이 이 탭에서만 유지한다 (sessionStorage). 그래서 홈에서 로그인하고 넘어와도 그대로 이어진다
+let store; try { store = window.sessionStorage; store.setItem('rfs_booted', '1'); } catch (e) {}   // 여기서 홈으로 가도 인트로를 다시 안 띄운다 (index.html)
+const sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
 let cid = null, busy = false;
 const SRC = {};   // 답마다 출처 목록 (패널에서 쓴다)
 
@@ -218,7 +258,7 @@ function meta(s) {
   const parts = s.title.replace(/\s*\[[^\]]*\]/g, '').split('|').map((x) => x.trim()).filter(Boolean);
   const name = parts[0] || '자료', sem = parts.find((x) => /^\d{2}-\d학기$/.test(x)) || '', kind = parts[2] || '';
   const pg = (s.source.match(/p\.[\d-]+/) || [''])[0];
-  return { web: false, name, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
+  return { web: false, name, sem, kind, pg, ctx: s.context || null, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
 }
 const chip = (mid, n) => { const m = SRC[mid] && SRC[mid][n]; return m ? `<button type="button" class="chip${m.web ? ' web' : ''}" data-m="${mid}" data-n="${n}"><i></i>${esc(m.chip)}</button>` : ''; };
 
@@ -244,7 +284,13 @@ function render(text, mid) {
     else if (line.trim()) out.push(`<p>${inline(line)}</p>`);
   }
   close(0);
-  return out.join('');
+  // 하위 목록이 있는 맨 바깥 목록은 로직트리로 그린다. 뿌리가 하나면 그 아래로 가지, 여럿이면 형제끼리 가지(flat)
+  const box = document.createElement('div'); box.innerHTML = out.join('');
+  box.querySelectorAll(':scope > ul, :scope > ol').forEach((l) => {
+    if (!l.querySelector('li > ul, li > ol')) return;
+    l.classList.add('tree'); if (l.children.length > 1) l.classList.add('flat');
+  });
+  return box.innerHTML;
 }
 
 function toConv() {
@@ -291,11 +337,12 @@ function addWait() {
 }
 function addNote(text, cls) { const d = document.createElement('div'); d.className = cls; d.textContent = text; $('log').appendChild(d); return d; }
 
-function addA(res) {
+// live: 쓰는 대로 보여 주던 답 칸. 있으면 그 칸을 다 쓴 답(출처 이름표 포함)으로 바꾼다
+function addA(res, live) {
   const mid = Date.now().toString(36);
   SRC[mid] = {}; (res.sources || []).forEach((s) => { SRC[mid][s.n] = Object.assign(meta(s), { cited: s.cited || [] }); });
-  const d = document.createElement('article');
-  d.className = 'a';
+  const d = live || document.createElement('article');
+  d.className = live ? 'a live' : 'a';
   const nums = Object.keys(SRC[mid]);
   d.innerHTML = render(res.answer, mid) + (nums.length ? `<div class="srcs"><span class="lab">출처 ${nums.length}</span>${nums.map((n) => chip(mid, n)).join('')}</div>` : '');
   // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)
@@ -305,21 +352,58 @@ function addA(res) {
     d.appendChild(o);
   }
   [...d.children].forEach((el, i) => el.style.setProperty('--i', Math.min(i, 14)));
-  $('log').appendChild(d);
+  if (!live) $('log').appendChild(d);
 }
 
 // 출처 이름표를 누르면 옆 패널(폰은 아래 시트)에 인용 원문
 const panel = $('panel'), scrim = $('scrim');
-function openPanel(mid, n) {
+function openPanel(mid, n, from) {
   const m = SRC[mid] && SRC[mid][n]; if (!m) return;
-  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '')
-    + m.cited.slice(0, 3).map((c) => `<blockquote><mark>${esc(c.length > 700 ? c.slice(0, 700) + '…' : c)}</mark></blockquote>`).join('')
-    + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
+  const ns = Object.keys(SRC[mid]), k = ns.indexOf(String(n));
+  const where = step(mid, n, from), c = m.ctx;
+  $('lab').textContent = `출처 ${k + 1} / ${ns.length}`;
+  const hit = (p) => m.cited.some((x) => x.trim() && (x.includes(p) || p.includes(x.trim())));
+  const para = (p, cls) => {
+    const sh = p.match(/^##\s*(?:시트:\s*)?(.+)/);
+    if (sh) return `<p class="sh${cls ? ' ' + cls : ''}">${esc(sh[1])}${/^##\s*시트/.test(p) ? ' 시트' : ''}</p>`;
+    if (/^(\d+단계\.?|[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.)\s/.test(p) && p.length < 40) cls = (cls ? cls + ' ' : '') + 'sh';   // '3단계. 주주가치 추정' 같은 소제목
+    return `<p${cls ? ` class="${cls}"` : ''}>${hit(p) && !/fade/.test(cls || '') ? `<mark>${esc(p)}</mark>` : esc(p)}</p>`;
+  };
+  // 형광펜 앞뒤 몇 문단만 펼쳐 두고 나머지는 접는다 (청크가 길면 형광펜이 아래로 묻힌다)
+  const ctxHTML = () => {
+    const ps = c.paras, hs = ps.map((p, i) => hit(p) ? i : -1).filter((i) => i >= 0);
+    const a = hs.length ? Math.max(0, hs[0] - 2) : 0, z = hs.length ? Math.min(ps.length, hs[hs.length - 1] + 4) : ps.length;
+    const fold = (arr, label) => arr.length ? `<details><summary>${label}</summary>${arr.map((p) => para(p)).join('')}</details>` : '';
+    return (a ? fold(ps.slice(0, a), `▴ 앞부분 ${a}문단 보기`) : c.before.map((p) => para(p, 'fade')).join(''))
+      + ps.slice(a, z).map((p) => para(p)).join('')
+      + (z < ps.length ? fold(ps.slice(z), `▾ 뒷부분 ${ps.length - z}문단 보기`) : c.after.map((p) => para(p, 'fade')).join(''));
+  };
+  const body = c && c.paras.length
+    ? `<dl class="meta"><dt>자료</dt><dd>${esc([m.sem, m.kind].filter(Boolean).join(' '))} · ${esc(m.name)}</dd>`
+      + (c.section || m.pg ? `<dt>위치</dt><dd>${esc([c.section, m.pg].filter(Boolean).join(' · '))}</dd>` : '')
+      + (where ? `<dt>답에서</dt><dd>‘${esc(where)}’ 부분의 근거</dd>` : '') + '</dl>'
+      + (c.section ? `<div class="crumb">${esc(c.section)}</div>` : '')
+      + `<div class="ctx">${ctxHTML()}</div>`
+    : m.cited.slice(0, 3).map((x) => `<blockquote><mark>${esc(x.length > 700 ? x.slice(0, 700) + '…' : x)}</mark></blockquote>`).join('')
+      + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
+  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + body
+    + (ns.length > 1 ? `<div class="nav"><button type="button" data-go="${ns[k - 1] || ''}"${k ? '' : ' disabled'}>← 이전 출처</button><button type="button" data-go="${ns[k + 1] || ''}"${k < ns.length - 1 ? '' : ' disabled'}>다음 출처 →</button></div>` : '');
+  $('doc').querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => b.dataset.go && openPanel(mid, b.dataset.go); });
   document.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b.dataset.m === mid && b.dataset.n === String(n)));
   panel.classList.add('open'); scrim.classList.add('open'); document.body.classList.add('reading');
+  $('doc').scrollTop = 0;
+}
+// 답 본문에서 이 출처가 달린 자리(누른 이름표, 없으면 처음 달린 곳)의 소제목. 없으면 빈 값
+function step(mid, n, from) {
+  const ch = (from && from.closest('article.a') && !from.closest('.srcs') && from) || document.querySelector(`article.a p .chip[data-m="${mid}"][data-n="${n}"], article.a li .chip[data-m="${mid}"][data-n="${n}"], article.a h4 .chip[data-m="${mid}"][data-n="${n}"]`);
+  if (!ch) return '';
+  let el = ch; const art = ch.closest('article.a');
+  while (el.parentElement !== art) el = el.parentElement;
+  while (el && el.tagName !== 'H4') el = el.previousElementSibling;
+  return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
 }
 function closePanel() { panel.classList.remove('open'); scrim.classList.remove('open'); document.body.classList.remove('reading'); document.querySelectorAll('.chip.on').forEach((b) => b.classList.remove('on')); }
-document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n); });
+document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n, b); });
 $('x').onclick = closePanel; scrim.onclick = closePanel;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
 
@@ -336,15 +420,45 @@ async function ask(text) {
     const { data } = await sb.auth.getSession();
     const headers = { 'Content-Type': 'application/json' };
     if (data.session) headers.Authorization = 'Bearer ' + data.session.access_token;
-    const r = await fetch(API.replace(/\/$/, '') + '/chat', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
-    const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
-    w.done();
-    if (res.conversation_id) cid = res.conversation_id;
-    if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
-    if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
-    addA(res);
+    // /chat/stream: 답 글자를 쓰는 대로 받는다 (data: {type: stage|delta|done|error} 줄들)
+    const r = await fetch(API.replace(/\/$/, '') + '/chat/stream', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
+    const fin = (res) => {
+      w.done();
+      if (res.conversation_id) cid = res.conversation_id;
+      if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
+    };
+    if (!/event-stream/.test(r.headers.get('content-type') || '')) {   // 하루 제한·잘못된 요청은 보통 JSON으로 온다
+      const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
+      fin(res);
+      if (!r.ok || res.error) throw new Error(res.error || '오류가 났습니다.');
+      addA(res); return;
+    }
+    let live = null, said = '', painted = false, done = null, buf = '';
+    const paint = () => { painted = false; if (done) return; live.innerHTML = render(said, 'live') + '<span class="caret"></span>'; };
+    const rd = r.body.getReader(), dec = new TextDecoder();
+    for (;;) {
+      const { value, done: end } = await rd.read();
+      if (end) break;
+      buf += dec.decode(value, { stream: true });
+      let k;
+      while ((k = buf.indexOf('\n\n')) >= 0) {
+        const line = buf.slice(0, k); buf = buf.slice(k + 2);
+        if (!line.startsWith('data: ')) continue;
+        const ev = JSON.parse(line.slice(6));
+        if (ev.type === 'stage') { const sm = w.querySelector('small'); if (sm) sm.textContent = '자료를 다 찾았어요. 답을 쓰는 중…'; }
+        else if (ev.type === 'delta') {
+          if (!live) { w.done(); live = document.createElement('article'); live.className = 'a live'; $('log').appendChild(live); }
+          said += ev.text;
+          if (!painted) { painted = true; requestAnimationFrame(paint); }
+        } else if (ev.type === 'done') done = ev;
+        else if (ev.type === 'error') { fin(ev); if (live) live.remove(); throw new Error(ev.error); }
+      }
+    }
+    if (!done) { if (live) live.remove(); throw new Error('연결이 끊겼어요. 다시 물어봐 주세요.'); }
+    fin(done);
+    addA(done, live);
   } catch (err) {
-    w.done(); addNote(err.message || '연결하지 못했습니다.', 'err');
+    w.done(); addNote(err instanceof TypeError ? '서버에 연결하지 못했어요. 잠시 뒤 다시 해 주세요.' : (err.message || '연결하지 못했습니다.'), 'err');
   } finally {
     busy = false; $('b').disabled = false; $('t').focus();
   }
@@ -372,6 +486,82 @@ const DEMO = new URLSearchParams(location.search).has('demo') ? {
     { n: 3, title: '밸류에이션 세미나 | 22-1학기 | 세미나 | EV/EBITDA | p.296', source: 'demo-3 p.296', cited: ['(예시) EBITDA 규모로 먼저 추리고 매출 구성으로 다시 거른다.'] },
   ], options: [],
 } : null;
+
+// 학회원 로그인: 로그인 화면은 홈페이지(AGORA) 하나만 쓴다. 다녀오면 이 탭의 로그인(sessionStorage)이 그대로 보인다
+// 홈은 rfs_after_login이 있으면 로그인하자마자 그 주소로 돌려보낸다 (index.html setU)
+const setLogin = (ses) => document.querySelectorAll('.login').forEach((b) => { b.textContent = ses ? '로그아웃' : '로그인'; b.classList.toggle('on', !!ses); b.title = ses ? '학회원으로 로그인됨' : ''; });
+sb.auth.getSession().then(({ data }) => setLogin(data.session));
+sb.auth.onAuthStateChange((_e, ses) => setLogin(ses));
+document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', async () => {
+  const { data } = await sb.auth.getSession();
+  if (data.session) { await sb.auth.signOut(); return; }
+  try { sessionStorage.setItem('rfs_after_login', JSON.stringify({ to: '/chat/', at: Date.now() })); } catch (e) {}
+  location.href = '/#intranet';
+}));
+
+// 첫 화면 사진 입체: 깊이 지도를 세 판(하늘·도시 0, 가운데 능선 .35, 앞 소나무 1)으로 나눠 판마다 통째로 움직인다.
+// 판 안은 깊이가 평평해야 잎이 일렁이지 않는다. 깊이 지도(1=가까움)로 앞 소나무·도시·하늘을 다른 속도로 움직인다 (assets/dipper.html과 같은 방식)
+// 처음 12초는 천천히 다가서며 저절로 흔들리고, 그 뒤로는 마우스를 따라서만 움직인다. 동작 줄이기 설정이면 사진 그대로
+(() => {
+  const hero = $('hero'), cv = $('hero3d');
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('embed')) return;
+  const g = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false });
+  if (!g) return;
+  const mob = innerWidth <= 760;
+  const img = new Image(), dimg = new Image();
+  img.src = mob ? '/assets/hero/polaris-m.webp' : '/assets/hero/polaris.webp';
+  dimg.src = mob ? '/assets/hero/polaris-depth-m.png?v=3' : '/assets/hero/polaris-depth.png?v=3';   // 깊이 지도를 바꾸면 v를 올린다 (예전 지도가 캐시에 남지 않게)
+  const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const fs = `precision highp float;
+    uniform sampler2D I,D; uniform vec2 R,S,M; uniform float Z,Y,A;
+    vec2 cover(vec2 f){ float sr=R.x/R.y, ir=S.x/S.y; vec2 uv=f/R; uv.y=1.-uv.y;
+      if(sr>ir){ float h=ir/sr; uv.y=uv.y*h+(1.-h)*Y; } else { float w=sr/ir; uv.x=uv.x*w+(1.-w)*.5; } return uv; }
+    void main(){
+      vec2 uv=cover(gl_FragCoord.xy), c=vec2(.5,.5), q=uv;
+      for(int i=0;i<4;i++){ float d=texture2D(D,q).r; float s=1.03+Z*(.3+.7*d); q=c+(uv-c)/s - M*(d-.25)*A; }
+      vec3 col=texture2D(I,clamp(q,.001,.999)).rgb*.78;          // CSS filter: brightness(.78) contrast(1.06)
+      gl_FragColor=vec4(clamp((col-.5)*1.06+.5,0.,1.),1.);
+    }`;
+  const sh = (t, src) => { const o = g.createShader(t); g.shaderSource(o, src); g.compileShader(o); return o; };
+  const pr = g.createProgram(); g.attachShader(pr, sh(g.VERTEX_SHADER, vs)); g.attachShader(pr, sh(g.FRAGMENT_SHADER, fs)); g.linkProgram(pr);
+  if (!g.getProgramParameter(pr, g.LINK_STATUS)) return;
+  g.useProgram(pr);
+  g.bindBuffer(g.ARRAY_BUFFER, g.createBuffer()); g.bufferData(g.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), g.STATIC_DRAW);
+  const loc = g.getAttribLocation(pr, 'p'); g.enableVertexAttribArray(loc); g.vertexAttribPointer(loc, 2, g.FLOAT, false, 0, 0);
+  const tex = (unit, im) => { g.activeTexture(g.TEXTURE0 + unit); g.bindTexture(g.TEXTURE_2D, g.createTexture());
+    [g.TEXTURE_MIN_FILTER, g.TEXTURE_MAG_FILTER].forEach((k) => g.texParameteri(g.TEXTURE_2D, k, g.LINEAR));
+    [g.TEXTURE_WRAP_S, g.TEXTURE_WRAP_T].forEach((k) => g.texParameteri(g.TEXTURE_2D, k, g.CLAMP_TO_EDGE));
+    g.texImage2D(g.TEXTURE_2D, 0, g.RGB, g.RGB, g.UNSIGNED_BYTE, im); };
+  const U = (n) => g.getUniformLocation(pr, n);
+  let t0 = 0, mx = 0, my = 0, tx = 0, ty = 0, on = false, drawing = false;
+  addEventListener('pointermove', (e) => { if (e.pointerType !== 'mouse') return; tx = e.clientX / innerWidth - .5; ty = e.clientY / innerHeight - .5; on = true; wake(); }, { passive: true });
+  const live = () => !document.hidden && document.body.classList.contains('start') && hero.getBoundingClientRect().bottom > 0;
+  const wake = () => { if (!drawing && t0 && live()) { drawing = true; requestAnimationFrame(draw); } };
+  document.addEventListener('visibilitychange', wake);
+  const draw = (now) => {
+    if (!live()) { drawing = false; return; }
+    const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
+    const t = (now - t0) / 1000, intro = t < 12;
+    const gx = intro && !on ? Math.sin(t * .2) * .6 : tx * 2, gy = intro && !on ? Math.cos(t * .14) * .35 : -ty * 2;
+    mx += (gx - mx) * .05; my += (gy - my) * .05;
+    g.uniform2f(U('R'), w, h); g.uniform2f(U('M'), mx, my); g.uniform1f(U('Z'), (mob ? .06 : .09) * Math.pow(Math.max(0, 1 - t / 12), 2.2));
+    g.drawArrays(g.TRIANGLE_STRIP, 0, 4);
+    if (!intro && Math.abs(gx - mx) < .002 && Math.abs(gy - my) < .002) { drawing = false; return; }   // 다 멎으면 쉰다
+    requestAnimationFrame(draw);
+  };
+  let n = 0;
+  const one = () => {
+    if (++n < 2) return;
+    tex(0, img); tex(1, dimg); g.uniform1i(U('I'), 0); g.uniform1i(U('D'), 1);
+    g.uniform2f(U('S'), img.naturalWidth, img.naturalHeight); g.uniform1f(U('Y'), mob ? .35 : .38);
+    g.uniform1f(U('A'), mob ? .014 : .022);   // 밀어내는 폭. 폰은 사진을 크게 잘라 보여서 더 작게 (크면 잎 가장자리가 일렁인다)   // CSS background-position과 같게
+    hero.classList.add('p3d'); t0 = performance.now(); wake();
+  };
+  [img, dimg].forEach((im) => (im.complete && im.naturalWidth ? one() : im.addEventListener('load', one, { once: true })));
+  // 대화에서 첫 화면으로 돌아오면 다시 그린다
+  new MutationObserver(wake).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+})();
 </script>
 </body>
 </html>

@@ -26,7 +26,8 @@
 </script>
 <script>
 // 인트로(로고 화면)는 이 탭에서 한 번만. 챗봇 등 다른 페이지에서 메뉴로 돌아올 때는 바로 그 화면으로 간다
-try { if (sessionStorage.getItem('rfs_booted')) document.documentElement.classList.add('rfs-seen', 'rfs-ready'); } catch (e) {}
+// 인트로는 탭에서 처음 한 번만. 우리 사이트의 다른 페이지(Polaris 등)에서 넘어온 경우도 이미 본 것으로 친다
+try { if (sessionStorage.getItem('rfs_booted') || (document.referrer && new URL(document.referrer).origin === location.origin)) document.documentElement.classList.add('rfs-seen', 'rfs-ready'); } catch (e) {}
 </script>
 <style>
 /* 인트로가 뜨기 전 빈 화면을 흰색 대신 인트로 바탕색으로, Polaris 버튼은 인트로가 끝난 뒤에 */
@@ -4623,7 +4624,9 @@ class Component extends DCLogic {
       this.sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
       // 학회원으로 로그인한 기기는 GA에서 내부 방문(traffic_type=internal)으로 표시해 외부 방문 지표와 섞이지 않게 한다
       const markMember = (ses) => { if (!ses) return; try { localStorage.setItem('rfs_member', '1'); } catch (e) {} try { window.gtag && window.gtag('set', { traffic_type: 'internal' }); } catch (e) {} };
-      const setU = (ses) => markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
+      // 다른 화면(Polaris 등)에서 로그인하러 왔으면 로그인하자마자 돌려보낸다 (10분 안에 온 요청만)
+      const back = (ses) => { if (!ses) return; try { const r = JSON.parse(sessionStorage.getItem('rfs_after_login') || 'null'); sessionStorage.removeItem('rfs_after_login'); if (r && /^\/[\w/-]*$/.test(r.to) && Date.now() - r.at < 600000) location.href = r.to; } catch (e) {} };
+      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
