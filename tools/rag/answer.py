@@ -73,7 +73,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 결론 문장에 다른 요점(약점, 부작용)을 붙이지 않는다. 앞에서 정한 기준(나누는 기준, 개수)을 끝까지 지킨다.
 
 5. 말투
-- 존댓말(해요체). 문장은 짧고 구체적으로, 내용은 빠짐없이. "결론:" 같은 꼬리표, 칭찬, 감탄, 상투적인 마무리, 같은 틀 문장 반복을 쓰지 않는다.
+- 존댓말(해요체). 문장은 짧고 구체적으로, 내용은 빠짐없이. 무엇을 다룰지·안 다룰지 예고하는 문장("개요부터 설명할게요", "계산 요령은 다루지 않아요")으로 시작하지 않는다. "결론:" 같은 꼬리표, 칭찬, 감탄, 상투적인 마무리, 같은 틀 문장 반복을 쓰지 않는다.
 - 글을 판단하는 기준은 TORM(26-1)·삼양식품(24-1) 리포트의 문체다(결론 먼저, 판단에 숫자, 군더더기 없는 연결).
 - 마크다운 제목(#)은 쓰지 않는다. 목록·굵은 글씨는 써도 된다.
 
@@ -175,6 +175,24 @@ class Answerer:
     def answer(self, question, given=None):
         return Chat(self).turn(question, given)
 
+    def context(self, chunk_id, cap=500):
+        """출처 패널에 보여줄 문맥: 인용한 청크의 문단 전체와 같은 문서 앞 청크 끝 2문단, 뒤 청크 첫 문단 (흐리게)."""
+        i = self.s.id2i.get(chunk_id)
+        if i is None:
+            return None
+        c = self.chunks[i]
+        paras = lambda j: [p.strip()[:cap] for p in self.chunks[j]['text'].split('\n') if p.strip()]
+        doc, k = chunk_id.rsplit('-', 1)
+        near = lambda d: self.s.id2i.get(f'{doc}-{int(k) + d:0{len(k)}d}')
+        prev, nxt = near(-1), near(1)
+        parts = c['header'].split(' | ')
+        section = parts[3] if len(parts) > 3 and not parts[3].startswith('p.') else ''
+        body = paras(i)
+        # 청크끼리 앞뒤가 겹치게 잘려 있어서, 본문에 이미 있는 문단은 뺀다
+        before = [p for p in paras(prev) if p not in body][-2:] if prev is not None else []
+        after = [p for p in paras(nxt) if p not in body][:1] if nxt is not None else []
+        return {'section': section, 'paras': body, 'before': before, 'after': after}
+
     def render(self, resp, shown, searches):
         """답 본문에 [1] 같은 출처 번호를 달고, 번호별 문서·페이지·인용 원문을 모은다."""
         text, sources, num = '', [], {}
@@ -187,7 +205,8 @@ class Answerer:
                 key = getattr(c, 'source', None) or c.url  # 학회 자료는 '청크ID p.쪽', 웹 검색은 URL
                 if key not in num:
                     num[key] = len(num) + 1
-                    sources.append({'n': num[key], 'source': key, 'title': c.title or key, 'cited': []})
+                    sources.append({'n': num[key], 'source': key, 'title': c.title or key, 'cited': [],
+                                    'context': None if key.startswith('http') else self.context(key.split()[0])})
                 src = sources[num[key] - 1]
                 if c.cited_text not in src['cited']:
                     src['cited'].append(c.cited_text)

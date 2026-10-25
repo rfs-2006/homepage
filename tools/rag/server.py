@@ -178,7 +178,7 @@ class Handler(BaseHTTPRequestHandler):
                                     'answer': out['answer'], 'sources': [s['source'] for s in out['sources']]},
                                    ensure_ascii=False) + '\n')
         self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'options': out.get('options', []), 'left': left,
-                         'sources': [{k: s[k] for k in ('n', 'title', 'source', 'cited')} for s in out['sources']]})
+                         'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context')} for s in out['sources']]})
 
     def log_message(self, fmt, *args):  # 접속 로그에 토큰·질문이 남지 않게 경로만
         print(time.strftime('%H:%M:%S'), self.command, self.path, args[1] if len(args) > 1 else '', flush=True)

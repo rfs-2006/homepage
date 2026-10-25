@@ -55,10 +55,11 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;padding:16px 36px;height:72px}
 /* 홈페이지와 같은 위 메뉴 (ABOUT … AGORA, 지금 화면은 POLARIS) */
 .brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
-.top .brand img{width:40px}
+.brand img{width:36px;height:36px;object-fit:contain}
 .brand span{display:flex;flex-direction:column;line-height:1.15}
-.brand b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:.02em}
-.brand small{font-size:11px;opacity:.85}
+.brand span{gap:3px;line-height:1}
+.brand b{font-family:'Noto Serif KR',serif;font-weight:700;font-size:17px;letter-spacing:-.02em}
+.brand small{font-size:11.5px;font-weight:500;letter-spacing:.06em;opacity:.8}
 .menu{margin-left:auto;display:flex;gap:36px}
 .menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;opacity:.85;padding:6px 0;border-bottom:2px solid transparent}
 .menu a:hover{opacity:1}
@@ -88,7 +89,7 @@ body.conv{background:var(--bg);color:var(--text);font-size:15.5px;line-height:1.
 body.conv .startv{display:none}
 body.start .convv{display:none}
 .head{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
-.head img{width:24px}.head .brand b{font-size:17px}
+
 .head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--text)}
 .head .new{margin-left:28px;font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:4px 12px;cursor:pointer}
 .head .new:hover{border-color:var(--text)}
@@ -138,6 +139,13 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .doc .tag{display:inline-block;font-size:11px;font-weight:500;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
 .doc blockquote{margin:0 0 14px;font-size:14px;line-height:1.9}
 .doc mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.doc .meta{display:grid;grid-template-columns:52px 1fr;gap:6px 10px;font-size:12.5px;line-height:1.55;padding:12px 14px;background:#fff;border:1px solid var(--hair);border-radius:8px;margin:2px 0 18px}
+.doc .meta dt{color:var(--sub)}.doc .meta dd{margin:0}
+.doc .crumb{font-size:12px;color:var(--navy);font-weight:500;margin:0 0 8px}
+.doc .ctx{font-size:13.5px;line-height:1.85;border-left:2px solid var(--hair);padding-left:14px;margin:0 0 18px}
+.doc .ctx p{margin:0 0 6px}.doc .ctx summary{font-size:12.5px;color:var(--sub);cursor:pointer;margin:0 0 8px;list-style:none}.doc .ctx summary::-webkit-details-marker{display:none}.doc .ctx details[open] summary{display:none}.doc .ctx .fade{color:var(--dim)}.doc .ctx .sh{font-weight:500;margin-top:12px}
+.doc .nav{display:flex;gap:16px}.doc .nav button{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);cursor:pointer}
+.doc .nav button:disabled{opacity:.3;cursor:default}
 .doc .open{display:inline-block;margin-top:6px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
 .scrim{display:none}
 /* 폰: ☰ 누르면 화면 전체 메뉴 */
@@ -161,7 +169,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .embed .foot{padding:10px 12px 10px}
 @media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
 @media (max-width:760px){
- .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:58vh;height:58svh}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+ .top{padding:12px 16px;height:auto}.brand img{width:32px;height:32px}.brand small{font-size:10.5px}.menu{display:none}.burger{display:flex}.hero{height:58vh;height:58svh}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
  .intro{margin-top:auto}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
  .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
@@ -186,10 +194,10 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 </div>
 <!-- 대화 화면 -->
 <div class="convv">
-  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
+  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
   <main id="log" aria-live="polite"></main>
   <form class="foot" id="f"><div class="in"><textarea id="t" placeholder="이어서 물어보기" maxlength="1000" aria-label="질문"></textarea><button class="send" id="b" type="submit" aria-label="보내기">↑</button></div><p class="note">답은 틀릴 수 있어요. 출처를 눌러 원문을 확인하세요.<span id="left"></span></p></form>
-  <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
+  <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab" id="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
   <div class="scrim" id="scrim"></div>
 </div>
 <div class="mnav" id="mnav" hidden><button type="button" class="mx" aria-label="메뉴 닫기">✕</button><nav><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></nav></div>
@@ -218,7 +226,7 @@ function meta(s) {
   const parts = s.title.replace(/\s*\[[^\]]*\]/g, '').split('|').map((x) => x.trim()).filter(Boolean);
   const name = parts[0] || '자료', sem = parts.find((x) => /^\d{2}-\d학기$/.test(x)) || '', kind = parts[2] || '';
   const pg = (s.source.match(/p\.[\d-]+/) || [''])[0];
-  return { web: false, name, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
+  return { web: false, name, sem, kind, pg, ctx: s.context || null, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
 }
 const chip = (mid, n) => { const m = SRC[mid] && SRC[mid][n]; return m ? `<button type="button" class="chip${m.web ? ' web' : ''}" data-m="${mid}" data-n="${n}"><i></i>${esc(m.chip)}</button>` : ''; };
 
@@ -310,16 +318,53 @@ function addA(res) {
 
 // 출처 이름표를 누르면 옆 패널(폰은 아래 시트)에 인용 원문
 const panel = $('panel'), scrim = $('scrim');
-function openPanel(mid, n) {
+function openPanel(mid, n, from) {
   const m = SRC[mid] && SRC[mid][n]; if (!m) return;
-  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '')
-    + m.cited.slice(0, 3).map((c) => `<blockquote><mark>${esc(c.length > 700 ? c.slice(0, 700) + '…' : c)}</mark></blockquote>`).join('')
-    + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
+  const ns = Object.keys(SRC[mid]), k = ns.indexOf(String(n));
+  const where = step(mid, n, from), c = m.ctx;
+  $('lab').textContent = `출처 ${k + 1} / ${ns.length}`;
+  const hit = (p) => m.cited.some((x) => x.trim() && (x.includes(p) || p.includes(x.trim())));
+  const para = (p, cls) => {
+    const sh = p.match(/^##\s*(?:시트:\s*)?(.+)/);
+    if (sh) return `<p class="sh${cls ? ' ' + cls : ''}">${esc(sh[1])}${/^##\s*시트/.test(p) ? ' 시트' : ''}</p>`;
+    if (/^(\d+단계\.?|[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+\.)\s/.test(p) && p.length < 40) cls = (cls ? cls + ' ' : '') + 'sh';   // '3단계. 주주가치 추정' 같은 소제목
+    return `<p${cls ? ` class="${cls}"` : ''}>${hit(p) && !/fade/.test(cls || '') ? `<mark>${esc(p)}</mark>` : esc(p)}</p>`;
+  };
+  // 형광펜 앞뒤 몇 문단만 펼쳐 두고 나머지는 접는다 (청크가 길면 형광펜이 아래로 묻힌다)
+  const ctxHTML = () => {
+    const ps = c.paras, hs = ps.map((p, i) => hit(p) ? i : -1).filter((i) => i >= 0);
+    const a = hs.length ? Math.max(0, hs[0] - 2) : 0, z = hs.length ? Math.min(ps.length, hs[hs.length - 1] + 4) : ps.length;
+    const fold = (arr, label) => arr.length ? `<details><summary>${label}</summary>${arr.map((p) => para(p)).join('')}</details>` : '';
+    return (a ? fold(ps.slice(0, a), `▴ 앞부분 ${a}문단 보기`) : c.before.map((p) => para(p, 'fade')).join(''))
+      + ps.slice(a, z).map((p) => para(p)).join('')
+      + (z < ps.length ? fold(ps.slice(z), `▾ 뒷부분 ${ps.length - z}문단 보기`) : c.after.map((p) => para(p, 'fade')).join(''));
+  };
+  const body = c && c.paras.length
+    ? `<dl class="meta"><dt>자료</dt><dd>${esc([m.sem, m.kind].filter(Boolean).join(' '))} · ${esc(m.name)}</dd>`
+      + (c.section || m.pg ? `<dt>위치</dt><dd>${esc([c.section, m.pg].filter(Boolean).join(' · '))}</dd>` : '')
+      + (where ? `<dt>답에서</dt><dd>‘${esc(where)}’ 부분의 근거</dd>` : '') + '</dl>'
+      + (c.section ? `<div class="crumb">${esc(c.section)}</div>` : '')
+      + `<div class="ctx">${ctxHTML()}</div>`
+    : m.cited.slice(0, 3).map((x) => `<blockquote><mark>${esc(x.length > 700 ? x.slice(0, 700) + '…' : x)}</mark></blockquote>`).join('')
+      + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
+  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + body
+    + (ns.length > 1 ? `<div class="nav"><button type="button" data-go="${ns[k - 1] || ''}"${k ? '' : ' disabled'}>← 이전 출처</button><button type="button" data-go="${ns[k + 1] || ''}"${k < ns.length - 1 ? '' : ' disabled'}>다음 출처 →</button></div>` : '');
+  $('doc').querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => b.dataset.go && openPanel(mid, b.dataset.go); });
   document.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b.dataset.m === mid && b.dataset.n === String(n)));
   panel.classList.add('open'); scrim.classList.add('open'); document.body.classList.add('reading');
+  $('doc').scrollTop = 0;
+}
+// 답 본문에서 이 출처가 달린 자리(누른 이름표, 없으면 처음 달린 곳)의 소제목. 없으면 빈 값
+function step(mid, n, from) {
+  const ch = (from && from.closest('article.a') && !from.closest('.srcs') && from) || document.querySelector(`article.a p .chip[data-m="${mid}"][data-n="${n}"], article.a li .chip[data-m="${mid}"][data-n="${n}"], article.a h4 .chip[data-m="${mid}"][data-n="${n}"]`);
+  if (!ch) return '';
+  let el = ch; const art = ch.closest('article.a');
+  while (el.parentElement !== art) el = el.parentElement;
+  while (el && el.tagName !== 'H4') el = el.previousElementSibling;
+  return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
 }
 function closePanel() { panel.classList.remove('open'); scrim.classList.remove('open'); document.body.classList.remove('reading'); document.querySelectorAll('.chip.on').forEach((b) => b.classList.remove('on')); }
-document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n); });
+document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n, b); });
 $('x').onclick = closePanel; scrim.onclick = closePanel;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
 
