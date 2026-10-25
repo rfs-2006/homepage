@@ -92,6 +92,14 @@ def take_quota(ip, member):
         return None, cap - counts[(day, key)]
 
 
+def give_back(ip, member, left):
+    day = time.strftime('%Y-%m-%d')
+    with lock:
+        counts[(day, '*')] -= 1
+        counts[(day, (ip, member))] -= 1
+    return left + 1
+
+
 def get_conv(cid):
     now = time.time()
     with lock:
@@ -157,6 +165,8 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as e:  # noqa: BLE001 — 사용자에게는 짧게, 서버 로그에는 자세히
                 print('오류', cid, repr(e), flush=True)
                 return self._json(500, {'error': '답을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'conversation_id': cid})
+        if out['kind'] == 'decline':  # 걸러진 질문은 하루 질문 수에서 빼 준다
+            left = give_back(ip, member, left)
         with lock:
             answerer.s.log.clear()  # 검색 로그는 평가용이라 서버에서는 쌓지 않는다
         if LOG_PATH:

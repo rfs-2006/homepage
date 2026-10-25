@@ -58,6 +58,19 @@ ASK_RULE = """
   ask_options는 신입도 고를 수 있는 쉬운 말로 2~5개, 마지막은 "잘 모르겠어요" (예: "제조업", "인터넷·소프트웨어", "바이오", "은행·증권", "잘 모르겠어요").
   clarify가 아니면 빈 문자열과 빈 목록."""
 
+# 서버에서만. 검색·답변 없이 정해진 문구로 정중하게 돌려보낸다 (답변 비용이 안 들고 하루 질문 수도 안 깎는다)
+DECLINE_RULE = """
+- decline: 학회 자료로 답할 수 없거나 답할 거리가 없는 질문을 거른다. 해당 없으면 빈 문자열.
+  vague: 무엇을 묻는지 알 수 없다 ("이거 뭐임", "그거 어케함", 뜻이 안 통하는 문장, 앞 대화로도 안 풀리는 지시어).
+  broad: 아무 조건 없이 뭔가 내놓으라는 요청 ("괜찮은 거 갖고와봐", "아무거나 알려줘", "재밌는 거", "리포트 하나 줘").
+  offtopic: 투자·리서치·학회와 무관 (날씨, 연애, 코딩 숙제, 맛집 등).
+  stock: 종목 매수·매도·보유 판단이나 종목 추천 ("지금 사도 돼?", "오를 종목 추천", "삼전 팔까?").
+  hello: 인사나 잡담만 있는 경우 ("안녕", "ㅎㅇ", "고마워").
+  짧아도 뜻이 통하면 거르지 않는다 ("WACC가 뭐야", "PER", "대한항공 리포트 있어?"는 정상 질문). 애매하면 거르지 않는다.
+- better: decline일 때만. 이 사람이 실제로 궁금했을 법한 것을 학회 자료로 답할 수 있는 구체적인 질문 2~3개로 바꿔 쓴다.
+  짧게, 사용자가 그대로 눌러 물을 수 있는 반말 질문체 (예: "항공사 리포트 투자포인트 사례 보여줘", "PER과 EV/EBITDA 언제 써?").
+  stock이면 그 회사를 분석하는 방법 질문으로 (예: "삼성전자 밸류에이션은 어떻게 해?"). decline이 아니면 빈 목록."""
+
 AGENT_SYSTEM = CORPUS + """
 
 너는 검색 담당이다. 사용자 질문에 답하는 데 필요한 청크를 찾아라. 답변은 쓰지 않는다.
@@ -114,9 +127,10 @@ class AgentSearch:
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
         self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
-    def rewrite(self, question, context='', allow_ask=False):
+    def rewrite(self, question, context='', allow_ask=False, allow_decline=False):
         """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
         context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
+        allow_decline이면 거를 질문일 때 kind가 decline:<이유>이고, 되물을 질문 자리에 {'better': 바꿔 쓴 질문들}을 준다.
         축은 rubric.md의 평가 축 (축별 추천 리포트를 고를 때 쓴다)."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
         props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
@@ -125,12 +139,17 @@ class AgentSearch:
                  'axis': {'type': 'string', 'enum': AXES + ['없음']}}
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
-        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else ''),
+        if allow_decline:
+            props |= {'decline': {'type': 'string', 'enum': ['', 'vague', 'broad', 'offtopic', 'stock', 'hello']},
+                      'better': {'type': 'array', 'items': {'type': 'string'}}}
+        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else '') + (DECLINE_RULE if allow_decline else ''),
                    output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
                        'type': 'object', 'properties': props, 'required': list(props), 'additionalProperties': False}}},
                    messages=[{'role': 'user', 'content': user}])
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
+        if out.get('decline'):
+            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, '없음'
         ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
             if out['kind'] == 'clarify' and out.get('ask_question') else None
         kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']

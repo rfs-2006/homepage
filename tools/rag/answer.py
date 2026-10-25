@@ -100,6 +100,16 @@ TOOL = {'name': 'search', 'description': '학회 자료에서 더 찾는다. 관
 TODAY = lambda: datetime.date.today().strftime('%Y년 %-m월 %-d일')  # 학기 자료가 몇 년 전 것인지 알게 한다
 WEB = {'type': 'web_search_20250305', 'name': 'web_search', 'max_uses': 2}
 
+# 걸러진 질문에 돌려주는 문구 (agent_search.DECLINE_RULE). 아래에 바꿔 쓴 질문이 버튼으로 붙는다
+DECLINE = {
+    'vague': '죄송해요, 어떤 걸 궁금해하시는지 제가 정확히 이해하지 못했어요. 회사 이름이나 리포트의 어느 부분(투자포인트, 매출 추정, 밸류에이션 등)이 궁금하신지 함께 적어 주시면 학회 자료에서 찾아 드릴게요.',
+    'broad': '죄송해요, 질문이 넓어서 도움이 될 만한 답을 드리기 어려워요. Polaris는 학회 리포트와 자료에서 근거를 찾아 설명해 드리는 도구라, 지금 공부하시거나 쓰고 계신 내용을 조금만 구체적으로 알려 주시면 훨씬 정확하게 도와드릴 수 있어요.',
+    'offtopic': '죄송해요, 이 질문은 제가 가진 학회 자료로는 답해 드리기 어려워요. 리서치, 밸류에이션, 리포트 작성처럼 투자 공부에 관한 질문이라면 성심껏 도와드릴게요.',
+    'stock': '죄송해요, 어떤 종목을 사거나 팔지, 어떤 종목이 좋은지는 말씀드리지 않아요. 대신 그 회사를 직접 분석해 보시는 방법은 학회 자료로 자세히 도와드릴 수 있어요.',
+    'hello': '안녕하세요. 학회 리포트와 자료에서 근거를 찾아 설명해 드리는 Polaris예요. 리서치하시다 막히는 부분을 편하게 물어봐 주세요.',
+}
+DECLINE_EXAMPLES = ['항공사 밸류에이션은 뭘 기준으로 해?', '산업 리서치는 어디서부터 시작해?', '내 리포트 문장 좀 봐줄래?']
+
 
 class Answerer:
     """mode: routed(질문 종류에 따라 multiquery / agent) | basic(항상 multiquery, 10절의 처음 버전)
@@ -200,8 +210,10 @@ class Chat:
     def _retrieve(self, question):
         s = self.a.s
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
-        queries, kind, standalone, ask, axis = s.rewrite(question, self._context(), allow_ask=allow)
+        queries, kind, standalone, ask, axis = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
         self.axis = axis
+        if kind.startswith('decline:'):
+            return ask, kind, standalone
         if ask:
             return ask, 'clarify', standalone
         if self.a.mode == 'routed' and kind == 'open':
@@ -223,6 +235,8 @@ class Chat:
             first, kind, standalone = self._retrieve(question)
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
+            if kind.startswith('decline:'):
+                return self._decline(question, kind.split(':')[1], first['better'], standalone)
             system, tools = SYSTEM.format(search=SEARCH.format(max=MAX_SEARCH), today=TODAY()), {'tools': [TOOL, WEB]}
         else:
             first, kind, standalone = [i for i in given if i not in self.shown], 'given', question
@@ -272,6 +286,14 @@ class Chat:
         return {'answer': text, 'options': ask['options'], 'sources': [], 'searches': [], 'shown': [],
                 'stop_reason': None, 'kind': 'clarify', 'standalone': standalone}
 
+
+    def _decline(self, question, why, better, standalone):
+        """검색·답변 없이 정해진 문구로 돌려보낸다. 바꿔 쓴 질문은 보기 버튼으로. 답변 모델 대화(msgs)에는 남기지 않는다."""
+        text = DECLINE[why]
+        options = better or DECLINE_EXAMPLES
+        self.turns.append({'question': question, 'answer': text, 'kind': 'decline'})
+        return {'answer': text, 'options': options, 'sources': [], 'searches': [], 'shown': [],
+                'stop_reason': None, 'kind': 'decline', 'standalone': standalone}
 
 
 if __name__ == '__main__':
