@@ -435,7 +435,9 @@ async function ask(text) {
     const headers = { 'Content-Type': 'application/json' };
     if (data.session) headers.Authorization = 'Bearer ' + data.session.access_token;
     // /chat/stream: 답 글자를 쓰는 대로 받는다 (data: {type: stage|delta|done|error} 줄들)
-    const r = await fetch(API.replace(/\/$/, '') + '/chat/stream', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
+    // 주소에 ?v2 를 붙이면 새 방식(답 모델이 도구를 골라 씀)으로 묻는다 (NOTES 16절, 나란히 비교용)
+    const MODE = /[?&]v2\b/.test(location.search) ? 'v2' : /[?&]v1\b/.test(location.search) ? 'v1' : '';
+    const r = await fetch(API.replace(/\/$/, '') + '/chat/stream', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text, ...(MODE ? { mode: MODE } : {}) }) });
     const fin = (res) => {
       w.done();
       if (res.conversation_id) cid = res.conversation_id;

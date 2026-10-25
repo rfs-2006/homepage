@@ -710,3 +710,10 @@ Sonnet은 POR도 알고 비교 질문을 나란히 놓을 줄도 아는데, 칸�
 2. 도구 5개 구현 (`search`·`web_search`는 있음) + 지시문·예시 새로 쓰기 + 문지기 줄이기. v1은 그대로 둔다.
 3. 회귀 시험으로 v1 vs v2 비교 → 결과 보고 결정.
 4. 서버에서 `POLARIS_MODE=v2`로 바꾸고 며칠 로그를 본다.
+
+### 구현 1차 (10/25)
+- `polaris_v2.py`: 문지기(GATE, Haiku) → 미리 검색 → 답 모델 + 도구(search·best_reports·read_report·report_file·read_guide·web_search). 지시문 3.1천 자.
+  피드백 하는 법·리포트 요약하는 법은 v1 TYPE에서 옮겨 read_guide 문서로. 평가표 축 7개·학회 안내도 read_guide.
+- 서버: `POLARIS_MODE=v1|v2` (기본 v1). 요청 본문 `mode`가 있으면 새 대화는 그걸 따른다. 채팅 화면 주소에 `?v2`를 붙이면 v2로 묻는다. 응답에 `tools`(부른 도구 이름).
+- 시험: `MODE=v2 CASES=cases_v4 eval_cases.py ...` — cases_v4 = v3 14개 + 10/25 실패 8개. v2는 거를 것만 맞춰 보고 답은 파일로 읽는다.
+- 도구는 실제 데이터로 따로 확인함 (검색은 BM25로 대신, API 없이). 답 품질은 서버에서 v1·v2 나란히 돌려 봐야 한다.

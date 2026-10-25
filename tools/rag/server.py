@@ -10,6 +10,7 @@
   PER_IP_DAILY           학회 계정으로 로그인했을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
   ANON_DAILY             로그인하지 않았을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 5
   ANSWER_MODEL           답변 모델, 기본 claude-sonnet-5-5 (claude-opus-5-5면 비용 두 배)
+  POLARIS_MODE           v1(질문 유형별 양식, 기본) | v2(답 모델이 도구를 골라 씀, polaris_v2.py). 요청 본문의 mode가 있으면 새 대화는 그걸 따른다 (나란히 비교용)
   DAILY_LIMIT            로그인 안 한 질문 전체의 하루 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
@@ -39,6 +40,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import MODELS  # noqa: E402
 from answer import Answerer, Chat  # noqa: E402
+import polaris_v2  # noqa: E402
 
 SB_URL = 'https://xyewclvpshldjucryapr.supabase.co'
 # 공개용 anon 키 (홈페이지 index.html에도 그대로 있다). 토큰 확인 요청에 같이 보낸다
@@ -107,14 +109,15 @@ def give_back(ip, member, left):
     return left + 1
 
 
-def get_conv(cid):
+def get_conv(cid, mode=''):
     now = time.time()
     with lock:
         for k in [k for k, v in convs.items() if v['used'] < now - IDLE_SEC]:
             del convs[k]
         if cid not in convs:
             cid = uuid.uuid4().hex
-            convs[cid] = {'chat': Chat(answerer), 'used': now, 'lock': threading.Lock()}
+            v2 = (mode or os.environ.get('POLARIS_MODE', 'v1')) == 'v2'
+            convs[cid] = {'chat': polaris_v2.Chat(answerer) if v2 else Chat(answerer), 'used': now, 'lock': threading.Lock()}
         convs[cid]['used'] = now
         return cid, convs[cid]
 
@@ -181,7 +184,7 @@ class Handler(BaseHTTPRequestHandler):
         err, left = take_quota(ip, member)
         if err:
             return self._json(429, {'error': err, 'left': 0})
-        cid, conv = get_conv(str(req.get('conversation_id') or ''))
+        cid, conv = get_conv(str(req.get('conversation_id') or ''), req.get('mode') if req.get('mode') in ('v1', 'v2') else '')
         if len(conv['chat'].turns) >= MAX_TURNS:
             return self._json(400, {'error': '대화가 길어졌습니다. 새 대화를 시작해 주세요.', 'conversation_id': cid})
         cb = {}
@@ -220,6 +223,7 @@ class Handler(BaseHTTPRequestHandler):
         body = {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''),
                 'timing': out.get('timing'), 'options': out.get('options', []), 'left': left,
                 'files': out.get('files', []),
+                'tools': [t['tool'] for t in out.get('trace', []) if 'tool' in t],   # v2가 부른 도구 이름만 (나란히 비교·평가용)
                 'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context', 'pdf')} for s in out['sources']]}
         if stream:
             send(dict(body, type='done'))
