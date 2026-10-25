@@ -17,6 +17,7 @@
 5. 대화는 앞부분을 바꾸지 않고 뒤에 붙이기만 한다. 그래서 프롬프트 캐싱이 턴마다 앞부분을 다시 읽지 않게 해 준다.
 """
 import datetime
+import html
 import json
 import re
 import sys
@@ -191,6 +192,29 @@ DECLINE = {
     'stock': '죄송해요, 어떤 종목을 사거나 팔지, 어떤 종목이 좋은지는 말씀드리지 않아요. 대신 그 회사를 직접 분석해 보시는 방법은 학회 자료로 자세히 도와드릴 수 있어요.',
     'hello': '안녕하세요. 학회 리포트와 자료에서 근거를 찾아 설명해 드리는 Polaris예요. 리서치하시다 막히는 부분을 편하게 물어봐 주세요.',
 }
+# 학회 자체를 묻는 질문(가입·활동·연락처)은 홈페이지 공개 페이지 글만 주고 가벼운 모델로 짧게 답한다 (검색·리포트 자료 없음)
+CLUB_SYSTEM = """너는 중앙대학교 가치투자학회 R.F.S.의 안내 챗봇 Polaris다. 아래 [홈페이지 공개 내용]만 근거로 학회에 대한 질문에 답한다.
+- 존댓말, 짧게(3~6문장). 필요하면 짧은 목록. 마크다운 제목은 쓰지 않는다.
+- 공개 내용에 없는 것은 지어내지 말고 문의처(아래 내용의 이메일·인스타그램)를 안내한다.
+- 연락처를 물으면 문의 메일(일반 contact@caurfs.kr, 모집 recruiting@caurfs.kr)과 인스타그램 @cau_rfs를 알려 준다. 개인 전화번호는 말하지 않는다.
+- 끝에 관련 페이지 하나를 링크로 붙인다: 모집·가입은 [신입 학회원 모집](/recruiting/), 학회·활동 소개는 [학회 소개](/about/).
+
+[홈페이지 공개 내용]
+{info}"""
+
+
+def club_info():
+    """홈페이지 공개 페이지(모집·소개)의 본문 글. 서버가 홈페이지 저장소 안에서 돌기 때문에 파일을 바로 읽는다."""
+    root = Path(__file__).resolve().parents[2]
+    out = []
+    for f in ('recruiting/index.html', 'about/index.html'):
+        p = root / f
+        if p.exists():
+            h = re.sub(r'<(script|style)[\s\S]*?</\1>', '', p.read_text(errors='ignore'))
+            out.append(re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', h))).strip())
+    return '\n\n'.join(out) + '\n\n문의: contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
+
+
 DECLINE_EXAMPLES = ['항공사 밸류에이션은 뭘 기준으로 해?', '산업 리서치는 어디서부터 시작해?', '내 리포트 문장 좀 봐줄래?']
 
 
@@ -461,6 +485,8 @@ class Chat:
                 on_stage('answer')
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
+            if kind == 'decline:club':
+                return self._club(question, standalone, on_text)
             if kind.startswith('decline:'):
                 return self._decline(question, kind.split(':')[1], first['better'], standalone)
             if kind == 'file':
@@ -542,6 +568,21 @@ class Chat:
         return {'answer': text, 'options': ask['options'], 'sources': [], 'searches': [], 'shown': [],
                 'stop_reason': None, 'kind': 'clarify', 'standalone': standalone}
 
+
+    def _club(self, question, standalone, on_text=None):
+        """학회 자체 질문(가입·활동·연락처): 홈페이지 공개 내용만 주고 가벼운 모델로 답한다. 답변 모델 대화(msgs)에는 남기지 않는다."""
+        s = self.a.s
+        if not hasattr(self.a, 'club'):
+            self.a.club = CLUB_SYSTEM.format(info=club_info())
+        t0 = time.perf_counter()
+        resp = ask(s.cl, model=s.model, on_text=on_text, system=self.a.club,
+                   messages=[{'role': 'user', 'content': (self._context() + '\n\n' if self.turns else '') + '질문: ' + question}])
+        s._count(resp)
+        text = ''.join(b.text for b in resp.content if b.type == 'text').strip()
+        self.timing['답변'] = [{'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens}]
+        self.turns.append({'question': question, 'answer': text, 'kind': 'club'})
+        return {'answer': text, 'options': [], 'sources': [], 'searches': [], 'shown': [], 'timing': self.timing,
+                'stop_reason': resp.stop_reason, 'kind': 'club', 'standalone': standalone}
 
     def _decline(self, question, why, better, standalone):
         """검색·답변 없이 정해진 문구로 돌려보낸다. 바꿔 쓴 질문은 보기 버튼으로. 답변 모델 대화(msgs)에는 남기지 않는다."""

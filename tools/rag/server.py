@@ -204,7 +204,7 @@ class Handler(BaseHTTPRequestHandler):
                 print('오류', cid, repr(e), flush=True)
                 body = {'error': '답을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'conversation_id': cid}
                 return send(dict(body, type='error')) if stream else self._json(500, body)
-        if out['kind'] in ('decline', 'file'):  # 걸러진 질문과 파일만 달라는 요청은 답을 쓰지 않으니 하루 질문 수에서 빼 준다
+        if out['kind'] in ('decline', 'file', 'club'):  # 걸러진 질문, 파일만 달라는 요청, 학회 안내(가벼운 모델로 짧게)는 하루 질문 수에서 빼 준다
             left = give_back(ip, member, left)
         trace = out.get('trace', [])   # 이 대화의 검색 기록 (대화마다 따로 모은다)
         with lock:
