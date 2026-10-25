@@ -84,9 +84,18 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .opts button{background:#fff;border:1px solid var(--hair);border-radius:999px;font:inherit;font-size:13.5px;padding:5px 13px;cursor:pointer;color:var(--text)}
 .opts button:hover{border-color:var(--text)}
-.wait{color:var(--sub)}
-.wait span{animation:blink 1.4s infinite}
-@keyframes blink{50%{opacity:.35}}
+/* 기다리는 동안: 북극성이 반짝이며 돌고, 옆 문구가 몇 초마다 바뀐다 (Claude의 생각 중 표시처럼) */
+.wait{display:flex;align-items:center;gap:12px;color:var(--sub);margin:26px 0 10px;min-height:28px}
+.wait svg{flex:none;width:22px;height:22px;color:var(--navy);animation:spin 5s linear infinite,pulse 1.6s ease-in-out infinite}
+.wait .msg{transition:opacity .35s,transform .35s}
+.wait .msg.out{opacity:0;transform:translateY(-4px)}
+.wait small{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.45;scale:.82}}
+/* 질문은 바로 떠오르고, 답은 문단마다 차례로 (스트리밍처럼) */
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+.q{animation:rise .35s ease-out both}
+.a>*{animation:rise .45s ease-out both;animation-delay:calc(var(--i,0) * 70ms)}
 .err{color:var(--err)}
 .foot{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 14px;background:linear-gradient(rgba(255,255,255,0),var(--bg) 40%)}
 .foot .in{max-width:700px;margin:0 auto;background:#fff;border:1px solid var(--hair);border-radius:12px;display:flex;align-items:flex-end;gap:8px;padding:7px 7px 7px 16px;box-shadow:0 12px 30px -18px rgba(20,23,28,.35);transition:margin .25s}
@@ -114,7 +123,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
  main{padding:6px 16px 170px}.q{font-size:19px;margin-top:34px}.foot{padding:12px 16px 12px}.head{padding:10px 16px}.head .new{margin-left:auto}
 }
-@media (prefers-reduced-motion:reduce){.panel,main,.foot .in{transition:none}.wait span{animation:none}}
+@media (prefers-reduced-motion:reduce){.panel,main,.foot .in{transition:none}.wait svg,.q,.a>*{animation:none}.wait .msg{transition:none}}
 </style>
 </head>
 <body class="start">
@@ -203,7 +212,26 @@ function toStart() {
   document.body.classList.remove('conv'); document.body.classList.add('start'); $('t0').focus();
 }
 
-function addQ(text) { const d = document.createElement('div'); d.className = 'q'; d.textContent = text; $('log').appendChild(d); }
+function addQ(text) {
+  const d = document.createElement('div'); d.className = 'q'; d.textContent = text; $('log').appendChild(d);
+  requestAnimationFrame(() => window.scrollTo({ top: d.getBoundingClientRect().top + window.scrollY - 76, behavior: 'smooth' }));
+}
+
+// 기다리는 동안 바뀌는 문구 (이스터에그). 첫 문구는 늘 평범하게, 다음부터 섞어서
+const WAIT = ['학회 자료에서 찾는 중…', 'Polaris를 만든 김민석 선배님께 물어보는 중…', '0기 정세호 선배님께 전화하는 중…',
+  '608명 선배님 중 답해 주실 분 찾는 중…', '2019년 리포트 먼지 터는 중…', '선배님 엑셀 여는 중… #REF!만 아니길',
+  '세미나 녹화본 1.5배속으로 보는 중…', '카페 게시판 37페이지 넘기는 중…', 'DART 공시 다시 뒤지는 중…',
+  'WACC 한 번 더 계산하는 중…', '투자포인트를 세 개로 줄이는 중…', '북두칠성 따라 북극성 찾는 중…', '목표주가 말고 근거 찾는 중…'];
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l1.9 7.1 7.1 1.9-7.1 1.9L12 19.5l-1.9-7.1L3 10.5l7.1-1.9z"/><circle cx="12" cy="10.5" r="1.3" fill="#fff"/></svg>';
+function addWait() {
+  const w = document.createElement('div'); w.className = 'wait'; w.setAttribute('role', 'status');
+  w.innerHTML = `${STAR}<div><span class="msg">${WAIT[0]}</span><small>보통 20초~1분 걸려요</small></div>`;
+  $('log').appendChild(w);
+  const rest = WAIT.slice(1).sort(() => Math.random() - .5), msg = w.querySelector('.msg'); let k = 0;
+  w._t = setInterval(() => { msg.classList.add('out'); setTimeout(() => { msg.textContent = rest[k++ % rest.length]; msg.classList.remove('out'); }, 350); }, 2600);
+  w.done = () => { clearInterval(w._t); w.remove(); };
+  return w;
+}
 function addNote(text, cls) { const d = document.createElement('div'); d.className = cls; d.textContent = text; $('log').appendChild(d); return d; }
 
 function addA(res) {
@@ -219,6 +247,7 @@ function addA(res) {
     res.options.forEach((t) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = () => { if (busy) return; o.remove(); ask(t); }; o.appendChild(b); });
     d.appendChild(o);
   }
+  [...d.children].forEach((el, i) => el.style.setProperty('--i', Math.min(i, 14)));
   $('log').appendChild(d);
 }
 
@@ -240,12 +269,11 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel
 async function ask(text) {
   if (busy || !text.trim()) return;
   toConv();
-  if (DEMO) { addQ('Peer 어떻게 골라?'); addA(DEMO); return; }   // 데모 답은 하나뿐이라 질문도 그 답에 맞춘다
+  if (DEMO) { addQ('Peer 어떻게 골라?'); const w = addWait(); setTimeout(() => { w.done(); addA(DEMO); }, 6000); return; }   // 데모 답은 하나뿐이라 질문도 그 답에 맞춘다. 기다림 화면도 보이게 6초
   addQ(text);
   if (!API) { addNote('챗봇 서버를 준비 중입니다.', 'err'); return; }
   busy = true; $('b').disabled = true;
-  const w = addNote('', 'wait'); w.innerHTML = '<span>자료를 찾고 답을 쓰는 중… (20초~1분)</span>';
-  w.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  const w = addWait();
   try {
     // 로그인은 없어도 된다. 로그인하지 않으면 서버가 IP당 하루 5번까지만 받는다
     const { data } = await sb.auth.getSession();
@@ -253,13 +281,13 @@ async function ask(text) {
     if (data.session) headers.Authorization = 'Bearer ' + data.session.access_token;
     const r = await fetch(API.replace(/\/$/, '') + '/chat', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
     const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
-    w.remove();
+    w.done();
     if (res.conversation_id) cid = res.conversation_id;
     if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
     if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
     addA(res);
   } catch (err) {
-    w.remove(); addNote(err.message || '연결하지 못했습니다.', 'err');
+    w.done(); addNote(err.message || '연결하지 못했습니다.', 'err');
   } finally {
     busy = false; $('b').disabled = false; $('t').focus();
   }
