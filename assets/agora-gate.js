@@ -90,9 +90,9 @@
       x.globalCompositeOperation = 'source-over'; x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
       sky.classList.toggle('on', t > .05);
       // 넓은 화면에서는 구를 화면 아래로 크게 내려 윗부분만 지평선처럼 보이게 한다
-      var cz0 = wide ? 1.8 : 2.15, cx = W / 2, cy = wide ? H * 1.22 : H * (small ? .6 : .58), R = wide ? Math.max(W * .62, H * .9) / 1.17 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
+      var cz0 = wide ? 1.8 : 2.15, cx = W / 2, cy = wide ? H * 1.3 : H * (small ? .65 : .63), R = wide ? Math.max(W * .62, H * .9) / 1.17 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
       var burst = 1 - Math.pow(2, -9 * cl((t - .05) / 1.05)), s = .04 + .96 * burst, camZ = cz0 - .9 * dvE;
-      var rot = t * .1 + (1 - eo((t - .05) / 1.5)) * 1.8 + mx * .5 + dvE * .35, tilt = .3 + my * .35;
+      var rot = t * .04 + (1 - eo((t - .05) / 1.5)) * .8 + mx * .25 + dvE * .35, tilt = .3 + my * .35;
       var cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt), i, p, q;
       var bgA = eo((t - .9) / 1.2) * (1 - dv);
       for (i = 0; i < BG.length; i++) { var bb = BG[i], tw0 = .6 + .4 * Math.sin(t * 1.7 + bb.j * 30); x.fillStyle = 'rgba(220,232,255,' + bb.a * tw0 * bgA + ')'; x.beginPath(); x.arc(((bb.x + t * .004 + mx * .01) % 1) * W, (bb.y + my * .01) * H, bb.r, 0, 7); x.fill(); }
