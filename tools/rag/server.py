@@ -5,6 +5,7 @@
   RAG_ANTHROPIC_API_KEY  Claude API 키 (필수)
   VOYAGE_API_KEY         Voyage 키. 이 개발 환경처럼 프록시가 키를 붙여 주는 곳에서는 없어도 된다.
   PORT                   기본 8787
+  HOST                   기본 127.0.0.1 (앞단 Caddy만 접속). 직접 받으려면 0.0.0.0
   ALLOW_ORIGIN           CORS 허용 주소, 기본 https://caurfs.kr (쉼표로 여러 개)
   PER_IP_DAILY           학회 계정으로 로그인했을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
   ANON_DAILY             로그인하지 않았을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 5
@@ -174,11 +175,13 @@ def main():
     global answerer
     cafe = sys.argv[1] if len(sys.argv) > 1 else '/home/user/rfs-cafe-data'
     port = int(os.environ.get('PORT', 8787))
-    print('자료 불러오는 중 (BM25 색인 30초쯤)', flush=True)
+    # 기본은 이 서버 안에서만 받는다(앞단 Caddy가 https로 받아 넘겨 준다). 밖에서 바로 받으면 X-Forwarded-For를 속여 하루 제한을 피할 수 있다
+    host = os.environ.get('HOST', '127.0.0.1')
+    print('자료 불러오는 중 (BM25 색인 10초쯤)', flush=True)
     # 12절: 검색은 Haiku로 바꿔도 품질이 그대로, 답변은 Sonnet이어야 한다
     answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=MODELS['sonnet'], ask=True)
-    print(f'준비됨 :{port}, 허용 주소 {ORIGINS}', flush=True)
-    ThreadingHTTPServer(('0.0.0.0', port), Handler).serve_forever()
+    print(f'준비됨 {host}:{port}, 허용 주소 {ORIGINS}', flush=True)
+    ThreadingHTTPServer((host, port), Handler).serve_forever()
 
 
 if __name__ == '__main__':
