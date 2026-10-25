@@ -9,6 +9,7 @@
   ALLOW_ORIGIN           CORS 허용 주소, 기본 https://caurfs.kr (쉼표로 여러 개)
   PER_IP_DAILY           학회 계정으로 로그인했을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
   ANON_DAILY             로그인하지 않았을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 5
+  ANSWER_MODEL           답변 모델, 기본 claude-sonnet-5-5 (claude-opus-5-5면 비용 두 배)
   DAILY_LIMIT            로그인 안 한 질문 전체의 하루 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
@@ -236,7 +237,9 @@ def main():
     host = os.environ.get('HOST', '127.0.0.1')
     print('자료 불러오는 중 (BM25 색인 10초쯤)', flush=True)
     # 12절: 검색은 Haiku로 바꿔도 품질이 그대로, 답변은 Sonnet이어야 한다
-    answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=MODELS['sonnet'], ask=True)
+    # 답변 모델은 /etc/polaris.env의 ANSWER_MODEL로 바꿀 수 있다 (기본 Sonnet 5.5. 예: claude-opus-5-5로 품질 비교)
+    answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=os.environ.get('ANSWER_MODEL', MODELS['sonnet']), ask=True)
+    print('답변 모델', answerer.answer_model, flush=True)
     print(f'준비됨 {host}:{port}, 허용 주소 {ORIGINS}', flush=True)
     ThreadingHTTPServer((host, port), Handler).serve_forever()
 
