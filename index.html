@@ -26,7 +26,8 @@
 </script>
 <script>
 // 인트로(로고 화면)는 이 탭에서 한 번만. 챗봇 등 다른 페이지에서 메뉴로 돌아올 때는 바로 그 화면으로 간다
-try { if (sessionStorage.getItem('rfs_booted')) document.documentElement.classList.add('rfs-seen', 'rfs-ready'); } catch (e) {}
+// 인트로는 탭에서 처음 한 번만. 우리 사이트의 다른 페이지(Polaris 등)에서 넘어온 경우도 이미 본 것으로 친다
+try { if (sessionStorage.getItem('rfs_booted') || (document.referrer && new URL(document.referrer).origin === location.origin)) document.documentElement.classList.add('rfs-seen', 'rfs-ready'); } catch (e) {}
 </script>
 <style>
 /* 인트로가 뜨기 전 빈 화면을 흰색 대신 인트로 바탕색으로, Polaris 버튼은 인트로가 끝난 뒤에 */

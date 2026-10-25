@@ -241,7 +241,7 @@ const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수
 
 const $ = (id) => document.getElementById(id);
 // 로그인은 홈페이지와 같이 이 탭에서만 유지한다 (sessionStorage). 그래서 홈에서 로그인하고 넘어와도 그대로 이어진다
-let store; try { store = window.sessionStorage; } catch (e) {}
+let store; try { store = window.sessionStorage; store.setItem('rfs_booted', '1'); } catch (e) {}   // 여기서 홈으로 가도 인트로를 다시 안 띄운다 (index.html)
 const sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
 let cid = null, busy = false;
 const SRC = {};   // 답마다 출처 목록 (패널에서 쓴다)
