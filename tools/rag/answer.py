@@ -45,6 +45,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 시장 관행·업계 사실("증권사들은 보통 PBR을 쓴다", 최근 사건)은 출처(학회 자료나 웹)가 있을 때만 쓴다.
 - 리포트가 실제로 쓴 것과 내 해석·짐작을 나눠 쓴다. 해석에는 "(추정)"을 붙인다.
 - 제목에 [학회 추천 사례: 축]이 붙은 자료는 그 축에서 학회가 잘한 리포트다. 그 축의 사례로 먼저 고려한다.
+- 자료 제목의 표시([학회 추천 사례], 등급)나 [학회 평가표], 검색 과정은 답에 그대로 말하지 않는다. 사용자에게는 리포트 이름과 내용으로만 말한다.
 - 오늘은 {today}다. 학기 'YY-1'은 20YY년 상반기, 'YY-2'는 하반기에 쓴 자료다. 업황·시장 관행·실적·주가는 그 시점 얘기라서,
   지금 얘기(웹 검색 결과 포함)와 나란히 둘 때는 몇 년 전 자료인지 밝힌다. 방법·원칙은 학기와 상관없이 쓴다.
 - 사례는 정규 학기 리포트에서만 들고 학기를 붙인다. 같은 내용이면 최근 학기를 앞에 둔다. 근거 없이 정한 숫자는 모범 사례로 보이지 않는다. 리포트끼리 숫자가 다르면 둘 다 보이고 왜 다른지 적는다.
@@ -215,6 +216,7 @@ def club_info():
     return '\n\n'.join(out) + '\n\n문의: contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
 
 
+BEST_ASK = re.compile(r'잘\s*(쓴|된|한|만든)|좋은\s*리포트|모범|베스트|참고할\s*(만한|리포트)|추천.*리포트|리포트.*추천')
 DECLINE_EXAMPLES = ['항공사 밸류에이션은 뭘 기준으로 해?', '산업 리서치는 어디서부터 시작해?', '내 리포트 문장 좀 봐줄래?']
 
 
@@ -237,6 +239,7 @@ class Answerer:
             v.sort(key=lambda i: int(self.chunks[i]['chunk_id'].rsplit('-', 1)[1]))
         self.dup = self.find_dups()
         self.site = self.site_reports(cafe)   # 문서 → 홈페이지 정규 리포트 {name, pdf, page}
+        self.best_pool = self.load_scores(cafe)   # 잘 쓴 리포트를 골라 달라는 질문용: 학회 평가표 점수
         self.rec = {}
         p = Path(cafe) / 'eval' / 'rubric_recommend.json'
         if p.exists():
@@ -245,6 +248,61 @@ class Answerer:
             # 축 → {청크 번호: 리포트 번호}. 같은 리포트의 PDF·워드·사이트판·엑셀을 한 리포트로 묶는다
             self.rec = {ax: {i: k for k, r in enumerate(v) for d in r['search_doc_ids'] for i in by_doc.get(d, [])}
                         for ax, v in top.items() if v}
+
+    def load_scores(self, cafe):
+        """정규 리포트 평가표(eval/rubric_scores.jsonl): 리포트마다 축별 1~3점과 이유. 검색에 들어간 판(PDF 등)의 문서 번호로 잇는다."""
+        p = Path(cafe) / 'eval' / 'rubric_scores.jsonl'
+        if not p.exists():
+            return []
+        by_subj, pdf = {}, set()   # 카페 글 제목 → 검색에 들어간 문서들 (평가표의 문서 번호는 예전 번호라 제목으로 잇는다)
+        meta = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
+        if meta.exists():
+            import gzip
+            for line in gzip.open(meta, 'rt'):
+                d = json.loads(line)
+                if d['doc_id'] in self.by_doc and d['doc_id'] not in self.dup and d.get('ext') != '.xlsx':
+                    by_subj.setdefault(d.get('subject', ''), []).append(d['doc_id'])
+                    if d.get('ext') == '.pdf':
+                        pdf.add(d['doc_id'])
+        out = []
+        for line in p.open():
+            r = json.loads(line)
+            subj = r.get('subject_full') or r['subject']
+            m = re.match(r'\[(\d\d)-([12])\]', subj)
+            docs = [d for d in [r['doc_id']] + by_subj.get(subj, []) if d in self.by_doc and d not in self.dup]
+            # 홈페이지판(사이트 PDF)이 따로 있으면 그것도 후보로 (카페에는 게시글만 있는 리포트: 대한항공 26-2 등)
+            if m:
+                docs += [d for d, v in self.site.items() if v['name'].startswith(r['subject']) and d in self.by_doc
+                         and f'{m.group(1)}-{m.group(2)}학기' in self.chunks[self.by_doc[d][0]]['header']]
+                pdf.update(d for d in docs if d in self.site)
+            if not m or not docs:
+                continue
+            # 1쪽 요약이 있는 PDF판 먼저
+            out.append({'doc': max(docs, key=lambda d: (d in pdf, len(self.by_doc[d]))), 'name': r['subject'], 'sem': f'{m.group(1)}-{m.group(2)}',
+                        'scores': r['scores'], 'reasons': r['reasons']})
+        return out
+
+    def best(self, axes, recent, n=3):
+        """잘 쓴 리포트 n개: 물은 축(없으면 전체 축) 평균 점수 순, 같으면 최근 학기 먼저. recent면 최근 4개 학기 안에서만."""
+        pool = self.best_pool
+        if recent:
+            sems = sorted({r['sem'] for r in pool}, reverse=True)[:4]
+            pool = [r for r in pool if r['sem'] in sems]
+        def score(r):
+            v = [r['scores'].get(a) for a in (axes or r['scores'])]
+            v = [x for x in v if isinstance(x, (int, float))]
+            return sum(v) / len(v) if v else 0
+        return sorted(pool, key=lambda r: (score(r), r['sem']), reverse=True)[:n]
+
+    def best_block(self, picks, axes):
+        """고른 리포트의 평가 이유 (답이 '왜 잘 썼는지'를 설명할 근거). 출처로 다는 건 함께 넣는 리포트 1~2쪽 청크."""
+        lines = []
+        for r in picks:
+            good = [a for a, v in r['scores'].items() if v == 3 and (not axes or a in axes)] or \
+                   sorted([a for a, v in r['scores'].items() if isinstance(v, (int, float)) and (not axes or a in axes)], key=lambda a: -r['scores'][a])[:2]
+            lines.append(f"- {r['name']} ({r['sem']}학기): " + ' / '.join(f"{a}: {r['reasons'].get(a, '')}" for a in good))
+        return {'type': 'text', 'text': '[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. '
+                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다.\n' + '\n'.join(lines)}
 
     def recommended(self, question, axis, n=REC_N):
         """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
@@ -288,10 +346,10 @@ class Answerer:
         for f in (root / 'research').glob('*/index.html'):
             h = f.read_text(errors='ignore')
             t = re.search(r'<title>([^<|]+?)\s*(?:기업분석|산업분석)?\s*리포트', h)
-            m = re.search(r'/assets/reports/([^"\']+\.pdf)', h)
-            if t and m and (root / 'assets' / 'reports' / m.group(1)).exists():
-                by_file[m.group(1)] = {'name': t.group(1).strip(), 'pdf': '/assets/reports/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
-        docs = {}
+            m = re.search(r'/assets/((?:reports/)?[^"\'/]+\.pdf)', h)   # 보통 assets/reports/, 예전에 올린 TORM만 assets/torm-report.pdf
+            if t and m and (root / 'assets' / m.group(1)).exists():
+                by_file[m.group(1).split('/')[-1]] = {'name': t.group(1).strip(), 'pdf': '/assets/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
+        docs, subj = {}, {}
         p = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
         if p.exists():
             import gzip
@@ -299,6 +357,17 @@ class Answerer:
                 d = json.loads(line)
                 if d.get('source') == 'site' and d.get('file') in by_file:
                     docs[d['doc_id']] = by_file[d['file']]
+                elif d.get('source') == 'cafe' and d['doc_id'] in self.by_doc and d.get('ext') != '.xlsx':
+                    subj[d['doc_id']] = d.get('subject') or ''
+        # 사이트판 문서가 데이터에 없는 페이지(TORM)는 카페 글 제목 '[26-1] TORM_…'의 회사명으로 잇는다 (같은 회사가 여럿이면 최근 학기)
+        for v in by_file.values():
+            if v in docs.values():
+                continue
+            name = re.match(r'[A-Za-z0-9가-힣]+', v['name'])
+            cand = {d: t for d, t in subj.items() if name and re.match(r'\[\d\d-[12]\]\s*' + re.escape(name.group(0)) + r'(?![A-Za-z가-힣])', t, re.I)}
+            if cand:
+                last = max(cand.values())
+                docs.update({d: v for d, t in cand.items() if t == last})
         site_hash = {hash(self.chunks[i]['text']): d for d in docs for i in self.by_doc.get(d, [])}
         for d, idx in self.by_doc.items():
             if d in docs or not idx or self.chunks[idx[0]]['doc_type'] not in ('company', 'industry'):
@@ -460,6 +529,13 @@ class Chat:
         else:
             found = s.multiquery(standalone, queries=queries, log=self.trace)[:PREFETCH]
         found = self.a.regular_only(found, question)
+        # 잘 쓴·좋은 리포트를 골라 달라는 질문: 검색 운이나 최신순이 아니라 학회 평가표 점수로 고르고, 그 리포트 1~2쪽을 앞에 둔다
+        self.best = []
+        if kind in ('cases', 'explain', 'fact') and BEST_ASK.search(question):
+            self.best = self.a.best(axes, bool(re.search(r'최근|요즘|최신|요새', question)))
+            lead = [i for r in self.best for i in (self.a.outline(r['doc'], n=3) or self.a.by_doc[r['doc']][:3])]
+            found = lead + [i for i in found if i not in lead]
+            self.trace.append({'best': [r['name'] + ' ' + r['sem'] for r in self.best]})
         # 축마다 추천 리포트. 축이 여럿이면 축마다 나눠서 모두 REC_N개 안쪽
         self.timing['검색'] = round(time.perf_counter() - t0, 1)
         t0 = time.perf_counter()
@@ -499,7 +575,8 @@ class Chat:
             system, tools, form = SYSTEM.format(search='', today=self.today), {}, TYPE['given']
         self.shown += first
         sec = f' (사용자 글의 섹션: {self.section})' if kind == 'feedback' and getattr(self, 'section', '') else ''
-        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + [{'type': 'text', 'text': f'질문{sec}: {question}\n\n[답 형식]\n{form}'}]
+        best = [a.best_block(self.best, self.axes)] if given is None and getattr(self, 'best', None) else []
+        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + best + [{'type': 'text', 'text': f'질문{sec}: {question}\n\n[답 형식]\n{form}'}]
         self.msgs.append({'role': 'user', 'content': content})
         searches, n = [], 0
         calls = []
