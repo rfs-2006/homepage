@@ -9,7 +9,7 @@
   ALLOW_ORIGIN           CORS 허용 주소, 기본 https://caurfs.kr (쉼표로 여러 개)
   PER_IP_DAILY           학회 계정으로 로그인했을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
   ANON_DAILY             로그인하지 않았을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 5
-  DAILY_LIMIT            전체 하루 질문 수 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
+  DAILY_LIMIT            로그인 안 한 질문 전체의 하루 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
   GET  /health                   준비됐는지
@@ -83,12 +83,14 @@ def take_quota(ip, member):
     """질문 하나를 쓴다. 넘으면 (오류 문구, 0), 아니면 (None, 오늘 남은 수). 로그인 여부에 따라 IP별 칸을 따로 센다."""
     day, cap, key = time.strftime('%Y-%m-%d'), PER_IP_DAILY if member else ANON_DAILY, (ip, member)
     with lock:
-        if counts[(day, '*')] >= DAILY_LIMIT:
-            return '오늘 챗봇 전체 사용량이 다 찼습니다. 내일 다시 써 주세요.', 0
+        # 전체 상한은 로그인 안 한 질문에만 건다 (누가 여러 주소로 상한을 다 써도 학회원은 계속 쓸 수 있게)
+        if not member and counts[(day, '*')] >= DAILY_LIMIT:
+            return '오늘 챗봇 전체 사용량이 다 찼습니다. 내일 다시 써 주세요. 학회원은 로그인하면 계속 쓸 수 있습니다.', 0
         if counts[(day, key)] >= cap:
             more = '' if member else ' 학회원은 로그인하면 더 쓸 수 있습니다.'
             return f'오늘 질문 {cap}개를 다 썼습니다. 내일 다시 써 주세요.{more}', 0
-        counts[(day, '*')] += 1
+        if not member:
+            counts[(day, '*')] += 1
         counts[(day, key)] += 1
         for k in [k for k in counts if k[0] != day]:
             del counts[k]
@@ -98,7 +100,8 @@ def take_quota(ip, member):
 def give_back(ip, member, left):
     day = time.strftime('%Y-%m-%d')
     with lock:
-        counts[(day, '*')] -= 1
+        if not member:
+            counts[(day, '*')] -= 1
         counts[(day, (ip, member))] -= 1
     return left + 1
 
@@ -116,6 +119,8 @@ def get_conv(cid):
 
 
 class Handler(BaseHTTPRequestHandler):
+    server_version, sys_version = 'polaris', ''   # 응답 헤더에 파이썬 버전을 드러내지 않는다
+
     def _cors(self):
         origin = self.headers.get('Origin', '')
         if origin in ORIGINS or PREVIEW.fullmatch(origin):
@@ -169,7 +174,9 @@ class Handler(BaseHTTPRequestHandler):
         msg = str(req.get('message', '')).strip()[:MAX_MSG]
         if not msg:
             return self._json(400, {'error': '질문을 입력해 주세요.'})
-        ip = (self.headers.get('X-Forwarded-For') or self.client_address[0]).split(',')[0].strip()
+        # 사용자가 보낸 X-Forwarded-For는 믿지 않는다. Caddy가 실제 접속 주소를 맨 뒤에 붙이므로 마지막 값을 쓴다
+        # (첫 값을 쓰면 헤더를 지어 보내 하루 제한을 무한히 피할 수 있었다)
+        ip = (self.headers.get('X-Forwarded-For') or self.client_address[0]).split(',')[-1].strip()
         err, left = take_quota(ip, member)
         if err:
             return self._json(429, {'error': err, 'left': 0})
