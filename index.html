@@ -231,6 +231,40 @@ a:hover{color:#203864}
 }
 .scrim{position:absolute;inset:0;background:#203864;opacity:0.82;mix-blend-mode:multiply;pointer-events:none;will-change:opacity}
 .hero{background:#0F1B2E}
+/* 히어로 B (네이버 클라우드 참고) */
+.hero-b{position:relative;height:100vh;min-height:620px;overflow:hidden;color:#F7F6F3}
+.hb-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(5,8,14,.66),rgba(5,8,14,.22) 60%,rgba(5,8,14,.12)),linear-gradient(180deg,rgba(5,8,14,.45),transparent 22%)}
+.hb-copy{position:absolute;z-index:2;left:7.7vw;right:7.7vw;top:34vh;display:block !important}
+.hb-meta{font-size:15px;opacity:.85;letter-spacing:.02em}
+.hb-name{font-family:'Noto Serif KR',serif;font-weight:400;font-size:clamp(40px,5vw,76px);line-height:1.18;letter-spacing:-.03em;margin:16px 0 10px}
+.hb-name a,.hb-name a:visited{color:#F7F6F3 !important;text-decoration:none}
+.hb-head{font-family:'Noto Serif KR',serif;font-weight:300;font-size:clamp(20px,1.8vw,28px);opacity:.92}
+.hb-rate{display:flex;gap:28px;margin-top:26px;font-size:15px;align-items:baseline}
+.hb-rate b{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.hb-rate i{font-style:normal;opacity:.7;font-size:12px;letter-spacing:.14em;margin-right:8px}
+.hb-btns{display:flex;gap:14px;margin-top:40px}
+.hb-btns a{display:inline-flex;align-items:center;justify-content:center;min-width:200px;height:52px;border:1px solid rgba(247,246,243,.55);border-radius:999px;color:#F7F6F3;text-decoration:none;font-size:15px;font-weight:600;transition:background .2s,border-color .2s}
+.hb-btns a:hover{background:rgba(247,246,243,.12);border-color:#F7F6F3}
+.hb-ctrl{position:absolute;z-index:3;left:7.7vw;bottom:9vh;display:flex;align-items:center;gap:26px;font-size:16px;font-weight:600}
+.hb-ctrl button{background:none;border:0;color:#F7F6F3;cursor:pointer;padding:6px 0;display:flex}
+.hb-ctrl button:hover{opacity:.75}
+.hb-cnt{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.hb-cnt i{font-style:normal;opacity:.5}
+.hb-ring{width:20px;height:20px;transform:rotate(-90deg)}
+.hb-ring circle{fill:none;stroke-width:2}
+.hb-ring .bg{stroke:rgba(247,246,243,.25)}
+.hb-ring .fg{stroke:#8FAADC;stroke-dasharray:56.5;stroke-dashoffset:56.5}
+.hb-ring.ra .fg{animation:hbRingA 6.5s linear forwards}
+.hb-ring.rb .fg{animation:hbRingB 6.5s linear forwards}
+@keyframes hbRingA{to{stroke-dashoffset:0}}@keyframes hbRingB{to{stroke-dashoffset:0}}
+.hb-down{position:absolute;z-index:3;left:50%;bottom:6vh;transform:translateX(-50%);color:#F7F6F3;animation:hbBob 2.2s ease-in-out infinite}
+@keyframes hbBob{50%{transform:translate(-50%,8px)}}
+.hero-bgwrap.ka image-slot{animation:hbKbA 7s ease-out both}
+.hero-bgwrap.kb image-slot{animation:hbKbB 7s ease-out both}
+@keyframes hbKbA{from{transform:scale(1.06)}to{transform:scale(1)}}@keyframes hbKbB{from{transform:scale(1.06)}to{transform:scale(1)}}
+.hero-b .hero-grid.fading{opacity:0;transform:translateY(14px)}
+.hero-b .hero-grid{transition:opacity .45s,transform .55s}
+@media (prefers-reduced-motion:reduce){.hb-down,.hero-bgwrap.ka image-slot,.hero-bgwrap.kb image-slot{animation:none}.hb-ring .fg{animation:none !important}}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
 .hero-grid.fading{opacity:0}
@@ -1740,65 +1774,23 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="홈">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
-    <section data-snap="" class="hero on-photo" data-nav="dark" data-screen-label="히어로">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
-      <div class="scrim" style="opacity:{{ heroScrim }}"></div>
-      <button class="hero-arrow hero-arrow-l" onClick="{{ heroPrev }}" aria-label="이전 리포트" style="position:absolute;left:28px;top:50%;transform:translateY(-50%);z-index:2;width:52px;height:52px;border:1px solid rgba(247,246,243,0.5);background:rgba(15,27,46,0.3);color:#F7F6F3;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;padding:0">←</button>
-      <button class="hero-arrow hero-arrow-r" onClick="{{ heroNext }}" aria-label="다음 리포트" style="position:absolute;right:28px;top:50%;transform:translateY(-50%);z-index:2;width:52px;height:52px;border:1px solid rgba(247,246,243,0.5);background:rgba(15,27,46,0.3);color:#F7F6F3;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;line-height:1;padding:0">→</button>
-      <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
-      <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
-        <div style="pointer-events:none">
-          <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:clamp(10px,1.8vh,20px)">
-            <span style="font-size:11px;font-weight:600;letter-spacing:0.16em;color:rgba(247,246,243,0.6);font-variant-numeric:tabular-nums">{{ heroCounter }}</span>
-            <span style="font-size:13px;color:rgba(247,246,243,0.88);letter-spacing:0.04em">{{ heroMeta }}</span>
-          </div>
-          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroName }}</a></h2>
-          <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
-          <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
-          <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
-            <div class="stripcell sc1" style="padding-right:24px;font-weight:700;font-size:18px;font-variant-numeric:tabular-nums">{{ heroOp }}</div>
-            <div class="stripcell sc2" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Target</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroTp }}</span></div>
-            <div class="stripcell" style="border-left:1px solid rgba(247,246,243,0.3);padding:0 24px;font-size:14px"><span class="striplab">Upside</span><span style="font-weight:700;font-variant-numeric:tabular-nums">{{ heroUpside }}</span></div>
-            <div class="stripbtn" style="margin-left:auto">
-              <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="pointer-events:auto">READ THE REPORT</a>
-            </div>
-          </div>
-        </div>
-        <div class="hero-cover-wrap">
-          <div style="aspect-ratio:16/9;border:1px solid rgba(247,246,243,0.4);position:relative;overflow:hidden;background:#FFFFFF">
-            <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
-          </div>
-          <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
-        </div>
+    <section data-snap="" class="hero hero-b on-photo" data-nav="dark" data-screen-label="히어로">
+      <!-- 히어로 (2026-10, 네이버 클라우드 참고 시안 B): 사진 꽉 채움, 왼쪽에 명조 제목과 투자의견 한 줄, 왼쪽 아래 화살표·숫자·원형 타이머 -->
+      <div class="hero-bgwrap {{ heroFadeCls }} {{ heroKb }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
+      <div class="hb-shade"></div>
+      <div class="hb-copy hero-grid {{ heroFadeCls }}">
+        <div class="hb-meta">{{ heroMeta }}</div>
+        <h2 class="hb-name"><a href="{{ heroHref }}" onClick="{{ heroOpen }}">{{ heroCompany }}</a></h2>
+        <div class="hb-head">{{ heroHeadline }}</div>
+        <div class="hb-rate"><b>{{ heroOp }}</b><span><i>TARGET</i><b>{{ heroTp }}</b></span><span><i>UPSIDE</i><b>{{ heroUpside }}</b></span></div>
+        <div class="hb-btns"><a href="{{ heroHref }}" onClick="{{ heroOpen }}">리포트 읽기</a><a href="#research" onClick="{{ goResearch }}">전체 리포트 보기</a></div>
       </div>
-      <div class="wrap hero-tick" style="padding:0 35px;width:100%;margin-top:clamp(22px,3.4vh,40px)">
-        <div style="display:flex;align-items:baseline;gap:26px;border-top:1px solid rgba(247,246,243,0.35);padding-top:16px">
-          <span style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
-          <div class="tickmask" style="flex:1;overflow:hidden;min-width:0">
-            <div class="ticktrack" style="display:flex;width:max-content">
-          <div class="tickset" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
-            <sc-for list="{{ heroTicker }}" as="t" hint-placeholder-count="8">
-              <span style="display:flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:0.07em;color:rgba(247,246,243,0.72);white-space:nowrap">
-                <span style="font-weight:700;color:#F7F6F3">{{ t.ticker }}</span>
-                <span style="font-weight:600">{{ t.op }}</span>
-                <span style="font-variant-numeric:tabular-nums">{{ t.upside }}</span>
-              </span>
-            </sc-for>
-          </div>
-          <div class="tickset" aria-hidden="true" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
-            <sc-for list="{{ heroTicker }}" as="t" hint-placeholder-count="8">
-              <span style="display:flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:0.07em;color:rgba(247,246,243,0.72);white-space:nowrap">
-                <span style="font-weight:700;color:#F7F6F3">{{ t.ticker }}</span>
-                <span style="font-weight:600">{{ t.op }}</span>
-                <span style="font-variant-numeric:tabular-nums">{{ t.upside }}</span>
-              </span>
-            </sc-for>
-          </div>
-            </div>
-          </div>
-        </div>
+      <div class="hb-ctrl">
+        <button type="button" onClick="{{ heroPrev }}" aria-label="이전 리포트"><svg width="52" height="20" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M51 10H2M10 2L2 10l8 8"/></svg></button>
+        <button type="button" onClick="{{ heroNext }}" aria-label="다음 리포트"><svg width="52" height="20" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 10h49M42 2l8 8-8 8"/></svg></button>
+        <span class="hb-cnt"><b>{{ heroCur }}</b><i>/</i><b>{{ heroTot }}</b><svg class="hb-ring {{ heroRing }}" viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="9"/><circle class="fg" cx="10" cy="10" r="9"/></svg></span>
       </div>
-      </div>
+      <a class="hb-down" href="#home-sky" onClick="{{ heroDown }}" aria-label="아래로"><svg width="42" height="64" viewBox="0 0 42 64" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 1v60M3 43l18 18 18-18"/></svg></a>
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
@@ -4533,6 +4525,7 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    setTimeout(() => this.heroAuto(), 0);
     window.__wkReady = () => this.wkDom(); this.wkDom();
     // Weekly Strategy: 흰 리포트 종이 위로 내려가면 메뉴 글자가 묻히지 않게 메뉴에 어두운 바탕을 깐다
     window.addEventListener('scroll', () => document.documentElement.classList.toggle('wk-solid', this.state.page === 'strategy' && window.scrollY > 160), { passive: true });
@@ -4717,7 +4710,16 @@ class Component extends DCLogic {
       document.querySelectorAll('[data-about-sec]').forEach((n) => this._secIo.observe(n));
     });
   }
+  // 홈 히어로는 6.5초마다 다음 리포트로 (원형 타이머와 같은 시간). 넘기거나 화살표를 누르면 처음부터 다시 잰다
+  heroAuto() {
+    const on = this.state.page === 'home' && !this.state.isMobile && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!on) { clearTimeout(this._heroT); this._heroT = null; this._heroSeen = null; return; }
+    if (this._heroSeen === this.state.heroIdx && this._heroT) return;
+    this._heroSeen = this.state.heroIdx; clearTimeout(this._heroT);
+    this._heroT = setTimeout(() => { this._heroT = null; if (!document.hidden && this._heroAdvance) this._heroAdvance(); else this.heroAuto(); }, 6500);
+  }
   componentDidUpdate(pp, ps) {
+    this.heroAuto();
     this.wkDom();
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
@@ -5732,6 +5734,7 @@ class Component extends DCLogic {
       this.setState({ heroFade: true });
       setTimeout(() => this.setState({ heroIdx: heroIdx + d, heroFade: false }, () => { this._heroBusy = false; }), 320);
     };
+    this._heroAdvance = () => heroStep(1);
     const vm = (r) => { const o = opStyle(r.op); return { ...r, opColor:o.c, opAlpha:o.a, href:'#research/' + r.id, open:(e) => { e && e.preventDefault && e.preventDefault(); e && e.stopPropagation && e.stopPropagation(); this.go('report', r.id); } }; };
     const cardVm = (r) => ({ ...vm(r), title: r.name + ' (' + r.ticker + ')', meta: r.sector + ' · ' + r.type, hasCover: !!r.cover, noCover: !r.cover, hasPdf: !!r.pdf, pdfHref: r.pdf });
     const sorted = [...REPORTS].sort((a, b) => {
@@ -6244,6 +6247,9 @@ class Component extends DCLogic {
       heroCaption: hero.name + ' (' + hero.ticker + ') · ' + hero.date,
       heroHref: '#research/' + hero.id,
       heroCounter: String(heroIdx + 1).padStart(2, '0') + ' / ' + String(HERO_LIST.length).padStart(2, '0'),
+      heroCompany: hero.name, heroCur: String(heroIdx + 1).padStart(2, '0'), heroTot: String(HERO_LIST.length).padStart(2, '0'),
+      heroRing: s.heroFade ? '' : (heroIdx % 2 ? 'rb' : 'ra'), heroKb: heroIdx % 2 ? 'kb' : 'ka',   // 애니메이션 이름을 번갈아 써야 리포트가 바뀔 때마다 처음부터 다시 돈다
+      heroDown: (e) => { e.preventDefault(); const el = document.getElementById('home-sky'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); },
       heroFadeCls: s.heroFade ? 'fading' : '',
       heroPrev: () => heroStep(-1),
       heroNext: () => heroStep(1),
