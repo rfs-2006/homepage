@@ -19,8 +19,16 @@ body{font-family:'Pretendard Variable',sans-serif;-webkit-font-smoothing:antiali
 .draftbar{position:fixed;right:12px;bottom:12px;z-index:99;font-size:12px;background:var(--black);color:var(--ink);padding:6px 10px;border-radius:4px;opacity:.85}
 .draftbar a{color:var(--accent);text-decoration:none;margin-left:8px}
 
+body{--head:rgba(244,241,235,.92);--dim:#A8A296}
+body[data-t=navy]{--paper:#0F1B2E;--card:#16253F;--text:#F2F0EA;--sub:rgba(242,240,234,.6);--hair:rgba(242,240,234,.13);--band:#16253F;--hl:rgba(143,170,220,.32);--pdf:#8FAADC;--navy:#8FAADC;--head:rgba(15,27,46,.92);--dim:rgba(242,240,234,.38)}
+body[data-t=white]{--paper:#FFFFFF;--card:#F5F6F8;--text:#14171C;--sub:#69707B;--hair:#E4E6EA;--band:#F5F6F8;--hl:#DCE5F6;--pdf:#203864;--navy:#203864;--head:rgba(255,255,255,.92);--dim:#A9AEB6}
+body[data-t=white] .opts button,body[data-t=white] .chip,body[data-t=white] form .in{background:#fff}
+body[data-t=white] .panel{background:#FAFBFC}
+.themes{position:fixed;left:50%;transform:translateX(-50%);top:56px;z-index:99;display:flex;gap:4px;background:#0E0B0B;border-radius:6px;padding:4px;font-size:12px}
+.themes button{border:0;border-radius:4px;background:none;color:#F4F1EB;font:inherit;padding:4px 9px;cursor:pointer;opacity:.6}
+.themes button.on{background:#F4F1EB;color:#0E0B0B;opacity:1}
 body{background:var(--paper);color:var(--text);font-size:15.5px;line-height:1.85;min-height:100vh}
-header{position:sticky;top:0;z-index:5;background:rgba(244,241,235,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
+header{position:sticky;top:0;z-index:5;background:var(--head);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
 header img{width:22px}header b{font-weight:600}
 header .r{margin-left:auto;display:flex;gap:18px;color:var(--sub)}
 main{max-width:700px;margin:0 auto;padding:10px 24px 170px;transition:margin .25s}
@@ -33,18 +41,18 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .ans p{margin:0 0 12px}
 .tree{list-style:none;margin:14px 0 18px;padding:2px 0 2px 16px;border-left:1px solid var(--hair);font-size:14.5px;color:var(--sub)}
 .tree ul{list-style:none;padding-left:16px;margin:2px 0}
-.tree ul li::before{content:'└ ';color:#B9B2A6}
+.tree ul li::before{content:'└ ';color:var(--dim)}
 .tail{color:var(--sub)}
 .chip{display:inline-flex;align-items:center;gap:5px;vertical-align:1px;font:500 12px 'Pretendard Variable';color:var(--text);background:var(--card);border:1px solid var(--hair);border-radius:4px;padding:0 7px;line-height:20px;cursor:pointer;white-space:nowrap}
 .chip i{width:8px;height:10px;background:var(--pdf);border-radius:1px;display:inline-block}
 .chip:hover,.chip.on{border-color:var(--text);background:var(--hl)}
 .srcs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:18px;padding-top:14px;border-top:1px solid var(--hair)}
 .srcs .lab{color:var(--sub);margin-right:4px}
-form{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 18px;background:linear-gradient(rgba(244,241,235,0),var(--paper) 40%)}
+form{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 18px;background:linear-gradient(transparent,var(--paper) 40%)}
 form .in{max-width:700px;margin:0 auto;background:var(--card);border:1px solid var(--hair);border-radius:12px;display:flex;align-items:center;padding:6px 6px 6px 16px;box-shadow:0 12px 30px -18px rgba(20,18,16,.35);transition:margin .25s}
 body.reading form .in{margin-left:max(0px,calc(50vw - 584px))}
 form textarea{flex:1;border:0;resize:none;height:42px;padding:10px 0;font:inherit;outline:none;background:none}
-form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--text);color:#fff}
+form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--text);color:var(--paper)}
 .panel{position:fixed;top:0;right:0;bottom:0;width:440px;background:var(--card);border-left:1px solid var(--hair);box-shadow:-20px 0 50px -30px rgba(20,18,16,.3);transform:translateX(102%);transition:transform .25s,visibility .25s;z-index:20;display:flex;flex-direction:column}
 .panel{visibility:hidden}.panel.open{transform:none;visibility:visible}
 .panel .top{display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid var(--hair)}
@@ -56,7 +64,7 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 .doc .meta{font-size:12.5px;color:var(--sub);margin-bottom:14px}
 .doc .tag{display:inline-block;font-size:11px;font-weight:600;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
 .sheet{font-size:14px;line-height:1.9}
-.sheet .dim{color:#A8A296}
+.sheet .dim{color:var(--dim)}
 .sheet mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl)}
 .doc .note{font-size:11.5px;color:var(--sub);margin-top:14px}
 .doc .open{display:inline-block;margin-top:14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
@@ -74,7 +82,7 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 </head>
 <body>
 
-<header><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S. Research</b><div class="r"><span>새 대화</span><span>인트라넷</span></div></header>
+<header><img class="seal" src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S. Research</b><div class="r"><span>새 대화</span><span>인트라넷</span></div></header>
 <main>
 <div class="q">밸류에이션 뭘로 해?</div>
 <div class="ans"><p>업종에 따라 쓰는 방법이 달라져요. 어떤 회사를 분석하시나요?</p><div class="opts"><button>제조업</button><button>인터넷·소프트웨어</button><button>바이오</button><button>은행·증권</button><button>잘 모르겠어요</button></div></div>
@@ -92,6 +100,7 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 <aside class="panel" id="panel"><div class="top"><span class="lab">출처 원문</span><button id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
 <div class="scrim" id="scrim"></div>
 <form onsubmit="return false"><div class="in"><textarea placeholder="이어서 물어보기"></textarea><button>↑</button></div></form>
+<div class="themes"><button data-t="navy">남색</button><button data-t="white">흰색+남색</button><button data-t="warm">지금(따뜻한 미색)</button></div>
 
 <div class="draftbar">시안 F · Hebbia형 · 대화<a href="./">목록 ←</a></div>
 <script>
@@ -111,7 +120,12 @@ function show(k, open) {
 document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) show(b.dataset.k); });
 const close = () => { panel.classList.remove('open'); scrim.classList.remove('open'); document.body.classList.remove('reading'); $('.chip').forEach((b) => b.classList.remove('on')); };
 document.getElementById('x').onclick = close; scrim.onclick = close;
-if (location.hash === '#open') show(1);
+if (location.hash.includes('open')) show(1);
+// 색 묶음 바꾸기 (시안 비교용). 주소 끝 ?t=navy 처럼도 열 수 있다
+function theme(t) { document.body.dataset.t = t; $('.themes button').forEach((b) => b.classList.toggle('on', b.dataset.t === t));
+  document.querySelector('.seal').src = t === 'navy' ? '/assets/rfs-seal-light-256.png' : '/assets/rfs-seal-navy.png'; }
+$('.themes button').forEach((b) => b.onclick = () => theme(b.dataset.t));
+theme(new URLSearchParams(location.search).get('t') || 'navy');
 </script>
 </body>
 </html>

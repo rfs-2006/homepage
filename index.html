@@ -6318,8 +6318,27 @@ class Component extends DCLogic {
 .rfs-bot span{white-space:nowrap}
 .rfs-bot:hover{background:#1A1614;border-color:rgba(244,241,235,.35)}
 @media (max-width:640px){.rfs-bot{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:48px;gap:0;padding-right:4px}.rfs-bot img{width:38px;height:38px}.rfs-bot span{display:none}}
-@media (prefers-reduced-motion:reduce){.rfs-bot{transition:none}}
+.rfs-bot-tip{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:60;width:260px;background:#F4F1EB;color:#141210;border-radius:12px;padding:14px 34px 14px 16px;box-shadow:0 18px 40px -18px rgba(0,0,0,.55);font:400 13px/1.55 'Pretendard Variable',sans-serif;animation:rfsTip .35s ease-out}
+.rfs-bot-tip::after{content:'';position:absolute;right:26px;bottom:-6px;width:12px;height:12px;background:#F4F1EB;transform:rotate(45deg)}
+.rfs-bot-tip a{color:#141210 !important;text-decoration:none;display:block}
+.rfs-bot-tip b{display:block;font-weight:600;font-size:14px;margin-bottom:2px}
+.rfs-bot-tip button{position:absolute;top:8px;right:8px;border:0;background:none;color:#8A847A;font-size:13px;cursor:pointer;padding:4px}
+@keyframes rfsTip{from{opacity:0;transform:translateY(6px)}}
+@media (max-width:640px){.rfs-bot-tip{right:16px;bottom:calc(76px + env(safe-area-inset-bottom));width:230px}.rfs-bot-tip::after{right:18px}}
+@media (prefers-reduced-motion:reduce){.rfs-bot{transition:none}.rfs-bot-tip{animation:none}}
 </style>
 <a class="rfs-bot" href="/chat/" aria-label="리서치 챗봇"><img src="/assets/rfs-seal-light-256.png" alt=""><span>리서치 챗봇</span></a>
+<div class="rfs-bot-tip" id="rfsBotTip" hidden><a href="/chat/"><b>궁금한 게 있으세요?</b>학회 리포트에서 찾아 출처와 함께 답해 드려요.</a><button type="button" aria-label="닫기">✕</button></div>
+<script>
+// 챗봇이 있는 줄 모를 수 있어서 처음 한 번만 말풍선을 띄운다. 닫거나 누르면 다시 안 띄운다 (이 브라우저 기준)
+(function () {
+  var tip = document.getElementById('rfsBotTip'), K = 'rfsBotTipSeen';
+  try { if (localStorage.getItem(K)) return; } catch (e) { return; }
+  var seen = function () { tip.hidden = true; try { localStorage.setItem(K, '1'); } catch (e) {} };
+  tip.querySelector('button').onclick = seen; tip.querySelector('a').onclick = seen;
+  document.querySelector('.rfs-bot').addEventListener('click', seen);
+  setTimeout(function () { tip.hidden = false; }, 2500);
+})();
+</script>
 </body>
 </html>
