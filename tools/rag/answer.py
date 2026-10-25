@@ -359,7 +359,7 @@ class Answerer:
                 d = json.loads(line)
                 if d.get('source') == 'site' and d.get('file') in by_file:
                     docs[d['doc_id']] = by_file[d['file']]
-                elif d.get('source') == 'cafe' and d['doc_id'] in self.by_doc and d.get('ext') != '.xlsx':
+                elif d.get('source') in ('cafe', 'upload') and d['doc_id'] in self.by_doc and d.get('ext') != '.xlsx':   # upload: 카페 밖에서 받은 리포트(삼양식품 24-1 SOHKA)
                     subj[d['doc_id']] = d.get('subject') or ''
         # 사이트판 문서가 데이터에 없는 페이지(TORM)는 카페 글 제목 '[26-1] TORM_…'의 회사명으로 잇는다 (같은 회사가 여럿이면 최근 학기)
         for v in by_file.values():
