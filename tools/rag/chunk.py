@@ -174,9 +174,15 @@ def rows_of(d):
         }
 
 
+def is_fund(d):
+    """운용팀 문서(정기보고서·포트폴리오·리밸런싱·회계장부·펀드제안서 등). 금액·수량·평단이 들어 있어 검색에 넣지 않는다.
+    지시문으로 "공개하지 않는다"만 막으면 우회 질문에 뚫릴 수 있어서 아예 검색 대상에서 뺀다 (NOTES 14절)"""
+    return d['board'] == '운용 현황 보고' or d['doc_type'] == 'fund_report' or bool(re.search('운용팀|자산운용', d['subject']))
+
+
 def main():
     docs = [json.loads(l) for l in open(SRC)]
-    live = [d for d in docs if 'duplicate_of' not in d and d['chars'] >= 200]
+    live = [d for d in docs if 'duplicate_of' not in d and d['chars'] >= 200 and not is_fund(d)]
     n = 0
     lens = []
     by_type = Counter()
