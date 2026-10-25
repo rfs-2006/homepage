@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>밤하늘 첫 화면형 | 챗봇 시안</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+.draftbar{position:fixed;right:12px;bottom:12px;z-index:99;font:12px 'Pretendard Variable',sans-serif;background:#0F1B2E;color:#F7F6F3;padding:6px 10px;border-radius:4px;opacity:.85}
+.draftbar a{color:#8FAADC;text-decoration:none;margin-left:8px}
+
+:root{--ink:#F7F6F3;--sub:rgba(247,246,243,.62);--line:rgba(247,246,243,.16);--accent:#8FAADC;--dark:#0B1424}
+body{background:var(--dark);color:var(--ink);font:15px/1.75 'Pretendard Variable',sans-serif}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 16px;text-align:center;
+ background:linear-gradient(180deg,rgba(11,20,36,.35),rgba(11,20,36,.85) 70%,var(--dark)),url(/assets/hero/fund-snow_dark.webp) center/cover}
+nav.top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:12px;padding:20px 40px;text-align:left}
+nav.top img{width:40px}
+nav.top b{font-family:'Noto Serif KR',serif;font-size:20px;line-height:1.1}
+nav.top b small{display:block;font:500 11px 'Pretendard Variable';color:var(--sub)}
+nav.top span{margin-left:auto;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase}
+.kick{font-size:12px;letter-spacing:.3em;color:var(--accent);text-transform:uppercase}
+h1{font-family:'Noto Serif KR',serif;font-weight:400;font-size:46px;letter-spacing:-.03em;line-height:1.25;margin:14px 0 10px}
+.sub{color:var(--sub);max-width:520px;margin:0 auto 30px}
+.box{width:min(680px,100%);background:rgba(15,27,46,.72);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:6px 6px 6px 20px;display:flex;align-items:center;text-align:left}
+.box textarea{flex:1;background:none;border:0;color:var(--ink);resize:none;height:54px;padding:16px 0;font:inherit;font-size:16px;outline:none}
+.box button{background:var(--ink);color:var(--dark);border:0;border-radius:10px;padding:12px 18px;font-weight:700;letter-spacing:.06em}
+.ex{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px;max-width:680px}
+.ex span{border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--sub);background:rgba(11,20,36,.4)}
+.down{position:absolute;bottom:22px;font-size:12px;color:var(--sub);letter-spacing:.14em}
+.conv{max-width:760px;margin:0 auto;padding:30px 16px 120px}
+.conv .lbl{font-size:11px;letter-spacing:.24em;color:var(--accent);text-transform:uppercase;border-top:1px solid var(--line);padding-top:16px;margin-bottom:6px}
+.q{font-family:'Noto Serif KR',serif;font-size:24px;letter-spacing:-.02em;margin:26px 0 12px}
+.a h4{font-family:'Noto Serif KR',serif;font-weight:600;font-size:17px;margin:20px 0 4px}
+.a p{margin:0 0 10px}
+.tree{border-left:2px solid var(--accent);padding:4px 0 4px 30px;font-size:14px;color:var(--sub)}
+.tree ul{padding-left:18px;margin:2px 0}
+sup.c{font-size:10px;color:var(--accent);font-weight:700;margin-left:2px}
+.tail{color:var(--sub)}
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.opts button{background:none;border:1px solid var(--line);color:var(--ink);border-radius:999px;font:inherit;font-size:13.5px;padding:6px 14px}
+.srcs{margin-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}
+.srcs div{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.srcs b{color:var(--ink);font-weight:500}
+.srcs em{font-style:normal;color:var(--accent);margin-left:auto;font-size:12px}
+@media (max-width:640px){h1{font-size:32px}nav.top{padding:16px}}
+
+</style>
+</head>
+<body>
+
+<section class="hero">
+<nav class="top"><img src="/assets/rfs-seal-light-256.png" alt=""><b>R.F.S.<small>중앙대학교 가치투자학회</small></b><span>새 대화 · 인트라넷</span></nav>
+<div class="kick">Research Chatbot</div>
+<h1>선배들의 리포트에서<br>답을 찾아 드려요</h1>
+<p class="sub">학회 리포트·세미나·엑셀 모델에서 찾아 출처와 함께 답해요. 리포트를 대신 써 드리지는 않고, 고치는 방법과 학회 예시를 알려 드려요.</p>
+<div class="box"><textarea placeholder="리포트 쓰다 막힌 곳을 물어보세요"></textarea><button>ASK</button></div>
+<div class="ex"><span>항공사 밸류에이션은 뭘로 해?</span><span>수출 통계로 매출 추정하는 법</span><span>WACC 타인자본비용 잡는 법</span><span>이 문장 봐줘: …</span></div>
+<div class="down">대화하면 아래로 이어져요 ↓</div>
+</section>
+<section class="conv">
+<div class="lbl">Conversation</div>
+<div class="q">밸류에이션 뭘로 해?</div><div class="a"><p>업종에 따라 쓰는 방법이 달라져요. 어떤 회사를 분석하시나요?</p><div class="opts "><button type="button">제조업</button><button type="button">인터넷·소프트웨어</button><button type="button">바이오</button><button type="button">은행·증권</button><button type="button">잘 모르겠어요</button></div></div>
+<div class="q">Peer 어떻게 골라?</div><div class="a"><p>Peer는 내가 분석하는 회사와 <b>돈 버는 구조가 비슷해서 비교 기준으로 삼는 상장사</b>예요. 기준은 두 가지이고, 둘 다 봐야 해요.</p>
+<ul class="tree"><li>Peer 고르기<ul><li>사업 유사성: 같은 사업에서 돈을 버는가</li><li>재무 유사성: 규모와 이익 수준이 비슷한가</li></ul></li></ul>
+<h4>1. 사업 유사성: 업종 이름이 아니라 이익 구조가 같은 회사</h4>
+<p>후보를 넓게 모은 뒤 매출 비중 같은 숫자로 하나씩 거르고, 탈락 이유까지 적는 게 핵심이에요. 대한항공(26-2학기) 리포트는 글로벌 대형 항공사 6곳을 화물 비중으로 걸렀고, 델타항공은 화물 매출이 1.4%뿐이라 뺐어요.<sup class="c">1</sup></p>
+<p>사업부가 여럿이면 사업부마다 Peer를 따로 골라요. OCI(26-1학기)는 폴리실리콘 사업과 에너지 사업에 다른 Peer를 붙였어요.<sup class="c">2</sup></p>
+<h4>2. 재무 유사성: 규모 차이가 비교를 흐리지 않는지</h4>
+<p>학회 세미나 자료는 EBITDA(상각 전 영업이익) 5억 달러 이상으로 먼저 거르고, 그다음 매출 구성으로 다시 걸렀어요.<sup class="c">3</sup></p>
+<p class="tail">고른 Peer의 배수는 상대가치 평가에서 목표 배수를 정할 때 쓰여요.</p>
+<p>분석 중인 회사는 사업부가 하나인가요, 여러 개인가요?</p></div>
+<div class="srcs"><div><span>[1]</span><b>korean air</b><span>26-2학기 · 기업 리포트 · p.19</span><em>학회 추천 사례 · Peer</em></div><div><span>[2]</span><b>oci</b><span>26-1학기 · 기업 리포트 · p.20</span></div><div><span>[3]</span><b>벨류에이션 세미나 EV/EBITDA</b><span>22-1학기 · 세미나 · p.296</span><em>교육자료</em></div></div>
+</section>
+<div class="draftbar">시안 E · 밤하늘 첫 화면형<a href="./">목록 ←</a></div>
+</body>
+</html>

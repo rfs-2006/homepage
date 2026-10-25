@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>리포트형 | 챗봇 시안</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+*{box-sizing:border-box}
+html,body{margin:0}
+.draftbar{position:fixed;right:12px;bottom:12px;z-index:99;font:12px 'Pretendard Variable',sans-serif;background:#0F1B2E;color:#F7F6F3;padding:6px 10px;border-radius:4px;opacity:.85}
+.draftbar a{color:#8FAADC;text-decoration:none;margin-left:8px}
+
+:root{--bg:#F7F6F3;--ink:#1A1A1A;--sub:rgba(26,26,26,.58);--line:#DCD9D1;--navy:#203864;--dark:#0F1B2E;--accent:#8FAADC}
+body{background:var(--bg);color:var(--ink);font:15px/1.75 'Pretendard Variable',sans-serif}
+header{background:var(--dark);color:#F7F6F3}
+header .in{max-width:820px;margin:0 auto;padding:16px;display:flex;align-items:center;gap:14px}
+header img{width:34px;height:34px}
+header .t{font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-.01em}
+header .t small{display:block;font:600 10px 'Pretendard Variable';letter-spacing:.2em;color:var(--accent);text-transform:uppercase}
+header nav{margin-left:auto;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+header nav a{color:rgba(247,246,243,.75);text-decoration:none;margin-left:18px}
+main{max-width:820px;margin:0 auto;padding:28px 16px 160px}
+.q{display:flex;justify-content:flex-end;margin:26px 0 14px}
+.q span{font-family:'Noto Serif KR',serif;font-size:17px;border-bottom:2px solid var(--navy);padding-bottom:2px}
+.paper{background:#fff;border:1px solid var(--line);box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(15,27,46,.35)}
+.paper .bar{background:#E9E7E2;padding:8px 22px;font-size:11px;letter-spacing:.12em;color:var(--sub);display:flex;justify-content:space-between;text-transform:uppercase}
+.paper .body{padding:22px 26px 8px}
+.paper .ttl{font-family:'Noto Serif KR',serif;font-size:24px;font-weight:700;color:var(--navy);letter-spacing:-.02em;margin:0 0 6px;border-bottom:2px solid var(--navy);padding-bottom:10px}
+.paper h4{font-family:'Noto Serif KR',serif;font-size:16px;color:var(--navy);margin:20px 0 6px}
+.paper p{margin:0 0 10px}
+.tree{background:#F1F4FA;border-left:3px solid var(--navy);padding:10px 14px 10px 30px;margin:12px 0;font-size:14px}
+.tree ul{padding-left:18px;margin:2px 0}
+sup.c{font-size:10px;color:var(--navy);font-weight:700;margin-left:1px;cursor:pointer}
+.tail{color:var(--sub);font-size:14px}
+.foot{border-top:1px solid var(--line);margin:14px 26px 0;padding:12px 0 18px;font-size:12px;color:var(--sub)}
+.foot b{color:var(--ink);font-weight:600}
+.foot ol{margin:6px 0 0;padding-left:18px}
+.foot em{font-style:normal;background:#203864;color:#fff;font-size:10px;padding:1px 5px;margin-left:6px;letter-spacing:.04em}
+.ask{background:#fff;border:1px solid var(--line);padding:16px 22px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.opts button{background:none;border:1px solid var(--navy);color:var(--navy);font:inherit;font-size:13px;padding:5px 12px;cursor:pointer}
+.intro{font-size:13px;color:var(--sub);border-left:2px solid var(--accent);padding-left:12px}
+form{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(transparent,var(--bg) 30%);padding:28px 16px 16px}
+form .in{max-width:820px;margin:0 auto;display:flex;background:#fff;border:1px solid var(--navy)}
+form textarea{flex:1;border:0;resize:none;height:52px;padding:14px 16px;font:inherit;outline:none;background:none}
+form button{background:var(--navy);color:#fff;border:0;padding:0 22px;font:600 12px 'Pretendard Variable';letter-spacing:.14em}
+
+</style>
+</head>
+<body>
+
+<header><div class="in"><img src="/assets/rfs-seal-light-256.png" alt=""><div class="t"><small>R.F.S. Research Desk</small>리서치 챗봇</div><nav><a href="#">새 대화</a><a href="#">인트라넷</a></nav></div></header>
+<main>
+<p class="intro">학회 리포트·세미나·엑셀 모델에서 찾아 출처와 함께 답해요. 리포트를 대신 써 드리지는 않고, 고치는 방법과 학회 예시를 알려 드려요.</p>
+<div class="q"><span>밸류에이션 뭘로 해?</span></div>
+<div class="ask">업종에 따라 쓰는 방법이 달라져요. 어떤 회사를 분석하시나요?<div class="opts "><button type="button">제조업</button><button type="button">인터넷·소프트웨어</button><button type="button">바이오</button><button type="button">은행·증권</button><button type="button">잘 모르겠어요</button></div></div>
+<div class="q"><span>Peer 어떻게 골라?</span></div>
+<article class="paper">
+<div class="bar"><span>Answer · Peer Group</span><span>출처 3개 · 2026.10.25</span></div>
+<div class="body"><h3 class="ttl">Peer는 이익 구조로 고른다</h3><p>Peer는 내가 분석하는 회사와 <b>돈 버는 구조가 비슷해서 비교 기준으로 삼는 상장사</b>예요. 기준은 두 가지이고, 둘 다 봐야 해요.</p>
+<ul class="tree"><li>Peer 고르기<ul><li>사업 유사성: 같은 사업에서 돈을 버는가</li><li>재무 유사성: 규모와 이익 수준이 비슷한가</li></ul></li></ul>
+<h4>1. 사업 유사성: 업종 이름이 아니라 이익 구조가 같은 회사</h4>
+<p>후보를 넓게 모은 뒤 매출 비중 같은 숫자로 하나씩 거르고, 탈락 이유까지 적는 게 핵심이에요. 대한항공(26-2학기) 리포트는 글로벌 대형 항공사 6곳을 화물 비중으로 걸렀고, 델타항공은 화물 매출이 1.4%뿐이라 뺐어요.<sup class="c">1</sup></p>
+<p>사업부가 여럿이면 사업부마다 Peer를 따로 골라요. OCI(26-1학기)는 폴리실리콘 사업과 에너지 사업에 다른 Peer를 붙였어요.<sup class="c">2</sup></p>
+<h4>2. 재무 유사성: 규모 차이가 비교를 흐리지 않는지</h4>
+<p>학회 세미나 자료는 EBITDA(상각 전 영업이익) 5억 달러 이상으로 먼저 거르고, 그다음 매출 구성으로 다시 걸렀어요.<sup class="c">3</sup></p>
+<p class="tail">고른 Peer의 배수는 상대가치 평가에서 목표 배수를 정할 때 쓰여요.</p>
+<p>분석 중인 회사는 사업부가 하나인가요, 여러 개인가요?</p></div>
+<div class="foot"><b>Source</b><ol><li>korean air | 26-2학기 · 기업 리포트 | p.19<em>학회 추천 사례 · Peer</em></li><li>oci | 26-1학기 · 기업 리포트 | p.20</li><li>벨류에이션 세미나 EV/EBITDA | 22-1학기 · 세미나 | p.296<em>교육자료</em></li></ol></div>
+</article>
+</main>
+<form onsubmit="return false"><div class="in"><textarea placeholder="리포트 쓰다 막힌 곳을 물어보세요"></textarea><button>ASK</button></div></form>
+<div class="draftbar">시안 A · 리포트형<a href="./">목록 ←</a></div>
+</body>
+</html>
