@@ -67,8 +67,8 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 .panel .top .lab{color:var(--sub)}
 .panel .top button{margin-left:auto;border:0;background:none;font-size:17px;color:var(--sub);cursor:pointer}
 .doc{padding:22px 22px;overflow:auto}
-.doc .lab{color:var(--sub)}
-.doc h3{font-family:'Noto Serif KR',serif;font-weight:400;font-size:24px;letter-spacing:-.02em;margin:6px 0 2px}
+.doc .lab{color:var(--sub);text-transform:none}
+.doc h3{font-family:'Noto Serif KR',serif;font-weight:400;font-size:24px;letter-spacing:-.02em;margin:6px 0 12px}
 .doc .meta{font-size:12.5px;color:var(--sub);margin-bottom:14px}
 .doc .tag{display:inline-block;font-size:11px;font-weight:600;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
 .sheet{font-size:14px;line-height:1.9}
@@ -105,7 +105,7 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 <p class="tail">고른 Peer의 배수는 상대가치 평가에서 목표 배수를 정할 때 쓰여요.</p>
 <p>분석 중인 회사는 사업부가 하나인가요, 여러 개인가요?</p><div class="srcs"><span class="lab">출처 3</span><button class="chip" data-k="1"><i></i>대한항공 p.19</button><button class="chip" data-k="2"><i></i>OCI p.20</button><button class="chip" data-k="3"><i></i>밸류에이션 세미나 p.296</button></div></article>
 </main>
-<aside class="panel" id="panel"><div class="top"><span class="lab">출처 원문</span><button id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
+<aside class="panel" id="panel"><div class="top"><span class="lab">출처</span><button id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
 <div class="scrim" id="scrim"></div>
 <form onsubmit="return false"><div class="in"><textarea placeholder="이어서 물어보기"></textarea><button>↑</button></div></form>
 <div class="themes"><button data-t="navy">남색</button><button data-t="white">흰색+남색</button><button data-t="warm">지금(따뜻한 미색)</button></div>
@@ -118,11 +118,10 @@ const $ = (s) => document.querySelectorAll(s);
 const doc = document.getElementById('doc'), panel = document.getElementById('panel'), scrim = document.getElementById('scrim');
 function show(k, open) {
   const s = S[k];
-  doc.innerHTML = `<div class="lab">${s.sem}학기 · ${s.kind}</div><h3>${s.n}</h3><div class="meta">${s.pg} · 정규 리포트·교육자료</div>`
+  doc.innerHTML = `<div class="lab">${s.sem}학기 · ${s.kind.split(' · ')[0]} · ${s.pg}</div><h3>${s.n}</h3>`
     + (s.tag ? `<span class="tag">${s.tag}</span>` : '')
     + `<div class="sheet"><span class="dim">… ${s.pre}</span><br><br><mark>${s.quote}</mark><br><br><span class="dim">${s.post} …</span></div>`
-    + `<div class="note">시안이라 원문 대신 지어 쓴 예시 문장이에요.</div><a class="open" href="#">리포트 ${s.pg} 열기 →</a>`;
-  doc.innerHTML += `<div class="nav">${Object.keys(S).map((j) => `<button class="chip${j == k ? ' on' : ''}" data-k="${j}"><i></i>${S[j].n} ${S[j].pg}</button>`).join('')}</div>`;
+    + `<a class="open" href="#">리포트 열기 →</a>`;
   $('.chip').forEach((b) => b.classList.toggle('on', b.dataset.k == k));
   panel.classList.add('open'); scrim.classList.add('open'); document.body.classList.add('reading');
 }
