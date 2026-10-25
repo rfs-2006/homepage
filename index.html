@@ -6463,15 +6463,15 @@ class Component extends DCLogic {
   box.querySelector('.rc-bar button').onclick = close;
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
 })();
-// 챗봇이 있는 줄 모를 수 있어서 말풍선을 띄운다. 탭(세션)마다 한 번, 인트로가 끝나고 1.5초 뒤. 닫거나 누르면 이 탭에서는 다시 안 띄운다
+// 챗봇이 있는 줄 모를 수 있어서 말풍선을 띄운다. 탭(세션)마다 한 번, 들어온 지 4초 뒤 (인트로가 그보다 길면 끝난 뒤). 닫거나 누르면 이 탭에서는 다시 안 띄운다
 (function () {
   var tip = document.getElementById('rfsBotTip'), K = 'rfsBotTipSeen';
   try { if (sessionStorage.getItem(K)) return; } catch (e) { return; }
   var seen = function () { tip.hidden = true; try { sessionStorage.setItem(K, '1'); } catch (e) {} };
   tip.querySelector('button').onclick = seen; tip.querySelector('a').onclick = seen;
   document.querySelector('.rfs-bot').addEventListener('click', seen);
-  var wait = function () { if (document.documentElement.classList.contains('rfs-ready')) setTimeout(function () { tip.hidden = false; }, 1500); else setTimeout(wait, 300); };
-  wait();
+  var wait = function () { if (document.documentElement.classList.contains('rfs-ready')) tip.hidden = false; else setTimeout(wait, 300); };
+  setTimeout(wait, Math.max(0, 4000 - performance.now()));
 })();
 </script>
 </body>
