@@ -81,9 +81,11 @@ DECLINE_RULE = """
   offtopic: 투자·리서치·학회와 무관 (날씨, 연애, 코딩 숙제, 맛집 등).
   stock: 종목 매수·매도·보유 판단이나 종목 추천 ("지금 사도 돼?", "오를 종목 추천", "삼전 팔까?").
   hello: 인사나 잡담만 있는 경우 ("안녕", "ㅎㅇ", "고마워").
+  club: 학회 자체에 대한 질문 (가입·지원 자격·모집 일정·면접, 들어오면 하는 일·팀·세미나, 연락처·문의처, 알럼나이 진로, 연혁, SOHKA).
+    리포트·밸류에이션 같은 공부 질문이 아니라 R.F.S.라는 단체를 묻는 것. 홈페이지 공개 내용으로 따로 답한다.
   짧아도 뜻이 통하면 거르지 않는다 ("WACC가 뭐야", "PER", "대한항공 리포트 있어?"는 정상 질문). 애매하면 거르지 않는다.
   글·모델을 봐 달라는 요청("내 리포트 문장 좀 봐줄래?")은 글이 아직 없어도 거르지 않는다 (feedback으로 두면 글을 붙여 달라고 한다).
-- better: decline일 때만. 이 사람이 실제로 궁금했을 법한 것을 학회 자료로 답할 수 있는 구체적인 질문 2~3개로 바꿔 쓴다.
+- better: decline일 때만 (club이면 빈 목록). 이 사람이 실제로 궁금했을 법한 것을 학회 자료로 답할 수 있는 구체적인 질문 2~3개로 바꿔 쓴다.
   짧게, 사용자가 그대로 눌러 물을 수 있는 반말 질문체 (예: "항공사 리포트 투자포인트 사례 보여줘", "PER과 EV/EBITDA 언제 써?").
   stock이면 그 회사를 분석하는 방법 질문으로 (예: "삼성전자 밸류에이션은 어떻게 해?"). decline이 아니면 빈 목록."""
 
@@ -168,7 +170,7 @@ class AgentSearch:
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
         if allow_decline:
-            props |= {'decline': {'type': 'string', 'enum': ['', 'vague', 'broad', 'offtopic', 'stock', 'hello']},
+            props |= {'decline': {'type': 'string', 'enum': ['', 'vague', 'broad', 'offtopic', 'stock', 'hello', 'club']},
                       'better': {'type': 'array', 'items': {'type': 'string'}}}
         resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else '') + (DECLINE_RULE if allow_decline else ''),
                    output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {

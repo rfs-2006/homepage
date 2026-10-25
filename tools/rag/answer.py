@@ -17,6 +17,7 @@
 5. 대화는 앞부분을 바꾸지 않고 뒤에 붙이기만 한다. 그래서 프롬프트 캐싱이 턴마다 앞부분을 다시 읽지 않게 해 준다.
 """
 import datetime
+import html
 import json
 import re
 import sys
@@ -44,6 +45,7 @@ SYSTEM = """너는 중앙대 투자학회 RFS의 리서치 코치다. 학회원�
 - 시장 관행·업계 사실("증권사들은 보통 PBR을 쓴다", 최근 사건)은 출처(학회 자료나 웹)가 있을 때만 쓴다.
 - 리포트가 실제로 쓴 것과 내 해석·짐작을 나눠 쓴다. 해석에는 "(추정)"을 붙인다.
 - 제목에 [학회 추천 사례: 축]이 붙은 자료는 그 축에서 학회가 잘한 리포트다. 그 축의 사례로 먼저 고려한다.
+- 자료 제목의 표시([학회 추천 사례], 등급)나 [학회 평가표], 검색 과정은 답에 그대로 말하지 않는다. 사용자에게는 리포트 이름과 내용으로만 말한다.
 - 오늘은 {today}다. 학기 'YY-1'은 20YY년 상반기, 'YY-2'는 하반기에 쓴 자료다. 업황·시장 관행·실적·주가는 그 시점 얘기라서,
   지금 얘기(웹 검색 결과 포함)와 나란히 둘 때는 몇 년 전 자료인지 밝힌다. 방법·원칙은 학기와 상관없이 쓴다.
 - 사례는 정규 학기 리포트에서만 들고 학기를 붙인다. 같은 내용이면 최근 학기를 앞에 둔다. 근거 없이 정한 숫자는 모범 사례로 보이지 않는다. 리포트끼리 숫자가 다르면 둘 다 보이고 왜 다른지 적는다.
@@ -191,6 +193,30 @@ DECLINE = {
     'stock': '죄송해요, 어떤 종목을 사거나 팔지, 어떤 종목이 좋은지는 말씀드리지 않아요. 대신 그 회사를 직접 분석해 보시는 방법은 학회 자료로 자세히 도와드릴 수 있어요.',
     'hello': '안녕하세요. 학회 리포트와 자료에서 근거를 찾아 설명해 드리는 Polaris예요. 리서치하시다 막히는 부분을 편하게 물어봐 주세요.',
 }
+# 학회 자체를 묻는 질문(가입·활동·연락처)은 홈페이지 공개 페이지 글만 주고 가벼운 모델로 짧게 답한다 (검색·리포트 자료 없음)
+CLUB_SYSTEM = """너는 중앙대학교 가치투자학회 R.F.S.의 안내 챗봇 Polaris다. 아래 [홈페이지 공개 내용]만 근거로 학회에 대한 질문에 답한다.
+- 존댓말, 짧게(3~6문장). 필요하면 짧은 목록. 마크다운 제목은 쓰지 않는다.
+- 공개 내용에 없는 것은 지어내지 말고 문의처(아래 내용의 이메일·인스타그램)를 안내한다.
+- 연락처를 물으면 문의 메일(일반 contact@caurfs.kr, 모집 recruiting@caurfs.kr)과 인스타그램 @cau_rfs를 알려 준다. 개인 전화번호는 말하지 않는다.
+- 끝에 관련 페이지 하나를 링크로 붙인다: 모집·가입은 [신입 학회원 모집](/recruiting/), 학회·활동 소개는 [학회 소개](/about/).
+
+[홈페이지 공개 내용]
+{info}"""
+
+
+def club_info():
+    """홈페이지 공개 페이지(모집·소개)의 본문 글. 서버가 홈페이지 저장소 안에서 돌기 때문에 파일을 바로 읽는다."""
+    root = Path(__file__).resolve().parents[2]
+    out = []
+    for f in ('recruiting/index.html', 'about/index.html'):
+        p = root / f
+        if p.exists():
+            h = re.sub(r'<(script|style)[\s\S]*?</\1>', '', p.read_text(errors='ignore'))
+            out.append(re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', h))).strip())
+    return '\n\n'.join(out) + '\n\n문의: contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
+
+
+BEST_ASK = re.compile(r'잘\s*(쓴|된|한|만든)|좋은\s*리포트|모범|베스트|참고할\s*(만한|리포트)|추천.*리포트|리포트.*추천')
 DECLINE_EXAMPLES = ['항공사 밸류에이션은 뭘 기준으로 해?', '산업 리서치는 어디서부터 시작해?', '내 리포트 문장 좀 봐줄래?']
 
 
@@ -213,6 +239,7 @@ class Answerer:
             v.sort(key=lambda i: int(self.chunks[i]['chunk_id'].rsplit('-', 1)[1]))
         self.dup = self.find_dups()
         self.site = self.site_reports(cafe)   # 문서 → 홈페이지 정규 리포트 {name, pdf, page}
+        self.best_pool = self.load_scores(cafe)   # 잘 쓴 리포트를 골라 달라는 질문용: 학회 평가표 점수
         self.rec = {}
         p = Path(cafe) / 'eval' / 'rubric_recommend.json'
         if p.exists():
@@ -221,6 +248,63 @@ class Answerer:
             # 축 → {청크 번호: 리포트 번호}. 같은 리포트의 PDF·워드·사이트판·엑셀을 한 리포트로 묶는다
             self.rec = {ax: {i: k for k, r in enumerate(v) for d in r['search_doc_ids'] for i in by_doc.get(d, [])}
                         for ax, v in top.items() if v}
+
+    def load_scores(self, cafe):
+        """정규 리포트 평가표(eval/rubric_scores.jsonl): 리포트마다 축별 1~3점과 이유. 검색에 들어간 판(PDF 등)의 문서 번호로 잇는다."""
+        p = Path(cafe) / 'eval' / 'rubric_scores.jsonl'
+        if not p.exists():
+            return []
+        by_subj, pdf = {}, set()   # 카페 글 제목 → 검색에 들어간 문서들 (평가표의 문서 번호는 예전 번호라 제목으로 잇는다)
+        meta = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
+        if meta.exists():
+            import gzip
+            for line in gzip.open(meta, 'rt'):
+                d = json.loads(line)
+                if d['doc_id'] in self.by_doc and d['doc_id'] not in self.dup and d.get('ext') != '.xlsx':
+                    by_subj.setdefault(d.get('subject', ''), []).append(d['doc_id'])
+                    if d.get('ext') == '.pdf':
+                        pdf.add(d['doc_id'])
+        out = []
+        for line in p.open():
+            r = json.loads(line)
+            subj = r.get('subject_full') or r['subject']
+            m = re.match(r'\[(\d\d)-([12])\]', subj)
+            docs = [d for d in [r['doc_id']] + by_subj.get(subj, []) if d in self.by_doc and d not in self.dup]
+            # 홈페이지판(사이트 PDF)이 따로 있으면 그것도 후보로 (카페에는 게시글만 있는 리포트: 대한항공 26-2 등)
+            if m:
+                docs += [d for d, v in self.site.items() if v['name'].startswith(r['subject']) and d in self.by_doc
+                         and f'{m.group(1)}-{m.group(2)}학기' in self.chunks[self.by_doc[d][0]]['header']]
+                pdf.update(d for d in docs if d in self.site)
+            if not m or not docs:
+                continue
+            # 1쪽 요약이 있는 PDF판 먼저
+            out.append({'doc': max(docs, key=lambda d: (d in pdf, len(self.by_doc[d]))), 'name': r['subject'], 'sem': f'{m.group(1)}-{m.group(2)}',
+                        'scores': r['scores'], 'reasons': r['reasons']})
+        return out
+
+    def best(self, axes, recent, n=3):
+        """잘 쓴 리포트 n개: 물은 축(없으면 전체 축) 평균 점수 순, 같으면 최근 학기 먼저. recent면 최근 4개 학기 안에서만."""
+        pool = self.best_pool
+        if recent:
+            sems = sorted({r['sem'] for r in pool}, reverse=True)[:4]
+            pool = [r for r in pool if r['sem'] in sems]
+        def score(r):
+            v = [r['scores'].get(a) for a in (axes or r['scores'])]
+            v = [x for x in v if isinstance(x, (int, float))]
+            return sum(v) / len(v) if v else 0
+        return sorted(pool, key=lambda r: (score(r), r['sem']), reverse=True)[:n]
+
+    def best_block(self, picks, axes):
+        """고른 리포트의 평가 이유 (답이 '왜 잘 썼는지'를 설명할 근거). 출처로 다는 건 함께 넣는 리포트 1~2쪽 청크."""
+        lines = []
+        for r in picks:
+            good = [a for a, v in r['scores'].items() if v == 3 and (not axes or a in axes)] or \
+                   sorted([a for a, v in r['scores'].items() if isinstance(v, (int, float)) and (not axes or a in axes)], key=lambda a: -r['scores'][a])[:2]
+            # 약점·지적은 뺀다: 평가표 이유는 "잘한 점. 약점: ..." 꼴이라 '약점' 앞까지만, 그리고 지적 문장('다만', '그러나'로 시작)도 자른다
+            cut = lambda t: re.split(r'\s*(?:약점|단점|다만,?|그러나|하지만|아쉬운|지적)\b', t)[0].strip()
+            lines.append(f"- {r['name']} ({r['sem']}학기): " + ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good))
+        return {'type': 'text', 'text': '[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. '
+                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
 
     def recommended(self, question, axis, n=REC_N):
         """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
@@ -264,10 +348,10 @@ class Answerer:
         for f in (root / 'research').glob('*/index.html'):
             h = f.read_text(errors='ignore')
             t = re.search(r'<title>([^<|]+?)\s*(?:기업분석|산업분석)?\s*리포트', h)
-            m = re.search(r'/assets/reports/([^"\']+\.pdf)', h)
-            if t and m and (root / 'assets' / 'reports' / m.group(1)).exists():
-                by_file[m.group(1)] = {'name': t.group(1).strip(), 'pdf': '/assets/reports/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
-        docs = {}
+            m = re.search(r'/assets/((?:reports/)?[^"\'/]+\.pdf)', h)   # 보통 assets/reports/, 예전에 올린 TORM만 assets/torm-report.pdf
+            if t and m and (root / 'assets' / m.group(1)).exists():
+                by_file[m.group(1).split('/')[-1]] = {'name': t.group(1).strip(), 'pdf': '/assets/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
+        docs, subj = {}, {}
         p = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
         if p.exists():
             import gzip
@@ -275,6 +359,17 @@ class Answerer:
                 d = json.loads(line)
                 if d.get('source') == 'site' and d.get('file') in by_file:
                     docs[d['doc_id']] = by_file[d['file']]
+                elif d.get('source') in ('cafe', 'upload') and d['doc_id'] in self.by_doc and d.get('ext') != '.xlsx':   # upload: 카페 밖에서 받은 리포트(삼양식품 24-1 SOHKA)
+                    subj[d['doc_id']] = d.get('subject') or ''
+        # 사이트판 문서가 데이터에 없는 페이지(TORM)는 카페 글 제목 '[26-1] TORM_…'의 회사명으로 잇는다 (같은 회사가 여럿이면 최근 학기)
+        for v in by_file.values():
+            if v in docs.values():
+                continue
+            name = re.match(r'[A-Za-z0-9가-힣]+', v['name'])
+            cand = {d: t for d, t in subj.items() if name and re.match(r'\[\d\d-[12]\]\s*' + re.escape(name.group(0)) + r'(?![A-Za-z가-힣])', t, re.I)}
+            if cand:
+                last = max(cand.values())
+                docs.update({d: v for d, t in cand.items() if t == last})
         site_hash = {hash(self.chunks[i]['text']): d for d in docs for i in self.by_doc.get(d, [])}
         for d, idx in self.by_doc.items():
             if d in docs or not idx or self.chunks[idx[0]]['doc_type'] not in ('company', 'industry'):
@@ -436,6 +531,13 @@ class Chat:
         else:
             found = s.multiquery(standalone, queries=queries, log=self.trace)[:PREFETCH]
         found = self.a.regular_only(found, question)
+        # 잘 쓴·좋은 리포트를 골라 달라는 질문: 검색 운이나 최신순이 아니라 학회 평가표 점수로 고르고, 그 리포트 1~2쪽을 앞에 둔다
+        self.best = []
+        if kind in ('cases', 'explain', 'fact') and BEST_ASK.search(question):
+            self.best = self.a.best(axes, bool(re.search(r'최근|요즘|최신|요새', question)))
+            lead = [i for r in self.best for i in (self.a.outline(r['doc'], n=3) or self.a.by_doc[r['doc']][:3])]
+            found = lead + [i for i in found if i not in lead]
+            self.trace.append({'best': [r['name'] + ' ' + r['sem'] for r in self.best]})
         # 축마다 추천 리포트. 축이 여럿이면 축마다 나눠서 모두 REC_N개 안쪽
         self.timing['검색'] = round(time.perf_counter() - t0, 1)
         t0 = time.perf_counter()
@@ -461,6 +563,8 @@ class Chat:
                 on_stage('answer')
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
+            if kind == 'decline:club':
+                return self._club(question, standalone, on_text)
             if kind.startswith('decline:'):
                 return self._decline(question, kind.split(':')[1], first['better'], standalone)
             if kind == 'file':
@@ -473,7 +577,8 @@ class Chat:
             system, tools, form = SYSTEM.format(search='', today=self.today), {}, TYPE['given']
         self.shown += first
         sec = f' (사용자 글의 섹션: {self.section})' if kind == 'feedback' and getattr(self, 'section', '') else ''
-        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + [{'type': 'text', 'text': f'질문{sec}: {question}\n\n[답 형식]\n{form}'}]
+        best = [a.best_block(self.best, self.axes)] if given is None and getattr(self, 'best', None) else []
+        content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + best + [{'type': 'text', 'text': f'질문{sec}: {question}\n\n[답 형식]\n{form}'}]
         self.msgs.append({'role': 'user', 'content': content})
         searches, n = [], 0
         calls = []
@@ -542,6 +647,21 @@ class Chat:
         return {'answer': text, 'options': ask['options'], 'sources': [], 'searches': [], 'shown': [],
                 'stop_reason': None, 'kind': 'clarify', 'standalone': standalone}
 
+
+    def _club(self, question, standalone, on_text=None):
+        """학회 자체 질문(가입·활동·연락처): 홈페이지 공개 내용만 주고 가벼운 모델로 답한다. 답변 모델 대화(msgs)에는 남기지 않는다."""
+        s = self.a.s
+        if not hasattr(self.a, 'club'):
+            self.a.club = CLUB_SYSTEM.format(info=club_info())
+        t0 = time.perf_counter()
+        resp = ask(s.cl, model=s.model, on_text=on_text, system=self.a.club,
+                   messages=[{'role': 'user', 'content': (self._context() + '\n\n' if self.turns else '') + '질문: ' + question}])
+        s._count(resp)
+        text = ''.join(b.text for b in resp.content if b.type == 'text').strip()
+        self.timing['답변'] = [{'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens}]
+        self.turns.append({'question': question, 'answer': text, 'kind': 'club'})
+        return {'answer': text, 'options': [], 'sources': [], 'searches': [], 'shown': [], 'timing': self.timing,
+                'stop_reason': resp.stop_reason, 'kind': 'club', 'standalone': standalone}
 
     def _decline(self, question, why, better, standalone):
         """검색·답변 없이 정해진 문구로 돌려보낸다. 바꿔 쓴 질문은 보기 버튼으로. 답변 모델 대화(msgs)에는 남기지 않는다."""
