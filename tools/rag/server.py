@@ -206,10 +206,14 @@ class Handler(BaseHTTPRequestHandler):
         if out['kind'] == 'decline':  # 걸러진 질문은 하루 질문 수에서 빼 준다
             left = give_back(ip, member, left)
         with lock:
-            answerer.s.log.clear()  # 검색 로그는 평가용이라 서버에서는 쌓지 않는다
+            trace = list(answerer.s.log)   # 검색어 재작성·agent 검색 기록 (동시에 여러 대화가 돌면 섞일 수 있다)
+            answerer.s.log.clear()
         if LOG_PATH:
+            # 답이 이상할 때 원인을 보려고: 질문 유형, 검색어, 모델이 받은 청크, 단계별 시간까지 남긴다 (사람 정보는 없음)
             with lock, open(LOG_PATH, 'a') as f:
                 f.write(json.dumps({'t': time.strftime('%Y-%m-%dT%H:%M:%S'), 'conv': cid, 'q': msg, 'kind': out['kind'], 'axes': out.get('axes', []),
+                                    'standalone': out.get('standalone'), 'search': trace, 'extra_search': out.get('searches', []),
+                                    'shown': out.get('shown_turn', []), 'timing': out.get('timing'),
                                     'answer': out['answer'], 'sources': [s['source'] for s in out['sources']]},
                                    ensure_ascii=False) + '\n')
         body = {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''),

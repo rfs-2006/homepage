@@ -337,6 +337,7 @@ class Chat:
     def turn(self, question, given=None, on_text=None, on_stage=None):
         """given: 검색 대신 넣을 청크 번호 목록 (평가에서 예전 답과 같은 자료로 프롬프트만 바꿔 비교할 때). 이때는 추가 검색도 없다."""
         a, s = self.a, self.a.s
+        n0 = len(self.shown)   # 이번 턴에 새로 보여 준 청크만 로그에 남기려고
         if given is None:
             first, kind, standalone = self._retrieve(question)
             if on_stage and kind in TYPE:
@@ -387,6 +388,7 @@ class Chat:
             self.msgs.append({'role': 'user', 'content': results})
         out = a.render(resp, self.shown, searches)
         out['timing'] = dict(getattr(self, 'timing', {}), 답변=calls, 추가검색=len(searches))
+        out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]   # 이번 턴에 모델이 받은 청크 (순서대로)
         out.update(kind=kind, standalone=standalone, axes=self.axes if given is None else [], section=self.section if given is None else '')
         self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})
         return out
