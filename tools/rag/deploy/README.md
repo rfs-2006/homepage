@@ -39,7 +39,7 @@ GitHub → rfs-2006/rfs-cafe-data → Settings → Deploy keys → Add deploy ke
 
 ```bash
 # 코드(공개)와 데이터(비공개, 검색에 쓰는 폴더만)
-sudo -u polaris git clone https://github.com/rfs-2006/homepage.git /srv/polaris/homepage
+sudo -u polaris git clone --depth 1 -b main https://github.com/rfs-2006/homepage.git /srv/polaris/homepage
 sudo -u polaris env GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=accept-new' \
   git clone --filter=blob:none --sparse git@github.com:rfs-2006/rfs-cafe-data.git /srv/polaris/rfs-cafe-data
 sudo -u polaris git -C /srv/polaris/rfs-cafe-data sparse-checkout set parsed vectors eval
