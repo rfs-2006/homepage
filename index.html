@@ -1762,10 +1762,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
-          <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:clamp(10px,1.8vh,20px)">
-            <span style="font-size:13px;color:rgba(247,246,243,0.88);letter-spacing:0.04em">{{ heroMeta }}</span>
-          </div>
-          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroName }}</a></h2>
+          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
           <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
           <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
           <div class="stripflex hero-strip" style="display:flex;align-items:center;border-top:1px solid rgba(247,246,243,0.55);border-bottom:1px solid rgba(247,246,243,0.55);padding:clamp(9px,1.5vh,14px) 0;color:#F7F6F3">
@@ -1782,33 +1779,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
           </div>
           <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
-        </div>
-      </div>
-      <div class="wrap hero-tick" style="padding:0 35px;width:100%;margin-top:clamp(22px,3.4vh,40px)">
-        <div style="display:flex;align-items:baseline;gap:26px;border-top:1px solid rgba(247,246,243,0.35);padding-top:16px">
-          <span style="font-size:11.5px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.6);white-space:nowrap;flex-shrink:0">Coverage</span>
-          <div class="tickmask" style="flex:1;overflow:hidden;min-width:0">
-            <div class="ticktrack" style="display:flex;width:max-content">
-          <div class="tickset" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
-            <sc-for list="{{ heroTicker }}" as="t" hint-placeholder-count="8">
-              <span style="display:flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:0.07em;color:rgba(247,246,243,0.72);white-space:nowrap">
-                <span style="font-weight:700;color:#F7F6F3">{{ t.ticker }}</span>
-                <span style="font-weight:600">{{ t.op }}</span>
-                <span style="font-variant-numeric:tabular-nums">{{ t.upside }}</span>
-              </span>
-            </sc-for>
-          </div>
-          <div class="tickset" aria-hidden="true" style="display:flex;gap:30px;align-items:baseline;padding-right:30px">
-            <sc-for list="{{ heroTicker }}" as="t" hint-placeholder-count="8">
-              <span style="display:flex;align-items:baseline;gap:8px;font-size:12px;letter-spacing:0.07em;color:rgba(247,246,243,0.72);white-space:nowrap">
-                <span style="font-weight:700;color:#F7F6F3">{{ t.ticker }}</span>
-                <span style="font-weight:600">{{ t.op }}</span>
-                <span style="font-variant-numeric:tabular-nums">{{ t.upside }}</span>
-              </span>
-            </sc-for>
-          </div>
-            </div>
-          </div>
         </div>
       </div>
       <div class="wrap" style="padding:0 35px;width:100%;margin-top:clamp(18px,3vh,30px)">
