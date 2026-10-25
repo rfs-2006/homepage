@@ -122,6 +122,10 @@ body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 @keyframes rise{from{opacity:0;transform:translateY(8px)}}
 .q{animation:rise .35s ease-out both}
 .a>*{animation:rise .45s ease-out both;animation-delay:calc(var(--i,0) * 70ms)}
+/* 답을 쓰는 대로 보일 때(live)는 다시 그릴 때마다 움직이지 않게. 다 쓴 뒤 붙는 출처·보기만 올라온다 */
+.a.live>*{animation:none}.a.live>.srcs,.a.live>.opts{animation:rise .45s ease-out both}
+.caret{display:inline-block;width:7px;height:1.05em;margin-left:2px;vertical-align:-2px;background:var(--navy);animation:blink 1s steps(2,start) infinite}
+@keyframes blink{to{visibility:hidden}}
 .err{color:var(--err)}
 .foot{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 14px;background:linear-gradient(rgba(255,255,255,0),var(--bg) 40%)}
 .foot .in{max-width:700px;margin:0 auto;background:#fff;border:1px solid var(--hair);border-radius:12px;display:flex;align-items:flex-end;gap:8px;padding:7px 7px 7px 16px;box-shadow:0 12px 30px -18px rgba(20,23,28,.35);transition:margin .25s}
@@ -299,11 +303,12 @@ function addWait() {
 }
 function addNote(text, cls) { const d = document.createElement('div'); d.className = cls; d.textContent = text; $('log').appendChild(d); return d; }
 
-function addA(res) {
+// live: 쓰는 대로 보여 주던 답 칸. 있으면 그 칸을 다 쓴 답(출처 이름표 포함)으로 바꾼다
+function addA(res, live) {
   const mid = Date.now().toString(36);
   SRC[mid] = {}; (res.sources || []).forEach((s) => { SRC[mid][s.n] = Object.assign(meta(s), { cited: s.cited || [] }); });
-  const d = document.createElement('article');
-  d.className = 'a';
+  const d = live || document.createElement('article');
+  d.className = live ? 'a live' : 'a';
   const nums = Object.keys(SRC[mid]);
   d.innerHTML = render(res.answer, mid) + (nums.length ? `<div class="srcs"><span class="lab">출처 ${nums.length}</span>${nums.map((n) => chip(mid, n)).join('')}</div>` : '');
   // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)
@@ -313,7 +318,7 @@ function addA(res) {
     d.appendChild(o);
   }
   [...d.children].forEach((el, i) => el.style.setProperty('--i', Math.min(i, 14)));
-  $('log').appendChild(d);
+  if (!live) $('log').appendChild(d);
 }
 
 // 출처 이름표를 누르면 옆 패널(폰은 아래 시트)에 인용 원문
@@ -381,13 +386,43 @@ async function ask(text) {
     const { data } = await sb.auth.getSession();
     const headers = { 'Content-Type': 'application/json' };
     if (data.session) headers.Authorization = 'Bearer ' + data.session.access_token;
-    const r = await fetch(API.replace(/\/$/, '') + '/chat', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
-    const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
-    w.done();
-    if (res.conversation_id) cid = res.conversation_id;
-    if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
-    if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
-    addA(res);
+    // /chat/stream: 답 글자를 쓰는 대로 받는다 (data: {type: stage|delta|done|error} 줄들)
+    const r = await fetch(API.replace(/\/$/, '') + '/chat/stream', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
+    const fin = (res) => {
+      w.done();
+      if (res.conversation_id) cid = res.conversation_id;
+      if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
+    };
+    if (!/event-stream/.test(r.headers.get('content-type') || '')) {   // 하루 제한·잘못된 요청은 보통 JSON으로 온다
+      const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
+      fin(res);
+      if (!r.ok || res.error) throw new Error(res.error || '오류가 났습니다.');
+      addA(res); return;
+    }
+    let live = null, said = '', painted = false, done = null, buf = '';
+    const paint = () => { painted = false; if (done) return; live.innerHTML = render(said, 'live') + '<span class="caret"></span>'; };
+    const rd = r.body.getReader(), dec = new TextDecoder();
+    for (;;) {
+      const { value, done: end } = await rd.read();
+      if (end) break;
+      buf += dec.decode(value, { stream: true });
+      let k;
+      while ((k = buf.indexOf('\n\n')) >= 0) {
+        const line = buf.slice(0, k); buf = buf.slice(k + 2);
+        if (!line.startsWith('data: ')) continue;
+        const ev = JSON.parse(line.slice(6));
+        if (ev.type === 'stage') { const sm = w.querySelector('small'); if (sm) sm.textContent = '자료를 다 찾았어요. 답을 쓰는 중…'; }
+        else if (ev.type === 'delta') {
+          if (!live) { w.done(); live = document.createElement('article'); live.className = 'a live'; $('log').appendChild(live); }
+          said += ev.text;
+          if (!painted) { painted = true; requestAnimationFrame(paint); }
+        } else if (ev.type === 'done') done = ev;
+        else if (ev.type === 'error') { fin(ev); if (live) live.remove(); throw new Error(ev.error); }
+      }
+    }
+    if (!done) { if (live) live.remove(); throw new Error('연결이 끊겼어요. 다시 물어봐 주세요.'); }
+    fin(done);
+    addA(done, live);
   } catch (err) {
     w.done(); addNote(err instanceof TypeError ? '서버에 연결하지 못했어요. 잠시 뒤 다시 해 주세요.' : (err.message || '연결하지 못했습니다.'), 'err');
   } finally {

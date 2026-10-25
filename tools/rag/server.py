@@ -143,8 +143,22 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, {'ok': answerer is not None})
         self._json(404, {'error': 'not found'})
 
+    def _sse_start(self):
+        self.send_response(200)
+        self._cors()
+        self.send_header('Content-Type', 'text/event-stream; charset=utf-8')
+        self.send_header('Cache-Control', 'no-cache')
+        self.end_headers()
+
+    def _sse(self, obj):
+        self.wfile.write(b'data: ' + json.dumps(obj, ensure_ascii=False).encode() + b'\n\n')
+        self.wfile.flush()
+
     def do_POST(self):
-        if self.path != '/chat':
+        """/chat: 다 쓴 답을 한 번에. /chat/stream: 같은 처리인데 답 글자를 쓰는 대로 보낸다 (text/event-stream)
+        보내는 것: {type: stage, stage} → {type: delta, text}... → {type: done, ...(/chat 응답과 같은 내용)} 또는 {type: error, error}"""
+        stream = self.path == '/chat/stream'
+        if self.path not in ('/chat', '/chat/stream'):
             return self._json(404, {'error': 'not found'})
         token = self.headers.get('Authorization', '').removeprefix('Bearer ').strip()
         member = bool(token) and verify(token)
@@ -162,12 +176,26 @@ class Handler(BaseHTTPRequestHandler):
         cid, conv = get_conv(str(req.get('conversation_id') or ''))
         if len(conv['chat'].turns) >= MAX_TURNS:
             return self._json(400, {'error': '대화가 길어졌습니다. 새 대화를 시작해 주세요.', 'conversation_id': cid})
+        cb = {}
+        if stream:
+            self._sse_start()
+            gone = []  # 사용자가 창을 닫으면 쓰기가 실패한다. 답은 끝까지 만들고(대화 기록용) 보내기만 멈춘다
+
+            def send(obj):
+                if gone:
+                    return
+                try:
+                    self._sse(obj)
+                except OSError:
+                    gone.append(1)
+            cb = {'on_text': lambda t: send({'type': 'delta', 'text': t}), 'on_stage': lambda st: send({'type': 'stage', 'stage': st})}
         with conv['lock']:  # 같은 대화에 동시에 두 질문이 들어오면 차례로
             try:
-                out = conv['chat'].turn(msg)
+                out = conv['chat'].turn(msg, **cb)
             except Exception as e:  # noqa: BLE001 — 사용자에게는 짧게, 서버 로그에는 자세히
                 print('오류', cid, repr(e), flush=True)
-                return self._json(500, {'error': '답을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'conversation_id': cid})
+                body = {'error': '답을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'conversation_id': cid}
+                return send(dict(body, type='error')) if stream else self._json(500, body)
         if out['kind'] == 'decline':  # 걸러진 질문은 하루 질문 수에서 빼 준다
             left = give_back(ip, member, left)
         with lock:
@@ -177,8 +205,13 @@ class Handler(BaseHTTPRequestHandler):
                 f.write(json.dumps({'t': time.strftime('%Y-%m-%dT%H:%M:%S'), 'conv': cid, 'q': msg, 'kind': out['kind'], 'axes': out.get('axes', []),
                                     'answer': out['answer'], 'sources': [s['source'] for s in out['sources']]},
                                    ensure_ascii=False) + '\n')
-        self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''), 'timing': out.get('timing'), 'options': out.get('options', []), 'left': left,
-                         'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context')} for s in out['sources']]})
+        body = {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''),
+                'timing': out.get('timing'), 'options': out.get('options', []), 'left': left,
+                'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context')} for s in out['sources']]}
+        if stream:
+            send(dict(body, type='done'))
+        else:
+            self._json(200, body)
 
     def log_message(self, fmt, *args):  # 접속 로그에 토큰·질문이 남지 않게 경로만
         print(time.strftime('%H:%M:%S'), self.command, self.path, args[1] if len(args) > 1 else '', flush=True)

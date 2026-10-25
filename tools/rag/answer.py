@@ -320,11 +320,13 @@ class Chat:
             found = (found[:2] + rec + [i for i in found[2:] if i not in rec])[:max(len(found), len(rec) + 2)]
         return [i for i in found if i not in self.shown], kind, standalone
 
-    def turn(self, question, given=None):
+    def turn(self, question, given=None, on_text=None, on_stage=None):
         """given: 검색 대신 넣을 청크 번호 목록 (평가에서 예전 답과 같은 자료로 프롬프트만 바꿔 비교할 때). 이때는 추가 검색도 없다."""
         a, s = self.a, self.a.s
         if given is None:
             first, kind, standalone = self._retrieve(question)
+            if on_stage and kind in TYPE:
+                on_stage('answer')
             if kind == 'clarify':
                 return self._clarify(question, first, standalone)
             if kind.startswith('decline:'):
@@ -343,7 +345,7 @@ class Chat:
         for _ in range(MAX_SEARCH + 2):
             t0 = time.perf_counter()
             # cache_control: 마지막 블록까지를 캐시에 쓴다. 다음 호출(도구 결과 뒤, 다음 턴)은 이 앞부분을 캐시에서 읽는다
-            resp = ask(s.cl, model=a.answer_model, system=system, **tools, cache_control={'type': 'ephemeral'},
+            resp = ask(s.cl, model=a.answer_model, on_text=on_text, system=system, **tools, cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             web = getattr(getattr(resp.usage, 'server_tool_use', None), 'web_search_requests', 0) or 0
