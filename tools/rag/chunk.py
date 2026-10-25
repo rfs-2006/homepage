@@ -157,29 +157,41 @@ def chunks_of(d):
             yield sec, None, None, c
 
 
+def rows_of(d):
+    """문서 하나의 청크 레코드들 (add_docs.py도 같이 쓴다)"""
+    sem = semester(d)
+    title = title_of(d)
+    for k, (sec, p0, p1, text) in enumerate(chunks_of(d)):
+        if len(text) < MIN:
+            continue
+        pages = (f'p.{p0}' if p0 == p1 else f'p.{p0}-{p1}') if p0 else ''
+        head = ' | '.join(x for x in [title, sem and f'{sem}학기', LABEL[d['doc_type']], sec, pages] if x)
+        yield {
+            'chunk_id': f"{d['doc_id']}-{k:03d}", 'doc_id': d['doc_id'], 'title': title, 'semester': sem,
+            'doc_type': d['doc_type'], 'grade': d['grade'], 'source': d['source'], 'board': d['board'],
+            'file': d['file'], 'article_id': d.get('article_id'), 'section': sec, 'page_start': p0, 'page_end': p1,
+            'header': head, 'text': text,
+        }
+
+
+def is_fund(d):
+    """운용팀 문서(정기보고서·포트폴리오·리밸런싱·회계장부·펀드제안서 등). 금액·수량·평단이 들어 있어 검색에 넣지 않는다.
+    지시문으로 "공개하지 않는다"만 막으면 우회 질문에 뚫릴 수 있어서 아예 검색 대상에서 뺀다 (NOTES 14절)"""
+    return d['board'] == '운용 현황 보고' or d['doc_type'] == 'fund_report' or bool(re.search('운용팀|자산운용', d['subject']))
+
+
 def main():
     docs = [json.loads(l) for l in open(SRC)]
-    live = [d for d in docs if 'duplicate_of' not in d and d['chars'] >= 200]
+    live = [d for d in docs if 'duplicate_of' not in d and d['chars'] >= 200 and not is_fund(d)]
     n = 0
     lens = []
     by_type = Counter()
     with open(OUT / 'chunks.jsonl', 'w') as f:
         for d in live:
-            sem = semester(d)
-            title = title_of(d)
-            for k, (sec, p0, p1, text) in enumerate(chunks_of(d)):
-                if len(text) < MIN:
-                    continue
-                pages = (f'p.{p0}' if p0 == p1 else f'p.{p0}-{p1}') if p0 else ''
-                head = ' | '.join(x for x in [title, sem and f'{sem}학기', LABEL[d['doc_type']], sec, pages] if x)
-                f.write(json.dumps({
-                    'chunk_id': f"{d['doc_id']}-{k:03d}", 'doc_id': d['doc_id'], 'title': title, 'semester': sem,
-                    'doc_type': d['doc_type'], 'grade': d['grade'], 'source': d['source'], 'board': d['board'],
-                    'file': d['file'], 'article_id': d.get('article_id'), 'section': sec, 'page_start': p0, 'page_end': p1,
-                    'header': head, 'text': text,
-                }, ensure_ascii=False) + '\n')
+            for r in rows_of(d):
+                f.write(json.dumps(r, ensure_ascii=False) + '\n')
                 n += 1
-                lens.append(len(text))
+                lens.append(len(r['text']))
                 by_type[d['doc_type']] += 1
     lens.sort()
     q = lambda p: lens[int(len(lens) * p)]

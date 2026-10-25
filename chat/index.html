@@ -3,189 +3,328 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>리서치 챗봇 | 중앙대 가치투자학회 R.F.S.</title>
+<title>Polaris · 리서치 챗봇 | 중앙대 가치투자학회 R.F.S.</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preload" as="image" href="/assets/hero/polaris.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 <style>
-:root{--bg:#F7F6F3;--ink:#1A1A1A;--sub:rgba(26,26,26,0.6);--line:#E2E0DA;--navy:#203864;--dark:#0F1B2E;--accent:#8FAADC;--card:#FFFFFF}
+/* 홈(index.html)과 같은 페이지 전환: 메뉴 POLARIS를 누르면 부드럽게 넘어온다 (지원 브라우저·PC만) */
+@media (min-width:1025px){@view-transition{navigation:auto}}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+/* 두 화면: 첫 화면(검정·사진, Hebbia풍) → 질문하면 대화 화면(흰색+남색) */
+:root{--black:#0E0B0B;--ink:#F4F1EB;--bg:#FFFFFF;--card:#F5F6F8;--text:#14171C;--sub:#69707B;--hair:#E4E6EA;--navy:#203864;--hl:#DCE5F6;--dim:#A9AEB6;--err:#8A2E2E}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Pretendard Variable',sans-serif;font-size:15px;line-height:1.7}
-a{color:var(--navy)}
-header{background:var(--dark);color:#F7F6F3;padding:18px 16px}
-header .in{max-width:760px;margin:0 auto;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-header h1{margin:0;font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:-0.02em}
-header a{color:rgba(247,246,243,0.75);font-size:13px;text-decoration:none}
-header button{background:none;border:1px solid rgba(247,246,243,0.35);color:#F7F6F3;font:inherit;font-size:13px;padding:4px 10px;cursor:pointer}
-main{max-width:760px;margin:0 auto;padding:20px 16px 140px}
-.intro{color:var(--sub);font-size:14px;margin:4px 0 20px}
-.ex{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}
-.ex button{background:var(--card);border:1px solid var(--line);font:inherit;font-size:13px;padding:6px 12px;cursor:pointer;color:var(--ink);text-align:left}
-.ex button:hover{border-color:var(--navy)}
-.msg{margin:18px 0}
-.q{display:flex;justify-content:flex-end}
-.q div{background:var(--navy);color:#F7F6F3;padding:10px 14px;max-width:85%;white-space:pre-wrap;word-break:break-word}
-.a{background:var(--card);border:1px solid var(--line);padding:16px 18px;word-break:break-word}
-.a p{margin:0 0 10px}.a p:last-child{margin-bottom:0}
-.a ul,.a ol{margin:0 0 10px;padding-left:20px}
-.cite{display:inline-block;font-size:11px;line-height:1;vertical-align:super;margin:0 1px;padding:2px 4px;border:1px solid var(--accent);color:var(--navy);background:none;cursor:pointer;font-family:inherit}
-.cite[aria-expanded=true]{background:var(--accent);color:var(--dark)}
-.src{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:13px;color:var(--sub)}
-.src summary{cursor:pointer}
-.src ol{margin:8px 0 0;padding-left:20px}
-.src li{margin:4px 0}
-.src li.on{color:var(--ink)}
-.src blockquote{margin:4px 0 0;padding:6px 10px;border-left:2px solid var(--accent);background:var(--bg);color:var(--ink);font-size:13px;white-space:pre-wrap}
-.wait{color:var(--sub);font-size:14px}
-.wait span{display:inline-block;animation:blink 1.4s infinite}
-@keyframes blink{50%{opacity:.3}}
-@media (prefers-reduced-motion:reduce){.wait span{animation:none}}
-.err{color:#8A2E2E;font-size:14px}
-form{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
-form .in{max-width:760px;margin:0 auto;display:flex;gap:8px}
-textarea{flex:1;resize:none;height:48px;max-height:160px;padding:12px 14px;border:1px solid rgba(26,26,26,0.25);background:var(--card);font:inherit;font-size:15px;color:var(--ink);outline:none}
-textarea:focus{border-color:var(--navy)}
-form button{background:var(--navy);color:#F7F6F3;border:none;font:inherit;padding:0 18px;cursor:pointer}
-form button:disabled{opacity:.5;cursor:default}
-.gate{background:var(--card);border:1px solid var(--line);padding:24px;text-align:center}
-.note{font-size:12px;color:var(--sub);margin-top:6px;text-align:center}
+html,body{margin:0}
+body{font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;font-weight:300;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+b,strong{font-weight:700}
+.lab{font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+
+/* ---- 첫 화면 ---- */
+body.start{background:var(--black);color:var(--ink);min-height:100vh}
+.top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;padding:16px 36px;height:72px}
+/* 홈페이지와 같은 위 메뉴 (ABOUT … AGORA, 지금 화면은 POLARIS) */
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.top .brand img{width:40px}
+.brand span{display:flex;flex-direction:column;line-height:1.15}
+.brand b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:.02em}
+.brand small{font-size:11px;opacity:.85}
+.menu{margin-left:auto;display:flex;gap:36px}
+.menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;opacity:.85;padding:6px 0;border-bottom:2px solid transparent}
+.menu a:hover{opacity:1}
+.menu a.on{opacity:1;border-bottom-color:currentColor}
+/* 사진은 화면 끝까지, 위는 메뉴가 읽히게 살짝, 아래는 길게 검정으로 녹여 경계가 안 보이게 */
+.hero{position:relative;height:74vh;min-height:440px;overflow:hidden;background:var(--black)}
+.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp) center 38%/cover;filter:brightness(.78) contrast(1.06)}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 20%,rgba(14,11,11,0) 30%,rgba(14,11,11,0) 42%,rgba(14,11,11,.55) 66%,rgba(14,11,11,.9) 86%,var(--black) 100%)}
+.intro{max-width:760px;margin:-190px auto 0;position:relative;text-align:center;padding:0 16px 70px}
+.intro .lab{color:rgba(244,241,235,.6)}
+.intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:50px;line-height:1.25;margin:14px 0 16px}
+.intro h1 em{font-style:normal;color:rgba(244,241,235,.45)}
+.intro p{color:rgba(244,241,235,.62);font-size:14.5px;line-height:1.85;margin:0 auto 32px;max-width:560px}
+.box{background:#F8F6F1;border-radius:10px;padding:12px 12px 10px 18px;text-align:left;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);display:flex;align-items:flex-end;gap:10px}
+.box textarea{flex:1;border:0;background:none;resize:none;height:56px;max-height:160px;padding:6px 0;font:inherit;font-weight:300;font-size:16px;color:var(--text);outline:none}
+.send{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:16px;cursor:pointer}
+.send:disabled{opacity:.4;cursor:default}
+.ex{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}
+.ex button{font:inherit;font-weight:300;font-size:13px;color:rgba(244,241,235,.75);background:none;border:1px solid rgba(244,241,235,.18);border-radius:999px;padding:6px 14px;cursor:pointer}
+.ex button:hover{border-color:rgba(244,241,235,.5);color:var(--ink)}
+.intro .note{font-size:12px;line-height:1.6;color:rgba(244,241,235,.45);margin:22px auto 0}
+
+/* ---- 대화 화면 ---- */
+body.conv{background:var(--bg);color:var(--text);font-size:15.5px;line-height:1.85}
+body.conv .startv{display:none}
+body.start .convv{display:none}
+.head{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
+.head img{width:24px}.head .brand b{font-size:17px}
+.head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--text)}
+.head .new{margin-left:28px;font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:4px 12px;cursor:pointer}
+.head .new:hover{border-color:var(--text)}
+main{max-width:700px;margin:0 auto;padding:10px 24px 170px;transition:margin .25s}
+body.reading main{margin-left:max(24px,calc(50vw - 560px))}
+.q{font-weight:500;font-size:21px;letter-spacing:-.03em;line-height:1.5;margin:44px 0 14px;padding-left:14px;border-left:2px solid var(--text);white-space:pre-wrap}
+.a h4{font-weight:500;font-size:18px;letter-spacing:-.03em;margin:24px 0 4px}
+.a p{margin:0 0 12px}
+.a ul,.a ol{margin:6px 0 14px;padding-left:22px}
+.a li{margin:2px 0}
+.a li>ul,.a li>ol{margin:2px 0 4px}
+.chip{display:inline-flex;align-items:center;gap:5px;vertical-align:1px;font:500 12px 'RFS Dotum UI','Pretendard Variable',sans-serif;color:var(--text);background:#fff;border:1px solid var(--hair);border-radius:4px;padding:0 7px;line-height:20px;cursor:pointer;white-space:nowrap;margin:0 1px}
+.chip i{width:8px;height:10px;background:var(--navy);border-radius:1px;display:inline-block}
+.chip.web i{border-radius:50%;width:9px;height:9px;background:none;border:1.5px solid var(--navy)}
+.chip:hover,.chip.on{border-color:var(--text);background:var(--hl)}
+.srcs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:16px;padding-top:14px;border-top:1px solid var(--hair)}
+.srcs .lab{color:var(--sub);margin-right:4px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.opts button{background:#fff;border:1px solid var(--hair);border-radius:999px;font:inherit;font-size:13.5px;padding:5px 13px;cursor:pointer;color:var(--text)}
+.opts button:hover{border-color:var(--text)}
+/* 기다리는 동안: 북극성이 반짝이며 돌고, 옆 문구가 몇 초마다 바뀐다 (Claude의 생각 중 표시처럼) */
+.wait{display:flex;align-items:center;gap:12px;color:var(--sub);margin:26px 0 10px;min-height:28px}
+.wait svg{flex:none;width:22px;height:22px;color:var(--navy);animation:spin 5s linear infinite,pulse 1.6s ease-in-out infinite}
+.wait .msg{transition:opacity .35s,transform .35s}
+.wait .msg.out{opacity:0;transform:translateY(-4px)}
+.wait small{display:block;font-size:11.5px;color:var(--dim);margin-top:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{50%{opacity:.45;scale:.82}}
+/* 질문은 바로 떠오르고, 답은 문단마다 차례로 (스트리밍처럼) */
+@keyframes rise{from{opacity:0;transform:translateY(8px)}}
+.q{animation:rise .35s ease-out both}
+.a>*{animation:rise .45s ease-out both;animation-delay:calc(var(--i,0) * 70ms)}
+.err{color:var(--err)}
+.foot{position:fixed;left:0;right:0;bottom:0;padding:14px 24px 14px;background:linear-gradient(rgba(255,255,255,0),var(--bg) 40%)}
+.foot .in{max-width:700px;margin:0 auto;background:#fff;border:1px solid var(--hair);border-radius:12px;display:flex;align-items:flex-end;gap:8px;padding:7px 7px 7px 16px;box-shadow:0 12px 30px -18px rgba(20,23,28,.35);transition:margin .25s}
+body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
+.foot textarea{flex:1;border:0;resize:none;height:40px;max-height:160px;padding:8px 0;font:inherit;outline:none;background:none}
+.foot .note{color:var(--sub);text-align:center;margin:8px 0 0;font-size:11.5px}
+.panel{position:fixed;top:0;right:0;bottom:0;width:440px;background:#FAFBFC;border-left:1px solid var(--hair);box-shadow:-20px 0 50px -30px rgba(20,23,28,.3);transform:translateX(102%);visibility:hidden;transition:transform .25s,visibility .25s;z-index:20;display:flex;flex-direction:column}
+.panel.open{transform:none;visibility:visible}
+.panel .bar{display:flex;align-items:center;padding:13px 20px;border-bottom:1px solid var(--hair)}
+.panel .bar .lab{color:var(--sub)}
+.panel .bar button{margin-left:auto;border:0;background:none;font-size:17px;color:var(--sub);cursor:pointer}
+.doc{padding:22px;overflow:auto}
+.doc .lab{color:var(--sub);text-transform:none;letter-spacing:.08em}
+.doc h3{font-weight:500;font-size:24px;letter-spacing:-.03em;margin:6px 0 12px}
+.doc .tag{display:inline-block;font-size:11px;font-weight:500;border:1px solid var(--navy);color:var(--navy);border-radius:3px;padding:1px 7px;margin-bottom:14px}
+.doc blockquote{margin:0 0 14px;font-size:14px;line-height:1.9}
+.doc mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.doc .open{display:inline-block;margin-top:6px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
+.scrim{display:none}
+/* 폰: ☰ 누르면 화면 전체 메뉴 */
+.burger{display:none;margin-left:auto;width:40px;height:40px;border:0;background:none;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:6px;color:inherit}
+.burger span{display:block;width:20px;height:1.5px;background:currentColor}
+.head .burger{margin-left:6px;color:var(--text)}
+.mnav{position:fixed;inset:0;z-index:50;background:var(--black);color:var(--ink);display:flex;flex-direction:column;justify-content:center;padding:0 32px;animation:rise .25s ease-out}
+.mnav nav{display:flex;flex-direction:column;gap:6px}
+.mnav a{color:inherit;text-decoration:none;font-family:'Noto Serif KR',serif;font-weight:300;font-size:30px;letter-spacing:.02em;padding:6px 0;opacity:.8}
+.mnav a.on{opacity:1}.mnav a.on::after{content:' ·';color:var(--navy)}
+.mnav .mx{position:absolute;top:18px;right:18px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:20px;cursor:pointer}
+@media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
+@media (max-width:760px){
+ .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:60vh;min-height:380px}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+ .intro{margin-top:-150px}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
+ .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
+ .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
+ main{padding:6px 16px 170px}.q{font-size:19px;margin-top:34px}.foot{padding:12px 16px 12px}.head{padding:10px 16px}.head .new{margin-left:auto}
+}
+@media (prefers-reduced-motion:reduce){.panel,main,.foot .in{transition:none}.wait svg,.q,.a>*{animation:none}.wait .msg{transition:none}}
 </style>
 </head>
-<body>
-<header><div class="in"><h1>리서치 챗봇</h1><span><button type="button" id="reset" hidden>새 대화</button> <a href="/#intranet/">인트라넷 →</a></span></div></header>
-<main>
-  <div id="gate" class="gate" hidden>
-    <p style="margin:0 0 12px">학회원만 쓸 수 있습니다.</p>
-    <a href="/#intranet/">학회원 로그인 →</a>
-  </div>
-  <div id="app" hidden>
-    <p class="intro">학회 리포트·세미나·엑셀 모델·가이드에서 찾아 출처와 함께 답합니다. 자료에 없는 내용은 없다고 말합니다. 투자 조언은 하지 않습니다.</p>
+<body class="start">
+<!-- 첫 화면 -->
+<div class="startv">
+  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></nav>
+  <div class="hero"></div>
+  <div class="intro">
+    <div class="lab">R.F.S. Database from 2006</div>
+    <h1>POLARIS와 함께 공부하세요</h1>
+    <p>Polaris는 R.F.S.의 리서치 어시스턴트예요. 학회가 쌓아 온 리포트·세미나·엑셀 모델에서 근거를 찾아 출처와 함께 설명하고, 쓰고 있는 리포트를 어떻게 고치면 좋을지 같이 봐 드려요.</p>
+    <form class="box" id="f0"><textarea id="t0" placeholder="질문을 입력하세요" maxlength="1000" aria-label="질문"></textarea><button class="send" type="submit" aria-label="보내기">↑</button></form>
     <div class="ex" id="ex"></div>
-    <div id="log" aria-live="polite"></div>
+    <p class="note">로그인하지 않으면 하루 5번까지 쓸 수 있어요.</p>
   </div>
-</main>
-<form id="f" hidden>
-  <div class="in">
-    <textarea id="t" placeholder="질문을 입력하세요" maxlength="1000" aria-label="질문"></textarea>
-    <button id="b" type="submit">보내기</button>
-  </div>
-  <p class="note">답은 학회원이 쓴 자료를 바탕으로 하며 틀릴 수 있습니다. 출처 번호를 눌러 원문을 확인하세요.</p>
-</form>
+</div>
+<!-- 대화 화면 -->
+<div class="convv">
+  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
+  <main id="log" aria-live="polite"></main>
+  <form class="foot" id="f"><div class="in"><textarea id="t" placeholder="이어서 물어보기" maxlength="1000" aria-label="질문"></textarea><button class="send" id="b" type="submit" aria-label="보내기">↑</button></div><p class="note">답은 틀릴 수 있어요. 출처를 눌러 원문을 확인하세요.<span id="left"></span></p></form>
+  <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
+  <div class="scrim" id="scrim"></div>
+</div>
+<div class="mnav" id="mnav" hidden><button type="button" class="mx" aria-label="메뉴 닫기">✕</button><nav><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></nav></div>
 <script>
 // 챗봇 서버 주소. 서버를 띄운 뒤 여기에 적는다 (tools/rag/server.py). 비어 있으면 '준비 중'으로 보인다.
 // 주소를 화면 주소창 값으로 바꾸지 못하게 상수로만 둔다 (로그인 토큰이 다른 곳으로 새지 않게).
 const API = '';
 const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
-const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', 'WACC에서 타인자본비용 잡는 법 알려줘', '투자포인트 제목은 어떻게 짓는 게 좋아?'];
+const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', '내 리포트 문장 좀 봐줄래?', '산업 리서치는 어디서부터 시작하면 돼?', 'WACC에서 타인자본비용 잡는 법 알려줘'];
 
 const $ = (id) => document.getElementById(id);
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
 let cid = null, busy = false;
+const SRC = {};   // 답마다 출처 목록 (패널에서 쓴다)
 
-const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-// 답은 짧은 마크다운(굵게, 목록)과 [1] 같은 출처 번호만 쓴다. 먼저 이스케이프하고 그 위에서만 바꾼다.
+// 출처 제목 '회사 | 26-2학기 | 기업 리포트 | 섹션 | p.19 [A 등급] [학회 추천 사례: 축]'을 이름표·패널용으로 나눈다
+function meta(s) {
+  if (/^https?:/.test(s.source)) {
+    let host = ''; try { host = new URL(s.source).hostname.replace(/^www\./, ''); } catch (e) {}
+    return { web: true, name: s.title || host, chip: host || '웹', line: '웹 · ' + host, url: s.source };
+  }
+  const tag = (s.title.match(/\[학회 추천 사례: ([^\]]+)\]/) || [])[1];
+  const parts = s.title.replace(/\s*\[[^\]]*\]/g, '').split('|').map((x) => x.trim()).filter(Boolean);
+  const name = parts[0] || '자료', sem = parts.find((x) => /^\d{2}-\d학기$/.test(x)) || '', kind = parts[2] || '';
+  const pg = (s.source.match(/p\.[\d-]+/) || [''])[0];
+  return { web: false, name, chip: name + (pg ? ' ' + pg : ''), line: [sem, kind, pg].filter(Boolean).join(' · '), tag: tag ? '학회 추천 사례 · ' + tag : '' };
+}
+const chip = (mid, n) => { const m = SRC[mid] && SRC[mid][n]; return m ? `<button type="button" class="chip${m.web ? ' web' : ''}" data-m="${mid}" data-n="${n}"><i></i>${esc(m.chip)}</button>` : ''; };
+
+// 답은 짧은 마크다운(굵게, 목록, 소제목)과 [1] 같은 출처 번호만 쓴다. 먼저 이스케이프하고 그 위에서만 바꾼다.
+// 목록은 공백 2칸 들여쓰기마다 한 단계 안으로 들어간다 (로직트리를 들여쓴 목록으로 그린다)
 function render(text, mid) {
-  const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>')
-    .replace(/\[(\d{1,2})\]/g, (_, n) => `<button type="button" class="cite" data-m="${mid}" data-n="${n}" aria-expanded="false">${n}</button>`);
-  const out = [];
-  let list = null;
+  const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(\d{1,2})\]/g, (_, n) => chip(mid, n));
+  const out = [], stack = [];
+  const close = (depth) => { while (stack.length > depth) out.push(`</li></${stack.pop()}>`); };
   for (const raw of text.split('\n')) {
     const line = raw.trimEnd();
-    const ul = line.match(/^\s*[-•]\s+(.*)/), ol = line.match(/^\s*\d+[.)]\s+(.*)/);
-    const kind = ul ? 'ul' : ol ? 'ol' : null;
-    if (kind) {
-      if (!list || list.kind !== kind) { if (list) out.push(`</${list.kind}>`); out.push(`<${kind}>`); list = { kind }; }
-      out.push(`<li>${inline((ul || ol)[1])}</li>`);
+    const m = line.match(/^(\s*)(?:([-•])|\d+[.)])\s+(.*)/);
+    if (m) {
+      const depth = Math.min(Math.floor(m[1].replace(/\t/g, '  ').length / 2), 3) + 1, kind = m[2] ? 'ul' : 'ol';
+      if (depth > stack.length) { while (stack.length < depth) { out.push(`<${kind}>`); stack.push(kind); } }
+      else { close(depth); if (stack[depth - 1] !== kind) { out.push(`</li></${stack.pop()}><${kind}>`); stack.push(kind); } else out.push('</li>'); }
+      out.push(`<li>${inline(m[3])}`);
       continue;
     }
-    if (list) { out.push(`</${list.kind}>`); list = null; }
-    if (line.trim()) out.push(`<p>${inline(line)}</p>`);
+    close(0);
+    const h = line.match(/^\*\*(.+)\*\*$/);   // 한 줄 전체가 굵은 글씨면 소제목
+    if (h) out.push(`<h4>${inline(h[1])}</h4>`);
+    else if (line.trim()) out.push(`<p>${inline(line)}</p>`);
   }
-  if (list) out.push(`</${list.kind}>`);
+  close(0);
   return out.join('');
 }
 
+function toConv() {
+  if (document.body.classList.contains('conv')) return;
+  const go = () => { document.body.classList.remove('start'); document.body.classList.add('conv'); };
+  if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(go); else go();
+}
+function toStart() {
+  cid = null; $('log').innerHTML = ''; closePanel();
+  document.body.classList.remove('conv'); document.body.classList.add('start'); $('t0').focus();
+}
+
 function addQ(text) {
-  const d = document.createElement('div');
-  d.className = 'msg q';
-  d.innerHTML = `<div>${esc(text)}</div>`;
+  const d = document.createElement('div'); d.className = 'q'; d.textContent = text; $('log').appendChild(d);
+  requestAnimationFrame(() => window.scrollTo({ top: d.getBoundingClientRect().top + window.scrollY - 76, behavior: 'smooth' }));
+}
+
+// 기다리는 동안 바뀌는 문구 (이스터에그). 첫 문구는 늘 평범하게, 다음부터 섞어서
+const WAIT = ['학회 자료에서 찾는 중…', 'Polaris 아빠 김민석 선배님께 물어보는 중…', '0기 정세호 선배님께 전화하는 중…',
+  '608명 선배님 중 답해 주실 분 찾는 중…', '2019년 리포트 먼지 터는 중…', '선배님 엑셀 여는 중… #REF!만 아니길',
+  '세미나 녹화본 1.5배속으로 보는 중…', '카페 게시판 37페이지 넘기는 중…', 'DART 공시 다시 뒤지는 중…',
+  'WACC 한 번 더 계산하는 중…', '투자포인트를 세 개로 줄이는 중…', '북두칠성 따라 북극성 찾는 중…', '목표주가 말고 근거 찾는 중…'];
+const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l1.9 7.1 7.1 1.9-7.1 1.9L12 19.5l-1.9-7.1L3 10.5l7.1-1.9z"/><circle cx="12" cy="10.5" r="1.3" fill="#fff"/></svg>';
+function addWait() {
+  const w = document.createElement('div'); w.className = 'wait'; w.setAttribute('role', 'status');
+  w.innerHTML = `${STAR}<div><span class="msg">${WAIT[0]}</span><small>보통 20초~1분 걸려요</small></div>`;
+  $('log').appendChild(w);
+  const rest = WAIT.slice(1).sort(() => Math.random() - .5), msg = w.querySelector('.msg'); let k = 0;
+  w._t = setInterval(() => { msg.classList.add('out'); setTimeout(() => { msg.textContent = rest[k++ % rest.length]; msg.classList.remove('out'); }, 350); }, 2600);
+  w.done = () => { clearInterval(w._t); w.remove(); };
+  return w;
+}
+function addNote(text, cls) { const d = document.createElement('div'); d.className = cls; d.textContent = text; $('log').appendChild(d); return d; }
+
+function addA(res) {
+  const mid = Date.now().toString(36);
+  SRC[mid] = {}; (res.sources || []).forEach((s) => { SRC[mid][s.n] = Object.assign(meta(s), { cited: s.cited || [] }); });
+  const d = document.createElement('article');
+  d.className = 'a';
+  const nums = Object.keys(SRC[mid]);
+  d.innerHTML = render(res.answer, mid) + (nums.length ? `<div class="srcs"><span class="lab">출처 ${nums.length}</span>${nums.map((n) => chip(mid, n)).join('')}</div>` : '');
+  // 되묻는 턴(kind: clarify)은 보기를 버튼으로. 누르면 그 보기로 답한다 (직접 써도 된다)
+  if ((res.options || []).length) {
+    const o = document.createElement('div'); o.className = 'opts';
+    res.options.forEach((t) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = t; b.onclick = () => { if (busy) return; o.remove(); ask(t); }; o.appendChild(b); });
+    d.appendChild(o);
+  }
+  [...d.children].forEach((el, i) => el.style.setProperty('--i', Math.min(i, 14)));
   $('log').appendChild(d);
 }
 
-function addA(res, mid) {
-  const d = document.createElement('div');
-  d.className = 'msg';
-  // source는 '청크ID p.쪽'이다. 학회원에게는 쪽만 보여준다
-  const src = (res.sources || []).map((s) => `<li id="s-${mid}-${s.n}">${esc(s.title)}${s.source.includes(' p.') ? `<br><small>${esc(s.source.replace(/^\S+\s+/, ''))}</small>` : ''}`
-    + (s.cited || []).slice(0, 2).map((c) => `<blockquote hidden>${esc(c.length > 600 ? c.slice(0, 600) + '…' : c)}</blockquote>`).join('') + '</li>').join('');
-  d.innerHTML = `<div class="a">${render(res.answer, mid)}${src ? `<details class="src"><summary>출처 ${res.sources.length}개</summary><ol>${src}</ol></details>` : ''}</div>`;
-  $('log').appendChild(d);
+// 출처 이름표를 누르면 옆 패널(폰은 아래 시트)에 인용 원문
+const panel = $('panel'), scrim = $('scrim');
+function openPanel(mid, n) {
+  const m = SRC[mid] && SRC[mid][n]; if (!m) return;
+  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '')
+    + m.cited.slice(0, 3).map((c) => `<blockquote><mark>${esc(c.length > 700 ? c.slice(0, 700) + '…' : c)}</mark></blockquote>`).join('')
+    + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
+  document.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b.dataset.m === mid && b.dataset.n === String(n)));
+  panel.classList.add('open'); scrim.classList.add('open'); document.body.classList.add('reading');
 }
-
-// 출처 번호를 누르면 아래 출처 목록을 펼치고 그 항목의 인용 원문을 보여준다
-document.addEventListener('click', (e) => {
-  const b = e.target.closest('.cite');
-  if (!b) return;
-  const li = $(`s-${b.dataset.m}-${b.dataset.n}`);
-  if (!li) return;
-  const open = b.getAttribute('aria-expanded') !== 'true';
-  b.setAttribute('aria-expanded', String(open));
-  li.closest('details').open = true;
-  li.classList.toggle('on', open);
-  li.querySelectorAll('blockquote').forEach((q) => { q.hidden = !open; });
-  if (open) li.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-});
+function closePanel() { panel.classList.remove('open'); scrim.classList.remove('open'); document.body.classList.remove('reading'); document.querySelectorAll('.chip.on').forEach((b) => b.classList.remove('on')); }
+document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n); });
+$('x').onclick = closePanel; scrim.onclick = closePanel;
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
 
 async function ask(text) {
   if (busy || !text.trim()) return;
-  if (!API) { addQ(text); const d = document.createElement('div'); d.className = 'msg err'; d.textContent = '챗봇 서버를 준비 중입니다.'; $('log').appendChild(d); return; }
-  busy = true; $('b').disabled = true; $('ex').hidden = true; $('reset').hidden = false;
+  toConv();
+  if (DEMO) { addQ('Peer 어떻게 골라?'); const w = addWait(); setTimeout(() => { w.done(); addA(DEMO); }, 6000); return; }   // 데모 답은 하나뿐이라 질문도 그 답에 맞춘다. 기다림 화면도 보이게 6초
   addQ(text);
-  const w = document.createElement('div');
-  w.className = 'msg wait';
-  w.innerHTML = '<span>자료를 찾고 답을 쓰는 중… (20초~1분)</span>';
-  $('log').appendChild(w);
-  w.scrollIntoView({ block: 'end', behavior: 'smooth' });
+  if (!API) { addNote('챗봇 서버를 준비 중입니다.', 'err'); return; }
+  busy = true; $('b').disabled = true;
+  const w = addWait();
   try {
+    // 로그인은 없어도 된다. 로그인하지 않으면 서버가 IP당 하루 5번까지만 받는다
     const { data } = await sb.auth.getSession();
-    if (!data.session) { location.href = '/#intranet/'; return; }
-    const r = await fetch(API.replace(/\/$/, '') + '/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.session.access_token },
-      body: JSON.stringify({ conversation_id: cid, message: text }),
-    });
+    const headers = { 'Content-Type': 'application/json' };
+    if (data.session) headers.Authorization = 'Bearer ' + data.session.access_token;
+    const r = await fetch(API.replace(/\/$/, '') + '/chat', { method: 'POST', headers, body: JSON.stringify({ conversation_id: cid, message: text }) });
     const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
-    w.remove();
+    w.done();
     if (res.conversation_id) cid = res.conversation_id;
+    if (typeof res.left === 'number') $('left').textContent = ` 오늘 남은 질문 ${res.left}개` + (data.session ? '' : ' (학회원은 로그인하면 더 쓸 수 있어요)');
     if (!r.ok) throw new Error(res.error || '오류가 났습니다.');
-    addA(res, Date.now().toString(36));
+    addA(res);
   } catch (err) {
-    w.remove();
-    const d = document.createElement('div');
-    d.className = 'msg err';
-    d.textContent = err.message || '연결하지 못했습니다.';
-    $('log').appendChild(d);
+    w.done(); addNote(err.message || '연결하지 못했습니다.', 'err');
   } finally {
     busy = false; $('b').disabled = false; $('t').focus();
   }
 }
 
-$('f').addEventListener('submit', (e) => { e.preventDefault(); const t = $('t').value; $('t').value = ''; ask(t); });
-$('t').addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('f').requestSubmit(); } });
-$('reset').addEventListener('click', () => { cid = null; $('log').innerHTML = ''; $('ex').hidden = false; $('reset').hidden = true; });
+const submit = (form, ta) => form.addEventListener('submit', (e) => { e.preventDefault(); const t = ta.value; ta.value = ''; ask(t); });
+submit($('f0'), $('t0')); submit($('f'), $('t'));
+[$('t0'), $('t')].forEach((ta) => ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ta.form.requestSubmit(); } }));
+$('reset').addEventListener('click', toStart);
+// 폰 메뉴 열고 닫기
+const mnav = $('mnav');
+const setMenu = (open) => { mnav.hidden = !open; document.querySelectorAll('.burger').forEach((b) => b.setAttribute('aria-expanded', String(open))); document.body.style.overflow = open ? 'hidden' : ''; };
+document.querySelectorAll('.burger').forEach((b) => b.addEventListener('click', () => setMenu(true)));
+mnav.querySelector('.mx').addEventListener('click', () => setMenu(false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mnav.hidden) setMenu(false); });
+
 EXAMPLES.forEach((q) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = q; b.onclick = () => ask(q); $('ex').appendChild(b); });
 
-sb.auth.getSession().then(({ data }) => {
-  const ok = !!data.session;
-  $('gate').hidden = ok; $('app').hidden = !ok; $('f').hidden = !ok;
-});
+// ?demo: 서버 없이 화면만 보는 예시 답 (디자인 확인용)
+const DEMO = new URLSearchParams(location.search).has('demo') ? {
+  answer: 'Peer는 내가 분석하는 회사와 **돈 버는 구조가 비슷해서 비교 기준으로 삼는 상장사**예요. 기준은 두 가지이고, 둘 다 봐야 해요.\n- Peer 고르기\n  - 사업 유사성: 같은 사업에서 돈을 버는가\n  - 재무 유사성: 규모와 이익 수준이 비슷한가\n**사업 유사성: 업종 이름이 아니라 이익 구조가 같은 회사**\n후보를 넓게 모은 뒤 매출 비중 같은 숫자로 하나씩 거르고, 탈락 이유까지 적는 게 핵심이에요. 대한항공 리포트는 글로벌 대형 항공사 6곳을 화물 비중으로 걸렀어요.[1]\n사업부가 여럿이면 사업부마다 Peer를 따로 골라요.[2]\n**재무 유사성: 규모 차이가 비교를 흐리지 않는지**\n학회 세미나 자료는 EBITDA(상각 전 영업이익) 규모로 먼저 거르고, 그다음 매출 구성으로 다시 걸렀어요.[3]\n고른 Peer의 배수는 상대가치 평가에서 목표 배수를 정할 때 쓰여요.\n분석 중인 회사는 사업부가 하나인가요, 여러 개인가요?',
+  sources: [
+    { n: 1, title: '대한항공 | 26-2학기 | 기업 리포트 | Ⅵ. Valuation | p.19 [A 정규 리포트·가이드·모델] [학회 추천 사례: Peer케이스]', source: 'demo-1 p.19', cited: ['(예시) 후보마다 화물 매출 비중을 확인해 걸렀고, 이익 구조가 다른 회사는 이유를 적어 제외했다.'] },
+    { n: 2, title: 'OCI | 26-1학기 | 기업 리포트 | 매출 추정 종합 | p.20', source: 'demo-2 p.20', cited: ['(예시) 사업부마다 다른 Peer 그룹을 골랐다.'] },
+    { n: 3, title: '밸류에이션 세미나 | 22-1학기 | 세미나 | EV/EBITDA | p.296', source: 'demo-3 p.296', cited: ['(예시) EBITDA 규모로 먼저 추리고 매출 구성으로 다시 거른다.'] },
+  ], options: [],
+} : null;
 </script>
 </body>
 </html>

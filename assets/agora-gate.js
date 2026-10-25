@@ -55,6 +55,15 @@
     };
 
     var cv = el.querySelector('canvas'), x = cv.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 2), W, H, small;
+    // 별 모양 한 장을 미리 그려 두고 찍는다: 가운데 빛 + 번짐 + 십자 빛살 (점 대신 별처럼)
+    var sprite = function (rgb) {
+      var c = document.createElement('canvas'), S = 96, h = S / 2, g; c.width = c.height = S; g = c.getContext('2d');
+      var rg = g.createRadialGradient(h, h, 0, h, h, h);
+      rg.addColorStop(0, 'rgba(' + rgb + ',1)'); rg.addColorStop(.06, 'rgba(' + rgb + ',.95)'); rg.addColorStop(.16, 'rgba(' + rgb + ',.32)'); rg.addColorStop(.4, 'rgba(' + rgb + ',.07)'); rg.addColorStop(1, 'rgba(' + rgb + ',0)');
+      g.fillStyle = rg; g.fillRect(0, 0, S, S); g.globalCompositeOperation = 'lighter';
+      [0, 1].forEach(function (v) { var lg = v ? g.createLinearGradient(h, 0, h, S) : g.createLinearGradient(0, h, S, h); lg.addColorStop(0, 'rgba(' + rgb + ',0)'); lg.addColorStop(.5, 'rgba(' + rgb + ',.85)'); lg.addColorStop(1, 'rgba(' + rgb + ',0)'); g.fillStyle = lg; if (v) g.fillRect(h - .8, 0, 1.6, S); else g.fillRect(0, h - .8, S, 1.6); });
+      return c;
+    }, SP_COOL = sprite('205,225,255'), SP_WARM = sprite('255,232,190');
     var wide; function rs() { W = innerWidth; H = innerHeight; small = W < 700; wide = W >= 900; cv.width = W * dpr; cv.height = H * dpr; }
     rs(); addEventListener('resize', rs);
     var mx = 0, my = 0, tmx = 0, tmy = 0;
@@ -90,9 +99,9 @@
       x.globalCompositeOperation = 'source-over'; x.setTransform(dpr, 0, 0, dpr, 0, 0); x.clearRect(0, 0, W, H);
       sky.classList.toggle('on', t > .05);
       // 넓은 화면에서는 구를 화면 아래로 크게 내려 윗부분만 지평선처럼 보이게 한다
-      var cz0 = wide ? 1.8 : 2.15, cx = W / 2, cy = wide ? H * 1.22 : H * (small ? .6 : .58), R = wide ? Math.max(W * .62, H * .9) / 1.17 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
+      var cz0 = wide ? 1.8 : 2.15, cx = W / 2, cy = wide ? H * 1.3 : H * (small ? .65 : .63), R = wide ? Math.max(W * .62, H * .9) / 1.17 : small ? Math.min(W * 1.05, H * .52) : Math.min(W * .42, H * .54);
       var burst = 1 - Math.pow(2, -9 * cl((t - .05) / 1.05)), s = .04 + .96 * burst, camZ = cz0 - .9 * dvE;
-      var rot = t * .1 + (1 - eo((t - .05) / 1.5)) * 1.8 + mx * .5 + dvE * .35, tilt = .3 + my * .35;
+      var rot = t * .04 + (1 - eo((t - .05) / 1.5)) * .8 + mx * .25 + dvE * .35, tilt = .3 + my * .35;
       var cr = Math.cos(rot), sr = Math.sin(rot), ct = Math.cos(tilt), st = Math.sin(tilt), i, p, q;
       var bgA = eo((t - .9) / 1.2) * (1 - dv);
       for (i = 0; i < BG.length; i++) { var bb = BG[i], tw0 = .6 + .4 * Math.sin(t * 1.7 + bb.j * 30); x.fillStyle = 'rgba(220,232,255,' + bb.a * tw0 * bgA + ')'; x.beginPath(); x.arc(((bb.x + t * .004 + mx * .01) % 1) * W, (bb.y + my * .01) * H, bb.r, 0, 7); x.fill(); }
@@ -120,15 +129,15 @@
         var Rv = R * s * 1.75 / Math.sqrt(Math.max(camZ * camZ - 1, .05)), rg = x.createRadialGradient(cx, cy, Rv * .86, cx, cy, Rv * 1.06);
         rg.addColorStop(0, 'rgba(90,150,255,0)'); rg.addColorStop(.75, 'rgba(110,165,255,' + .16 * wfa + ')'); rg.addColorStop(1, 'rgba(90,150,255,0)'); x.fillStyle = rg; x.fillRect(0, 0, W, H);
       }
-      var lt = eo((t - .35) / .9); x.lineWidth = .6;
-      if (lt > 0) for (i = 0; i < E.length; i++) { p = pr[E[i][0]]; q = pr[E[i][1]]; if (p.hid || q.hid) continue; x.strokeStyle = 'rgba(130,185,255,' + (.08 + .34 * ((p.Z + q.Z) / 2 + 1) / 2) * lt * (1 - dv * .6) + ')'; x.beginPath(); x.moveTo(p.X, p.Y); x.lineTo(q.X, q.Y); x.stroke(); }
+      var lt = eo((t - .35) / .9); x.lineWidth = small ? 1 : 1.3;
+      if (lt > 0) for (i = 0; i < E.length; i++) { p = pr[E[i][0]]; q = pr[E[i][1]]; if (p.hid || q.hid) continue; x.strokeStyle = 'rgba(140,190,255,' + (.12 + .46 * ((p.Z + q.Z) / 2 + 1) / 2) * lt * (1 - dv * .6) + ')'; x.beginPath(); x.moveTo(p.X, p.Y); x.lineTo(q.X, q.Y); x.stroke(); }
       for (i = 0; i < N; i++) {
         p = pr[i]; if (p.hid) continue;
         var dd = (p.Z + 1) / 2, tw = .75 + .25 * Math.sin(t * 2.4 + P[i].j * 20), hot = LA[i] > .05;
         var r = (.8 + 2.4 * dd * dd) * (.6 + .4 * s) * (hot ? 1.35 : 1) * Math.min(4, .55 + .45 * p.sc * 1.2) * (small ? .8 : 1);
         var al = cl(t / .35) * (.18 + .82 * dd) * tw;
-        x.fillStyle = hot ? 'rgba(255,232,190,' + al + ')' : 'rgba(' + (150 + 70 * dd | 0) + ',' + (195 + 40 * dd | 0) + ',255,' + al + ')';
-        x.beginPath(); x.arc(p.X, p.Y, r, 0, 7); x.fill();
+        var sz = r * (dd > .45 || hot ? 9 : 5.5);   // 앞쪽 별일수록 빛살이 길다
+        x.globalAlpha = Math.min(1, al); x.drawImage(hot ? SP_WARM : SP_COOL, p.X - sz / 2, p.Y - sz / 2, sz, sz); x.globalAlpha = 1;
       }
       x.globalCompositeOperation = 'source-over';
       // 기관 이름: 정면 쪽 별 몇 개만, 순서가 앞선 곳부터. 스며들듯 켜지고 꺼지며, 켜질 때 정한 쪽(왼/오른)에 끝까지 붙어 간다

@@ -26,6 +26,7 @@ LLM = 'claude-sonnet-5-5'
 JUDGE_LLM = 'claude-opus-5-5'
 MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
+AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 점수를 못 믿어 뺐다, NOTES 14절)
 SNIPPET = 350
 
 CORPUS = """자료: 중앙대 투자학회 RFS의 학회 자료 (2019~2026). 기업·산업 리포트, 세미나·교육 자료, 엑셀 밸류에이션 모델, 스터디, 투자제안서.
@@ -41,7 +42,21 @@ MQ_SYSTEM = CORPUS + """
 - 앞선 대화가 같이 오면, 마지막 질문이 무엇을 가리키는지 앞 대화로 풀어서 검색어를 만든다 (예: "LCC면?" → "저비용항공사 밸류에이션").
 - standalone: 마지막 질문을 앞 대화 없이도 뜻이 통하는 한 문장으로 다시 쓴다. 앞선 대화가 없으면 질문 그대로.
 - kind: 특정 문서·회사의 사실이나 용어 뜻을 묻는 질문은 fact, 방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘",
-  "목차는 보통", "~관련 리포트 있어?")은 open."""
+  "목차는 보통", "~관련 리포트 있어?")은 open.
+- axis: 질문이 리포트의 어느 부분에 관한 것인지. 투자포인트 / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
+  추정(매출·비용 추정) / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목) / 없음(그 밖).
+  축은 리포트를 쓰거나 피드백받는 질문일 때만 고른다. 사실 질문, 용어 뜻, 밸류에이션, 종목을 사도 되냐는 질문은 없음."""
+
+# 서버(대화)에서만 붙인다. 평가는 한 번 묻고 끝이라 되물으면 채점이 안 된다
+ASK_RULE = """
+- kind clarify: 답이 회사·업종·상황에 따라 크게 갈리는 코칭 질문인데, 그 정보가 질문과 앞 대화 어디에도 없을 때만.
+  예) "밸류에이션 뭘로 해?", "매출 추정 어떻게 시작해?" → 어떤 회사인지 모르면 답의 절반이 쓸모없다.
+  clarify가 아닌 것: "DCF 어떻게 해?"처럼 순서가 정해진 방법, 특정 리포트·용어를 묻는 질문, 이미 회사·업종을 말한 질문.
+  애매하면 clarify로 하지 않는다. 되묻기는 짜증 나기 쉽다.
+- ask_question / ask_options: clarify일 때만. ask_question은 존댓말로, 왜 묻는지 한 줄 + 질문 하나
+  (예: "업종에 따라 쓰는 밸류에이션 방법이 달라져요. 어떤 회사를 분석하시나요?").
+  ask_options는 신입도 고를 수 있는 쉬운 말로 2~5개, 마지막은 "잘 모르겠어요" (예: "제조업", "인터넷·소프트웨어", "바이오", "은행·증권", "잘 모르겠어요").
+  clarify가 아니면 빈 문자열과 빈 목록."""
 
 AGENT_SYSTEM = CORPUS + """
 
@@ -49,6 +64,7 @@ AGENT_SYSTEM = CORPUS + """
 - search 도구로 찾는다. 질문 표현 그대로보다 리포트에 나올 용어·회사 이름으로 바꿔서 찾는 게 잘 된다.
 - 결과를 읽고 부족하면 검색어를 바꿔 다시 찾는다. search는 최대 {max}번.
 - "사례 알려줘"류 질문은 서로 다른 리포트의 사례를 여러 개 모은다.
+- 방법 질문이면 핵심 개념을 설명한 학회 교육자료(신입생 가이드북, 세미나 자료) 청크도 1~2개 찾아 넣는다.
 - 다 찾았으면 finish 도구에 관련 있는 chunk_id를 관련 높은 순서로 넣는다 (최대 20개). 질문에 대한 방법·근거·사례가 청크 안에 직접 있는 것만.
   관련 청크가 없으면 빈 목록을 낸다."""
 
@@ -87,7 +103,7 @@ class AgentSearch:
         self.cl = client()
         self.model = model
         self.id2i = {c['chunk_id']: i for i, c in enumerate(self.r.chunks)}
-        self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0}
+        self.usage = {'input': 0, 'output': 0, 'cache_read': 0, 'cache_write': 0, 'web_search': 0}
         self.log = []
 
     def _count(self, resp):
@@ -96,19 +112,29 @@ class AgentSearch:
         self.usage['output'] += u.output_tokens
         self.usage['cache_read'] += u.cache_read_input_tokens or 0
         self.usage['cache_write'] += u.cache_creation_input_tokens or 0
+        self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
-    def rewrite(self, question, context=''):
-        """검색어 3~5개, 질문 종류(fact/open), 앞 대화 없이 통하는 질문을 돌려준다. context는 여러 턴 대화의 앞선 대화."""
+    def rewrite(self, question, context='', allow_ask=False):
+        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
+        context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
+        축은 rubric.md의 평가 축 (축별 추천 리포트를 고를 때 쓴다)."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
-        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM, output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
-            'type': 'object', 'properties': {'queries': {'type': 'array', 'items': {'type': 'string'}},
-                                             'kind': {'type': 'string', 'enum': ['fact', 'open']},
-                                             'standalone': {'type': 'string'}},
-            'required': ['queries', 'kind', 'standalone'], 'additionalProperties': False}}},
-            messages=[{'role': 'user', 'content': user}])
+        props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
+                 'kind': {'type': 'string', 'enum': ['fact', 'open'] + (['clarify'] if allow_ask else [])},
+                 'standalone': {'type': 'string'},
+                 'axis': {'type': 'string', 'enum': AXES + ['없음']}}
+        if allow_ask:
+            props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
+        resp = ask(self.cl, model=self.model, system=MQ_SYSTEM + (ASK_RULE if allow_ask else ''),
+                   output_config={'effort': 'low', 'format': {'type': 'json_schema', 'schema': {
+                       'type': 'object', 'properties': props, 'required': list(props), 'additionalProperties': False}}},
+                   messages=[{'role': 'user', 'content': user}])
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
-        return out['queries'][:5], out['kind'], out['standalone'] or question
+        ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
+            if out['kind'] == 'clarify' and out.get('ask_question') else None
+        kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']
+        return out['queries'][:5], kind, out['standalone'] or question, ask_, out['axis']
 
     def multiquery(self, question, rerank_top=100, queries=None):
         qs = queries if queries is not None else self.rewrite(question)[0]
