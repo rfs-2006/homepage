@@ -29,12 +29,17 @@ b,strong{font-weight:700}
 
 /* ---- 첫 화면 ---- */
 body.start{background:var(--black);color:var(--ink);min-height:100vh}
-.top{display:flex;align-items:center;gap:10px;padding:18px 36px;font-size:13px}
-.top img{width:28px}
-.top b{font-weight:500;letter-spacing:.02em}
-.top .r{margin-left:auto;display:flex;align-items:center;gap:20px}
-.top a{color:inherit;text-decoration:none;opacity:.75}.top a:hover{opacity:1}
-.top button{font:inherit;font-weight:500;border:0;border-radius:3px;padding:6px 12px;cursor:pointer;background:var(--ink);color:var(--black)}
+.top{display:flex;align-items:center;gap:10px;padding:16px 36px;height:72px}
+/* 홈페이지와 같은 위 메뉴 (ABOUT … AGORA, 지금 화면은 POLARIS) */
+.brand{display:flex;align-items:center;gap:10px;color:inherit;text-decoration:none}
+.top .brand img{width:40px}
+.brand span{display:flex;flex-direction:column;line-height:1.15}
+.brand b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:20px;letter-spacing:.02em}
+.brand small{font-size:11px;opacity:.85}
+.menu{margin-left:auto;display:flex;gap:36px}
+.menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;opacity:.85;padding:6px 0;border-bottom:2px solid transparent}
+.menu a:hover{opacity:1}
+.menu a.on{opacity:1;border-bottom-color:currentColor}
 .hero{position:relative;height:46vh;min-height:300px;overflow:hidden;margin:0 36px;border-radius:4px;background:#05070C url(/assets/hero/polaris.webp) center 45%/cover;filter:saturate(.75) brightness(.85)}
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,0) 45%,var(--black))}
 .intro{max-width:760px;margin:-80px auto 0;position:relative;text-align:center;padding:0 16px 70px}
@@ -56,10 +61,10 @@ body.conv{background:var(--bg);color:var(--text);font-size:15.5px;line-height:1.
 body.conv .startv{display:none}
 body.start .convv{display:none}
 .head{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
-.head img{width:22px}.head b{font-weight:700}.head .s{color:var(--sub)}
-.head .r{margin-left:auto;display:flex;gap:18px}
-.head a,.head button{color:var(--sub);text-decoration:none;font:inherit;background:none;border:0;cursor:pointer;padding:0}
-.head a:hover,.head button:hover{color:var(--text)}
+.head img{width:24px}.head .brand b{font-size:17px}
+.head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--text)}
+.head .new{margin-left:28px;font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:4px 12px;cursor:pointer}
+.head .new:hover{border-color:var(--text)}
 main{max-width:700px;margin:0 auto;padding:10px 24px 170px;transition:margin .25s}
 body.reading main{margin-left:max(24px,calc(50vw - 560px))}
 .q{font-weight:500;font-size:21px;letter-spacing:-.03em;line-height:1.5;margin:44px 0 14px;padding-left:14px;border-left:2px solid var(--text);white-space:pre-wrap}
@@ -101,7 +106,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .scrim{display:none}
 @media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
 @media (max-width:760px){
- .top{padding:14px 16px}.top .r a{display:none}.hero{margin:0 16px;height:36vh;background-image:url(/assets/hero/polaris-m.webp);background-position:center 45%}
+ .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.hero{margin:0 16px;height:36vh;background-image:url(/assets/hero/polaris-m.webp);background-position:center 45%}
  .intro{margin-top:-60px}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
  .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
@@ -113,7 +118,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 <body class="start">
 <!-- 첫 화면 -->
 <div class="startv">
-  <nav class="top"><img src="/assets/rfs-seal-light-256.png" alt=""><b>R.F.S. Research</b><div class="r"><a href="/">R.F.S. 홈</a></div></nav>
+  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div></nav>
   <div class="hero"></div>
   <div class="intro">
     <div class="lab">R.F.S. Database from 2006</div>
@@ -126,7 +131,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 </div>
 <!-- 대화 화면 -->
 <div class="convv">
-  <header class="head"><img src="/assets/rfs-seal-navy.png" alt=""><b>Polaris</b><span class="s">R.F.S. Research</span><div class="r"><button type="button" id="reset">새 대화</button><a href="/">R.F.S. 홈</a></div></header>
+  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button></header>
   <main id="log" aria-live="polite"></main>
   <form class="foot" id="f"><div class="in"><textarea id="t" placeholder="이어서 물어보기" maxlength="1000" aria-label="질문"></textarea><button class="send" id="b" type="submit" aria-label="보내기">↑</button></div><p class="note">답은 틀릴 수 있어요. 출처를 눌러 원문을 확인하세요.<span id="left"></span></p></form>
   <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
@@ -138,7 +143,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 const API = '';
 const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
-const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', '리포트 글 잘 쓰는 법 알려줘', '산업 리서치는 어디서부터 시작하면 돼?'];
+const EXAMPLES = ['항공사 밸류에이션은 뭘로 하는 게 좋아?', '수출 통계로 매출을 추정하는 방법 있어?', '내 리포트 문장 좀 봐줄래?', '산업 리서치는 어디서부터 시작하면 돼?', 'WACC에서 타인자본비용 잡는 법 알려줘'];
 
 const $ = (id) => document.getElementById(id);
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
