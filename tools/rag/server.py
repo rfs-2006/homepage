@@ -206,8 +206,8 @@ class Handler(BaseHTTPRequestHandler):
                 return send(dict(body, type='error')) if stream else self._json(500, body)
         if out['kind'] == 'decline':  # 걸러진 질문은 하루 질문 수에서 빼 준다
             left = give_back(ip, member, left)
+        trace = out.get('trace', [])   # 이 대화의 검색 기록 (대화마다 따로 모은다)
         with lock:
-            trace = list(answerer.s.log)   # 검색어 재작성·agent 검색 기록 (동시에 여러 대화가 돌면 섞일 수 있다)
             answerer.s.log.clear()
         if LOG_PATH:
             # 답이 이상할 때 원인을 보려고: 질문 유형, 검색어, 모델이 받은 청크, 단계별 시간까지 남긴다 (사람 정보는 없음)
