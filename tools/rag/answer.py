@@ -20,6 +20,7 @@ import datetime
 import json
 import re
 import sys
+import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -286,7 +287,10 @@ class Chat:
     def _retrieve(self, question):
         s = self.a.s
         allow = self.a.ask and not any(t.get('kind') == 'clarify' for t in self.turns)  # 되묻기는 한 대화에 한 번
+        t0 = time.perf_counter()
         queries, kind, standalone, ask, axes, section = s.rewrite(question, self._context(), allow_ask=allow, allow_decline=self.a.ask)
+        self.timing = {'분석': round(time.perf_counter() - t0, 1)}
+        t0 = time.perf_counter()
         # 문장·글을 봐 달라고 했으면 글 축을 맨 앞에 (검색 단계가 순서를 자주 안 지킨다)
         asked = question + ' ' + ' '.join(t['question'] for t in self.turns[-2:])
         if kind == 'feedback' and '글' in axes and re.search(r'문장|문단|글|표현|제목|문체', asked):
@@ -302,6 +306,8 @@ class Chat:
             found = s.multiquery(standalone, queries=queries)[:PREFETCH]
         found = self.a.regular_only(found, question)
         # 축마다 추천 리포트. 축이 여럿이면 축마다 나눠서 모두 REC_N개 안쪽
+        self.timing['검색'] = round(time.perf_counter() - t0, 1)
+        t0 = time.perf_counter()
         self.rec_axis = {}
         per = max(1, REC_N // max(1, len(axes)))
         for ax in axes:
@@ -309,6 +315,7 @@ class Chat:
                 if i not in self.shown:
                     self.rec_axis.setdefault(i, ax)
         rec = list(self.rec_axis)
+        self.timing['추천'] = round(time.perf_counter() - t0, 1)
         if rec:  # 가장 관련 높은 2개 다음에 추천 리포트를 넣고, 전체 개수는 그대로
             found = (found[:2] + rec + [i for i in found[2:] if i not in rec])[:max(len(found), len(rec) + 2)]
         return [i for i in found if i not in self.shown], kind, standalone
@@ -332,11 +339,15 @@ class Chat:
         content = [a.result_block(i, self.rec_axis.get(i)) for i in first] + [{'type': 'text', 'text': f'질문{sec}: {question}'}]
         self.msgs.append({'role': 'user', 'content': content})
         searches, n = [], 0
+        calls = []
         for _ in range(MAX_SEARCH + 2):
+            t0 = time.perf_counter()
             # cache_control: 마지막 블록까지를 캐시에 쓴다. 다음 호출(도구 결과 뒤, 다음 턴)은 이 앞부분을 캐시에서 읽는다
             resp = ask(s.cl, model=a.answer_model, system=system, **tools, cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
+            web = getattr(getattr(resp.usage, 'server_tool_use', None), 'web_search_requests', 0) or 0
+            calls.append({'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens, '웹': web, '끝': resp.stop_reason})
             self.msgs.append({'role': 'assistant', 'content': resp.content})
             if resp.stop_reason == 'pause_turn':  # 서버 쪽 웹 검색이 도중에 멈춤. 그대로 다시 보내면 이어서 한다
                 continue
@@ -359,6 +370,7 @@ class Chat:
                                 'content': [a.result_block(i) for i in found] or [{'type': 'text', 'text': '새 결과 없음'}]})
             self.msgs.append({'role': 'user', 'content': results})
         out = a.render(resp, self.shown, searches)
+        out['timing'] = dict(getattr(self, 'timing', {}), 답변=calls, 추가검색=len(searches))
         out.update(kind=kind, standalone=standalone, axes=self.axes if given is None else [], section=self.section if given is None else '')
         self.turns.append({'question': question, 'answer': out['answer'], 'kind': kind})
         return out

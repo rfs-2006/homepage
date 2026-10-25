@@ -31,7 +31,7 @@ def run(api, case):
         kind, axes = res.get('kind', 'error'), res.get('axes', [])
         ok = kind == exp['kind'] and set(exp.get('axes', [])) <= set(axes)
         turns.append({'q': q, 'kind': kind, 'axes': axes, 'section': res.get('section', ''), 'ok': ok, 'sec': round(time.time() - t),
-                      'answer': res.get('answer') or res.get('error'), 'options': res.get('options', []),
+                      'answer': res.get('answer') or res.get('error'), 'timing': res.get('timing'), 'options': res.get('options', []),
                       'sources': [s.get('title') for s in res.get('sources', [])], 'expect': exp})
     return {'id': case['id'], 'note': case['note'], 'turns': turns}
 
