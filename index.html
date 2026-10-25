@@ -5813,17 +5813,29 @@ class Component extends DCLogic {
     const heroStep = (d) => {
       if (HERO_LIST.length < 2 || this._heroBusy) return;
       this._heroBusy = true;
+      const L = HERO_LIST.length, to = heroIdx + d, nx = HERO_LIST[((to % L) + L) % L];
       const els = () => [...document.querySelectorAll('.hero-bgwrap, .hero-grid, .ha-cover')];
       const move = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
+      let done = false;
+      const finish = () => { if (done) return; done = true; els().forEach((el) => { el.style.transition = ''; el.style.transform = ''; }); this._heroBusy = false; preloadNear(to); };
+      setTimeout(finish, 2600);   // 어떤 경우에도 화면이 옆으로 밀린 채 멈추지 않게
       const sec = els()[0] && els()[0].closest('section');
-      if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ heroIdx: heroIdx + d }, () => { this._heroBusy = false; }); return; }
+      if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ heroIdx: to }, finish); return; }
       const W = sec.clientWidth;
+      // 들어올 리포트 사진이 받아진 뒤에 들어오게 (최대 0.7초 기다림). 미리 받아 두므로 보통 바로다
+      const ready = new Promise((res) => { const im = new Image(); im.onload = im.onerror = res; im.src = nx.heroBg; if (im.complete) res(); setTimeout(res, 700); });
       move(-d * W, 380);
-      setTimeout(() => this.setState({ heroIdx: heroIdx + d }, () => {
+      Promise.all([ready, new Promise((res) => setTimeout(res, 380))]).then(() => this.setState({ heroIdx: to }, () => {
         move(d * W, 0); void sec.offsetWidth;
-        requestAnimationFrame(() => { move(0, 460); setTimeout(() => { els().forEach((el) => { el.style.transition = ''; }); this._heroBusy = false; }, 480); });
-      }), 380);
+        setTimeout(() => { move(0, 460); setTimeout(finish, 500); }, 30);
+      }));
     };
+    // 앞뒤 리포트의 배경 사진과 표지 1쪽을 미리 받아 둔다 (끌어서 넘길 때 빈 화면이 안 보이게)
+    const preloadNear = (i) => [i - 1, i + 1].forEach((k) => {
+      const r = HERO_LIST[((k % HERO_LIST.length) + HERO_LIST.length) % HERO_LIST.length];
+      [r.heroBg, /-top169\.webp$/.test(r.heroCover || '') ? r.heroCover.replace(/-top169\.webp$/, '-p1.webp') : ''].forEach((u) => { if (u) { const im = new Image(); im.decoding = 'async'; im.src = u; } });
+    });
+    if (!this._heroNearInit) { this._heroNearInit = true; setTimeout(() => preloadNear(heroIdx), 1200); }
     this._heroStep = heroStep;
     this._heroAdvance = () => heroStep(1);
     const vm = (r) => { const o = opStyle(r.op); return { ...r, opColor:o.c, opAlpha:o.a, href:'#research/' + r.id, open:(e) => { e && e.preventDefault && e.preventDefault(); e && e.stopPropagation && e.stopPropagation(); this.go('report', r.id); } }; };
