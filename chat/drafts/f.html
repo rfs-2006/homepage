@@ -24,9 +24,17 @@ body[data-t=navy]{--paper:#0F1B2E;--card:#16253F;--text:#F2F0EA;--sub:rgba(242,2
 body[data-t=white]{--paper:#FFFFFF;--card:#F5F6F8;--text:#14171C;--sub:#69707B;--hair:#E4E6EA;--band:#F5F6F8;--hl:#DCE5F6;--pdf:#203864;--navy:#203864;--head:rgba(255,255,255,.92);--dim:#A9AEB6}
 body[data-t=white] .opts button,body[data-t=white] .chip,body[data-t=white] form .in{background:#fff}
 body[data-t=white] .panel{background:#FAFBFC}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+body[data-f=kopub],body[data-f=mix]{font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;font-weight:300}
+body[data-f=kopub] b,body[data-f=mix] b{font-weight:700}
+body[data-f=kopub] .chip,body[data-f=mix] .chip,body[data-f=kopub] .opts button,body[data-f=mix] .opts button,body[data-f=kopub] header,body[data-f=mix] header{font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;font-weight:500}
+body[data-f=kopub] .q,body[data-f=kopub] .ans h4,body[data-f=kopub] .doc h3{font-family:'RFS Dotum UI','Pretendard Variable',sans-serif;font-weight:500;letter-spacing:-.03em}
 .themes{position:fixed;left:50%;transform:translateX(-50%);top:56px;z-index:99;display:flex;gap:4px;background:#0E0B0B;border-radius:6px;padding:4px;font-size:12px}
 .themes button{border:0;border-radius:4px;background:none;color:#F4F1EB;font:inherit;padding:4px 9px;cursor:pointer;opacity:.6}
 .themes button.on{background:#F4F1EB;color:#0E0B0B;opacity:1}
+.themes.fonts{top:96px}
 body{background:var(--paper);color:var(--text);font-size:15.5px;line-height:1.85;min-height:100vh}
 header{position:sticky;top:0;z-index:5;background:var(--head);backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
 header img{width:22px}header b{font-weight:600}
@@ -101,6 +109,7 @@ form button{width:34px;height:34px;border-radius:50%;border:0;background:var(--t
 <div class="scrim" id="scrim"></div>
 <form onsubmit="return false"><div class="in"><textarea placeholder="이어서 물어보기"></textarea><button>↑</button></div></form>
 <div class="themes"><button data-t="navy">남색</button><button data-t="white">흰색+남색</button><button data-t="warm">지금(따뜻한 미색)</button></div>
+<div class="themes fonts"><button data-f="kopub">코펍 돋움</button><button data-f="mix">코펍 + 명조 제목</button><button data-f="pre">지금(프리텐다드 + 명조)</button></div>
 
 <div class="draftbar">시안 F · Hebbia형 · 대화<a href="./">목록 ←</a></div>
 <script>
@@ -122,10 +131,13 @@ const close = () => { panel.classList.remove('open'); scrim.classList.remove('op
 document.getElementById('x').onclick = close; scrim.onclick = close;
 if (location.hash.includes('open')) show(1);
 // 색 묶음 바꾸기 (시안 비교용). 주소 끝 ?t=navy 처럼도 열 수 있다
-function theme(t) { document.body.dataset.t = t; $('.themes button').forEach((b) => b.classList.toggle('on', b.dataset.t === t));
+function theme(t) { document.body.dataset.t = t; $('.themes button[data-t]').forEach((b) => b.classList.toggle('on', b.dataset.t === t));
   document.querySelector('.seal').src = t === 'navy' ? '/assets/rfs-seal-light-256.png' : '/assets/rfs-seal-navy.png'; }
-$('.themes button').forEach((b) => b.onclick = () => theme(b.dataset.t));
-theme(new URLSearchParams(location.search).get('t') || 'navy');
+$('.themes button[data-t]').forEach((b) => b.onclick = () => theme(b.dataset.t));
+function font(f) { document.body.dataset.f = f; $('.themes button[data-f]').forEach((b) => b.classList.toggle('on', b.dataset.f === f)); }
+$('.themes button[data-f]').forEach((b) => b.onclick = () => font(b.dataset.f));
+const qs = new URLSearchParams(location.search);
+theme(qs.get('t') || 'white'); font(qs.get('f') || 'kopub');
 </script>
 </body>
 </html>
