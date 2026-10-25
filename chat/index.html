@@ -115,9 +115,18 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .doc mark{background:var(--hl);color:var(--text);box-shadow:0 0 0 3px var(--hl);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .doc .open{display:inline-block;margin-top:6px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
 .scrim{display:none}
+/* 폰: ☰ 누르면 화면 전체 메뉴 */
+.burger{display:none;margin-left:auto;width:40px;height:40px;border:0;background:none;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:6px;color:inherit}
+.burger span{display:block;width:20px;height:1.5px;background:currentColor}
+.head .burger{margin-left:6px;color:var(--text)}
+.mnav{position:fixed;inset:0;z-index:50;background:var(--black);color:var(--ink);display:flex;flex-direction:column;justify-content:center;padding:0 32px;animation:rise .25s ease-out}
+.mnav nav{display:flex;flex-direction:column;gap:6px}
+.mnav a{color:inherit;text-decoration:none;font-family:'Noto Serif KR',serif;font-weight:300;font-size:30px;letter-spacing:.02em;padding:6px 0;opacity:.8}
+.mnav a.on{opacity:1}.mnav a.on::after{content:' ·';color:var(--navy)}
+.mnav .mx{position:absolute;top:18px;right:18px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:20px;cursor:pointer}
 @media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
 @media (max-width:760px){
- .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.hero{height:60vh;min-height:380px}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+ .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:60vh;min-height:380px}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
  .intro{margin-top:-150px}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
  .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
@@ -129,7 +138,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 <body class="start">
 <!-- 첫 화면 -->
 <div class="startv">
-  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div></nav>
+  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></nav>
   <div class="hero"></div>
   <div class="intro">
     <div class="lab">R.F.S. Database from 2006</div>
@@ -142,12 +151,13 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 </div>
 <!-- 대화 화면 -->
 <div class="convv">
-  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button></header>
+  <header class="head"><a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><b>R.F.S.</b></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" id="reset" class="new">새 대화</button><button type="button" class="burger" aria-label="메뉴 열기" aria-controls="mnav" aria-expanded="false"><span></span><span></span></button></header>
   <main id="log" aria-live="polite"></main>
   <form class="foot" id="f"><div class="in"><textarea id="t" placeholder="이어서 물어보기" maxlength="1000" aria-label="질문"></textarea><button class="send" id="b" type="submit" aria-label="보내기">↑</button></div><p class="note">답은 틀릴 수 있어요. 출처를 눌러 원문을 확인하세요.<span id="left"></span></p></form>
   <aside class="panel" id="panel" aria-label="출처"><div class="bar"><span class="lab">출처</span><button type="button" id="x" aria-label="닫기">✕</button></div><div class="doc" id="doc"></div></aside>
   <div class="scrim" id="scrim"></div>
 </div>
+<div class="mnav" id="mnav" hidden><button type="button" class="mx" aria-label="메뉴 닫기">✕</button><nav><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></nav></div>
 <script>
 // 챗봇 서버 주소. 서버를 띄운 뒤 여기에 적는다 (tools/rag/server.py). 비어 있으면 '준비 중'으로 보인다.
 // 주소를 화면 주소창 값으로 바꾸지 못하게 상수로만 둔다 (로그인 토큰이 다른 곳으로 새지 않게).
@@ -297,6 +307,13 @@ const submit = (form, ta) => form.addEventListener('submit', (e) => { e.preventD
 submit($('f0'), $('t0')); submit($('f'), $('t'));
 [$('t0'), $('t')].forEach((ta) => ta.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); ta.form.requestSubmit(); } }));
 $('reset').addEventListener('click', toStart);
+// 폰 메뉴 열고 닫기
+const mnav = $('mnav');
+const setMenu = (open) => { mnav.hidden = !open; document.querySelectorAll('.burger').forEach((b) => b.setAttribute('aria-expanded', String(open))); document.body.style.overflow = open ? 'hidden' : ''; };
+document.querySelectorAll('.burger').forEach((b) => b.addEventListener('click', () => setMenu(true)));
+mnav.querySelector('.mx').addEventListener('click', () => setMenu(false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !mnav.hidden) setMenu(false); });
+
 EXAMPLES.forEach((q) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = q; b.onclick = () => ask(q); $('ex').appendChild(b); });
 
 // ?demo: 서버 없이 화면만 보는 예시 답 (디자인 확인용)
