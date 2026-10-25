@@ -245,7 +245,8 @@ a:hover{color:#203864}
 .scrim{position:absolute;inset:0;background:#203864;opacity:0.82;mix-blend-mode:multiply;pointer-events:none;will-change:opacity}
 .hero{background:#0F1B2E}
 /* 히어로 아래 화살표·숫자·원형 타이머 (6.5초마다 다음 리포트), 맨 아래 가운데 ↓ (네이버 클라우드 참고) */
-.hb-ctrl{display:flex;align-items:center;gap:18px;font-size:12.5px;font-weight:600;color:#F7F6F3}
+.hb-ctrl{display:flex;align-items:center;gap:22px;font-size:17px;font-weight:600;color:#F7F6F3}
+.hb-ctrlwrap{position:absolute;left:0;right:0;bottom:calc(3.5vh + 6px);padding:0 35px;box-sizing:border-box;z-index:2}   /* 넘기는 화살표·숫자는 리포트 내용과 떼어 왼쪽 아래 구석에, 가운데 ↓와 같은 높이 */
 .hb-ctrl button{background:none;border:0;color:#F7F6F3;cursor:pointer;padding:4px 0;display:flex;opacity:.85}
 .hb-ctrl button:hover{opacity:1}
 .hb-cnt{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums;letter-spacing:.06em}
@@ -1804,10 +1805,10 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
         </div>
       </div>
-      <div class="wrap" style="padding:0 35px;width:100%;margin-top:clamp(18px,3vh,30px)">
+      <div class="wrap hb-ctrlwrap">
         <div class="hb-ctrl">
-          <button type="button" onClick="{{ heroPrev }}" aria-label="이전 리포트"><svg width="34" height="14" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M51 10H2M10 2L2 10l8 8"/></svg></button>
-          <button type="button" onClick="{{ heroNext }}" aria-label="다음 리포트"><svg width="34" height="14" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M1 10h49M42 2l8 8-8 8"/></svg></button>
+          <button type="button" onClick="{{ heroPrev }}" aria-label="이전 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M51 10H2M10 2L2 10l8 8"/></svg></button>
+          <button type="button" onClick="{{ heroNext }}" aria-label="다음 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 10h49M42 2l8 8-8 8"/></svg></button>
           <span class="hb-cnt"><b>{{ heroCur }}</b><i>/</i><b>{{ heroTot }}</b><svg class="hb-ring {{ heroRing }}" viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="9"/><circle class="fg" cx="10" cy="10" r="9"/></svg></span>
         </div>
       </div>
