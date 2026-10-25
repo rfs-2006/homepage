@@ -1,0 +1,4 @@
+# api.caurfs.kr 로 들어온 https 요청을 이 서버 안의 챗봇(127.0.0.1:8787)에 넘긴다. 인증서는 Caddy가 자동으로 받고 갱신한다
+api.caurfs.kr {
+	reverse_proxy 127.0.0.1:8787
+}

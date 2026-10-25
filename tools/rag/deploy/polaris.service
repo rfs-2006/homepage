@@ -1,0 +1,31 @@
+# Polaris 챗봇 서버. 펀드 서버(Micro)에 같이 올리므로, 전용 사용자 polaris로 돌리고 /root(펀드 코드·키움 키)를 못 보게 막는다.
+[Unit]
+Description=Polaris RAG chat server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=polaris
+Group=polaris
+WorkingDirectory=/srv/polaris/homepage/tools/rag
+# 키는 root만 읽는 파일에 두고 systemd가 넣어 준다 (polaris 사용자는 이 파일을 못 읽는다)
+EnvironmentFile=/etc/polaris.env
+ExecStart=/srv/polaris/venv/bin/python -I /srv/polaris/homepage/tools/rag/server.py /srv/polaris/rfs-cafe-data
+Restart=always
+RestartSec=5
+# 1GB 서버를 펀드 수집기와 나눠 쓴다. 넘으면 이 서비스만 다시 시작된다
+MemoryMax=700M
+# 격리: /root·다른 사용자 홈 못 봄, 시스템 파일 쓰기 금지, 권한 올리기 금지
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/srv/polaris/log
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target
