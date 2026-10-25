@@ -289,7 +289,12 @@ class Chat:
             if g == '학회 안내':
                 if GUIDES['학회 안내'] is None:
                     GUIDES['학회 안내'] = '학회 안내 (홈페이지 공개 내용. 끝에 [신입 학회원 모집](/recruiting/) 또는 [학회 소개](/about/) 링크)\n' + club_info()
-            return [{'type': 'text', 'text': GUIDES.get(g) or '그런 문서는 없다.'}]
+            text = GUIDES.get(g)
+            if not text:
+                return [{'type': 'text', 'text': '그런 문서는 없다.'}]
+            # 기준 문서도 search_result로 넘긴다: 그 내용으로 답할 때 출처 칩('학회 기준 문서 · 이름')이 달리게 (글 블록이면 인용이 안 달려 출처 0개가 됐다)
+            return [{'type': 'search_result', 'source': f'기준문서 {g}', 'title': f'학회 기준 문서 · {g}',
+                     'content': [{'type': 'text', 'text': p} for p in text.split('\n') if p.strip()], 'citations': {'enabled': True}}]
         return [{'type': 'text', 'text': '모르는 도구'}]
 
     # ------------------------------------------------------------ 한 턴
