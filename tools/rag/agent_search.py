@@ -26,7 +26,8 @@ LLM = 'claude-sonnet-5-5'
 JUDGE_LLM = 'claude-opus-5-5'
 MODELS = {'sonnet': 'claude-sonnet-5-5', 'haiku': 'claude-haiku-5-5', 'opus': 'claude-opus-5-5'}
 MAX_SEARCH = 5
-AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 점수를 못 믿어 뺐다, NOTES 14절)
+AXES = ['투자포인트', '탑다운', '리서치깊이', '추정', '밸류에이션', 'Peer케이스', '글']  # rubric.md 축 (밸류에이션은 추천 리포트가 없고 기준만 쓴다, NOTES 14절)
+KINDS = ['explain', 'fact', 'feedback', 'cases']  # 질문 유형. 유형마다 검색과 답 형식이 다르다 (answer.py TYPE)
 SNIPPET = 350
 
 CORPUS = """자료: 중앙대 투자학회 RFS의 학회 자료 (2019~2026). 기업·산업 리포트, 세미나·교육 자료, 엑셀 밸류에이션 모델, 스터디, 투자제안서.
@@ -41,13 +42,19 @@ MQ_SYSTEM = CORPUS + """
 - 검색어마다 다른 각도로. 3~5개, 각각 짧게 (2~8단어).
 - 앞선 대화가 같이 오면, 마지막 질문이 무엇을 가리키는지 앞 대화로 풀어서 검색어를 만든다 (예: "LCC면?" → "저비용항공사 밸류에이션").
 - standalone: 마지막 질문을 앞 대화 없이도 뜻이 통하는 한 문장으로 다시 쓴다. 앞선 대화가 없으면 질문 그대로.
-- kind: 특정 문서·회사의 사실이나 용어 뜻 한 가지를 묻는 질문은 fact ("WACC가 뭐야", "대한항공 목표주가 얼마였어?").
-  방법·사례·예시를 넓게 모아야 하는 질문("어떻게 해?", "예시 알려줘", "목차는 보통", "~관련 리포트 있어?")은 open.
-  방법이나 개념을 처음부터 설명해 달라는 질문도 open ("DCF 설명해줘", "아무것도 몰라", "처음 해봐", "매출 추정 알려줘", "어디서부터 시작해?").
-  애매하면 open.
-- axis: 질문이 리포트의 어느 부분에 관한 것인지. 투자포인트 / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
-  추정(매출·비용 추정) / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목) / 없음(그 밖).
-  축은 리포트를 쓰거나 피드백받는 질문일 때만 고른다. 사실 질문, 용어 뜻, 밸류에이션, 종목을 사도 되냐는 질문은 없음."""
+- kind: 질문 유형.
+  explain: 방법·개념을 설명해 달라 ("DCF 어떻게 해?", "설명해줘", "아무것도 몰라", "처음 해봐", "어디서부터 시작해?", "왜 ~를 써?").
+  fact: 용어 뜻이나 특정 문서·회사의 사실 한 가지 ("WACC가 뭐야", "대한항공 목표주가 얼마였어?").
+  feedback: 사용자가 쓴 글·모델·생각을 봐 달라 ("내 문장 봐줘", "이거 괜찮아?", 리포트 문단을 붙여 넣은 경우).
+  cases: 사례·리포트를 모아 달라 ("예시 알려줘", "~관련 리포트 있어?", "다른 리포트들은 어떻게 했어?").
+  애매하면 explain.
+- axes: 리포트의 어느 부분·기준에 관한 질문인지. 여러 개 가능. 해당 없으면 빈 목록.
+  투자포인트(주장 자체: 시장과 다른 점, 겹침, 목표주가 연결) / 탑다운(산업에서 기업으로 좁히기) / 리서치깊이(데이터를 직접 찾고 가공) /
+  추정(매출·비용 추정) / 밸류에이션 / Peer케이스(비교 기업, 케이스 스터디) / 글(문장·문단·제목·표현).
+  feedback이면 무엇을 봐 달라고 했는지로 고른다. "문장 봐줘", "글 어때?"는 글이 투자포인트 섹션이어도 글.
+  무엇을 볼지 말이 없으면 붙인 글의 섹션에 맞는 내용 축 + 글 (투자포인트 문단이면 투자포인트, 글).
+  explain·cases는 리포트의 한 부분을 쓰는 법을 묻는 질문일 때만 그 축 ("투자포인트 어떻게 써?" → 투자포인트). 사실 질문, 용어 뜻, 종목을 사도 되냐는 질문은 빈 목록.
+- section: feedback에서 붙인 글이 리포트의 어느 섹션인지 (투자포인트, 산업분석, 기업개요, 실적 추정, 밸류에이션, 리스크 등). 모르면 빈 문자열."""
 
 # 서버(대화)에서만 붙인다. 평가는 한 번 묻고 끝이라 되물으면 채점이 안 된다
 ASK_RULE = """
@@ -130,15 +137,16 @@ class AgentSearch:
         self.usage['web_search'] += getattr(getattr(u, 'server_tool_use', None), 'web_search_requests', 0) or 0
 
     def rewrite(self, question, context='', allow_ask=False, allow_decline=False):
-        """검색어 3~5개, 질문 종류(fact/open, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축을 돌려준다.
+        """검색어 3~5개, 질문 유형(KINDS, allow_ask면 clarify도), 앞 대화 없이 통하는 질문, 되물을 질문, 축 목록, 섹션을 돌려준다.
         context는 여러 턴 대화의 앞선 대화. 되물을 질문은 clarify일 때만 {'question', 'options'}, 아니면 None.
         allow_decline이면 거를 질문일 때 kind가 decline:<이유>이고, 되물을 질문 자리에 {'better': 바꿔 쓴 질문들}을 준다.
-        축은 rubric.md의 평가 축 (축별 추천 리포트를 고를 때 쓴다)."""
+        축(axes)은 rubric.md의 평가 축 목록 (축별 추천 리포트와 피드백 기준을 고를 때 쓴다), section은 피드백할 글의 섹션."""
         user = f'앞선 대화:\n{context}\n\n마지막 질문: {question}' if context else question
         props = {'queries': {'type': 'array', 'items': {'type': 'string'}},
-                 'kind': {'type': 'string', 'enum': ['fact', 'open'] + (['clarify'] if allow_ask else [])},
+                 'kind': {'type': 'string', 'enum': KINDS + (['clarify'] if allow_ask else [])},
                  'standalone': {'type': 'string'},
-                 'axis': {'type': 'string', 'enum': AXES + ['없음']}}
+                 'axes': {'type': 'array', 'items': {'type': 'string', 'enum': AXES}},
+                 'section': {'type': 'string'}}
         if allow_ask:
             props |= {'ask_question': {'type': 'string'}, 'ask_options': {'type': 'array', 'items': {'type': 'string'}}}
         if allow_decline:
@@ -151,11 +159,12 @@ class AgentSearch:
         self._count(resp)
         out = json.loads(next(b.text for b in resp.content if b.type == 'text'))
         if out.get('decline'):
-            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, '없음'
+            return [], 'decline:' + out['decline'], out['standalone'] or question, {'better': out['better'][:3]}, [], ''
         ask_ = {'question': out['ask_question'], 'options': out['ask_options'][:5]} \
             if out['kind'] == 'clarify' and out.get('ask_question') else None
-        kind = 'open' if out['kind'] == 'clarify' and not ask_ else out['kind']
-        return out['queries'][:5], kind, out['standalone'] or question, ask_, out['axis']
+        kind = 'explain' if out['kind'] == 'clarify' and not ask_ else out['kind']
+        axes = list(dict.fromkeys(out['axes']))
+        return out['queries'][:5], kind, out['standalone'] or question, ask_, axes, out['section']
 
     def multiquery(self, question, rerank_top=100, queries=None):
         qs = queries if queries is not None else self.rewrite(question)[0]

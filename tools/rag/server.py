@@ -14,7 +14,7 @@
 API
   GET  /health                   준비됐는지
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
-       → {conversation_id, answer, sources:[{n, title, source, cited}], kind, options, left}
+       → {conversation_id, answer, sources:[{n, title, source, cited, context}], kind, axes, section, options, left}
          left는 오늘 남은 질문 수
          kind가 clarify면 검색 없이 되묻는 턴이고, options는 화면에 버튼으로 보일 보기다 (아니면 빈 목록)
 
@@ -174,10 +174,10 @@ class Handler(BaseHTTPRequestHandler):
             answerer.s.log.clear()  # 검색 로그는 평가용이라 서버에서는 쌓지 않는다
         if LOG_PATH:
             with lock, open(LOG_PATH, 'a') as f:
-                f.write(json.dumps({'t': time.strftime('%Y-%m-%dT%H:%M:%S'), 'conv': cid, 'q': msg, 'kind': out['kind'],
+                f.write(json.dumps({'t': time.strftime('%Y-%m-%dT%H:%M:%S'), 'conv': cid, 'q': msg, 'kind': out['kind'], 'axes': out.get('axes', []),
                                     'answer': out['answer'], 'sources': [s['source'] for s in out['sources']]},
                                    ensure_ascii=False) + '\n')
-        self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'options': out.get('options', []), 'left': left,
+        self._json(200, {'conversation_id': cid, 'answer': out['answer'], 'kind': out['kind'], 'axes': out.get('axes', []), 'section': out.get('section', ''), 'options': out.get('options', []), 'left': left,
                          'sources': [{k: s.get(k) for k in ('n', 'title', 'source', 'cited', 'context')} for s in out['sources']]})
 
     def log_message(self, fmt, *args):  # 접속 로그에 토큰·질문이 남지 않게 경로만
