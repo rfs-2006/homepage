@@ -231,7 +231,28 @@ class Chat:
         return doc, ids
 
     # ------------------------------------------------------------ 도구 실행
+    @staticmethod
+    def _homog(content):
+        """tool_result 안에 search_result 블록이 하나라도 있으면 전부 search_result여야 한다 (API 규칙, 10/25 400 오류).
+        섞여 있으면 글 블록을 search_result 모양으로 바꾼다. 출처 이름은 '학회 평가표'처럼 글의 첫 [꺾쇠] 또는 '안내'."""
+        if not any(b.get('type') == 'search_result' for b in content):
+            return content
+        out = []
+        for b in content:
+            if b.get('type') == 'search_result':
+                out.append(b)
+            else:
+                m = re.match(r'\[([^\]]+)\]', b.get('text', ''))
+                title = m.group(1) if m else '안내'
+                out.append({'type': 'search_result', 'source': title, 'title': title,
+                            'content': [{'type': 'text', 'text': p} for p in b.get('text', '').split('\n') if p.strip()] or [{'type': 'text', 'text': '-'}],
+                            'citations': {'enabled': True}})
+        return out
+
     def _run(self, name, inp, question):
+        return self._homog(self._run_raw(name, inp, question))
+
+    def _run_raw(self, name, inp, question):
         a = self.a
         blocks = lambda ids: [a.result_block(i) for i in ids]
         if name == 'search':
