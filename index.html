@@ -247,6 +247,7 @@ a:hover{color:#203864}
 /* 히어로 아래 화살표·숫자·원형 타이머 (6.5초마다 다음 리포트), 맨 아래 가운데 ↓ (네이버 클라우드 참고) */
 .hb-ctrl{display:flex;align-items:center;gap:22px;font-size:17px;font-weight:600;color:#F7F6F3}
 .hb-ctrlwrap{position:absolute;left:0;right:0;bottom:calc(3.5vh + 6px);padding:0 35px;box-sizing:border-box;z-index:2}   /* 넘기는 화살표·숫자는 리포트 내용과 떼어 왼쪽 아래 구석에, 가운데 ↓와 같은 높이 */
+.hero .hero-grid.wrap,.hero .hb-ctrlwrap.wrap{max-width:1240px}   /* 넓은 화면에서 글과 표지를 가운데로 조금 모은다 (기본 .wrap은 1360) */
 .hb-ctrl button{background:none;border:0;color:#F7F6F3;cursor:pointer;padding:4px 0;display:flex;opacity:.85}
 .hb-ctrl button:hover{opacity:1}
 .hb-cnt{display:flex;align-items:center;gap:7px;font-variant-numeric:tabular-nums;letter-spacing:.06em}
