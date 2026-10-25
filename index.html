@@ -1762,6 +1762,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
+          <div style="font-size:13px;letter-spacing:0.08em;color:rgba(247,246,243,0.75);font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroDate }}</div>
           <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
           <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
           <p style="font-size:clamp(14px,1.05vw,16px);line-height:1.7;max-width:34em;margin:0 0 clamp(14px,2.6vh,30px);color:rgba(247,246,243,0.85)">{{ heroSummary }}</p>
@@ -6246,7 +6247,7 @@ class Component extends DCLogic {
       heroCaption: hero.name + ' (' + hero.ticker + ') · ' + hero.date,
       heroHref: '#research/' + hero.id,
       heroCounter: String(heroIdx + 1).padStart(2, '0') + ' / ' + String(HERO_LIST.length).padStart(2, '0'),
-      heroCompany: hero.name, heroCur: String(heroIdx + 1).padStart(2, '0'), heroTot: String(HERO_LIST.length).padStart(2, '0'),
+      heroCompany: hero.name, heroDate: hero.date, heroCur: String(heroIdx + 1).padStart(2, '0'), heroTot: String(HERO_LIST.length).padStart(2, '0'),
       heroRing: s.heroFade ? '' : (heroIdx % 2 ? 'rb' : 'ra'),   // 애니메이션 이름을 번갈아 써야 리포트가 바뀔 때마다 처음부터 다시 돈다
       heroDown: (e) => { e.preventDefault(); const el = document.getElementById('home-sky'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); },
       heroFadeCls: s.heroFade ? 'fading' : '',
