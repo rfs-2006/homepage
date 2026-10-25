@@ -84,7 +84,9 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <link rel="preload" as="image" href="assets/hero/sky.webp?v=1014" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
-<link rel="preload" as="image" href="assets/torm-fleet.webp" fetchpriority="high">
+<!-- 홈 히어로 첫 리포트 사진·표지 (REPORTS에서 heroBg가 있는 첫 리포트). 히어로 첫 리포트가 바뀌면 이 두 줄도 바꾼다 -->
+<link rel="preload" as="image" href="assets/hero/sanil.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/covers/26-2_sanil-top169.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
@@ -4591,7 +4593,8 @@ class Component extends DCLogic {
         const i = new Image(); i.decoding = 'async'; i.src = src; this._heroGot[src] = i;
       });
     };
-    idle(() => { this._prefetch && this._prefetch(); this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p));
+    // 히어로가 6.5초마다 넘어가므로 다음 리포트 사진을 가장 먼저 받고, 그다음 메뉴 첫 화면 사진, 마지막으로 나머지
+    idle(() => { this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); this._prefetch && this._prefetch();
       // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
       window.__rfsFont && window.__rfsFont(); this.loadP1(); });
     this._onHash = () => this.applyHash();

@@ -41,22 +41,24 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .menu a:hover{opacity:1}
 .menu a.on{opacity:1;border-bottom-color:currentColor}
 /* 사진은 화면 끝까지, 위는 메뉴가 읽히게 살짝, 아래는 길게 검정으로 녹여 경계가 안 보이게 */
-.hero{position:relative;height:74vh;min-height:440px;overflow:hidden;background:var(--black)}
+/* 첫 화면은 한 화면 안에: 사진은 뒤에 깔고(위 68%), 글과 입력창은 아래에 붙인다 */
+.startv{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
+.hero{position:absolute;left:0;right:0;top:0;height:68vh;height:68svh;overflow:hidden;background:var(--black)}
 .hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp) center 38%/cover;filter:brightness(.78) contrast(1.06)}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
-.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 20%,rgba(14,11,11,0) 30%,rgba(14,11,11,0) 42%,rgba(14,11,11,.55) 66%,rgba(14,11,11,.9) 86%,var(--black) 100%)}
-.intro{max-width:760px;margin:-190px auto 0;position:relative;text-align:center;padding:0 16px 70px}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 18%,rgba(14,11,11,0) 26%,rgba(14,11,11,.5) 46%,rgba(14,11,11,.88) 66%,var(--black) 84%)}
+.intro{max-width:760px;width:100%;margin:auto auto 0;position:relative;text-align:center;padding:0 16px clamp(20px,4.5vh,48px)}
 .intro .lab{color:rgba(244,241,235,.6)}
-.intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:50px;line-height:1.25;margin:14px 0 16px}
+.intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:clamp(34px,5.4vh,50px);line-height:1.25;margin:clamp(8px,1.4vh,14px) 0 clamp(10px,1.6vh,16px)}
 .intro h1 em{font-style:normal;color:rgba(244,241,235,.45)}
-.intro p{color:rgba(244,241,235,.62);font-size:14.5px;line-height:1.85;margin:0 auto 32px;max-width:560px}
+.intro p{color:rgba(244,241,235,.62);font-size:14.5px;line-height:1.8;margin:0 auto clamp(18px,3.2vh,32px);max-width:560px}
 .box{background:#F8F6F1;border-radius:10px;padding:12px 12px 10px 18px;text-align:left;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);display:flex;align-items:flex-end;gap:10px}
 .box textarea{flex:1;border:0;background:none;resize:none;height:56px;max-height:160px;padding:6px 0;font:inherit;font-weight:300;font-size:16px;color:var(--text);outline:none}
 .send{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:16px;cursor:pointer}
 .send:disabled{opacity:.4;cursor:default}
-.ex{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}
+.ex{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:clamp(12px,1.8vh,18px)}
 .ex button{font:inherit;font-weight:300;font-size:13px;color:rgba(244,241,235,.75);background:none;border:1px solid rgba(244,241,235,.18);border-radius:999px;padding:6px 14px;cursor:pointer}
 .ex button:hover{border-color:rgba(244,241,235,.5);color:var(--ink)}
-.intro .note{font-size:12px;line-height:1.6;color:rgba(244,241,235,.45);margin:22px auto 0}
+.intro .note{font-size:12px;line-height:1.6;color:rgba(244,241,235,.45);margin:clamp(12px,2vh,22px) auto 0}
 
 /* ---- 대화 화면 ---- */
 body.conv{background:var(--bg);color:var(--text);font-size:15.5px;line-height:1.85}
@@ -126,8 +128,8 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .mnav .mx{position:absolute;top:18px;right:18px;width:40px;height:40px;border:0;background:none;color:inherit;font-size:20px;cursor:pointer}
 @media (max-width:1100px){body.reading main,body.reading .foot .in{margin-left:auto}}
 @media (max-width:760px){
- .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:60vh;min-height:380px}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
- .intro{margin-top:-150px}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
+ .top{padding:12px 16px;height:auto}.top .brand img{width:34px}.brand b{font-size:17px}.menu{display:none}.burger{display:flex}.hero{height:58vh;height:58svh}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+ .intro{margin-top:auto}.intro h1{font-size:min(30px,7vw);white-space:nowrap}
  .panel{top:auto;left:0;width:auto;max-height:80vh;border-radius:14px 14px 0 0;border:1px solid var(--hair);transform:translateY(102%)}
  .scrim{position:fixed;inset:0;background:rgba(14,11,11,.35);z-index:10}.scrim.open{display:block}
  main{padding:6px 16px 170px}.q{font-size:19px;margin-top:34px}.foot{padding:12px 16px 12px}.head{padding:10px 16px}.head .new{margin-left:auto}
@@ -229,6 +231,7 @@ function addQ(text) {
 
 // 기다리는 동안 바뀌는 문구 (이스터에그). 첫 문구는 늘 평범하게, 다음부터 섞어서
 const WAIT = ['학회 자료에서 찾는 중…', 'Polaris 아빠 김민석 선배님께 물어보는 중…', '0기 정세호 선배님께 전화하는 중…',
+  '이승혁 부회장님께 카톡하는 중…', '김민석 회장님께 문자하는 중… 읽씹 아니길', '회장단 단톡방에 물어보는 중…',
   '608명 선배님 중 답해 주실 분 찾는 중…', '2019년 리포트 먼지 터는 중…', '선배님 엑셀 여는 중… #REF!만 아니길',
   '세미나 녹화본 1.5배속으로 보는 중…', '카페 게시판 37페이지 넘기는 중…', 'DART 공시 다시 뒤지는 중…',
   'WACC 한 번 더 계산하는 중…', '투자포인트를 세 개로 줄이는 중…', '북두칠성 따라 북극성 찾는 중…', '목표주가 말고 근거 찾는 중…'];
