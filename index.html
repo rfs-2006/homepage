@@ -254,6 +254,7 @@ a:hover{color:#203864}
 .hb-ring circle{fill:none;stroke-width:2.2}
 .hb-ring .bg{stroke:rgba(247,246,243,.25)}
 .hb-ring .fg{stroke:#8FAADC;stroke-dasharray:56.5;stroke-dashoffset:56.5}
+.hb-ring{display:none}   /* 자동 넘김을 껐으니 원형 타이머도 숨긴다 */
 .hb-ring.ra .fg{animation:hbRingA 6.5s linear forwards}
 .hb-ring.rb .fg{animation:hbRingB 6.5s linear forwards}
 @keyframes hbRingA{to{stroke-dashoffset:0}}@keyframes hbRingB{to{stroke-dashoffset:0}}
@@ -266,6 +267,8 @@ a:hover{color:#203864}
 .hero-cover-wrap .hs-hint{position:absolute;right:10px;bottom:10px;font-size:11px;color:#fff;background:rgba(15,27,46,.72);padding:4px 9px;border-radius:999px;pointer-events:none;opacity:0;transition:opacity .25s}
 .hero-cover-wrap:hover .hs-hint{opacity:1}.hero-cover-wrap.scrolled .hs-hint{opacity:0}
 .hero:has(.hero-cover-wrap:hover) .hb-ring .fg{animation-play-state:paused}
+section.hero{cursor:grab;touch-action:pan-y}section.hero.dragging{cursor:grabbing;user-select:none}section.hero.dragging *{cursor:grabbing !important}
+section.hero img{-webkit-user-drag:none}
 @media (prefers-reduced-motion:reduce){.hb-down{animation:none}.hb-ring .fg{animation:none !important}}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
@@ -4547,6 +4550,42 @@ class Component extends DCLogic {
   }
 
   componentDidMount() {
+    // 홈 히어로를 잡고 좌우로 끌면 화면이 따라오고, 충분히 끌면 다음/이전 리포트로 넘어간다 (조금만 끌면 제자리로)
+    {
+      let drag = null;
+      const els = () => document.querySelectorAll('section.hero .hero-bgwrap, section.hero .hero-grid');
+      const put = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
+      document.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0 || e.pointerType !== 'mouse' || this._heroBusy) return;
+        const sec = e.target.closest && e.target.closest('section.hero');
+        if (!sec || e.target.closest('button, input, textarea')) return;
+        drag = { sec, x: e.clientX, y: e.clientY, dx: 0, t: performance.now(), moved: false };
+      });
+      document.addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        const dx = e.clientX - drag.x;
+        if (!drag.moved) {
+          if (Math.abs(dx) < 6) return;
+          if (Math.abs(e.clientY - drag.y) > Math.abs(dx)) { drag = null; return; }   // 세로로 움직이면 끌기가 아니다
+          drag.moved = true; drag.sec.classList.add('dragging');
+        }
+        drag.dx = dx; put(dx, 0);
+      });
+      const end = () => {
+        if (!drag) return;
+        const d = drag; drag = null; d.sec.classList.remove('dragging');
+        if (!d.moved) return;
+        this._heroDraggedAt = performance.now();
+        const fast = Math.abs(d.dx) > 40 && Math.abs(d.dx) / Math.max(1, performance.now() - d.t) > 0.5;
+        if ((Math.abs(d.dx) > d.sec.clientWidth * 0.15 || fast) && this._heroStep) this._heroStep(d.dx < 0 ? 1 : -1);
+        else { put(0, 300); setTimeout(() => els().forEach((el) => { el.style.transition = ''; }), 320); }
+      };
+      document.addEventListener('pointerup', end);
+      document.addEventListener('pointercancel', end);
+      // 끌고 놓은 직후의 클릭(제목·READ 버튼)은 무시한다
+      document.addEventListener('click', (e) => { if (this._heroDraggedAt && performance.now() - this._heroDraggedAt < 350 && e.target.closest && e.target.closest('section.hero')) { e.preventDefault(); e.stopPropagation(); } }, true);
+      document.addEventListener('dragstart', (e) => { if (e.target.closest && e.target.closest('section.hero')) e.preventDefault(); });
+    }
     window.heroScrollWants = window.heroScrollWants || ((e) => { const sc = e.target && e.target.closest && e.target.closest('.hero-scroll'); if (!sc) return false; return e.deltaY > 0 ? sc.scrollTop + sc.clientHeight < sc.scrollHeight - 1 : sc.scrollTop > 0; });   // 히어로 표지 안에서 더 굴릴 데가 남았으면 페이지 휠 이동이 가로채지 않는다
     setTimeout(() => this.heroAuto(), 0);
     // 히어로 표지 위에 마우스가 있는 동안은 자동 넘김을 멈춘다 (휠로 내려 읽는 중)
@@ -4743,7 +4782,8 @@ class Component extends DCLogic {
   }
   // 홈 히어로는 6.5초마다 다음 리포트로 (원형 타이머와 같은 시간). 넘기거나 화살표를 누르면 처음부터 다시 잰다
   heroAuto() {
-    const on = this.state.page === 'home' && !this.state.isMobile && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // 저절로 넘기지 않는다: 잡고 좌우로 끌거나 화살표로 넘긴다 (2026-10, 네이버 클라우드식). 다시 켜려면 아래 false를 지운다
+    const on = false && this.state.page === 'home' && !this.state.isMobile && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!on) { clearTimeout(this._heroT); this._heroT = null; this._heroSeen = null; return; }
     if (this._heroSeen === this.state.heroIdx && this._heroT) return;
     this._heroSeen = this.state.heroIdx; clearTimeout(this._heroT);
@@ -5767,12 +5807,23 @@ class Component extends DCLogic {
     const HERO_LIST = REPORTS.filter((r) => r.heroBg);
     const heroIdx = ((s.heroIdx % HERO_LIST.length) + HERO_LIST.length) % HERO_LIST.length;
     const hero = HERO_LIST[heroIdx] || REPORTS[0];
+    // 다음/이전 리포트: 지금 화면이 옆으로 밀려 나가고 새 화면이 반대편에서 들어온다 (네이버 클라우드처럼, 페이드 없음).
+    // 잡고 끄는 중이었으면 끈 자리에서 이어서 나간다 (componentDidMount의 끌기)
     const heroStep = (d) => {
       if (HERO_LIST.length < 2 || this._heroBusy) return;
       this._heroBusy = true;
-      this.setState({ heroFade: true });
-      setTimeout(() => this.setState({ heroIdx: heroIdx + d, heroFade: false }, () => { this._heroBusy = false; }), 320);
+      const els = () => [...document.querySelectorAll('.hero-bgwrap, .hero-grid')];
+      const move = (x, ms) => els().forEach((el) => { el.style.transition = ms ? `transform ${ms}ms cubic-bezier(.4,0,.2,1)` : 'none'; el.style.transform = x ? `translate3d(${x}px,0,0)` : ''; });
+      const sec = els()[0] && els()[0].closest('section');
+      if (!sec || matchMedia('(prefers-reduced-motion: reduce)').matches) { this.setState({ heroIdx: heroIdx + d }, () => { this._heroBusy = false; }); return; }
+      const W = sec.clientWidth;
+      move(-d * W, 380);
+      setTimeout(() => this.setState({ heroIdx: heroIdx + d }, () => {
+        move(d * W, 0); void sec.offsetWidth;
+        requestAnimationFrame(() => { move(0, 460); setTimeout(() => { els().forEach((el) => { el.style.transition = ''; }); this._heroBusy = false; }, 480); });
+      }), 380);
     };
+    this._heroStep = heroStep;
     this._heroAdvance = () => heroStep(1);
     const vm = (r) => { const o = opStyle(r.op); return { ...r, opColor:o.c, opAlpha:o.a, href:'#research/' + r.id, open:(e) => { e && e.preventDefault && e.preventDefault(); e && e.stopPropagation && e.stopPropagation(); this.go('report', r.id); } }; };
     const cardVm = (r) => ({ ...vm(r), title: r.name + ' (' + r.ticker + ')', meta: r.sector + ' · ' + r.type, hasCover: !!r.cover, noCover: !r.cover, hasPdf: !!r.pdf, pdfHref: r.pdf });
