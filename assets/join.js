@@ -11,7 +11,7 @@
 @media (max-width:599px){.jn{padding:0}.jn-in{min-height:100%;border:0;padding:56px 20px 32px}}\
 .jn-x{position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;background:none;color:rgba(247,246,243,.7);font-size:22px;cursor:pointer}\
 .jn small.k{display:block;font-size:11px;letter-spacing:.24em;color:rgba(247,246,243,.6)}\
-.jn h2{margin:8px 0 0;font:400 26px "Noto Serif KR",serif;letter-spacing:-.02em;color:#F7F6F3}\
+.jn h2{margin:4px 0 0;font:400 26px "Noto Serif KR",serif;letter-spacing:-.02em;color:#F7F6F3}\
 .jn .lead{margin:10px 0 0;font-size:13.5px;line-height:1.7;color:rgba(247,246,243,.72)}\
 .jn form{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:12px 12px}\
 .jn label{display:flex;flex-direction:column;gap:6px;font-size:12px;color:rgba(247,246,243,.7)}\
@@ -32,6 +32,16 @@
 .jn .er{grid-column:1/-1;margin:0;font-size:12.5px;color:#E8A9A9}.jn .er:empty{display:none}\
 .jn button.go{grid-column:1/-1;height:50px;margin-top:6px;border:0;background:#F7F6F3;color:#0F1B2E;font:inherit;font-size:12px;font-weight:600;letter-spacing:.16em;cursor:pointer}\
 .jn button.go:disabled{opacity:.55;cursor:default}\
+.jn-in.s{width:min(400px,100%);text-align:center}.jn-in.s h2{font:400 30px "Source Serif 4",serif;letter-spacing:.14em}\
+.jn form.sm{display:flex;flex-direction:column;gap:8px;margin-top:22px;text-align:left}\
+.jn form.sm input[type=text],.jn form.sm input[type=password],.jn form.sm input[type=email],.jn form.sm input[type=url]{height:46px;padding:0 14px;border:1px solid rgba(247,246,243,.26);background:rgba(247,246,243,.05);color:#F7F6F3;font:inherit;font-size:15px;border-radius:0;outline:none;width:100%;box-sizing:border-box}\
+.jn form.sm input::placeholder{color:rgba(247,246,243,.45)}\
+.jn form.sm input:focus{border-color:rgba(247,246,243,.7)}\
+.jn .pol{margin-top:10px;height:120px;overflow-y:auto;padding:12px 14px;border:1px solid rgba(247,246,243,.18);font-size:12px;line-height:1.7;color:rgba(247,246,243,.65)}\
+.jn .pol b{display:block;color:#F7F6F3;font-weight:600;margin-bottom:4px}.jn .pol p{margin:4px 0 0}.jn .pol a{color:#F7F6F3}\
+.jn form.sm .chk{margin-top:6px}\
+.jn form.sm .go{margin-top:8px}\
+.jn .nt{margin:8px 0 0;text-align:center;font-size:12px;color:rgba(247,246,243,.55)}\
 .jn .done{margin-top:22px;font-size:14px;line-height:1.8;color:rgba(247,246,243,.8)}\
 .jn .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:16px 0;border-top:1px solid rgba(247,246,243,.14)}\
 .jn .row:first-of-type{margin-top:18px}\
@@ -52,12 +62,12 @@
   var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
   var cur = null;
 
-  function shell(html) {
+  function shell(html, cls) {
     if (!document.getElementById('jn-css')) { var c = document.createElement('style'); c.id = 'jn-css'; c.textContent = CSS; document.head.appendChild(c); }
     close();
     var el = document.createElement('div');
     el.className = 'jn'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
-    el.innerHTML = '<div class="jn-in"><button class="jn-x" type="button" aria-label="닫기">×</button>' + html + '</div>';
+    el.innerHTML = '<div class="jn-in' + (cls ? ' ' + cls : '') + '"><button class="jn-x" type="button" aria-label="닫기">×</button>' + html + '</div>';
     document.body.appendChild(el);
     el.querySelector('.jn-x').onclick = close;
     el.addEventListener('click', function (e) { if (e.target === el) close(); });
@@ -82,26 +92,26 @@
   }
 
   function open(o) {
-    var el = shell('<small class="k">R.F.S. MEMBERS</small><h2>가입 신청</h2>' +
-      '<p class="lead">운영진이 확인하고 승인하면 아이디로 로그인할 수 있어요. 학회원이 아니어도 신청할 수 있고, 이때 기수는 비워 두면 돼요.</p>' +
-      '<form novalidate>' +
-      '<label><b>아이디</b><input type="text" name="login" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20" required></label>' +
-      '<label><b>이름</b><input type="text" name="realname" autocomplete="name" maxlength="30" required></label>' +
-      '<label><b>비밀번호</b><input type="password" name="pw" autocomplete="new-password" maxlength="72" required></label>' +
-      '<label><b>비밀번호 확인</b><input type="password" name="pw2" autocomplete="new-password" maxlength="72" required></label>' +
-      '<p class="hint">아이디는 로그인 칸에 그대로 써요. 비밀번호는 8자 이상.</p>' +
-      '<label><b>닉네임</b><input type="text" name="nickname" maxlength="30" required></label>' +
-      '<label><b>생년월일</b><input name="birth" inputmode="numeric" placeholder="20030315" maxlength="8" required></label>' +
-      '<label class="w"><b>이메일</b><input type="email" name="email" autocomplete="email" maxlength="120" required></label>' +
-      '<label><span><b>기수</b> <i>학회원만</i></span><input name="cohort" inputmode="numeric" placeholder="예: 43" maxlength="3"></label>' +
-      '<label><span><b>블로그</b> <i>선택</i></span><input type="url" name="blog" placeholder="https://" maxlength="200"></label>' +
-      '<div class="agree"><h3>개인정보 수집·이용 동의 (필수)</h3><table>' +
-      '<tr><th>항목</th><td>필수: 아이디, 비밀번호, 이름, 닉네임, 이메일, 생년월일<br>선택: 기수, 블로그 주소</td></tr>' +
-      '<tr><th>목적</th><td>학회원 여부 확인과 가입 승인, 로그인, 학회원 전용 서비스 제공, 운영 공지 연락</td></tr>' +
-      '<tr><th>보유 기간</th><td>탈퇴할 때까지. 승인하지 않은 신청은 거절 즉시 파기</td></tr></table>' +
-      '<p>동의하지 않을 수 있으나, 이 경우 가입 신청을 할 수 없어요. 정보는 Supabase(미국)의 클라우드 서버에 저장돼요. 자세한 내용은 <a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침</a>을 확인해 주세요.</p>' +
-      '<label class="chk"><input type="checkbox" name="agree">위 내용을 확인했고 동의합니다</label></div>' +
-      '<p class="er" aria-live="polite"></p><button class="go" type="submit">신청하기</button></form>');
+    var inp = function (name, ph, type, extra) { return '<input name="' + name + '" type="' + (type || 'text') + '" placeholder="' + ph + '" aria-label="' + ph + '"' + (extra || '') + '>'; };
+    var el = shell('<h2>JOIN</h2><form class="sm" novalidate>' +
+      inp('login', '아이디', 'text', ' autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20"') +
+      inp('pw', '비밀번호 (8자 이상)', 'password', ' autocomplete="new-password" maxlength="72"') +
+      inp('pw2', '비밀번호 확인', 'password', ' autocomplete="new-password" maxlength="72"') +
+      inp('realname', '이름', 'text', ' autocomplete="name" maxlength="30"') +
+      inp('nickname', '닉네임', 'text', ' maxlength="30"') +
+      inp('email', '이메일', 'email', ' autocomplete="email" maxlength="120"') +
+      inp('birth', '생년월일 (숫자 8자리)', 'text', ' inputmode="numeric" maxlength="8"') +
+      inp('cohort', '기수 (학회원만)', 'text', ' inputmode="numeric" maxlength="3"') +
+      inp('blog', '블로그 (선택)', 'url', ' maxlength="200"') +
+      '<div class="pol" tabindex="0"><b>개인정보 수집·이용 동의 (필수)</b>' +
+      '<p>수집 항목: 아이디, 비밀번호, 이름, 닉네임, 이메일, 생년월일 (선택: 기수, 블로그)</p>' +
+      '<p>목적: 학회원 확인과 가입 승인, 로그인, 학회원 전용 서비스, 운영 공지</p>' +
+      '<p>보유 기간: 탈퇴할 때까지. 승인하지 않은 신청은 즉시 파기</p>' +
+      '<p>정보는 Supabase(미국) 클라우드에 저장됩니다. 동의하지 않을 수 있으나 이 경우 가입할 수 없습니다. 만 14세 미만은 가입할 수 없습니다.</p>' +
+      '<p><a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침 전문</a></p></div>' +
+      '<label class="chk"><input type="checkbox" name="agree">개인정보 수집·이용에 동의합니다</label>' +
+      '<p class="er" aria-live="polite"></p><button class="go" type="submit">JOIN</button>' +
+      '<p class="nt">운영진이 승인하면 아이디로 로그인할 수 있어요.</p></form>', 's');
     var f = el.querySelector('form'), er = el.querySelector('.er'), go = el.querySelector('.go');
     setTimeout(function () { try { f.login.focus({ preventScroll: true }); } catch (e) {} }, 200);
     f.birth.oninput = function () { f.birth.value = f.birth.value.replace(/\D/g, '').slice(0, 8); };
@@ -122,7 +132,7 @@
       er.textContent = ''; go.disabled = true; go.textContent = '보내는 중';
       call(o.sb, 'member-signup', { id: v('login').toLowerCase(), password: f.pw.value, name: v('realname'), nickname: v('nickname'), email: v('email'), birth: v('birth'), cohort: v('cohort'), blog: v('blog'), agree: true }).then(function (r) {
         if (r && r.ok) {
-          el.querySelector('.jn-in').innerHTML = '<button class="jn-x" type="button" aria-label="닫기">×</button><small class="k">R.F.S. MEMBERS</small><h2>신청했어요</h2>' +
+          el.querySelector('.jn-in').innerHTML = '<button class="jn-x" type="button" aria-label="닫기">×</button><h2>신청했어요</h2>' +
             '<p class="done">운영진이 확인하고 승인하면 <b>' + esc(v('login').toLowerCase()) + '</b>(으)로 로그인할 수 있어요.<br>승인 전에 로그인하면 \'승인 대기 중\'으로 나와요.</p>' +
             '<button class="go" type="button" style="width:100%;margin-top:22px">확인</button>';
           el.querySelector('.jn-x').onclick = close; el.querySelector('.go').onclick = close;
