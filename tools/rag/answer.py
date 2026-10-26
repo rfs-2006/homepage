@@ -325,8 +325,9 @@ class Answerer:
                                      if not re.search(r'오탈자|오타|군더더기|아쉽|부족하|미흡|빠졌|없었다', x))
             why = ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good) or '학회가 꼽은 리포트. 무엇이 좋은지는 아래 리포트 자료에서 찾아 설명한다'
             lines.append(f"- {r['name']} ({r['sem']}학기): " + why)
-        return {'type': 'text', 'text': '[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. '
-                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
+        head = ('[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. ' if axes else
+                '[학회 추천] 학회가 꼽은 잘 쓴 리포트다. 이 순서대로 소개하고, 평가 이유가 없는 리포트를 평가표에서 높게 평가받았다고 말하지 않는다. ')
+        return {'type': 'text', 'text': head + '왜 잘 썼는지는 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
 
     def recommended(self, question, axis, n=REC_N):
         """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
