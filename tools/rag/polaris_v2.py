@@ -119,8 +119,9 @@ ADVISOR_MODEL = os.environ.get('ADVISOR_MODEL', '').strip()
 # 지시문(도구 정의 포함 약 2만 토큰) 끝에 캐시 표시를 따로 단다. 대화 끝에만 달면 새 대화마다 지시문을 다시 써서(쓰기 1.25배) 비용 대부분이 여기서 나온다.
 # 여기 달아 두면 다른 대화도 지시문을 읽기 요금(0.1배 이하)으로 가져간다. 1시간 TTL은 쓰기가 2배라 한 시간에 대화 두 번 넘게 시작되면 이득.
 SYSTEM_TTL = os.environ.get('SYSTEM_CACHE_TTL', '1h')
-ADVISOR_TOOL = {'type': 'advisor_20260301', 'name': 'advisor', 'model': ADVISOR_MODEL, 'max_uses': 1,
-                'caching': {'type': 'ephemeral', 'ttl': '5m'}}
+# 어드바이저는 지시문·도구 정의·도구 결과까지 대화 전체를 자동으로 읽는다 (고를 수 없다). 그래서 지시문이 큰 우리는 부를 때마다 3만 토큰을 Opus 요금으로 읽는다.
+# 문서상 캐시는 대화당 3번 이상 불러야 본전이라(우리는 1번) 끄고, 조언 출력은 2048로 묶는다 (안 묶으면 생각 포함 4~6천 토큰).
+ADVISOR_TOOL = {'type': 'advisor_20260301', 'name': 'advisor', 'model': ADVISOR_MODEL, 'max_uses': 1, 'max_tokens': 2048}
 ADVISOR_NOTE = """
 
 [advisor]
