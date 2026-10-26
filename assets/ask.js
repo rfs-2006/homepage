@@ -19,10 +19,10 @@
 .ask-grain{position:fixed;inset:0;background:url(/assets/grain.png);opacity:.1;mix-blend-mode:overlay;pointer-events:none}\
 .ask-bar{position:fixed;top:0;left:0;height:2px;width:0;background:var(--ac);z-index:5;transition:width .7s var(--e)}\
 .ask-top{position:fixed;top:0;left:0;right:0;z-index:4;height:64px;background:transparent;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(10px,3vw,40px)}\
-.ask-top .sl{display:flex;align-items:center;gap:10px;font-family:var(--ser);font-size:12.5px;letter-spacing:.2em}\
+.ask-top .sl{position:absolute;left:50%;transform:translateX(-50%);pointer-events:none;display:flex;align-items:center;gap:10px;font-family:var(--ser);font-size:12.5px;letter-spacing:.2em}\
 .ask-top .sl img{width:24px;height:24px;opacity:.9}\
 .ask-top .tr{display:flex;align-items:center;gap:2px}\
-.ask .tx{height:44px;padding:0 10px;border:0;background:none;color:var(--t2);font:inherit;font-size:12.5px;letter-spacing:.04em;cursor:pointer;transition:color .2s}.ask .tx:hover{color:var(--tx)}.ask .tx[hidden]{display:none}.ask .tx{white-space:nowrap}@media (max-width:599px){.ask .tx .lg{display:none}.ask .tx{padding:0 8px}}\
+.ask .tx{height:44px;padding:0 10px;border:0;background:none;color:var(--t2);font:inherit;font-size:12.5px;letter-spacing:.04em;cursor:pointer;transition:color .2s}.ask .tx:hover{color:var(--tx)}.ask .tx[hidden]{display:none}.ask .tx{white-space:nowrap}@media (max-width:599px){.ask .tx .lg{display:none}.ask .tx{padding:0 8px}.ask-top:has(.ad:not([hidden])) .sl span{display:none}}\
 .ask .ib{width:44px;height:44px;border:0;background:none;display:flex;align-items:center;justify-content:center;color:var(--t2);cursor:pointer;transition:opacity .25s,color .2s}\
 .ask .ib:hover{color:var(--tx)}.ask .ib:disabled{opacity:0;pointer-events:none}.ask .ib svg{width:22px;height:22px}\
 .ask .ib:focus-visible,.ask .o:focus-visible,.ask .nx:focus-visible,.ask .how button:focus-visible,.ask .meta a:focus-visible,.ask .more:focus-visible{outline:2px solid var(--ac);outline-offset:2px}\
@@ -404,7 +404,7 @@
     var el = document.createElement('div');
     el.className = 'ask'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '선배님께 여쭙기');
     el.innerHTML = '<div class="ask-bg"></div><div class="ask-grain"></div><div class="ask-bar"></div>' +
-      '<div class="ask-top"><button class="ib bk" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="sl"><img src="/assets/rfs-seal-light-256.png" alt="">AGORA</span><div class="tr"><button class="tx ad" type="button" hidden></button><button class="tx lo" type="button">로그아웃</button><button class="ib cl" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>' +
+      '<div class="ask-top"><button class="ib bk" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="sl"><img src="/assets/rfs-seal-light-256.png" alt=""><span>AGORA</span></span><div class="tr"><button class="tx ad" type="button" hidden></button><button class="tx lo" type="button">로그아웃</button><button class="ib cl" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>' +
       '<main class="ask-wrap"></main><button class="nx" type="button"></button>';
     document.body.appendChild(el);
     st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, sendSms: o.sendSms, onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
