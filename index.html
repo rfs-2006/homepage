@@ -387,6 +387,7 @@ section[data-snap]{scroll-margin-top:0}
 .anchor-nav.on-dark a.active{color:#F7F6F3}
 .footlinks a{color:rgba(247,246,243,0.85)}
 .footlinks a:hover{color:#F7F6F3}
+.footlinks.fl-light a{color:#203864}.footlinks.fl-light a:hover{color:#1A1A1A}
 @media (max-width:1024px){.anchor-nav{display:none}}
 .diag-mobile{display:none}
 @media (max-width:768px){
@@ -3281,26 +3282,26 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   
   
 
-  <footer data-nav="dark" style="background:#203864">
+  <footer data-nav="light" style="background:#EDEBE5;border-top:1px solid #D9D6CF">
     <div class="wrap" style="padding:80px 35px 40px">
       <div class="foot-grid" style="display:grid;grid-template-columns:1.6fr 1fr;gap:40px">
         <div>
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <img src="assets/rfs-seal-light-256.png" alt="R.F.S." width="44" height="44" style="display:block">
-            <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:22px;letter-spacing:-0.03em;color:#F7F6F3">R.F.S.</span>
+            <img src="assets/rfs-seal-navy.png" alt="R.F.S." width="44" height="44" style="display:block">
+            <span style="font-family:'Noto Serif KR',serif;font-weight:700;font-size:22px;letter-spacing:-0.03em;color:#203864">R.F.S.</span>
           </div>
-          <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">중앙대학교 가치투자학회 R.F.S.<br>서울시 동작구 흑석로 84 중앙대학교 경영경제대학&nbsp;</div>
-          <div class="footlinks" style="display:flex;gap:20px;margin-top:14px;font-size:13px">
+          <div style="font-size:13px;color:rgba(26,26,26,0.72);line-height:1.9">중앙대학교 가치투자학회 R.F.S.<br>서울시 동작구 흑석로 84 중앙대학교 경영경제대학&nbsp;</div>
+          <div class="footlinks fl-light" style="display:flex;gap:20px;margin-top:14px;font-size:13px">
             <a href="https://www.instagram.com/cau_rfs/" target="_blank" rel="noopener">Instagram</a>
             <a href="https://cafe.naver.com/caurfs" target="_blank" rel="noopener">네이버 카페</a>
           </div>
         </div>
-        <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">
-          <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(247,246,243,0.6);margin-bottom:12px">CONTACT</div>
-          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br>이메일 &nbsp;<a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
+        <div style="font-size:13px;color:rgba(26,26,26,0.72);line-height:1.9">
+          <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(26,26,26,0.5);margin-bottom:12px">CONTACT</div>
+          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:#203864">010-4291-9088</a><br>이메일 &nbsp;<a href="mailto:contact@caurfs.kr" style="color:#203864">contact@caurfs.kr</a>
         </div>
       </div>
-      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:48px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
+      <div style="font-size:12px;color:rgba(26,26,26,0.5);margin-top:48px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
     </div>
   </footer>
 
@@ -6476,7 +6477,7 @@ class Component extends DCLogic {
 </script>
 <!-- 리서치 챗봇(Polaris) 바로가기: 모든 화면 오른쪽 아래. 누르면 /chat/. 폰에서는 로고만 -->
 <style>
-.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:rgba(14,11,11,.32);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(244,241,235,.22);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
+.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:rgba(14,11,11,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(244,241,235,.22);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
 .rfs-bot img{width:42px;height:42px;border-radius:50%;flex:none}
 .rfs-bot,.rfs-bot:visited,.rfs-bot span{color:#F4F1EB !important}
 .rfs-bot{gap:10px;padding-right:18px}
