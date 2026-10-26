@@ -1955,7 +1955,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1018" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="{{ resHero }}" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -2026,7 +2026,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1018" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="{{ resHeroM }}" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -4641,6 +4641,7 @@ const ring = (segs, r) => {
 };
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
+const RES_HERO = Math.random() < 0.5 ? '' : '-b';
 class Component extends DCLogic {
   state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
@@ -4766,7 +4767,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research-m.webp?v=1018' : 'assets/hero/research.webp?v=1018'],
+        research: [m ? 'assets/hero/research' + RES_HERO + '-m.webp?v=1018' : 'assets/hero/research' + RES_HERO + '.webp?v=1018'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -6183,6 +6184,8 @@ class Component extends DCLogic {
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
+      // 리서치 맨 위 그림: 열 때마다 렘브란트와 플라톤의 동굴(산레담) 중 하나
+      resHero: 'assets/hero/research' + RES_HERO + '.webp?v=1018', resHeroM: 'assets/hero/research' + RES_HERO + '-m.webp?v=1018',
       // 페이지 상단 고정 탭: data-t와 같은 data-tab 섹션(지금 보이는 것)으로 이동
       tabGo: (e) => {
         e.preventDefault();
