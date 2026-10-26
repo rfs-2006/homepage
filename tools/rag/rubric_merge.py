@@ -37,7 +37,8 @@ def main():
     docs, dup_of, same_subject = {}, {}, collections.defaultdict(set)
     for l in gzip.open(CAFE / 'parsed' / 'docs.jsonl.gz', 'rt'):
         d = json.loads(l)
-        docs[d['doc_id']] = d['subject']
+        # 홈페이지판(사이트 PDF)은 제목이 파일 이름('vt')이라 학기를 붙여 카페 글 제목 꼴('[24-2] vt')로 맞춘다 (answer.py가 학기를 읽는다)
+        docs[d['doc_id']] = f"[{d['semester']}] {d['subject']}" if d.get('source') == 'site' and d.get('semester') else d['subject']
         same_subject[d['subject']].add(d['doc_id'])
         if 'duplicate_of' in d:
             dup_of[d['doc_id']] = d['duplicate_of']
