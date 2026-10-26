@@ -1,4 +1,4 @@
-// 가입 신청: 로그인 화면의 '가입 신청' 폼이 부른다. 로그인 없이 누구나 부를 수 있다.
+// 회원가입: 로그인 화면의 '회원가입' 폼이 부른다. 로그인 없이 누구나 부를 수 있다.
 // - 계정을 바로 만들되 '정지' 상태로 만든다. 정지된 계정은 로그인이 안 되므로, 관리자가 승인(정지 해제)하기 전에는 아무것도 못 본다
 // - 비밀번호는 Supabase Auth가 해시로 저장한다. 이 함수와 DB 어디에도 평문으로 남지 않는다
 // - 아이디는 로그인 칸에 그대로 쓰는 이름이다 (hong → hong@caurfs.kr 계정). 운영용 아이디는 막는다
@@ -93,6 +93,6 @@ Deno.serve(async (req) => {
   });
   if (error) return json(/already|exists|registered/i.test(error.message) ? 409 : 500, { error: /already|exists|registered/i.test(error.message) ? 'taken' : 'create' });
 
-  await notify(`[R.F.S.] 가입 신청 1건: ${cohort ? cohort + '기 ' : '외부 '}${name}. AGORA에서 승인해 주세요.`);
+  await notify(`[R.F.S.] 회원가입 1건: ${cohort ? cohort + '기 ' : '외부 '}${name}. AGORA에서 승인해 주세요.`);
   return json(200, { ok: true });
 });

@@ -124,8 +124,8 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=17" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
-<script src="./assets/agora-gate.js?v=10" defer></script>
-<script src="./assets/join.js?v=2" defer></script>
+<script src="./assets/agora-gate.js?v=11" defer></script>
+<script src="./assets/join.js?v=3" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -5325,7 +5325,7 @@ class Component extends DCLogic {
     };
   }
 
-  // 가입 신청 (assets/join.js). 관리자면 AGORA 메뉴에 '가입 신청 N'이 생긴다. 관리자 여부는 member-admin 함수가 정한다
+  // 가입 신청 (assets/join.js). 관리자면 AGORA 메뉴에 '회원가입 승인 N'이 생긴다. 관리자 여부는 member-admin 함수가 정한다
   openJoin() { if (window.RFSJoin && this.sb) window.RFSJoin.open({ sb: this.sb }); }
   openJoinAdmin() { if (window.RFSJoin && this.sb) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setState({ joinPending: n }) }); }
   loadJoinAdmin(email) {
@@ -6088,7 +6088,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), { key: 'ask', label: '선배님께 여쭙기', href: '#intranet/ask', on: (e) => { e.preventDefault(); this.openAsk(); }, cls: '' }, railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }, ...(s.joinPending == null ? [] : [{ key: 'join', label: '가입 신청' + (s.joinPending ? ' ' + s.joinPending : ''), href: '#intranet', on: (e) => { e.preventDefault(); this.openJoinAdmin(); }, cls: '' }])],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), { key: 'ask', label: '선배님께 여쭙기', href: '#intranet/ask', on: (e) => { e.preventDefault(); this.openAsk(); }, cls: '' }, railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }, ...(s.joinPending == null ? [] : [{ key: 'join', label: '회원가입 승인' + (s.joinPending ? ' ' + s.joinPending : ''), href: '#intranet', on: (e) => { e.preventDefault(); this.openJoinAdmin(); }, cls: '' }])],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       // 아고라 첫 화면 (네트워크형)

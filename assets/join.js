@@ -1,8 +1,8 @@
 /* 가입 신청과 승인.
- * RFSJoin.open({ sb })  : 로그인 화면의 '가입 신청'. 아이디·비밀번호·이름·닉네임·이메일·생년월일·블로그·기수 + 개인정보 수집·이용 동의.
+ * RFSJoin.open({ sb })  : 로그인 화면의 '회원가입'. 아이디·비밀번호·이름·닉네임·이메일·생년월일·블로그·기수 + 개인정보 수집·이용 동의.
  *                         Supabase 함수 member-signup이 '정지된' 계정을 만든다 → 승인 전에는 로그인이 안 된다.
  * RFSJoin.admin({ sb }) : 관리자(member-admin의 MEMBER_ADMINS)가 AGORA에서 여는 승인 화면. 승인하면 로그인 가능, 거절하면 즉시 삭제.
- * RFSJoin.isAdmin(sb)   : 관리자면 대기 건수, 아니면 null (화면에 '가입 신청' 메뉴를 보일지 정할 때). */
+ * RFSJoin.isAdmin(sb)   : 관리자면 대기 건수, 아니면 null (화면에 '회원가입 승인' 메뉴를 보일지 정할 때). */
 (function () {
   var CSS = '\
 .jn{position:fixed;inset:0;z-index:3600;background:rgba(2,5,12,.78);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:56px 16px 40px;font-family:"Pretendard Variable",Pretendard,sans-serif;color:#F7F6F3;opacity:0;transition:opacity .35s ease}\
@@ -41,7 +41,6 @@
 .jn .pol b{display:block;color:#F7F6F3;font-weight:600;margin-bottom:4px}.jn .pol p{margin:4px 0 0}.jn .pol a{color:#F7F6F3}\
 .jn form.sm .chk{margin-top:6px}\
 .jn form.sm .go{margin-top:8px}\
-.jn .nt{margin:8px 0 0;text-align:center;font-size:12px;color:rgba(247,246,243,.55)}\
 .jn .done{margin-top:22px;font-size:14px;line-height:1.8;color:rgba(247,246,243,.8)}\
 .jn .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:16px 0;border-top:1px solid rgba(247,246,243,.14)}\
 .jn .row:first-of-type{margin-top:18px}\
@@ -110,8 +109,7 @@
       '<p>정보는 Supabase(미국) 클라우드에 저장됩니다. 동의하지 않을 수 있으나 이 경우 가입할 수 없습니다. 만 14세 미만은 가입할 수 없습니다.</p>' +
       '<p><a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침 전문</a></p></div>' +
       '<label class="chk"><input type="checkbox" name="agree">개인정보 수집·이용에 동의합니다</label>' +
-      '<p class="er" aria-live="polite"></p><button class="go" type="submit">JOIN</button>' +
-      '<p class="nt">운영진이 승인하면 아이디로 로그인할 수 있어요.</p></form>', 's');
+      '<p class="er" aria-live="polite"></p><button class="go" type="submit">JOIN</button></form>', 's');
     var f = el.querySelector('form'), er = el.querySelector('.er'), go = el.querySelector('.go');
     setTimeout(function () { try { f.login.focus({ preventScroll: true }); } catch (e) {} }, 200);
     f.birth.oninput = function () { f.birth.value = f.birth.value.replace(/\D/g, '').slice(0, 8); };
@@ -139,7 +137,7 @@
           return;
         }
         go.disabled = false; go.textContent = '신청하기';
-        fail(MSG[r && r.error] || (r && r.error === 'not_deployed' ? '가입 신청을 준비하고 있어요. contact@caurfs.kr로 문의해 주세요.' : '신청을 보내지 못했어요. 잠시 후 다시 시도해 주세요.'));
+        fail(MSG[r && r.error] || (r && r.error === 'not_deployed' ? '회원가입을 준비하고 있어요. contact@caurfs.kr로 문의해 주세요.' : '신청을 보내지 못했어요. 잠시 후 다시 시도해 주세요.'));
       });
     };
   }
@@ -149,7 +147,7 @@
   }
 
   function admin(o) {
-    var el = shell('<small class="k">ADMIN</small><h2>가입 신청</h2><p class="lead">승인하면 바로 로그인할 수 있어요. 거절하면 신청 정보가 바로 지워져요.</p><div class="ls"><p class="empty">불러오는 중…</p></div>');
+    var el = shell('<small class="k">ADMIN</small><h2>회원가입 승인</h2><p class="lead">승인하면 바로 로그인할 수 있어요. 거절하면 신청 정보가 바로 지워져요.</p><div class="ls"><p class="empty">불러오는 중…</p></div>');
     var ls = el.querySelector('.ls');
     var load = function () {
       call(o.sb, 'member-admin', { action: 'list' }).then(function (r) {
