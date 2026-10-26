@@ -167,6 +167,45 @@
     }
   }
 
+  // 주간 운용 리포트 양식(.wr): 노션 글을 제목 단위로 나눠 "02 포트폴리오"처럼 번호 붙은 칸으로 만든다.
+  // 나누는 곳: 구분선(hr), 제목(h2·h3), <주간 리뷰>처럼 꺾쇠로 감싼 굵은 줄. 칸 첫 줄이 굵은 글자뿐이면 그 칸의 제목으로 쓴다
+  function report(wr, body) {
+    if (!wr || !body) return;
+    var t = wr.querySelector('.wr-t'), first = body.firstElementChild;
+    if (t) {
+      if (first && first.nodeName === 'H2' && first.className === 'h1') { t.textContent = first.textContent.trim(); first.remove(); }
+      else t.textContent = t.getAttribute('data-t') || '';
+    }
+    var boldOnly = function (n) { if (n.nodeName !== 'P') return ''; var x = n.textContent.trim(), b = n.querySelectorAll('strong,b'); if (!x || x.length > 40 || !b.length) return ''; var bt = ''; b.forEach(function (k) { bt += k.textContent; }); return bt.trim() === x ? x : ''; };
+    var isBreak = function (n) { if (n.nodeName === 'HR' || n.nodeName === 'H2' || n.nodeName === 'H3') return true; var x = boldOnly(n); return !!x && /^[<〈《].*[>〉》]$/.test(x); };
+    var chunks = [[]];
+    Array.prototype.slice.call(body.children).forEach(function (n) {
+      if (isBreak(n) && chunks[chunks.length - 1].length) chunks.push([]);
+      if (n.nodeName === 'HR') { n.remove(); return; }
+      chunks[chunks.length - 1].push(n);
+    });
+    var num = wr.querySelector('.wr-perf') ? 2 : 1, frag = document.createDocumentFragment();
+    chunks.forEach(function (ns) {
+      if (!ns.length) return;
+      var head = ns[0], title = '';
+      if (head.nodeName === 'H2' || head.nodeName === 'H3') title = head.textContent.trim();
+      else title = boldOnly(head);
+      title = title.replace(/^[<〈《\[]\s*|\s*[>〉》\]]$/g, '');
+      var sec = document.createElement('section'); sec.className = 'wr-sec';
+      if (title) {
+        ns.shift(); head.remove();
+        var h = document.createElement('div'); h.className = 'wr-h';
+        var sp = document.createElement('span'); sp.textContent = (num < 10 ? '0' : '') + num; num++;
+        var h2 = document.createElement('h2'); h2.textContent = title;
+        h.appendChild(sp); h.appendChild(h2); sec.appendChild(h);
+      }
+      ns.forEach(function (n) { if (boldOnly(n)) n.classList.add('wr-sub'); sec.appendChild(n); });
+      frag.appendChild(sec);
+    });
+    body.innerHTML = ''; body.appendChild(frag);
+    var hn = wr.querySelector('.wr-hold .wr-n'); if (hn) hn.textContent = (num < 10 ? '0' : '') + num;
+  }
+
   // ── 편집기 ──
   var files = new Map(); // blob 주소 → File
   var draft = '';        // 화면이 다시 그려져도 쓰던 글이 남게
@@ -258,6 +297,6 @@
   }
   function reset() { draft = ''; lastRange = null; files.forEach(function (_, u) { URL.revokeObjectURL(u); }); files.clear(); if (cur) { cur.innerHTML = ''; sync(); } }
 
-  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset };
+  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, report: report, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset };
   if (window.__wkReady) window.__wkReady();
 })();
