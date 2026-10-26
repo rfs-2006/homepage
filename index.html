@@ -1589,7 +1589,17 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-more span{font-size:14px;color:#F7F6F3;border:1px solid rgba(247,246,243,.45);padding:12px 22px;background:rgba(11,21,36,.6);transition:background-color .3s ease}
 .wk-more:hover span{background:rgba(32,56,100,.85)}
 .wk-top .wk-item{border:0;padding:0;margin:0}
-.wk-bpick{margin:0 0 22px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}.wk-bpick .wk-pk{flex:none}
+.wk-nav{display:flex;align-items:center;gap:10px;margin:0 0 22px}
+.wk-arr{padding:11px 16px;border:1px solid rgba(247,246,243,.2);font-size:13px;color:#F7F6F3 !important;text-decoration:none;transition:border-color .3s ease,background-color .3s ease}.wk-arr:hover{border-color:rgba(143,170,220,.55);background:rgba(32,56,100,.4)}
+.wk-arr.off{opacity:.3;pointer-events:none}
+.wk-cur{padding:0 14px;text-align:center}.wk-cur b{display:block;font-size:15px;font-weight:600}.wk-cur small{display:block;margin-top:2px;font-size:12px;color:rgba(247,246,243,.55)}
+.wk-boardbtn{margin-left:auto;padding:11px 18px;border:1px solid rgba(247,246,243,.35);font-size:13px;color:#F7F6F3 !important;text-decoration:none;transition:background-color .3s ease}.wk-boardbtn:hover{background:rgba(247,246,243,.08)}
+.wk-table{border-top:1px solid rgba(247,246,243,.2);margin-bottom:30px}
+.wk-tr{display:grid;grid-template-columns:110px 70px minmax(0,1fr);gap:4px 16px;padding:16px 4px;border-bottom:1px solid rgba(247,246,243,.1);color:#F7F6F3 !important;text-decoration:none;transition:background-color .35s ease}.wk-tr:hover{background:rgba(143,170,220,.07)}
+.wk-tr time{font-size:13px;color:rgba(247,246,243,.6);font-variant-numeric:tabular-nums}.wk-tr em{font-style:normal;font-size:12px;color:#8FAADC}.wk-tr b{font-size:15px;font-weight:600}.wk-tr span{grid-column:3;font-size:12.5px;color:rgba(247,246,243,.55)}
+.wk-tr.on b{color:#8FAADC}
+.wk-hide{display:none}.wk-nav.lst .wk-arr,.wk-nav.lst .wk-cur{display:none}
+@media (max-width:699px){.wk-nav{flex-wrap:wrap}.wk-cur{order:-1;width:100%;text-align:left;padding:0 0 6px}.wk-boardbtn{margin-left:auto}.wk-tr{grid-template-columns:1fr}.wk-tr span{grid-column:1}}
 .wk-all .wr-x{display:none}.wk-all .wk-item{border:0;padding:0}
 .fd-card.wk-all{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important}.wk-all .wr{margin-top:0}
 .wr-chw{margin-top:22px}
@@ -3079,7 +3089,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </form></sc-if>
       <section class="fd-card wk-all">
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
-        <nav class="wk-pick wk-bpick"><sc-for list="{{ wkBoardPicks }}" as="k"><a href="#" class="{{ k.cls }}" onClick="{{ k.on }}"><b>{{ k.l }}</b><small>{{ k.r }}</small></a></sc-for></nav><div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
+        <nav class="{{ wkNavCls }}"><a href="#" class="{{ wkPrevCls }}" onClick="{{ wkPrev }}">← 이전 주</a><div class="wk-cur"><b>{{ wkCurL }}</b><small>{{ wkCurR }}</small></div><a href="#" class="{{ wkNextCls }}" onClick="{{ wkNext }}">다음 주 →</a><a href="#" class="wk-boardbtn" onClick="{{ wkListToggle }}">{{ wkListLabel }}</a></nav><sc-if value="{{ wkListOn }}" hint-placeholder-val="{{ false }}"><div class="wk-table"><sc-for list="{{ wkRows }}" as="r"><a href="#" class="{{ r.cls }}" onClick="{{ r.on }}"><time>{{ r.date }}</time><em>{{ r.cat }}</em><b>{{ r.title }}</b><span>{{ r.ex }}</span></a></sc-for></div></sc-if><div class="{{ wkBoardCls }}"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
             <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
@@ -5567,15 +5577,24 @@ class Component extends DCLogic {
           weeklyLatest: sel ? [item(sel, true, 'wkTop')] : [],
           wkPicks: st.map((w, k) => ({ l: label(w, k), r: cardOf(w, String(w.body || ''), String(w.body || '').indexOf('<!--rich-->') === 0).cRange, cls: 'wk-pk' + (w === sel ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkTop: w.id, wkTopFull: false }); } })),
           wkPeekCls: 'wk-list wk-peek',
-          wkExpand: (e) => { e.preventDefault(); this.setState({ wkOpen: sel ? sel.id : undefined }, () => { this.go('strategy'); window.scrollTo(0, 0); }); },
+          wkExpand: (e) => { e.preventDefault(); this.setState({ wkOpen: sel ? sel.id : undefined, wkList: false }, () => { this.go('strategy'); window.scrollTo(0, 0); }); },
         };
       })(),
       // 위클리 게시판: 위쪽 주 메뉴(이번 주·지난주·그 전 주·공지)에서 고른 글 하나만 전체로 보여 준다
       weeklyList: list.filter((w) => w.id === (list.some((x) => x.id === openId) ? openId : list[0] && list[0].id)).map((w) => item(w, true)),
-      wkBoardPicks: (() => { let k = 0; return list.map((w) => { const isN = (w.category || '투자전략') === '공지'; const c = cardOf(w, String(w.body || ''), String(w.body || '').indexOf('<!--rich-->') === 0);
-        const l = isN ? '공지' : (k === 0 ? '이번 주' : k === 1 ? '지난주' : c.cWeek); if (!isN) k++;
-        const sel = w.id === (list.some((x) => x.id === openId) ? openId : list[0] && list[0].id);
-        return { l, r: isN ? fmt(w.week).slice(5) : c.cRange, cls: 'wk-pk' + (sel ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkOpen: w.id }); } }; }); })(),
+      ...(() => {
+        // 위클리 페이지: 들어가면 고른 글(처음엔 이번 주) 하나만. ← 이전 주 / 다음 주 →로 넘기고, 게시판 버튼은 전체 목록을 따로 연다
+        const cur = list.findIndex((x) => x.id === (list.some((y) => y.id === openId) ? openId : list[0] && list[0].id));
+        const w0 = list[cur], go = (k) => (e) => { e.preventDefault(); if (list[k]) this.setState({ wkOpen: list[k].id, wkList: false }, () => window.scrollTo({ top: 0, behavior: 'smooth' })); };
+        const c0 = w0 ? cardOf(w0, String(w0.body || ''), String(w0.body || '').indexOf('<!--rich-->') === 0) : null;
+        return {
+          wkCurL: !w0 ? '' : (w0.category || '투자전략') === '공지' ? '공지' : cur === 0 ? '이번 주 · ' + c0.cWeek : c0.cWeek, wkCurR: w0 ? ((w0.category || '투자전략') === '공지' ? fmt(w0.week) : c0.cRange) : '',
+          wkPrev: go(cur + 1), wkNext: go(cur - 1), wkPrevCls: 'wk-arr' + (list[cur + 1] ? '' : ' off'), wkNextCls: 'wk-arr' + (cur > 0 ? '' : ' off'),
+          wkListOn: !!s.wkList, wkNavCls: 'wk-nav' + (s.wkList ? ' lst' : ''), wkListLabel: s.wkList ? '닫기' : '게시판', wkBoardCls: 'wk-list' + (s.wkList ? ' wk-hide' : ''),
+          wkListToggle: (e) => { e.preventDefault(); this.setState({ wkList: !s.wkList }); },
+          wkRows: list.map((w) => ({ date: fmt(w.week), cat: w.category || '투자전략', title: w.title, ex: (() => { const x = plain(String(w.body || '')); return x.slice(0, 70) + (x.length > 70 ? '…' : ''); })(), cls: 'wk-tr' + (w === w0 ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkOpen: w.id, wkList: false }, () => window.scrollTo({ top: 0, behavior: 'smooth' })); } })),
+        };
+      })(),
       wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
       wkBack: (e) => { e.preventDefault(); this.go('fund'); },
       wkNewLabel: s.wkWrite ? '닫기' : '글쓰기',
