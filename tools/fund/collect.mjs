@@ -120,7 +120,7 @@ async function savePublic(d) {
     asOf: d.asOf.slice(0, 10), start: d.start, nav: d.nav, ret: d.ret, day: d.day, cashWeight: d.cashWeight,
     bm: { kospi: d.bm.kospi && { ret: d.bm.kospi.ret, day: d.bm.kospi.day }, kosdaq: d.bm.kosdaq && { ret: d.bm.kosdaq.ret, day: d.bm.kosdaq.day } },
     holdings: d.holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day, since: h.since })),
-    history: d.history,
+    history: d.history, weeks: d.weeks || [],
   };
   try { await save(pub, 'public_content', 'fund'); console.log(d.asOf + ' public snapshot saved'); }
   catch (e) { console.error('public snapshot skipped: ' + e.message.split('\n')[0]); }
@@ -165,13 +165,17 @@ async function round() {
   const history = hist.filter((h) => h[0] !== today && wk(h[0]));
   const prevNav = history.length ? history[history.length - 1][1] : null;
   if (nav) history.push([today, +nav.toFixed(2), kospi && kospi.now, kosdaq && kosdaq.now]);
+  // 주별 비중 기록: 그 주 월요일을 키로, 그 주 마지막 조회(금요일 마감 뒤에는 금요일 확정치)의 종목 비중과 현금 비중. 금액·수량은 넣지 않는다
+  const monday = (() => { const d = new Date(today + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); })();
+  const snap = { week: monday, asOf: today, cash: total ? +(cash / total * 100).toFixed(2) : 0, h: holdings.map((h) => [h.code, h.name, +h.weight.toFixed(2)]) };
+  const weeks = (((prev && prev.weeks) || []).filter((x) => x.week !== monday)).concat(nav ? [snap] : []).slice(-104);
   const data = {
     asOf: stamp(), start: START || baseDate, baseTotal: base, baseDate, backfilledFrom: (prev && prev.backfilledFrom) || null,
     total, stock, cash, cashWeight: total ? cash / total * 100 : 0,
     nav: nav && +nav.toFixed(2), ret: nav ? nav / 1000 * 100 - 100 : n(head.tot_prft_rt),
     day: nav && prevNav ? (nav / prevNav - 1) * 100 : null,
     pl: n(head.tot_evlt_pl), plRet: n(head.tot_prft_rt),
-    holdings, since, bm: { kospi, kosdaq }, history: history.slice(-400),
+    holdings, since, bm: { kospi, kosdaq }, history: history.slice(-400), weeks,
   };
   if (DRY) { console.log(JSON.stringify({ ...data, holdings: data.holdings.length + ' holdings' })); return; }
   await save(data);
@@ -179,7 +183,7 @@ async function round() {
   const prevTotal = data.day !== null && data.day !== undefined ? total / (1 + data.day / 100) : null;
   const pubLive = {
     asOf: data.asOf, start: data.start, baseDate: data.baseDate, backfilledFrom: data.backfilledFrom,
-    cashWeight: data.cashWeight, nav: data.nav, ret: data.ret, day: data.day, since: data.since, bm: data.bm, history: data.history,
+    cashWeight: data.cashWeight, nav: data.nav, ret: data.ret, day: data.day, since: data.since, bm: data.bm, history: data.history, weeks: data.weeks,
     holdings: holdings.map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret, day: h.day, cur: h.cur, since: h.since,
       ctb: prevTotal && h.dayPl !== null && h.dayPl !== undefined ? h.dayPl / prevTotal * 100 : null })),
   };
