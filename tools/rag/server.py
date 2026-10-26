@@ -15,6 +15,7 @@
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
   GET  /health                   준비됐는지
+  POST /wk/feedback  {text}  운용팀 계정만. 위클리 초안의 빠진 맥락·용어·문장 피드백 (wk_feedback.py)
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
        → {conversation_id, answer, sources:[{n, title, source, cited, context}], kind, axes, section, options, left}
          left는 오늘 남은 질문 수
@@ -41,6 +42,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import MODELS  # noqa: E402
 from answer import Answerer, Chat  # noqa: E402
 import polaris_v2  # noqa: E402
+import wk_feedback  # noqa: E402
 
 SB_URL = 'https://xyewclvpshldjucryapr.supabase.co'
 # 공개용 anon 키 (홈페이지 index.html에도 그대로 있다). 토큰 확인 요청에 같이 보낸다
@@ -58,28 +60,33 @@ MAX_TURNS, IDLE_SEC, MAX_MSG = 12, 2 * 3600, 1000
 
 lock = threading.Lock()
 convs = {}            # id → {'chat', 'used', 'lock'}
-tokens_ok = {}        # access token → 확인 시각 (5분 캐시)
+tokens_ok = {}        # access token → (확인 시각, 이메일) (5분 캐시)
+WK_WRITERS = [e.strip().lower() for e in os.environ.get('WK_WRITERS', 'amt@caurfs.kr').split(',') if e.strip()]
 counts = defaultdict(int)  # (날짜, ip 또는 '*') → 질문 수
 answerer = None
 
 
-def verify(token):
-    """Supabase에 토큰 주인을 묻는다. 학회 계정(@caurfs.kr)이면 통과."""
+def token_email(token):
+    """Supabase에 토큰 주인의 이메일을 묻는다 (5분 캐시). 못 알아내면 ''."""
     now = time.time()
     with lock:
-        if tokens_ok.get(token, 0) > now - 300:
-            return True
+        hit = tokens_ok.get(token)
+        if hit and hit[0] > now - 300:
+            return hit[1]
     req = urllib.request.Request(f'{SB_URL}/auth/v1/user', headers={'apikey': SB_ANON, 'Authorization': f'Bearer {token}'})
     try:
         with urllib.request.urlopen(req, timeout=10) as r:
             email = (json.load(r).get('email') or '').lower()
     except (urllib.error.URLError, TimeoutError, ValueError):
-        return False
-    if not email.endswith(ALLOWED_DOMAIN):
-        return False
+        return ''
     with lock:
-        tokens_ok[token] = now
-    return True
+        tokens_ok[token] = (now, email)
+    return email
+
+
+def verify(token):
+    """학회 계정(@caurfs.kr)이면 통과."""
+    return token_email(token).endswith(ALLOWED_DOMAIN)
 
 
 def take_quota(ip, member):
@@ -166,6 +173,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         """/chat: 다 쓴 답을 한 번에. /chat/stream: 같은 처리인데 답 글자를 쓰는 대로 보낸다 (text/event-stream)
         보내는 것: {type: stage, stage} → {type: delta, text}... → {type: done, ...(/chat 응답과 같은 내용)} 또는 {type: error, error}"""
+        if self.path == '/wk/feedback':
+            return self._wk_feedback()
         stream = self.path == '/chat/stream'
         if self.path not in ('/chat', '/chat/stream'):
             return self._json(404, {'error': 'not found'})
@@ -229,6 +238,22 @@ class Handler(BaseHTTPRequestHandler):
             send(dict(body, type='done'))
         else:
             self._json(200, body)
+
+    def _wk_feedback(self):
+        """위클리 글 피드백: 운용팀 계정(WK_WRITERS)만. {text} → {items: [{type, quote, issue, fix}]}. 글은 로그에 남기지 않는다"""
+        token = self.headers.get('Authorization', '').removeprefix('Bearer ').strip()
+        if not token or token_email(token) not in WK_WRITERS:
+            return self._json(403, {'error': '운용팀 계정으로 로그인해야 쓸 수 있습니다.'})
+        try:
+            req = json.loads(self.rfile.read(min(int(self.headers.get('Content-Length', 0)), 200000)) or b'{}')
+        except ValueError:
+            return self._json(400, {'error': '요청 형식이 잘못됐습니다.'})
+        try:
+            out = wk_feedback.feedback(str(req.get('text', '')))
+        except Exception as e:  # noqa: BLE001
+            print('피드백 오류', repr(e), flush=True)
+            return self._json(500, {'error': '피드백을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.'})
+        self._json(200, out)
 
     def log_message(self, fmt, *args):  # 접속 로그에 토큰·질문이 남지 않게 경로만
         print(time.strftime('%H:%M:%S'), self.command, self.path, args[1] if len(args) > 1 else '', flush=True)

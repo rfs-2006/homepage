@@ -122,14 +122,17 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=18" defer></script>
-<script src="./assets/wk-rich.js?v=3" defer></script>
-<script src="./assets/agora-gate.js?v=11" defer></script>
-<script src="./assets/join.js?v=3" defer></script>
+<script src="./assets/ask.js?v=19" defer></script>
+<script src="./assets/wk-rich.js?v=5" defer></script>
+<script src="./assets/wk-print.js?v=1" defer></script>
+<script src="./assets/agora-gate.js?v=12" defer></script>
+<script src="./assets/join.js?v=4" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
 .covrow:hover{background:rgba(32,56,100,0.035)}
+/* 줄에 마우스를 올리면 바탕색이 서서히 */
+.covrow,.fd-row,.fd-mv,.fd-pr,.fd-rt .rr,.fd-li{transition:background-color .4s ease}
 html,body{margin:0;padding:0;background:#F7F6F3;color:#1A1A1A;font-family:'Pretendard Variable',Pretendard,sans-serif;-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{color:#0F1B2E}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -301,7 +304,7 @@ section.hero img{-webkit-user-drag:none}
 @keyframes boot-shoot{0%{opacity:0;transform:rotate(-18deg) translateX(0)}15%{opacity:1}100%{opacity:0;transform:rotate(-18deg) translateX(-62vw)}}
 .boot-line,.boot-cap{z-index:2}
 @media (prefers-reduced-motion:reduce){.boot-img{animation:none !important}.boot-shoot{display:none}}
-/* 로고가 가운데 뜬 뒤, 오른쪽으로 'with Claude for Nonprofits'가 펼쳐지며 로고가 살짝 왼쪽으로 비켜선다 */
+/* 로고가 가운데 뜬 뒤, 오른쪽으로 'with Claude'가 펼쳐지며 로고가 살짝 왼쪽으로 비켜선다 */
 .boot-lock{position:relative;display:flex;align-items:center;justify-content:center}
 .boot-cfn{overflow:hidden;max-width:0;opacity:0;animation:boot-open 1000ms cubic-bezier(0.65,0,0.35,1) 1000ms both}
 .boot-cfn>div{display:flex;flex-direction:column;justify-content:center;gap:7px;margin-left:clamp(22px,2.4vw,34px);padding-left:clamp(22px,2.4vw,34px);border-left:1px solid rgba(247,246,243,.4);white-space:nowrap;color:#F7F6F3;height:clamp(52px,4.6vw,72px);animation:boot-slide 1000ms cubic-bezier(0.23,1,0.32,1) 1150ms both}
@@ -401,7 +404,7 @@ section[data-snap]{scroll-margin-top:0}
 @media (max-width:560px){.org-row{grid-template-columns:1fr !important;gap:6px !important}}
 @media (max-width:768px){.diag-desktop{display:none}.diag-mobile{display:block}}
 .gisu-index{display:flex;flex-wrap:wrap;gap:8px}
-.gisu-index a{padding:9px 18px;font-size:13px;font-variant-numeric:tabular-nums;border:1px solid #D0CECE;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
+.gisu-index a{padding:9px 18px;font-size:14px;font-variant-numeric:tabular-nums;border:1px solid #D0CECE;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
 .gisu-index a.on{border-color:#203864}
 .pager{display:flex;gap:4px;align-items:center;justify-content:center;padding:40px 0}
 .pager a,.pager span{min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:13px;font-variant-numeric:tabular-nums;color:rgba(26,26,26,0.65);border:1px solid transparent;cursor:pointer;transition:color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
@@ -469,10 +472,10 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .roster-row{grid-template-columns:1fr !important;gap:6px !important}}
 @media (max-width:900px){.donut-wrap{grid-template-columns:1fr !important;gap:32px !important}.legend2{grid-template-columns:1fr !important}.proc-grid{grid-template-columns:1fr !important;gap:40px !important}}
 .numblock{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
-/* 'Claude for Nonprofits' 표기: Claude는 크게 세리프 이탤릭, for Nonprofits는 작게 (메뉴·푸터·로딩 화면 공통) */
+/* 'with Claude' 표기: Claude는 크게 세리프 이탤릭 (메뉴·푸터·로딩 화면 공통) */
 .cfc{font-family:'Source Serif 4','Noto Serif KR',serif;font-style:italic;font-weight:400;font-size:1.32em;letter-spacing:-.015em;line-height:1}
 .cfx{font-size:.74em;letter-spacing:.01em;opacity:.82}
-/* 메뉴 로고 옆 'with Claude for Nonprofits' (우리 글꼴로, 상표 모양은 흉내 내지 않음). 폰처럼 좁은 화면에서는 숨기고 푸터에 한 줄로 */
+/* 메뉴 로고 옆 'with Claude' (우리 글꼴로, 상표 모양은 흉내 내지 않음). 폰처럼 좁은 화면에서는 숨기고 푸터에 한 줄로 */
 .cfn{display:flex;flex-direction:column;justify-content:center;gap:4px;margin-left:7px;padding-left:18px;position:relative;line-height:1}
 .cfn::before{content:'';position:absolute;left:0;top:50%;height:26px;margin-top:-13px;width:1px;background:currentColor;opacity:.28}
 .nav a .cfn.wordmark-block>span.cfn-w{font-size:9.5px !important;font-weight:600 !important;letter-spacing:.24em !important;opacity:.62;line-height:1 !important}
@@ -889,9 +892,11 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 /* 상단 메뉴: PC에서 크게 + 마우스 올리면 밑줄이 왼쪽부터 그어짐 */
 .navlink{position:relative}
 .navlink::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-.navlink:hover::after,.navlink.on::after{transform:scaleX(1)}
+.navlink::after{display:none}
 .nav .navlink.on{border-bottom-color:transparent !important}
-.nav.on-dark .navlink:hover{color:#F7F6F3}
+/* 지금 페이지·마우스 올린 메뉴는 밑줄 대신 글자색으로 */
+.nav.on-dark .navlink:hover,.nav.on-dark .navlink.on{color:#8FAADC}
+.nav.on-light .navlink:hover,.nav.on-light .navlink.on{color:#203864}
 @media (min-width:1024px){
   .nav{height:84px;padding:0 48px}
   .nav .seal{width:46px;height:46px}
@@ -1088,7 +1093,8 @@ main.pgx .secpad{padding-top:56px !important;padding-bottom:56px !important}
 .pg-tabs{position:sticky;top:64px;z-index:20;background:rgba(247,246,243,0.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid #E2E0DA}
 .pg-tabs .wrap{display:flex;gap:6px;padding:12px 35px}
 .pg-tabs a{flex:1;text-align:center;padding:10px 0;font-size:16.5px;color:rgba(26,26,26,0.65);border:1px solid transparent;transition:all .2s ease;text-decoration:none}
-.pg-tabs a:hover{color:#0F1B2E;border-color:rgba(32,56,100,0.4)}
+.pg-tabs a{border:0 !important;transition:color .3s ease !important}
+.pg-tabs a:hover{color:#203864}.pg-tabs a:focus:not(:focus-visible){outline:0}
 main.pgx{background:#EEEDE8 !important}
 main.pgx .story h2,main.pgx .story .sec-title{font-family:'Noto Serif KR',serif !important;font-size:clamp(29px,2.9vw,42px) !important;font-weight:400 !important;letter-spacing:-0.02em !important;line-height:1.35 !important}
 main.pgx .story .nettitle{font-weight:700 !important}
@@ -1307,10 +1313,10 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
 .hero-cue{position:absolute;left:50%;bottom:34px;z-index:3;width:44px;height:44px;margin-left:-22px;border:0;background:none;cursor:pointer;padding:0;transition:opacity .4s ease}
-.hero-cue::before{content:'';position:absolute;left:50%;top:12px;width:13px;height:13px;margin-left:-7px;border-right:1.5px solid rgba(247,246,243,.85);border-bottom:1.5px solid rgba(247,246,243,.85);transform:rotate(45deg)}
+.hero-cue::before{content:'';position:absolute;left:50%;top:4px;width:20px;height:36px;margin-left:-10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 36' fill='none' stroke='%23F7F6F3' stroke-opacity='.85' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 1v33M2 26l8 8 8-8'/%3E%3C/svg%3E") center/contain no-repeat}
 .pg-hero.hero-out .hero-cue{opacity:0}
 @media (prefers-reduced-motion:no-preference){.hero-cue::before{animation:cueBob 1.8s ease-in-out infinite}}
-@keyframes cueBob{0%,100%{transform:translateY(0) rotate(45deg);opacity:.9}50%{transform:translateY(7px) rotate(45deg);opacity:.45}}
+@keyframes cueBob{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(7px);opacity:.45}}
 .pg-hero.pg-full .scrim{transition:opacity .9s ease}.pg-hero.pg-full.hero-out .scrim{opacity:0 !important}   /* 사진 위 남색 막도 같이 흐려져야 파란 화면이 남았다 뚝 사라지지 않는다 */
 /* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
    가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 준다 */
@@ -1509,7 +1515,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
 .wk-del{font-size:13px;color:rgba(247,246,243,0.62)}
 .wk-foot{margin-top:16px;text-align:right}.wk-foot a{display:inline-block;padding:7px 12px;border:1px solid rgba(247,246,243,0.18);font-size:12.5px;color:rgba(247,246,243,0.65)}.wk-foot a:hover{color:#F7F6F3;border-color:rgba(247,246,243,0.4)}
-.wk-form{display:grid;gap:10px;margin-top:14px}
+.wk-form{display:grid;gap:10px;margin-top:14px}.wk-fbbtn{color:#8FAADC !important;font-size:14px}.wk-fb{margin-top:6px;border-top:1px solid rgba(143,170,220,.35);padding-top:14px}.wk-fb-h{margin:0 0 10px;font-size:15px;font-weight:600;color:#F7F6F3}.wk-fb-i{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid rgba(247,246,243,.12)}.wk-fb-i em{font-style:normal;font-size:13px;font-weight:600;color:#8FAADC}.wk-fb-i q{display:block;font-size:14px;color:#F7F6F3;quotes:'「' '」'}.wk-fb-i p{margin:4px 0 0;font-size:14px;line-height:1.6;color:#F7F6F3}.wk-fb-i p.fx{color:#8FAADC}.wk-lab{display:grid;gap:6px;font-size:14px;color:#F7F6F3}.wk-team{font-family:inherit;line-height:1.6;resize:vertical}
 .wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
 .wk-file{font-size:13px;color:rgba(247,246,243,0.7)}.wk-file input{margin-left:10px}.wk-file span{margin-left:8px;color:#8FAADC}
 .wk-btn{justify-self:start;padding:10px 22px;background:#8FAADC;color:#0F1B2E;border:0;font-weight:700;cursor:pointer}
@@ -1570,6 +1576,110 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-body .wk-rich{margin-bottom:12px}
 /* 리포트 양식: 노션식 글을 리포트 상세(.rpt-paper)와 같은 틀로. 날짜 줄, 회색 띠(로고), 남색 헤드라인, 오른쪽 남색 정보 박스와 목차 */
 .wk-body:has(.wkp-sheet){padding-left:0}
+/* 글자 정리: 회색 부가설명을 흰색(밝은 바탕에서는 검정)에 가깝게, 12.5px 이하 이름표는 13px 이상으로. 그래프 축만 작게 두고 밝힘 */
+.fd-nav a{color:rgba(247,246,243,.92) !important}.fd-nav a:hover{color:#8FAADC !important}
+.pg-tabs a{color:rgba(26,26,26,.88) !important}.pg-tabs a:hover{color:#203864 !important}
+.fd-kc .kk{font-size:13.5px !important;color:rgba(247,246,243,.85) !important}
+.fd-kc .ks{font-size:13.5px !important}
+.kc-light .kk,.kc-light .ks{font-size:13.5px !important;color:rgba(26,26,26,.85) !important}
+.fd-legend{font-size:13px !important;color:rgba(247,246,243,.88) !important}
+.fd-switch a{font-size:13.5px !important;color:rgba(247,246,243,.9) !important}.fd-switch a.on{color:#0F1B2E !important}
+.fd-ya .yl,.fd-xa .xl,.fd-ends .el{color:rgba(247,246,243,.82) !important}
+.fd-lh,.fd-lh span,.fd-mh,.fd-mh span{font-size:12.5px !important;color:#8FAADC !important}
+.fd-row small,.fd-row em,.fd-hold small,.fd-li small,.fd-mv em{font-size:13px !important;color:rgba(247,246,243,.8) !important}
+.fd-pr .hd,.fd-pr.hd>*{font-size:13px !important}
+.fd-disc,.fdpage .fd-disc,.fd-meta,.fd-asof,.fd-foot,.fd-cap,.fd-attrcap{font-size:13px !important;color:rgba(247,246,243,.78) !important}
+.wk-table .wk-tr time{font-size:14px !important;color:rgba(247,246,243,.85) !important}
+.wk-table .wk-tr em{font-size:13px !important;color:#8FAADC !important}
+.wk-table .wk-tr b{font-size:16px !important;color:#F7F6F3 !important}
+.wk-table .wk-tr>span{font-size:14px !important;color:rgba(247,246,243,.88) !important}
+.fd-kc .ks[style*="0.55"],.fd-kc small.cs{color:rgba(247,246,243,.82) !important}
+.og-h,.og-h span{font-size:13px !important}
+.tl-txt.inv-soft{color:rgba(26,26,26,.85) !important}
+/* FUND 첫 화면: 주 고르기 + 리포트 미리보기(아래는 흐리게) */
+.wk-pick{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:4px 0 18px}
+.wk-pk{display:flex;flex-direction:column;gap:2px;padding:10px 16px;border:1px solid rgba(247,246,243,.16);color:rgba(247,246,243,.7) !important;text-decoration:none;transition:color .3s ease,border-color .3s ease,background-color .3s ease}
+.wk-pk b{font-size:14px;font-weight:600}.wk-pk small{font-size:11.5px;color:rgba(247,246,243,.5)}
+.wk-pk:hover{color:#F7F6F3 !important;border-color:rgba(143,170,220,.45)}
+.wk-pk.on{background:#F7F6F3;border-color:#F7F6F3;color:#0F1B2E !important}.wk-pk.on small{color:rgba(15,27,46,.6)}
+.wk-all-l{margin-left:auto;align-self:center;font-size:13px;color:#8FAADC !important;text-decoration:none}
+.wk-peek{position:relative}
+.wk-peek:not(.full) .wk-item{max-height:420px;overflow:hidden}.wk-peek .wr-chw{display:none}
+.wk-peek .wk-more{display:none}.wk-peek:not(.full) .wr-x{display:none}
+.wk-peek:not(.full) .wk-more{display:flex;position:absolute;left:0;right:0;bottom:0;height:220px;align-items:flex-end;justify-content:center;padding-bottom:30px;text-decoration:none;background:linear-gradient(180deg,rgba(11,21,36,0) 0%,rgba(11,21,36,.75) 55%,#0B1524 92%)}
+.wk-more span{font-size:14px;color:#F7F6F3;border:1px solid rgba(247,246,243,.45);padding:12px 22px;background:rgba(11,21,36,.6);transition:background-color .3s ease}
+.wk-more:hover span{background:rgba(32,56,100,.85)}
+.wk-top .wk-item{border:0;padding:0;margin:0}
+.wk-nav{display:flex;align-items:center;gap:10px;margin:0 0 22px}
+.wk-arr{padding:11px 16px;border:1px solid rgba(247,246,243,.2);font-size:13px;color:#F7F6F3 !important;text-decoration:none;transition:border-color .3s ease,background-color .3s ease}.wk-arr:hover{border-color:rgba(143,170,220,.55);background:rgba(32,56,100,.4)}
+.wk-arr.off{opacity:.3;pointer-events:none}
+.wk-cur{padding:0 14px;text-align:center}.wk-cur b{display:block;font-size:15px;font-weight:600}.wk-cur small{display:block;margin-top:2px;font-size:12px;color:rgba(247,246,243,.55)}
+.wk-boardbtn{margin-left:auto;padding:11px 18px;border:1px solid rgba(247,246,243,.35);font-size:13px;color:#F7F6F3 !important;text-decoration:none;transition:background-color .3s ease}.wk-boardbtn:hover{background:rgba(247,246,243,.08)}
+.wk-table{border-top:1px solid rgba(247,246,243,.2);margin-bottom:30px}
+.wk-tr{display:grid;grid-template-columns:110px 70px minmax(0,1fr);gap:4px 16px;padding:16px 4px;border-bottom:1px solid rgba(247,246,243,.1);color:#F7F6F3 !important;text-decoration:none;transition:background-color .35s ease}.wk-tr:hover{background:rgba(143,170,220,.07)}
+.wk-tr time{font-size:13px;color:rgba(247,246,243,.6);font-variant-numeric:tabular-nums}.wk-tr em{font-style:normal;font-size:12px;color:#8FAADC}.wk-tr b{font-size:15px;font-weight:600}.wk-tr>span{grid-column:3;font-size:12.5px;color:rgba(247,246,243,.55)}.wk-tr time span,.wk-tr em span,.wk-tr b span{color:inherit;font-size:inherit}
+.wk-tr.on b{color:#8FAADC}
+.wk-hide{display:none}.wk-nav.lst,.wk-board .wk-nav.lst{display:none}
+/* 위클리 페이지: 머리·주 넘기기·리포트를 한 폭(960px)에 맞춘다. 회색 작은 글씨 없이 */
+.wk-board>.wk-back,.wk-board>.wk-bh,.wk-board .wk-nav,.wk-board .wk-table,.wk-board .wk-msg,.wk-board .wk-form{max-width:960px;margin-left:auto;margin-right:auto}
+.wk-board .wk-back{display:block;font-size:14px;color:#F7F6F3;opacity:.85}.wk-board .wk-boardbtn,.wk-board .wk-new{white-space:nowrap}
+.wk-board .wk-bh{align-items:flex-end;margin:20px auto 34px}
+.wk-acts2{display:flex;gap:28px;padding-bottom:6px}
+.wk-board .wk-boardbtn,.wk-board .wk-new{margin:0;padding:0;border:0;background:none;font-size:15px;font-weight:500;color:#F7F6F3 !important;text-decoration:none;transition:color .3s ease}
+.wk-board .wk-boardbtn:hover,.wk-board .wk-new:hover{color:#8FAADC !important;background:none}
+.wk-board .wk-nav{display:grid;grid-template-columns:56px 1fr 56px;align-items:center;gap:0;margin:0 auto 0;border-top:1px solid rgba(247,246,243,.22)}
+.wk-board .wk-arr{height:64px;padding:0;border:0;display:flex;align-items:center;justify-content:center;font-size:20px;color:#F7F6F3 !important;background:none}
+.wk-board .wk-arr:hover{color:#8FAADC !important;background:none}
+.wk-board .wk-arr.off{opacity:.25}
+.wk-board .wk-cur{margin:0;padding:0;text-align:center;font-size:16px;color:#F7F6F3}.wk-board .wk-cur b{display:inline;font-size:16px;font-weight:700;margin-right:12px}
+.wk-board .wk-list .wr{margin-top:0}
+@media (max-width:699px){.wk-board .wk-bh{flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:22px}.wk-board .wk-bh h1{font-size:34px}.wk-board .wk-cur{order:0;width:auto;text-align:center;padding:0}.wk-board .wk-nav{grid-template-columns:44px 1fr 44px}.wk-board .wk-cur,.wk-board .wk-cur b{font-size:14.5px}.wk-board .wk-cur b{display:block;margin:0 0 2px}.wk-acts2{gap:18px}}
+@media (max-width:699px){.wk-nav{flex-wrap:wrap}.wk-cur{order:-1;width:100%;text-align:left;padding:0 0 6px}.wk-boardbtn{margin-left:auto}.wk-tr{grid-template-columns:1fr}.wk-tr>span{grid-column:1}}
+.wk-all .wr-x{display:none}.wk-all .wk-item{border:0;padding:0}
+.fd-card.wk-all{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important}.wk-all .wr{margin-top:0}
+.wr-chw{margin-top:22px}
+@media (max-width:699px){.wk-pk{padding:8px 12px}.wk-peek:not(.full) .wk-item{max-height:400px}}
+/* FUND 첫 화면 주간 카드 */
+.wk-top .wk-item{border:0;padding:0;margin:0}.wk-top .wk-item+.wk-item{margin-top:12px}
+.wk-card{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:30px;align-items:center;padding:24px 28px;border:1px solid rgba(247,246,243,.12);background:rgba(21,35,59,.6);color:#F7F6F3 !important;text-decoration:none;transition:background-color .35s ease,border-color .35s ease}
+.wk-card:hover{background:rgba(32,56,100,.55);border-color:rgba(143,170,220,.35)}
+.wc-w b{display:block;font-size:13px;font-weight:600;letter-spacing:.12em;color:#8FAADC}.wc-w span{display:block;margin-top:6px;font-size:13px;color:rgba(247,246,243,.6)}.wc-w em{display:inline-block;margin-top:8px;font-style:normal;font-size:11px;color:#8FAADC;border:1px solid rgba(143,170,220,.4);padding:2px 7px}.wc-w em:empty{display:none}
+.wc-m p{margin:0;font-size:18px;font-weight:600;letter-spacing:-.01em}
+.wc-n{display:flex;gap:34px;margin-top:12px}.wc-n small{display:block;font-size:11.5px;color:rgba(247,246,243,.55)}.wc-n b{display:block;margin-top:3px;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums}
+.wc-go{font-size:13px;color:#8FAADC;border:1px solid rgba(143,170,220,.4);padding:10px 16px;white-space:nowrap}
+.wk-top .wk-item.open .wk-card{border-color:rgba(143,170,220,.35)}
+@media (max-width:699px){.wk-card{grid-template-columns:1fr;gap:12px;padding:18px}.wc-n{gap:20px}.wc-n b{font-size:17px}.wc-go{justify-self:start;padding:8px 12px}}
+/* 주간 운용 리포트 양식(.wr): 종이 바탕 + 남색 머리띠, 번호 붙은 칸 (assets/wk-rich.js report) */
+.wk-body:has(.wr){padding-left:0}.wk-item.open:has(.wr)>.wk-head{display:none}.wk-item.open:has(.wr){padding-top:4px}
+.wr{background:#F7F6F3;color:#1A1A1A;max-width:960px;margin:6px auto 20px;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.wr-hd{background:#203864;color:#F7F6F3;padding:26px 34px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
+.wr-hd>div:first-child{flex:1;min-width:0}.wr-k{margin:0;font-size:11.5px;letter-spacing:.2em;color:#8FAADC;white-space:nowrap}
+.wr-t{margin:10px 0 0;font-size:28px;font-weight:700;letter-spacing:-.01em;line-height:1.3;color:#F7F6F3;font-family:inherit}
+.wr-m{margin:6px 0 0;font-size:14px;color:rgba(247,246,243,.75)}
+.wr-sl{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}.wr-sl img{width:48px;height:auto}.wr-sl span{font-size:12px;color:rgba(247,246,243,.7)}
+.wr-acts{margin:0;display:flex;gap:16px}.wk-all .wr-x.wr-pdf,.wk-peek .wr-x.wr-pdf{display:inline}.wk-peek:not(.full) .wr-pdf{display:none !important}.wr-x{font-size:12px;color:rgba(247,246,243,.75) !important;text-decoration:none}.wr-x:hover{color:#F7F6F3 !important}
+.wr-in{padding:0 34px 40px}
+.wr-h{display:flex;align-items:baseline;gap:14px;margin:44px 0 16px;padding-bottom:10px;border-bottom:2px solid #203864}
+.wr-h span{font-size:12px;font-weight:700;letter-spacing:.14em;color:#8FAADC}
+.wr-h h2{margin:0;font-size:21px;font-weight:700;color:#203864;letter-spacing:-.01em;font-family:inherit}
+.wr-h small{margin-left:auto;font-size:12px;color:rgba(26,26,26,.5)}
+.wr-ch{display:block;width:100%;height:220px}.wr-ch .a{fill:rgba(32,56,100,.06)}.wr-ch .z{fill:none;stroke:#CFCCC4;stroke-width:1}.wr-ch .k{fill:none;stroke:#8FAADC;stroke-width:1.6;vector-effect:non-scaling-stroke}.wr-ch .f{fill:none;stroke:#203864;stroke-width:2.2;vector-effect:non-scaling-stroke}
+.wr-ax{display:flex;justify-content:space-between;margin:6px 0 16px;font-size:11.5px;color:rgba(26,26,26,.55)}.wr-ax .lg i{display:inline-block;width:14px;height:2px;margin:0 5px 3px 12px;vertical-align:middle}.wr-ax .lg i.f{background:#203864}.wr-ax .lg i.k{background:#8FAADC}
+.wr-pt{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.wr-pt th{background:#203864;color:#F7F6F3;font-weight:500;padding:9px 10px;text-align:right}.wr-pt th:first-child{text-align:left}.wr-pt th:nth-child(2),.wr-pt td:nth-child(2){background-color:rgba(143,170,220,.16)}.wr-pt th:nth-child(2){background:#2E4C85}
+.wr-pt td{padding:10px;text-align:right;border-bottom:1px solid #E2E0DA}.wr-pt td:first-child{text-align:left;color:#1A1A1A !important}.wr-pt tr.f td{font-weight:700}
+.wr-body{font-size:14.5px;line-height:1.8;text-align:left}.wr-body p,.wr-body li{text-align:left !important;word-spacing:normal}
+.wr-body p{margin:8px 0}.wr-body .wr-sub{margin:22px 0 4px;padding-left:9px;border-left:3px solid #8FAADC;font-weight:700}
+.wr-body ul,.wr-body ol{margin:4px 0 4px;padding-left:20px}.wr-body li{margin:3px 0}.wr-body li::marker{color:#203864}
+.wr-body strong{color:#203864}
+.wr-body figure{margin:16px auto;max-width:620px}.wr-body figure img,.wr-body img{max-width:100%;height:auto;display:block;border:1px solid #E2E0DA;background:#fff}
+.wr-body table{width:100%;border-collapse:collapse;margin:10px 0}.wr-body td,.wr-body th{border:1px solid #E2E0DA;padding:7px 10px}
+.wr-hr{display:grid;grid-template-columns:minmax(0,1fr) 38% 60px 76px 64px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid #E2E0DA;font-size:14px;font-variant-numeric:tabular-nums}
+.wr-hr i{display:block;height:8px}.wr-hr i b{display:block;height:100%;background:#203864}.wr-hr em{font-style:normal;text-align:right}.wr-hr small{text-align:right;font-size:13px}
+.wr-link{display:inline-block;margin-top:26px;font-size:13px;color:#203864 !important}
+.wr-ft{margin:0;border-top:1px solid #E2E0DA;padding:14px 34px;font-size:11px;color:rgba(26,26,26,.5)}
+@media (max-width:699px){.wr{margin-left:-16px;margin-right:-16px}.wr-hd{padding:22px 18px 20px}.wr-t{font-size:22px}.wr-sl img{width:38px}.wr-in{padding:0 18px 32px}.wr-pt{font-size:12.5px}.wr-pt th,.wr-pt td{padding:8px 5px}.wr-hr{grid-template-columns:minmax(0,1fr) 22% 48px 62px 52px;gap:6px;font-size:12.5px}.wr-ch{height:160px}}
+
 .wkp-sheet{background:#FFFFFF;color:#000;max-width:920px;margin:6px auto 20px;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(0,0,0,0.4)}
 .wkp-top{display:flex;align-items:center;padding:18px 20px 9px;font-size:14px;font-weight:500;color:#595959;font-variant-numeric:tabular-nums}.wkp-x{margin-left:auto;font-size:12.5px;color:#7F7F7F;text-decoration:none}.wkp-x:hover{color:#002060}
 .wk-item.open:has(.wkp-sheet)>.wk-head{display:none}.wk-item.open:has(.wkp-sheet){padding-top:4px}.wkp-top span{color:#A6A6A6;margin:0 7px}
@@ -1711,7 +1821,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <img class="boot-img" src="assets/hero/sky.webp?v=1014" alt="">
     <div class="scrim" style="opacity:0.4"></div>
     <i class="boot-shoot"></i>
-    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></div></div></div>
+    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em></span></div></div></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
   </div>
@@ -1723,7 +1833,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <span style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-0.02em">R.F.S.</span>
         <span class="wordmark-sub" style="font-size:11.5px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
       </span>
-      <span class="wordmark-block cfn" aria-label="with Claude for Nonprofits"><span class="cfn-w">WITH</span><span class="cfn-t"><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></span>
+      <span class="wordmark-block cfn" aria-label="with Claude"><span class="cfn-w">WITH</span><span class="cfn-t"><em class="cfc">Claude</em></span></span>
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
       <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="5">
@@ -1792,7 +1902,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
-          <div style="font-size:13px;letter-spacing:0.08em;color:rgba(247,246,243,0.75);font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
+          <div style="font-size:13px;letter-spacing:0.08em;color:#F7F6F3;font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
           <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
           <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
           <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
@@ -1845,7 +1955,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="{{ resHero }}" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -1876,7 +1986,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <div>
                 <h2 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
               </div>
-              <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
+              <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
               <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -1886,12 +1996,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
+              <div style="margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
               <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
                 <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b></span>
                 <span class="col-s" style="font-size:13.5px;color:#1A1A1A">{{ r.sector }}</span>
-                <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+                <span style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
                 <span style="text-align:right;font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
               </a>
@@ -1916,7 +2026,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="{{ resHeroM }}" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -1943,7 +2053,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
     <section data-tab="reports" id="coverage" data-nav="light" style="background:#F7F6F3;padding:36px 22px 64px;scroll-margin-top:64px">
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
-      <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
+      <input class="mfilter" type="search" placeholder="검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
       <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
         <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
         <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -1960,7 +2070,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <span style="font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
             <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12.5px;color:#1A1A1A;font-variant-numeric:tabular-nums">
-              <span style="font-size:11.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+              <span style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
               <span>{{ r.sector }}</span>
               <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
             </div>
@@ -2638,7 +2748,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </sc-for>
           </div>
           <div class="rv rv-right">
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.55);padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.4)">진출 분야</div>
+            <div style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.88);padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.4)">진출 분야</div>
             <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
               <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(247,246,243,0.18);font-size:14px;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
                 <span style="width:10px;height:10px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
@@ -2774,7 +2884,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="assets/hero/recruit.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:50% 45%"></image-slot></div>
       <div class="scrim" style="opacity:0.6"></div>
       <div class="wrap pg-hero-in">
-        <p class="sec-label pg-eyebrow" style="color:rgba(247,246,243,0.65)">{{ recruitEyebrow }}</p>
         <h1 class="pg-title">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p style="margin:18px 0 0;font-size:clamp(15px,1.15vw,18px);color:rgba(247,246,243,0.85);max-width:36em">{{ closedNote }}</p>
@@ -2822,7 +2931,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -2881,7 +2990,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="assets/hero/recruit-m.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:55% 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
       <div class="pg-hero-in">
-        <p class="sec-label">{{ recruitEyebrow }}</p>
         <h1 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(38px,11vw,52px);font-weight:700;letter-spacing:-0.035em;line-height:1.02;color:#F7F6F3">Recruiting</h1>
         <sc-if value="{{ notRecruiting }}" hint-placeholder-val="{{ true }}">
           <p style="margin:20px 0 0;font-size:14px;line-height:1.75;color:rgba(247,246,243,0.85)">{{ closedNote }}</p>
@@ -2922,7 +3030,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -3003,7 +3111,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <main data-screen-label="Weekly Strategy" data-nav="dark" class="fdpage wkpage" style="position:relative;background:#0B1524;color:#F7F6F3">
     <div class="wrap fd-body wk-board">
       <a class="wk-back" href="#fund" onClick="{{ wkBack }}">← AMT Fund</a>
-      <div class="wk-bh"><div><h1>Weekly Strategy</h1><p>운용팀 주간 투자전략</p></div><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div>
+      <div class="wk-bh"><h1>Weekly Strategy</h1><div class="wk-acts2"><a href="#" class="wk-boardbtn" onClick="{{ wkListToggle }}">{{ wkListLabel }}</a><a href="#" class="wk-new" onClick="{{ wkToggleWrite }}">{{ wkNewLabel }}</a></div></div>
       <sc-if value="{{ hasWkMsg }}" hint-placeholder-val="{{ false }}"><p class="wk-msg">{{ wkErr }}</p></sc-if>
       <sc-if value="{{ wkWriteOpen }}" hint-placeholder-val="{{ false }}"><form class="wk-form fd-card" onSubmit="{{ wkSubmit }}">
         <div class="wk-cats"><sc-for list="{{ wkCats }}" as="c"><a href="#" class="{{ c.cls }}" onClick="{{ c.on }}">{{ c.t }}</a></sc-for></div>
@@ -3012,14 +3120,16 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
         <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
-        <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
+        <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 역할 · 담당" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
+        <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" class="wk-fbbtn" onClick="{{ wkFbRun }}">{{ wkFbLabel }}</a><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
+        <sc-if value="{{ wkFbOn }}" hint-placeholder-val="{{ false }}"><div class="wk-fb"><p class="wk-fb-h">{{ wkFbHead }}</p><sc-for list="{{ wkFbItems }}" as="f"><div class="wk-fb-i"><em>{{ f.type }}</em><div><q>{{ f.quote }}</q><p>{{ f.issue }}</p><p class="fx">{{ f.fix }}</p></div></div></sc-for></div></sc-if>
       </form></sc-if>
       <section class="fd-card wk-all">
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
-        <div class="wk-list"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
+        <nav class="{{ wkNavCls }}"><a href="#" class="{{ wkPrevCls }}" onClick="{{ wkPrev }}" aria-label="이전 주">←</a><p class="wk-cur"><b>{{ wkCurL }}</b>{{ wkCurR }}</p><a href="#" class="{{ wkNextCls }}" onClick="{{ wkNext }}" aria-label="다음 주">→</a></nav><sc-if value="{{ wkListOn }}" hint-placeholder-val="{{ false }}"><div class="wk-table"><sc-for list="{{ wkRows }}" as="r"><a href="#" class="{{ r.cls }}" onClick="{{ r.on }}"><time>{{ r.date }}</time><em>{{ r.cat }}</em><b>{{ r.title }}</b><span>{{ r.ex }}</span></a></sc-for></div></sc-if><div class="{{ wkBoardCls }}"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top">{{ w.date }}<span>|</span>{{ w.kind }}<a href="#" class="wkp-x" onClick="{{ w.toggle }}">접기 −</a></div><div class="wkp-head"><div class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><div><div>R.F.S</div><div>Rising Financial Stars</div></div></div><div class="wkp-sec"><span>|</span> {{ w.kind }} <span>|</span></div><h1 class="wkp-name">{{ w.bandName }}</h1></div><div class="wkp-grid"><h2 class="wkp-hl" data-t="{{ w.title }}"></h2><aside class="wkp-side"><div class="wkp-facts"><sc-for list="{{ w.facts }}" as="f"><div class="wkp-fact"><span>{{ f.l }}</span><b>{{ f.v }}</b></div></sc-for></div><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Fund Data</div><table class="wkp-dt"><tr><th>수익률(%)</th><th>1주</th><th>1개월</th><th>3개월</th></tr><sc-for list="{{ w.fdRows }}" as="r"><tr><td>{{ r.n }}</td><td>{{ r.a }}</td><td>{{ r.b }}</td><td>{{ r.c }}</td></tr></sc-for></table><div class="wkp-kv"><sc-for list="{{ w.fdKv }}" as="k"><div><span>{{ k.l }}</span><b>{{ k.v }}</b></div></sc-for></div></div><div class="wkp-blk"><div class="wkp-bt">Fund Price<span class="wkp-lg"><i class="f"></i>AMT<i class="k"></i>KOSPI</span></div><svg class="wkp-ch" viewBox="0 0 237 104" preserveAspectRatio="none"><polyline class="b" points="{{ w.chB }}"></polyline><polyline class="k" points="{{ w.chK }}"></polyline><polyline class="f" points="{{ w.chF }}"></polyline></svg><div class="wkp-ax"><span>{{ w.chFrom }}</span><span>{{ w.chTo }}</span></div></div></sc-if><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Top Holdings<small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.top }}" as="t"><div class="wkp-hd"><span>{{ t.n }}</span><i style="width:{{ t.bw }}"></i><b>{{ t.w }}</b></div></sc-for></div></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wkp-btn" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if><div class="wkp-toc"></div></aside><div class="wkp-main"><div class="wk-rich wkp" data-wk="{{ w.id }}"></div></div></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><p class="wr-acts"><a href="#" class="wr-x wr-pdf" onClick="{{ w.pdf }}">PDF 저장</a><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></p></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -3048,13 +3158,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
 
       <section class="fd-card fd-open wk-top" id="fd-weekly">
-        <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 보기<em>→</em></span></a>
+        <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 위클리<em>→</em></span></a>
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
-        <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
-          <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
+        <div class="{{ wkPeekCls }}"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
+          
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wkp-sheet"><div class="wkp-top">{{ w.date }}<span>|</span>{{ w.kind }}<a href="#" class="wkp-x" onClick="{{ w.toggle }}">접기 −</a></div><div class="wkp-head"><div class="wkp-logo"><img src="assets/rfs-seal-light-256.png" alt=""><div><div>R.F.S</div><div>Rising Financial Stars</div></div></div><div class="wkp-sec"><span>|</span> {{ w.kind }} <span>|</span></div><h1 class="wkp-name">{{ w.bandName }}</h1></div><div class="wkp-grid"><h2 class="wkp-hl" data-t="{{ w.title }}"></h2><aside class="wkp-side"><div class="wkp-facts"><sc-for list="{{ w.facts }}" as="f"><div class="wkp-fact"><span>{{ f.l }}</span><b>{{ f.v }}</b></div></sc-for></div><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Fund Data</div><table class="wkp-dt"><tr><th>수익률(%)</th><th>1주</th><th>1개월</th><th>3개월</th></tr><sc-for list="{{ w.fdRows }}" as="r"><tr><td>{{ r.n }}</td><td>{{ r.a }}</td><td>{{ r.b }}</td><td>{{ r.c }}</td></tr></sc-for></table><div class="wkp-kv"><sc-for list="{{ w.fdKv }}" as="k"><div><span>{{ k.l }}</span><b>{{ k.v }}</b></div></sc-for></div></div><div class="wkp-blk"><div class="wkp-bt">Fund Price<span class="wkp-lg"><i class="f"></i>AMT<i class="k"></i>KOSPI</span></div><svg class="wkp-ch" viewBox="0 0 237 104" preserveAspectRatio="none"><polyline class="b" points="{{ w.chB }}"></polyline><polyline class="k" points="{{ w.chK }}"></polyline><polyline class="f" points="{{ w.chF }}"></polyline></svg><div class="wkp-ax"><span>{{ w.chFrom }}</span><span>{{ w.chTo }}</span></div></div></sc-if><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><div class="wkp-blk"><div class="wkp-bt">Top Holdings<small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.top }}" as="t"><div class="wkp-hd"><span>{{ t.n }}</span><i style="width:{{ t.bw }}"></i><b>{{ t.w }}</b></div></sc-for></div></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wkp-btn" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if><div class="wkp-toc"></div></aside><div class="wkp-main"><div class="wk-rich wkp" data-wk="{{ w.id }}"></div></div></div></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
-            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><p class="wr-acts"><a href="#" class="wr-x wr-pdf" onClick="{{ w.pdf }}">PDF 저장</a><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></p></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for><a href="#fund/strategy" class="wk-more" onClick="{{ wkExpand }}"><span>이번 주 위클리 전체 보기 →</span></a></div>
             <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
           </div></sc-if>
@@ -3278,7 +3388,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   
   
 
-  <footer data-nav="dark" style="background:#0F1B2E">
+  <footer data-nav="dark" style="background:#0A1322">
     <div class="wrap" style="padding:80px 35px 40px">
       <div class="foot-grid" style="display:grid;grid-template-columns:1.6fr 1fr;gap:40px">
         <div>
@@ -3290,16 +3400,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <div class="footlinks" style="display:flex;gap:20px;margin-top:14px;font-size:13px">
             <a href="https://www.instagram.com/cau_rfs/" target="_blank" rel="noopener">Instagram</a>
             <a href="https://cafe.naver.com/caurfs" target="_blank" rel="noopener">네이버 카페</a>
-            <a href="/privacy/">개인정보처리방침</a>
           </div>
         </div>
         <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">
           <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(247,246,243,0.6);margin-bottom:12px">CONTACT</div>
-          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br><a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
+          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br>이메일 &nbsp;<a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
         </div>
       </div>
-      <p style="border-top:1px solid rgba(247,246,243,0.25);margin:48px 0 0;padding-top:20px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.55);max-width:72em">본 사이트의 리포트는 중앙대학교 가치투자학회 R.F.S. 학회원이 교육 목적으로 작성한 자료입니다. 투자의견과 목표주가는 학회원의 분석에 기반한 의견이며 특정 종목의 매수·매도를 권유하지 않습니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</p>
-      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
+      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:48px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
     </div>
   </footer>
 
@@ -4534,8 +4642,9 @@ const ring = (segs, r) => {
 };
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
+const RES_HERO = Math.random() < 0.5 ? '' : '-b';
 class Component extends DCLogic {
-  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -4610,7 +4719,8 @@ class Component extends DCLogic {
     // 카드가 화면에 들어오면 in 클래스를 붙여 등장 효과를 한 번 재생한다
     if ('IntersectionObserver' in window && 'MutationObserver' in window) {
       document.documentElement.classList.add('fx');
-      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: 0.12 });
+      // 카드가 12% 보이거나, 아주 긴 카드(위클리 전문 등)는 화면의 30%를 채우면 나타난다. 12%만 보면 화면보다 8배 긴 카드는 영영 안 나타난다
+      const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting && (e.intersectionRatio >= 0.12 || e.intersectionRect.height >= window.innerHeight * 0.3)) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: [0, 0.05, 0.12, 0.3, 0.6] });
       // 펀드 카드 + 다른 페이지(홈 제외)의 본문 블록에도 같은 등장 효과
       const blocks = 'main section:not(.pg-hero):not(.hero) > .wrap > *:not(.rv), main.mhome section:not(.pg-hero) > *:not(.rv)';
       const scan = () => {
@@ -4636,7 +4746,7 @@ class Component extends DCLogic {
     // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
     const ready = () => { document.documentElement.classList.add('rfs-ready'); try { sessionStorage.setItem('rfs_booted', '1'); } catch (e) {} };
     if (document.documentElement.classList.contains('rfs-seen')) { this._bootFinished = true; this.setState({ boot: 'gone' }); }
-    const t0 = performance.now(), minHold = 3800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude for Nonprofits'가 펼쳐질 시간
+    const t0 = performance.now(), minHold = 3800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude'가 펼쳐질 시간
     const finish = () => {
       if (this._bootFinished) return;
       this._bootFinished = true;
@@ -4658,7 +4768,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research-m.webp?v=1017' : 'assets/hero/research.webp?v=1017'],
+        research: [m ? 'assets/hero/research' + RES_HERO + '-m.webp?v=1020' : 'assets/hero/research' + RES_HERO + '.webp?v=1020'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -5348,15 +5458,25 @@ class Component extends DCLogic {
   // 위클리: 글쓰기 칸을 노션식 편집기로 붙이고, 노션식 글은 HTML로 채운다 (assets/wk-rich.js)
   wkDom() {
     const W = window.RFSWk; if (!W) return;
+    if (W.setProxy && !this._wkProxy) {
+      this._wkProxy = true;
+      // 노션 사진 주소는 브라우저가 직접 못 받는 경우가 많아 wk-image 함수가 대신 받아 준다
+      W.setProxy((url) => this.sb.auth.getSession().then(({ data }) => fetch(this.sb.supabaseUrl + '/functions/v1/wk-image', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: this.sb.supabaseKey, Authorization: 'Bearer ' + ((data && data.session && data.session.access_token) || this.sb.supabaseKey) }, body: JSON.stringify({ url }) }))
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); }));
+    }
     const ed = document.querySelector('.wk-form .wk-ed'); if (ed) W.attach(ed);
-    document.querySelectorAll('.wk-rich[data-wk]').forEach((n) => { const id = n.getAttribute('data-wk'); const b = (this._wkBodies || {})[id]; if (b && n.__wk !== b) { n.__wk = b; W.render(n, b); W.sheet(n.closest('.wkp-sheet'), n); } });
+    document.querySelectorAll('.wk-rich[data-wk]').forEach((n) => { const id = n.getAttribute('data-wk'); const b = (this._wkBodies || {})[id]; if (b && n.__wk !== b) { n.__wk = b; W.render(n, b); if (n.closest('.wr')) W.report(n.closest('.wr'), n); else W.sheet(n.closest('.wkp-sheet'), n); } });
   }
 
   // FUND 위클리: 누구나 읽고, 운용팀 계정(AMT_EMAIL)만 쓴다. 표는 Supabase fund_weekly, 사진은 Storage fund-weekly
   loadWeekly() {
     if (!this.sb) return;
     this.sb.from('fund_weekly').select('*').order('week', { ascending: false }).order('created_at', { ascending: false }).limit(30)
-      .then(({ data, error }) => this.setState({ weekly: error ? [] : (data || []), weeklyLoaded: true }), () => this.setState({ weekly: [], weeklyLoaded: true }));
+      .then(({ data, error }) => {
+        // 다음에 들어올 때 바로 보이게 마지막 목록을 이 브라우저에 둔다 (공개 글이라 괜찮다). 실패하면 있던 것을 그대로 쓴다
+        if (!error && data) { try { const j = JSON.stringify(data.slice(0, 6)); if (j.length < 400000) localStorage.setItem('rfs_wk_cache', j); } catch (e) {} }
+        this.setState((st) => ({ weekly: error ? (st.weekly || []) : (data || []), weeklyLoaded: true }));
+      }, () => this.setState((st) => ({ weekly: st.weekly || [], weeklyLoaded: true })));
   }
 
   weeklyProps() {
@@ -5408,7 +5528,7 @@ class Component extends DCLogic {
       const a = new Date(w.week + 'T00:00:00'), f = new Date(a); f.setDate(a.getDate() + 4);
       const base = isN ? [{ l: '구분', v: '공지' }, { l: '게시일', v: fmt(w.week).slice(2) }] : [{ l: '구분', v: '투자전략' }, { l: '적용 기간', v: isNaN(a) ? '-' : md(a) + ' ~ ' + md(f) }];
       let i = -1; FH.forEach((h, k) => { if (isN ? h[0] <= w.week : h[0] < w.week) i = k; });
-      if (i < 1) return { facts: base.concat([{ l: '작성', v: '운용팀' }]), hasFd: false, hasTop: false };
+      if (i < 1) return { facts: base.concat([{ l: '작성', v: '운용팀' }]), hasFd: false, hasTop: false, metaLine: isN ? '게시일 ' + fmt(w.week) : '적용 기간 ' + (isNaN(a) ? '-' : md(a) + '(월) ~ ' + md(f) + '(금)'), asOfLine: '' };
       const H = FH.slice(0, i + 1), L = H[i], d0 = L[0];
       const back = (days) => { const t = new Date(d0 + 'T00:00:00'); t.setDate(t.getDate() - days); const c = t.toISOString().slice(0, 10); return H.filter((h) => h[0] <= c).pop() || null; };
       const r = (ref, col) => (ref ? (L[col] / ref[col] - 1) * 100 : null);
@@ -5421,22 +5541,62 @@ class Component extends DCLogic {
       const yb = (100 - (100 - lo) / (hi - lo) * 96).toFixed(1);
       const hs = newest ? ((FD.holdings || []).slice().sort((x, y) => y.weight - x.weight).slice(0, 5)) : [];
       const wm = Math.max(1, ...hs.map((h) => h.weight || 0));
+      // 새 양식(주간 운용 리포트): 기간 수익률 표 4칸 + 초과, 넓은 누적 그래프(설정일 = 0%), 보유 종목 전체 + 현금
+      const UP = '#B23A3A', DN = '#2F5FA8', FL = 'rgba(26,26,26,.45)', cc = (v) => (v === null || isNaN(v) ? FL : v > 0 ? UP : v < 0 ? DN : FL);
+      const per = [[r(w1, 1), r(w1, 2)], [r(m1, 1), r(m1, 2)], [r(m3, 1), r(m3, 2)], [sinceF, sinceK]];
+      const prow = (n, k, cls, unit) => { const o = { n, cls }; per.forEach((pr, q) => { const v = k === 2 ? (pr[0] === null || pr[1] === null ? null : pr[0] - pr[1]) : pr[k]; o['v' + (q + 1)] = sg(v, 2) + (v === null ? '' : unit); o['c' + (q + 1)] = cc(v); }); return o; };
+      const ff = H.map((h) => (h[1] / 1000 - 1) * 100), kk = H.map((h) => (h[2] / H[0][2] - 1) * 100);
+      const lo2 = Math.min(...ff, ...kk, 0) - 2, hi2 = Math.max(...ff, ...kk, 0) + 2;
+      const X2 = (k) => (k / Math.max(1, H.length - 1) * 860).toFixed(1), Y2 = (v) => (6 + (hi2 - v) / (hi2 - lo2) * 208).toFixed(1);
+      const pl = (arr) => arr.map((v, k) => X2(k) + ',' + Y2(v)).join(' ');
+      // 보유 종목: 그 주 비중 기록(수집기 weeks)이 있으면 그것을, 없으면 가장 최근 글에만 지금 비중을. 지난주 기록이 있으면 비중 증감도
+      const WK = FD.weeks || [], wi = WK.findIndex((x) => x.week === w.week);
+      const snapOf = (x) => x ? { cash: x.cash, h: x.h.map(([code, name, weight]) => ({ code, name, weight, ret: null })), asOf: x.asOf } : null;
+      const cur = wi >= 0 ? snapOf(WK[wi]) : newest ? { cash: FD.cashWeight, h: (FD.holdings || []).map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret })), asOf: (FD.asOf || '').slice(0, 10) } : null;
+      (this._wkTo = this._wkTo || {})[w.id] = wi >= 0 && WK[wi].to != null ? WK[wi].to.toFixed(1) + '%' : ''; // 매매회전율 (수집기 kt00007), 보고서 PDF에만 쓴다
+      const prvS = wi > 0 ? snapOf(WK[wi - 1]) : wi < 0 && newest ? snapOf(WK.filter((x) => x.week < w.week).pop()) : null;
+      const pw = {}; if (prvS) prvS.h.forEach((h) => { pw[h.code] = h.weight; });
+      const all = cur ? cur.h.slice().sort((x, y) => y.weight - x.weight) : [];
+      const hm = Math.max(1, ...all.map((h) => h.weight || 0), (cur && cur.cash) || 0);
+      const dlt = (now, was) => { if (!prvS) return { d: '', dc: FL }; const v = (now || 0) - (was || 0); return Math.abs(v) < 0.05 ? { d: '-', dc: FL } : { d: (was === undefined ? '신규 ' : '') + sg(v, 1) + '%p', dc: v > 0 ? UP : DN }; };
       return {
         facts: base.concat([{ l: '기준가 (' + d0.slice(5).replace('-', '.') + ')', v: Number(L[1]).toFixed(2) }, { l: '설정 이후', v: sg(sinceF) + '%' }, { l: 'KOSPI 대비', v: sg(sinceF - sinceK) + '%p' }]),
         hasFd: true,
         fdRows: [{ n: 'AMT Fund', a: sg(r(w1, 1)), b: sg(r(m1, 1)), c: sg(r(m3, 1)) }, { n: 'KOSPI', a: sg(r(w1, 2)), b: sg(r(m1, 2)), c: sg(r(m3, 2)) }],
         fdKv: [{ l: '설정일', v: (FD.start || H[0][0]).replace(/-/g, '.') }, { l: 'KOSPI (' + d0.slice(5).replace('-', '.') + ')', v: Number(L[2]).toLocaleString('ko-KR', { maximumFractionDigits: 2 }) }],
         chF: pt(fs), chK: pt(ks), chB: '0,' + yb + ' 237,' + yb, chFrom: H[0][0].slice(2).replace(/-/g, '.'), chTo: d0.slice(2).replace(/-/g, '.'),
-        hasTop: hs.length > 0, topAsOf: (FD.asOf || '').slice(5).replace('-', '.') + ' 기준',
+        hasTop: hs.length > 0 || !!(cur && cur.h.length), topAsOf: ((cur && cur.asOf) || FD.asOf || '').slice(5, 10).replace('-', '.') + ' 기준' + (prvS ? ' · 가운데 칸은 지난주 대비' : ''),
         top: hs.map((h) => ({ n: h.name, w: (h.weight || 0).toFixed(1) + '%', bw: ((h.weight || 0) / wm * 100).toFixed(0) + '%' })),
+        ptRows: [prow('AMT Fund', 0, 'f', '%'), prow('KOSPI', 1, '', '%'), prow('초과수익', 2, 'x', '%p')],
+        rcF: pl(ff), rcK: pl(kk), rcZ: '0,' + Y2(0) + ' 860,' + Y2(0), rcA: '0,' + Y2(0) + ' ' + pl(ff) + ' 860,' + Y2(0),
+        hold: all.map((h) => ({ n: h.name, w: (h.weight || 0).toFixed(1) + '%', bw: ((h.weight || 0) / hm * 100).toFixed(0) + '%', op: 1, r: h.ret === null || h.ret === undefined ? '' : sg(h.ret, 1) + '%', rc: cc(h.ret), ...dlt(h.weight, pw[h.code]) }))
+          .concat(prvS ? prvS.h.filter((h) => !all.some((x) => x.code === h.code)).map((h) => ({ n: h.name, w: '0.0%', bw: '0%', op: 1, r: '편출', rc: FL, d: sg(-h.weight, 1) + '%p', dc: DN })) : [])
+          .concat(cur && cur.cash ? [{ n: '현금', w: cur.cash.toFixed(1) + '%', bw: (cur.cash / hm * 100).toFixed(0) + '%', op: .4, r: '', rc: FL, ...dlt(cur.cash, prvS ? prvS.cash : undefined) }] : []),
+        metaLine: (isN ? '게시일 ' + fmt(w.week) : '적용 기간 ' + md(a) + '(월) ~ ' + md(f) + '(금)') + ' · 기준가 ' + Number(L[1]).toFixed(2),
+        asOfLine: '기준일 ' + d0.replace(/-/g, '.'),
       };
     };
-    const item = (w, open) => {
+    // FUND 첫 화면 카드: 주차, 금주 섹터 배분(글의 '금주:' 줄), 그 주 수익률·KOSPI 대비, 주식비(글 속 '주식비 N%'들의 처음 → 마지막)
+    const cardOf = (w, body, rich) => {
+      const x = rich ? plain(body) : body;
+      const wk = (x.match(/(\d{1,2})월\s*(\d)주차/) || []);
+      const head = ((x.match(/금주\s*[:：]\s*([^()\n]{2,60}?)\s*(?:\(|주식비|$)/) || [])[1] || '').trim();
+      const eq = [...x.matchAll(/주식비\s*(\d{1,3})\s*%/g)].map((m) => m[1] + '%').slice(0, 2);
+      const a = new Date(w.week + 'T00:00:00'), f = new Date(a); f.setDate(a.getDate() + 4);
+      const fy = ymdOf(f), pre = FH.filter((h) => h[0] < w.week).pop(), end = FH.filter((h) => h[0] <= fy).pop();
+      const ok = pre && end && end[0] >= w.week;
+      const rf = ok ? (end[1] / pre[1] - 1) * 100 : null, rk = ok ? (end[2] / pre[2] - 1) * 100 : null;
+      const col = (v) => (v === null ? 'rgba(247,246,243,.5)' : v > 0 ? 'var(--up)' : v < 0 ? 'var(--dn)' : 'rgba(247,246,243,.7)');
+      return { cWeek: wk.length ? wk[1] + '월 ' + wk[2] + '주차' : fmt(w.week), cRange: isNaN(a) ? '' : md(a) + ' ~ ' + md(f),
+        cHead: head || w.title, cRet: rf === null ? '-' : sg(rf, 2) + '%', cRetC: col(rf), cEx: rf === null ? '-' : sg(rf - rk, 2) + '%p', cExC: col(rf === null ? null : rf - rk),
+        cEq: eq.length ? (eq.length > 1 && eq[0] !== eq[1] ? eq[0] + ' → ' + eq[1] : eq[eq.length - 1]) : '-', cTag: end && end[0] < fy ? '진행 중' : '', hasTag: !!(end && end[0] < fy) };
+    };
+    const item = (w, open, key = 'wkOpen') => {
       const body = String(w.body || '');
       const rich = body.indexOf('<!--rich-->') === 0;
       if (rich) this._wkBodies[w.id] = body;
       return {
-        id: w.id, rich: open && rich, kind: (w.category || '투자전략') === '공지' ? 'Notice' : 'Weekly Strategy',
+        id: w.id, rich: open && rich, kind: (w.category || '투자전략') === '공지' ? 'Notice' : 'Weekly Strategy', kindLine: ((w.category || '투자전략') === '공지' ? 'NOTICE' : 'WEEKLY STRATEGY') + ' · AMT FUND',
         // 리포트 양식 머리: 회색 띠는 리포트의 회사명 자리에 'AMT Fund', 위 칸은 Weekly Strategy/Notice. 오른쪽 남색 박스는 글 정보
         bandName: 'AMT Fund',
         ...(open && rich ? fundSide(w, w === list[0]) : {}),
@@ -5444,7 +5604,9 @@ class Component extends DCLogic {
         excerpt: (() => { const x = rich ? plain(body) : body.replace(TOK, '').replace(/\s+/g, ' ').trim(); return x.slice(0, 120) + (x.length > 120 ? '…' : ''); })(),
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
-        toggle: (e) => { e.preventDefault(); this.setState({ wkOpen: open ? null : w.id }); },
+        toggle: (e) => { e.preventDefault(); if (key === 'wkTop') { this.setState({ wkTopFull: false }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); }); return; } this.setState({ [key]: open ? null : w.id }); },
+        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: w.team || [], note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '' })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
+        ...(key === 'wkTop' ? cardOf(w, body, rich) : {}),
         canDel: open && isAmt,
         del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
       };
@@ -5452,14 +5614,39 @@ class Component extends DCLogic {
     return {
       hasWeekly: true, weeklyEmpty: list.length === 0 && !!s.weeklyLoaded, noWeekly: false,
       wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
-      weeklyLatest: list.filter((w) => (w.category || '투자전략') === '투자전략').slice(0, 1).map((w) => item(w, true)),
-      weeklyList: list.map((w) => item(w, w.id === openId)),
+      ...(() => {
+        // FUND 첫 화면: 최근 투자전략 몇 주를 고르는 줄 + 고른 주의 리포트 윗부분만 보이고 아래는 흐려진다. 누르면 전체가 펼쳐진다
+        const st = list.filter((w) => (w.category || '투자전략') === '투자전략').slice(0, 1);
+        const sel = st[0];
+        const label = (w, k) => (k === 0 ? '이번 주' : k === 1 ? '지난주' : (cardOf(w, String(w.body || ''), true).cWeek));
+        return {
+          weeklyLatest: sel ? [item(sel, true, 'wkTop')] : [],
+          wkPicks: st.map((w, k) => ({ l: label(w, k), r: cardOf(w, String(w.body || ''), String(w.body || '').indexOf('<!--rich-->') === 0).cRange, cls: 'wk-pk' + (w === sel ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkTop: w.id, wkTopFull: false }); } })),
+          wkPeekCls: 'wk-list wk-peek',
+          wkExpand: (e) => { e.preventDefault(); this.setState({ wkOpen: sel ? sel.id : undefined, wkList: false }, () => { this.go('strategy'); window.scrollTo(0, 0); }); },
+        };
+      })(),
+      // 위클리 게시판: 위쪽 주 메뉴(이번 주·지난주·그 전 주·공지)에서 고른 글 하나만 전체로 보여 준다
+      weeklyList: list.filter((w) => w.id === (list.some((x) => x.id === openId) ? openId : list[0] && list[0].id)).map((w) => item(w, true)),
+      ...(() => {
+        // 위클리 페이지: 들어가면 고른 글(처음엔 이번 주) 하나만. ← 이전 주 / 다음 주 →로 넘기고, 게시판 버튼은 전체 목록을 따로 연다
+        const cur = list.findIndex((x) => x.id === (list.some((y) => y.id === openId) ? openId : list[0] && list[0].id));
+        const w0 = list[cur], go = (k) => (e) => { e.preventDefault(); if (list[k]) this.setState({ wkOpen: list[k].id, wkList: false }, () => window.scrollTo({ top: 0, behavior: 'smooth' })); };
+        const c0 = w0 ? cardOf(w0, String(w0.body || ''), String(w0.body || '').indexOf('<!--rich-->') === 0) : null;
+        return {
+          wkCurL: !w0 ? '' : (w0.category || '투자전략') === '공지' ? '공지' : cur === 0 ? '이번 주 · ' + c0.cWeek : c0.cWeek, wkCurR: w0 ? ((w0.category || '투자전략') === '공지' ? fmt(w0.week) : c0.cRange) : '',
+          wkPrev: go(cur + 1), wkNext: go(cur - 1), wkPrevCls: 'wk-arr' + (list[cur + 1] ? '' : ' off'), wkNextCls: 'wk-arr' + (cur > 0 ? '' : ' off'),
+          wkListOn: !!s.wkList, wkNavCls: 'wk-nav' + (s.wkList ? ' lst' : ''), wkListLabel: s.wkList ? '닫기' : '전체 목록', wkBoardCls: 'wk-list' + (s.wkList ? ' wk-hide' : ''),
+          wkListToggle: (e) => { e.preventDefault(); this.setState({ wkList: !s.wkList }); },
+          wkRows: list.map((w) => ({ date: fmt(w.week), cat: w.category || '투자전략', title: w.title, ex: (() => { const x = plain(String(w.body || '')); return x.slice(0, 70) + (x.length > 70 ? '…' : ''); })(), cls: 'wk-tr' + (w === w0 ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkOpen: w.id, wkList: false }, () => window.scrollTo({ top: 0, behavior: 'smooth' })); } })),
+        };
+      })(),
       wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
       wkBack: (e) => { e.preventDefault(); this.go('fund'); },
       wkNewLabel: s.wkWrite ? '닫기' : '글쓰기',
       wkPreviews: (s.wkFiles || []).map((f, i) => ({ n: '사진 ' + (i + 1), u: f.__url || (f.__url = URL.createObjectURL(f)), rm: (e) => {
         e.preventDefault();
-        const ta = document.querySelector('.wk-form textarea');
+        const ta = document.querySelector('.wk-form textarea[data-body]');
         const body = (ta ? ta.value : (s.wkBody || '')).replace(new RegExp('\\s*\\[사진\\s*' + (i + 1) + '\\]\\s*', 'g'), '\n\n').replace(TOK, (m0, n) => (+n > i + 1 ? '[사진 ' + (+n - 1) + ']' : m0)).replace(/\n{3,}/g, '\n\n').trim();
         this.setState({ wkFiles: s.wkFiles.filter((_, k) => k !== i), wkBody: body });
       } })),
@@ -5483,12 +5670,34 @@ class Component extends DCLogic {
       wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
+      // 운용 인력은 새 글을 쓸 때 지난 글의 명단을 그대로 가져와 고쳐 쓴다
+      wkTeamTxt: s.wkTeamTxt != null ? s.wkTeamTxt : (((list.find((x) => Array.isArray(x.team) && x.team.length) || {}).team) || []).map((r) => r.filter(Boolean).join(' · ')).join('\n'),
+      onWkTeam: (e) => this.setState({ wkTeamTxt: e.target.value }),
+      wkNote: s.wkNote || '', onWkNote: (e) => this.setState({ wkNote: e.target.value }),
+      // Polaris 피드백 (작성자 전용): 올리기 전에 빠진 맥락·설명 없는 용어·다듬을 문장을 짚는다 (api.caurfs.kr /wk/feedback, tools/rag/wk_feedback.py)
+      wkFbLabel: s.wkFbBusy ? 'Polaris가 읽는 중…' : 'Polaris 피드백',
+      wkFbOn: !!(s.wkFb && (s.wkFb.items || s.wkFb.err)),
+      wkFbHead: s.wkFb ? (s.wkFb.err || (s.wkFb.items.length ? '고칠 곳 ' + s.wkFb.items.length + '개' : '짚을 곳이 없습니다')) : '',
+      wkFbItems: (s.wkFb && s.wkFb.items) || [],
+      wkFbRun: async (e) => {
+        e.preventDefault();
+        if (s.wkFbBusy) return;
+        const ed = document.querySelector('.wk-form .wk-ed'); const text = ed ? ed.innerText.trim() : '';
+        if (!text) { this.setState({ wkFb: { err: '본문을 먼저 붙여넣어 주세요' } }); return; }
+        this.setState({ wkFbBusy: true, wkFb: null });
+        try {
+          const { data } = await this.sb.auth.getSession();
+          const r = await fetch('https://api.caurfs.kr/wk/feedback', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ((data && data.session && data.session.access_token) || '') }, body: JSON.stringify({ text }) });
+          const j = await r.json().catch(() => ({}));
+          this.setState({ wkFbBusy: false, wkFb: r.ok && !j.error ? { items: j.items || [] } : { err: j.error || '피드백을 받지 못했습니다' } });
+        } catch (x) { this.setState({ wkFbBusy: false, wkFb: { err: 'Polaris 서버에 연결하지 못했습니다' } }); }
+      },
       onWkFiles: (e) => {
         const cur = s.wkFiles || [];
         const add = [...(e.target.files || [])].filter((f) => /^image\//.test(f.type)).slice(0, 10 - cur.length); e.target.value = '';
         if (!add.length) return;
         // 커서가 있던 자리(없으면 끝)에 [사진 N] 줄을 넣어 글 중간에 사진이 들어가게 한다
-        const ta = document.querySelector('.wk-form textarea');
+        const ta = document.querySelector('.wk-form textarea[data-body]');
         const body = ta ? ta.value : (s.wkBody || '');
         const c0 = ta && typeof ta.selectionStart === 'number' ? ta.selectionStart : body.length;
         const nl = body.indexOf('\n', c0); const at = nl < 0 ? body.length : nl; // 커서가 있는 줄 끝에 넣어 단어가 잘리지 않게
@@ -5510,12 +5719,19 @@ class Component extends DCLogic {
           // 본문 속 사진은 저장소에 올리고 그 주소로 바꿔 HTML로 저장한다
           const body = await window.RFSWk.collect(ed, upload);
           const link = (s.wkLink || '').trim();
-          const { error } = await this.sb.from('fund_weekly').insert({ category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' });
+          const row = { category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' };
+          if (strat) {
+            const teamSrc = s.wkTeamTxt != null ? s.wkTeamTxt : ((document.querySelector('.wk-form .wk-team') || {}).value || '');
+            row.team = teamSrc.split('\n').map((l) => l.split(/\s*[·|\t]\s*/).map((x) => x.trim()).filter(Boolean)).filter((r) => r.length).map((r) => [r[0], r[1] || '', r.slice(2).join(' ')]);
+            row.note = (s.wkNote || '').trim();
+          }
+          const { error } = await this.sb.from('fund_weekly').insert(row);
+          if (error && /team|note/.test(error.message || '')) throw new Error('Supabase에 운용 인력·한마디 칸이 아직 없어요. supabase/fund_weekly_team.sql을 먼저 실행해 주세요');
           if (error) throw error;
           window.RFSWk.reset();
-          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined });
+          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined, wkNote: '', wkTeamTxt: null, wkFb: null });
           this.loadWeekly();
-        } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^노션/.test(m) ? m : '올리지 못했습니다: ' + m }); }
+        } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^(노션|Supabase)/.test(m) ? m : '올리지 못했습니다: ' + m }); }
       },
     };
   }
@@ -5993,6 +6209,8 @@ class Component extends DCLogic {
     const cohortNums = Object.keys(ROSTER).map((k) => parseInt(k, 10)).sort((a, b) => b - a);
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
+      // 리서치 맨 위 그림: 열 때마다 렘브란트와 플라톤의 동굴(산레담) 중 하나
+      resHero: 'assets/hero/research' + RES_HERO + '.webp?v=1020', resHeroM: 'assets/hero/research' + RES_HERO + '-m.webp?v=1020',
       // 페이지 상단 고정 탭: data-t와 같은 data-tab 섹션(지금 보이는 것)으로 이동
       tabGo: (e) => {
         e.preventDefault();
@@ -6279,7 +6497,7 @@ class Component extends DCLogic {
       cohorts: cohortDefs.map((c) => {
         const n = parseInt(c, 10);
         return { label: c, cls: s.cohort === c ? 'on' : '', count: (COHORTS[n] || 0) + '명',
-          color: s.cohort === c ? '#F7F6F3' : 'rgba(26,26,26,0.65)',
+          color: s.cohort === c ? '#F7F6F3' : '#1A1A1A',
           bg: s.cohort === c ? '#203864' : 'transparent',
           weight: s.cohort === c ? '700' : '400',
           on: (e) => { e.preventDefault(); this.setState({ cohort: c }); } };
@@ -6455,7 +6673,7 @@ class Component extends DCLogic {
 }
 </script>
 <script>
-// 메뉴 로고 옆 'with Claude for Nonprofits'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
+// 메뉴 로고 옆 'with Claude'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
 (function(){
   var raf=0;
   function fit(){ raf=0;
@@ -6475,12 +6693,12 @@ class Component extends DCLogic {
 </script>
 <!-- 리서치 챗봇(Polaris) 바로가기: 모든 화면 오른쪽 아래. 누르면 /chat/. 폰에서는 로고만 -->
 <style>
-.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:#0E0B0B;border:1px solid rgba(244,241,235,.18);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
+.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:rgba(14,11,11,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(244,241,235,.22);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
 .rfs-bot img{width:42px;height:42px;border-radius:50%;flex:none}
 .rfs-bot,.rfs-bot:visited,.rfs-bot span{color:#F4F1EB !important}
 .rfs-bot{gap:10px;padding-right:18px}
 .rfs-bot span{white-space:nowrap}
-.rfs-bot:hover{background:#1A1614;border-color:rgba(244,241,235,.35)}
+.rfs-bot:hover{background:rgba(14,11,11,.5);border-color:rgba(244,241,235,.4)}
 @media (max-width:640px){.rfs-bot{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:48px;gap:0;padding-right:4px}.rfs-bot img{width:38px;height:38px}.rfs-bot span{display:none}}
 .rfs-chat{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:61;width:min(420px,calc(100vw - 48px));height:min(680px,calc(100vh - 120px));background:#0E0B0B;border:1px solid rgba(244,241,235,.16);border-radius:16px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.65);display:flex;flex-direction:column;transform-origin:bottom right;animation:rfsChatIn .28s cubic-bezier(.2,.8,.2,1)}
 .rfs-chat[hidden]{display:none}

@@ -3,6 +3,7 @@
 // window.RFSWk = { clean(html) → 안전한 HTML 문자열, isRich(body), render(el, body), attach(editorEl), pick(), collect(editorEl, upload) → body, text(body), reset() }
 (function () {
   var MARK = '<!--rich-->';
+  var pasting = false, proxy = null; // proxy(url) → Promise<Blob>: 브라우저가 직접 못 받는 노션 사진을 서버(wk-image 함수)로 받는다
   var RENAME = { B: 'STRONG', I: 'EM', DEL: 'S', STRIKE: 'S', H1: 'H2', H4: 'H3', H5: 'H3', H6: 'H3' };
   var INLINE = { STRONG: 1, EM: 1, U: 1, S: 1, CODE: 1, MARK: 1, A: 1, BR: 1, SPAN: 1 };
   var DROP = { SCRIPT: 1, STYLE: 1, META: 1, LINK: 1, TITLE: 1, HEAD: 1, IFRAME: 1, OBJECT: 1, EMBED: 1, NOSCRIPT: 1, TEMPLATE: 1, BUTTON: 1, SELECT: 1, TEXTAREA: 1, SVG: 1, CANVAS: 1, VIDEO: 1, AUDIO: 1 };
@@ -35,7 +36,12 @@
     var st = styleOf(n), cls = String(n.className || '');
     if (/(^|\s)checkbox(-on|-off)?(\s|$)/.test(cls) && !(n.textContent || '').trim()) return [checkbox({ checked: /checkbox-on/.test(cls), hasAttribute: function () { return false; }, className: '' })];
     if (t === 'INPUT') return /checkbox/i.test(n.type || n.getAttribute('type') || '') ? [checkbox(n)] : [];
-    if (t === 'IMG') { var s = okSrc(n.getAttribute('src')); if (!s) return []; var im = el('img'); im.src = s; im.alt = ''; im.loading = 'lazy'; return [el('figure', [im])]; }
+    if (t === 'IMG') {
+      var s = okSrc(n.getAttribute('src')), im = el('img'); im.alt = '';
+      // 붙여넣을 때 못 쓰는 주소(file:, attachment: 등)인 사진은 버리지 않고 빈 칸으로 남겨 다시 올리게 한다
+      if (!s) { if (!pasting) return []; im.setAttribute('data-k', 'miss'); var mf = el('figure', [im]); mf.className = 'miss'; mf.setAttribute('contenteditable', 'false'); return [mf]; }
+      im.src = s; im.loading = 'lazy'; return [el('figure', [im])];
+    }
     if (t === 'HR') return [el('hr')];
     if (t === 'BR') return [el('br')];
     if (t === 'PRE') { var pr = el('pre'); pr.textContent = n.textContent.replace(/\n$/, ''); return [pr]; }
@@ -167,6 +173,45 @@
     }
   }
 
+  // 주간 운용 리포트 양식(.wr): 노션 글을 제목 단위로 나눠 "02 포트폴리오"처럼 번호 붙은 칸으로 만든다.
+  // 나누는 곳: 구분선(hr), 제목(h2·h3), <주간 리뷰>처럼 꺾쇠로 감싼 굵은 줄. 칸 첫 줄이 굵은 글자뿐이면 그 칸의 제목으로 쓴다
+  function report(wr, body) {
+    if (!wr || !body) return;
+    var t = wr.querySelector('.wr-t'), first = body.firstElementChild;
+    if (t) {
+      if (first && first.nodeName === 'H2' && first.className === 'h1') { t.textContent = first.textContent.trim(); first.remove(); }
+      else t.textContent = t.getAttribute('data-t') || '';
+    }
+    var boldOnly = function (n) { if (n.nodeName !== 'P') return ''; var x = n.textContent.trim(), b = n.querySelectorAll('strong,b'); if (!x || x.length > 40 || !b.length) return ''; var bt = ''; b.forEach(function (k) { bt += k.textContent; }); return bt.trim() === x ? x : ''; };
+    var isBreak = function (n) { if (n.nodeName === 'HR' || n.nodeName === 'H2' || n.nodeName === 'H3') return true; var x = boldOnly(n); return !!x && /^[<〈《].*[>〉》]$/.test(x); };
+    var chunks = [[]];
+    Array.prototype.slice.call(body.children).forEach(function (n) {
+      if (isBreak(n) && chunks[chunks.length - 1].length) chunks.push([]);
+      if (n.nodeName === 'HR') { n.remove(); return; }
+      chunks[chunks.length - 1].push(n);
+    });
+    var num = wr.querySelector('.wr-perf') ? 2 : 1, frag = document.createDocumentFragment();
+    chunks.forEach(function (ns) {
+      if (!ns.length) return;
+      var head = ns[0], title = '';
+      if (head.nodeName === 'H2' || head.nodeName === 'H3') title = head.textContent.trim();
+      else title = boldOnly(head);
+      title = title.replace(/^[<〈《\[]\s*|\s*[>〉》\]]$/g, '');
+      var sec = document.createElement('section'); sec.className = 'wr-sec';
+      if (title) {
+        ns.shift(); head.remove();
+        var h = document.createElement('div'); h.className = 'wr-h';
+        var sp = document.createElement('span'); sp.textContent = (num < 10 ? '0' : '') + num; num++;
+        var h2 = document.createElement('h2'); h2.textContent = title;
+        h.appendChild(sp); h.appendChild(h2); sec.appendChild(h);
+      }
+      ns.forEach(function (n) { if (boldOnly(n)) n.classList.add('wr-sub'); sec.appendChild(n); });
+      frag.appendChild(sec);
+    });
+    body.innerHTML = ''; body.appendChild(frag);
+    var hn = wr.querySelector('.wr-hold .wr-n'); if (hn) hn.textContent = (num < 10 ? '0' : '') + num;
+  }
+
   // ── 편집기 ──
   var files = new Map(); // blob 주소 → File
   var draft = '';        // 화면이 다시 그려져도 쓰던 글이 남게
@@ -190,8 +235,8 @@
       if (/^blob:/.test(src) && files.has(src)) { im.setAttribute('data-k', 'ok'); return; }
       im.setAttribute('data-k', 'wait');
       var fig = im.closest('figure'); if (fig) fig.classList.add('wait');
-      var p = /^data:/.test(src) ? fetch(src) : fetch(src, { mode: 'cors', credentials: 'omit' });
-      p.then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      var direct = (/^data:/.test(src) ? fetch(src) : fetch(src, { mode: 'cors', credentials: 'omit' })).then(function (r) { if (!r.ok) throw new Error(r.status); return r.blob(); });
+      direct.catch(function (e) { if (proxy && /^https:/.test(src)) return proxy(src); throw e; })
         .then(function (b) {
           if (!/^image\//.test(b.type)) throw new Error('type');
           var u = blobOf(new File([b], 'notion.' + (b.type.split('/')[1] || 'png').replace(/[^a-z0-9]/g, ''), { type: b.type }));
@@ -226,8 +271,11 @@
       var imgs = Array.prototype.filter.call(cd.files || [], function (f) { return /^image\//.test(f.type); });
       e.preventDefault();
       if (!html && imgs.length) { insertHtml(imgs.map(figFor).join('')); return; }
-      insertHtml(html ? clean(html) : textToHtml(cd.getData('text/plain')));
-      fetchImgs();
+      pasting = true;
+      try { insertHtml(html ? clean(html) : textToHtml(cd.getData('text/plain'))); } finally { pasting = false; }
+      // 글과 사진 파일이 같이 왔으면(일부 앱) 빈 사진 칸을 차례로 채운다
+      if (imgs.length) cur.querySelectorAll('img[data-k="miss"]').forEach(function (im, i) { if (!imgs[i]) return; im.src = blobOf(imgs[i]); im.setAttribute('data-k', 'ok'); var fg = im.closest('figure'); if (fg) { fg.classList.remove('miss'); fg.removeAttribute('contenteditable'); } });
+      fetchImgs(); sync();
     });
     node.addEventListener('drop', function (e) {
       var fs = Array.prototype.filter.call((e.dataTransfer && e.dataTransfer.files) || [], function (f) { return /^image\//.test(f.type); });
@@ -258,6 +306,6 @@
   }
   function reset() { draft = ''; lastRange = null; files.forEach(function (_, u) { URL.revokeObjectURL(u); }); files.clear(); if (cur) { cur.innerHTML = ''; sync(); } }
 
-  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset };
+  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, report: report, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset, setProxy: function (f) { proxy = f; } };
   if (window.__wkReady) window.__wkReady();
 })();

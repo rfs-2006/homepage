@@ -43,7 +43,7 @@
       '<div class="ag-ttl"><b>' + (o.total || 608) + '</b><small>RISEN FINANCIAL STARS</small></div>' +
       '<div class="ag-lg" role="dialog" aria-label="학회원 로그인"><img src="/assets/rfs-seal-light-256.png" alt="R.F.S."><small>MEMBERS ONLY</small><h1>학회원 로그인</h1>' +
       '<form><input name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required><input name="password" type="password" autocomplete="current-password" placeholder="비밀번호" required><p class="er" aria-live="polite"></p><button type="submit">LOGIN</button></form>' +
-      '<p class="hp">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p><p class="jl">계정이 없다면 · <a href="#" class="jn-go">회원가입</a></p></div>';
+      '<p class="hp">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p><p class="jl"><a href="#" class="jn-go">회원가입</a></p></div>';
     document.body.appendChild(el);
     var sky = el.querySelector('.ag-sky'), ttl = el.querySelector('.ag-ttl'), lg = el.querySelector('.ag-lg'), form = el.querySelector('form'), er = el.querySelector('.er'), btn = el.querySelector('button');
     el.querySelector('.jn-go').onclick = function (e) { e.preventDefault(); if (o.join) o.join(); };
