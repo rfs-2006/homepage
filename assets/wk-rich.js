@@ -183,7 +183,10 @@
       else t.textContent = t.getAttribute('data-t') || '';
     }
     var boldOnly = function (n) { if (n.nodeName !== 'P') return ''; var x = n.textContent.trim(), b = n.querySelectorAll('strong,b'); if (!x || x.length > 40 || !b.length) return ''; var bt = ''; b.forEach(function (k) { bt += k.textContent; }); return bt.trim() === x ? x : ''; };
-    var isBreak = function (n) { if (n.nodeName === 'HR' || n.nodeName === 'H2' || n.nodeName === 'H3') return true; var x = boldOnly(n); return !!x && /^[<〈《].*[>〉》]$/.test(x); };
+    // 위클리에 늘 나오는 칸 이름은 굵게 안 해도(그냥 한 줄로 써도) 새 칸으로 나눈다
+    var KNOWN = /^(포트폴리오|주간\s*리뷰|시장\s*및\s*수급|시장|수급|매크로|관심\s*섹터(\s*및\s*종목)?|개별(\s*종목)?|차주\s*(주요\s*)?일정|주요\s*일정|BM\s*Plan|결론|리스크|트레이딩\s*플랜)$/i;
+    var known = function (n) { if (n.nodeName !== 'P') return ''; var x = n.textContent.trim().replace(/^[<〈《\[]\s*|\s*[>〉》\]]$/g, '').replace(/\s*:$/, ''); return x.length <= 20 && KNOWN.test(x) ? x : ''; };
+    var isBreak = function (n) { if (n.nodeName === 'HR' || n.nodeName === 'H2' || n.nodeName === 'H3') return true; if (known(n)) return true; var x = boldOnly(n); return !!x && /^[<〈《].*[>〉》]$/.test(x); };
     var chunks = [[]];
     Array.prototype.slice.call(body.children).forEach(function (n) {
       if (isBreak(n) && chunks[chunks.length - 1].length) chunks.push([]);
@@ -195,7 +198,7 @@
       if (!ns.length) return;
       var head = ns[0], title = '';
       if (head.nodeName === 'H2' || head.nodeName === 'H3') title = head.textContent.trim();
-      else title = boldOnly(head);
+      else title = known(head) || boldOnly(head);
       title = title.replace(/^[<〈《\[]\s*|\s*[>〉》\]]$/g, '');
       var sec = document.createElement('section'); sec.className = 'wr-sec';
       if (title) {

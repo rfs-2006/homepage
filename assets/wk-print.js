@@ -60,7 +60,7 @@
       '.cv-ft{margin-top:auto;padding:4mm 0 10mm;font-size:7.5pt;line-height:1.55;border-top:.5pt solid #D9D6CF}' +
       // 왼쪽 큰 제목 + 오른쪽 내용 칸
       '.pg{break-before:page}' +
-      '.blk{display:grid;grid-template-columns:38mm 1fr;column-gap:6mm;padding:5mm 0 6mm;border-bottom:.8pt solid #D9D6CF}.blk:last-child{border-bottom:0}' +
+      '.blk{display:grid;grid-template-columns:38mm 1fr;column-gap:6mm;padding:5mm 0 6mm;border-bottom:.8pt solid #D9D6CF}.pg .blk:last-child{border-bottom:0}.pg:first-of-type{}' +
       '.blk>h2{margin:0;font-size:17pt;line-height:1.25;font-weight:700;color:' + INK + ';letter-spacing:-.02em}.blk>h2 small{display:block;margin-top:1.5mm;font-size:7.8pt;font-weight:300;letter-spacing:0}' +
       '.blk>div>*+.sh{margin-top:5mm}' +
       'table.t{width:100%;border-collapse:collapse;font-size:8.2pt;line-height:1.35;font-variant-numeric:tabular-nums}' +
@@ -70,11 +70,11 @@
       '.ax{display:flex;justify-content:space-between;font-size:7.2pt;margin-top:1mm}.ax i{display:inline-block;width:4mm;height:1.2pt;margin:0 1.2mm .8mm 3mm;vertical-align:middle}' +
       '.two{display:grid;grid-template-columns:1fr 1fr;gap:4mm;align-items:start}.cap{margin:1mm 0 0;font-size:7.2pt}' +
       // 운용 경과(위클리 본문): 칸마다 왼쪽 제목, 오른쪽 글
-      '.bd{font-size:8.8pt;line-height:1.55}.bd .wr-sec{display:grid;grid-template-columns:38mm 1fr;column-gap:6mm;padding:4.5mm 0 4mm;border-bottom:.8pt solid #D9D6CF}.bd .wr-sec:first-child{padding-top:0}' +
+      '.bdw{border-top:.8pt solid #D9D6CF}.ap .blk{display:block;overflow:hidden}.ap .blk>h2{float:left;width:38mm}.ap .blk>div{margin-left:44mm}.ap .blk:last-child{border-bottom:0}.bd{font-size:8.8pt;line-height:1.55}.bd .wr-sec{display:grid;grid-template-columns:38mm 1fr;column-gap:6mm;padding:4.5mm 0 4mm;border-bottom:.8pt solid #D9D6CF}' +
       '.bd .wr-h{display:block;margin:0;padding:0;border:0;break-after:avoid}.bd .wr-h span{display:block;font-size:7.5pt;font-weight:700;color:' + SKY + ';letter-spacing:.12em}.bd .wr-h h2{margin:.5mm 0 0;font-size:13pt;line-height:1.3;font-weight:700;color:' + INK + ';letter-spacing:-.02em}' +
       '.bd .c>:first-child{margin-top:0}.bd p{margin:.6mm 0}.bd .wr-sub{margin:3mm 0 .8mm;padding:.8mm 2.5mm;background:rgba(143,170,220,.2);font-weight:700;color:' + NAVY + ';break-after:avoid}.bd strong{color:' + NAVY + '}' +
       '.bd ul,.bd ol{margin:.6mm 0;padding-left:4mm}.bd li{margin:.15mm 0}.bd li::marker{color:' + NAVY + '}.bd li>ul,.bd li>ol{margin:.2mm 0}' +
-      '.bd figure{margin:2.5mm 0;break-inside:avoid}.bd img{max-width:100%;max-height:78mm;height:auto;display:block;border:.4pt solid #D9D6CF}' +
+      '.bd figure{margin:2.5mm 0;break-inside:avoid}.bd img{max-width:100%;max-height:72mm;height:auto;display:block;border:.4pt solid #D9D6CF}' +
       '.bd table{width:100%;border-collapse:collapse;margin:2mm 0;font-size:8pt;line-height:1.35;break-inside:avoid}.bd td,.bd th{border:.4pt solid #D9D6CF;padding:.8mm 1.6mm}.bd hr{display:none}.bd h1,.bd h2.h1{display:none}' +
       '.bd h3{margin:2.5mm 0 .8mm;font-size:9.5pt;color:' + NAVY + '}.bd details>summary{list-style:none;font-weight:700}.bd .chk{margin-right:1.2mm}' +
       // 부록
@@ -124,9 +124,10 @@
       '<div class="sh">매매회전율<small>최근 1주 · 매매 금액 ÷ 평균 순자산</small></div><table class="t"><tr><th>기간</th><th>회전율</th></tr><tr><td>최근 1주</td><td>' + esc(opt.turnover || '집계 중') + '</td></tr></table>' +
       '</div></div></section>' +
 
-      '<section class="pg"><div class="bd">' + d.body + '</div></section>' +
+      // 본문은 운용 현황 바로 아래에서 이어 시작한다 (2쪽 아래가 비지 않게)
+      '<section class="bdw"><div class="bd">' + d.body + '</div></section>' +
 
-      '<section class="pg"><div class="blk"><h2>펀드 개요</h2><div>' +
+      '<section class="ap"><div class="blk"><h2>펀드 개요</h2><div>' +
       '<table class="ov"><tr><th>펀드명</th><td>AMT Fund</td></tr><tr><th>운용</th><td>중앙대학교 가치투자학회 R.F.S. Asset Management Team</td></tr>' +
       '<tr><th>비교지수</th><td>' + esc(bm) + '</td></tr><tr><th>투자 대상</th><td>국내 상장 주식</td></tr>' +
       '<tr><th>투자 원칙</th><td>GPS — 성장(Growth)이 담보된 기업을 좋은 가격(Price)에 포착하고, 시장 심리(Sentiment)를 활용해 매매 시점을 잡는다</td></tr>' +
