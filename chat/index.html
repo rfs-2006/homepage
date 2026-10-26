@@ -493,7 +493,7 @@ async function ask(text) {
 
 // 대화 기록 (로그인한 계정만): 질문·답을 차례로 저장하고, 첫 화면에 지난 대화를 띄운다
 async function keep(q, res) {
-  if (res.kind === 'decline') return;
+  if (res.kind === 'decline' || Date.now() < Date.parse('2026-11-02T00:00:00+09:00')) return;   // 개인정보처리방침 변경 시행일(11/2)부터 저장
   const { data } = await sb.auth.getSession(); if (!data.session) return;
   turns.push({ q, a: { answer: res.answer, kind: res.kind, sources: res.sources || [], files: res.files || [] } });
   try {
