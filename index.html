@@ -301,7 +301,7 @@ section.hero img{-webkit-user-drag:none}
 @keyframes boot-shoot{0%{opacity:0;transform:rotate(-18deg) translateX(0)}15%{opacity:1}100%{opacity:0;transform:rotate(-18deg) translateX(-62vw)}}
 .boot-line,.boot-cap{z-index:2}
 @media (prefers-reduced-motion:reduce){.boot-img{animation:none !important}.boot-shoot{display:none}}
-/* 로고가 가운데 뜬 뒤, 오른쪽으로 'with Claude for Nonprofits'가 펼쳐지며 로고가 살짝 왼쪽으로 비켜선다 */
+/* 로고가 가운데 뜬 뒤, 오른쪽으로 'with Claude'가 펼쳐지며 로고가 살짝 왼쪽으로 비켜선다 */
 .boot-lock{position:relative;display:flex;align-items:center;justify-content:center}
 .boot-cfn{overflow:hidden;max-width:0;opacity:0;animation:boot-open 1000ms cubic-bezier(0.65,0,0.35,1) 1000ms both}
 .boot-cfn>div{display:flex;flex-direction:column;justify-content:center;gap:7px;margin-left:clamp(22px,2.4vw,34px);padding-left:clamp(22px,2.4vw,34px);border-left:1px solid rgba(247,246,243,.4);white-space:nowrap;color:#F7F6F3;height:clamp(52px,4.6vw,72px);animation:boot-slide 1000ms cubic-bezier(0.23,1,0.32,1) 1150ms both}
@@ -469,10 +469,10 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
 .roster-row{grid-template-columns:1fr !important;gap:6px !important}}
 @media (max-width:900px){.donut-wrap{grid-template-columns:1fr !important;gap:32px !important}.legend2{grid-template-columns:1fr !important}.proc-grid{grid-template-columns:1fr !important;gap:40px !important}}
 .numblock{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
-/* 'Claude for Nonprofits' 표기: Claude는 크게 세리프 이탤릭, for Nonprofits는 작게 (메뉴·푸터·로딩 화면 공통) */
+/* 'with Claude' 표기: Claude는 크게 세리프 이탤릭 (메뉴·푸터·로딩 화면 공통) */
 .cfc{font-family:'Source Serif 4','Noto Serif KR',serif;font-style:italic;font-weight:400;font-size:1.32em;letter-spacing:-.015em;line-height:1}
 .cfx{font-size:.74em;letter-spacing:.01em;opacity:.82}
-/* 메뉴 로고 옆 'with Claude for Nonprofits' (우리 글꼴로, 상표 모양은 흉내 내지 않음). 폰처럼 좁은 화면에서는 숨기고 푸터에 한 줄로 */
+/* 메뉴 로고 옆 'with Claude' (우리 글꼴로, 상표 모양은 흉내 내지 않음). 폰처럼 좁은 화면에서는 숨기고 푸터에 한 줄로 */
 .cfn{display:flex;flex-direction:column;justify-content:center;gap:4px;margin-left:7px;padding-left:18px;position:relative;line-height:1}
 .cfn::before{content:'';position:absolute;left:0;top:50%;height:26px;margin-top:-13px;width:1px;background:currentColor;opacity:.28}
 .nav a .cfn.wordmark-block>span.cfn-w{font-size:9.5px !important;font-weight:600 !important;letter-spacing:.24em !important;opacity:.62;line-height:1 !important}
@@ -1713,7 +1713,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <img class="boot-img" src="assets/hero/sky.webp?v=1014" alt="">
     <div class="scrim" style="opacity:0.4"></div>
     <i class="boot-shoot"></i>
-    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></div></div></div>
+    <div class="boot-lock"><img class="boot-seal" src="assets/rfs-seal-light-256.png" alt="R.F.S."><div class="boot-cfn"><div><small>WITH</small><span><em class="cfc">Claude</em></span></div></div></div>
     <div class="boot-line"></div>
     <div class="boot-cap">Rising Financial Stars · Chung-Ang University</div>
   </div>
@@ -1725,7 +1725,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <span style="font-family:'Noto Serif KR',serif;font-size:17px;font-weight:700;letter-spacing:-0.02em">R.F.S.</span>
         <span class="wordmark-sub" style="font-size:11.5px;font-weight:500;letter-spacing:0.06em">중앙대학교 가치투자학회</span>
       </span>
-      <span class="wordmark-block cfn" aria-label="with Claude for Nonprofits"><span class="cfn-w">WITH</span><span class="cfn-t"><em class="cfc">Claude</em> <span class="cfx">for Nonprofits</span></span></span>
+      <span class="wordmark-block cfn" aria-label="with Claude"><span class="cfn-w">WITH</span><span class="cfn-t"><em class="cfc">Claude</em></span></span>
     </a>
     <div class="navlinks" style="display:flex;gap:28px;font-size:12px;font-weight:500;letter-spacing:0.08em">
       <sc-for list="{{ navItems }}" as="it" hint-placeholder-count="5">
@@ -1878,7 +1878,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <div>
                 <h2 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
               </div>
-              <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="종목명, 티커, 섹터 검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
+              <input value="{{ q }}" onChange="{{ onQuery }}" placeholder="검색" style="width:300px;max-width:100%;box-sizing:border-box;border:1px solid #D0CECE;padding:12px 14px;font:inherit;font-size:13px;background:#FFFFFF;color:#1A1A1A">
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
               <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -1945,7 +1945,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
     <section data-tab="reports" id="coverage" data-nav="light" style="background:#F7F6F3;padding:36px 22px 64px;scroll-margin-top:64px">
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Reports</h2>
-      <input class="mfilter" type="search" placeholder="종목명, 티커, 섹터 검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
+      <input class="mfilter" type="search" placeholder="검색" value="{{ q }}" onChange="{{ onQuery }}" style="width:100%;box-sizing:border-box;margin-top:18px;padding:12px 14px;border:1px solid #D0CECE;background:#FFFFFF;font:inherit;font-size:14px;color:#1A1A1A;outline:none" />
       <div class="mselects" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
         <select value="{{ fSector }}" onChange="{{ onSector }}"><sc-for list="{{ sectorOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
         <select value="{{ fOp }}" onChange="{{ onOp }}"><sc-for list="{{ opOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
@@ -2823,7 +2823,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -2922,7 +2922,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
+            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -4634,7 +4634,7 @@ class Component extends DCLogic {
     // 동작 줄이기 설정이어도 인트로는 같은 시간 보여준다 (움직임만 CSS에서 페이드로 바꿈)
     const ready = () => { document.documentElement.classList.add('rfs-ready'); try { sessionStorage.setItem('rfs_booted', '1'); } catch (e) {} };
     if (document.documentElement.classList.contains('rfs-seen')) { this._bootFinished = true; this.setState({ boot: 'gone' }); }
-    const t0 = performance.now(), minHold = 3800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude for Nonprofits'가 펼쳐질 시간
+    const t0 = performance.now(), minHold = 3800;   // 로고가 뜬 뒤 왼쪽으로 비켜서며 'with Claude'가 펼쳐질 시간
     const finish = () => {
       if (this._bootFinished) return;
       this._bootFinished = true;
@@ -6453,7 +6453,7 @@ class Component extends DCLogic {
 }
 </script>
 <script>
-// 메뉴 로고 옆 'with Claude for Nonprofits'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
+// 메뉴 로고 옆 'with Claude'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
 (function(){
   var raf=0;
   function fit(){ raf=0;
