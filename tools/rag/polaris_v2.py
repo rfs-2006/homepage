@@ -116,6 +116,9 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
 # ---------------------------------------------------------------- 어드바이저 (서버 설정 ADVISOR_MODEL로 켜고 끈다)
 # 답 모델이 쓰기 전에 더 큰 모델에게 대화 전체를 보여 주고 계획을 점검받는다. 계획(갈래·순서·빠진 것)이 약해서 생기는 실패를 막으려는 것.
 ADVISOR_MODEL = os.environ.get('ADVISOR_MODEL', '').strip()
+# 지시문(도구 정의 포함 약 2만 토큰) 끝에 캐시 표시를 따로 단다. 대화 끝에만 달면 새 대화마다 지시문을 다시 써서(쓰기 1.25배) 비용 대부분이 여기서 나온다.
+# 여기 달아 두면 다른 대화도 지시문을 읽기 요금(0.1배 이하)으로 가져간다. 1시간 TTL은 쓰기가 2배라 한 시간에 대화 두 번 넘게 시작되면 이득.
+SYSTEM_TTL = os.environ.get('SYSTEM_CACHE_TTL', '1h')
 ADVISOR_TOOL = {'type': 'advisor_20260301', 'name': 'advisor', 'model': ADVISOR_MODEL, 'max_uses': 1,
                 'caching': {'type': 'ephemeral', 'ttl': '5m'}}
 ADVISOR_NOTE = """
@@ -361,7 +364,8 @@ class Chat:
         calls, used, texts = [], 0, []
         for _ in range(MAX_ROUNDS):
             t0 = time.perf_counter()
-            resp = ask(s.cl, model=a.answer_model, on_text=on_text, system=self.system, **tools, cache_control={'type': 'ephemeral'},
+            resp = ask(s.cl, model=a.answer_model, on_text=on_text, system=[{'type': 'text', 'text': self.system, 'cache_control': {'type': 'ephemeral', 'ttl': SYSTEM_TTL}}],
+                       **tools, cache_control={'type': 'ephemeral'},
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             web = getattr(getattr(resp.usage, 'server_tool_use', None), 'web_search_requests', 0) or 0
