@@ -123,7 +123,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
-<script src="./assets/wk-rich.js?v=4" defer></script>
+<script src="./assets/wk-rich.js?v=5" defer></script>
 <script src="./assets/wk-print.js?v=1" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=3" defer></script>
@@ -5457,6 +5457,12 @@ class Component extends DCLogic {
   // 위클리: 글쓰기 칸을 노션식 편집기로 붙이고, 노션식 글은 HTML로 채운다 (assets/wk-rich.js)
   wkDom() {
     const W = window.RFSWk; if (!W) return;
+    if (W.setProxy && !this._wkProxy) {
+      this._wkProxy = true;
+      // 노션 사진 주소는 브라우저가 직접 못 받는 경우가 많아 wk-image 함수가 대신 받아 준다
+      W.setProxy((url) => this.sb.auth.getSession().then(({ data }) => fetch(this.sb.supabaseUrl + '/functions/v1/wk-image', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: this.sb.supabaseKey, Authorization: 'Bearer ' + ((data && data.session && data.session.access_token) || this.sb.supabaseKey) }, body: JSON.stringify({ url }) }))
+        .then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); }));
+    }
     const ed = document.querySelector('.wk-form .wk-ed'); if (ed) W.attach(ed);
     document.querySelectorAll('.wk-rich[data-wk]').forEach((n) => { const id = n.getAttribute('data-wk'); const b = (this._wkBodies || {})[id]; if (b && n.__wk !== b) { n.__wk = b; W.render(n, b); if (n.closest('.wr')) W.report(n.closest('.wr'), n); else W.sheet(n.closest('.wkp-sheet'), n); } });
   }
