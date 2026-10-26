@@ -356,8 +356,8 @@ class Chat:
             on_stage('answer')
         self.msgs.append({'role': 'user', 'content': [a.result_block(i) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]})
         tools = {'tools': TOOLS + [WEB]} if given is None else {}
-        if tools and ADVISOR_MODEL:
-            tools = {'tools': TOOLS + [WEB, ADVISOR_TOOL], 'betas': ['advisor-tool-2026-03-01']}
+        if ADVISOR_MODEL:  # 앞 턴에 조언 블록이 있는데 도구에서 빠지면 400이라 given일 때도 붙인다
+            tools = {'tools': tools.get('tools', []) + [ADVISOR_TOOL], 'betas': ['advisor-tool-2026-03-01']}
         calls, used, texts = [], 0, []
         for _ in range(MAX_ROUNDS):
             t0 = time.perf_counter()
@@ -365,10 +365,13 @@ class Chat:
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             web = getattr(getattr(resp.usage, 'server_tool_use', None), 'web_search_requests', 0) or 0
-            call = {'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens, '웹': web, '끝': resp.stop_reason}
+            call = {'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens,
+                    '캐시읽기': resp.usage.cache_read_input_tokens or 0, '캐시쓰기': resp.usage.cache_creation_input_tokens or 0, '웹': web, '끝': resp.stop_reason}
             adv = [it for it in (getattr(resp.usage, 'iterations', None) or []) if getattr(it, 'type', '') == 'advisor_message']
             if adv:  # 어드바이저 토큰은 usage.iterations에 따로 잡힌다
                 call['조언'] = {'입력': sum(getattr(it, 'input_tokens', 0) or 0 for it in adv),
+                              '캐시읽기': sum(getattr(it, 'cache_read_input_tokens', 0) or 0 for it in adv),
+                              '캐시쓰기': sum(getattr(it, 'cache_creation_input_tokens', 0) or 0 for it in adv),
                               '출력': sum(getattr(it, 'output_tokens', 0) or 0 for it in adv)}
             for b in resp.content:
                 if b.type == 'server_tool_use' and b.name == 'advisor':
@@ -399,7 +402,7 @@ class Chat:
             self.msgs.append({'role': 'user', 'content': results})
         # 도구를 부르기 전에 쓴 글이 있으면 그것까지 (지시문은 쓰지 말라고 하지만)
         out = a.render(SimpleNamespace(content=texts, stop_reason=resp.stop_reason), self.shown, [t['input'].get('query') for t in self.trace if t.get('tool') == 'search'])
-        out['timing'] = dict(self.timing, 답변=calls, 도구=used, 모델=a.answer_model + (f' + {ADVISOR_MODEL} 조언' if ADVISOR_MODEL and given is None else ''))
+        out['timing'] = dict(self.timing, 답변=calls, 도구=used, 모델=a.answer_model + (f' + {ADVISOR_MODEL} 조언' if ADVISOR_MODEL else ''))
         out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]
         out['files'] = self.file_out
         out['trace'] = self.trace
