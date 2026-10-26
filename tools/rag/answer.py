@@ -322,7 +322,7 @@ class Answerer:
                    sorted([a for a, v in r['scores'].items() if isinstance(v, (int, float)) and (not axes or a in axes)], key=lambda a: -r['scores'][a])[:2]
             # 약점·지적은 뺀다: 평가표 이유는 "잘한 점. 약점: ..." 꼴이라 '약점' 앞까지만, 남은 문장 중 지적하는 문장(오탈자·군더더기 등)도 뺀다
             cut = lambda t: ' '.join(x for x in re.split(r'(?<=다\.)\s+', re.split(r'\s*(?:(?:약점|단점)\s*(?:은|는|:|으로)|다만,?|그러나|하지만|아쉬운|지적할)', t)[0].strip())
-                                     if not re.search(r'오탈자|오타|군더더기|아쉽|부족하|미흡|빠졌|없었다', x))
+                                     if not re.search(r'오탈자|오타|군더더기|아쉽|부족하|미흡|빠졌|없었다|근거가 약|근거 없|에 가깝다', x))
             why = ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good) or '학회가 꼽은 리포트. 무엇이 좋은지는 아래 리포트 자료에서 찾아 설명한다'
             lines.append(f"- {r['name']} ({r['sem']}학기): " + why)
         head = ('[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. ' if axes else
