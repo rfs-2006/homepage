@@ -403,7 +403,7 @@ section[data-snap]{scroll-margin-top:0}
 @media (max-width:560px){.org-row{grid-template-columns:1fr !important;gap:6px !important}}
 @media (max-width:768px){.diag-desktop{display:none}.diag-mobile{display:block}}
 .gisu-index{display:flex;flex-wrap:wrap;gap:8px}
-.gisu-index a{padding:9px 18px;font-size:13px;font-variant-numeric:tabular-nums;border:1px solid #D0CECE;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
+.gisu-index a{padding:9px 18px;font-size:14px;font-variant-numeric:tabular-nums;border:1px solid #D0CECE;transition:background-color 120ms cubic-bezier(0.23,1,0.32,1),color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
 .gisu-index a.on{border-color:#203864}
 .pager{display:flex;gap:4px;align-items:center;justify-content:center;padding:40px 0}
 .pager a,.pager span{min-width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:13px;font-variant-numeric:tabular-nums;color:rgba(26,26,26,0.65);border:1px solid transparent;cursor:pointer;transition:color 120ms cubic-bezier(0.23,1,0.32,1),border-color 120ms cubic-bezier(0.23,1,0.32,1)}
@@ -1575,6 +1575,26 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-body .wk-rich{margin-bottom:12px}
 /* 리포트 양식: 노션식 글을 리포트 상세(.rpt-paper)와 같은 틀로. 날짜 줄, 회색 띠(로고), 남색 헤드라인, 오른쪽 남색 정보 박스와 목차 */
 .wk-body:has(.wkp-sheet){padding-left:0}
+/* 글자 정리: 회색 부가설명을 흰색(밝은 바탕에서는 검정)에 가깝게, 12.5px 이하 이름표는 13px 이상으로. 그래프 축만 작게 두고 밝힘 */
+.fd-nav a{color:rgba(247,246,243,.92) !important}.fd-nav a:hover{color:#8FAADC !important}
+.pg-tabs a{color:rgba(26,26,26,.88) !important}.pg-tabs a:hover{color:#203864 !important}
+.fd-kc .kk{font-size:13.5px !important;color:rgba(247,246,243,.85) !important}
+.fd-kc .ks{font-size:13.5px !important}
+.kc-light .kk,.kc-light .ks{font-size:13.5px !important;color:rgba(26,26,26,.85) !important}
+.fd-legend{font-size:13px !important;color:rgba(247,246,243,.88) !important}
+.fd-switch a{font-size:13.5px !important;color:rgba(247,246,243,.9) !important}.fd-switch a.on{color:#0F1B2E !important}
+.fd-ya .yl,.fd-xa .xl,.fd-ends .el{color:rgba(247,246,243,.82) !important}
+.fd-lh,.fd-lh span,.fd-mh,.fd-mh span{font-size:12.5px !important;color:#8FAADC !important}
+.fd-row small,.fd-row em,.fd-hold small,.fd-li small,.fd-mv em{font-size:13px !important;color:rgba(247,246,243,.8) !important}
+.fd-pr .hd,.fd-pr.hd>*{font-size:13px !important}
+.fd-disc,.fdpage .fd-disc,.fd-meta,.fd-asof,.fd-foot,.fd-cap,.fd-attrcap{font-size:13px !important;color:rgba(247,246,243,.78) !important}
+.wk-table .wk-tr time{font-size:14px !important;color:rgba(247,246,243,.85) !important}
+.wk-table .wk-tr em{font-size:13px !important;color:#8FAADC !important}
+.wk-table .wk-tr b{font-size:16px !important;color:#F7F6F3 !important}
+.wk-table .wk-tr>span{font-size:14px !important;color:rgba(247,246,243,.88) !important}
+.fd-kc .ks[style*="0.55"],.fd-kc small.cs{color:rgba(247,246,243,.82) !important}
+.og-h,.og-h span{font-size:13px !important}
+.tl-txt.inv-soft{color:rgba(26,26,26,.85) !important}
 /* FUND 첫 화면: 주 고르기 + 리포트 미리보기(아래는 흐리게) */
 .wk-pick{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:4px 0 18px}
 .wk-pk{display:flex;flex-direction:column;gap:2px;padding:10px 16px;border:1px solid rgba(247,246,243,.16);color:rgba(247,246,243,.7) !important;text-decoration:none;transition:color .3s ease,border-color .3s ease,background-color .3s ease}
@@ -1596,9 +1616,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-boardbtn{margin-left:auto;padding:11px 18px;border:1px solid rgba(247,246,243,.35);font-size:13px;color:#F7F6F3 !important;text-decoration:none;transition:background-color .3s ease}.wk-boardbtn:hover{background:rgba(247,246,243,.08)}
 .wk-table{border-top:1px solid rgba(247,246,243,.2);margin-bottom:30px}
 .wk-tr{display:grid;grid-template-columns:110px 70px minmax(0,1fr);gap:4px 16px;padding:16px 4px;border-bottom:1px solid rgba(247,246,243,.1);color:#F7F6F3 !important;text-decoration:none;transition:background-color .35s ease}.wk-tr:hover{background:rgba(143,170,220,.07)}
-.wk-tr time{font-size:13px;color:rgba(247,246,243,.6);font-variant-numeric:tabular-nums}.wk-tr em{font-style:normal;font-size:12px;color:#8FAADC}.wk-tr b{font-size:15px;font-weight:600}.wk-tr span{grid-column:3;font-size:12.5px;color:rgba(247,246,243,.55)}
+.wk-tr time{font-size:13px;color:rgba(247,246,243,.6);font-variant-numeric:tabular-nums}.wk-tr em{font-style:normal;font-size:12px;color:#8FAADC}.wk-tr b{font-size:15px;font-weight:600}.wk-tr>span{grid-column:3;font-size:12.5px;color:rgba(247,246,243,.55)}.wk-tr time span,.wk-tr em span,.wk-tr b span{color:inherit;font-size:inherit}
 .wk-tr.on b{color:#8FAADC}
-.wk-hide{display:none}.wk-nav.lst{display:none}
+.wk-hide{display:none}.wk-nav.lst,.wk-board .wk-nav.lst{display:none}
 /* 위클리 페이지: 머리·주 넘기기·리포트를 한 폭(960px)에 맞춘다. 회색 작은 글씨 없이 */
 .wk-board>.wk-back,.wk-board>.wk-bh,.wk-board .wk-nav,.wk-board .wk-table,.wk-board .wk-msg,.wk-board .wk-form{max-width:960px;margin-left:auto;margin-right:auto}
 .wk-board .wk-back{display:block;font-size:14px;color:#F7F6F3;opacity:.85}.wk-board .wk-boardbtn,.wk-board .wk-new{white-space:nowrap}
@@ -1613,7 +1633,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-board .wk-cur{margin:0;padding:0;text-align:center;font-size:16px;color:#F7F6F3}.wk-board .wk-cur b{display:inline;font-size:16px;font-weight:700;margin-right:12px}
 .wk-board .wk-list .wr{margin-top:0}
 @media (max-width:699px){.wk-board .wk-bh{flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:22px}.wk-board .wk-bh h1{font-size:34px}.wk-board .wk-cur{order:0;width:auto;text-align:center;padding:0}.wk-board .wk-nav{grid-template-columns:44px 1fr 44px}.wk-board .wk-cur,.wk-board .wk-cur b{font-size:14.5px}.wk-board .wk-cur b{display:block;margin:0 0 2px}.wk-acts2{gap:18px}}
-@media (max-width:699px){.wk-nav{flex-wrap:wrap}.wk-cur{order:-1;width:100%;text-align:left;padding:0 0 6px}.wk-boardbtn{margin-left:auto}.wk-tr{grid-template-columns:1fr}.wk-tr span{grid-column:1}}
+@media (max-width:699px){.wk-nav{flex-wrap:wrap}.wk-cur{order:-1;width:100%;text-align:left;padding:0 0 6px}.wk-boardbtn{margin-left:auto}.wk-tr{grid-template-columns:1fr}.wk-tr>span{grid-column:1}}
 .wk-all .wr-x{display:none}.wk-all .wk-item{border:0;padding:0}
 .fd-card.wk-all{background:none !important;border:0 !important;box-shadow:none !important;padding:0 !important}.wk-all .wr{margin-top:0}
 .wr-chw{margin-top:22px}
@@ -1975,12 +1995,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
-              <div style="margin-top:30px;padding:0 6px 8px;font-size:12px;font-weight:700;letter-spacing:0.12em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
+              <div style="margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
               <a href="{{ r.href }}" onClick="{{ r.open }}" class="covrow" style="display:grid;grid-template-columns:minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:18px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none">
                 <span style="min-width:0"><b style="font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em">{{ r.name }}</b></span>
                 <span class="col-s" style="font-size:13.5px;color:#1A1A1A">{{ r.sector }}</span>
-                <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+                <span style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
                 <span style="text-align:right;font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
               </a>
@@ -2049,7 +2069,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
               <span style="font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums;font-size:14px;white-space:nowrap">{{ r.upside }}</span>
             </div>
             <div style="display:flex;gap:10px;align-items:baseline;margin-top:6px;font-size:12.5px;color:#1A1A1A;font-variant-numeric:tabular-nums">
-              <span style="font-size:11.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
+              <span style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
               <span>{{ r.sector }}</span>
               <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
             </div>
@@ -2727,7 +2747,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             </sc-for>
           </div>
           <div class="rv rv-right">
-            <div style="font-size:11px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;color:rgba(247,246,243,0.55);padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.4)">진출 분야</div>
+            <div style="font-size:13px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:rgba(247,246,243,0.88);padding-bottom:12px;border-bottom:1px solid rgba(247,246,243,0.4)">진출 분야</div>
             <sc-for list="{{ slices }}" as="d" hint-placeholder-count="8">
               <div onMouseEnter="{{ d.onEnter }}" style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid rgba(247,246,243,0.18);font-size:14px;opacity:{{ d.opacity }};transition:opacity 160ms ease;cursor:default">
                 <span style="width:10px;height:10px;background:{{ d.color }};display:inline-block;flex-shrink:0"></span>
@@ -6434,7 +6454,7 @@ class Component extends DCLogic {
       cohorts: cohortDefs.map((c) => {
         const n = parseInt(c, 10);
         return { label: c, cls: s.cohort === c ? 'on' : '', count: (COHORTS[n] || 0) + '명',
-          color: s.cohort === c ? '#F7F6F3' : 'rgba(26,26,26,0.65)',
+          color: s.cohort === c ? '#F7F6F3' : '#1A1A1A',
           bg: s.cohort === c ? '#203864' : 'transparent',
           weight: s.cohort === c ? '700' : '400',
           on: (e) => { e.preventDefault(); this.setState({ cohort: c }); } };
