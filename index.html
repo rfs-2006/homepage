@@ -4536,7 +4536,7 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 class Component extends DCLogic {
-  state = { posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -5357,7 +5357,11 @@ class Component extends DCLogic {
   loadWeekly() {
     if (!this.sb) return;
     this.sb.from('fund_weekly').select('*').order('week', { ascending: false }).order('created_at', { ascending: false }).limit(30)
-      .then(({ data, error }) => this.setState({ weekly: error ? [] : (data || []), weeklyLoaded: true }), () => this.setState({ weekly: [], weeklyLoaded: true }));
+      .then(({ data, error }) => {
+        // 다음에 들어올 때 바로 보이게 마지막 목록을 이 브라우저에 둔다 (공개 글이라 괜찮다). 실패하면 있던 것을 그대로 쓴다
+        if (!error && data) { try { const j = JSON.stringify(data.slice(0, 6)); if (j.length < 400000) localStorage.setItem('rfs_wk_cache', j); } catch (e) {} }
+        this.setState((st) => ({ weekly: error ? (st.weekly || []) : (data || []), weeklyLoaded: true }));
+      }, () => this.setState((st) => ({ weekly: st.weekly || [], weeklyLoaded: true })));
   }
 
   weeklyProps() {
