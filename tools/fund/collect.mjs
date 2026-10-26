@@ -80,6 +80,45 @@ async function balance() {
   return { head, rows };
 }
 
+// ---------- 하루 체결 금액 (계좌별주문체결내역상세, kt00007) → 매매회전율 ----------
+// 금액은 회전율 계산에만 쓰고 저장하지 않는다. 지난 날짜는 바뀌지 않으니 한 번 받은 값을 기억해 둔다
+const tradeCache = {};
+async function tradeAmt(d8) {
+  if (tradeCache[d8] != null) return tradeCache[d8];
+  let sum = 0, cont = '', next = '';
+  for (let page = 0; page < 20; page++) {
+    const h = { 'Content-Type': 'application/json;charset=UTF-8', 'api-id': 'kt00007', authorization: 'Bearer ' + (await token()) };
+    if (cont === 'Y') { h['cont-yn'] = 'Y'; h['next-key'] = next; }
+    const r = await fetch(API + '/api/dostk/acnt', { method: 'POST', headers: h, body: JSON.stringify({ ord_dt: d8, qry_tp: '4', stk_bond_tp: '1', sell_tp: '0', stk_cd: '', fr_ord_no: '', dmst_stex_tp: '%' }) });
+    const j = await r.json();
+    if (j.return_code !== undefined && +j.return_code !== 0) throw new Error('kt00007: ' + j.return_msg);
+    const arr = Object.values(j).find((v) => Array.isArray(v)) || [];
+    if (!tradeAmt.logged && arr[0]) { tradeAmt.logged = true; console.log('kt00007 fields: ' + Object.keys(arr[0]).join(',')); }
+    for (const it of arr) {
+      const qk = Object.keys(it).find((x) => /^cntr_qty$/.test(x)) || Object.keys(it).find((x) => /cntr_qty/.test(x));
+      const pk = Object.keys(it).find((x) => /^cntr_uv$/.test(x)) || Object.keys(it).find((x) => /cntr_(uv|pric)/.test(x));
+      if (qk && pk) sum += Math.abs(n(it[qk]) * n(it[pk]));
+    }
+    cont = r.headers.get('cont-yn') || ''; next = r.headers.get('next-key') || '';
+    if (cont !== 'Y') break;
+    await sleep(250);
+  }
+  if (d8 < ymd().replace(/-/g, '')) tradeCache[d8] = sum;
+  return sum;
+}
+// 이번 주(월요일~오늘) 매매회전율 % = 체결 금액 합 ÷ 평균 총자산
+async function weekTurnover(monday, today, total, history) {
+  let amt = 0;
+  for (let d = new Date(monday + 'T00:00:00Z'); d.toISOString().slice(0, 10) <= today; d.setUTCDate(d.getUTCDate() + 1)) {
+    const x = d.getUTCDay(); if (x === 0 || x === 6) continue;
+    amt += await tradeAmt(d.toISOString().slice(0, 10).replace(/-/g, '')); await sleep(250);
+  }
+  // 평균 자산은 이번 주 기준가 평균 비율로 오늘 총자산을 되돌려 근사한다 (매일 총자산을 따로 받지 않으려고)
+  const navs = history.filter((h) => h[0] >= monday).map((h) => h[1]); const last = navs[navs.length - 1];
+  const avg = navs.length && last ? total * (navs.reduce((a, b) => a + b, 0) / navs.length) / last : total;
+  return avg > 0 ? +(amt / avg * 100).toFixed(1) : null;
+}
+
 // ---------- 지수 (네이버 금융 공개 시세) ----------
 const idxBase = {};
 async function indexRet(code, start) {
@@ -167,7 +206,10 @@ async function round() {
   if (nav) history.push([today, +nav.toFixed(2), kospi && kospi.now, kosdaq && kosdaq.now]);
   // 주별 비중 기록: 그 주 월요일을 키로, 그 주 마지막 조회(금요일 마감 뒤에는 금요일 확정치)의 종목 비중과 현금 비중. 금액·수량은 넣지 않는다
   const monday = (() => { const d = new Date(today + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); })();
-  const snap = { week: monday, asOf: today, cash: total ? +(cash / total * 100).toFixed(2) : 0, h: holdings.map((h) => [h.code, h.name, +h.weight.toFixed(2)]) };
+  const prevSnap = ((prev && prev.weeks) || []).find((x) => x.week === monday);
+  // 회전율은 공개 저장 때(마감 뒤 1회, 켜질 때)만 새로 계산하고, 장중에는 앞서 계산한 값을 그대로 쓴다
+  const to = round.publish ? await weekTurnover(monday, today, total, history).catch((e) => { console.error('turnover: ' + e.message); return prevSnap ? prevSnap.to : null; }) : prevSnap ? prevSnap.to : null;
+  const snap = { week: monday, asOf: today, cash: total ? +(cash / total * 100).toFixed(2) : 0, to, h: holdings.map((h) => [h.code, h.name, +h.weight.toFixed(2)]) };
   const weeks = (((prev && prev.weeks) || []).filter((x) => x.week !== monday)).concat(nav ? [snap] : []).slice(-104);
   const data = {
     asOf: stamp(), start: START || baseDate, baseTotal: base, baseDate, backfilledFrom: (prev && prev.backfilledFrom) || null,

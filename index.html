@@ -124,6 +124,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
 <script src="./assets/wk-rich.js?v=4" defer></script>
+<script src="./assets/wk-print.js?v=1" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=3" defer></script>
 <style>
@@ -1514,7 +1515,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-link{display:inline-block;margin-right:18px;font-size:14px;font-weight:600;color:#8FAADC}
 .wk-del{font-size:13px;color:rgba(247,246,243,0.62)}
 .wk-foot{margin-top:16px;text-align:right}.wk-foot a{display:inline-block;padding:7px 12px;border:1px solid rgba(247,246,243,0.18);font-size:12.5px;color:rgba(247,246,243,0.65)}.wk-foot a:hover{color:#F7F6F3;border-color:rgba(247,246,243,0.4)}
-.wk-form{display:grid;gap:10px;margin-top:14px}
+.wk-form{display:grid;gap:10px;margin-top:14px}.wk-lab{display:grid;gap:6px;font-size:14px;color:#F7F6F3}.wk-team{font-family:inherit;line-height:1.6;resize:vertical}
 .wk-row{display:grid;grid-template-columns:170px 1fr;gap:10px}
 .wk-file{font-size:13px;color:rgba(247,246,243,0.7)}.wk-file input{margin-left:10px}.wk-file span{margin-left:8px;color:#8FAADC}
 .wk-btn{justify-self:start;padding:10px 22px;background:#8FAADC;color:#0F1B2E;border:0;font-weight:700;cursor:pointer}
@@ -1656,7 +1657,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wr-t{margin:10px 0 0;font-size:28px;font-weight:700;letter-spacing:-.01em;line-height:1.3;color:#F7F6F3;font-family:inherit}
 .wr-m{margin:6px 0 0;font-size:14px;color:rgba(247,246,243,.75)}
 .wr-sl{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}.wr-sl img{width:48px;height:auto}.wr-sl span{font-size:12px;color:rgba(247,246,243,.7)}
-.wr-x{font-size:12px;color:rgba(247,246,243,.75) !important;text-decoration:none}.wr-x:hover{color:#F7F6F3 !important}
+.wr-acts{margin:0;display:flex;gap:16px}.wk-all .wr-x.wr-pdf,.wk-peek .wr-x.wr-pdf{display:inline}.wk-peek:not(.full) .wr-pdf{display:none !important}.wr-x{font-size:12px;color:rgba(247,246,243,.75) !important;text-decoration:none}.wr-x:hover{color:#F7F6F3 !important}
 .wr-in{padding:0 34px 40px}
 .wr-h{display:flex;align-items:baseline;gap:14px;margin:44px 0 16px;padding-bottom:10px;border-bottom:2px solid #203864}
 .wr-h span{font-size:12px;font-weight:700;letter-spacing:.14em;color:#8FAADC}
@@ -1954,7 +1955,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="리서치" class="pgx">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="research-photo" shape="rect" fit="cover" src="assets/hero/research.webp?v=1018" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -2025,7 +2026,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="리서치 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
-      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1017" style="--slot-position:center 50%"></image-slot></div>
+      <div class="pg-bg"><image-slot id="m-research-photo" shape="rect" fit="cover" src="assets/hero/research-m.webp?v=1018" style="--slot-position:center 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.58"></div>
       <div class="wrap pg-hero-in">
         <h1 class="pg-title">Research</h1>
@@ -3119,6 +3120,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
         <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
+        <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 역할 · 담당" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
       </form></sc-if>
       <section class="fd-card wk-all">
@@ -3126,7 +3128,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <nav class="{{ wkNavCls }}"><a href="#" class="{{ wkPrevCls }}" onClick="{{ wkPrev }}" aria-label="이전 주">←</a><p class="wk-cur"><b>{{ wkCurL }}</b>{{ wkCurR }}</p><a href="#" class="{{ wkNextCls }}" onClick="{{ wkNext }}" aria-label="다음 주">→</a></nav><sc-if value="{{ wkListOn }}" hint-placeholder-val="{{ false }}"><div class="wk-table"><sc-for list="{{ wkRows }}" as="r"><a href="#" class="{{ r.cls }}" onClick="{{ r.on }}"><time>{{ r.date }}</time><em>{{ r.cat }}</em><b>{{ r.title }}</b><span>{{ r.ex }}</span></a></sc-for></div></sc-if><div class="{{ wkBoardCls }}"><sc-for list="{{ weeklyList }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           <a href="#" class="wk-head" onClick="{{ w.toggle }}"><time><em class="{{ w.catCls }}">{{ w.cat }}</em>{{ w.date }}</time><b>{{ w.title }}</b><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><i>−</i></sc-if><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}"><span class="ex">{{ w.excerpt }}</span><i>+</i></sc-if></a>
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><p class="wr-acts"><a href="#" class="wr-x wr-pdf" onClick="{{ w.pdf }}">PDF 저장</a><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></p></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
             <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -3160,7 +3162,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="{{ wkPeekCls }}"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
           
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
-            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
+            <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindLine }}</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><p class="wr-acts"><a href="#" class="wr-x wr-pdf" onClick="{{ w.pdf }}">PDF 저장</a><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></p></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table><div class="wr-chw"><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div></div></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
             <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for><a href="#fund/strategy" class="wk-more" onClick="{{ wkExpand }}"><span>이번 주 위클리 전체 보기 →</span></a></div>
             <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
@@ -4764,7 +4766,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research-m.webp?v=1017' : 'assets/hero/research.webp?v=1017'],
+        research: [m ? 'assets/hero/research-m.webp?v=1018' : 'assets/hero/research.webp?v=1018'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -5543,6 +5545,7 @@ class Component extends DCLogic {
       const WK = FD.weeks || [], wi = WK.findIndex((x) => x.week === w.week);
       const snapOf = (x) => x ? { cash: x.cash, h: x.h.map(([code, name, weight]) => ({ code, name, weight, ret: null })), asOf: x.asOf } : null;
       const cur = wi >= 0 ? snapOf(WK[wi]) : newest ? { cash: FD.cashWeight, h: (FD.holdings || []).map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret })), asOf: (FD.asOf || '').slice(0, 10) } : null;
+      (this._wkTo = this._wkTo || {})[w.id] = wi >= 0 && WK[wi].to != null ? WK[wi].to.toFixed(1) + '%' : ''; // 매매회전율 (수집기 kt00007), 보고서 PDF에만 쓴다
       const prvS = wi > 0 ? snapOf(WK[wi - 1]) : wi < 0 && newest ? snapOf(WK.filter((x) => x.week < w.week).pop()) : null;
       const pw = {}; if (prvS) prvS.h.forEach((h) => { pw[h.code] = h.weight; });
       const all = cur ? cur.h.slice().sort((x, y) => y.weight - x.weight) : [];
@@ -5594,6 +5597,7 @@ class Component extends DCLogic {
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
         toggle: (e) => { e.preventDefault(); if (key === 'wkTop') { this.setState({ wkTopFull: false }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); }); return; } this.setState({ [key]: open ? null : w.id }); },
+        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: w.team || [], note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '' })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
         ...(key === 'wkTop' ? cardOf(w, body, rich) : {}),
         canDel: open && isAmt,
         del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
@@ -5634,7 +5638,7 @@ class Component extends DCLogic {
       wkNewLabel: s.wkWrite ? '닫기' : '글쓰기',
       wkPreviews: (s.wkFiles || []).map((f, i) => ({ n: '사진 ' + (i + 1), u: f.__url || (f.__url = URL.createObjectURL(f)), rm: (e) => {
         e.preventDefault();
-        const ta = document.querySelector('.wk-form textarea');
+        const ta = document.querySelector('.wk-form textarea[data-body]');
         const body = (ta ? ta.value : (s.wkBody || '')).replace(new RegExp('\\s*\\[사진\\s*' + (i + 1) + '\\]\\s*', 'g'), '\n\n').replace(TOK, (m0, n) => (+n > i + 1 ? '[사진 ' + (+n - 1) + ']' : m0)).replace(/\n{3,}/g, '\n\n').trim();
         this.setState({ wkFiles: s.wkFiles.filter((_, k) => k !== i), wkBody: body });
       } })),
@@ -5658,12 +5662,16 @@ class Component extends DCLogic {
       wkTitle: s.wkTitle || '', onWkTitle: (e) => this.setState({ wkTitle: e.target.value }),
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
+      // 운용 인력은 새 글을 쓸 때 지난 글의 명단을 그대로 가져와 고쳐 쓴다
+      wkTeamTxt: s.wkTeamTxt != null ? s.wkTeamTxt : (((list.find((x) => Array.isArray(x.team) && x.team.length) || {}).team) || []).map((r) => r.filter(Boolean).join(' · ')).join('\n'),
+      onWkTeam: (e) => this.setState({ wkTeamTxt: e.target.value }),
+      wkNote: s.wkNote || '', onWkNote: (e) => this.setState({ wkNote: e.target.value }),
       onWkFiles: (e) => {
         const cur = s.wkFiles || [];
         const add = [...(e.target.files || [])].filter((f) => /^image\//.test(f.type)).slice(0, 10 - cur.length); e.target.value = '';
         if (!add.length) return;
         // 커서가 있던 자리(없으면 끝)에 [사진 N] 줄을 넣어 글 중간에 사진이 들어가게 한다
-        const ta = document.querySelector('.wk-form textarea');
+        const ta = document.querySelector('.wk-form textarea[data-body]');
         const body = ta ? ta.value : (s.wkBody || '');
         const c0 = ta && typeof ta.selectionStart === 'number' ? ta.selectionStart : body.length;
         const nl = body.indexOf('\n', c0); const at = nl < 0 ? body.length : nl; // 커서가 있는 줄 끝에 넣어 단어가 잘리지 않게
@@ -5685,12 +5693,19 @@ class Component extends DCLogic {
           // 본문 속 사진은 저장소에 올리고 그 주소로 바꿔 HTML로 저장한다
           const body = await window.RFSWk.collect(ed, upload);
           const link = (s.wkLink || '').trim();
-          const { error } = await this.sb.from('fund_weekly').insert({ category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' });
+          const row = { category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' };
+          if (strat) {
+            const teamSrc = s.wkTeamTxt != null ? s.wkTeamTxt : ((document.querySelector('.wk-form .wk-team') || {}).value || '');
+            row.team = teamSrc.split('\n').map((l) => l.split(/\s*[·|\t]\s*/).map((x) => x.trim()).filter(Boolean)).filter((r) => r.length).map((r) => [r[0], r[1] || '', r.slice(2).join(' ')]);
+            row.note = (s.wkNote || '').trim();
+          }
+          const { error } = await this.sb.from('fund_weekly').insert(row);
+          if (error && /team|note/.test(error.message || '')) throw new Error('Supabase에 운용 인력·한마디 칸이 아직 없어요. supabase/fund_weekly_team.sql을 먼저 실행해 주세요');
           if (error) throw error;
           window.RFSWk.reset();
-          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined });
+          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined, wkNote: '', wkTeamTxt: null });
           this.loadWeekly();
-        } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^노션/.test(m) ? m : '올리지 못했습니다: ' + m }); }
+        } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^(노션|Supabase)/.test(m) ? m : '올리지 못했습니다: ' + m }); }
       },
     };
   }
