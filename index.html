@@ -889,9 +889,11 @@ main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inse
 /* 상단 메뉴: PC에서 크게 + 마우스 올리면 밑줄이 왼쪽부터 그어짐 */
 .navlink{position:relative}
 .navlink::after{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
-.navlink:hover::after,.navlink.on::after{transform:scaleX(1)}
+.navlink::after{display:none}
 .nav .navlink.on{border-bottom-color:transparent !important}
-.nav.on-dark .navlink:hover{color:#F7F6F3}
+/* 지금 페이지·마우스 올린 메뉴는 밑줄 대신 글자색으로 */
+.nav.on-dark .navlink:hover,.nav.on-dark .navlink.on{color:#8FAADC}
+.nav.on-light .navlink:hover,.nav.on-light .navlink.on{color:#203864}
 @media (min-width:1024px){
   .nav{height:84px;padding:0 48px}
   .nav .seal{width:46px;height:46px}
