@@ -4768,7 +4768,7 @@ class Component extends DCLogic {
       const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
-        research: [m ? 'assets/hero/research' + RES_HERO + '-m.webp?v=1018' : 'assets/hero/research' + RES_HERO + '.webp?v=1018'],
+        research: [m ? 'assets/hero/research' + RES_HERO + '-m.webp?v=1020' : 'assets/hero/research' + RES_HERO + '.webp?v=1020'],
         about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
@@ -6210,7 +6210,7 @@ class Component extends DCLogic {
     const intraTitle = tab === 'dashboard' ? 'R.F.S. Network' : tab === 'board' ? '게시판' : tab === 'fund' ? 'RFS 펀드' : tab === 'schedule' ? '이번 학기 일정' : tab === 'ask' ? 'Ask' : tab === 'directory' ? '알럼나이 디렉토리' : 'Intranet';
     return {
       // 리서치 맨 위 그림: 열 때마다 렘브란트와 플라톤의 동굴(산레담) 중 하나
-      resHero: 'assets/hero/research' + RES_HERO + '.webp?v=1018', resHeroM: 'assets/hero/research' + RES_HERO + '-m.webp?v=1018',
+      resHero: 'assets/hero/research' + RES_HERO + '.webp?v=1020', resHeroM: 'assets/hero/research' + RES_HERO + '-m.webp?v=1020',
       // 페이지 상단 고정 탭: data-t와 같은 data-tab 섹션(지금 보이는 것)으로 이동
       tabGo: (e) => {
         e.preventDefault();
