@@ -1575,6 +1575,21 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-body .wk-rich{margin-bottom:12px}
 /* 리포트 양식: 노션식 글을 리포트 상세(.rpt-paper)와 같은 틀로. 날짜 줄, 회색 띠(로고), 남색 헤드라인, 오른쪽 남색 정보 박스와 목차 */
 .wk-body:has(.wkp-sheet){padding-left:0}
+/* FUND 첫 화면: 주 고르기 + 리포트 미리보기(아래는 흐리게) */
+.wk-pick{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:4px 0 18px}
+.wk-pk{display:flex;flex-direction:column;gap:2px;padding:10px 16px;border:1px solid rgba(247,246,243,.16);color:rgba(247,246,243,.7) !important;text-decoration:none;transition:color .3s ease,border-color .3s ease,background-color .3s ease}
+.wk-pk b{font-size:14px;font-weight:600}.wk-pk small{font-size:11.5px;color:rgba(247,246,243,.5)}
+.wk-pk:hover{color:#F7F6F3 !important;border-color:rgba(143,170,220,.45)}
+.wk-pk.on{background:#F7F6F3;border-color:#F7F6F3;color:#0F1B2E !important}.wk-pk.on small{color:rgba(15,27,46,.6)}
+.wk-all-l{margin-left:auto;align-self:center;font-size:13px;color:#8FAADC !important;text-decoration:none}
+.wk-peek{position:relative}
+.wk-peek:not(.full) .wk-item{max-height:640px;overflow:hidden}
+.wk-peek .wk-more{display:none}.wk-peek:not(.full) .wr-x{display:none}
+.wk-peek:not(.full) .wk-more{display:flex;position:absolute;left:0;right:0;bottom:0;height:300px;align-items:flex-end;justify-content:center;padding-bottom:30px;text-decoration:none;background:linear-gradient(180deg,rgba(11,21,36,0) 0%,rgba(11,21,36,.75) 55%,#0B1524 92%)}
+.wk-more span{font-size:14px;color:#F7F6F3;border:1px solid rgba(247,246,243,.45);padding:12px 22px;background:rgba(11,21,36,.6);transition:background-color .3s ease}
+.wk-more:hover span{background:rgba(32,56,100,.85)}
+.wk-top .wk-item{border:0;padding:0;margin:0}
+@media (max-width:699px){.wk-pk{padding:8px 12px}.wk-all-l{width:100%;margin:6px 0 0}.wk-peek:not(.full) .wk-item{max-height:520px}}
 /* FUND 첫 화면 주간 카드 */
 .wk-top .wk-item{border:0;padding:0;margin:0}.wk-top .wk-item+.wk-item{margin-top:12px}
 .wk-card{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:30px;align-items:center;padding:24px 28px;border:1px solid rgba(247,246,243,.12);background:rgba(21,35,59,.6);color:#F7F6F3 !important;text-decoration:none;transition:background-color .35s ease,border-color .35s ease}
@@ -1589,7 +1604,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-body:has(.wr){padding-left:0}.wk-item.open:has(.wr)>.wk-head{display:none}.wk-item.open:has(.wr){padding-top:4px}
 .wr{background:#F7F6F3;color:#1A1A1A;max-width:960px;margin:6px auto 20px;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;box-shadow:0 24px 60px rgba(0,0,0,.4)}
 .wr-hd{background:#203864;color:#F7F6F3;padding:26px 34px 24px;display:flex;justify-content:space-between;align-items:flex-end;gap:20px}
-.wr-k{margin:0;font-size:11.5px;letter-spacing:.2em;color:#8FAADC}
+.wr-hd>div:first-child{flex:1;min-width:0}.wr-k{margin:0;font-size:11.5px;letter-spacing:.2em;color:#8FAADC;white-space:nowrap}
 .wr-t{margin:10px 0 0;font-size:28px;font-weight:700;letter-spacing:-.01em;line-height:1.3;color:#F7F6F3;font-family:inherit}
 .wr-m{margin:6px 0 0;font-size:14px;color:rgba(247,246,243,.75)}
 .wr-sl{text-align:right;flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:8px}.wr-sl img{width:48px;height:auto}.wr-sl span{font-size:12px;color:rgba(247,246,243,.7)}
@@ -3092,13 +3107,13 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 
 
       <section class="fd-card fd-open wk-top" id="fd-weekly">
-        <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 보기<em>→</em></span></a>
+        <a class="fd-ch wk-hlink" href="#fund/strategy" onClick="{{ wkBoard }}"><h2 class="fd-ct">Weekly Strategy</h2><span class="wk-arrow">전체 위클리<em>→</em></span></a>
         <sc-if value="{{ weeklyEmpty }}" hint-placeholder-val="{{ false }}"><p class="wk-empty">첫 전략이 곧 올라옵니다.</p></sc-if>
-        <div class="wk-list"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="3"><article class="{{ w.cls }}">
-          <a href="#" class="wk-card" onClick="{{ w.toggle }}"><div class="wc-w"><b>{{ w.cWeek }}</b><span>{{ w.cRange }}</span><sc-if value="{{ w.hasTag }}" hint-placeholder-val="{{ false }}"><em>{{ w.cTag }}</em></sc-if></div><div class="wc-m"><p>{{ w.cHead }}</p><div class="wc-n"><div><small>주간 수익률</small><b style="color:{{ w.cRetC }}">{{ w.cRet }}</b></div><div><small>KOSPI 대비</small><b style="color:{{ w.cExC }}">{{ w.cEx }}</b></div><div><small>주식비</small><b>{{ w.cEq }}</b></div></div></div><span class="wc-go"><sc-if value="{{ w.closed }}" hint-placeholder-val="{{ true }}">리포트 펼치기 ↓</sc-if><sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}">접기 ↑</sc-if></span></a>
+        <nav class="wk-pick"><sc-for list="{{ wkPicks }}" as="k"><a href="#" class="{{ k.cls }}" onClick="{{ k.on }}"><b>{{ k.l }}</b><small>{{ k.r }}</small></a></sc-for></nav><div class="{{ wkPeekCls }}"><sc-for list="{{ weeklyLatest }}" as="w" hint-placeholder-count="1"><article class="{{ w.cls }}">
+          
           <sc-if value="{{ w.open }}" hint-placeholder-val="{{ false }}"><div class="wk-body">
             <sc-if value="{{ w.rich }}" hint-placeholder-val="{{ false }}"><article class="wr"><header class="wr-hd"><div><p class="wr-k">{{ w.kindUp }} · AMT FUND</p><h1 class="wr-t" data-t="{{ w.title }}"></h1><p class="wr-m">{{ w.metaLine }}</p></div><div class="wr-sl"><img src="assets/rfs-seal-light-256.png" alt=""><span>{{ w.asOfLine }}</span><a href="#" class="wr-x" onClick="{{ w.toggle }}">접기 −</a></div></header><div class="wr-in"><sc-if value="{{ w.hasFd }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-perf"><div class="wr-h"><span>01</span><h2>펀드 성과</h2></div><svg class="wr-ch" viewBox="0 0 860 220" preserveAspectRatio="none"><polygon class="a" points="{{ w.rcA }}"></polygon><polyline class="z" points="{{ w.rcZ }}"></polyline><polyline class="k" points="{{ w.rcK }}"></polyline><polyline class="f" points="{{ w.rcF }}"></polyline></svg><div class="wr-ax"><span>{{ w.chFrom }}</span><span class="lg"><i class="f"></i>AMT Fund<i class="k"></i>KOSPI · 설정일 기준 누적</span><span>{{ w.chTo }}</span></div><table class="wr-pt"><tr><th>구분</th><th>1주</th><th>1개월</th><th>3개월</th><th>설정 이후</th></tr><sc-for list="{{ w.ptRows }}" as="r"><tr class="{{ r.cls }}"><td>{{ r.n }}</td><td style="color:{{ r.c1 }}">{{ r.v1 }}</td><td style="color:{{ r.c2 }}">{{ r.v2 }}</td><td style="color:{{ r.c3 }}">{{ r.v3 }}</td><td style="color:{{ r.c4 }}">{{ r.v4 }}</td></tr></sc-for></table></section></sc-if><div class="wk-rich wkp wr-body" data-wk="{{ w.id }}"></div><sc-if value="{{ w.hasTop }}" hint-placeholder-val="{{ false }}"><section class="wr-sec wr-hold"><div class="wr-h"><span class="wr-n"></span><h2>보유 종목</h2><small>{{ w.topAsOf }}</small></div><sc-for list="{{ w.hold }}" as="t"><div class="wr-hr"><span>{{ t.n }}</span><i><b style="width:{{ t.bw }};opacity:{{ t.op }}"></b></i><em>{{ t.w }}</em><small style="color:{{ t.dc }}">{{ t.d }}</small><small style="color:{{ t.rc }}">{{ t.r }}</small></div></sc-for></section></sc-if><sc-if value="{{ w.hasLink }}" hint-placeholder-val="{{ false }}"><a class="wr-link" href="{{ w.link }}" target="_blank" rel="noopener">노션 원문 보기 →</a></sc-if></div><p class="wr-ft">R.F.S. Asset Management Team · 교육 목적으로 운용하며 특정 종목의 매수·매도를 권유하지 않습니다.</p></article></sc-if><sc-for list="{{ w.paras }}" as="p"><sc-if value="{{ p.isImg }}" hint-placeholder-val="{{ false }}"><figure class="wk-fig"><img src="{{ p.u }}" alt="" loading="lazy"></figure></sc-if><sc-if value="{{ p.isText }}" hint-placeholder-val="{{ true }}"><p><sc-for list="{{ p.lines }}" as="l"><span>{{ l.t }}</span></sc-for></p></sc-if></sc-for>
-            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for></div>
+            <div class="wk-imgs"><sc-for list="{{ w.imgs }}" as="im"><a href="{{ im.u }}" target="_blank" rel="noopener"><img src="{{ im.u }}" alt="" loading="lazy"></a></sc-for><a href="#" class="wk-more" onClick="{{ wkExpand }}"><span>리포트 전체 보기 ↓</span></a></div>
             <sc-if value="{{ w.plainLink }}" hint-placeholder-val="{{ false }}"><a class="wk-link" href="{{ w.link }}" target="_blank" rel="noopener">전문 보기 →</a></sc-if>
             <sc-if value="{{ w.canDel }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-del" onClick="{{ w.del }}">삭제</a></sc-if>
           </div></sc-if>
@@ -5529,7 +5544,7 @@ class Component extends DCLogic {
         excerpt: (() => { const x = rich ? plain(body) : body.replace(TOK, '').replace(/\s+/g, ' ').trim(); return x.slice(0, 120) + (x.length > 120 ? '…' : ''); })(),
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
-        toggle: (e) => { e.preventDefault(); this.setState({ [key]: open ? null : w.id }); },
+        toggle: (e) => { e.preventDefault(); if (key === 'wkTop') { this.setState({ wkTopFull: false }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); }); return; } this.setState({ [key]: open ? null : w.id }); },
         ...(key === 'wkTop' ? cardOf(w, body, rich) : {}),
         canDel: open && isAmt,
         del: async (e) => { e.preventDefault(); if (!window.confirm('이 글을 지울까요?')) return; await this.sb.from('fund_weekly').delete().eq('id', w.id); this.loadWeekly(); },
@@ -5538,7 +5553,18 @@ class Component extends DCLogic {
     return {
       hasWeekly: true, weeklyEmpty: list.length === 0 && !!s.weeklyLoaded, noWeekly: false,
       wkStart: (e) => { e.preventDefault(); this.setState(isAmt ? { wkWrite: true } : { wkLogin: true }, () => { const el = document.getElementById('fd-weekly'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }); },
-      weeklyLatest: list.filter((w) => (w.category || '투자전략') === '투자전략').slice(0, 3).map((w) => item(w, w.id === s.wkTop, 'wkTop')),
+      ...(() => {
+        // FUND 첫 화면: 최근 투자전략 몇 주를 고르는 줄 + 고른 주의 리포트 윗부분만 보이고 아래는 흐려진다. 누르면 전체가 펼쳐진다
+        const st = list.filter((w) => (w.category || '투자전략') === '투자전략').slice(0, 4);
+        const sel = st.find((w) => w.id === s.wkTop) || st[0];
+        const label = (w, k) => (k === 0 ? '이번 주' : k === 1 ? '지난주' : (cardOf(w, String(w.body || ''), true).cWeek));
+        return {
+          weeklyLatest: sel ? [item(sel, true, 'wkTop')] : [],
+          wkPicks: st.map((w, k) => ({ l: label(w, k), r: cardOf(w, String(w.body || ''), String(w.body || '').indexOf('<!--rich-->') === 0).cRange, cls: 'wk-pk' + (w === sel ? ' on' : ''), on: (e) => { e.preventDefault(); this.setState({ wkTop: w.id, wkTopFull: false }); } })),
+          wkPeekCls: 'wk-list wk-peek' + (s.wkTopFull ? ' full' : ''),
+          wkExpand: (e) => { e.preventDefault(); this.setState({ wkTopFull: true }); },
+        };
+      })(),
       weeklyList: list.map((w) => item(w, w.id === openId)),
       wkBoard: (e) => { e.preventDefault(); this.go('strategy'); },
       wkBack: (e) => { e.preventDefault(); this.go('fund'); },
