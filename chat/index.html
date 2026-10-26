@@ -184,6 +184,21 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
 .doc .nav{display:flex;gap:16px}.doc .nav button{border:0;background:none;padding:0;font:inherit;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);cursor:pointer}
 .doc .nav button:disabled{opacity:.3;cursor:default}
 .doc .open{display:inline-block;margin-top:6px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
+/* 정규 리포트 출처: PC에서는 패널을 넓혀 PDF 그 쪽을 그대로 띄우고 인용 부분에 형광펜 (PDF.js, 모델 토큰 안 씀) */
+.panel.wide{width:min(760px,58vw)}
+body.reading.wide main{margin-left:max(24px,calc(50vw - 760px))}
+.doc .tabs{display:flex;gap:4px;margin:0 0 12px}.doc .tabs button{border:1px solid var(--hair);background:#fff;font:inherit;font-size:12.5px;padding:4px 12px;border-radius:999px;cursor:pointer;color:var(--sub)}.doc .tabs button.on{border-color:var(--navy);color:var(--navy);font-weight:500}
+.pdfv{border:1px solid var(--hair);border-radius:8px;background:#E9EBEE;overflow:hidden;display:flex;flex-direction:column;height:calc(100vh - 250px);min-height:420px}
+.pdfv .tb{display:flex;align-items:center;gap:6px;padding:6px 10px;background:#fff;border-bottom:1px solid var(--hair);font-size:12.5px;color:var(--sub)}
+.pdfv .tb button{border:1px solid var(--hair);background:#fff;border-radius:6px;min-width:28px;height:26px;font:inherit;font-size:13px;cursor:pointer;color:var(--text)}.pdfv .tb button:disabled{opacity:.35;cursor:default}
+.pdfv .tb .sp{flex:1}.pdfv .tb a{color:var(--text);font-size:12px}
+.pdfv .sc{flex:1;overflow:auto;padding:14px;cursor:grab}.pdfv .sc.drag{cursor:grabbing;user-select:none}
+.pdfv .pg{position:relative;margin:0 auto;background:#fff;box-shadow:0 4px 18px -6px rgba(20,23,28,.35)}
+.pdfv canvas{display:block}
+.pdfv .hl{position:absolute;background:rgba(255,214,0,.42);mix-blend-mode:multiply;border-radius:2px;pointer-events:none}
+.pdfv .msg{padding:30px;text-align:center;color:var(--sub);font-size:13px}
+.doc .pdfq{font-size:12.5px;line-height:1.7;color:var(--sub);margin:0 0 10px}.doc .pdfq mark{color:var(--text)}
+.doc .pdflink{display:inline-block;margin:0 0 14px;font-size:13px;color:var(--text);border-bottom:1px solid var(--text);text-decoration:none}
 .scrim{display:none}
 /* 폰: ☰ 누르면 화면 전체 메뉴 */
 .burger{display:none;margin-left:auto;width:40px;height:40px;border:0;background:none;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:6px;color:inherit}
@@ -400,12 +415,105 @@ function openPanel(mid, n, from) {
       + `<div class="ctx">${ctxHTML()}</div>`
     : m.cited.slice(0, 3).map((x) => `<blockquote><mark>${esc(x.length > 700 ? x.slice(0, 700) + '…' : x)}</mark></blockquote>`).join('')
       + (m.web ? `<a class="open" href="${esc(m.url)}" target="_blank" rel="noopener">원문 열기 →</a>` : '');
-  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + body
-    + (ns.length > 1 ? `<div class="nav"><button type="button" data-go="${ns[k - 1] || ''}"${k ? '' : ' disabled'}>← 이전 출처</button><button type="button" data-go="${ns[k + 1] || ''}"${k < ns.length - 1 ? '' : ' disabled'}>다음 출처 →</button></div>` : '');
+  const nav = ns.length > 1 ? `<div class="nav"><button type="button" data-go="${ns[k - 1] || ''}"${k ? '' : ' disabled'}>← 이전 출처</button><button type="button" data-go="${ns[k + 1] || ''}"${k < ns.length - 1 ? '' : ' disabled'}>다음 출처 →</button></div>` : '';
+  const pageNo = parseInt((m.pg.match(/\d+/) || ['1'])[0], 10), pageTo = parseInt((m.pg.match(/-(\d+)/) || [0, pageNo])[1], 10);
+  const usePdf = !!m.pdf && PDF_OK();
+  const tabs = m.pdf ? (usePdf ? `<div class="tabs"><button type="button" data-tab="pdf" class="on">PDF ${m.pg ? esc(m.pg) : ''}</button><button type="button" data-tab="txt">인용 글</button></div>`
+                                : `<a class="pdflink" href="${esc(m.pdf)}#page=${pageNo}" target="_blank" rel="noopener">PDF ${m.pg ? esc(m.pg) + ' ' : ''}열기 →</a>`) : '';
+  const pdfBody = usePdf ? `<div class="pdfq">${m.cited.slice(0, 1).map((x) => `<mark>${esc(x.length > 160 ? x.slice(0, 160) + '…' : x)}</mark>`).join('')}</div><div class="pdfv" id="pdfv"><div class="msg">PDF 불러오는 중…</div></div>` : '';
+  $('doc').innerHTML = `<div class="lab">${esc(m.line)}</div><h3>${esc(m.name)}</h3>` + (m.tag ? `<span class="tag">${esc(m.tag)}</span>` : '') + tabs
+    + (usePdf ? `<div data-pane="pdf">${pdfBody}</div><div data-pane="txt" hidden>${body}</div>` : body) + nav;
   $('doc').querySelectorAll('[data-go]').forEach((b) => { b.onclick = () => b.dataset.go && openPanel(mid, b.dataset.go); });
+  $('doc').querySelectorAll('[data-tab]').forEach((b) => { b.onclick = () => {
+    $('doc').querySelectorAll('[data-tab]').forEach((x) => x.classList.toggle('on', x === b));
+    $('doc').querySelectorAll('[data-pane]').forEach((x) => { x.hidden = x.dataset.pane !== b.dataset.tab; });
+    panel.classList.toggle('wide', b.dataset.tab === 'pdf'); document.body.classList.toggle('wide', b.dataset.tab === 'pdf');
+  }; });
+  panel.classList.toggle('wide', usePdf); document.body.classList.toggle('wide', usePdf);
+  if (usePdf) showPdf($('pdfv'), m.pdf, pageNo, pageTo, m.cited);
   document.querySelectorAll('.chip').forEach((b) => b.classList.toggle('on', b.dataset.m === mid && b.dataset.n === String(n)));
   panel.classList.add('open'); scrim.classList.add('open'); document.body.classList.add('reading');
   $('doc').scrollTop = 0;
+}
+// ---- 정규 리포트 PDF 뷰어 (PC). PDF.js는 처음 열 때만 받는다. 인용 문장은 쪽의 글자 위치에서 찾아 형광펜 칸을 덧그린다
+const PDF_OK = () => window.innerWidth > 900 && !document.documentElement.classList.contains('embed') && !document.body.classList.contains('embed');
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+let pdfLib = null, pdfDrag = null; const pdfDocs = {};
+window.addEventListener('pointermove', (e) => { const d = pdfDrag; if (!d) return; d.sc.scrollLeft = d.l - (e.clientX - d.x); d.sc.scrollTop = d.t - (e.clientY - d.y); });
+window.addEventListener('pointerup', () => { if (pdfDrag) pdfDrag.sc.classList.remove('drag'); pdfDrag = null; });
+function loadPdfLib() {
+  if (pdfLib) return pdfLib;
+  pdfLib = new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = PDFJS + 'pdf.min.js'; sc.crossOrigin = 'anonymous';
+    sc.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js'; ok(window.pdfjsLib); }; sc.onerror = no; document.head.appendChild(sc); });
+  return pdfLib;
+}
+// 띄어쓰기·줄바꿈·따옴표 차이를 없앤 글자열로 비교한다 (PDF 글자 추출과 우리 청크 텍스트가 띄어쓰기가 다르다)
+const norm = (t) => t.replace(/[\s '"‘’“”`·•∙\-–—]/g, '').toLowerCase();
+function findHits(items, cited) {
+  let flat = '', owner = [];
+  items.forEach((it, i) => { const t = norm(it.str); flat += t; for (let j = 0; j < t.length; j++) owner.push(i); });
+  const hit = new Set();
+  cited.forEach((c) => {
+    // 인용문을 문장 단위로 잘라 각각 찾는다 (한 덩어리로 찾으면 표·줄바꿈 하나 때문에 통째로 못 찾는다)
+    c.split(/(?<=[.다요음])\s+|\n+/).map(norm).filter((x) => x.length >= 8).forEach((seg) => {
+      for (const len of [seg.length, 40, 24, 14]) {
+        const key = seg.slice(0, Math.min(len, seg.length)); if (key.length < 8) break;
+        let at = flat.indexOf(key);
+        if (at >= 0) { const end = Math.min(flat.length, at + seg.length); for (let p = at; p < end; p++) hit.add(owner[p]); break; }
+      }
+    });
+  });
+  return hit;
+}
+async function showPdf(box, url, page, pageTo, cited) {
+  const tok = (showPdf.tok = (showPdf.tok || 0) + 1);
+  try {
+    const lib = await loadPdfLib();
+    const doc = await (pdfDocs[url] = pdfDocs[url] || lib.getDocument({ url, isEvalSupported: false }).promise);
+    if (tok !== showPdf.tok) return;
+    page = Math.min(Math.max(1, page || 1), doc.numPages); pageTo = Math.min(Math.max(page, pageTo || page), doc.numPages);
+    // 쪽 범위(p.18-19)면 인용이 실제로 있는 쪽을 연다
+    for (let p = page; p <= pageTo; p++) { const tc = await (await doc.getPage(p)).getTextContent(); if (findHits(tc.items, cited).size) { page = p; break; } }
+    box.innerHTML = `<div class="tb"><button type="button" data-a="prev" aria-label="이전 쪽">‹</button><span class="pn"></span><button type="button" data-a="next" aria-label="다음 쪽">›</button>
+      <span class="sp"></span><button type="button" data-a="out" aria-label="축소">−</button><span class="zm"></span><button type="button" data-a="in" aria-label="확대">+</button><button type="button" data-a="fit">맞춤</button>
+      <a href="${esc(url)}#page=${page}" target="_blank" rel="noopener">새 창</a></div><div class="sc"><div class="pg"></div></div>`;
+    const sc = box.querySelector('.sc'), pg = box.querySelector('.pg');
+    let cur = page, zf = 1;   // 폭 맞춤 대비 배율 (1 = 폭 맞춤)
+    const draw = async () => {
+      const pp = await doc.getPage(cur); if (tok !== showPdf.tok) return;
+      const fit = (sc.clientWidth - 28) / pp.getViewport({ scale: 1 }).width, scale = fit * zf;
+      const vp = pp.getViewport({ scale }), dpr = Math.min(2, window.devicePixelRatio || 1);
+      const cv = document.createElement('canvas'); cv.width = Math.floor(vp.width * dpr); cv.height = Math.floor(vp.height * dpr);
+      cv.style.width = vp.width + 'px'; cv.style.height = vp.height + 'px';
+      await pp.render({ canvasContext: cv.getContext('2d'), viewport: vp, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
+      if (tok !== showPdf.tok) return;
+      pg.style.width = vp.width + 'px'; pg.style.height = vp.height + 'px'; pg.innerHTML = ''; pg.appendChild(cv);
+      const tc = await pp.getTextContent(), hits = findHits(tc.items, cited); let first = null;
+      hits.forEach((i) => {
+        const it = tc.items[i], tr = lib.Util.transform(vp.transform, it.transform), h = Math.hypot(tr[2], tr[3]), w = it.width * scale;
+        if (!w || !h) return;
+        const d = document.createElement('div'); d.className = 'hl';
+        d.style.left = tr[4] + 'px'; d.style.top = (tr[5] - h) + 'px'; d.style.width = w + 'px'; d.style.height = (h * 1.15) + 'px'; pg.appendChild(d);
+        if (first == null || tr[5] - h < first) first = tr[5] - h;
+      });
+      box.querySelector('.pn').textContent = `${cur} / ${doc.numPages}쪽`; box.querySelector('.zm').textContent = Math.round(zf * 100) + '%';
+      box.querySelector('[data-a=prev]').disabled = cur <= 1; box.querySelector('[data-a=next]').disabled = cur >= doc.numPages;
+      if (first != null) sc.scrollTop = Math.max(0, first - 80); else sc.scrollTop = 0;
+    };
+    box.querySelector('.tb').onclick = (e) => {
+      const a = e.target.dataset && e.target.dataset.a; if (!a) return;
+      if (a === 'prev' && cur > 1) cur--; else if (a === 'next' && cur < doc.numPages) cur++;
+      else if (a === 'in') zf = Math.min(4, zf * 1.25); else if (a === 'out') zf = Math.max(0.5, zf / 1.25); else if (a === 'fit') zf = 1; else return;
+      draw();
+    };
+    // 끌어서 옮기기 (확대했을 때). 창 전체 이벤트는 한 번만 단다
+    sc.onpointerdown = (e) => { if (e.button !== 0) return; pdfDrag = { sc, x: e.clientX, y: e.clientY, l: sc.scrollLeft, t: sc.scrollTop }; sc.classList.add('drag'); };
+    // Ctrl + 휠로 확대·축소
+    sc.addEventListener('wheel', (e) => { if (!e.ctrlKey) return; e.preventDefault(); box.querySelector(e.deltaY < 0 ? '[data-a=in]' : '[data-a=out]').click(); }, { passive: false });
+    await draw();
+  } catch (err) {
+    if (tok === showPdf.tok) box.innerHTML = `<div class="msg">PDF를 띄우지 못했어요. <a href="${esc(url)}#page=${page}" target="_blank" rel="noopener">새 창으로 열기 →</a></div>`;
+  }
 }
 // 답 본문에서 이 출처가 달린 자리(누른 이름표, 없으면 처음 달린 곳)의 소제목. 없으면 빈 값
 function step(mid, n, from) {
@@ -416,7 +524,7 @@ function step(mid, n, from) {
   while (el && el.tagName !== 'H4') el = el.previousElementSibling;
   return el ? el.textContent.replace(/\s+/g, ' ').trim() : '';
 }
-function closePanel() { panel.classList.remove('open'); scrim.classList.remove('open'); document.body.classList.remove('reading'); document.querySelectorAll('.chip.on').forEach((b) => b.classList.remove('on')); }
+function closePanel() { panel.classList.remove('open', 'wide'); scrim.classList.remove('open'); document.body.classList.remove('reading', 'wide'); document.querySelectorAll('.chip.on').forEach((b) => b.classList.remove('on')); }
 document.addEventListener('click', (e) => { const b = e.target.closest('.chip'); if (b) openPanel(b.dataset.m, b.dataset.n, b); });
 $('x').onclick = closePanel; scrim.onclick = closePanel;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanel(); });
