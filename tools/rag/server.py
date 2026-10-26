@@ -13,6 +13,8 @@
   POLARIS_MODE           v1(질문 유형별 양식, 기본) | v2(답 모델이 도구를 골라 씀, polaris_v2.py). 요청 본문의 mode가 있으면 새 대화는 그걸 따른다 (나란히 비교용)
   DAILY_LIMIT            로그인 안 한 질문 전체의 하루 상한 (비용 안전장치), 기본 100 (질문 1개 약 6~8센트, 꽉 차도 월 30~40만 원 안쪽)
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
+  TELEGRAM_BOT_TOKEN     질문이 들어올 때마다 텔레그램으로 알림 (질문·답 앞부분·유형·도구·시간·출처 수). 둘 다 있어야 보낸다. IP 등 사람 정보는 안 보낸다
+  TELEGRAM_CHAT_ID       알림 받을 대화 id (봇에게 아무 말이나 보낸 뒤 getUpdates로 확인)
 API
   GET  /health                   준비됐는지
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
@@ -54,6 +56,30 @@ PER_IP_DAILY = int(os.environ.get('PER_IP_DAILY', 40))
 ANON_DAILY = int(os.environ.get('ANON_DAILY', 5))
 DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', 100))
 LOG_PATH = os.environ.get('LOG_PATH')
+TG_TOKEN, TG_CHAT = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip(), os.environ.get('TELEGRAM_CHAT_ID', '').strip()
+
+
+def notify(text):
+    """텔레그램 알림. 답을 늦추지 않게 따로 돌리고, 실패해도 무시한다 (토큰은 로그에 남기지 않는다)."""
+    if not (TG_TOKEN and TG_CHAT):
+        return
+
+    def go():
+        try:
+            body = json.dumps({'chat_id': TG_CHAT, 'text': text[:4000], 'disable_web_page_preview': True}).encode()
+            req = urllib.request.Request(f'https://api.telegram.org/bot{TG_TOKEN}/sendMessage', data=body, headers={'Content-Type': 'application/json'})
+            urllib.request.urlopen(req, timeout=10).read()
+        except Exception as e:  # noqa: BLE001
+            print('텔레그램 알림 실패', type(e).__name__, flush=True)
+    threading.Thread(target=go, daemon=True).start()
+
+
+def brief(out, msg, member, cid, n_turn, sec):
+    """알림 한 통: 누가(로그인 여부만)·몇 번째 질문·질문·유형·도구·시간·출처 수·답 앞부분."""
+    tools = [t['tool'] for t in out.get('trace', []) if 'tool' in t]
+    head = f"🧭 Polaris · {'학회원' if member else '비로그인'} · 대화 {cid[:6]} {n_turn}번째 · {out['kind']}" + (f" · 도구 {','.join(tools)}" if tools else '')
+    a = out['answer'] or ''
+    return f"{head}\n\nQ. {msg}\n\nA. {a[:900]}{'…' if len(a) > 900 else ''}\n\n⏱ {sec:.0f}초 · 출처 {len(out.get('sources', []))}" + (' · PDF' if out.get('files') else '')
 MAX_TURNS, IDLE_SEC, MAX_MSG = 12, 2 * 3600, 1000
 
 lock = threading.Lock()
@@ -201,10 +227,12 @@ class Handler(BaseHTTPRequestHandler):
                     gone.append(1)
             cb = {'on_text': lambda t: send({'type': 'delta', 'text': t}), 'on_stage': lambda st: send({'type': 'stage', 'stage': st})}
         with conv['lock']:  # 같은 대화에 동시에 두 질문이 들어오면 차례로
+            t_start = time.time()
             try:
                 out = conv['chat'].turn(msg, **cb)
             except Exception as e:  # noqa: BLE001 — 사용자에게는 짧게, 서버 로그에는 자세히
                 print('오류', cid, repr(e), flush=True)
+                notify(f"⚠️ Polaris 오류 · 대화 {cid[:6]}\n\nQ. {msg}\n\n{type(e).__name__}: {str(e)[:300]}")
                 body = {'error': '답을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.', 'conversation_id': cid}
                 return send(dict(body, type='error')) if stream else self._json(500, body)
         if out['kind'] in ('decline', 'file', 'club'):  # 걸러진 질문, 파일만 달라는 요청, 학회 안내(가벼운 모델로 짧게)는 하루 질문 수에서 빼 준다
@@ -212,6 +240,7 @@ class Handler(BaseHTTPRequestHandler):
         trace = out.get('trace', [])   # 이 대화의 검색 기록 (대화마다 따로 모은다)
         with lock:
             answerer.s.log.clear()
+        notify(brief(out, msg, member, cid, len(conv['chat'].turns), time.time() - t_start))
         if LOG_PATH:
             # 답이 이상할 때 원인을 보려고: 질문 유형, 검색어, 모델이 받은 청크, 단계별 시간까지 남긴다 (사람 정보는 없음)
             with lock, open(LOG_PATH, 'a') as f:

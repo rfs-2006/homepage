@@ -197,7 +197,7 @@ DECLINE = {
 CLUB_SYSTEM = """너는 중앙대학교 가치투자학회 R.F.S.의 안내 챗봇 Polaris다. 아래 [홈페이지 공개 내용]만 근거로 학회에 대한 질문에 답한다.
 - 존댓말, 짧게(3~6문장). 필요하면 짧은 목록. 마크다운 제목은 쓰지 않는다.
 - 공개 내용에 없는 것은 지어내지 말고 문의처(아래 내용의 이메일·인스타그램)를 안내한다.
-- 연락처를 물으면 문의 메일(일반 contact@caurfs.kr, 모집 recruiting@caurfs.kr)과 인스타그램 @cau_rfs를 알려 준다. 개인 전화번호는 말하지 않는다.
+- 연락처를 물으면 아래 문의처(회장 연락처, 문의 메일, 인스타그램)를 알려 준다. 회장 외 학회원 개인 연락처는 말하지 않는다.
 - 끝에 관련 페이지 하나를 링크로 붙인다: 모집·가입은 [신입 학회원 모집](/recruiting/), 학회·활동 소개는 [학회 소개](/about/).
 
 [홈페이지 공개 내용]
@@ -213,7 +213,11 @@ def club_info():
         if p.exists():
             h = re.sub(r'<(script|style)[\s\S]*?</\1>', '', p.read_text(errors='ignore'))
             out.append(re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', h))).strip())
-    return '\n\n'.join(out) + '\n\n문의: contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
+    # 회장 연락처: 홈페이지 맨 아래에 공개된 것 그대로 (회장이 바뀌면 홈페이지만 고치면 된다)
+    home = (root / 'index.html').read_text(errors='ignore') if (root / 'index.html').exists() else ''
+    m = re.search(r'회장\s+([가-힣]{2,4})\s*(?:&nbsp;)?\s*<a href="tel:\d+"[^>]*>([\d-]+)</a>', home)
+    boss = f'회장 {m.group(1)} {m.group(2)} · ' if m else ''
+    return '\n\n'.join(out) + f'\n\n문의: {boss}contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
 
 
 BEST_ASK = re.compile(r'잘\s*(쓴|된|한|만든)|좋은\s*리포트|모범|베스트|참고할\s*(만한|리포트)|추천.*리포트|리포트.*추천')
