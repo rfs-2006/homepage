@@ -85,6 +85,15 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .ex{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:clamp(12px,1.8vh,18px)}
 .ex button{font:inherit;font-weight:300;font-size:13px;color:rgba(244,241,235,.75);background:none;border:1px solid rgba(244,241,235,.18);border-radius:999px;padding:6px 14px;cursor:pointer}
 .ex button:hover{border-color:rgba(244,241,235,.5);color:var(--ink)}
+.hist{width:min(560px,100%);margin:clamp(18px,3vh,30px) auto 0;text-align:left}
+.hist h3{margin:0 0 6px;font-size:14px;font-weight:500;color:var(--ink)}
+.hist .it{display:flex;align-items:center;gap:10px;border-top:1px solid rgba(244,241,235,.16)}
+.hist .it button.o{flex:1;min-width:0;display:flex;gap:12px;align-items:baseline;font:inherit;font-size:14px;color:var(--ink);background:none;border:0;padding:10px 0;text-align:left;cursor:pointer}
+.hist .it button.o span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.hist .it button.o time{font-size:13px;color:var(--ink);flex:none}
+.hist .it button.o:hover span{text-decoration:underline;text-underline-offset:3px}
+.hist .it button.d{font:inherit;font-size:16px;line-height:1;color:var(--ink);background:none;border:0;padding:6px;cursor:pointer;opacity:.7}
+.hist .it button.d:hover{opacity:1}
 .intro .note{font-size:12px;line-height:1.6;color:rgba(244,241,235,.45);margin:clamp(12px,2vh,22px) auto 0}
 
 /* ---- 대화 화면 ---- */
@@ -226,6 +235,7 @@ body.reading .foot .in{margin-left:max(0px,calc(50vw - 584px))}
     <p>Polaris는 R.F.S.의 리서치 어시스턴트예요. 학회가 쌓아 온 리포트·세미나·엑셀 모델에서 근거를 찾아 출처와 함께 설명하고, 쓰고 있는 리포트를 어떻게 고치면 좋을지 같이 봐 드려요.</p>
     <form class="box" id="f0"><textarea id="t0" placeholder="질문을 입력하세요" maxlength="1000" aria-label="질문"></textarea><button class="send" type="submit" aria-label="보내기">↑</button></form>
     <div class="ex" id="ex"></div>
+    <div class="hist" id="hist" hidden></div>
     <p class="note">로그인하지 않으면 하루 5번까지 쓸 수 있어요.</p>
   </div>
 </div>
@@ -251,6 +261,7 @@ const $ = (id) => document.getElementById(id);
 let store; try { store = window.sessionStorage; store.setItem('rfs_booted', '1'); } catch (e) {}   // 여기서 홈으로 가도 인트로를 다시 안 띄운다 (index.html)
 const sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
 let cid = null, busy = false;
+let rec = null, turns = [];   // 로그인했으면 지금 대화를 polaris_chats의 한 줄로 저장한다 (supabase/polaris_chats.sql)
 const SRC = {};   // 답마다 출처 목록 (패널에서 쓴다)
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -306,7 +317,7 @@ function toConv() {
   if (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.startViewTransition(go); else go();
 }
 function toStart() {
-  cid = null; $('log').innerHTML = ''; closePanel();
+  cid = null; rec = null; turns = []; $('log').innerHTML = ''; closePanel(); loadHist();
   document.body.classList.remove('conv'); document.body.classList.add('start'); $('t0').focus();
 }
 
@@ -447,7 +458,7 @@ async function ask(text) {
       const res = await r.json().catch(() => ({ error: '서버 응답을 읽지 못했습니다.' }));
       fin(res);
       if (!r.ok || res.error) throw new Error(res.error || '오류가 났습니다.');
-      addA(res); return;
+      addA(res); keep(text, res); return;
     }
     let live = null, said = '', painted = false, done = null, buf = '';
     const paint = () => { painted = false; if (done) return; live.innerHTML = render(said, 'live') + '<span class="caret"></span>'; };
@@ -472,13 +483,45 @@ async function ask(text) {
     }
     if (!done) { if (live) live.remove(); throw new Error('연결이 끊겼어요. 다시 물어봐 주세요.'); }
     fin(done);
-    addA(done, live);
+    addA(done, live); keep(text, done);
   } catch (err) {
     w.done(); addNote(err instanceof TypeError ? '서버에 연결하지 못했어요. 잠시 뒤 다시 해 주세요.' : (err.message || '연결하지 못했습니다.'), 'err');
   } finally {
     busy = false; $('b').disabled = false; $('t').focus();
   }
 }
+
+// 대화 기록 (로그인한 계정만): 질문·답을 차례로 저장하고, 첫 화면에 지난 대화를 띄운다
+async function keep(q, res) {
+  if (res.kind === 'decline') return;
+  const { data } = await sb.auth.getSession(); if (!data.session) return;
+  turns.push({ q, a: { answer: res.answer, kind: res.kind, sources: res.sources || [], files: res.files || [] } });
+  try {
+    if (rec) await sb.from('polaris_chats').update({ turns, updated_at: new Date().toISOString() }).eq('id', rec);
+    else { const r = await sb.from('polaris_chats').insert({ title: q.slice(0, 80), turns }).select('id').single(); if (r.data) rec = r.data.id; }
+  } catch (e) { /* 저장 실패해도 대화는 계속 */ }
+}
+async function loadHist() {
+  const box = $('hist'); if (!box) return;
+  const { data } = await sb.auth.getSession();
+  if (!data.session) { box.hidden = true; box.innerHTML = ''; return; }
+  const r = await sb.from('polaris_chats').select('id,title,updated_at').order('updated_at', { ascending: false }).limit(8);
+  const rows = r.data || [];
+  box.hidden = !rows.length;
+  const day = (t) => { const d = new Date(t); return (d.getMonth() + 1) + '.' + d.getDate(); };
+  box.innerHTML = rows.length ? '<h3>지난 대화</h3>' + rows.map((x) => `<div class="it"><button type="button" class="o" data-id="${x.id}"><span>${esc(x.title || '제목 없음')}</span><time>${day(x.updated_at)}</time></button><button type="button" class="d" data-del="${x.id}" aria-label="이 대화 지우기">×</button></div>`).join('') : '';
+}
+$('hist').addEventListener('click', async (e) => {
+  const del = e.target.closest('[data-del]'), op = e.target.closest('[data-id]');
+  if (del) { if (!confirm('이 대화를 지울까요?')) return; await sb.from('polaris_chats').delete().eq('id', del.dataset.del); loadHist(); return; }
+  if (!op || busy) return;
+  const r = await sb.from('polaris_chats').select('id,turns').eq('id', op.dataset.id).single();
+  if (!r.data) return;
+  // 지난 대화를 다시 펼친다. 이어서 물으면 같은 기록에 덧붙는다 (서버 쪽 대화 맥락은 새로 시작)
+  $('log').innerHTML = ''; cid = null; rec = r.data.id; turns = r.data.turns || [];
+  toConv();
+  turns.forEach((t) => { addQ(t.q); addA(t.a); });
+});
 
 const submit = (form, ta) => form.addEventListener('submit', (e) => { e.preventDefault(); const t = ta.value; ta.value = ''; ask(t); });
 submit($('f0'), $('t0')); submit($('f'), $('t'));
@@ -507,7 +550,7 @@ const DEMO = new URLSearchParams(location.search).has('demo') ? {
 // 홈은 rfs_after_login이 있으면 로그인하자마자 그 주소로 돌려보낸다 (index.html setU)
 const setLogin = (ses) => document.querySelectorAll('.login').forEach((b) => { b.textContent = ses ? '로그아웃' : '로그인'; b.classList.toggle('on', !!ses); b.title = ses ? '학회원으로 로그인됨' : ''; });
 sb.auth.getSession().then(({ data }) => setLogin(data.session));
-sb.auth.onAuthStateChange((_e, ses) => setLogin(ses));
+sb.auth.onAuthStateChange((_e, ses) => { setLogin(ses); loadHist(); });
 document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', async () => {
   const { data } = await sb.auth.getSession();
   if (data.session) { await sb.auth.signOut(); return; }

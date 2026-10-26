@@ -13,7 +13,7 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
-const POLICY_VERSION = '2026-10-26';
+const POLICY_VERSION = '2026-11-02';
 const RESERVED = ['admin', 'root', 'amt', 'member', 'members', 'contact', 'recruiting', 'rfs', 'caurfs', 'agora', 'test', 'support', 'help', 'info', 'noreply', 'no-reply', 'postmaster', 'webmaster'];
 const MAX_PENDING = 60, PER_IP_DAY = 3;
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
