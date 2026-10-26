@@ -117,12 +117,14 @@ def client():
 
 
 def ask(cl, model=LLM, on_text=None, **kw):
-    """on_text가 있으면 스트리밍으로 받으면서 답 글자를 바로 넘긴다 (화면에 쓰는 대로 보이게)."""
+    """on_text가 있으면 스트리밍으로 받으면서 답 글자를 바로 넘긴다 (화면에 쓰는 대로 보이게).
+    betas=[...]로 베타 기능(예: 어드바이저)을 더 켤 수 있다."""
+    betas = ['server-side-fallback-2026-07-01', *kw.pop('betas', [])]
     if 'haiku' in model:  # Haiku 5.5는 서버 쪽 대체 모델(fallbacks)이 없다
         r = cl.messages.create(model=model, max_tokens=16000, **kw)
     elif on_text:
         # 대체 모델로 넘어가도 같은 스트림에서 이어진다 (이미 받은 글자는 그대로)
-        with cl.beta.messages.stream(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
+        with cl.beta.messages.stream(model=model, max_tokens=16000, betas=betas,
                                      fallbacks='default', **kw) as st:
             for ev in st:
                 if ev.type == 'text':
@@ -130,7 +132,7 @@ def ask(cl, model=LLM, on_text=None, **kw):
             r = st.get_final_message()
     else:
         # 안전 분류기가 거절하면 서버가 다른 모델로 다시 돌린다 (fallbacks: default)
-        r = cl.beta.messages.create(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
+        r = cl.beta.messages.create(model=model, max_tokens=16000, betas=betas,
                                     fallbacks='default', **kw)
     if r.stop_reason == 'refusal':
         raise RuntimeError(f'거절: {r.stop_details}')

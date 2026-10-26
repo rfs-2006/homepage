@@ -12,6 +12,7 @@ v1과 같은 Answerer(검색기·데이터·평가표)를 쓰고, 돌려주는 �
   python3 -I tools/rag/polaris_v2.py /home/user/rfs-cafe-data "PER PBR PSR 차이가 뭐야?" ["POR은?"] ...
 """
 import json
+import os
 import re
 import sys
 import time
@@ -112,6 +113,20 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
 보내기 전에 다시 읽는다: 이 사람이 하려는 일에 맞는 전체 그림인가, 질문에 바로 답했나, 모양이 질문에 맞나, 약어를 풀었나, 학회 자료와 일반 지식이 섞여 학회가 하지 않은 걸 했다고 쓰지 않았나."""
 
 
+# ---------------------------------------------------------------- 어드바이저 (서버 설정 ADVISOR_MODEL로 켜고 끈다)
+# 답 모델이 쓰기 전에 더 큰 모델에게 대화 전체를 보여 주고 계획을 점검받는다. 계획(갈래·순서·빠진 것)이 약해서 생기는 실패를 막으려는 것.
+ADVISOR_MODEL = os.environ.get('ADVISOR_MODEL', '').strip()
+ADVISOR_TOOL = {'type': 'advisor_20260301', 'name': 'advisor', 'model': ADVISOR_MODEL, 'max_uses': 1,
+                'caching': {'type': 'ephemeral', 'ttl': '5m'}}
+ADVISOR_NOTE = """
+
+[advisor]
+advisor는 더 큰 모델이 이 대화 전체를 보고 계획을 조언해 주는 도구다 (입력 없이 부른다).
+- 설명·비교·피드백·여러 갈래로 답할 질문이면, 자료를 다 받은 뒤 답을 쓰기 바로 전에 한 번 부른다. 무엇을 어떤 갈래·순서로 쓸지, 빠진 것이 없는지 점검받는다.
+- 연락처·가입 같은 학회 안내, 파일 요청, 한 줄로 끝나는 사실은 부르지 않는다.
+- 조언은 참고다. 출처는 받은 자료에만 달고, 조언을 받았다는 말은 답에 쓰지 않는다. 부르기 전에 답 글을 먼저 쓰지 않는다."""
+
+
 FEEDBACK_GUIDE = """피드백 하는 법
 - 봐 줄 내용이 아무것도 없을 때만(글도, 포인트 목록도, 생각도 없음) 글과 그 글이 들어가는 섹션을 붙여 달라고 짧게 말하고 끝낸다. 포인트 제목 한두 줄만 있어도 그것으로 한다.
 - 축 고르기: 사용자가 말한 것부터 (문장·표현·제목·문단을 봐 달라 → 글 축 먼저). 섹션 이름은 축이 아니다 (투자포인트 문단을 봐 달라 = 글 축 + 투자포인트 축).
@@ -192,7 +207,7 @@ class Chat:
     def __init__(self, answerer):
         self.a = answerer
         self.msgs, self.shown, self.turns = [], [], []
-        self.system = SYSTEM.format(today=TODAY(), concept_map=MAP_GUIDES['개념 지도'], examples=EXAMPLES)
+        self.system = SYSTEM.format(today=TODAY(), concept_map=MAP_GUIDES['개념 지도'], examples=EXAMPLES) + (ADVISOR_NOTE if ADVISOR_MODEL else '')
         self.trace, self.timing, self.file_out = [], {}, []
 
     # ------------------------------------------------------------ 문지기
@@ -341,6 +356,8 @@ class Chat:
             on_stage('answer')
         self.msgs.append({'role': 'user', 'content': [a.result_block(i) for i in first] + [{'type': 'text', 'text': f'질문: {question}'}]})
         tools = {'tools': TOOLS + [WEB]} if given is None else {}
+        if tools and ADVISOR_MODEL:
+            tools = {'tools': TOOLS + [WEB, ADVISOR_TOOL], 'betas': ['advisor-tool-2026-03-01']}
         calls, used, texts = [], 0, []
         for _ in range(MAX_ROUNDS):
             t0 = time.perf_counter()
@@ -348,7 +365,15 @@ class Chat:
                        output_config={'effort': 'medium'}, messages=self.msgs)
             s._count(resp)
             web = getattr(getattr(resp.usage, 'server_tool_use', None), 'web_search_requests', 0) or 0
-            calls.append({'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens, '웹': web, '끝': resp.stop_reason})
+            call = {'초': round(time.perf_counter() - t0, 1), '출력': resp.usage.output_tokens, '입력': resp.usage.input_tokens, '웹': web, '끝': resp.stop_reason}
+            adv = [it for it in (getattr(resp.usage, 'iterations', None) or []) if getattr(it, 'type', '') == 'advisor_message']
+            if adv:  # 어드바이저 토큰은 usage.iterations에 따로 잡힌다
+                call['조언'] = {'입력': sum(getattr(it, 'input_tokens', 0) or 0 for it in adv),
+                              '출력': sum(getattr(it, 'output_tokens', 0) or 0 for it in adv)}
+            for b in resp.content:
+                if b.type == 'server_tool_use' and b.name == 'advisor':
+                    self.trace.append({'tool': 'advisor', 'input': {}})
+            calls.append(call)
             self.msgs.append({'role': 'assistant', 'content': resp.content})
             texts += [b for b in resp.content if b.type == 'text']
             if resp.stop_reason == 'pause_turn':
@@ -374,7 +399,7 @@ class Chat:
             self.msgs.append({'role': 'user', 'content': results})
         # 도구를 부르기 전에 쓴 글이 있으면 그것까지 (지시문은 쓰지 말라고 하지만)
         out = a.render(SimpleNamespace(content=texts, stop_reason=resp.stop_reason), self.shown, [t['input'].get('query') for t in self.trace if t.get('tool') == 'search'])
-        out['timing'] = dict(self.timing, 답변=calls, 도구=used)
+        out['timing'] = dict(self.timing, 답변=calls, 도구=used, 모델=a.answer_model + (f' + {ADVISOR_MODEL} 조언' if ADVISOR_MODEL and given is None else ''))
         out['shown_turn'] = [a.chunks[i]['chunk_id'] for i in self.shown[n0:]]
         out['files'] = self.file_out
         out['trace'] = self.trace
