@@ -122,9 +122,10 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=17" defer></script>
+<script src="./assets/ask.js?v=18" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
-<script src="./assets/agora-gate.js?v=9" defer></script>
+<script src="./assets/agora-gate.js?v=11" defer></script>
+<script src="./assets/join.js?v=3" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -3289,6 +3290,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <div class="footlinks" style="display:flex;gap:20px;margin-top:14px;font-size:13px">
             <a href="https://www.instagram.com/cau_rfs/" target="_blank" rel="noopener">Instagram</a>
             <a href="https://cafe.naver.com/caurfs" target="_blank" rel="noopener">네이버 카페</a>
+            <a href="/privacy/">개인정보처리방침</a>
           </div>
         </div>
         <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">
@@ -4689,7 +4691,7 @@ class Component extends DCLogic {
       const markMember = (ses) => { if (!ses) return; try { localStorage.setItem('rfs_member', '1'); } catch (e) {} try { window.gtag && window.gtag('set', { traffic_type: 'internal' }); } catch (e) {} };
       // 다른 화면(Polaris 등)에서 로그인하러 왔으면 로그인하자마자 돌려보낸다 (10분 안에 온 요청만)
       const back = (ses) => { if (!ses) return; try { const r = JSON.parse(sessionStorage.getItem('rfs_after_login') || 'null'); sessionStorage.removeItem('rfs_after_login'); if (r && /^\/(?!\/)[\w/-]*$/.test(r.to) && Date.now() - r.at < 600000) location.href = r.to; } catch (e) {} };
-      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); } else { this.setState({ intraData: null, fundLive: null }); this.loadRfm(); } });
+      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -4825,7 +4827,7 @@ class Component extends DCLogic {
     const want = this.state.page === 'intranet' && !this.state.user && !(this.props.intranetPreview ?? false);
     if (want && !this._gate) {
       if (!window.AgoraGate) { clearTimeout(this._gateT); this._gateT = setTimeout(() => this.syncGate(), 150); return; }
-      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, top: GATE_TOP.length, login: (id, pw) => this.signIn(id, pw) });
+      this._gate = window.AgoraGate.mount({ total: 608, names: GATE_NAMES, top: GATE_TOP.length, login: (id, pw) => this.signIn(id, pw), join: () => this.openJoin() });
     } else if (!want && this._gate) {
       if (this.state.page === 'intranet' && this.state.user) this._gate.dive(); else this._gate.destroy();
       this._gate = null;
@@ -5323,6 +5325,17 @@ class Component extends DCLogic {
     };
   }
 
+  // 가입 신청 (assets/join.js). 관리자면 AGORA 위쪽 바에 '회원가입 승인 N'이 생긴다 (assets/ask.js). 관리자 여부는 member-admin 함수가 정한다
+  openJoin() { if (window.RFSJoin && this.sb) window.RFSJoin.open({ sb: this.sb }); }
+  openJoinAdmin() { if (window.RFSJoin && this.sb) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setJoinPending(n) }); }
+  setJoinPending(n) { this.setState({ joinPending: n }); if (window.RFSAsk && window.RFSAsk.setAdmin) window.RFSAsk.setAdmin(n); }
+  logout() { if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); }
+  loadJoinAdmin(email) {
+    if (this._joinFor === email) return; this._joinFor = email;
+    const run = () => (window.RFSJoin ? window.RFSJoin.isAdmin(this.sb).then((n) => { if (this._joinFor === email) this.setJoinPending(n); }) : setTimeout(run, 300));
+    run();
+  }
+
   // 로그인은 한 곳: 비밀번호 하나로 학회원 공용 계정, 맞지 않으면 운용팀 계정을 차례로 시도한다 (운용팀은 학회원 화면도 다 본다)
   // 아이디는 '@' 앞만 써도 된다 (amt → amt@caurfs.kr, member → member@caurfs.kr)
   signIn(id, pw) {
@@ -5690,6 +5703,7 @@ class Component extends DCLogic {
     if (!window.RFSAsk || !this.state.user) return;
     const ID = this.state.intraData || {};
     window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+      onLogout: () => this.logout(), adminCount: this.state.joinPending, onAdmin: () => this.openJoinAdmin(),
       // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
       sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
         if (!error) return { ok: true };
@@ -5997,11 +6011,11 @@ class Component extends DCLogic {
         if (!this.sb) return this.setState({ loginErr: '연결에 실패했습니다. 새로고침 후 다시 시도해 주세요.' });
         this.setState({ loginBusy: true, loginErr: '' });
         this.signIn(s.loginId, s.loginPw)
-          .then(({ error, email }) => this.setState({ loginBusy: false, loginErr: error ? '아이디와 비밀번호를 확인해 주세요.' : '', loginPw: error ? s.loginPw : '',
+          .then(({ error, email }) => this.setState({ loginBusy: false, loginErr: error ? (/banned/i.test(error.message || '') || error.code === 'user_banned' ? '승인 대기 중이에요. 승인되면 로그인할 수 있어요.' : '아이디와 비밀번호를 확인해 주세요.') : '', loginPw: error ? s.loginPw : '',
             // 게시판 글쓰기에서 왔으면 로그인 뒤 게시판으로 돌아간다 (운용팀이면 작성 폼을 연다)
             ...(!error && s.page === 'strategy' ? { wkLogin: false, wkWrite: email === 'amt@caurfs.kr', wkErr: email === 'amt@caurfs.kr' ? '' : '학회원으로 로그인했습니다. 글쓰기는 운용팀 계정(amt)으로 로그인해야 합니다.' } : {}) }));
       },
-      intraLogout: (e) => { e.preventDefault(); if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); },
+      intraLogout: (e) => { e.preventDefault(); this.logout(); },
       qna: ID.QNA.map((x) => ({ ...x, meta: x.from + ' 질문 · ' + x.date })),
       qnaCount: ID.QNA.length + '건',
       hasQna: ID.QNA.length > 0,

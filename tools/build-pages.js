@@ -75,7 +75,7 @@ const COHORT = stat('Cohort').target, ALUMNI = stat('Alumni').target, REPORTS_N 
 const ORG = { '@type': 'Organization', name: C.SITE_NAME, url: `${C.SITE}/` };
 const NAV = `<header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
 <nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>`;
-const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></footer>
+const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <a href="/privacy/">개인정보처리방침</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></footer>
 </body>
 </html>
 `;
@@ -234,17 +234,61 @@ ${NAV}
 ${FOOTER}`;
 }
 
+// ---------- /privacy/ ----------
+// 가입 신청 폼(assets/join.js)의 수집·이용 동의와 같은 내용. 바꾸면 join.js의 동의 표와 member-signup의 POLICY_VERSION도 같이 바꾼다
+
+function privacyPage() {
+  const url = `${C.SITE}/privacy/`;
+  const title = '개인정보처리방침 | 중앙대학교 가치투자학회 R.F.S.';
+  const desc = '중앙대학교 가치투자학회 R.F.S. 홈페이지 회원 가입 신청에서 받는 개인정보의 항목, 목적, 보유 기간, 파기, 위탁, 이용자의 권리.';
+  const row = (a, b) => `<tr><th style="text-align:left;padding:10px 14px 10px 0;vertical-align:top;white-space:nowrap;font-weight:600">${a}</th><td style="padding:10px 0;color:var(--muted)">${b}</td></tr>`;
+  return head({ title, desc, url, keywords: ['R.F.S. 개인정보처리방침'] }) +
+`</head>
+<body>
+${NAV}
+<main>
+<div class="crumb"><a href="/">R.F.S.</a> › 개인정보처리방침</div>
+<h1>개인정보처리방침</h1>
+<p class="headline">시행일 2026년 10월 26일</p>
+<p>중앙대학교 가치투자학회 R.F.S.(이하 "학회")는 「개인정보 보호법」에 따라 홈페이지 회원의 개인정보를 처리합니다. 학회는 영리 목적이 아닌 학회 운영을 위해 필요한 최소한의 정보만 받습니다.</p>
+<section><h2>1. 처리하는 항목과 목적</h2><table style="border-collapse:collapse;width:100%">
+${row('필수', '아이디, 비밀번호, 이름, 닉네임, 이메일, 생년월일')}
+${row('선택', '기수(학회원인 경우), 블로그 주소')}
+${row('자동 생성', '가입 신청·승인 시각, 접속 IP의 일방향 암호화 값(중복 신청 방지, 승인 후 삭제)')}
+${row('목적', '학회원 여부 확인과 가입 승인, 로그인, 학회원 전용 서비스(AGORA 등) 제공, 운영 공지 연락')}
+</table><p style="color:var(--muted)">비밀번호는 복원할 수 없는 방식으로 저장되며 학회 운영진도 볼 수 없습니다. 만 14세 미만은 가입할 수 없습니다.</p></section>
+<section><h2>2. 보유 기간과 파기</h2><ul class="list">
+<li style="padding:8px 0">회원 정보는 탈퇴할 때까지 보유하고, 탈퇴를 요청하면 지체 없이 파기합니다.</li>
+<li style="padding:8px 0">가입을 승인하지 않은 신청은 거절하는 즉시 파기합니다.</li>
+<li style="padding:8px 0">전자 파일은 복구할 수 없는 방법으로 삭제합니다.</li></ul></section>
+<section><h2>3. 제3자 제공</h2><p>학회는 회원의 개인정보를 제3자에게 제공하지 않습니다. 법령에 따라 요구되는 경우는 예외로 합니다.</p></section>
+<section><h2>4. 처리 위탁과 국외 이전</h2><table style="border-collapse:collapse;width:100%">
+${row('Supabase Inc. (미국)', '회원 계정·로그인, 데이터 저장. 가입 신청 시 입력한 정보 전체가 Supabase의 클라우드 서버에 저장됩니다(정보통신망을 통한 전송, 회원 탈퇴 시까지).')}
+${row('(주)솔라피 (대한민국)', '가입 신청 알림 문자 발송(운영진에게 신청자의 이름·기수만 전송)')}
+${row('Netlify, Inc. (미국)', '홈페이지 호스팅(접속 기록)')}
+</table><p style="color:var(--muted)">국외 이전을 원하지 않으면 가입을 신청하지 않을 수 있습니다. 이 경우 학회원 전용 서비스를 이용할 수 없습니다.</p></section>
+<section><h2>5. 이용자의 권리</h2><p>회원은 언제든지 자신의 개인정보 열람, 정정, 삭제, 처리 정지와 탈퇴를 요청할 수 있습니다. 아래 이메일로 요청하면 지체 없이 처리합니다.</p></section>
+<section><h2>6. 동의를 거부할 권리</h2><p>개인정보 수집·이용에 동의하지 않을 수 있습니다. 다만 필수 항목에 동의하지 않으면 가입 신청을 할 수 없습니다.</p></section>
+<section><h2>7. 쿠키 등</h2><p>로그인 상태 유지를 위해 브라우저 저장소를 사용하고, 방문 통계를 위해 Google Analytics를 사용합니다. 브라우저 설정에서 저장을 거부할 수 있으며, 이 경우 로그인이 유지되지 않을 수 있습니다.</p></section>
+<section><h2>8. 개인정보 보호책임자</h2><p>R.F.S. 회장 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p>
+<p style="color:var(--muted)">개인정보 침해 신고·상담: 개인정보침해신고센터(privacy.kisa.or.kr, 국번 없이 118), 개인정보분쟁조정위원회(www.kopico.go.kr, 1833-6972)</p></section>
+<section><h2>9. 변경</h2><p>이 방침을 바꾸면 시행 7일 전에 이 페이지에 알립니다.</p></section>
+</main>
+${FOOTER}`;
+}
+
 write('about/index.html', aboutPage());
 write('fund/index.html', fundPage());
 write('people/index.html', peoplePage());
 write('recruiting/index.html', recruitingPage());
+write('privacy/index.html', privacyPage());
 
 // sitemap에 두 페이지를 넣는다 (build-site.js가 sitemap을 새로 쓰므로 그 다음에 실행)
 let sm = read('sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
-for (const p of ['about', 'recruiting', 'fund', 'people']) {
+for (const p of ['about', 'recruiting', 'fund', 'people', 'privacy']) {
   const loc = `${C.SITE}/${p}/`;
   if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>\n</urlset>`);
 }
 write('sitemap.xml', sm);
-console.log(`about/, recruiting/, fund/, people/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);
+console.log(`about/, recruiting/, fund/, people/, privacy/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);

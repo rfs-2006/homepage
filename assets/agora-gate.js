@@ -27,6 +27,7 @@
 .ag-lg button:disabled{opacity:.6;cursor:default}\
 .ag-lg .er{margin:4px 0 0;font-size:12px;color:#E8A9A9;min-height:0}\
 .ag-lg .hp{margin:16px 0 0;font-size:12px;color:rgba(247,246,243,.6)}.ag-lg .hp a{color:rgba(247,246,243,.85);display:inline-flex;align-items:center;min-height:44px}\
+.ag-lg .jl{margin:0;font-size:12px;color:rgba(247,246,243,.6)}.ag-lg .jl a{color:#F7F6F3;display:inline-flex;align-items:center;min-height:36px;text-decoration:underline;text-underline-offset:3px}\
 .ag-gate .on{opacity:1}\
 @media (min-width:900px){.ag-lg{top:60%}}.ag-gate .ag-ttl.on{transform:none}.ag-gate .ag-lg.on{transform:translate(-50%,-50%)}\
 .ag-gate.dive .ag-lg,.ag-gate.dive .ag-ttl{opacity:0;transition:opacity .5s ease}\
@@ -42,15 +43,16 @@
       '<div class="ag-ttl"><b>' + (o.total || 608) + '</b><small>RISEN FINANCIAL STARS</small></div>' +
       '<div class="ag-lg" role="dialog" aria-label="학회원 로그인"><img src="/assets/rfs-seal-light-256.png" alt="R.F.S."><small>MEMBERS ONLY</small><h1>학회원 로그인</h1>' +
       '<form><input name="username" autocomplete="username" autocapitalize="none" placeholder="아이디" required><input name="password" type="password" autocomplete="current-password" placeholder="비밀번호" required><p class="er" aria-live="polite"></p><button type="submit">LOGIN</button></form>' +
-      '<p class="hp">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p></div>';
+      '<p class="hp">비밀번호 문의 · <a href="mailto:contact@caurfs.kr">contact@caurfs.kr</a></p><p class="jl">계정이 없다면 · <a href="#" class="jn-go">회원가입</a></p></div>';
     document.body.appendChild(el);
     var sky = el.querySelector('.ag-sky'), ttl = el.querySelector('.ag-ttl'), lg = el.querySelector('.ag-lg'), form = el.querySelector('form'), er = el.querySelector('.er'), btn = el.querySelector('button');
+    el.querySelector('.jn-go').onclick = function (e) { e.preventDefault(); if (o.join) o.join(); };
     form.onsubmit = function (e) {
       e.preventDefault();
       if (btn.disabled) return;
       btn.disabled = true; btn.textContent = '…'; er.textContent = '';
       Promise.resolve(o.login(form.username.value, form.password.value)).then(function (r) {
-        if (r && r.error) { btn.disabled = false; btn.textContent = 'LOGIN'; er.textContent = '아이디와 비밀번호를 확인해 주세요.'; form.password.value = ''; form.password.focus(); }
+        if (r && r.error) { btn.disabled = false; btn.textContent = 'LOGIN'; er.textContent = /banned/i.test((r.error && r.error.message) || '') || (r.error && r.error.code) === 'user_banned' ? '승인 대기 중이에요. 승인되면 로그인할 수 있어요.' : '아이디와 비밀번호를 확인해 주세요.'; form.password.value = ''; form.password.focus(); }
       }, function () { btn.disabled = false; btn.textContent = 'LOGIN'; er.textContent = '연결에 실패했습니다. 잠시 후 다시 시도해 주세요.'; });
     };
 
