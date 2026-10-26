@@ -1307,10 +1307,10 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
 .pg-hero.pg-full.hero-out .pg-bg,.pg-hero.pg-full.hero-out .pg-hero-in{opacity:0}
 .hero-cue{position:absolute;left:50%;bottom:34px;z-index:3;width:44px;height:44px;margin-left:-22px;border:0;background:none;cursor:pointer;padding:0;transition:opacity .4s ease}
-.hero-cue::before{content:'';position:absolute;left:50%;top:12px;width:13px;height:13px;margin-left:-7px;border-right:1.5px solid rgba(247,246,243,.85);border-bottom:1.5px solid rgba(247,246,243,.85);transform:rotate(45deg)}
+.hero-cue::before{content:'';position:absolute;left:50%;top:4px;width:20px;height:36px;margin-left:-10px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 36' fill='none' stroke='%23F7F6F3' stroke-opacity='.85' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10 1v33M2 26l8 8 8-8'/%3E%3C/svg%3E") center/contain no-repeat}
 .pg-hero.hero-out .hero-cue{opacity:0}
 @media (prefers-reduced-motion:no-preference){.hero-cue::before{animation:cueBob 1.8s ease-in-out infinite}}
-@keyframes cueBob{0%,100%{transform:translateY(0) rotate(45deg);opacity:.9}50%{transform:translateY(7px) rotate(45deg);opacity:.45}}
+@keyframes cueBob{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(7px);opacity:.45}}
 .pg-hero.pg-full .scrim{transition:opacity .9s ease}.pg-hero.pg-full.hero-out .scrim{opacity:0 !important}   /* 사진 위 남색 막도 같이 흐려져야 파란 화면이 남았다 뚝 사라지지 않는다 */
 /* 메뉴 첫 화면 제목: 화면 전체에 같은 진하기로 덮으면 사진이 납작하고 제목이 사진에 묻힌다.
    가장자리는 살짝 어둡게, 제목 뒤만 부드럽게 눌러 주고, 글자에 넓은 그림자를 준다 */
@@ -1792,7 +1792,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
       <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
         <div style="pointer-events:none">
-          <div style="font-size:13px;letter-spacing:0.08em;color:rgba(247,246,243,0.75);font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
+          <div style="font-size:13px;letter-spacing:0.08em;color:#F7F6F3;font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
           <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
           <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
           <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
@@ -3278,7 +3278,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   
   
 
-  <footer data-nav="dark" style="background:#0F1B2E">
+  <footer data-nav="dark" style="background:#203864">
     <div class="wrap" style="padding:80px 35px 40px">
       <div class="foot-grid" style="display:grid;grid-template-columns:1.6fr 1fr;gap:40px">
         <div>
@@ -3290,16 +3290,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <div class="footlinks" style="display:flex;gap:20px;margin-top:14px;font-size:13px">
             <a href="https://www.instagram.com/cau_rfs/" target="_blank" rel="noopener">Instagram</a>
             <a href="https://cafe.naver.com/caurfs" target="_blank" rel="noopener">네이버 카페</a>
-            <a href="/privacy/">개인정보처리방침</a>
           </div>
         </div>
         <div style="font-size:13px;color:rgba(247,246,243,0.75);line-height:1.9">
           <div style="font-size:12px;font-weight:600;letter-spacing:0.08em;color:rgba(247,246,243,0.6);margin-bottom:12px">CONTACT</div>
-          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br><a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
+          회장 김민석 &nbsp;<a href="tel:01042919088" style="color:rgba(247,246,243,0.9)">010-4291-9088</a><br>이메일 &nbsp;<a href="mailto:contact@caurfs.kr" style="color:rgba(247,246,243,0.9)">contact@caurfs.kr</a>
         </div>
       </div>
-      <p style="border-top:1px solid rgba(247,246,243,0.25);margin:48px 0 0;padding-top:20px;font-size:12px;line-height:1.8;color:rgba(247,246,243,0.55);max-width:72em">본 사이트의 리포트는 중앙대학교 가치투자학회 R.F.S. 학회원이 교육 목적으로 작성한 자료입니다. 투자의견과 목표주가는 학회원의 분석에 기반한 의견이며 특정 종목의 매수·매도를 권유하지 않습니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</p>
-      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:16px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
+      <div style="font-size:12px;color:rgba(247,246,243,0.6);margin-top:48px">© 2026 중앙대학교 가치투자학회 R.F.S. · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></div>
     </div>
   </footer>
 
@@ -6475,12 +6473,12 @@ class Component extends DCLogic {
 </script>
 <!-- 리서치 챗봇(Polaris) 바로가기: 모든 화면 오른쪽 아래. 누르면 /chat/. 폰에서는 로고만 -->
 <style>
-.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:#0E0B0B;border:1px solid rgba(244,241,235,.18);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
+.rfs-bot{position:fixed;right:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:0;height:52px;padding:4px;border-radius:999px;background:rgba(14,11,11,.32);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(244,241,235,.22);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);color:#F4F1EB;text-decoration:none;font:500 13.5px 'Pretendard Variable',sans-serif;letter-spacing:-.01em;transition:background-color .2s,border-color .2s}
 .rfs-bot img{width:42px;height:42px;border-radius:50%;flex:none}
 .rfs-bot,.rfs-bot:visited,.rfs-bot span{color:#F4F1EB !important}
 .rfs-bot{gap:10px;padding-right:18px}
 .rfs-bot span{white-space:nowrap}
-.rfs-bot:hover{background:#1A1614;border-color:rgba(244,241,235,.35)}
+.rfs-bot:hover{background:rgba(14,11,11,.5);border-color:rgba(244,241,235,.4)}
 @media (max-width:640px){.rfs-bot{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:48px;gap:0;padding-right:4px}.rfs-bot img{width:38px;height:38px}.rfs-bot span{display:none}}
 .rfs-chat{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:61;width:min(420px,calc(100vw - 48px));height:min(680px,calc(100vh - 120px));background:#0E0B0B;border:1px solid rgba(244,241,235,.16);border-radius:16px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.65);display:flex;flex-direction:column;transform-origin:bottom right;animation:rfsChatIn .28s cubic-bezier(.2,.8,.2,1)}
 .rfs-chat[hidden]{display:none}
