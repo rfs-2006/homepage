@@ -482,7 +482,8 @@ async function showPdf(box, url, page, pageTo, cited) {
     const draw = async () => {
       const pp = await doc.getPage(cur); if (tok !== showPdf.tok) return;
       const fit = (sc.clientWidth - 28) / pp.getViewport({ scale: 1 }).width, scale = fit * zf;
-      const vp = pp.getViewport({ scale }), dpr = Math.min(2, window.devicePixelRatio || 1);
+      // 화면 배율(윈도우 125%·150% 등)과 상관없이 최소 2배로 촘촘하게 그린다 (1배로 그리면 글자가 뭉개진다). 너무 큰 캔버스는 막는다(가로 6000px)
+      const vp = pp.getViewport({ scale }), dpr = Math.min(Math.max(2, (window.devicePixelRatio || 1) * 1.5), 4, 6000 / vp.width);
       const cv = document.createElement('canvas'); cv.width = Math.floor(vp.width * dpr); cv.height = Math.floor(vp.height * dpr);
       cv.style.width = vp.width + 'px'; cv.style.height = vp.height + 'px';
       await pp.render({ canvasContext: cv.getContext('2d'), viewport: vp, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
