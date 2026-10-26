@@ -68,6 +68,8 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
   - web_search: 학회 자료에 없는 최근 사실·시장 관행 확인 (최대 2번).
 
 기준 문서 (read_guide로 읽는다. 학회 교육자료·산업 가이드라인·정규 리포트 평가표를 전부 읽고 만든 것이라 학회 자료가 실제로 뭐라고 하는지와 쪽수가 적혀 있다.
+  기준 문서는 출처가 아니라 지도다. 내가 요약한 2차 자료라서, 읽는 사람이 원문을 확인할 수 없다. 그 안의 [GB p.64], "삼양식품 24-1" 같은 표시는 원문을 찾아가는 주소다.
+  답에 학회 자료로 쓰는 사실(어느 리포트가 무엇을 왜 했나, 가이드북이 뭐라고 하나)은 그 주소로 search나 read_report를 불러 원문에 출처가 달리게 쓴다. 판단 순서·설명 틀은 그대로 써도 된다. [GB p.64] 같은 표시를 답에 옮기지 않는다.
   아래 [개념 지도]는 늘 붙어 있다. 방법 하나를 깊이 설명하거나 비교할 때는 '밸류에이션 방법별'을, 배수·Peer 얘기면 '적정 배수와 Peer'를, 업종이 정해졌으면 '업종별 관행'을 읽고 그 내용으로 답한다. 미리 찾은 자료만으로 끝내지 않는다.)
 - 밸류에이션 방법별: PER·EV/EBITDA·PBR·PSR·DCF·RIM·DDM·SOTP마다 맞을 때/못 쓸 때, 실행 순서(입력값을 어디서), 학회 리포트 사례, 평가표가 짚는 실수.
 - 적정 배수와 Peer: Peer/Historical/Historical Peer/Band, 시점, 할인·할증, Peer 고르는 기준, 마무리 처리(희석·순차입금·민감도).
@@ -95,7 +97,7 @@ SYSTEM = """너는 중앙대 가치투자학회 R.F.S.의 Polaris다. 학회 리
   겹치지 않고 빠짐없이(MECE) 나뉘는 것은 들여쓴 목록(공백 2칸마다 한 단계)으로 트리를 먼저 그리고 본문은 그 순서대로 간다. 그렇게 안 나뉘는 내용은 트리를 억지로 그리지 않는다.
 - 신입이 읽는다: 약어는 처음에 풀네임과 한 줄 뜻. 숫자에는 무엇 대비 얼마인지. 사례는 왜 보는지부터, 무엇을 왜 했는지 이야기로.
 - 한 덩어리에 요점 하나. 요점이 여럿이면 개수와 관계를 먼저 말한다.
-- 존댓말(해요체), 짧고 구체적으로. 마크다운 제목(#)은 쓰지 않는다. 굵은 글씨·목록은 써도 된다.
+- 존댓말(해요체), 짧고 구체적으로. 화면은 굵은 한 줄(소제목), 목록, 들여쓴 목록(트리)만 그린다. 마크다운 제목(#)·코드 블록·표는 쓰지 않는다.
 - 뜻이 여러 가지로 읽히면 첫 줄에 "A로 이해했어요. B면 말해 주세요"라고 하고 답한다. 정말 답할 수 없을 만큼 정보가 없을 때만 되묻는다 (보기를 들어 짧게).
 - 학회 자료에서 못 찾은 것은 지어내지 않고 못 찾았다고 말한다.
 
@@ -126,10 +128,25 @@ SUMMARY_GUIDE = """리포트 요약하는 법 (read_report로 '요약'과 '전�
 
 # 개념 지도 (guides/concept_map.md): 학회 교육자료·산업 가이드라인·평가표를 전부 읽고 만든 기준 문서. '# 제목'마다 따로 펼쳐 읽는다 (Agent Skills 식)
 #   개념 지도(뼈대·리포트 흐름·밸류에이션 판단 순서) / 밸류에이션 방법별 / 적정 배수와 Peer / 업종별 관행 / 추정 / 산업·기업 분석 / 재무제표 읽기 / 자료 찾기
+def as_answer_style(text):
+    """지시문·기준 문서를 채팅 화면이 그리는 모양으로: '#' 제목 → 굵은 한 줄, 코드 블록 표시는 지운다.
+    모델은 규칙보다 지시문 전체의 모양을 따라 쓴다 (10/26: 지시문에 ## 9줄·``` 2개 → 답에 '## 1.'과 ``` 안의 트리가 나옴)"""
+    out = []
+    for line in text.splitlines():
+        m = re.match(r'^#{1,6}\s+(.*)', line)
+        if m:
+            out.append(f'**{m.group(1).strip()}**')
+        elif line.strip().startswith('```'):
+            continue
+        else:
+            out.append(line)
+    return '\n'.join(out)
+
+
 _MAP = (Path(__file__).parent / 'guides' / 'concept_map.md').read_text()
 # 모범 답 (guides/examples.md): 규칙 대신 그림. 비교형 질문 하나, 방법 설명(DCF) 하나. 지시문에 늘 붙는다 (Anthropic: 예외 목록보다 대표 예시 몇 개)
-EXAMPLES = (Path(__file__).parent / 'guides' / 'examples.md').read_text()
-MAP_GUIDES = {m.group(1).strip(): m.group(0).strip() for m in re.finditer(r'^# (.+?)\n(?:(?!^# ).*\n?)*', _MAP, re.M)}
+EXAMPLES = as_answer_style((Path(__file__).parent / 'guides' / 'examples.md').read_text())
+MAP_GUIDES = {m.group(1).strip(): as_answer_style(m.group(0).strip()) for m in re.finditer(r'^# (.+?)\n(?:(?!^# ).*\n?)*', _MAP, re.M)}
 GUIDES = {**{k: v for k, v in MAP_GUIDES.items() if k != '개념 지도'}, **{a: RUBRIC[RUBRIC_AXIS[a]] for a in AXES if RUBRIC_AXIS[a] in RUBRIC},
           '피드백 하는 법': FEEDBACK_GUIDE, '리포트 요약하는 법': SUMMARY_GUIDE, '학회 안내': None}   # 학회 안내는 처음 읽을 때 만든다
 
@@ -292,11 +309,8 @@ class Chat:
                 if GUIDES['학회 안내'] is None:
                     GUIDES['학회 안내'] = '학회 안내 (홈페이지 공개 내용. 끝에 [신입 학회원 모집](/recruiting/) 또는 [학회 소개](/about/) 링크)\n' + club_info()
             text = GUIDES.get(g)
-            if not text:
-                return [{'type': 'text', 'text': '그런 문서는 없다.'}]
-            # 기준 문서도 search_result로 넘긴다: 그 내용으로 답할 때 출처 칩('학회 기준 문서 · 이름')이 달리게 (글 블록이면 인용이 안 달려 출처 0개가 됐다)
-            return [{'type': 'search_result', 'source': f'기준문서 {g}', 'title': f'학회 기준 문서 · {g}',
-                     'content': [{'type': 'text', 'text': p} for p in text.split('\n') if p.strip()], 'citations': {'enabled': True}}]
+            # 기준 문서는 글 블록으로 준다(출처로 달리지 않게). 2차 요약이라 원문 대신 인용되면 안 된다 (10/26: 리포트 사실에 '학회 기준 문서'가 출처로 붙음)
+            return [{'type': 'text', 'text': text or '그런 문서는 없다.'}]
         return [{'type': 'text', 'text': '모르는 도구'}]
 
     # ------------------------------------------------------------ 한 턴

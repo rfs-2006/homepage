@@ -300,8 +300,9 @@ function render(text, mid) {
       out.push(`<li>${inline(m[3])}`);
       continue;
     }
+    if (/^\s*```/.test(line)) continue;   // 코드 블록 표시는 지운다 (모델이 가끔 트리를 코드 블록에 넣는다)
     close(0);
-    const h = line.match(/^\*\*(.+)\*\*$/);   // 한 줄 전체가 굵은 글씨면 소제목
+    const h = line.match(/^\*\*(.+)\*\*$/) || line.match(/^#{1,4}\s+(.+)$/);   // 한 줄 전체가 굵은 글씨거나 '## 제목'이면 소제목
     if (h) out.push(`<h4>${inline(h[1])}</h4>`);
     else if (line.trim()) out.push(`<p>${inline(line)}</p>`);
   }
