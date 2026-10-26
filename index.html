@@ -122,7 +122,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
-<script src="./assets/ask.js?v=17" defer></script>
+<script src="./assets/ask.js?v=18" defer></script>
 <script src="./assets/wk-rich.js?v=3" defer></script>
 <script src="./assets/agora-gate.js?v=11" defer></script>
 <script src="./assets/join.js?v=3" defer></script>
@@ -5325,12 +5325,14 @@ class Component extends DCLogic {
     };
   }
 
-  // 가입 신청 (assets/join.js). 관리자면 AGORA 메뉴에 '회원가입 승인 N'이 생긴다. 관리자 여부는 member-admin 함수가 정한다
+  // 가입 신청 (assets/join.js). 관리자면 AGORA 위쪽 바에 '회원가입 승인 N'이 생긴다 (assets/ask.js). 관리자 여부는 member-admin 함수가 정한다
   openJoin() { if (window.RFSJoin && this.sb) window.RFSJoin.open({ sb: this.sb }); }
-  openJoinAdmin() { if (window.RFSJoin && this.sb) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setState({ joinPending: n }) }); }
+  openJoinAdmin() { if (window.RFSJoin && this.sb) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setJoinPending(n) }); }
+  setJoinPending(n) { this.setState({ joinPending: n }); if (window.RFSAsk && window.RFSAsk.setAdmin) window.RFSAsk.setAdmin(n); }
+  logout() { if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); }
   loadJoinAdmin(email) {
     if (this._joinFor === email) return; this._joinFor = email;
-    const run = () => (window.RFSJoin ? window.RFSJoin.isAdmin(this.sb).then((n) => { if (this._joinFor === email) this.setState({ joinPending: n }); }) : setTimeout(run, 300));
+    const run = () => (window.RFSJoin ? window.RFSJoin.isAdmin(this.sb).then((n) => { if (this._joinFor === email) this.setJoinPending(n); }) : setTimeout(run, 300));
     run();
   }
 
@@ -5701,6 +5703,7 @@ class Component extends DCLogic {
     if (!window.RFSAsk || !this.state.user) return;
     const ID = this.state.intraData || {};
     window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+      onLogout: () => this.logout(), adminCount: this.state.joinPending, onAdmin: () => this.openJoinAdmin(),
       // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
       sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
         if (!error) return { ok: true };
@@ -6012,7 +6015,7 @@ class Component extends DCLogic {
             // 게시판 글쓰기에서 왔으면 로그인 뒤 게시판으로 돌아간다 (운용팀이면 작성 폼을 연다)
             ...(!error && s.page === 'strategy' ? { wkLogin: false, wkWrite: email === 'amt@caurfs.kr', wkErr: email === 'amt@caurfs.kr' ? '' : '학회원으로 로그인했습니다. 글쓰기는 운용팀 계정(amt)으로 로그인해야 합니다.' } : {}) }));
       },
-      intraLogout: (e) => { e.preventDefault(); if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); },
+      intraLogout: (e) => { e.preventDefault(); this.logout(); },
       qna: ID.QNA.map((x) => ({ ...x, meta: x.from + ' 질문 · ' + x.date })),
       qnaCount: ID.QNA.length + '건',
       hasQna: ID.QNA.length > 0,
@@ -6088,7 +6091,7 @@ class Component extends DCLogic {
       intraTitle, intraTab: tab,
       isIntraDash: tab === 'dashboard', isIntraFund: tab === 'fund', isIntraBoard: tab === 'board', isIntraSchedule: tab === 'schedule', isIntraDirectory: tab === 'directory',
 
-      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), { key: 'ask', label: '선배님께 여쭙기', href: '#intranet/ask', on: (e) => { e.preventDefault(); this.openAsk(); }, cls: '' }, railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }, ...(s.joinPending == null ? [] : [{ key: 'join', label: '회원가입 승인' + (s.joinPending ? ' ' + s.joinPending : ''), href: '#intranet', on: (e) => { e.preventDefault(); this.openJoinAdmin(); }, cls: '' }])],
+      intraRailMain: [railItem('dashboard', 'Home'), railItem('directory', '알럼나이 디렉토리'), { key: 'ask', label: '선배님께 여쭙기', href: '#intranet/ask', on: (e) => { e.preventDefault(); this.openAsk(); }, cls: '' }, railItem('board', '게시판'), { key: 'fund', label: 'AMT Fund ↗', href: '#fund', on: (e) => { e.preventDefault(); this.go('fund'); }, cls: '' }, { key: 'rfm', label: 'RFM 순위 ↗', href: '#rfm', on: (e) => { e.preventDefault(); this.go('rfm'); }, cls: '' }],
       dirTotal: dirAll.length + '명', dirIndTotal: new Set(dirAll.map((a) => a.industry).filter(Boolean)).size + '개', dirHitCount: dirHits.length + '명',
       dirQ: s.dirQ, onDirQ: (e) => this.setState({ dirQ: e.target.value }),
       // 아고라 첫 화면 (네트워크형)
