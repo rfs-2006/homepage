@@ -124,7 +124,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
 <script src="./assets/wk-rich.js?v=6" defer></script>
-<script src="./assets/wk-print.js?v=4" defer></script>
+<script src="./assets/wk-print.js?v=5" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=4" defer></script>
 <style>
@@ -3122,7 +3122,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
         <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
-        <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 역할 · 담당" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
+        <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 직책 · 담당 섹터 · 기수 · 주요 경력" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" class="wk-fbbtn" onClick="{{ wkPolRun }}">{{ wkPolLabel }}</a><sc-if value="{{ wkPolUndo }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-fbbtn" onClick="{{ wkPolBack }}">되돌리기</a></sc-if><a href="#" class="wk-fbbtn" onClick="{{ wkFbRun }}">{{ wkFbLabel }}</a><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
         <sc-if value="{{ wkFbOn }}" hint-placeholder-val="{{ false }}"><div class="wk-fb"><p class="wk-fb-h">{{ wkFbHead }}</p><sc-for list="{{ wkFbItems }}" as="f"><div class="wk-fb-i"><em>{{ f.type }}</em><div><q>{{ f.quote }}</q><p>{{ f.issue }}</p><p class="fx">{{ f.fix }}</p></div></div></sc-for></div></sc-if>
       </form></sc-if>
@@ -4645,6 +4645,13 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 const RES_HERO = Math.random() < 0.5 ? '' : '-b';
+// AMT Fund 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가). FUND 화면과 운용보고서 PDF가 같이 쓴다
+const FUND_SECTOR = {
+  '009150': '전자부품', '353200': 'PCB·기판', '007660': 'PCB·기판', '222800': 'PCB·기판', '007810': 'PCB·기판',
+  '064290': '반도체 장비·부품', '039030': '반도체 장비·부품', '058470': '반도체 장비·부품', '089030': '반도체 장비·부품', '330860': '반도체 장비·부품',
+  '005930': '반도체', '000660': '반도체', '103590': '전력기기', '062040': '전력기기', '033790': '2차전지 소재',
+  '003490': '항공', '041830': '의료기기', 'TRMD': '해운', '035900': '엔터', '041510': '엔터', '352820': '엔터', '096770': '정유·화학',
+};
 class Component extends DCLogic {
   state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
@@ -5182,12 +5189,7 @@ class Component extends DCLogic {
     const ctbOf = (h) => (typeof h.ctb === 'number' ? h.ctb : h.day !== null && h.day !== undefined ? (h.weight || 0) * h.day / 100 : null);
     const rep = {}; REPORTS.forEach((r) => { if (r.ticker && !rep[r.ticker]) rep[r.ticker] = r; });
     // 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가)
-    const SECTOR = {
-      '009150': '전자부품', '353200': 'PCB·기판', '007660': 'PCB·기판', '222800': 'PCB·기판', '007810': 'PCB·기판',
-      '064290': '반도체 장비·부품', '039030': '반도체 장비·부품', '058470': '반도체 장비·부품', '089030': '반도체 장비·부품', '330860': '반도체 장비·부품',
-      '005930': '반도체', '000660': '반도체', '103590': '전력기기', '062040': '전력기기', '033790': '2차전지 소재',
-      '003490': '항공', '041830': '의료기기', 'TRMD': '해운',
-    };
+    const SECTOR = FUND_SECTOR;
     const sectorOf = (h) => SECTOR[h.code] || (rep[h.code] && rep[h.code].sector) || '기타';
     const hi = this.state.fdHi === undefined ? null : this.state.fdHi;
     let acc = 0; const stops = []; const segs = [];
@@ -5580,6 +5582,18 @@ class Component extends DCLogic {
       const snapOf = (x) => x ? { cash: x.cash, h: x.h.map(([code, name, weight]) => ({ code, name, weight, ret: null })), asOf: x.asOf } : null;
       const cur = wi >= 0 ? snapOf(WK[wi]) : newest ? { cash: FD.cashWeight, h: (FD.holdings || []).map((h) => ({ code: h.code, name: h.name, weight: h.weight, ret: h.ret })), asOf: (FD.asOf || '').slice(0, 10) } : null;
       (this._wkTo = this._wkTo || {})[w.id] = wi >= 0 && WK[wi].to != null ? WK[wi].to.toFixed(1) + '%' : ''; // 매매회전율 (수집기 kt00007), 보고서 PDF에만 쓴다
+      // 운용보고서 PDF 부록: 업종별 비중·매매 종목·비용(모두 % 비율, 금액 없음)
+      (this._wkPdf = this._wkPdf || {})[w.id] = (() => {
+        const sn = wi >= 0 ? WK[wi] : null; const cur0 = wi >= 0 ? snapOf(WK[wi]) : null;
+        const sec = {}; ((cur0 && cur0.h) || []).forEach((h) => { const k = FUND_SECTOR[h.code] || '기타'; sec[k] = (sec[k] || 0) + (h.weight || 0); });
+        const prev0 = wi > 0 ? snapOf(WK[wi - 1]) : null; const pw0 = {}; ((prev0 && prev0.h) || []).forEach((h) => { pw0[h.code] = h.weight; });
+        const cw0 = {}; ((cur0 && cur0.h) || []).forEach((h) => { cw0[h.code] = h.weight; });
+        return {
+          sectors: Object.entries(sec).sort((x, y) => y[1] - x[1]).map(([k, v]) => [k, v.toFixed(1)]), cash: cur0 && cur0.cash != null ? cur0.cash.toFixed(1) : '',
+          trades: ((sn && sn.tr) || []).map(([c, n, sd]) => { const d = (cw0[c] || 0) - (pw0[c] || 0); return [n, sd, prev0 ? (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(1) : '-']; }),
+          fee: sn && sn.fee != null ? sn.fee.toFixed(3) + '%' : '', tax: sn && sn.tax != null ? sn.tax.toFixed(3) + '%' : '',
+        };
+      })();
       const prvS = wi > 0 ? snapOf(WK[wi - 1]) : wi < 0 && newest ? snapOf(WK.filter((x) => x.week < w.week).pop()) : null;
       const pw = {}; if (prvS) prvS.h.forEach((h) => { pw[h.code] = h.weight; });
       const all = cur ? cur.h.slice().sort((x, y) => y.weight - x.weight) : [];
@@ -5631,7 +5645,7 @@ class Component extends DCLogic {
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
         toggle: (e) => { e.preventDefault(); if (key === 'wkTop') { this.setState({ wkTopFull: false }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); }); return; } this.setState({ [key]: open ? null : w.id }); },
-        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: w.team || [], note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '' })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
+        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: w.team || [], note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '', ...((this._wkPdf || {})[w.id] || {}) })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
         ...(key === 'wkTop' ? cardOf(w, body, rich) : {}),
         canDel: open && isAmt,
         // 올린 글도 운용팀 계정이면 Polaris 피드백을 볼 수 있다 (글 안에서만, 저장하지 않음)
@@ -5784,7 +5798,7 @@ class Component extends DCLogic {
           const row = { category: cat, week: strat ? wkMon : today, title: strat ? weekTitle(wkMon) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' };
           if (strat) {
             const teamSrc = s.wkTeamTxt != null ? s.wkTeamTxt : ((document.querySelector('.wk-form .wk-team') || {}).value || '');
-            row.team = teamSrc.split('\n').map((l) => l.split(/\s*[·|\t]\s*/).map((x) => x.trim()).filter(Boolean)).filter((r) => r.length).map((r) => [r[0], r[1] || '', r.slice(2).join(' ')]);
+            row.team = teamSrc.split('\n').map((l) => l.split(/\s*[·|\t]\s*/).map((x) => x.trim()).filter(Boolean)).filter((r) => r.length).map((r) => [r[0], r[1] || '', r[2] || '', r[3] || '', r.slice(4).join(' · ')]);
             row.note = (s.wkNote || '').trim();
           }
           const { error } = await this.sb.from('fund_weekly').insert(row);

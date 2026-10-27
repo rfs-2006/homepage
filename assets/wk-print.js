@@ -79,6 +79,7 @@
       '.bd h3{margin:2.5mm 0 .8mm;font-size:9.5pt;color:' + NAVY + '}.bd details>summary{list-style:none;font-weight:700}.bd .chk{margin-right:1.2mm}' +
       // 부록
       'table.ov{width:100%;border-collapse:collapse;font-size:8.4pt;line-height:1.45}table.ov th{width:26mm;text-align:left;font-weight:500;color:' + NAVY + ';padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF;vertical-align:top}table.ov td{padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF}' +
+      'table.tl th,table.tl td{text-align:left}table.tn td:last-child,table.tn th:last-child{text-align:right}.ap .blk>h2{font-size:13pt;word-break:keep-all}.ap .blk>h2 small{display:block;margin-top:1.5mm;font-size:7.8pt;font-weight:300}' +
       '.rk p{margin:0 0 1.2mm;font-size:8pt;line-height:1.5}.rk b{color:' + NAVY + ';margin-right:1.5mm}';
   }
 
@@ -102,7 +103,16 @@
     var dn = d.hold.filter(function (h) { return num(h.d) < 0; }).sort(function (a, b) { return num(a.d) - num(b.d); }).slice(0, 5);
     var mv = function (l) { return '<table class="t"><tr><th>종목명</th><th>증감</th></tr>' + (l.length ? l.map(function (h) { return '<tr><td>' + esc(h.n) + '</td><td style="color:' + (h.dc || INK) + '">' + esc(h.d.replace('%p', '')) + '</td></tr>'; }).join('') : '<tr><td>해당 종목 없음</td><td></td></tr>') + '</table>'; };
     var team = (opt.team || []).filter(function (r) { return r && r[0]; });
-    var teamT = team.length ? '<table class="t"><tr><th>이름</th><th>역할</th><th>담당</th></tr>' + team.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td style="text-align:left">' + esc(r[1] || '') + '</td><td style="text-align:left">' + esc(r[2] || '') + '</td></tr>'; }).join('') + '</table>' : '';
+    // 투자운용인력현황: 한 줄에 '이름 · 직책 · 담당 · 기수 · 주요 경력' (뒤 칸은 비워도 됨). 값이 있는 칸만 보인다
+    var TH = ['성명', '직책', '담당 섹터', '기수', '주요 경력'];
+    var cols = TH.map(function (_, k) { return team.some(function (r) { return r[k]; }); });
+    var teamT = team.length ? '<table class="t tl"><tr>' + TH.filter(function (_, k) { return cols[k]; }).map(function (h) { return '<th>' + h + '</th>'; }).join('') + '</tr>' + team.map(function (r) { return '<tr>' + TH.map(function (_, k) { return cols[k] ? '<td>' + esc(r[k] || '') + '</td>' : ''; }).join('') + '</tr>'; }).join('') + '</table>' : '';
+    // 자산보유현황(업종별 비중)·투자자산 매매내역·비용 현황: 모두 % 비율 (금액·수량 없음)
+    var secs = opt.sectors || [];
+    var assetT = secs.length ? '<table class="t tl tn"><tr><th>구분</th><th>비중 (%)</th></tr>' + secs.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td></tr>'; }).join('') + (opt.cash ? '<tr class="f"><td>현금</td><td>' + esc(opt.cash) + '</td></tr>' : '') + '</table>' : '';
+    var trs = opt.trades || [];
+    var tradeT = '<table class="t tl tn"><tr><th>종목</th><th>구분</th><th>비중 변화 (%p)</th></tr>' + (trs.length ? trs.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td><td>' + esc(x[2]) + '</td></tr>'; }).join('') : '<tr><td>이번 주 매매 없음</td><td></td><td></td></tr>') + '</table>';
+    var costT = '<table class="t tl tn"><tr><th>항목</th><th>순자산 대비</th></tr><tr><td>매매수수료</td><td>' + esc(opt.fee || '집계 중') + '</td></tr><tr><td>증권거래세</td><td>' + esc(opt.tax || '집계 중') + '</td></tr><tr><td>매매회전율</td><td>' + esc(opt.turnover || '집계 중') + '</td></tr></table>';
     var seal = abs('/assets/rfs-seal-light-256.png');
 
     return '<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>' + esc(d.title) + ' · AMT Fund 운용보고서</title><style>' + css('AMT Fund 주간 운용보고서 · ' + d.title) + '</style></head><body>' +
@@ -133,7 +143,11 @@
       '<tr><th>투자 원칙</th><td>GPS — 성장(Growth)이 담보된 기업을 좋은 가격(Price)에 포착하고, 시장 심리(Sentiment)를 활용해 매매 시점을 잡는다</td></tr>' +
       '<tr><th>운용 방식</th><td>탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 회의에서 팀 합의로 편입·비중·엑시트 결정, 최종 책임은 운용팀장</td></tr>' +
       '<tr><th>보고</th><td>매주 투자전략(본 보고서), 이슈 발생 시 담당 매니저 코멘트</td></tr></table>' +
-      '</div></div>' + (teamT ? '<div class="blk"><h2>운용 인력</h2><div>' + teamT + '</div></div>' : '') +
+      '</div></div>' +
+      (assetT ? '<div class="blk"><h2>자산보유현황<small>' + esc(d.topAsOf.replace(/ ·.*$/, '')) + '</small></h2><div>' + assetT + '</div></div>' : '') +
+      '<div class="blk"><h2>투자자산 매매내역<small>이번 주</small></h2><div>' + tradeT + '</div></div>' +
+      '<div class="blk"><h2>비용 현황<small>이번 주 · 추정</small></h2><div>' + costT + '</div></div>' +
+      (teamT ? '<div class="blk"><h2>투자운용인력현황</h2><div>' + teamT + '</div></div>' : '') +
       '<div class="blk"><h2>투자 위험</h2><div class="rk">' +
       '<p><b>원본 손실 위험</b> 원본을 보장하지 않으며, 투자 원본의 전부 또는 일부 손실이 생길 수 있습니다.</p>' +
       '<p><b>시장 및 개별 종목 위험</b> 주식 가격, 금리 등 거시 지표 변화와 발행 회사의 영업·재무 상황에 따라 가치가 크게 변할 수 있습니다.</p>' +
