@@ -85,7 +85,7 @@ async function balance() {
 const tradeCache = {};
 async function tradeAmt(d8) {
   if (tradeCache[d8] != null) return tradeCache[d8];
-  let sum = 0, cont = '', next = '';
+  let sum = 0, sell = 0, cont = '', next = ''; const side = {};
   for (let page = 0; page < 20; page++) {
     const h = { 'Content-Type': 'application/json;charset=UTF-8', 'api-id': 'kt00007', authorization: 'Bearer ' + (await token()) };
     if (cont === 'Y') { h['cont-yn'] = 'Y'; h['next-key'] = next; }
@@ -97,26 +97,45 @@ async function tradeAmt(d8) {
     for (const it of arr) {
       const qk = Object.keys(it).find((x) => /^cntr_qty$/.test(x)) || Object.keys(it).find((x) => /cntr_qty/.test(x));
       const pk = Object.keys(it).find((x) => /^cntr_uv$/.test(x)) || Object.keys(it).find((x) => /cntr_(uv|pric)/.test(x));
-      if (qk && pk) sum += Math.abs(n(it[qk]) * n(it[pk]));
+      if (!(qk && pk)) continue;
+      const amt = Math.abs(n(it[qk]) * n(it[pk])); if (!amt) continue;
+      sum += amt;
+      // 매수·매도 구분: '매도'·'매수'가 들어 있는 글자 칸을 찾는다 (필드 이름이 달라도 되게)
+      const tag = Object.values(it).map(String).find((v) => /매도|매수/.test(v)) || '';
+      const isSell = /매도/.test(tag); if (isSell) sell += amt;
+      const ck = Object.keys(it).find((x) => /^stk_cd$/.test(x)) || Object.keys(it).find((x) => /stk_cd/.test(x));
+      const nk = Object.keys(it).find((x) => /^stk_nm$/.test(x)) || Object.keys(it).find((x) => /stk_nm/.test(x));
+      const code = ck ? String(it[ck]).replace(/^A/, '').trim() : '';
+      if (code) { const o = side[code] || (side[code] = { name: nk ? String(it[nk]).trim() : code, b: 0, s: 0 }); if (isSell) o.s = 1; else o.b = 1; }
     }
     cont = r.headers.get('cont-yn') || ''; next = r.headers.get('next-key') || '';
     if (cont !== 'Y') break;
     await sleep(250);
   }
-  if (d8 < ymd().replace(/-/g, '')) tradeCache[d8] = sum;
-  return sum;
+  const out = { sum, sell, side };
+  if (d8 < ymd().replace(/-/g, '')) tradeCache[d8] = out;
+  return out;
 }
-// 이번 주(월요일~오늘) 매매회전율 % = 체결 금액 합 ÷ 평균 총자산
+// 이번 주(월요일~오늘) 매매회전율·비용(%)과 매매 종목. 금액은 비율 계산에만 쓰고 저장하지 않는다
+// 비용은 수수료율(FUND_FEE_RATE, 기본 0.015%)·매도 거래세율(FUND_TAX_RATE, 기본 0.15%)로 추정
+const FEE_RATE = +(process.env.FUND_FEE_RATE || 0.00015), TAX_RATE = +(process.env.FUND_TAX_RATE || 0.0015);
 async function weekTurnover(monday, today, total, history) {
-  let amt = 0;
+  let amt = 0, sell = 0; const side = {};
   for (let d = new Date(monday + 'T00:00:00Z'); d.toISOString().slice(0, 10) <= today; d.setUTCDate(d.getUTCDate() + 1)) {
     const x = d.getUTCDay(); if (x === 0 || x === 6) continue;
-    amt += await tradeAmt(d.toISOString().slice(0, 10).replace(/-/g, '')); await sleep(250);
+    const t = await tradeAmt(d.toISOString().slice(0, 10).replace(/-/g, '')); await sleep(250);
+    amt += t.sum; sell += t.sell;
+    for (const [c, o] of Object.entries(t.side)) { const q = side[c] || (side[c] = { name: o.name, b: 0, s: 0 }); q.b |= o.b; q.s |= o.s; }
   }
   // 평균 자산은 이번 주 기준가 평균 비율로 오늘 총자산을 되돌려 근사한다 (매일 총자산을 따로 받지 않으려고)
   const navs = history.filter((h) => h[0] >= monday).map((h) => h[1]); const last = navs[navs.length - 1];
   const avg = navs.length && last ? total * (navs.reduce((a, b) => a + b, 0) / navs.length) / last : total;
-  return avg > 0 ? +(amt / avg * 100).toFixed(1) : null;
+  if (!(avg > 0)) return null;
+  return {
+    to: +(amt / avg * 100).toFixed(1),
+    fee: +(amt * FEE_RATE / avg * 100).toFixed(3), tax: +(sell * TAX_RATE / avg * 100).toFixed(3),
+    tr: Object.entries(side).map(([c, o]) => [c, o.name, o.b && o.s ? '매수·매도' : o.s ? '매도' : '매수']),
+  };
 }
 
 // ---------- 지수 (네이버 금융 공개 시세) ----------
@@ -208,8 +227,9 @@ async function round() {
   const monday = (() => { const d = new Date(today + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7)); return d.toISOString().slice(0, 10); })();
   const prevSnap = ((prev && prev.weeks) || []).find((x) => x.week === monday);
   // 회전율은 공개 저장 때(마감 뒤 1회, 켜질 때)만 새로 계산하고, 장중에는 앞서 계산한 값을 그대로 쓴다
-  const to = round.publish ? await weekTurnover(monday, today, total, history).catch((e) => { console.error('turnover: ' + e.message); return prevSnap ? prevSnap.to : null; }) : prevSnap ? prevSnap.to : null;
-  const snap = { week: monday, asOf: today, cash: total ? +(cash / total * 100).toFixed(2) : 0, to, h: holdings.map((h) => [h.code, h.name, +h.weight.toFixed(2)]) };
+  const keep = prevSnap ? { to: prevSnap.to, fee: prevSnap.fee, tax: prevSnap.tax, tr: prevSnap.tr } : {};
+  const tw = round.publish ? await weekTurnover(monday, today, total, history).catch((e) => { console.error('turnover: ' + e.message); return null; }) : null;
+  const snap = { week: monday, asOf: today, cash: total ? +(cash / total * 100).toFixed(2) : 0, ...keep, ...(tw || {}), h: holdings.map((h) => [h.code, h.name, +h.weight.toFixed(2)]) };
   const weeks = (((prev && prev.weeks) || []).filter((x) => x.week !== monday)).concat(nav ? [snap] : []).slice(-104);
   const data = {
     asOf: stamp(), start: START || baseDate, baseTotal: base, baseDate, backfilledFrom: (prev && prev.backfilledFrom) || null,
