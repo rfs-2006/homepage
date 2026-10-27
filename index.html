@@ -5099,6 +5099,9 @@ class Component extends DCLogic {
 
   snapTargets() {
     const list = [...document.querySelectorAll('section[data-snap]')].map((n) => n.offsetTop);
+    // 홈 첫 화면이 화면보다 길면, 별자리로 가기 전에 소식 띠 아래 끝까지 한 번 멈춘다
+    const bx = [...document.querySelectorAll('.bx-hero')].find((n) => n.offsetHeight);
+    if (bx) { list.push(bx.offsetTop); const end = bx.offsetTop + bx.offsetHeight - window.innerHeight; if (end > bx.offsetTop + 40) list.push(end); }
     const foot = document.querySelector('footer');
     if (foot) list.push(Math.min(foot.offsetTop, document.documentElement.scrollHeight - window.innerHeight));
     return list.sort((a, b) => a - b);
