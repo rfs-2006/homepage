@@ -124,7 +124,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
 <script src="./assets/wk-rich.js?v=6" defer></script>
-<script src="./assets/wk-print.js?v=6" defer></script>
+<script src="./assets/wk-print.js?v=7" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=4" defer></script>
 <style>
@@ -4645,6 +4645,24 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 const RES_HERO = Math.random() < 0.5 ? '' : '-b';
+// 운용보고서 부록 숫자: 일별 기준가 [날짜, 기준가, KOSPI] 로 기간 수익률·기준가 변화·위험 지표를 계산한다 (모두 % 비율)
+const wkStats = (hist, week) => {
+  const end = new Date(new Date(week + 'T00:00:00').getTime() + 4 * 864e5).toISOString().slice(0, 10);
+  const H = hist.filter((h) => h[0] <= end && h[1]); if (H.length < 2) return {};
+  const last = H[H.length - 1], at = (d) => { let r = H[0]; H.forEach((h) => { if (h[0] <= d) r = h; }); return r; };
+  const ago = (days) => at(new Date(new Date(last[0] + 'T00:00:00').getTime() - days * 864e5).toISOString().slice(0, 10));
+  const pct = (a, b) => (a && b ? (a / b - 1) * 100 : null), f = (v) => (v == null ? '-' : (v > 0 ? '+' : '') + v.toFixed(2));
+  const per = [['1주', ago(7)], ['1개월', ago(30)], ['3개월', ago(91)], ['설정 이후', H[0]]].map(([k, r]) => { const a = pct(last[1], r[1]), b = pct(last[2], r[2]); return [k, f(a), f(b), a != null && b != null ? f(a - b) : '-']; });
+  const prev = at(new Date(new Date(week + 'T00:00:00').getTime() - 864e5).toISOString().slice(0, 10));
+  const rf = [], rk = [];
+  for (let i = 1; i < H.length; i++) { if (H[i - 1][1] && H[i][1] && H[i - 1][2] && H[i][2]) { rf.push(H[i][1] / H[i - 1][1] - 1); rk.push(H[i][2] / H[i - 1][2] - 1); } }
+  const mean = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1), sd = (a) => { const m = mean(a); return Math.sqrt(mean(a.map((x) => (x - m) ** 2))); };
+  let peak = 0, mdd = 0; H.forEach((h) => { peak = Math.max(peak, h[1]); mdd = Math.min(mdd, h[1] / peak - 1); });
+  const mf = mean(rf), mk = mean(rk), cov = mean(rf.map((x, i) => (x - mf) * (rk[i] - mk))), vk = sd(rk) ** 2;
+  const risk = rf.length > 5 ? [['연환산 변동성 (펀드)', (sd(rf) * Math.sqrt(252) * 100).toFixed(1) + '%'], ['연환산 변동성 (KOSPI)', (sd(rk) * Math.sqrt(252) * 100).toFixed(1) + '%'],
+    ['최대 낙폭 (MDD)', (mdd * 100).toFixed(1) + '%'], ['베타 (KOSPI 대비)', vk ? (cov / vk).toFixed(2) : '-'], ['추적오차 (연환산)', (sd(rf.map((x, i) => x - rk[i])) * Math.sqrt(252) * 100).toFixed(1) + '%']] : [];
+  return { per, perAsOf: last[0].slice(5).replace('-', '.'), navs: prev[0] < week ? [prev[0].slice(5).replace('-', '.'), prev[1].toFixed(2), last[0].slice(5).replace('-', '.'), last[1].toFixed(2), f(pct(last[1], prev[1]))] : null, risk, riskFrom: H[0][0].replace(/-/g, '.') };
+};
 // 운용팀 기본 명단: 위클리에 운용 인력을 따로 적지 않았을 때 보고서와 글쓰기 칸에 쓴다 [이름, 직책, 담당 섹터, 기수, 주요 경력]
 const FUND_TEAM = [['박정훈', '운용역', '', '40기', ''], ['심민주', '운용역', '', '40기', ''], ['서정민', '운용역', '', '42기', ''], ['김영빈', '운용역', '', '43기', ''], ['박상훈', '운용역', '', '43기', ''], ['주현익', '운용역', '', '43기', '']];
 // AMT Fund 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가). FUND 화면과 운용보고서 PDF가 같이 쓴다
@@ -5594,6 +5612,8 @@ class Component extends DCLogic {
           sectors: Object.entries(sec).sort((x, y) => y[1] - x[1]).map(([k, v]) => [k, v.toFixed(1)]), cash: cur0 && cur0.cash != null ? cur0.cash.toFixed(1) : '',
           trades: ((sn && sn.tr) || []).map(([c, n, sd]) => { const d = (cw0[c] || 0) - (pw0[c] || 0); return [n, sd, prev0 ? (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(1) : '-']; }),
           fee: sn && sn.fee != null ? sn.fee.toFixed(3) + '%' : '', tax: sn && sn.tax != null ? sn.tax.toFixed(3) + '%' : '',
+          top: ((cur0 && cur0.h) || []).slice().sort((x, y) => (y.weight || 0) - (x.weight || 0)).slice(0, 10).map((h) => [h.name, FUND_SECTOR[h.code] || '기타', (h.weight || 0).toFixed(1)]),
+          ...wkStats(FD.history || [], w.week),
         };
       })();
       const prvS = wi > 0 ? snapOf(WK[wi - 1]) : wi < 0 && newest ? snapOf(WK.filter((x) => x.week < w.week).pop()) : null;
