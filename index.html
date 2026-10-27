@@ -291,11 +291,18 @@ section.hero img{-webkit-user-drag:none}
 .bx-photo{position:absolute;inset:0 35px;overflow:hidden;background:#111}
 .bx-photo img{position:absolute;inset:-10%;width:120%;height:120%;object-fit:cover;filter:blur(36px) brightness(.62) saturate(.9)}
 .bx-card{position:absolute;left:50%;top:11%;bottom:11%;aspect-ratio:1;transform:translateX(-50%);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,30px);color:#F7F6F3;text-decoration:none}
-.bx-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bx-card .bx-ci{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bx-card{background:linear-gradient(150deg,#0F1B2E 0%,#203864 62%,#5B7FC4 100%)}
+.bx-card .mcard{position:relative;z-index:2;width:84%;transform:rotate(-4deg)}
+.bx-k-card::before{display:none}
+.bx-grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#000}
+.bx-grid img{width:100%;height:100%;object-fit:cover;object-position:50% 0}
+.bx-k-grid::before{background:linear-gradient(180deg,rgba(5,10,20,.15),rgba(5,10,20,.6))}
+.bx-k-word::before{display:none}
 .bx-card::before{content:'';position:absolute;inset:0;background:rgba(5,10,20,.28);z-index:1}
-.bx-card i,.bx-card b{position:relative;z-index:2}
-.bx-card i{font-family:'Source Serif 4',serif;font-style:italic;font-weight:400;font-size:clamp(40px,5vw,78px);letter-spacing:-.03em;line-height:1;white-space:nowrap}
-.bx-card b{background:#000;padding:.32em .6em .26em;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(22px,2.4vw,36px);letter-spacing:.01em}
+.bx-card .bx-wd,.bx-card .bx-tg{position:relative;z-index:2}
+.bx-card .bx-wd{font-family:'Source Serif 4',serif;font-style:italic;font-weight:400;font-size:clamp(40px,5vw,78px);letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.bx-card .bx-tg{background:#000;padding:.32em .6em .26em;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(22px,2.4vw,36px);letter-spacing:.01em}
 .bx-hero .bx-cap{display:flex;justify-content:space-between;gap:48px;margin:clamp(36px,5vh,56px) auto 0;padding-bottom:clamp(64px,10vh,110px)}
 .bx-hero .bx-cap.wrap{padding-left:35px;padding-right:35px}
 .bx-cap h3{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(30px,2.8vw,44px);letter-spacing:-.01em;color:#F7F6F3}
@@ -308,7 +315,7 @@ section.hero img{-webkit-user-drag:none}
 .bx-dots button.on{width:13px;height:13px;background:#F7F6F3;box-shadow:0 0 0 3px #000,0 0 0 4.5px #F7F6F3}
 .bxa{animation:bxa .6s ease both}.bxb{animation:bxb .6s ease both}
 @keyframes bxa{from{opacity:0}to{opacity:1}}@keyframes bxb{from{opacity:0}to{opacity:1}}
-.bx-card.bxa,.bx-card.bxb{animation-name:none}.bx-card.bxa img,.bx-card.bxb img{animation:bxa .6s ease both}
+.bx-card.bxa,.bx-card.bxb{animation-name:none}.bx-card.bxa>*,.bx-card.bxb>*{animation:bxa .6s ease both}
 .bx-m{padding-top:120px}
 .bx-m .bx-top{display:block;padding:0 24px}
 .bx-m .bx-h{font-size:clamp(40px,11.5vw,54px)}.bx-m .bx-h span{margin-left:1em}
@@ -1898,7 +1905,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
         <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="bx-band"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><img src="{{ bxImg }}" alt=""><i>{{ bxWord }}</i><b>R.F.S.</b></a></div>
+      <div class="bx-band"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card bx-k-{{ bxKind }} {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div></sc-if><sc-if value="{{ bxIsGrid }}" hint-placeholder-val="{{ false }}"><span class="bx-grid"><sc-for list="{{ bxGrid }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if><sc-if value="{{ bxIsPhoto }}" hint-placeholder-val="{{ false }}"><img class="bx-ci" src="{{ bxCardImg }}" alt=""></sc-if><sc-if value="{{ bxHasWord }}" hint-placeholder-val="{{ false }}"><i class="bx-wd">{{ bxWord }}</i></sc-if><sc-if value="{{ bxHasTag }}" hint-placeholder-val="{{ false }}"><b class="bx-tg">{{ bxTag }}</b></sc-if></a></div>
       <div class="bx-cap">
         <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
           <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
@@ -1931,7 +1938,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
         <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="bx-band wrap"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><img src="{{ bxImg }}" alt=""><i>{{ bxWord }}</i><b>R.F.S.</b></a></div>
+      <div class="bx-band wrap"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card bx-k-{{ bxKind }} {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div></sc-if><sc-if value="{{ bxIsGrid }}" hint-placeholder-val="{{ false }}"><span class="bx-grid"><sc-for list="{{ bxGrid }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if><sc-if value="{{ bxIsPhoto }}" hint-placeholder-val="{{ false }}"><img class="bx-ci" src="{{ bxCardImg }}" alt=""></sc-if><sc-if value="{{ bxHasWord }}" hint-placeholder-val="{{ false }}"><i class="bx-wd">{{ bxWord }}</i></sc-if><sc-if value="{{ bxHasTag }}" hint-placeholder-val="{{ false }}"><b class="bx-tg">{{ bxTag }}</b></sc-if></a></div>
       <div class="bx-cap wrap">
         <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
           <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
@@ -6728,14 +6735,15 @@ class Component extends DCLogic {
       heroFadeCls: s.heroFade ? 'fading' : '',
       ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
         const B = [
-          { img:'assets/hero/polaris.webp', word:'POLARIS', title:'POLARIS', desc:'학회 리포트와 세미나 자료를 근거로 답하는 리서치 챗봇입니다. 답마다 출처를 함께 보여 줍니다.', href:'/chat/' },
-          { img:'assets/hero/research.webp', word:'RESEARCH', title:'Research', desc:'학회원이 쓴 기업분석 리포트를 섹터·투자의견·학기별로 볼 수 있습니다.', page:'research' },
-          { img:'assets/hero/fund-snow_dark.webp', word:'AMT FUND', title:'AMT Fund', desc:'학회 운용 펀드 AMT Fund의 기준가와 KOSPI 대비 수익률을 실시간으로 공개합니다.', page:'fund' },
-          { img:'assets/hero/recruit.webp', word:'JOIN US', title:'Recruiting', desc:'1년 이상 활동 가능한 중앙인이면 전공·학번·나이 제한 없이 지원할 수 있습니다.', page:'recruit' }];
+          { kind:'card', img:'assets/hero/sky.webp', title:'Claude for Nonprofits 제휴', desc:'R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
+          { kind:'word', img:'assets/hero/nyse.webp', word:'OpenAI', tag:'제휴 추진 중', title:'OpenAI 제휴 추진', desc:'OpenAI와의 제휴를 마무리 단계에서 검토하고 있습니다. 체결되면 학회원은 60% 할인된 가격으로 이용할 수 있습니다.' },
+          { kind:'word', img:'assets/hero/nyse.webp', word:'Butler', tag:'유료 플랜 제공', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다.', page:'recruit' },
+          { kind:'grid', img:'assets/hero/research.webp', grid:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], tag:'1차 세미나 리포트', title:'1차 세미나 리포트', desc:'산일전기 · 대한항공 · 인바디 · 네패스아크, 26-2학기 1차 세미나 기업분석 리포트 4편을 공개했습니다.', page:'research' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
         const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
-        return { bxImg: b.img, bxWord: b.word, bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || '#' + b.page,
-          bxGo: (e) => { if (b.page) { e.preventDefault(); this.go(b.page); } },
+        return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? '#' + b.page : '#'),
+          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsGrid: b.kind === 'grid', bxIsPhoto: b.kind === 'photo', bxHasWord: !!b.word, bxHasTag: !!b.tag, bxCardImg: b.cardImg || '', bxGrid: b.grid || [],
+          bxGo: (e) => { e.preventDefault(); if (b.page) this.go(b.page); },
           bxAnim: i % 2 ? 'bxb' : 'bxa', bxPrev: () => to(i - 1), bxNext: () => to(i + 1),
           bxDots: B.map((x, k) => ({ cls: k === i ? 'on' : '', label: x.title, go: () => to(k) })) };
       })(),
