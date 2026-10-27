@@ -280,9 +280,9 @@ section.hero img{-webkit-user-drag:none}
 /* 홈 히어로 (블랙스톤형): 짙은 네이비, 계단식 세리프 제목, 아래 꽉 찬 소식 슬라이드. 양 끝은 메뉴(좌우 48px)와 맞춘다 */
 .bx-hero{position:relative;color:#F7F6F3;background:linear-gradient(180deg,#060D19 0%,#08111F 55%,#0B1524 100%);padding-top:clamp(150px,19vh,210px);overflow:hidden}
 .bx-x{box-sizing:border-box;width:100%;padding:0 35px}
-@media (min-width:1024px){.bx-x{padding:0 48px}}
+@media (min-width:1024px){.bx-x{padding:0 max(48px,calc((100vw - 1280px) / 2))}.nav.nav-home{padding:0 max(48px,calc((100vw - 1280px) / 2))}}   /* 블랙스톤처럼 본문 폭을 1280px로 모으고, 홈에서는 메뉴도 같은 폭에 맞춘다 */
 .bx-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px}
-.bx-hero .bx-h{margin:0;color:#F7F6F3;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(56px,6.6vw,120px);line-height:1.08;letter-spacing:-.014em}
+.bx-hero .bx-h{margin:0;color:#F7F6F3;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(54px,4.8vw,92px);line-height:1.1;letter-spacing:-.014em}
 .bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
 .bx-r{margin:0 0 .55em;font-family:'Noto Serif KR',serif;font-size:clamp(16px,1.3vw,22px);line-height:1.75;color:rgba(247,246,243,.9);white-space:nowrap}
 .bx-bandx{margin-top:clamp(56px,8vh,96px)}
@@ -6555,7 +6555,7 @@ class Component extends DCLogic {
         { target: 608, suffix: '명', shown: s.counted ? '608' : '0', key: 'Alumni', note: 'COHORTS' },
         { target: 250, suffix: '+', shown: s.counted ? '250' : '0', key: 'Reports', note: '누적 발간 기업 보고서' }],
       goRecruitLink: (e) => { e.preventDefault(); this.go('recruit'); },
-      navItems, menuCls: s.menuOpen ? 'open' : '', navCls: s.navMode === 'dark' ? 'on-dark' : 'on-light',
+      navItems, menuCls: s.menuOpen ? 'open' : '', navCls: (s.navMode === 'dark' ? 'on-dark' : 'on-light') + (s.page === 'home' ? ' nav-home' : ''),
       aboutSecs: [
         { label:'소개', href:'#home-intro', id:'home-intro' },
         { label:'연혁', href:'#about-history', id:'about-history' },
