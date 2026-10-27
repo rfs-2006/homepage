@@ -4645,6 +4645,8 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 const RES_HERO = Math.random() < 0.5 ? '' : '-b';
+// 운용팀 기본 명단: 위클리에 운용 인력을 따로 적지 않았을 때 보고서와 글쓰기 칸에 쓴다 [이름, 직책, 담당 섹터, 기수, 주요 경력]
+const FUND_TEAM = [['박정훈', '운용역', '', '40기', ''], ['심민주', '운용역', '', '40기', ''], ['서정민', '운용역', '', '42기', ''], ['김영빈', '운용역', '', '43기', ''], ['박상훈', '운용역', '', '43기', ''], ['주현익', '운용역', '', '43기', '']];
 // AMT Fund 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가). FUND 화면과 운용보고서 PDF가 같이 쓴다
 const FUND_SECTOR = {
   '009150': '전자부품', '353200': 'PCB·기판', '007660': 'PCB·기판', '222800': 'PCB·기판', '007810': 'PCB·기판',
@@ -5645,7 +5647,7 @@ class Component extends DCLogic {
         paras: open && !rich ? parasImg(body, w.images || []) : [], imgs: open && !rich ? (w.images || []).filter((_, k) => !usedIdx(body).has(k)).map((u) => ({ u })) : [],
         hasLink: open && !!w.link, plainLink: open && !rich && !!w.link, link: w.link || '',
         toggle: (e) => { e.preventDefault(); if (key === 'wkTop') { this.setState({ wkTopFull: false }, () => { const el = document.getElementById('fd-weekly'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); }); return; } this.setState({ [key]: open ? null : w.id }); },
-        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: w.team || [], note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '', ...((this._wkPdf || {})[w.id] || {}) })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
+        pdf: (e) => { e.preventDefault(); const wr = e.target.closest('.wr'); if (wr && window.RFSPrint && !window.RFSPrint.open(wr, { team: (w.team && w.team.length) ? w.team : FUND_TEAM, note: w.note || '', bm: 'KOSPI', turnover: (this._wkTo || {})[w.id] || '', ...((this._wkPdf || {})[w.id] || {}) })) window.alert('팝업이 막혀 있어요. 이 사이트의 팝업을 허용해 주세요'); },
         ...(key === 'wkTop' ? cardOf(w, body, rich) : {}),
         canDel: open && isAmt,
         // 올린 글도 운용팀 계정이면 Polaris 피드백을 볼 수 있다 (글 안에서만, 저장하지 않음)
@@ -5725,7 +5727,7 @@ class Component extends DCLogic {
       wkBody: s.wkBody || '', onWkBody: (e) => this.setState({ wkBody: e.target.value }),
       wkLink: s.wkLink || '', onWkLink: (e) => this.setState({ wkLink: e.target.value }),
       // 운용 인력은 새 글을 쓸 때 지난 글의 명단을 그대로 가져와 고쳐 쓴다
-      wkTeamTxt: s.wkTeamTxt != null ? s.wkTeamTxt : (((list.find((x) => Array.isArray(x.team) && x.team.length) || {}).team) || []).map((r) => r.filter(Boolean).join(' · ')).join('\n'),
+      wkTeamTxt: s.wkTeamTxt != null ? s.wkTeamTxt : (((list.find((x) => Array.isArray(x.team) && x.team.length) || {}).team) || FUND_TEAM).map((r) => r.filter(Boolean).join(' · ')).join('\n'),
       onWkTeam: (e) => this.setState({ wkTeamTxt: e.target.value }),
       wkNote: s.wkNote || '', onWkNote: (e) => this.setState({ wkNote: e.target.value }),
       // Polaris 피드백 (작성자 전용): 올리기 전에 빠진 맥락·설명 없는 용어·다듬을 문장을 짚는다 (api.caurfs.kr /wk/feedback, tools/rag/wk_feedback.py)
