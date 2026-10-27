@@ -96,7 +96,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <link rel="preload" as="image" href="assets/hero/sky.webp?v=1014" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
 <!-- 홈 히어로 아래 사진. 사진을 바꾸면 이 줄도 바꾼다 -->
-<link rel="preload" as="image" href="assets/hero/cau.webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/hero/polaris.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
@@ -287,18 +287,37 @@ section.hero img{-webkit-user-drag:none}
 .bx-h{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(52px,6.2vw,96px);line-height:1.1;letter-spacing:-.012em}
 .bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
 .bx-r{margin:0 0 .5em;font-family:'Noto Serif KR',serif;font-size:clamp(16px,1.35vw,20px);line-height:1.75;color:rgba(247,246,243,.9);white-space:nowrap}
-.bx-hero .bx-band{position:relative;flex:1;width:100%;min-height:300px;margin:clamp(56px,8vh,88px) auto 0}
-.bx-photo{position:absolute;inset:0 35px;overflow:hidden}
-.bx-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.8)}
-.bx-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.4))}
-.bx-card{position:absolute;left:50%;top:clamp(36px,5vh,56px);bottom:0;width:min(34%,420px);transform:translateX(-50%);background:linear-gradient(135deg,#0F1B2E 0%,#203864 60%,#8FAADC 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:clamp(28px,5vh,48px)}
-.bx-card i{font-family:'Source Serif 4',serif;font-style:italic;font-size:clamp(34px,3.6vw,58px);letter-spacing:-.02em;color:#F7F6F3;white-space:nowrap}
-.bx-m{min-height:100svh;padding-top:120px}
+.bx-hero .bx-band{position:relative;width:100%;height:clamp(380px,56vh,580px);margin:clamp(56px,8vh,88px) auto 0}
+.bx-photo{position:absolute;inset:0 35px;overflow:hidden;background:#111}
+.bx-photo img{position:absolute;inset:-10%;width:120%;height:120%;object-fit:cover;filter:blur(36px) brightness(.62) saturate(.9)}
+.bx-card{position:absolute;left:50%;top:11%;bottom:11%;aspect-ratio:1;transform:translateX(-50%);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,30px);color:#F7F6F3;text-decoration:none}
+.bx-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bx-card::before{content:'';position:absolute;inset:0;background:rgba(5,10,20,.28);z-index:1}
+.bx-card i,.bx-card b{position:relative;z-index:2}
+.bx-card i{font-family:'Source Serif 4',serif;font-style:italic;font-weight:400;font-size:clamp(40px,5vw,78px);letter-spacing:-.03em;line-height:1;white-space:nowrap}
+.bx-card b{background:#000;padding:.32em .6em .26em;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(22px,2.4vw,36px);letter-spacing:.01em}
+.bx-hero .bx-cap{display:flex;justify-content:space-between;gap:48px;margin:clamp(36px,5vh,56px) auto 0;padding-bottom:clamp(64px,10vh,110px)}
+.bx-hero .bx-cap.wrap{padding-left:35px;padding-right:35px}
+.bx-cap h3{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(30px,2.8vw,44px);letter-spacing:-.01em;color:#F7F6F3}
+.bx-cap p{margin:6px 0 0;max-width:440px;font-size:16px;line-height:1.75;color:rgba(247,246,243,.85);word-break:keep-all}
+.bx-nav{display:flex;align-items:center;gap:22px;margin-top:clamp(28px,4vh,44px)}
+.bx-nav>button{width:40px;height:40px;border-radius:50%;border:1.5px solid #F7F6F3;background:none;color:#F7F6F3;display:grid;place-items:center;cursor:pointer;padding:0}
+.bx-nav>button:hover{background:#F7F6F3;color:#000}
+.bx-dots{display:flex;gap:16px;align-items:center;padding:0 6px}
+.bx-dots button{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:rgba(247,246,243,.45);cursor:pointer}
+.bx-dots button.on{width:13px;height:13px;background:#F7F6F3;box-shadow:0 0 0 3px #000,0 0 0 4.5px #F7F6F3}
+.bxa{animation:bxa .6s ease both}.bxb{animation:bxb .6s ease both}
+@keyframes bxa{from{opacity:0}to{opacity:1}}@keyframes bxb{from{opacity:0}to{opacity:1}}
+.bx-card.bxa,.bx-card.bxb{animation-name:none}.bx-card.bxa img,.bx-card.bxb img{animation:bxa .6s ease both}
+.bx-m{padding-top:120px}
 .bx-m .bx-top{display:block;padding:0 24px}
 .bx-m .bx-h{font-size:clamp(40px,11.5vw,54px)}.bx-m .bx-h span{margin-left:1em}
 .bx-m .bx-r{margin-top:22px;font-size:15px}
-.bx-hero.bx-m .bx-band{margin-top:40px;min-height:260px}.bx-m .bx-photo{inset:0}
-.bx-m .bx-card{width:58%;top:28px}.bx-m .bx-card i{font-size:32px}
+.bx-hero.bx-m .bx-band{margin-top:40px;height:auto;aspect-ratio:1.15}.bx-m .bx-photo{inset:0}
+.bx-m .bx-card{top:12%;bottom:12%}
+.bx-hero.bx-m .bx-cap{display:block;padding:28px 24px 64px;margin:0}
+.bx-m .bx-cap p{margin-top:16px;font-size:15px}
+.bx-m .bx-nav{margin-top:24px}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
 .hero-grid.fading{opacity:0}
@@ -1879,7 +1898,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
         <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="bx-band"><div class="bx-photo"><img src="assets/hero/cau-m.webp" alt="중앙대학교 캠퍼스"></div><div class="bx-card"><i>SINCE 2006</i></div></div>
+      <div class="bx-band"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><img src="{{ bxImg }}" alt=""><i>{{ bxWord }}</i><b>R.F.S.</b></a></div>
+      <div class="bx-cap">
+        <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
+          <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
+        <p class="{{ bxAnim }}">{{ bxDesc }}</p>
+      </div>
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
@@ -1902,12 +1926,17 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="홈">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
-    <section data-snap="" class="bx-hero" data-nav="dark" data-screen-label="히어로">
+    <section class="bx-hero" data-nav="dark" data-screen-label="히어로">
       <div class="wrap bx-top">
         <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
         <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="wrap bx-band"><div class="bx-photo"><img src="assets/hero/cau.webp" alt="중앙대학교 캠퍼스" fetchpriority="high"></div><div class="bx-card"><i>SINCE 2006</i></div></div>
+      <div class="bx-band wrap"><div class="bx-photo"><img class="{{ bxAnim }}" src="{{ bxImg }}" alt=""></div><a class="bx-card {{ bxAnim }}" href="{{ bxHref }}" onClick="{{ bxGo }}"><img src="{{ bxImg }}" alt=""><i>{{ bxWord }}</i><b>R.F.S.</b></a></div>
+      <div class="bx-cap wrap">
+        <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
+          <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
+        <p class="{{ bxAnim }}">{{ bxDesc }}</p>
+      </div>
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
@@ -4653,7 +4682,7 @@ const FUND_SECTOR = {
   '003490': '항공', '041830': '의료기기', 'TRMD': '해운', '035900': '엔터', '041510': '엔터', '352820': '엔터', '096770': '정유·화학',
 };
 class Component extends DCLogic {
-  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, bxIdx:0, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -6697,6 +6726,19 @@ class Component extends DCLogic {
       heroRing: s.heroFade ? '' : (heroIdx % 2 ? 'rb' : 'ra'),   // 애니메이션 이름을 번갈아 써야 리포트가 바뀔 때마다 처음부터 다시 돈다
       heroDown: (e) => { e.preventDefault(); const el = document.getElementById('home-sky'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); },
       heroFadeCls: s.heroFade ? 'fading' : '',
+      ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
+        const B = [
+          { img:'assets/hero/polaris.webp', word:'POLARIS', title:'POLARIS', desc:'학회 리포트와 세미나 자료를 근거로 답하는 리서치 챗봇입니다. 답마다 출처를 함께 보여 줍니다.', href:'/chat/' },
+          { img:'assets/hero/research.webp', word:'RESEARCH', title:'Research', desc:'학회원이 쓴 기업분석 리포트를 섹터·투자의견·학기별로 볼 수 있습니다.', page:'research' },
+          { img:'assets/hero/fund-snow_dark.webp', word:'AMT FUND', title:'AMT Fund', desc:'학회 운용 펀드 AMT Fund의 기준가와 KOSPI 대비 수익률을 실시간으로 공개합니다.', page:'fund' },
+          { img:'assets/hero/recruit.webp', word:'JOIN US', title:'Recruiting', desc:'1년 이상 활동 가능한 중앙인이면 전공·학번·나이 제한 없이 지원할 수 있습니다.', page:'recruit' }];
+        const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
+        const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
+        return { bxImg: b.img, bxWord: b.word, bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || '#' + b.page,
+          bxGo: (e) => { if (b.page) { e.preventDefault(); this.go(b.page); } },
+          bxAnim: i % 2 ? 'bxb' : 'bxa', bxPrev: () => to(i - 1), bxNext: () => to(i + 1),
+          bxDots: B.map((x, k) => ({ cls: k === i ? 'on' : '', label: x.title, go: () => to(k) })) };
+      })(),
       heroPrev: () => heroStep(-1),
       heroNext: () => heroStep(1),
       heroTicker: (() => { const live = REPORTS.filter((r) => r.heroBg).map((r) => ({ ticker: r.region === 'Korea' ? r.name : r.ticker, op: r.op, upside: r.upside })); const out = []; while (out.length < 12) live.forEach((x) => out.push(x)); return out; })(),
