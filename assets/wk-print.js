@@ -80,7 +80,10 @@
       // 부록
       'table.ov{width:100%;border-collapse:collapse;font-size:8.4pt;line-height:1.45}table.ov th{width:26mm;text-align:left;font-weight:500;color:' + NAVY + ';padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF;vertical-align:top}table.ov td{padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF}' +
       'table.tl th,table.tl td{text-align:left}table.tn td:last-child,table.tn th:last-child{text-align:right}.ap .blk>h2{font-size:13pt;word-break:keep-all}.ap .blk>h2 small{display:block;margin-top:1.5mm;font-size:7.8pt;font-weight:300}' +
-      '.rk p{margin:0 0 1.2mm;font-size:8pt;line-height:1.5}.rk b{color:' + NAVY + ';margin-right:1.5mm}';
+      '.rk p{margin:0 0 1.2mm;font-size:8pt;line-height:1.5}.rk b{color:' + NAVY + ';margin-right:1.5mm}' +
+      // 부록 표는 두 칸씩 나란히 (삼성 운용보고서처럼 좌우 배치)
+      '.pair{display:grid;grid-template-columns:1fr 1fr;column-gap:8mm;padding:5mm 0 6mm;border-bottom:.8pt solid #D9D6CF;break-inside:avoid}.ap .pair:last-child{border-bottom:0}' +
+      '.pair h3{margin:0 0 2.5mm;font-size:13pt;line-height:1.25;font-weight:700;color:' + INK + ';letter-spacing:-.02em}.pair h3 small{margin-left:2mm;font-size:7.8pt;font-weight:300;letter-spacing:0}.pair>div>*+h3{margin-top:6mm}';
   }
 
   function build(wr, opt) {
@@ -144,16 +147,14 @@
       '<tr><th>운용 방식</th><td>탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 회의에서 팀 합의로 편입·비중·엑시트 결정, 최종 책임은 운용팀장</td></tr>' +
       '<tr><th>보고</th><td>매주 투자전략(본 보고서), 이슈 발생 시 담당 매니저 코멘트</td></tr></table>' +
       '</div></div>' +
-      (assetT ? '<div class="blk"><h2>자산보유현황<small>' + esc(d.topAsOf.replace(/ ·.*$/, '')) + '</small></h2><div>' + assetT + '</div></div>' : '') +
-      '<div class="blk"><h2>투자자산 매매내역<small>이번 주</small></h2><div>' + tradeT + '</div></div>' +
-      '<div class="blk"><h2>비용 현황<small>이번 주 · 추정</small></h2><div>' + costT + '</div></div>' +
-      (teamT ? '<div class="blk"><h2>투자운용인력현황</h2><div>' + teamT + '</div></div>' : '') +
-      '<div class="blk"><h2>투자 위험</h2><div class="rk">' +
+      '<div class="pair"><div>' + (assetT ? '<h3>자산보유현황<small>' + esc(d.topAsOf.replace(/ ·.*$/, '')) + '</small></h3>' + assetT : '<h3>비용 현황<small>이번 주 · 추정</small></h3>' + costT) + '</div>' +
+      '<div><h3>투자자산 매매내역<small>이번 주</small></h3>' + tradeT + (assetT ? '<h3>비용 현황<small>이번 주 · 추정</small></h3>' + costT : '') + '</div></div>' +
+      '<div class="pair">' + (teamT ? '<div><h3>투자운용인력현황</h3>' + teamT + '</div>' : '') + '<div' + (teamT ? '' : ' style="grid-column:1/-1"') + '><h3>투자 위험</h3><div class="rk">' +
       '<p><b>원본 손실 위험</b> 원본을 보장하지 않으며, 투자 원본의 전부 또는 일부 손실이 생길 수 있습니다.</p>' +
       '<p><b>시장 및 개별 종목 위험</b> 주식 가격, 금리 등 거시 지표 변화와 발행 회사의 영업·재무 상황에 따라 가치가 크게 변할 수 있습니다.</p>' +
       '<p><b>집중 투자 위험</b> 소수 종목·특정 업종에 집중 투자할 수 있어 해당 업종의 변동에 성과가 크게 좌우될 수 있습니다.</p>' +
       '<p><b>비교지수와의 괴리</b> 업종 구성과 종목 비중이 비교지수와 달라 시장 국면에 따라 수익률 차이가 커질 수 있습니다.</p>' +
-      '<p><b>잦은 매매에 따른 비용</b> 시장 상황에 따라 적극적으로 매매하므로 매매 비용이 늘어날 수 있습니다.</p></div></div></section>' +
+      '<p><b>잦은 매매에 따른 비용</b> 시장 상황에 따라 적극적으로 매매하므로 매매 비용이 늘어날 수 있습니다.</p></div></div></div></section>' +
       '</body></html>';
   }
 
