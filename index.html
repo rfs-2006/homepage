@@ -95,12 +95,9 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <link rel="preload" as="image" href="assets/hero/sky.webp?v=1014" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
-<!-- 홈 히어로 첫 리포트 사진·표지 (REPORTS에서 heroBg가 있는 첫 리포트). 히어로 첫 리포트가 바뀌면 이 두 줄도 바꾼다 -->
-<link rel="preload" as="image" href="assets/hero/sanil.webp" fetchpriority="high">
-<link rel="preload" as="image" href="assets/covers/26-2_sanil-top169.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
 // 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
@@ -124,7 +121,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
 <script src="./assets/wk-rich.js?v=6" defer></script>
-<script src="./assets/wk-print.js?v=5" defer></script>
+<script src="./assets/wk-print.js?v=8" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=4" defer></script>
 <style>
@@ -280,6 +277,70 @@ section.hero img{-webkit-user-drag:none}
 .ha-btn{display:inline-block;margin-top:clamp(20px,3.6vh,34px);border:1px solid rgba(247,246,243,.8);padding:14px 32px;font-size:14px;font-weight:600;letter-spacing:.02em;color:#F7F6F3;text-decoration:none;transition:background .2s,color .2s}
 .ha-btn:hover{background:#F7F6F3;color:#0B1524}
 @media (prefers-reduced-motion:reduce){.hb-down{animation:none}.hb-ring .fg{animation:none !important}}
+/* 홈 히어로 (블랙스톤형): 짙은 네이비, 계단식 세리프 제목, 아래 꽉 찬 소식 슬라이드. 양 끝은 메뉴(좌우 48px)와 맞춘다 */
+.bx-hero{position:relative;color:#F7F6F3;background:linear-gradient(180deg,#060D19 0%,#08111F 55%,#0B1524 100%);padding-top:clamp(150px,19vh,210px);overflow:hidden}
+.bx-x{box-sizing:border-box;width:100%;padding:0 35px}
+@media (min-width:1024px){.bx-x{padding:0 max(48px,calc((100vw - 1280px) / 2))}.nav.nav-home{padding:0 max(48px,calc((100vw - 1280px) / 2))}}   /* 블랙스톤처럼 본문 폭을 1280px로 모으고, 홈에서는 메뉴도 같은 폭에 맞춘다 */
+.bx-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px}
+.bx-hero .bx-h{margin:0;color:#F7F6F3;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(54px,4.8vw,92px);line-height:1.1;letter-spacing:-.014em}
+.bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
+.bx-r{margin:0 0 .55em;font-family:'Noto Serif KR',serif;font-size:clamp(16px,1.3vw,22px);line-height:1.75;color:rgba(247,246,243,.9);white-space:nowrap}
+.bx-bandx{margin-top:clamp(56px,8vh,96px)}
+.bx-band{position:relative;display:block;height:clamp(420px,62vh,720px);overflow:hidden;background:#0F1B2E;color:#F7F6F3;text-decoration:none;touch-action:pan-y}
+.bx-bg{position:absolute;inset:0}
+.bx-s-empty .bx-bg{display:none}.bx-s-empty{cursor:default}
+.bx-bg img{width:100%;height:100%;object-fit:cover;display:block}
+.bx-bg::after{content:'';position:absolute;inset:0}
+/* 1. Claude: 별 사진 위에 카드 크게 */
+.bx-s-card .bx-bg::after{background:radial-gradient(60% 70% at 50% 55%,rgba(32,56,100,.35),rgba(6,13,25,.78) 75%)}
+.bx-c{position:absolute;inset:0;display:grid;place-items:center}
+.bx-c .mcard{width:min(44%,720px);transform:rotate(-5deg);box-shadow:0 60px 120px rgba(0,0,0,.6),0 0 90px rgba(143,170,220,.25),inset 0 0 0 1px rgba(201,216,245,.35)}
+/* 2. 글자 장면: 사진 위에 큰 이탤릭 글자 */
+.bx-s-word .bx-bg::after{background:linear-gradient(90deg,rgba(6,13,25,.88) 0%,rgba(6,13,25,.55) 55%,rgba(6,13,25,.35) 100%)}
+.bx-w{position:absolute;left:clamp(32px,6vw,110px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:flex-start;gap:clamp(18px,3vh,32px)}
+.bx-w i{font-family:'Source Serif 4',serif;font-style:italic;font-weight:400;font-size:clamp(84px,11vw,210px);line-height:.95;letter-spacing:-.035em}
+.bx-w b{background:#000;padding:.36em .7em .3em;font-family:'Noto Serif KR',serif;font-weight:400;font-size:clamp(18px,1.6vw,28px);letter-spacing:.02em}
+/* 3. 리포트·화면 여러 장: 아래에서 올라오는 줄 */
+.bx-s-shots .bx-bg::after,.bx-s-butler .bx-bg::after{background:linear-gradient(180deg,rgba(6,13,25,.55),rgba(6,13,25,.9))}
+.bx-s-shots .bx-bg img,.bx-s-butler .bx-bg img{filter:blur(28px) saturate(.8);transform:scale(1.15)}
+.bx-shots{position:absolute;left:0;right:0;bottom:0;top:10%;display:flex;justify-content:center;align-items:flex-start;gap:clamp(16px,2vw,36px);padding:0 4%}
+.bx-shots img{flex:0 0 auto;width:min(20%,330px);height:auto;background:#fff;box-shadow:0 40px 80px rgba(0,0,0,.55)}
+.bx-shots img:nth-child(odd){margin-top:4%}
+.bx-s-butler .bx-shots{align-items:center;top:0}
+.bx-s-butler .bx-shots img{width:min(22%,380px);aspect-ratio:4/3;object-fit:cover;object-position:0 0;border-radius:10px;align-self:center;margin-top:0;transform:rotate(-2deg)}
+.bx-s-butler .bx-shots img:nth-child(even){transform:rotate(2deg) translateY(18%)}
+.bx-cap{display:flex;justify-content:space-between;gap:48px;margin-top:clamp(36px,5vh,56px);padding-bottom:clamp(72px,11vh,120px)}
+.bx-cap h3{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(30px,2.8vw,48px);letter-spacing:-.01em;color:#F7F6F3}
+.bx-cap p{margin:6px 0 0;max-width:460px;font-size:16px;line-height:1.75;color:rgba(247,246,243,.85);word-break:keep-all}
+.bx-nav{display:flex;align-items:center;gap:22px;margin-top:clamp(28px,4vh,44px)}
+.bx-nav>button{width:42px;height:42px;border-radius:50%;border:1.5px solid #F7F6F3;background:none;color:#F7F6F3;display:grid;place-items:center;cursor:pointer;padding:0;transition:background .2s,color .2s}
+.bx-nav>button:hover{background:#F7F6F3;color:#08111F}
+.bx-dots{display:flex;gap:16px;align-items:center;padding:0 6px}
+.bx-dots button{width:9px;height:9px;border-radius:50%;border:0;padding:0;background:rgba(247,246,243,.45);cursor:pointer}
+.bx-dots button.on{width:13px;height:13px;background:#F7F6F3;box-shadow:0 0 0 3px #08111F,0 0 0 4.5px #F7F6F3}
+.bxa{animation:bxa .7s ease both}.bxb{animation:bxb .7s ease both}
+@keyframes bxa{from{opacity:0}to{opacity:1}}@keyframes bxb{from{opacity:0}to{opacity:1}}
+.bx-c.bxa,.bx-c.bxb,.bx-w.bxa,.bx-w.bxb,.bx-shots.bxa,.bx-shots.bxb{animation-name:bxup}
+@keyframes bxup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.bx-w.bxa,.bx-w.bxb{animation-name:bxupw}
+@keyframes bxupw{from{opacity:0;transform:translateY(calc(-50% + 24px))}to{opacity:1;transform:translateY(-50%)}}
+/* 모바일 */
+.bx-m{padding-top:120px}
+.bx-m .bx-x{padding:0 24px}
+.bx-m .bx-top{display:block}
+.bx-m .bx-h{font-size:clamp(42px,12vw,58px)}.bx-m .bx-h span{margin-left:1em}
+.bx-m .bx-r{margin-top:22px;font-size:15px}
+.bx-m .bx-bandx{padding:0;margin-top:40px}
+.bx-m .bx-band{height:auto;aspect-ratio:4/5}
+.bx-m .bx-c .mcard{width:78%}
+.bx-m .bx-w{left:24px}.bx-m .bx-w i{font-size:clamp(64px,19vw,96px)}.bx-m .bx-w b{font-size:16px}
+.bx-m .bx-shots{top:14%;gap:10px;padding:0 6%;flex-wrap:wrap;align-content:flex-start}
+.bx-m .bx-shots img{width:calc(50% - 5px);margin-top:0 !important}
+.bx-m.bx-hero .bx-s-butler .bx-shots img{width:calc(50% - 5px);height:auto;transform:none;border-radius:8px}
+.bx-m .bx-cap{display:block;margin-top:28px;padding-bottom:64px}
+.bx-m .bx-cap h3{font-size:30px}
+.bx-m .bx-cap p{margin-top:16px;font-size:15px}
+.bx-m .bx-nav{margin-top:24px}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
 .hero-grid.fading{opacity:0}
@@ -1855,26 +1916,21 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <main data-screen-label="홈 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
 
-    <section class="on-photo" data-nav="dark" onTouchStart="{{ mTouchStart }}" onTouchEnd="{{ mTouchEnd }}" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><img loading="lazy" src="{{ heroBgSafe }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:{{ heroPosM }};display:block"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(15,27,46,0.25) 0%, rgba(15,27,46,0.35) 40%, rgba(15,27,46,0.92) 100%)"></div>
-      <div class="hero-grid {{ heroFadeCls }}" style="position:relative;z-index:1;padding:0 24px 28px">
-        <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.7)">
-          <span>Latest report</span><span style="width:20px;height:1px;background:rgba(247,246,243,0.4)"></span><span>{{ heroCounter }}</span>
-        </div>
-        <div style="margin-top:14px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:rgba(247,246,243,0.85)">{{ mHeroNameOnly }} · {{ mHeroTicker }}</div>
-        <h2 style="margin:8px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(30px,8.6vw,38px);font-weight:700;line-height:1.22;letter-spacing:-0.025em;color:#F7F6F3">{{ heroHeadline }}</h2>
-        <div style="display:flex;align-items:baseline;gap:18px;margin-top:22px;padding-top:16px;border-top:1px solid rgba(247,246,243,0.35)">
-          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
-          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
-          <div style="margin-left:auto"><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px">
-          <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="padding:12px 20px;font-size:12px">READ REPORT</a>
-          <div style="display:flex;gap:6px">
-            <sc-for list="{{ mHeroDots }}" as="d" hint-placeholder-count="8"><span onClick="{{ d.go }}" style="width:6px;height:6px;background:{{ d.on }};display:inline-block"></span></sc-for>
-          </div>
-        </div>
+    <section class="bx-hero bx-m" data-nav="dark">
+      <div class="bx-x bx-top">
+        <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
+        <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
+      </div>
+      <div class="bx-x bx-bandx"><a class="bx-band bx-s-{{ bxKind }}" href="{{ bxHref }}" onClick="{{ bxGo }}" onTouchStart="{{ bxTs }}" onTouchEnd="{{ bxTe }}" aria-label="{{ bxTitle }}">
+        <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
+        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
+        <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
+        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+      </a></div>
+      <div class="bx-x bx-cap">
+        <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
+          <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
+        <p class="{{ bxAnim }}">{{ bxDesc }}</p>
       </div>
     </section>
 
@@ -1898,36 +1954,22 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="홈">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
-    <section data-snap="" class="hero on-photo" data-nav="dark" data-screen-label="히어로">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
-      <div class="scrim" style="opacity:{{ heroScrim }}"></div>
-      <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
-      <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
-        <div style="pointer-events:none">
-          <div style="font-size:13px;letter-spacing:0.08em;color:#F7F6F3;font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
-          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
-          <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
-          <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
-          <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="ha-btn" style="pointer-events:auto">리포트 읽기</a>
-        </div>
-        <div class="hero-cover-wrap">
-          <div style="aspect-ratio:16/9;border:1px solid rgba(247,246,243,0.4);position:relative;overflow:hidden;background:#FFFFFF">
-            <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
-            <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
-            <span class="hs-hint">스크롤해서 읽기</span>
-          </div>
-          <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
-        </div>
+    <section class="bx-hero" data-nav="dark" data-screen-label="히어로">
+      <div class="bx-x bx-top">
+        <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
+        <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="wrap hb-ctrlwrap">
-        <div class="hb-ctrl">
-          <button type="button" onClick="{{ heroPrev }}" aria-label="이전 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M51 10H2M10 2L2 10l8 8"/></svg></button>
-          <button type="button" onClick="{{ heroNext }}" aria-label="다음 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 10h49M42 2l8 8-8 8"/></svg></button>
-          <span class="hb-cnt"><b>{{ heroCur }}</b><i>/</i><b>{{ heroTot }}</b><svg class="hb-ring {{ heroRing }}" viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="9"/><circle class="fg" cx="10" cy="10" r="9"/></svg></span>
-        </div>
+      <div class="bx-x bx-bandx"><a class="bx-band bx-s-{{ bxKind }}" href="{{ bxHref }}" onClick="{{ bxGo }}" onTouchStart="{{ bxTs }}" onTouchEnd="{{ bxTe }}" aria-label="{{ bxTitle }}">
+        <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
+        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
+        <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
+        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+      </a></div>
+      <div class="bx-x bx-cap">
+        <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
+          <div class="bx-nav"><button type="button" onClick="{{ bxPrev }}" aria-label="이전"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M17 10H3M8 5l-5 5 5 5"/></svg></button><span class="bx-dots"><sc-for list="{{ bxDots }}" as="d" hint-placeholder-count="4"><button type="button" class="{{ d.cls }}" onClick="{{ d.go }}" aria-label="{{ d.label }}"></button></sc-for></span><button type="button" onClick="{{ bxNext }}" aria-label="다음"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 10h14M12 5l5 5-5 5"/></svg></button></div></div>
+        <p class="{{ bxAnim }}">{{ bxDesc }}</p>
       </div>
-      </div>
-      <a class="hb-down" href="#home-sky" onClick="{{ heroDown }}" aria-label="아래로"><svg width="22" height="36" viewBox="0 0 42 64" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M21 1v60M3 43l18 18 18-18"/></svg></a>
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
@@ -2933,7 +2975,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
+            <div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -3032,7 +3074,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </div>
         <div class="perks-g">
           <figure class="perk rv rv-up">
-            <div class="mcard"><img class="mseal" src="assets/rfs-seal-light-640.png" alt=""><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div>
+            <div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div>
             <figcaption><b>Claude 60% 할인</b><span>R.F.S.의 모든 학회원은 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.</span></figcaption>
           </figure>
           <figure class="perk rv rv-up" style="--rv-delay:120ms">
@@ -4645,6 +4687,24 @@ const ring = (segs, r) => {
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
 const RES_HERO = Math.random() < 0.5 ? '' : '-b';
+// 운용보고서 부록 숫자: 일별 기준가 [날짜, 기준가, KOSPI] 로 기간 수익률·기준가 변화·위험 지표를 계산한다 (모두 % 비율)
+const wkStats = (hist, week) => {
+  const end = new Date(new Date(week + 'T00:00:00').getTime() + 4 * 864e5).toISOString().slice(0, 10);
+  const H = hist.filter((h) => h[0] <= end && h[1]); if (H.length < 2) return {};
+  const last = H[H.length - 1], at = (d) => { let r = H[0]; H.forEach((h) => { if (h[0] <= d) r = h; }); return r; };
+  const ago = (days) => at(new Date(new Date(last[0] + 'T00:00:00').getTime() - days * 864e5).toISOString().slice(0, 10));
+  const pct = (a, b) => (a && b ? (a / b - 1) * 100 : null), f = (v) => (v == null ? '-' : (v > 0 ? '+' : '') + v.toFixed(2));
+  const per = [['1주', ago(7)], ['1개월', ago(30)], ['3개월', ago(91)], ['설정 이후', H[0]]].map(([k, r]) => { const a = pct(last[1], r[1]), b = pct(last[2], r[2]); return [k, f(a), f(b), a != null && b != null ? f(a - b) : '-']; });
+  const prev = at(new Date(new Date(week + 'T00:00:00').getTime() - 864e5).toISOString().slice(0, 10));
+  const rf = [], rk = [];
+  for (let i = 1; i < H.length; i++) { if (H[i - 1][1] && H[i][1] && H[i - 1][2] && H[i][2]) { rf.push(H[i][1] / H[i - 1][1] - 1); rk.push(H[i][2] / H[i - 1][2] - 1); } }
+  const mean = (a) => a.reduce((x, y) => x + y, 0) / (a.length || 1), sd = (a) => { const m = mean(a); return Math.sqrt(mean(a.map((x) => (x - m) ** 2))); };
+  let peak = 0, mdd = 0; H.forEach((h) => { peak = Math.max(peak, h[1]); mdd = Math.min(mdd, h[1] / peak - 1); });
+  const mf = mean(rf), mk = mean(rk), cov = mean(rf.map((x, i) => (x - mf) * (rk[i] - mk))), vk = sd(rk) ** 2;
+  const risk = rf.length > 5 ? [['연환산 변동성 (펀드)', (sd(rf) * Math.sqrt(252) * 100).toFixed(1) + '%'], ['연환산 변동성 (KOSPI)', (sd(rk) * Math.sqrt(252) * 100).toFixed(1) + '%'],
+    ['최대 낙폭 (MDD)', (mdd * 100).toFixed(1) + '%'], ['베타 (KOSPI 대비)', vk ? (cov / vk).toFixed(2) : '-'], ['추적오차 (연환산)', (sd(rf.map((x, i) => x - rk[i])) * Math.sqrt(252) * 100).toFixed(1) + '%']] : [];
+  return { per, perAsOf: last[0].slice(5).replace('-', '.'), navs: prev[0] < week ? [prev[0].slice(5).replace('-', '.'), prev[1].toFixed(2), last[0].slice(5).replace('-', '.'), last[1].toFixed(2), f(pct(last[1], prev[1]))] : null, risk, riskFrom: H[0][0].replace(/-/g, '.') };
+};
 // 운용팀 기본 명단: 위클리에 운용 인력을 따로 적지 않았을 때 보고서와 글쓰기 칸에 쓴다 [이름, 직책, 담당 섹터, 기수, 주요 경력]
 const FUND_TEAM = [['박정훈', '운용역', '', '40기', ''], ['심민주', '운용역', '', '40기', ''], ['서정민', '운용역', '', '42기', ''], ['김영빈', '운용역', '', '43기', ''], ['박상훈', '운용역', '', '43기', ''], ['주현익', '운용역', '', '43기', '']];
 // AMT Fund 업종: 운용팀 분류 (종목이 새로 편입되면 여기에 추가). FUND 화면과 운용보고서 PDF가 같이 쓴다
@@ -4655,7 +4715,7 @@ const FUND_SECTOR = {
   '003490': '항공', '041830': '의료기기', 'TRMD': '해운', '035900': '엔터', '041510': '엔터', '352820': '엔터', '096770': '정유·화학',
 };
 class Component extends DCLogic {
-  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, boot:'in', heroIdx:0, heroFade:false, bxIdx:0, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -5594,6 +5654,8 @@ class Component extends DCLogic {
           sectors: Object.entries(sec).sort((x, y) => y[1] - x[1]).map(([k, v]) => [k, v.toFixed(1)]), cash: cur0 && cur0.cash != null ? cur0.cash.toFixed(1) : '',
           trades: ((sn && sn.tr) || []).map(([c, n, sd]) => { const d = (cw0[c] || 0) - (pw0[c] || 0); return [n, sd, prev0 ? (d > 0 ? '+' : d < 0 ? '−' : '') + Math.abs(d).toFixed(1) : '-']; }),
           fee: sn && sn.fee != null ? sn.fee.toFixed(3) + '%' : '', tax: sn && sn.tax != null ? sn.tax.toFixed(3) + '%' : '',
+          top: ((cur0 && cur0.h) || []).slice().sort((x, y) => (y.weight || 0) - (x.weight || 0)).slice(0, 10).map((h) => [h.name, FUND_SECTOR[h.code] || '기타', (h.weight || 0).toFixed(1)]),
+          ...wkStats(FD.history || [], w.week),
         };
       })();
       const prvS = wi > 0 ? snapOf(WK[wi - 1]) : wi < 0 && newest ? snapOf(WK.filter((x) => x.week < w.week).pop()) : null;
@@ -6494,7 +6556,7 @@ class Component extends DCLogic {
         { target: 608, suffix: '명', shown: s.counted ? '608' : '0', key: 'Alumni', note: 'COHORTS' },
         { target: 250, suffix: '+', shown: s.counted ? '250' : '0', key: 'Reports', note: '누적 발간 기업 보고서' }],
       goRecruitLink: (e) => { e.preventDefault(); this.go('recruit'); },
-      navItems, menuCls: s.menuOpen ? 'open' : '', navCls: s.navMode === 'dark' ? 'on-dark' : 'on-light',
+      navItems, menuCls: s.menuOpen ? 'open' : '', navCls: (s.navMode === 'dark' ? 'on-dark' : 'on-light') + (s.page === 'home' ? ' nav-home' : ''),
       aboutSecs: [
         { label:'소개', href:'#home-intro', id:'home-intro' },
         { label:'연혁', href:'#about-history', id:'about-history' },
@@ -6697,6 +6759,22 @@ class Component extends DCLogic {
       heroRing: s.heroFade ? '' : (heroIdx % 2 ? 'rb' : 'ra'),   // 애니메이션 이름을 번갈아 써야 리포트가 바뀔 때마다 처음부터 다시 돈다
       heroDown: (e) => { e.preventDefault(); const el = document.getElementById('home-sky'); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); },
       heroFadeCls: s.heroFade ? 'fading' : '',
+      ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
+        const B = [
+          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
+          { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
+          { kind:'empty', img:'', title:'', desc:'' },   // 3·4번 칸은 소식이 정해지면 채운다
+          { kind:'empty', img:'', title:'', desc:'' }];
+        const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
+        const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
+        return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? '#' + b.page : '#'),
+          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsWord: b.kind === 'word', bxIsShots: b.kind === 'shots' || b.kind === 'butler', bxShots: b.shots || [],
+          bxGo: (e) => { e.preventDefault(); if (this._bxSwiped) { this._bxSwiped = false; return; } if (b.page) this.go(b.page); },
+          bxTs: (e) => { this._bxX = e.touches[0].clientX; this._bxSwiped = false; },
+          bxTe: (e) => { const dx = e.changedTouches[0].clientX - (this._bxX || 0); if (Math.abs(dx) > 40) { this._bxSwiped = true; to(i + (dx < 0 ? 1 : -1)); } },
+          bxAnim: i % 2 ? 'bxb' : 'bxa', bxPrev: () => to(i - 1), bxNext: () => to(i + 1),
+          bxDots: B.map((x, k) => ({ cls: k === i ? 'on' : '', label: x.title || '소식 ' + (k + 1), go: () => to(k) })) };
+      })(),
       heroPrev: () => heroStep(-1),
       heroNext: () => heroStep(1),
       heroTicker: (() => { const live = REPORTS.filter((r) => r.heroBg).map((r) => ({ ticker: r.region === 'Korea' ? r.name : r.ticker, op: r.op, upside: r.upside })); const out = []; while (out.length < 12) live.forEach((x) => out.push(x)); return out; })(),

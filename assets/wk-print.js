@@ -80,7 +80,13 @@
       // 부록
       'table.ov{width:100%;border-collapse:collapse;font-size:8.4pt;line-height:1.45}table.ov th{width:26mm;text-align:left;font-weight:500;color:' + NAVY + ';padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF;vertical-align:top}table.ov td{padding:1.2mm 0;border-bottom:.4pt solid #D9D6CF}' +
       'table.tl th,table.tl td{text-align:left}table.tn td:last-child,table.tn th:last-child{text-align:right}.ap .blk>h2{font-size:13pt;word-break:keep-all}.ap .blk>h2 small{display:block;margin-top:1.5mm;font-size:7.8pt;font-weight:300}' +
-      '.rk p{margin:0 0 1.2mm;font-size:8pt;line-height:1.5}.rk b{color:' + NAVY + ';margin-right:1.5mm}';
+      '.rk p{margin:0 0 1.2mm;font-size:8pt;line-height:1.5}.rk b{color:' + NAVY + ';margin-right:1.5mm}' +
+      // 부록 표는 두 칸씩 나란히 (삼성 운용보고서처럼 좌우 배치)
+      '.ap2{break-before:page}.ov2{font-size:7.2pt;line-height:1.3}.ov2 th{width:16mm;white-space:nowrap}.ov2 th,.ov2 td{padding:.45mm 1.6mm !important}.ap2 .pair{padding:2.2mm 0 2.6mm}.ap2 .pair.tri{grid-template-columns:1fr 1fr 1fr;column-gap:6mm}.ap2 h3{font-size:10pt;margin-bottom:1.2mm}.ap2 .pair>div>*+h3{margin-top:2.4mm}.ap2 table.t{font-size:7.6pt}.ap2 table.t{font-size:7.2pt;line-height:1.3}.ap2 table.t td{padding:.4mm 1.6mm}.ap2 table.t th{padding:.55mm 1.6mm}.ap2 .rk p{font-size:7pt;line-height:1.4;margin:0 0 .4mm}.ap2 .rk.c2{column-count:2;column-gap:8mm}.ap2 .cap{font-size:6.8pt}' +
+      '.bar{display:grid;grid-template-columns:26mm 1fr 10mm;align-items:center;column-gap:2mm;font-size:7.6pt;padding:.45mm 0;border-bottom:.4pt solid #D9D6CF}.bar i{display:block;height:2.6mm;background:' + NAVY + '}.bar.cs i{background:' + SKY + '}.bar b{text-align:right;font-weight:500}' +
+      '.stk{display:flex;height:6mm;margin:1mm 0 1.5mm}.stk span{display:block}.lg{display:flex;gap:5mm;font-size:7.6pt}.lg i{display:inline-block;width:2.6mm;height:2.6mm;margin-right:1.2mm;vertical-align:-.2mm}' +
+      'table.tn2 td:first-child{white-space:nowrap}.pair{display:grid;grid-template-columns:1fr 1fr;column-gap:8mm;padding:5mm 0 6mm;border-bottom:.8pt solid #D9D6CF;break-inside:avoid}.ap .pair:last-child,.ap2 .pair:last-child{border-bottom:0}' +
+      '.pair h3{margin:0 0 2.5mm;font-size:13pt;line-height:1.25;font-weight:700;color:' + INK + ';letter-spacing:-.02em}.pair h3 small{margin-left:2mm;font-size:7.8pt;font-weight:300;letter-spacing:0}.pair>div>*+h3{margin-top:6mm}';
   }
 
   function build(wr, opt) {
@@ -113,6 +119,23 @@
     var trs = opt.trades || [];
     var tradeT = '<table class="t tl tn"><tr><th>종목</th><th>구분</th><th>비중 변화 (%p)</th></tr>' + (trs.length ? trs.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td><td>' + esc(x[2]) + '</td></tr>'; }).join('') : '<tr><td>이번 주 매매 없음</td><td></td><td></td></tr>') + '</table>';
     var costT = '<table class="t tl tn"><tr><th>항목</th><th>순자산 대비</th></tr><tr><td>매매수수료</td><td>' + esc(opt.fee || '집계 중') + '</td></tr><tr><td>증권거래세</td><td>' + esc(opt.tax || '집계 중') + '</td></tr><tr><td>매매회전율</td><td>' + esc(opt.turnover || '집계 중') + '</td></tr></table>';
+    // 삼성 보고서 칸: 상세 기간 수익률·기준가격 현황·자산구성현황·주요 자산보유 현황·위험 지표 (모두 % 비율·기준가)
+    var per = opt.per || [];
+    var perT = per.length ? '<table class="t tn2"><tr><th>구분</th>' + per.map(function (x) { return '<th>' + esc(x[0]) + '</th>'; }).join('') + '</tr>' +
+      [['운용펀드', 1], ['비교지수 (' + bm + ')', 2], ['초과수익률', 3]].map(function (r) { return '<tr' + (r[1] === 3 ? ' class="f"' : '') + '><td>' + esc(r[0]) + '</td>' + per.map(function (x) { return '<td>' + esc(x[r[1]]) + '</td>'; }).join('') + '</tr>'; }).join('') + '</table>' : '';
+    var nv = opt.navs;
+    var navT = nv ? '<table class="t tn2"><tr><th>항목</th><th>전주말 (' + esc(nv[0]) + ')</th><th>당주말 (' + esc(nv[2]) + ')</th><th>증감률 (%)</th></tr><tr><td>기준가격</td><td>' + esc(nv[1]) + '</td><td>' + esc(nv[3]) + '</td><td>' + esc(nv[4]) + '</td></tr></table>' : '';
+    var cashN = parseFloat(opt.cash);
+    var compT = !isNaN(cashN) ? '<table class="t tl tn"><tr><th>구분</th><th>구성비중 (%)</th></tr><tr><td>주식</td><td>' + (100 - cashN).toFixed(1) + '</td></tr><tr><td>현금·예금</td><td>' + cashN.toFixed(1) + '</td></tr><tr class="f"><td>합계</td><td>100.0</td></tr></table>' : '';
+    var top = opt.top || [];
+    var topT = top.length ? '<table class="t tl tn"><tr><th>종목명</th><th>업종</th><th>비중 (%)</th></tr>' + top.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td><td>' + esc(x[2]) + '</td></tr>'; }).join('') + '</table><p class="cap">펀드 자산 중 비중 상위 ' + top.length + '종목</p>' : '';
+    var rsk = opt.risk || [];
+    var riskT = rsk.length ? '<table class="t tl tn"><tr><th>항목</th><th>값</th></tr>' + rsk.map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td>' + esc(x[1]) + '</td></tr>'; }).join('') + '</table><p class="cap">' + esc(opt.riskFrom || '') + ' 이후 일별 기준가 · 연환산 = 일간 표준편차 × √252</p>' : '';
+    var H3 = function (t, sm) { return '<h3>' + t + (sm ? '<small>' + esc(sm) + '</small>' : '') + '</h3>'; };
+    var asOf0 = esc(d.topAsOf.replace(/ ·.*$/, ''));
+    var mx = Math.max.apply(null, secs.map(function (x) { return +x[1] || 0; }).concat([+opt.cash || 0, 1]));
+    var barT = secs.length ? secs.map(function (x) { return '<div class="bar"><span>' + esc(x[0]) + '</span><i style="width:' + ((+x[1] || 0) / mx * 100).toFixed(1) + '%"></i><b>' + esc(x[1]) + '</b></div>'; }).join('') + (opt.cash ? '<div class="bar cs"><span>현금</span><i style="width:' + ((+opt.cash || 0) / mx * 100).toFixed(1) + '%"></i><b>' + esc(opt.cash) + '</b></div>' : '') + '<p class="cap">단위 %. 편입 종목을 운용팀 업종 분류로 묶은 비중</p>' : '';
+    var stkT = !isNaN(cashN) ? '<div class="stk"><span style="width:' + (100 - cashN).toFixed(1) + '%;background:' + NAVY + '"></span><span style="width:' + cashN.toFixed(1) + '%;background:' + SKY + '"></span></div><div class="lg"><span><i style="background:' + NAVY + '"></i>주식 ' + (100 - cashN).toFixed(1) + '%</span><span><i style="background:' + SKY + '"></i>현금·예금 ' + cashN.toFixed(1) + '%</span></div>' : '';
     var seal = abs('/assets/rfs-seal-light-256.png');
 
     return '<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>' + esc(d.title) + ' · AMT Fund 운용보고서</title><style>' + css('AMT Fund 주간 운용보고서 · ' + d.title) + '</style></head><body>' +
@@ -137,23 +160,23 @@
       // 본문은 운용 현황 바로 아래에서 이어 시작한다 (2쪽 아래가 비지 않게)
       '<section class="bdw"><div class="bd">' + d.body + '</div></section>' +
 
-      '<section class="ap"><div class="blk"><h2>펀드 개요</h2><div>' +
-      '<table class="ov"><tr><th>펀드명</th><td>AMT Fund</td></tr><tr><th>운용</th><td>중앙대학교 가치투자학회 R.F.S. Asset Management Team</td></tr>' +
-      '<tr><th>비교지수</th><td>' + esc(bm) + '</td></tr><tr><th>투자 대상</th><td>국내 상장 주식</td></tr>' +
-      '<tr><th>투자 원칙</th><td>GPS — 성장(Growth)이 담보된 기업을 좋은 가격(Price)에 포착하고, 시장 심리(Sentiment)를 활용해 매매 시점을 잡는다</td></tr>' +
-      '<tr><th>운용 방식</th><td>탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 회의에서 팀 합의로 편입·비중·엑시트 결정, 최종 책임은 운용팀장</td></tr>' +
-      '<tr><th>보고</th><td>매주 투자전략(본 보고서), 이슈 발생 시 담당 매니저 코멘트</td></tr></table>' +
-      '</div></div>' +
-      (assetT ? '<div class="blk"><h2>자산보유현황<small>' + esc(d.topAsOf.replace(/ ·.*$/, '')) + '</small></h2><div>' + assetT + '</div></div>' : '') +
-      '<div class="blk"><h2>투자자산 매매내역<small>이번 주</small></h2><div>' + tradeT + '</div></div>' +
-      '<div class="blk"><h2>비용 현황<small>이번 주 · 추정</small></h2><div>' + costT + '</div></div>' +
-      (teamT ? '<div class="blk"><h2>투자운용인력현황</h2><div>' + teamT + '</div></div>' : '') +
-      '<div class="blk"><h2>투자 위험</h2><div class="rk">' +
+      '<section class="ap2"><div class="pair"><div style="grid-column:1/-1">' + H3('펀드 개요') + '<table class="ov ov2">' +
+      '<tr><th>펀드명</th><td>AMT Fund</td><th>운용</th><td>중앙대학교 가치투자학회 R.F.S. Asset Management Team</td></tr>' +
+      '<tr><th>비교지수</th><td>' + esc(bm) + '</td><th>투자 대상</th><td>국내 상장 주식</td></tr>' +
+      '<tr><th>투자 원칙</th><td colspan="3">GPS — 성장(Growth)이 담보된 기업을 좋은 가격(Price)에 포착하고, 시장 심리(Sentiment)를 활용해 매매 시점을 잡는다</td></tr>' +
+      '<tr><th>운용 방식</th><td colspan="3">탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 운용회의에서 편입·비중·매도 결정, 최종 의사결정은 책임운용역</td></tr>' +
+      '<tr><th>보고</th><td colspan="3">주간 운용보고서 정기 발간, 주요 변동 사항 홈페이지 수시 공시</td></tr></table></div></div>' +
+      '<div class="pair"><div>' + (perT ? H3('상세 기간 수익률', (opt.perAsOf || '') + ' 기준 · 단위 %') + perT : '') + '</div><div>' + (navT ? H3('기준가격 현황', '전주 대비') + navT : '') + (stkT ? H3('자산구성현황', asOf0) + stkT : '') + '</div></div>' +
+      '<div class="pair"><div>' + (barT ? H3('업종별 투자비중', asOf0) + barT : '') + '</div><div>' + (topT ? H3('주요 자산보유 현황', asOf0) + topT : '') + '</div></div>' +
+      '<div class="pair tri"><div>' + H3('투자자산 매매내역', '이번 주') + tradeT + '</div><div>' + H3('비용 현황', '이번 주 · 추정') + costT + '</div><div>' + (riskT ? H3('위험 지표', '설정 이후') + riskT : '') + '</div></div>' +
+      '<div class="pair"><div>' + (teamT ? H3('투자운용인력현황') + teamT : '') + '</div><div>' + H3('주요 비상대응계획') + '<div class="rk"><p>운용팀의 시장·보유 종목 리스크 상시 모니터링. 편입 기업의 중대 공시, 급격한 가격 변동 등 이슈 발생 시 담당 운용역 즉시 점검 후 운용팀 리스크 회의 소집. 중대 사안은 회장단 보고 후 비중 조정 및 학회원 고지.</p></div>' +
+      H3('공지사항') + '<div class="rk"><p>1. 본 펀드는 R.F.S. 내부 운용 원칙에 따라 운용되며, 운용 금액·수량 등 세부 내역은 공개하지 않고 비율로 표기합니다.</p><p>2. 주요 운용 현황은 R.F.S. 홈페이지(caurfs.kr) FUND에서 수시 공시합니다.</p></div></div></div>' +
+      '<div class="pair"><div style="grid-column:1/-1">' + H3('투자 위험') + '<div class="rk c2">' +
       '<p><b>원본 손실 위험</b> 원본을 보장하지 않으며, 투자 원본의 전부 또는 일부 손실이 생길 수 있습니다.</p>' +
       '<p><b>시장 및 개별 종목 위험</b> 주식 가격, 금리 등 거시 지표 변화와 발행 회사의 영업·재무 상황에 따라 가치가 크게 변할 수 있습니다.</p>' +
       '<p><b>집중 투자 위험</b> 소수 종목·특정 업종에 집중 투자할 수 있어 해당 업종의 변동에 성과가 크게 좌우될 수 있습니다.</p>' +
       '<p><b>비교지수와의 괴리</b> 업종 구성과 종목 비중이 비교지수와 달라 시장 국면에 따라 수익률 차이가 커질 수 있습니다.</p>' +
-      '<p><b>잦은 매매에 따른 비용</b> 시장 상황에 따라 적극적으로 매매하므로 매매 비용이 늘어날 수 있습니다.</p></div></div></section>' +
+      '<p><b>잦은 매매에 따른 비용</b> 시장 상황에 따라 적극적으로 매매하므로 매매 비용이 늘어날 수 있습니다.</p></div></div></div></section>' +
       '</body></html>';
   }
 
