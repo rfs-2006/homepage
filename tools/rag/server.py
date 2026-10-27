@@ -15,6 +15,7 @@
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
 API
   GET  /health                   준비됐는지
+  POST /wk/polish  {html}  운용팀 계정만. 위클리 초안을 운용사 문체로 다듬은 HTML (wk_feedback.polish)
   POST /wk/feedback  {text}  운용팀 계정만. 위클리 초안의 빠진 맥락·용어·문장 피드백 (wk_feedback.py)
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
        → {conversation_id, answer, sources:[{n, title, source, cited, context}], kind, axes, section, options, left}
@@ -173,8 +174,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         """/chat: 다 쓴 답을 한 번에. /chat/stream: 같은 처리인데 답 글자를 쓰는 대로 보낸다 (text/event-stream)
         보내는 것: {type: stage, stage} → {type: delta, text}... → {type: done, ...(/chat 응답과 같은 내용)} 또는 {type: error, error}"""
-        if self.path == '/wk/feedback':
-            return self._wk_feedback()
+        if self.path in ('/wk/feedback', '/wk/polish'):
+            return self._wk_feedback(polish=self.path == '/wk/polish')
         stream = self.path == '/chat/stream'
         if self.path not in ('/chat', '/chat/stream'):
             return self._json(404, {'error': 'not found'})
@@ -239,7 +240,7 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._json(200, body)
 
-    def _wk_feedback(self):
+    def _wk_feedback(self, polish=False):
         """위클리 글 피드백: 운용팀 계정(WK_WRITERS)만. {text} → {items: [{type, quote, issue, fix}]}. 글은 로그에 남기지 않는다"""
         token = self.headers.get('Authorization', '').removeprefix('Bearer ').strip()
         if not token or token_email(token) not in WK_WRITERS:
@@ -249,7 +250,7 @@ class Handler(BaseHTTPRequestHandler):
         except ValueError:
             return self._json(400, {'error': '요청 형식이 잘못됐습니다.'})
         try:
-            out = wk_feedback.feedback(str(req.get('text', '')))
+            out = wk_feedback.polish(str(req.get('html', ''))) if polish else wk_feedback.feedback(str(req.get('text', '')))
         except Exception as e:  # noqa: BLE001
             print('피드백 오류', repr(e), flush=True)
             return self._json(500, {'error': '피드백을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.'})

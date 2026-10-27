@@ -3123,7 +3123,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 역할 · 담당" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
-        <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" class="wk-fbbtn" onClick="{{ wkFbRun }}">{{ wkFbLabel }}</a><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
+        <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" class="wk-fbbtn" onClick="{{ wkPolRun }}">{{ wkPolLabel }}</a><sc-if value="{{ wkPolUndo }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-fbbtn" onClick="{{ wkPolBack }}">되돌리기</a></sc-if><a href="#" class="wk-fbbtn" onClick="{{ wkFbRun }}">{{ wkFbLabel }}</a><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
         <sc-if value="{{ wkFbOn }}" hint-placeholder-val="{{ false }}"><div class="wk-fb"><p class="wk-fb-h">{{ wkFbHead }}</p><sc-for list="{{ wkFbItems }}" as="f"><div class="wk-fb-i"><em>{{ f.type }}</em><div><q>{{ f.quote }}</q><p>{{ f.issue }}</p><p class="fx">{{ f.fix }}</p></div></div></sc-for></div></sc-if>
       </form></sc-if>
       <section class="fd-card wk-all">
@@ -5457,6 +5457,21 @@ class Component extends DCLogic {
     return this.sb.auth.signInWithPassword({ email, password: pw || '' }).then(({ error }) => ({ error, email }));
   }
 
+  // 증권사 문체로 다듬기 (운용팀 계정만): 편집기 HTML의 사진을 [[IMG n]]로 바꿔 보내고, 돌아온 HTML에 사진을 다시 끼운다
+  async wkPolish(ed) {
+    const imgs = [...ed.querySelectorAll('img')].map((im) => im.outerHTML);
+    let k = 0; const html = ed.innerHTML.replace(/<img\b[^>]*>/g, () => '[[IMG ' + (++k) + ']]');
+    const { data } = await this.sb.auth.getSession();
+    const r = await fetch('https://api.caurfs.kr/wk/polish', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + ((data && data.session && data.session.access_token) || '') }, body: JSON.stringify({ html }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j.error || !j.html) throw new Error(j.error || '문체를 다듬지 못했습니다');
+    this._wkPrevHtml = ed.innerHTML;
+    ed.innerHTML = window.RFSWk.clean(j.html.replace(/\[\[IMG (\d+)\]\]/g, (m, n) => imgs[+n - 1] || ''));
+    // clean이 사진 표시(data-k)를 지우므로 다시 붙이고, 편집기에 바뀐 걸 알린다
+    ed.querySelectorAll('img').forEach((im) => { if (/^blob:|^https:/.test(im.getAttribute('src') || '')) im.setAttribute('data-k', 'ok'); });
+    ed.dispatchEvent(new Event('input'));
+  }
+
   // Polaris 피드백 (운용팀 계정만, 서버가 한 번 더 확인): 글 → {items} 또는 {err}
   async wkFeedback(text) {
     const { data } = await this.sb.auth.getSession();
@@ -5700,6 +5715,16 @@ class Component extends DCLogic {
       onWkTeam: (e) => this.setState({ wkTeamTxt: e.target.value }),
       wkNote: s.wkNote || '', onWkNote: (e) => this.setState({ wkNote: e.target.value }),
       // Polaris 피드백 (작성자 전용): 올리기 전에 빠진 맥락·설명 없는 용어·다듬을 문장을 짚는다 (api.caurfs.kr /wk/feedback, tools/rag/wk_feedback.py)
+      wkPolLabel: s.wkPolBusy ? '문체 다듬는 중…' : '증권사 문체로 다듬기',
+      wkPolUndo: !!s.wkPolished,
+      wkPolRun: async (e) => {
+        e.preventDefault(); if (s.wkPolBusy) return;
+        const ed = document.querySelector('.wk-form .wk-ed'); if (!ed || !ed.textContent.trim()) { this.setState({ wkErr: '본문을 먼저 붙여넣어 주세요' }); return; }
+        this.setState({ wkPolBusy: true, wkErr: '' });
+        try { await this.wkPolish(ed); this.setState({ wkPolBusy: false, wkPolished: true, wkErr: '문체를 다듬었어요. 확인한 뒤 올리기를 누르세요' }); }
+        catch (x) { this.setState({ wkPolBusy: false, wkErr: (x && x.message) || '문체를 다듬지 못했습니다' }); }
+      },
+      wkPolBack: (e) => { e.preventDefault(); const ed = document.querySelector('.wk-form .wk-ed'); if (ed && this._wkPrevHtml != null) { ed.innerHTML = this._wkPrevHtml; ed.dispatchEvent(new Event('input')); } this.setState({ wkPolished: false, wkErr: '원래 글로 되돌렸어요' }); },
       wkFbLabel: s.wkFbBusy ? 'Polaris가 읽는 중…' : 'Polaris 피드백',
       wkFbOn: !!(s.wkFb && (s.wkFb.items || s.wkFb.err)),
       wkFbHead: s.wkFb ? (s.wkFb.err || (s.wkFb.items.length ? '고칠 곳 ' + s.wkFb.items.length + '개' : '짚을 곳이 없습니다')) : '',
@@ -5736,6 +5761,13 @@ class Component extends DCLogic {
         if (!strat && !(s.wkTitle || '').trim()) { this.setState({ wkErr: '제목을 입력하세요' }); return; }
         const ed = document.querySelector('.wk-form .wk-ed');
         if (!ed || !window.RFSWk) { this.setState({ wkErr: '편집기를 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요' }); return; }
+        // 투자전략은 올리기 전에 한 번 증권사 문체로 다듬어 보여 준다. 확인하고 다시 누르면 그대로 올라간다
+        if (strat && !s.wkPolished && !s.wkPolTried) {
+          this.setState({ wkPolBusy: true, wkErr: '' });
+          try { await this.wkPolish(ed); this.setState({ wkPolBusy: false, wkPolished: true, wkPolTried: true, wkErr: '문체를 다듬었어요. 확인한 뒤 올리기를 한 번 더 누르세요' }); }
+          catch (x) { this.setState({ wkPolBusy: false, wkPolTried: true, wkErr: ((x && x.message) || '문체를 다듬지 못했습니다') + '. 이대로 올리려면 올리기를 한 번 더 누르세요' }); }
+          return;
+        }
         this.setState({ wkBusy: true, wkErr: '' });
         try {
           // 본문 속 사진은 저장소에 올리고 그 주소로 바꿔 HTML로 저장한다
@@ -5759,7 +5791,7 @@ class Component extends DCLogic {
           if (error && /team|note/.test(error.message || '')) throw new Error('Supabase에 운용 인력·한마디 칸이 아직 없어요. supabase/fund_weekly_team.sql을 먼저 실행해 주세요');
           if (error) throw error;
           window.RFSWk.reset();
-          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined, wkNote: '', wkTeamTxt: null, wkFb: null });
+          this.setState({ wkBusy: false, wkWrite: false, wkTitle: '', wkBody: '', wkLink: '', wkFiles: [], wkMon: '', wkOpen: undefined, wkNote: '', wkTeamTxt: null, wkFb: null, wkPolished: false, wkPolTried: false });
           this.loadWeekly();
         } catch (x) { const m = (x && x.message) || String(x); this.setState({ wkBusy: false, wkErr: /^(노션|Supabase)/.test(m) ? m : '올리지 못했습니다: ' + m }); }
       },
