@@ -95,12 +95,11 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <link rel="preload" as="image" href="assets/hero/sky.webp?v=1014" fetchpriority="high">
 <link rel="preload" as="image" href="assets/rfs-seal-light-256.png">
-<!-- 홈 히어로 첫 리포트 사진·표지 (REPORTS에서 heroBg가 있는 첫 리포트). 히어로 첫 리포트가 바뀌면 이 두 줄도 바꾼다 -->
-<link rel="preload" as="image" href="assets/hero/sanil.webp" fetchpriority="high">
-<link rel="preload" as="image" href="assets/covers/26-2_sanil-top169.webp" fetchpriority="high">
+<!-- 홈 히어로 아래 사진. 사진을 바꾸면 이 줄도 바꾼다 -->
+<link rel="preload" as="image" href="assets/hero/cau.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
 // 리포트 글꼴(KoPub 돋움): 리포트 본문은 이 글꼴이 다 받아진 뒤에 보인다 (html.rfont). 다른 글꼴로 먼저 보였다가 바뀌지 않게.
@@ -280,6 +279,26 @@ section.hero img{-webkit-user-drag:none}
 .ha-btn{display:inline-block;margin-top:clamp(20px,3.6vh,34px);border:1px solid rgba(247,246,243,.8);padding:14px 32px;font-size:14px;font-weight:600;letter-spacing:.02em;color:#F7F6F3;text-decoration:none;transition:background .2s,color .2s}
 .ha-btn:hover{background:#F7F6F3;color:#0B1524}
 @media (prefers-reduced-motion:reduce){.hb-down{animation:none}.hb-ring .fg{animation:none !important}}
+/* 홈 히어로 (블랙스톤형): 검은 바탕, 계단식 세리프 제목, 아래 사진 띠 + 가운데 카드 */
+.bx-hero{position:relative;background:#000;color:#F7F6F3;min-height:100vh;box-sizing:border-box;padding-top:clamp(150px,19vh,210px);display:flex;flex-direction:column;overflow:hidden}
+.bx-hero .wrap{max-width:1240px;width:100%;box-sizing:border-box;padding-left:35px;padding-right:35px}
+.bx-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px}
+.bx-hero .bx-h{color:#F7F6F3}
+.bx-h{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(52px,6.2vw,96px);line-height:1.1;letter-spacing:-.012em}
+.bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
+.bx-r{margin:0 0 .5em;font-family:'Noto Serif KR',serif;font-size:clamp(16px,1.35vw,20px);line-height:1.75;color:rgba(247,246,243,.9);white-space:nowrap}
+.bx-hero .bx-band{position:relative;flex:1;width:100%;min-height:300px;margin:clamp(56px,8vh,88px) auto 0}
+.bx-photo{position:absolute;inset:0 35px;overflow:hidden}
+.bx-photo img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.8)}
+.bx-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.1),rgba(0,0,0,.4))}
+.bx-card{position:absolute;left:50%;top:clamp(36px,5vh,56px);bottom:0;width:min(34%,420px);transform:translateX(-50%);background:linear-gradient(135deg,#0F1B2E 0%,#203864 60%,#8FAADC 100%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:clamp(28px,5vh,48px)}
+.bx-card i{font-family:'Source Serif 4',serif;font-style:italic;font-size:clamp(34px,3.6vw,58px);letter-spacing:-.02em;color:#F7F6F3;white-space:nowrap}
+.bx-m{min-height:100svh;padding-top:120px}
+.bx-m .bx-top{display:block;padding:0 24px}
+.bx-m .bx-h{font-size:clamp(40px,11.5vw,54px)}.bx-m .bx-h span{margin-left:1em}
+.bx-m .bx-r{margin-top:22px;font-size:15px}
+.bx-hero.bx-m .bx-band{margin-top:40px;min-height:260px}.bx-m .bx-photo{inset:0}
+.bx-m .bx-card{width:58%;top:28px}.bx-m .bx-card i{font-size:32px}
 .hero-bgwrap,.hero-grid{transition:opacity 300ms cubic-bezier(0.4,0,0.2,1)}
 .hero-bgwrap.fading{opacity:0.42}
 .hero-grid.fading{opacity:0}
@@ -1855,27 +1874,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <main data-screen-label="홈 (모바일)" class="mhome" style="background:#F7F6F3;color:#1A1A1A">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
 
-    <section class="on-photo" data-nav="dark" onTouchStart="{{ mTouchStart }}" onTouchEnd="{{ mTouchEnd }}" style="position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><img loading="lazy" src="{{ heroBgSafe }}" alt="" style="width:100%;height:100%;object-fit:cover;object-position:{{ heroPosM }};display:block"></div>
-      <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(15,27,46,0.25) 0%, rgba(15,27,46,0.35) 40%, rgba(15,27,46,0.92) 100%)"></div>
-      <div class="hero-grid {{ heroFadeCls }}" style="position:relative;z-index:1;padding:0 24px 28px">
-        <div style="display:flex;align-items:center;gap:10px;font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(247,246,243,0.7)">
-          <span>Latest report</span><span style="width:20px;height:1px;background:rgba(247,246,243,0.4)"></span><span>{{ heroCounter }}</span>
-        </div>
-        <div style="margin-top:14px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:rgba(247,246,243,0.85)">{{ mHeroNameOnly }} · {{ mHeroTicker }}</div>
-        <h2 style="margin:8px 0 0;font-family:'Noto Serif KR',serif;font-size:clamp(30px,8.6vw,38px);font-weight:700;line-height:1.22;letter-spacing:-0.025em;color:#F7F6F3">{{ heroHeadline }}</h2>
-        <div style="display:flex;align-items:baseline;gap:18px;margin-top:22px;padding-top:16px;border-top:1px solid rgba(247,246,243,0.35)">
-          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">RATING</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px">{{ heroOp }}</div></div>
-          <div><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">TARGET</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#F7F6F3;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroTp }}</div></div>
-          <div style="margin-left:auto"><div style="font-size:11.5px;letter-spacing:0.14em;color:rgba(247,246,243,0.6)">UPSIDE</div><div style="font-family:'Noto Serif KR',serif;font-size:22px;font-weight:700;color:#e0a63c;margin-top:2px;font-variant-numeric:tabular-nums">{{ heroUpside }}</div></div>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:22px">
-          <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="btn btn-photo" style="padding:12px 20px;font-size:12px">READ REPORT</a>
-          <div style="display:flex;gap:6px">
-            <sc-for list="{{ mHeroDots }}" as="d" hint-placeholder-count="8"><span onClick="{{ d.go }}" style="width:6px;height:6px;background:{{ d.on }};display:inline-block"></span></sc-for>
-          </div>
-        </div>
+    <section class="bx-hero bx-m" data-nav="dark">
+      <div class="bx-top">
+        <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
+        <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
+      <div class="bx-band"><div class="bx-photo"><img src="assets/hero/cau-m.webp" alt="중앙대학교 캠퍼스"></div><div class="bx-card"><i>SINCE 2006</i></div></div>
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
@@ -1898,36 +1902,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
   <main data-screen-label="홈">
     <h1 class="sr-only">R.F.S. 중앙대학교 가치투자학회</h1>
-    <section data-snap="" class="hero on-photo" data-nav="dark" data-screen-label="히어로">
-      <div class="hero-bgwrap {{ heroFadeCls }}" style="position:absolute;inset:0"><image-slot id="hero-bg" shape="rect" fit="cover" src="{{ heroBg }}" credit="{{ heroBgCredit }}" credit-href="{{ heroBgCreditHref }}"></image-slot></div>
-      <div class="scrim" style="opacity:{{ heroScrim }}"></div>
-      <div class="hero-col" style="position:relative;z-index:1;width:100%;min-height:100vh;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;padding:88px 0 clamp(24px,3.4vh,44px)">
-      <div class="hero-grid hero-pad wrap {{ heroFadeCls }}" style="display:grid;grid-template-columns:minmax(0,60%) minmax(0,40%);gap:48px;padding:0 35px;align-items:center;width:100%">
-        <div style="pointer-events:none">
-          <div style="font-size:13px;letter-spacing:0.08em;color:#F7F6F3;font-variant-numeric:tabular-nums;margin-bottom:clamp(10px,1.6vh,18px)">{{ heroMeta }}</div>
-          <h2 class="hero-title" style="font-family:'Noto Serif KR',serif;font-size:clamp(38px,4.3vw,58px);font-weight:700;letter-spacing:-0.03em;line-height:1.05;margin:0 0 10px"><a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="darklink" style="color:#F7F6F3;pointer-events:auto">{{ heroCompany }}</a></h2>
-          <div style="font-family:'Noto Serif KR',serif;font-size:clamp(18px,1.9vw,24px);font-weight:600;letter-spacing:-0.02em;color:rgba(247,246,243,0.92);margin-bottom:clamp(12px,2vh,22px)">{{ heroHeadline }}</div>
-          <div class="ha-k"><span class="op">{{ heroOp }}</span><span>목표주가 <b>{{ heroTp }}</b></span><span>상승여력 <b>{{ heroUpside }}</b></span></div>
-          <a href="{{ heroHref }}" onClick="{{ heroOpen }}" class="ha-btn" style="pointer-events:auto">리포트 읽기</a>
-        </div>
-        <div class="hero-cover-wrap">
-          <div style="aspect-ratio:16/9;border:1px solid rgba(247,246,243,0.4);position:relative;overflow:hidden;background:#FFFFFF">
-            <image-slot id="hero-cover-top" shape="rect" fit="cover" src="{{ heroCover }}" placeholder="리포트 표지 상단 (16:9)"></image-slot>
-            <div class="hero-scroll" aria-label="리포트 1쪽 (스크롤해서 읽기)" tabindex="0"><img src="{{ heroPage }}" alt="" decoding="async"></div>
-            <span class="hs-hint">스크롤해서 읽기</span>
-          </div>
-          <div style="font-size:11px;color:rgba(247,246,243,0.85);margin-top:8px">{{ heroCaption }}</div>
-        </div>
+    <section data-snap="" class="bx-hero" data-nav="dark" data-screen-label="히어로">
+      <div class="wrap bx-top">
+        <h2 class="bx-h"><b>Rise</b> with<br><span>Financial Stars</span></h2>
+        <p class="bx-r">R.F.S.는 중앙대학교 최고의<br>가치투자학회입니다.</p>
       </div>
-      <div class="wrap hb-ctrlwrap">
-        <div class="hb-ctrl">
-          <button type="button" onClick="{{ heroPrev }}" aria-label="이전 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M51 10H2M10 2L2 10l8 8"/></svg></button>
-          <button type="button" onClick="{{ heroNext }}" aria-label="다음 리포트"><svg width="46" height="18" viewBox="0 0 52 20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 10h49M42 2l8 8-8 8"/></svg></button>
-          <span class="hb-cnt"><b>{{ heroCur }}</b><i>/</i><b>{{ heroTot }}</b><svg class="hb-ring {{ heroRing }}" viewBox="0 0 20 20" aria-hidden="true"><circle class="bg" cx="10" cy="10" r="9"/><circle class="fg" cx="10" cy="10" r="9"/></svg></span>
-        </div>
-      </div>
-      </div>
-      <a class="hb-down" href="#home-sky" onClick="{{ heroDown }}" aria-label="아래로"><svg width="22" height="36" viewBox="0 0 42 64" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M21 1v60M3 43l18 18 18-18"/></svg></a>
+      <div class="wrap bx-band"><div class="bx-photo"><img src="assets/hero/cau.webp" alt="중앙대학교 캠퍼스" fetchpriority="high"></div><div class="bx-card"><i>SINCE 2006</i></div></div>
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
