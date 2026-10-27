@@ -1,6 +1,6 @@
 """축별 평가(rubric.md) 결과를 합쳐 축별 추천 리포트 목록을 만든다.
 
-  python3 -I tools/rag/rubric_merge.py /home/user/rfs-cafe-data <평가 결과 폴더(batch_*.jsonl)>
+  python3 -I tools/rag/rubric_merge.py /home/user/rfs-cafe-data /home/user/rfs-cafe-data/eval/rubric_work/out
 출력  eval/rubric_scores.jsonl (리포트마다 축별 점수·이유·인용·검산, 글 지표 붙임)
       eval/rubric_recommend.json (축마다 3점 리포트 = 챗봇이 "이 축은 이 선배 리포트를 보라"고 보여줄 후보.
         search_doc_ids는 검색에 실제로 들어간 판의 doc_id. answer.py가 읽는다)
