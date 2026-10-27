@@ -1115,8 +1115,8 @@ main.pgx .pres .pres-in{padding:64px 56px}
 @media (max-width:860px){
   .pg-tabs{top:56px}.pg-tabs .wrap{padding:8px 12px}.pg-tabs a{font-size:14.5px;padding:8px 0}
   main.pgx>section[data-nav="light"]:not(.pres)>.wrap{width:calc(100% - 24px);padding:32px 20px !important}
-  main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero),main.pgx .pres{width:calc(100% - 24px);margin:12px auto}
-  main.pgx.mhome>section[data-nav="light"]:not(.pres){background:#FFFFFF !important;border:1px solid #E2E0DA !important;margin:12px;padding:32px 20px !important}
+  main.pgx>section.on-photo:not(.pg-hero),main.pgx>section[data-nav="dark"]:not(.pg-hero),main.pgx .pres{width:calc(100% - 32px);margin:14px auto}
+  main.pgx.mhome>section[data-nav="light"]:not(.pres){background:#FFFFFF !important;border:1px solid #E2E0DA !important;margin:14px 16px;padding:32px 20px !important}
   main.pgx.mhome>section[data-nav="light"][data-tab="latest"]{padding:28px 0 8px !important}
   main.pgx.mhome .pres .pres-in{padding:40px 22px}
   main.pgx h2,main.pgx .sec-title{font-size:24px !important}
@@ -1678,7 +1678,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wr-hr i{display:block;height:8px}.wr-hr i b{display:block;height:100%;background:#203864}.wr-hr em{font-style:normal;text-align:right}.wr-hr small{text-align:right;font-size:13px}
 .wr-link{display:inline-block;margin-top:26px;font-size:13px;color:#203864 !important}
 .wr-ft{margin:0;border-top:1px solid #E2E0DA;padding:14px 34px;font-size:11px;color:rgba(26,26,26,.5)}
-@media (max-width:699px){.wr{margin-left:-16px;margin-right:-16px}.wr-hd{padding:22px 18px 20px}.wr-t{font-size:22px}.wr-sl img{width:38px}.wr-in{padding:0 18px 32px}.wr-pt{font-size:12.5px}.wr-pt th,.wr-pt td{padding:8px 5px}.wr-hr{grid-template-columns:minmax(0,1fr) 22% 48px 62px 52px;gap:6px;font-size:12.5px}.wr-ch{height:160px}}
+@media (max-width:699px){.wr{margin-left:-16px;margin-right:-16px}.wr-hd{padding:22px 18px 20px}.wr-t{font-size:22px}.wr-sl img{width:38px}.wr-in{padding:0 18px 32px}.wr-pt{font-size:12.5px}.wr-pt th,.wr-pt td{padding:8px 5px}.wr-pt th:first-child,.wr-pt td:first-child{padding-left:8px}.wr-pt th:last-child,.wr-pt td:last-child{padding-right:8px}.wr-h h2{white-space:nowrap}.wr-h small{min-width:0;text-align:right;line-height:1.5}.wr-hr{grid-template-columns:minmax(0,1fr) 14% 44px 50px 54px;gap:6px;font-size:12.5px}.wr-ch{height:160px}}
+/* 모바일 좁은 폭: 보유종목 Today 칸이 화면 밖으로 나가지 않게, 벤치마크 표 구분 칸이 한 줄에 들어가게 */
+@media (max-width:560px){.fd-row,.fd-lh{grid-template-columns:24px minmax(0,1fr) 50px 96px !important;gap:8px !important}.fd-pr.rfm-pr{grid-template-columns:minmax(0,1fr) 64px 80px !important;gap:6px !important}}
 
 .wkp-sheet{background:#FFFFFF;color:#000;max-width:920px;margin:6px auto 20px;font-family:'RFS Report Dotum','Pretendard Variable',sans-serif;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(0,0,0,0.4)}
 .wkp-top{display:flex;align-items:center;padding:18px 20px 9px;font-size:14px;font-weight:500;color:#595959;font-variant-numeric:tabular-nums}.wkp-x{margin-left:auto;font-size:12.5px;color:#7F7F7F;text-decoration:none}.wkp-x:hover{color:#002060}
