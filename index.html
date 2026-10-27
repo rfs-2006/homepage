@@ -288,6 +288,7 @@ section.hero img{-webkit-user-drag:none}
 .bx-bandx{margin-top:clamp(56px,8vh,96px)}
 .bx-band{position:relative;display:block;height:clamp(420px,62vh,720px);overflow:hidden;background:#0F1B2E;color:#F7F6F3;text-decoration:none;touch-action:pan-y}
 .bx-bg{position:absolute;inset:0}
+.bx-s-empty .bx-bg{display:none}.bx-s-empty{cursor:default}
 .bx-bg img{width:100%;height:100%;object-fit:cover;display:block}
 .bx-bg::after{content:'';position:absolute;inset:0}
 /* 1. Claude: 별 사진 위에 카드 크게 */
@@ -1922,7 +1923,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
       <div class="bx-x bx-bandx"><a class="bx-band bx-s-{{ bxKind }}" href="{{ bxHref }}" onClick="{{ bxGo }}" onTouchStart="{{ bxTs }}" onTouchEnd="{{ bxTe }}" aria-label="{{ bxTitle }}">
         <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
-        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div></span></sc-if>
+        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
         <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
       </a></div>
@@ -1960,7 +1961,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       </div>
       <div class="bx-x bx-bandx"><a class="bx-band bx-s-{{ bxKind }}" href="{{ bxHref }}" onClick="{{ bxGo }}" onTouchStart="{{ bxTs }}" onTouchEnd="{{ bxTe }}" aria-label="{{ bxTitle }}">
         <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
-        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude for Nonprofits</span></div></div></div></span></sc-if>
+        <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
         <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
       </a></div>
@@ -6760,10 +6761,10 @@ class Component extends DCLogic {
       heroFadeCls: s.heroFade ? 'fading' : '',
       ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
         const B = [
-          { kind:'card', img:'assets/hero/sky.webp', title:'Claude for Nonprofits', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
-          { kind:'word', img:'assets/hero/nyse.webp', word:'OpenAI', tag:'제휴 추진 중', title:'OpenAI 제휴 추진', desc:'OpenAI와의 제휴를 마무리 단계에서 검토하고 있습니다. 체결되면 학회원은 60% 할인된 가격으로 이용할 수 있습니다.' },
-          { kind:'butler', img:'assets/partners/butler-dash.webp', shots:['assets/partners/butler-report.webp','assets/partners/butler-dash.webp','assets/partners/butler-seg.webp','assets/partners/butler-fin.webp'], title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
-          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], title:'1차 세미나 리포트', desc:'산일전기 · 대한항공 · 인바디 · 네패스아크. 26-2학기 1차 세미나 기업분석 리포트 4편을 공개했습니다.', page:'research' }];
+          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
+          { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
+          { kind:'empty', img:'', title:'', desc:'' },   // 3·4번 칸은 소식이 정해지면 채운다
+          { kind:'empty', img:'', title:'', desc:'' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
         const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
         return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? '#' + b.page : '#'),
@@ -6772,7 +6773,7 @@ class Component extends DCLogic {
           bxTs: (e) => { this._bxX = e.touches[0].clientX; this._bxSwiped = false; },
           bxTe: (e) => { const dx = e.changedTouches[0].clientX - (this._bxX || 0); if (Math.abs(dx) > 40) { this._bxSwiped = true; to(i + (dx < 0 ? 1 : -1)); } },
           bxAnim: i % 2 ? 'bxb' : 'bxa', bxPrev: () => to(i - 1), bxNext: () => to(i + 1),
-          bxDots: B.map((x, k) => ({ cls: k === i ? 'on' : '', label: x.title, go: () => to(k) })) };
+          bxDots: B.map((x, k) => ({ cls: k === i ? 'on' : '', label: x.title || '소식 ' + (k + 1), go: () => to(k) })) };
       })(),
       heroPrev: () => heroStep(-1),
       heroNext: () => heroStep(1),
