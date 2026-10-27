@@ -5496,7 +5496,8 @@ class Component extends DCLogic {
     const fmt = (d) => { const t = new Date(d + 'T00:00:00'); return isNaN(t) ? d : t.getFullYear() + '.' + String(t.getMonth() + 1).padStart(2, '0') + '.' + String(t.getDate()).padStart(2, '0'); };
     const today = (() => { const k = new Date(Date.now() + 9 * 3600e3); return k.toISOString().slice(0, 10); })();
     // 투자전략: 일요일에 올리면 다음 월~금. 그 주 월요일(오늘이 월요일이면 오늘)을 기준일로, 제목은 날짜 범위
-    const nextMon = (() => { const d = new Date(today + 'T00:00:00'); d.setDate(d.getDate() + ((8 - d.getDay()) % 7)); return d; })();
+    // 기본 적용 주: 주말에 쓰면 다음 주 월요일, 평일(월~금)에 쓰면 이번 주 월요일 (그 주 전략을 늦게 올리는 경우가 많아서)
+    const nextMon = (() => { const d = new Date(today + 'T00:00:00'); const k = d.getDay(); d.setDate(d.getDate() + (k === 0 ? 1 : k === 6 ? 2 : 1 - k)); return d; })();
     const ymdOf = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     const md = (d) => (d.getMonth() + 1) + '.' + d.getDate();
     const weekTitle = (mon) => { const a = new Date(mon + 'T00:00:00'); const f = new Date(a); f.setDate(a.getDate() + 4); return md(a) + '(월) ~ ' + md(f) + '(금) 투자전략'; };
@@ -5736,9 +5737,17 @@ class Component extends DCLogic {
         this.setState({ wkBusy: true, wkErr: '' });
         try {
           // 본문 속 사진은 저장소에 올리고 그 주소로 바꿔 HTML로 저장한다
+          // 노션 제목에 '(10/26~10/30)'처럼 기간이 있으면 그 주 월요일을 적용 주로 쓴다 (날짜 칸을 잘못 골라도 맞게)
+          let wkMon = monPick;
+          const h1 = ed.querySelector('h1, h2'); const m = h1 && /\((\d{1,2})\s*[\/.]\s*(\d{1,2})\s*~/.exec(h1.textContent || '');
+          if (strat && m) {
+            const now = new Date(today + 'T00:00:00'); let y = now.getFullYear(); const mo = +m[1];
+            if (mo === 12 && now.getMonth() === 0) y--; else if (mo === 1 && now.getMonth() === 11) y++;
+            const d = new Date(y, mo - 1, +m[2]); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); wkMon = ymdOf(d);
+          }
           const body = await window.RFSWk.collect(ed, upload);
           const link = (s.wkLink || '').trim();
-          const row = { category: cat, week: strat ? monPick : today, title: strat ? weekTitle(monPick) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' };
+          const row = { category: cat, week: strat ? wkMon : today, title: strat ? weekTitle(wkMon) : s.wkTitle.trim(), body, images: [], link: /^https?:\/\//.test(link) ? link : '' };
           if (strat) {
             const teamSrc = s.wkTeamTxt != null ? s.wkTeamTxt : ((document.querySelector('.wk-form .wk-team') || {}).value || '');
             row.team = teamSrc.split('\n').map((l) => l.split(/\s*[·|\t]\s*/).map((x) => x.trim()).filter(Boolean)).filter((r) => r.length).map((r) => [r[0], r[1] || '', r.slice(2).join(' ')]);
