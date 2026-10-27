@@ -164,13 +164,13 @@
       '<tr><th>펀드명</th><td>AMT Fund</td><th>운용</th><td>중앙대학교 가치투자학회 R.F.S. Asset Management Team</td></tr>' +
       '<tr><th>비교지수</th><td>' + esc(bm) + '</td><th>투자 대상</th><td>국내 상장 주식</td></tr>' +
       '<tr><th>투자 원칙</th><td colspan="3">GPS — 성장(Growth)이 담보된 기업을 좋은 가격(Price)에 포착하고, 시장 심리(Sentiment)를 활용해 매매 시점을 잡는다</td></tr>' +
-      '<tr><th>운용 방식</th><td colspan="3">탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 회의에서 팀 합의로 편입·비중·엑시트 결정, 최종 책임은 운용팀장</td></tr>' +
-      '<tr><th>보고</th><td colspan="3">매주 투자전략(본 보고서), 이슈 발생 시 담당 매니저 코멘트</td></tr></table></div></div>' +
+      '<tr><th>운용 방식</th><td colspan="3">탑다운으로 유망 섹터 선정, 바텀업으로 종목 선별. 주간 운용회의에서 편입·비중·매도 결정, 최종 의사결정은 책임운용역</td></tr>' +
+      '<tr><th>보고</th><td colspan="3">주간 운용보고서 정기 발간, 주요 변동 사항 홈페이지 수시 공시</td></tr></table></div></div>' +
       '<div class="pair"><div>' + (perT ? H3('상세 기간 수익률', (opt.perAsOf || '') + ' 기준 · 단위 %') + perT : '') + '</div><div>' + (navT ? H3('기준가격 현황', '전주 대비') + navT : '') + (stkT ? H3('자산구성현황', asOf0) + stkT : '') + '</div></div>' +
       '<div class="pair"><div>' + (barT ? H3('업종별 투자비중', asOf0) + barT : '') + '</div><div>' + (topT ? H3('주요 자산보유 현황', asOf0) + topT : '') + '</div></div>' +
       '<div class="pair tri"><div>' + H3('투자자산 매매내역', '이번 주') + tradeT + '</div><div>' + H3('비용 현황', '이번 주 · 추정') + costT + '</div><div>' + (riskT ? H3('위험 지표', '설정 이후') + riskT : '') + '</div></div>' +
-      '<div class="pair"><div>' + (teamT ? H3('투자운용인력현황') + teamT : '') + '</div><div>' + H3('주요 비상대응계획') + '<div class="rk"><p>운용팀이 시장 급변, 보유 종목 이슈 등을 상시 점검하고, 이슈가 생기면 담당 매니저가 운용팀장에게 바로 보고합니다. 중대한 사안은 주간 회의 전이라도 운용팀 합의로 비중을 조정하고 학회 공지로 알립니다.</p></div>' +
-      H3('공지사항') + '<div class="rk"><p>1. 본 보고서는 R.F.S. 운용팀이 교육 목적으로 작성하였으며, 금액·수량은 공개하지 않고 비율로만 표기합니다.</p><p>2. 매주 투자전략과 실시간 운용 현황은 caurfs.kr FUND에서 확인할 수 있습니다.</p></div></div></div>' +
+      '<div class="pair"><div>' + (teamT ? H3('투자운용인력현황') + teamT : '') + '</div><div>' + H3('주요 비상대응계획') + '<div class="rk"><p>운용팀의 시장·보유 종목 리스크 상시 모니터링. 편입 기업의 중대 공시, 급격한 가격 변동 등 이슈 발생 시 담당 운용역 즉시 점검 후 운용팀 리스크 회의 소집. 중대 사안은 회장단 보고 후 비중 조정 및 학회원 고지.</p></div>' +
+      H3('공지사항') + '<div class="rk"><p>1. 본 펀드는 R.F.S. 내부 운용 원칙에 따라 운용되며, 운용 금액·수량 등 세부 내역은 공개하지 않고 비율로 표기합니다.</p><p>2. 주요 운용 현황은 R.F.S. 홈페이지(caurfs.kr) FUND에서 수시 공시합니다.</p></div></div></div>' +
       '<div class="pair"><div style="grid-column:1/-1">' + H3('투자 위험') + '<div class="rk c2">' +
       '<p><b>원본 손실 위험</b> 원본을 보장하지 않으며, 투자 원본의 전부 또는 일부 손실이 생길 수 있습니다.</p>' +
       '<p><b>시장 및 개별 종목 위험</b> 주식 가격, 금리 등 거시 지표 변화와 발행 회사의 영업·재무 상황에 따라 가치가 크게 변할 수 있습니다.</p>' +
