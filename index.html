@@ -309,6 +309,33 @@ section.hero img{-webkit-user-drag:none}
 .bx-s-butler .bx-shots{align-items:center;top:0}
 .bx-s-butler .bx-shots img{width:min(22%,380px);aspect-ratio:4/3;object-fit:cover;object-position:0 0;border-radius:10px;align-self:center;margin-top:0;transform:rotate(-2deg)}
 .bx-s-butler .bx-shots img:nth-child(even){transform:rotate(2deg) translateY(18%)}
+/* 3. Butler: 보랏빛 조명 위에 로고와 화면 네 장 */
+.bx-s-butler .bx-bg{display:none}
+.bx-s-butler{background:radial-gradient(60% 85% at 74% 50%,rgba(112,86,245,.42),rgba(112,86,245,0) 70%),radial-gradient(40% 60% at 12% 30%,rgba(32,56,100,.5),rgba(32,56,100,0) 70%),linear-gradient(135deg,#0F1B2E,#090F1C)}
+.bx-bt{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;gap:4%;padding:0 6%}
+.bt-id{display:flex;flex-direction:column;align-items:flex-start;gap:14px;flex:0 0 auto}
+.bt-id img{width:clamp(64px,5.4vw,96px);border-radius:24%;box-shadow:0 20px 50px rgba(112,86,245,.45)}
+.bx-hero .bt-id b{color:#F7F6F3;margin-top:10px;font-family:'Source Serif 4',serif;font-weight:400;font-size:clamp(64px,6.6vw,124px);line-height:.95;letter-spacing:-.03em}
+.bt-id small{font-size:clamp(14px,1.05vw,18px);color:rgba(247,246,243,.7);letter-spacing:.01em}
+.bt-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,1.4vw,22px);width:min(48%,600px,calc(clamp(420px,62vh,720px) / 1.3));transform:perspective(1600px) rotateY(-12deg) rotateX(4deg);transform-origin:70% 50%}
+.bt-grid>span{display:block;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.bt-grid>span:nth-child(even){transform:translateY(10%)}
+.bt-grid img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;object-position:0 0}
+.bt-grid em{display:block;padding:10px 14px;font-style:normal;font-size:13px;font-weight:600;color:#1A1A1A;border-top:1px solid #ECEAE4}
+/* 4. POLARIS: 서울 사진 위에 대화 창 */
+.bx-s-chat .bx-bg::after{background:linear-gradient(180deg,rgba(6,13,25,.5),rgba(6,13,25,.82))}
+.bx-ch{position:absolute;inset:0;display:grid;place-items:center}
+.ch-win{display:flex;flex-direction:column;gap:18px;width:min(78%,760px);padding:22px 26px 20px;border-radius:22px;background:rgba(11,21,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 50px 100px rgba(0,0,0,.5),inset 0 0 0 1px rgba(214,226,245,.18)}
+.ch-hd{display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid rgba(214,226,245,.14)}
+.ch-hd img{width:30px;height:30px}.bx-hero .ch-hd b{color:#F7F6F3;font-size:14px;letter-spacing:.14em}.ch-hd small{font-size:13px;color:rgba(247,246,243,.6)}
+.ch-q{align-self:flex-end;max-width:70%;padding:12px 18px;border-radius:18px 18px 4px 18px;background:#F7F6F3;color:#0F1B2E;font-size:clamp(14px,1.05vw,17px);font-weight:600}
+.ch-a{align-self:flex-start;display:flex;flex-direction:column;gap:12px;max-width:86%;padding:16px 20px;border-radius:18px 18px 18px 4px;background:rgba(247,246,243,.08);font-size:clamp(14px,1.05vw,17px);line-height:1.7;word-break:keep-all}
+.bx-hero .ch-a,.bx-hero .ch-a>span{color:#F7F6F3}.bx-hero .ch-a b{color:#C9D8F5;font-weight:600}
+.ch-src{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:6px 12px;border-radius:999px;background:rgba(143,170,220,.16);font-size:12.5px;color:rgba(247,246,243,.85)}
+.ch-src i{font-style:normal;font-weight:700;color:#8FAADC}
+.ch-in{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding:12px 12px 12px 18px;border-radius:14px;background:rgba(247,246,243,.06);box-shadow:inset 0 0 0 1px rgba(214,226,245,.14);font-size:14px;color:rgba(247,246,243,.5)}
+.ch-in i{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#F7F6F3;color:#0F1B2E;font-style:normal;font-weight:700}
+.bx-ch.bxa .ch-q,.bx-ch.bxb .ch-q{animation:bxup .6s .35s ease both}.bx-ch.bxa .ch-a,.bx-ch.bxb .ch-a{animation:bxup .6s .9s ease both}
 .bx-cap{display:flex;justify-content:space-between;gap:48px;margin-top:clamp(36px,5vh,56px);padding-bottom:clamp(72px,11vh,120px)}
 .bx-cap h3{margin:0;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(30px,2.8vw,48px);letter-spacing:-.01em;color:#F7F6F3}
 .bx-cap p{margin:6px 0 0;max-width:460px;font-size:16px;line-height:1.75;color:rgba(247,246,243,.85);word-break:keep-all}
@@ -320,7 +347,7 @@ section.hero img{-webkit-user-drag:none}
 .bx-dots button.on{width:13px;height:13px;background:#F7F6F3;box-shadow:0 0 0 3px #08111F,0 0 0 4.5px #F7F6F3}
 .bxa{animation:bxa .7s ease both}.bxb{animation:bxb .7s ease both}
 @keyframes bxa{from{opacity:0}to{opacity:1}}@keyframes bxb{from{opacity:0}to{opacity:1}}
-.bx-c.bxa,.bx-c.bxb,.bx-w.bxa,.bx-w.bxb,.bx-shots.bxa,.bx-shots.bxb{animation-name:bxup}
+.bx-bt.bxa,.bx-bt.bxb,.bx-ch.bxa,.bx-ch.bxb,.bx-c.bxa,.bx-c.bxb,.bx-w.bxa,.bx-w.bxb,.bx-shots.bxa,.bx-shots.bxb{animation-name:bxup}
 @keyframes bxup{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
 .bx-w.bxa,.bx-w.bxb{animation-name:bxupw}
 @keyframes bxupw{from{opacity:0;transform:translateY(calc(-50% + 24px))}to{opacity:1;transform:translateY(-50%)}}
@@ -337,6 +364,10 @@ section.hero img{-webkit-user-drag:none}
 .bx-m .bx-shots{top:14%;gap:10px;padding:0 6%;flex-wrap:wrap;align-content:flex-start}
 .bx-m .bx-shots img{width:calc(50% - 5px);margin-top:0 !important}
 .bx-m.bx-hero .bx-s-butler .bx-shots img{width:calc(50% - 5px);height:auto;transform:none;border-radius:8px}
+.bx-m .bx-bt{flex-direction:column;justify-content:center;gap:22px;padding:0 9%}
+.bx-m .bt-id{align-items:center;text-align:center;gap:8px}.bx-m .bt-id{flex-direction:row;gap:12px}.bx-m .bt-id small{display:none}.bx-m .bt-id img{width:44px}.bx-m .bt-id b{font-size:46px;margin-top:0}.bx-m .bt-id small{font-size:13px}
+.bx-m .bt-grid{width:100%;gap:10px;transform:none}.bx-m .bt-grid>span:nth-child(even){transform:none}.bx-m .bt-grid em{padding:7px 10px;font-size:11px}
+.bx-m .ch-win{width:88%;padding:16px 16px 14px;gap:12px}.bx-m .ch-q,.bx-m .ch-a{font-size:13px}.bx-m .ch-a{max-width:94%;padding:12px 14px}.bx-m .ch-src{font-size:11px}.bx-m .ch-in{font-size:12px}
 .bx-m .bx-cap{display:block;margin-top:28px;padding-bottom:64px}
 .bx-m .bx-cap h3{font-size:30px}
 .bx-m .bx-cap p{margin-top:16px;font-size:15px}
@@ -1926,6 +1957,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
         <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+        <sc-if value="{{ bxIsButler }}" hint-placeholder-val="{{ false }}"><span class="bx-bt {{ bxAnim }}"><span class="bt-id"><img src="assets/partners/butler.webp" alt=""><b>Butler</b><small>기업분석 플랫폼 · 학회원 전원 유료 플랜</small></span><span class="bt-grid"><span><img src="assets/partners/butler-report.webp" alt=""><em>증권사 리포트 요약</em></span><span><img src="assets/partners/butler-dash.webp" alt=""><em>실적 · 공시</em></span><span><img src="assets/partners/butler-seg.webp" alt=""><em>사업부문</em></span><span><img src="assets/partners/butler-fin.webp" alt=""><em>재무 그래프</em></span></span></span></sc-if>
+        <sc-if value="{{ bxIsChat }}" hint-placeholder-val="{{ false }}"><span class="bx-ch {{ bxAnim }}"><span class="ch-win"><span class="ch-hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>POLARIS</b><small>R.F.S. 리서치 챗봇</small></span><span class="ch-q">네패스아크 리포트 핵심만 알려줘</span><span class="ch-a"><span>26-2학기 1차 세미나 리포트는 네패스아크를 <b>‘삼성 파운드리 회복의 최대 수혜주’</b>로 봤어요. 투자의견은 BUY예요.</span><span class="ch-src"><i>출처</i>네패스아크 (330860.KQ) · Research Team 2 · p.1</span></span><span class="ch-in">학회 리포트에 대해 물어보세요<i>↑</i></span></span></span></sc-if>
       </a></div>
       <div class="bx-x bx-cap">
         <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
@@ -1964,6 +1997,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
         <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+        <sc-if value="{{ bxIsButler }}" hint-placeholder-val="{{ false }}"><span class="bx-bt {{ bxAnim }}"><span class="bt-id"><img src="assets/partners/butler.webp" alt=""><b>Butler</b><small>기업분석 플랫폼 · 학회원 전원 유료 플랜</small></span><span class="bt-grid"><span><img src="assets/partners/butler-report.webp" alt=""><em>증권사 리포트 요약</em></span><span><img src="assets/partners/butler-dash.webp" alt=""><em>실적 · 공시</em></span><span><img src="assets/partners/butler-seg.webp" alt=""><em>사업부문</em></span><span><img src="assets/partners/butler-fin.webp" alt=""><em>재무 그래프</em></span></span></span></sc-if>
+        <sc-if value="{{ bxIsChat }}" hint-placeholder-val="{{ false }}"><span class="bx-ch {{ bxAnim }}"><span class="ch-win"><span class="ch-hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>POLARIS</b><small>R.F.S. 리서치 챗봇</small></span><span class="ch-q">네패스아크 리포트 핵심만 알려줘</span><span class="ch-a"><span>26-2학기 1차 세미나 리포트는 네패스아크를 <b>‘삼성 파운드리 회복의 최대 수혜주’</b>로 봤어요. 투자의견은 BUY예요.</span><span class="ch-src"><i>출처</i>네패스아크 (330860.KQ) · Research Team 2 · p.1</span></span><span class="ch-in">학회 리포트에 대해 물어보세요<i>↑</i></span></span></span></sc-if>
       </a></div>
       <div class="bx-x bx-cap">
         <div><h3 class="{{ bxAnim }}">{{ bxTitle }}</h3>
@@ -6766,13 +6801,13 @@ class Component extends DCLogic {
         const B = [
           { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
           { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
-          { kind:'empty', img:'', title:'', desc:'' },   // 3·4번 칸은 소식이 정해지면 채운다
-          { kind:'empty', img:'', title:'', desc:'' }];
+          { kind:'butler', img:'', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
+          { kind:'chat', img:'assets/hero/polaris.webp', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
         const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
         return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? '#' + b.page : '#'),
-          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsWord: b.kind === 'word', bxIsShots: b.kind === 'shots' || b.kind === 'butler', bxShots: b.shots || [],
-          bxGo: (e) => { e.preventDefault(); if (this._bxSwiped) { this._bxSwiped = false; return; } if (b.page) this.go(b.page); },
+          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsWord: b.kind === 'word', bxIsShots: b.kind === 'shots', bxIsButler: b.kind === 'butler', bxIsChat: b.kind === 'chat', bxShots: b.shots || [],
+          bxGo: (e) => { e.preventDefault(); if (this._bxSwiped) { this._bxSwiped = false; return; } if (b.href) { window.location.href = b.href; return; } if (b.page) this.go(b.page); },
           bxTs: (e) => { this._bxX = e.touches[0].clientX; this._bxSwiped = false; },
           bxTe: (e) => { const dx = e.changedTouches[0].clientX - (this._bxX || 0); if (Math.abs(dx) > 40) { this._bxSwiped = true; to(i + (dx < 0 ? 1 : -1)); } },
           bxAnim: i % 2 ? 'bxb' : 'bxa', bxPrev: () => to(i - 1), bxNext: () => to(i + 1),
