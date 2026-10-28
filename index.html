@@ -1667,21 +1667,38 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .wk-rich summary.h{font-size:1.15em;font-weight:600}
 .wk-body .wk-rich{margin-bottom:12px}
 /* 리포트 1쪽 용어 풀이: 점선 밑줄 → 눌러서 설명 카드 (모바일은 아래에서 올라오는 시트) */
-.rpt-paper .gl{border-bottom:1.5px dotted #8FAADC;cursor:pointer;transition:background .15s ease}
-.rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.22);border-bottom-color:#203864}
-#gl-pop{position:absolute;z-index:90;width:340px;background:#FFFFFF;border-top:3px solid #203864;box-shadow:0 18px 48px rgba(15,27,46,0.28);padding:18px 20px 16px;font-family:'Pretendard','Noto Sans KR',sans-serif;color:#1A1A1A;animation:glIn .16s ease}
-#gl-pop[hidden]{display:none}
-#gl-pop.sheet{position:fixed;left:0 !important;right:0;bottom:0;top:auto !important;width:auto;max-height:70vh;overflow:auto;padding:22px 20px calc(20px + env(safe-area-inset-bottom));animation:glUp .2s ease}
-@keyframes glIn{from{opacity:0;transform:translateY(-4px)}}
+.rpt-paper .gl{text-decoration:underline dotted rgba(32,56,100,0.45);text-decoration-thickness:1.5px;text-underline-offset:4px;cursor:pointer;border-radius:3px;transition:background .15s ease,text-decoration-color .15s ease}
+.rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.2);text-decoration-color:#203864}
+#gl-pop{position:absolute;z-index:90;width:340px;background:#FFFFFF;border-radius:14px;box-shadow:0 0 0 1px rgba(15,27,46,0.06),0 12px 32px rgba(15,27,46,0.16),0 2px 6px rgba(15,27,46,0.06);padding:20px 20px 16px;font-family:'Pretendard','Noto Sans KR',sans-serif;color:#191F28;animation:glIn .16s ease;transform-origin:var(--ax,24px) 0}
+#gl-pop::before{content:'';position:absolute;top:-6px;left:var(--ax,24px);width:12px;height:12px;margin-left:-6px;background:#FFFFFF;transform:rotate(45deg);box-shadow:-1px -1px 0 rgba(15,27,46,0.06);border-radius:2px 0 0 0}
+#gl-pop.up{transform-origin:var(--ax,24px) 100%}
+#gl-pop.up::before{top:auto;bottom:-6px;box-shadow:1px 1px 0 rgba(15,27,46,0.06);border-radius:0 0 2px 0}
+#gl-pop[hidden],#gl-dim[hidden]{display:none}
+#gl-dim{position:fixed;inset:0;z-index:89;background:rgba(0,0,0,0.42);animation:glFade .2s ease}
+#gl-pop.sheet{position:fixed;left:0 !important;right:0;bottom:0;top:auto !important;width:auto;max-height:78vh;overflow:auto;border-radius:24px 24px 0 0;box-shadow:none;padding:12px 24px calc(16px + env(safe-area-inset-bottom));animation:glUp .26s cubic-bezier(.2,.8,.2,1)}
+#gl-pop.sheet::before{display:none}
+#gl-pop .gl-h{display:none;width:40px;height:4px;border-radius:2px;background:#E5E8EB;margin:0 auto 20px}
+#gl-pop.sheet .gl-h{display:block}
+@keyframes glIn{from{opacity:0;transform:scale(.96)}}
 @keyframes glUp{from{transform:translateY(100%)}}
-#gl-pop .gl-k{font-size:11px;font-weight:600;letter-spacing:0.08em;color:#203864}
-#gl-pop .gl-x{position:absolute;top:10px;right:12px;border:0;background:none;font-size:20px;color:rgba(26,26,26,0.45);cursor:pointer;line-height:1}
-#gl-pop .gl-t{display:block;margin:6px 0 8px;font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;letter-spacing:-0.02em}
-#gl-pop .gl-d{margin:0;font-size:14px;line-height:1.7;color:rgba(26,26,26,0.85)}
-#gl-pop .gl-c{margin-top:14px;padding:12px 14px;background:#F7F6F3;border-left:2px solid #8FAADC}
-#gl-pop .gl-c small{display:block;font-size:11px;font-weight:600;color:#203864;margin-bottom:4px}
-#gl-pop .gl-c p{margin:0;font-size:13.5px;line-height:1.7;color:#1A1A1A}
-#gl-pop .gl-a{display:inline-block;margin-top:14px;font-size:13px;font-weight:600;color:#203864}
+@keyframes glFade{from{opacity:0}}
+#gl-pop .gl-k{display:inline-block;padding:3px 8px;border-radius:6px;background:#EEF2F9;font-size:11.5px;font-weight:600;color:#203864}
+#gl-pop .gl-x{position:absolute;top:12px;right:12px;width:28px;height:28px;border:0;border-radius:50%;background:transparent;font-size:18px;color:#8B95A1;cursor:pointer;line-height:1}
+#gl-pop .gl-x:hover{background:#F2F4F6}
+#gl-pop.sheet .gl-x{display:none}
+#gl-pop .gl-t{display:block;margin:10px 0 6px;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:#191F28}
+#gl-pop.sheet .gl-t{font-size:21px;margin-top:12px}
+#gl-pop .gl-d{margin:0;font-size:14.5px;line-height:1.65;color:#4E5968}
+#gl-pop.sheet .gl-d{font-size:16px}
+#gl-pop .gl-c{margin-top:14px;padding:14px 16px;background:#F2F4F6;border-radius:12px}
+#gl-pop .gl-c small{display:block;font-size:12px;font-weight:600;color:#203864;margin-bottom:4px}
+#gl-pop .gl-c p{margin:0;font-size:13.5px;line-height:1.65;color:#333D4B}
+#gl-pop.sheet .gl-c p{font-size:15px}
+#gl-pop .gl-a{display:flex;align-items:center;justify-content:space-between;margin:12px -8px 0;padding:10px 8px;border-radius:10px;font-size:13.5px;font-weight:600;color:#203864;text-decoration:none}
+#gl-pop .gl-a:hover{background:#F2F4F6}
+#gl-pop .gl-a::after{content:'›';font-size:18px;color:#8B95A1}
+#gl-pop .gl-ok{display:none}
+#gl-pop.sheet .gl-ok{display:block;width:100%;margin-top:8px;padding:16px;border:0;border-radius:14px;background:#203864;color:#FFFFFF;font:600 16px 'Pretendard','Noto Sans KR',sans-serif;cursor:pointer}
 /* 리포트 양식: 노션식 글을 리포트 상세(.rpt-paper)와 같은 틀로. 날짜 줄, 회색 띠(로고), 남색 헤드라인, 오른쪽 남색 정보 박스와 목차 */
 .wk-body:has(.wkp-sheet){padding-left:0}
 /* 글자 정리: 회색 부가설명을 흰색(밝은 바탕에서는 검정)에 가깝게, 12.5px 이하 이름표는 13px 이상으로. 그래프 축만 작게 두고 밝힘 */
@@ -4910,7 +4927,7 @@ class Component extends DCLogic {
     document.addEventListener('click', (e) => {
       const t = e.target.closest && e.target.closest('.gl');
       if (t) { e.preventDefault(); this.glOpen(t); return; }
-      if (e.target.closest && e.target.closest('#gl-pop') && !e.target.closest('.gl-x')) return;
+      if (e.target.closest && e.target.closest('#gl-pop') && !e.target.closest('.gl-x, .gl-ok')) return;
       this.glClose();
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.glClose(); });
@@ -5111,20 +5128,28 @@ class Component extends DCLogic {
     let pop = document.getElementById('gl-pop');
     if (!pop) { pop = document.createElement('div'); pop.id = 'gl-pop'; document.body.appendChild(pop); }
     const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    pop.innerHTML = '<div class="gl-k">' + esc(e.k) + '</div><button class="gl-x" aria-label="닫기">×</button><b class="gl-t">' + esc(e.t) + '</b><p class="gl-d">' + esc(e.d) + '</p>'
-      + (e.c ? '<div class="gl-c"><small>이 리포트에서</small><p>' + esc(e.c) + '</p></div>' : '')
-      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + '가 ' + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에 더 묻기 →</a>';
+    pop.innerHTML = '<i class="gl-h"></i><span class="gl-k">' + esc(e.k) + '</span><button class="gl-x" aria-label="닫기">×</button><b class="gl-t">' + esc(e.t) + '</b><p class="gl-d">' + esc(e.d) + '</p>'
+      + (e.c ? '<div class="gl-c"><small>이 리포트에서는</small><p>' + esc(e.c) + '</p></div>' : '')
+      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + '가 ' + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
     document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); el.classList.add('on');
     const mob = window.innerWidth < 720; pop.className = mob ? 'sheet' : '';
-    if (!mob) {
-      const b = el.getBoundingClientRect(), w = 340;
-      pop.style.left = Math.max(12, Math.min(b.left + window.scrollX, window.scrollX + window.innerWidth - w - 12)) + 'px';
-      pop.style.top = (b.bottom + window.scrollY + 10) + 'px';
-    } else { pop.style.left = ''; pop.style.top = ''; }
+    let dim = document.getElementById('gl-dim');
+    if (mob && !dim) { dim = document.createElement('div'); dim.id = 'gl-dim'; document.body.appendChild(dim); }
+    if (dim) dim.hidden = !mob;
     pop.hidden = false;
+    if (!mob) {
+      // 글자 바로 아래에 띄우고, 아래 자리가 모자라면 위로 올린다. 꼬리는 단어 가운데를 가리킨다
+      const b = el.getBoundingClientRect(), w = 340, h = pop.offsetHeight;
+      const left = Math.max(12, Math.min(b.left, window.innerWidth - w - 12));
+      const up = b.bottom + h + 16 > window.innerHeight && b.top > h + 16;
+      pop.classList.toggle('up', up);
+      pop.style.setProperty('--ax', Math.max(18, Math.min(w - 18, b.left + Math.min(b.width, 80) / 2 - left)) + 'px');
+      pop.style.left = (left + window.scrollX) + 'px';
+      pop.style.top = (up ? b.top + window.scrollY - h - 10 : b.bottom + window.scrollY + 10) + 'px';
+    } else { pop.style.left = ''; pop.style.top = ''; }
   }
 
-  glClose() { const pop = document.getElementById('gl-pop'); if (pop) pop.hidden = true; document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); }
+  glClose() { const pop = document.getElementById('gl-pop'), dim = document.getElementById('gl-dim'); if (pop) pop.hidden = true; if (dim) dim.hidden = true; document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); }
 
   heroIntro(page) {
     clearTimeout(this._hiT); this._hiStop && this._hiStop();
