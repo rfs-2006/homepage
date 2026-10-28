@@ -60,10 +60,9 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .brand span{gap:3px;line-height:1}
 .brand b{font-family:'Noto Serif KR',serif;font-weight:700;font-size:17px;letter-spacing:-.02em}
 .brand small{font-size:11.5px;font-weight:500;letter-spacing:.06em;opacity:.8}
-.menu{margin-left:auto;display:flex;gap:36px}
-.menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:13px;font-weight:500;letter-spacing:.14em;opacity:.85;padding:6px 0;border-bottom:2px solid transparent}
-.menu a:hover{opacity:1}
-.menu a.on{opacity:1;border-bottom-color:currentColor}
+.menu{margin-left:auto;display:flex;gap:40px}
+.menu a{color:inherit;text-decoration:none;font-family:'Pretendard Variable',sans-serif;font-size:14px;font-weight:500;letter-spacing:.1em;padding:4px 0;transition:color 120ms ease}
+.top .menu a:hover,.top .menu a.on{color:#8FAADC}   /* 홈 메뉴와 같게: 현재 페이지는 밑줄 대신 연한 남색 */
 /* 사진은 화면 끝까지, 위는 메뉴가 읽히게 살짝, 아래는 길게 검정으로 녹여 경계가 안 보이게 */
 /* 첫 화면은 한 화면 안에: 사진은 뒤에 깔고(위 68%), 글과 입력창은 아래에 붙인다 */
 .startv{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
@@ -102,7 +101,7 @@ body.conv .startv{display:none}
 body.start .convv{display:none}
 .head{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px;padding:11px 24px;font-size:13px}
 
-.head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--text)}
+.head .menu{gap:28px}.head .menu a{font-size:12px;color:var(--sub);opacity:1}.head .menu a:hover,.head .menu a.on{color:var(--navy)}
 .head .new{margin-left:28px;font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:4px 12px;cursor:pointer}
 .head .new:hover{border-color:var(--text)}
 /* 학회원 로그인 (하루 질문 수가 늘어난다) */
