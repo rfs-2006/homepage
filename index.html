@@ -115,7 +115,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
       document.fonts.add(f); return f.load();
     })).then(ok, ok);
   };
-  if (/^\/research\/[^/]+/.test(location.pathname) || /^#research\/./.test(location.hash)) window.__rfsFont();
+  if (/^\/research\/[^/]+/.test(location.pathname) || /^#(research\/.|rfm)/.test(location.hash)) window.__rfsFont();
 })();
 </script>
 <script src="./image-slot.js?v=2"></script>
@@ -1462,6 +1462,8 @@ main.hi-in>:not(.pg-hero){animation:hiIn .9s ease both}
 .fd-sec{margin-top:88px}
 @media (max-width:760px){.pg-hero-in{padding:112px 20px 52px}.pg-stats{gap:18px 28px}.pg-stats .sv{font-size:24px}.fd-wrap,.rfm-wrap{padding:64px 16px 80px !important}.pg-lede{font-size:22px}}
 .rfmpage{--rH:64px}
+/* RFM은 리포트와 같은 KoPub 돋움(RFS Report Dotum)으로. 300·500·700만 있어 600은 700으로 보인다 */
+.rfmpage,.rfmpage :is(h1,h2,h3,p,span,b,em,small,div,a,button,td,th,li,strong,i,label,input){font-family:'RFS Report Dotum','Pretendard Variable',Pretendard,sans-serif !important}
 .rfm-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(247,246,243,0.65);font-variant-numeric:tabular-nums;flex-wrap:wrap}
 .rfm-live{display:inline-flex;align-items:center;gap:6px;color:#5FC48A;font-weight:600;letter-spacing:0.06em}
 .rfm-live i{width:7px;height:7px;border-radius:50%;background:#5FC48A;animation:rfmPulse 1.6s ease-in-out infinite}
@@ -6143,7 +6145,7 @@ class Component extends DCLogic {
   }
 
   setTitle(page, reportId) {
-    if (page === 'report' && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
+    if ((page === 'report' || page === 'rfm') && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
     const r = REPORTS.find((x) => x.id === reportId);
     document.title = page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'

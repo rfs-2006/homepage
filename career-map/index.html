@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>금융권 직무 지도 | 중앙대 가치투자학회 R.F.S.</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preload" as="image" href="/assets/hero/research-b.webp">
+<style>
+.topbar{display:flex;align-items:center;gap:10px;max-width:1200px;margin:0 auto;padding:18px max(16px,env(safe-area-inset-left,0px)) 0;color:var(--ink);text-decoration:none}.topbar img{width:36px;height:36px;border-radius:50%;background:#0F1B2E}.topbar b{display:block;font-family:var(--f-kr-disp);font-size:16px;line-height:1.1}.topbar small{font-size:11px;color:var(--sub)}
+/* 지도 한 장이 주인공: 위에 지도(눌러서 직무 보기), 아래에 대전제 → 들어가서 → 용어. R.F.S. 네이비 톤 */
+:root{
+  --bg:#F7F6F3; --panel:#FFFFFF; --ink:#1A1A1A; --sub:rgba(26,26,26,.68); --line:#D0CECE;
+  --accent:#203864; --accent-2:#8FAADC; --soft:#EEF1F6;
+  --sell:#E7EDF7; --mid:#EEEAF6; --buy:#E6F1EE;
+  --sell-ink:#203864; --mid-ink:#4B3B7A; --buy-ink:#1F5A4C;
+  --edge:#9AA8BE; --edge-on:#203864;
+  --f-disp:'Source Serif 4','Noto Serif KR',Georgia,serif;
+  --f-kr-disp:'Noto Serif KR','Source Serif 4',serif;
+  --f-body:'Pretendard Variable',Pretendard,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;word-break:keep-all}
+.wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:48px 72px;display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{text-wrap:balance;margin:0}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+header{display:flex;flex-direction:column;gap:14px}
+header h1{font-family:var(--f-kr-disp);font-weight:700;font-size:clamp(32px,5vw,52px);line-height:1.2;letter-spacing:-.01em}
+header h1 i{font-family:var(--f-disp);font-weight:400}
+header p{margin:0;max-width:62ch;color:var(--sub)}
+.meta{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--sub)}
+.meta b{color:var(--ink);font-weight:600}
+
+/* 지도 */
+.map{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}
+.mapbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 16px 10px;min-width:0}
+.mapscroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto}
+@media (max-width:760px){svg{min-width:720px}}
+.zone rect{rx:12}
+.zone text{font-family:var(--f-body);font-size:13px;font-weight:700;letter-spacing:.08em}
+.node{cursor:pointer}
+.node rect{fill:var(--panel);stroke:var(--line);stroke-width:1.2;transition:stroke .2s,fill .2s}
+.node text{font-family:var(--f-body);fill:var(--ink)}
+.node .t{font-size:15px;font-weight:700}
+.node .s{font-size:11.5px;fill:var(--sub)}
+.node:hover rect,.node:focus-visible rect{stroke:var(--accent-2)}
+.node.on rect{stroke:var(--accent);stroke-width:2.4}
+.node.dim{opacity:.35}
+.node:focus{outline:none}
+.edge{fill:none;stroke:var(--edge);stroke-width:1.6;transition:stroke .2s,opacity .2s}
+.edge.on{stroke:var(--edge-on);stroke-width:2.4}
+.edge.dim{opacity:.18}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--sub);padding:8px 4px 2px}
+.legend i{display:inline-block;width:22px;height:0;border-top:2px solid var(--edge-on);vertical-align:middle;margin-right:6px}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px 22px 20px;display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+.card .zn{font-size:12px;font-weight:700;letter-spacing:.1em}
+.card h3{font-family:var(--f-kr-disp);font-size:24px;line-height:1.3}
+.card .q{margin:0;padding:12px 14px;border-radius:10px;background:var(--soft);font-size:14px;line-height:1.65}
+.card .q b{color:var(--accent)}
+.card ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.card .go{display:flex;flex-wrap:wrap;gap:6px}
+.card .go button{font:inherit;font-size:12.5px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.card .go button:hover{border-color:var(--accent-2)}
+.card small{color:var(--sub);font-size:12.5px}
+.lbl{font-size:12px;font-weight:700;color:var(--sub);letter-spacing:.06em}
+
+/* 본문 섹션 */
+section{display:flex;flex-direction:column;gap:20px}
+section>h2{font-family:var(--f-kr-disp);font-size:clamp(24px,3vw,30px)}
+section>p.lead{margin:0;color:var(--sub);max-width:62ch}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pt{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pt h3{font-size:16px;font-weight:700}
+.pt p{margin:0;font-size:14.5px;color:var(--sub)}
+.pt p b{color:var(--ink)}
+.quote{font-family:var(--f-kr-disp);font-size:clamp(20px,2.4vw,26px);line-height:1.55;margin:0;padding-left:18px;border-left:3px solid var(--accent);max-width:40ch}
+dl{display:grid;grid-template-columns:minmax(120px,180px) minmax(0,1fr);gap:0;margin:0;border-top:1px solid var(--line)}
+dt,dd{margin:0;padding:12px 0;border-bottom:1px solid var(--line)}
+dt{font-weight:700;padding-right:16px}
+dd{color:var(--sub);font-size:14.5px}
+.note{font-size:13px;color:var(--sub);margin:0}
+.tp{display:flex;flex-direction:column;gap:12px;padding:26px 0;border-top:1px solid var(--line)}
+.tp-h{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.tp-h time{font-family:var(--f-disp);font-size:17px;color:var(--accent);font-variant-numeric:tabular-nums;min-width:64px}
+.tp-h h3{font-size:20px;font-weight:700}
+.say,.ex,.eg{border-radius:12px;padding:16px 20px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.say{background:var(--soft)}
+.ex{background:var(--panel);border:1px solid var(--line)}
+.eg{background:var(--panel);border:1px dashed var(--accent-2)}
+.say>span,.ex>span,.eg>span{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--accent)}
+.say p{margin:0;font-size:15.5px;line-height:1.8;color:var(--ink);max-width:72ch}
+.ex p,.eg p,.eg li{margin:0;font-size:14.5px;line-height:1.75;color:var(--sub);max-width:72ch}
+.ex b,.eg b{color:var(--ink)}
+.eg ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+
+.tl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.tl li{display:grid;grid-template-columns:88px minmax(0,1fr);gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.tl time{font-family:var(--f-disp);font-size:18px;color:var(--accent);font-variant-numeric:tabular-nums;padding-top:2px}
+.tl h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.tl p{margin:0 0 10px;max-width:68ch;color:var(--sub);font-size:15px}
+.tl p:last-child{margin-bottom:0}
+.tl p b,.qa p b{color:var(--ink)}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.qa details{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px;min-width:0}
+.qa summary{cursor:pointer;font-weight:700;font-size:15.5px;list-style:none;display:flex;gap:10px}
+.qa summary::before{content:'Q';font-family:var(--f-disp);color:var(--accent);font-weight:500}
+.qa summary::-webkit-details-marker{display:none}
+.qa p{margin:10px 0 0;color:var(--sub);font-size:14.5px}
+@media (max-width:520px){.tl li{grid-template-columns:minmax(0,1fr);gap:4px}.qa{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.map{grid-template-columns:minmax(0,1fr)}.card{position:static}}
+@media (max-width:520px){dl{grid-template-columns:minmax(0,1fr)}dt{padding-bottom:0;border-bottom:0}dd{padding-top:4px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* 사이트(홈·FUND·RFM)와 같은 틀: 사진 위 남색 막 + 큰 세리프 제목, 같은 메뉴, 지도는 남색 띠 위, 카드는 각지게 */
+body{margin:0;-webkit-font-smoothing:antialiased}
+.nav{position:absolute;top:0;left:0;right:0;z-index:5;display:flex;justify-content:space-between;align-items:center;height:84px;padding:0 max(48px,calc((100vw - 1280px) / 2));color:#F7F6F3}
+.brand{display:flex;align-items:center;gap:12px;color:#F7F6F3;text-decoration:none}
+.brand img{width:46px;height:46px}
+.brand b{display:block;font-family:'Source Serif 4',serif;font-weight:600;font-size:21px;line-height:1.05;letter-spacing:.01em}
+.brand small{display:block;font-size:12px;opacity:.85;margin-top:2px}
+.brand i{display:flex;flex-direction:column;justify-content:center;margin-left:8px;padding-left:16px;border-left:1px solid rgba(247,246,243,.35);font-style:normal}
+.brand i small{font-size:9px;letter-spacing:.2em;opacity:.7;margin:0}
+.brand i em{font-family:'Source Serif 4',serif;font-style:italic;font-size:19px;line-height:1.1}
+.menu{display:flex;gap:38px}
+.menu a{color:#F7F6F3;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.12em}
+.menu a:hover{opacity:.7}
+.hero{position:relative;min-height:56vh;display:flex;align-items:flex-end;overflow:hidden;color:#F7F6F3;background:#0F1B2E}
+.hero>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(.2)}
+.hero .scrim{position:absolute;inset:0;background:#203864;opacity:.78;mix-blend-mode:multiply}
+.hero .fade{position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(180deg,rgba(15,27,46,0),rgba(15,27,46,.75))}
+.hero-in{position:relative;width:100%;padding:150px max(48px,calc((100vw - 1280px) / 2)) 64px;display:flex;flex-direction:column;gap:16px}
+.hero .eyebrow{color:#C9D8F5}
+.hero h1{font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(52px,6vw,96px);line-height:1;letter-spacing:-.02em;color:#F7F6F3;text-shadow:0 6px 28px rgba(4,8,16,.45)}
+.hero h1 span{display:block;margin-top:14px;font-family:'Noto Serif KR',serif;font-weight:600;font-size:clamp(22px,2.2vw,32px);letter-spacing:-.02em}
+.hero p{margin:0;max-width:60ch;color:rgba(247,246,243,.85);font-size:16px}
+.hero .meta{color:rgba(247,246,243,.7)}.hero .meta b{color:#F7F6F3}
+.mapband{background:#0F1B2E;color:#F7F6F3;padding:72px 0 80px;
+  --panel:#13223A; --ink:#F7F6F3; --sub:rgba(247,246,243,.66); --line:rgba(247,246,243,.16); --soft:rgba(143,170,220,.12);
+  --accent:#8FAADC; --accent-2:#C9D8F5; --sell:#132544; --mid:#1C2140; --buy:#11302C;
+  --sell-ink:#B9CCEE; --mid-ink:#CBBEF0; --buy-ink:#A8DCCD; --edge:#3B4E6E; --edge-on:#C9D8F5}
+.mapband .in{max-width:1280px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:24px}
+.mapband h2{font-family:'Noto Serif KR',serif;font-size:clamp(26px,3vw,36px);color:#F7F6F3;letter-spacing:-.02em}
+.mapband .eyebrow{color:#8FAADC}
+.wrap{max-width:1280px}
+.mapbox,.card,.pt,.qa details,.say,.ex,.eg{border-radius:0}
+.zone rect{rx:0}
+.node rect{rx:0}
+section>h2,.tp-h h3{font-family:'Noto Serif KR',serif;letter-spacing:-.02em;color:#0F1B2E}
+.tp-h h3{font-weight:700}
+.say{background:#0F1B2E}.say>span{color:#8FAADC}.say p{color:#F7F6F3}
+.ex{border-left:3px solid #203864}
+.eg{border:1px solid #D0CECE;background:#EEF1F6}
+.pt{border-top:2px solid #203864}
+.foot{background:#0F1B2E;color:rgba(247,246,243,.7);font-size:13px;padding:28px max(16px,env(safe-area-inset-left,0px));text-align:center}
+.foot a{color:#F7F6F3}
+@media (max-width:1024px){.menu{display:none}.nav{padding:0 20px}}
+@media (max-width:760px){.hero-in{padding:120px 20px 44px}.brand i{display:none}.brand img{width:40px;height:40px}}
+</style>
+</head>
+<body>
+
+
+<nav class="nav"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span><i><small>WITH</small><em>Claude</em></i></a>
+<div class="menu"><a href="/about/">ABOUT</a><a href="/chat/">POLARIS</a><a href="/#research">RESEARCH</a><a href="/fund/">FUND</a><a href="/people/">PEOPLE</a><a href="/recruiting/">RECRUITING</a><a href="/#intranet">AGORA</a></div></nav>
+<header class="hero"><img src="/assets/hero/research-b.webp" alt=""><div class="scrim"></div><div class="fade"></div>
+  <div class="hero-in">
+    <span class="eyebrow">R.F.S. 직무 세미나 · 2026.10.27</span>
+    <h1>Career Map<span>금융권 직무 지도</span></h1>
+    <p>현직 선배님이 칠판에 그려 준 여의도 지도예요. 직무를 눌러 보세요. 무슨 일을 하는지, 거기서 어디로 갈 수 있는지 보여 드려요.</p>
+    <div class="meta"><span>강연 <b>현직 선배님</b> · 증권사 프랍 운용</span><span>111분</span><span>선 = 옮겨 갈 수 있는 길</span></div>
+  </div>
+</header>
+<div class="mapband"><div class="in"><span class="eyebrow">지도</span><h2>어디서 시작해서 어디로 갈 수 있을까요</h2>
+  <div class="map">
+    <div class="mapbox">
+      <div class="mapscroll"><svg id="m" viewBox="0 0 1000 640" role="img" aria-label="금융권 직무 지도: 셀 사이드, 셀 속 바이와 출자자, 바이 사이드 세 구역과 직무 사이 이동 경로"></svg></div>
+      <div class="legend"><span><i></i>옮겨 갈 수 있는 길이에요. 반대로 돌아오기도 해요</span></div>
+    </div>
+    <aside class="card" id="card" aria-live="polite"></aside>
+  </div>
+
+</div></div>
+<div class="wrap">
+
+  <section>
+    <span class="eyebrow">시작하기 전에</span>
+    <h2>돈이에요, 일이 좋아서예요?</h2>
+    <p class="quote">"이것 하나는 정하고 오세요. 안 그러면 길을 잃어요."</p>
+    <div class="cols">
+      <div class="pt"><h3>크게 벌고 싶다면</h3><p>사람 만나는 걸 좋아해야 해요. 주식 운용도 예외가 아니에요. IR 담당자와 매일 연락하며 지내요.</p></div>
+      <div class="pt"><h3>같은 연차, 다른 연봉</h3><p>연차가 쌓이면 동기끼리도 받는 돈이 크게 달라져요. 이게 신경 쓰이지 않는다면 미들·백오피스도 좋은 선택이에요.</p></div>
+      <div class="pt"><h3>셀과 바이, 이제 섞였어요</h3><p>증권사도 직접 투자하고, 운용사도 증권사 같은 일을 해요. 부서 이름도 회사마다 달라서 이름만 보고는 무슨 일인지 알기 어려워요.</p></div>
+      <div class="pt"><h3>중앙대도 다 갈 수 있어요</h3><p>"쫄지 마요." 어디서 시작하느냐보다 들어가서 어떻게 지내느냐가 더 중요해요.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">들어가서</span>
+    <h2>여의도에서 일 잘하는 법</h2>
+    <div class="cols">
+      <div class="pt"><h3>적을 만들지 마세요</h3><p>업계가 좁아서 평판은 30초면 다 알아봐요. 싫은 사람이 있어도 티 내지 마세요. 인사만 잘해도 절반은 해요.</p></div>
+      <div class="pt"><h3>눈치껏, 알아서, 잘</h3><p>할까 말까 싶으면 하지 마세요. 해야 하나 싶으면 하세요. 못 할 것 같은 일은 처음부터 못 한다고 말하세요.</p></div>
+      <div class="pt"><h3>실수하면 바로 사과해요</h3><p>둘러대지 말고 바로 사과하면 돼요. 같은 실수만 반복하지 않으면 괜찮아요. IB는 작은 실수도 크게 번져서 꼼꼼해야 해요.</p></div>
+      <div class="pt"><h3>연봉은 이직할 때 올라요</h3><p>증권사엔 호봉이 없어요. 오래 다녀도 크게 안 올라요. 지원해서 옮기기보다 제안을 받고 옮겨야 협상할 수 있어요. 밖에서 사람을 많이 만나 두세요.</p></div>
+      <div class="pt"><h3>인턴은 기대를 낮추세요</h3><p>큰 회사 인턴은 배울 게 별로 없어요. 배우고 싶다면 작은 곳에서 내 의견을 내 보세요.</p></div>
+      <div class="pt"><h3>약점은 줄여 두세요</h3><p>학점 하나로 떨어지진 않아요. 다만 낮다면 이유를 말할 수 있어야 해요. MBA는 굳이 안 해도 돼요.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">강연 자세히</span>
+    <h2>선배님 말, 그리고 풀어서 보기</h2>
+    <p class="lead">왼쪽 칸은 선배님이 한 말이에요. 아래 칸은 그 말을 이해하는 데 필요한 배경과 예시예요. 선배님 말은 바꾸지 않았어요.</p>
+
+    <article class="tp">
+      <div class="tp-h"><time>00:00</time><h3>셀 사이드와 바이 사이드, 이제 섞였어요</h3></div>
+      <div class="say"><span>선배님</span><p>예전엔 증권사는 그냥 중개만 했고, 바이 사이드는 주식 투자만 했어요. 지금은 증권사에 IMA랑 발행어음 같은 게 생기면서 경계가 엄청 많이 무너졌어요. 바이 사이드가 셀이랑 비슷한 일을 하고, 셀 안에서도 바이 사이드 툴을 많이 써요. 반도체에서 전공정·후공정 구분이 흐려진 것처럼요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>셀 사이드</b>는 금융 상품을 "파는" 쪽이에요. 증권사가 대표적이에요. 주식 주문을 받아 주고(브로커리지), 기업이 주식·채권을 발행하도록 돕고(IB), 리포트를 써서 투자자에게 정보를 줘요(리서치). 돈은 주로 수수료로 벌어요.</p>
+        <p><b>바이 사이드</b>는 금융 상품을 "사는" 쪽이에요. 자산운용사, 헤지펀드, PE, VC처럼 맡은 돈으로 직접 투자해요. 돈은 투자 수익과 운용 보수로 벌어요.</p>
+        <p><b>발행어음</b>은 큰 증권사가 자기 신용으로 찍는 1년 이내짜리 어음이에요. 고객에게 돈을 받아서 그 돈으로 기업에 투자해요. <b>IMA</b>(종합투자계좌)는 그보다 더 큰 증권사만 할 수 있는, 원금을 지급하는 투자 계좌예요. 둘 다 증권사가 "중개"가 아니라 직접 "투자"를 하게 만들었어요. 그래서 셀과 바이의 경계가 흐려졌다는 거예요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>02:16</time><h3>브로커리지와 프라임 브로커리지</h3></div>
+      <div class="say"><span>선배님</span><p>증권사 브로커리지는 주식, 채권, FX, 프라임 브로커리지(PBS)가 있다고 보면 돼요. 회사마다 부서 이름이 다 달라서 이름만 봐서는 무슨 일 하는지 몰라요. PBS는 하나의 부서인 곳도 있고, 헤지펀드 서비스랑 델타원으로 나누는 곳도 있어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>브로커리지</b>는 투자자의 주문을 시장에 대신 넣어 주고 수수료를 받는 일이에요. 개인 고객은 리테일, 기관 고객(운용사·연기금 등)은 법인영업에서 맡아요.</p>
+        <p><b>프라임 브로커리지(PBS)</b>는 헤지펀드 전용 종합 서비스예요. 헤지펀드는 주식을 빌려서 공매도도 하고, 돈을 빌려서 레버리지도 쓰고, 거래도 자주 해요. 이걸 한 증권사가 묶어서 다 해 주는 거예요.</p>
+        <p><b>헤지펀드 서비스</b>에는 펀드를 만들 때 필요한 일도 들어가요. 펀드는 구조상 운용사(굴리는 곳), 수탁사(돈을 보관하는 곳), 판매사(파는 곳)가 같이 움직여야 해요. 운용사가 돈을 직접 들고 있으면 위험하니까, 돈은 수탁사가 따로 보관해요. 이런 세팅을 대신 해 주는 거예요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>04:52</time><h3>대차와 델타원, 선배님이 제일 좋다고 한 비즈니스</h3></div>
+      <div class="say"><span>선배님</span><p>제가 가장 좋다고 생각하는 비즈니스 모델이 대차예요. 공매도를 할 수 있게 주식을 빌려주는 거예요. 계좌 만들 때 잘 읽어 보면 "내 주식이 대차로 나갈 수 있게 동의하겠습니까"가 있어요. 다들 그냥 체크하죠. 그게 대차 풀로 쓰여요. ETF 하는 곳, 특히 롱 펀드는 주식을 오래 들고 있어서 거기서도 빌려와요. 헤지펀드한테서는 안 빌려요. 거래가 너무 잦아서 팔아 버리면 바로 돌려 달라고(리콜) 하거든요.</p><p>델타원은, 거래처가 주식 한 주를 사면 델타가 1이 되잖아요. 그걸 0으로 맞춰 주는 게 얘네예요. 이해관계자가 엄청 많아요. 프랍도, 자산운용사도, 메자닌 하우스도 다 거래 상대방이에요. 그래서 갈 수 있는 데가 엄청 많아져요. 대학생 중에 대차 가고 싶다는 사람은 없을 거라서 엄청 엣지 있을 거예요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>공매도</b>는 갖고 있지 않은 주식을 빌려서 먼저 팔고, 나중에 싸게 다시 사서 갚는 거예요. 주가가 떨어져야 돈을 벌어요. 그러려면 누군가 주식을 빌려줘야 하는데, 그 일을 하는 게 <b>대차</b>예요. 빌려준 대가로 매일 수수료(대차 요율)를 받아요.</p>
+        <p><b>델타</b>는 "주가가 1원 움직일 때 내 손익이 얼마나 움직이냐"예요. 주식 1주를 들고 있으면 델타가 1이에요. 주가가 오르면 그만큼 벌고, 내리면 그만큼 잃어요. <b>델타원</b> 데스크는 고객이 원하는 주식 수익을 계약(스왑 등)으로 만들어 주고, 자기는 반대 포지션을 잡아 델타를 0으로 맞춰요. 시장이 오르든 내리든 수수료만 남기는 구조예요.</p>
+        <p>롱 펀드에서는 빌리고 헤지펀드에서는 안 빌리는 이유도 있어요. 빌려준 쪽이 주식을 팔고 싶으면 돌려 달라고 해요(리콜). 그러면 빌린 쪽은 보통 2영업일(T+2) 안에 갚아야 해요. 헤지펀드처럼 자주 사고파는 곳에서 빌리면 리콜이 너무 잦아져요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span><p>헤지펀드가 A 주식이 떨어질 거라고 봐요. 증권사 대차 데스크에서 A를 1만 주 빌려 1만 원에 팔아요(1억 원). 주가가 8천 원이 되면 1만 주를 8천만 원에 사서 갚아요. 헤지펀드는 2천만 원을 벌고, 대차 데스크는 빌려준 기간 동안 수수료를 받아요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>06:30</time><h3>대전제: 직장인이냐, 떼돈이냐</h3></div>
+      <div class="say"><span>선배님</span><p>그냥 일반 직장인으로 금융회사에 다니고 싶은 쪽이 있고, 금융권 가서 떼돈을 벌 거라는 쪽이 있어요. 후자면 대전제가 무조건 엄청 네트워킹 프렌들리한 사람이어야 해요. 사람 만나는 게 싫은데 "저는 운용할 건데요" 하면, 주식 하는 애들이 네트워킹이 더 빡세요. IR들이랑 엄청 친하게 지내거든요. 네트워크에 프렌들리하지 않으면 성공 절대 못 해요.</p><p>직장인으로 와도 상대적 박탈감이 있어요. 연차가 높아질수록 같은 연차끼리도 말도 안 되게 갭이 벌어져요. 이런 거에 전혀 흔들리지 않는다면 편하게 다닐 수 있어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>IR</b>(Investor Relations)은 상장회사에서 투자자를 상대하는 부서예요. 펀드매니저는 회사 실적이나 사업 상황을 IR과 수시로 통화하고 만나면서 확인해요. 그래서 주식 운용도 결국 사람 일이에요.</p>
+        <p><b>프론트·미들·백오피스</b>도 알아 두면 좋아요. 프론트는 돈을 직접 버는 부서(영업, 운용, IB)예요. 미들은 리스크 관리처럼 프론트를 견제하는 부서, 백은 결제·회계·인사 같은 지원 부서예요. 프론트는 성과에 따라 연봉 차이가 크고, 미들·백은 안정적인 대신 차이가 작아요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>09:13</time><h3>선배님의 일: 이벤트 트레이딩</h3></div>
+      <div class="say"><span>선배님</span><p>저는 이벤트 트레이딩이라는 영역에서 운용을 해요. 롱 포지션이 있으면 그 롱에 대한 헤지 포지션을 꼭 가지고 가요. 그 헤지 수단을 주는 게 대차·델타원이에요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>이벤트 트레이딩</b>은 합병, 유상증자, 블록딜, 지수 편입처럼 정해진 사건 때문에 생기는 가격 차이를 노리는 투자예요. <b>롱</b>은 사서 오르길 기다리는 것, <b>헤지</b>는 반대 방향 포지션을 같이 잡아서 예상 못 한 손실을 줄이는 거예요. 예를 들어 반도체 종목을 사면서 지수나 같은 업종 다른 종목을 공매도해 두면, 시장 전체가 빠질 때 손실이 줄어요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>11:07</time><h3>셀 안의 바이: PI, 채권 운용, IMA</h3></div>
+      <div class="say"><span>선배님</span><p>셀에서 바이를 하는 게 저 같은 PI(프랍), 그리고 발행어음이랑 IMA예요. PI는 주식에만 있는 게 아니고 채권에도 있어요. 채권 운용은 RP로 굴리는 북 등 북이 엄청 다양해요. 채권은 bp 싸움이라 덩치가 커야 의미가 있어서, 자기자본이 큰 한투나 미래에셋 정도만 의미가 있어요.</p><p>발행어음이랑 IMA는 사실상 미들오피스라고 보는 게 맞아요. 딜 소싱은 IB에서 해 오고, 여기서는 같이 투자해요. 저는 추천하지 않아요. 완전 주변인 같은 느낌이에요. 회사에서는 영업 직군으로 대우해서 계약직으로 바꾸는데 성과보수는 되게 안 좋게 나와요. 하는 일은 같은데 보수 차이가 어마무시해서 상대적 박탈감이 커요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>PI</b>(Principal Investment)와 <b>프랍</b>(Proprietary trading)은 고객 돈이 아니라 증권사 자기 돈으로 투자하는 부서예요. 이익도 손실도 다 회사 몫이에요.</p>
+        <p><b>북</b>(book)은 한 트레이더나 팀이 맡아 굴리는 포지션 묶음이에요. <b>RP</b>(환매조건부채권)는 "나중에 다시 사 주기로 약속하고 채권을 파는" 단기 자금 거래예요. 증권사는 이걸로 싸게 돈을 빌려 채권에 투자해요.</p>
+        <p><b>bp</b>(베이시스 포인트)는 0.01%p예요. 채권은 금리 몇 bp 차이로 먹는 장사라, 굴리는 돈이 커야 수익이 의미 있는 크기가 돼요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span><p>채권 1조 원으로 10bp(0.1%)를 더 벌면 10억 원이에요. 같은 10bp를 100억 원으로 벌면 1천만 원이에요. 그래서 자기자본이 작은 증권사는 채권 프랍을 해도 큰 의미가 없어요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>15:42</time><h3>운용: 자산운용사, 롱숏, 외국계</h3></div>
+      <div class="say"><span>선배님</span><p>펀드 운용하는 사람에게 제일 중요한 마인드셋은 규칙이에요. 주식을 잘하고 못하고가 아니에요. ETF든 펀드든 색깔과 테마가 있잖아요. 나한테 출자해 준 LP들과의 약속이 있고, 그걸 항상 지키면서 운용해야 해요. 펀드매니저가 되고 싶다면 면접에서도 그걸 강조하면 좋아요.</p><p>자산운용사는 BM이 있어요. BM 대비 잘하냐 못하냐가 기준이라, 한 종목을 엄청 많이 본다고 잘한 게 아니에요. 헤지펀드는 롱숏이에요. 국내 롱숏은 숏을 지수로 쳐요. 펀드가 100이면 60을 숏 치고 40으로 수익을 내야 하는 식이에요. 밀레니엄 같은 외국계는 더 빡세요. MDD 대비 3% 빠지면 바로 싹 다 정리해요. 숏도 같은 섹터 안 종목으로 쳐야 해요. 소부장을 롱했으면 같은 소부장 안에서 숏을 쳐야 해요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>LP</b>(Limited Partner)는 펀드에 돈을 맡긴 투자자예요. 펀드를 굴리는 쪽은 <b>GP</b>(General Partner)라고 해요. "배터리 중소형주에 투자하는 펀드"라고 돈을 모았는데 갑자기 은행주를 사면 LP와의 약속을 어긴 거예요.</p>
+        <p><b>BM</b>(벤치마크)은 성과를 비교하는 기준이에요. 예를 들어 KOSPI 200을 BM으로 삼았다면, 시장이 -10%일 때 펀드가 -7%면 잘한 거예요.</p>
+        <p><b>롱숏</b>은 오를 종목은 사고(롱) 내릴 종목이나 지수는 공매도(숏)해서 시장 방향과 상관없이 수익을 내려는 전략이에요. <b>MDD</b>(최대 낙폭)는 고점에서 얼마나 떨어졌는지예요. <b>소부장</b>은 반도체 소재·부품·장비 업종이에요.</p>
+        <p>외국계 <b>멀티매니저</b>는 회사 안에 여러 운용팀을 두고 각자에게 손실 한도를 줘요. 한도를 넘으면 그 팀의 포지션을 바로 정리해요. 같은 섹터 안에서 롱숏을 맞추게 하는 건, 섹터 전체가 움직이는 위험은 없애고 종목을 고르는 실력만 보겠다는 뜻이에요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span><p>펀드 100억 원으로 삼성전자·SK하이닉스를 100억 원어치 사고, KOSPI200 선물로 60억 원어치 숏을 쳐요. 시장 전체가 10% 빠지면 롱에서 10억 원을 잃고 숏에서 6억 원을 벌어서, 순손실은 4억 원이 돼요. 두 종목이 시장보다 덜 빠지면 그만큼 이익이에요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>22:23</time><h3>대형 운용사와 중소형 운용사</h3></div>
+      <div class="say"><span>선배님</span><p>배우기에는 중소형 운용사가 좋다는 건 맞아요. 대형 운용사는 큰 회사라 인턴 얘기를 귀담아들을 생각이 기본적으로 없어요. 작은 운용사는 99년, 2000년대 초반생들이 주식 픽 하는 걸 같이 스터디하기도 해요. 다만 붙어 있으면 배우겠다가 아니라, 내 의견을 내면서 티키타카 해야 배워요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>24:21</time><h3>사모·헤지펀드 들어가는 길</h3></div>
+      <div class="say"><span>선배님</span><p>거기는 거의 다 스카우팅이고 공채는 안 뽑아요. 수시 채용이고 경력직이라고 보는 게 맞아요. 바늘구멍 같은 방법이 하나 있는데, 작년 대상승장 이후 개인 투자 하우스가 어마무시하게 많이 생겼어요. 제가 아는 데만 10곳 정도인데 AUM이 4천억이 넘어요. 다 기라성 같은 사람들이 나와서 만든 곳이에요. 거기서 인턴을 시작하면 다른 데로 보내 주기도 해요. 근데 엄청난 도박이에요. 다른 거 필요 없고 무조건 주식 운용만 가고 싶다면 해 볼 수 있는 방법이에요.</p></div>
+      <div class="ex"><span>풀어서 보면</span><p><b>AUM</b>(Assets Under Management)은 맡아서 굴리는 돈의 규모예요. 개인 자금 하우스는 외부 투자자 돈이 아니라 운용자 본인과 지인의 돈을 굴리는 곳이라, 정해진 채용 절차 없이 사람을 뽑아요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>25:56</time><h3>코벤 펀드와 메자닌 시장</h3></div>
+      <div class="say"><span>선배님</span><p>코벤 펀드라는 거 때문에 이 비즈니스가 어마무시하게 커지기 시작했어요. 코스닥 벤처펀드는 공모주 청약할 때 배정 비율을 높게 가져갈 수 있어요. 그냥 받았다 하면 따상이니까 운용사 입장에선 수익을 엄청 쉽게 낼 수 있었죠. 그래서 메자닌 하우스들이 코벤 펀드를 어마무시하게 많이 만들었어요. 코벤 비율을 맞추려고 주식을 쓰면 변동성이 너무 크니까, 풋옵션이 있는 메자닌으로 채웠어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>코스닥 벤처펀드</b>는 자산의 일정 비율 이상을 벤처기업이나 코스닥 중소기업에 투자해야 하는 펀드예요. 대신 공모주를 일정 비율 먼저 배정받는 혜택이 있어요. 공모주가 상장 첫날 크게 오르던 시절이라 이 혜택이 아주 컸어요.</p>
+        <p><b>따상</b>은 상장 첫날 시초가가 공모가의 2배로 시작해서 상한가까지 가는 거예요.</p>
+        <p>벤처 비율을 주식으로 채우면 주가가 출렁일 때 펀드 수익률도 같이 출렁여요. 메자닌은 주가가 떨어져도 원금을 돌려받을 권리(풋옵션)가 있어서, 비율은 채우면서 손실 위험은 줄일 수 있었어요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>29:03</time><h3>메자닌은 이렇게 생겼어요</h3></div>
+      <div class="say"><span>선배님</span><p>메자닌을 구성하는 건 주가, 크레딧, 풋옵션이에요. 발행할 때 기준가가 정해지고, 그게 1만 원이면 CB는 전환가, EB는 교환가, BW는 행사가라고 해요. 주가가 밑으로 꽂아도 채권 상태로 들고 있으면 이 가격 기준으로 원금을 받을 수 있어요. 근데 그러려면 크레딧이 중요해요. 회사가 돈이 없으면 파산하는 거예요. 저도 메자닌 투자하면서 파산한 회사가 몇 개 있어요.</p><p>만기는 99%가 5년인데, 풋옵션은 만기 전에 상환받을 수 있는 권리예요. 실질 만기는 70~80%가 2년이에요. 예전엔 주가가 빠지면 전환가를 내려 주는 리픽싱만 있었어요. 보통 30%까지요. 그때는 무조건 먹는 상품이었어요. 이게 막히면서 상향 리픽싱이 생겼어요. 내려갔다가 다시 오르면 원래 가격까지 다시 올려요. 그래서 옛날보다 매력이 많이 떨어졌어요. 그래도 호시절에 시장이 너무 커져서 여전히 하나의 시장으로 자리 잡았어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>CB</b>(전환사채)는 정해진 가격(전환가)에 그 회사 새 주식으로 바꿀 수 있는 채권이에요. <b>BW</b>(신주인수권부사채)는 채권은 그대로 두고, 새 주식을 정해진 가격(행사가)에 살 권리가 따로 붙어 있어요. <b>EB</b>(교환사채)는 회사가 이미 갖고 있는 다른 주식(자사주나 계열사 주식)으로 바꿀 수 있는 채권이에요.</p>
+        <p>CB·BW는 새 주식이 생겨서 기존 주주 지분이 줄어들어요(희석). 그래서 발행 절차가 까다롭고 사모로 발행하면 1년 동안 전환할 수 없어요. EB는 이미 있는 주식이라 희석이 없어서 규정이 덜 빡세요. 다만 나중에 그 주식이 시장에 쏟아질 수 있어서(오버행) 주가에는 부담이 돼요. 자사주로 EB를 찍는 건 규정이 바뀌어서 지금은 막혔어요.</p>
+        <p><b>풋옵션</b>(조기상환청구권)은 만기 전에 "원금 돌려주세요"라고 요구할 수 있는 권리예요. 보통 발행하고 1~2년 뒤부터 쓸 수 있어요. <b>크레딧</b>은 회사가 그 돈을 실제로 갚을 수 있는 능력이에요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span>
+        <p>주가 1만 원인 회사가 전환가 1만 원짜리 CB를 발행했어요. 100억 원어치를 샀다고 해 볼게요.</p>
+        <ul>
+          <li>주가가 1만 5천 원이 되면: 주식으로 바꿔서 팔아요. 100만 주 × 1만 5천 원 = 150억 원, 50억 원을 벌어요.</li>
+          <li>주가가 6천 원이 되면: 주식으로 안 바꿔요. 2년 뒤 풋옵션을 써서 원금 100억 원(+약속된 이자)을 돌려받아요. 회사가 돈이 있다면요.</li>
+          <li>회사가 파산하면: 원금도 못 받을 수 있어요. 그래서 크레딧을 봐요.</li>
+          <li>리픽싱: 주가가 7천 원으로 떨어지면 전환가를 7천 원까지 내려 줘요(최대 30%). 이제 같은 100억 원으로 약 143만 주를 받을 수 있어요. 예전엔 여기서 주가가 다시 1만 원이 되면 그대로 43% 이익이었어요. 상향 리픽싱이 생긴 뒤로는 주가가 다시 오르면 전환가도 원래대로 올라가요.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>36:58</time><h3>한국 메자닌은 특이한 시장이에요</h3></div>
+      <div class="say"><span>선배님</span><p>미국은 공모 메자닌이 엄청 활성화돼 있는데, 한국은 사모 메자닌이 압도적이에요. 공모 메자닌은 한계기업이나 하는 거라는 인식이 있어서 1년에 네다섯 개 정도고, 사모 메자닌은 600~700건이 넘어요. 미국은 상장돼 있으니 사고팔고 하는데, 우리나라는 상장이 안 돼 있으니 무조건 사서 들고 가요. 적극적으로 메자닌을 하고 싶다면 해외 투자하는 곳으로 가야 해요. 상장 메자닌은 옵션 가치를 다 발라내 계산해서 스프레드를 먹는 비즈니스라 엄청 복잡해요.</p><p>주식은 주가 전망이 80~90%인데, 메자닌은 크레딧 50%, 주가 전망 50%예요. 그리고 회사 심사부랑 싸워야 해요. 심사부는 돈을 얼마나 버는지보다 회사가 안전한지를 봐요. 그래서 크레딧을 보던 IB 출신이 메자닌 쪽으로 많이 가요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>공모</b>는 불특정 다수에게 공개적으로 파는 것, <b>사모</b>는 소수의 투자자에게만 파는 거예요. 한국 메자닌은 대부분 운용사나 증권사 몇 곳이 사모로 사 가서 만기나 풋옵션 때까지 들고 있어요.</p>
+        <p><b>한계기업</b>은 영업으로 번 돈으로 이자도 못 갚는 회사예요. <b>심사부</b>는 투자 부서가 가져온 딜이 위험하지 않은지 회사 입장에서 검토하는 부서예요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>35:07</time><h3>메자닌 하우스 고르는 기준</h3></div>
+      <div class="say"><span>선배님</span><p>어디를 갈지 볼 때는 사이즈를 봐요. 그 회사가 돈이 얼마나 많은지요. 대형사로 갈수록 내가 운용할 수 있는 금액이 커지고, 중소형사로 갈수록 줄어들어요. 북이 크면 무조건 돈 벌기가 쉬워요. 대신 북이 작은 곳에서 같은 돈을 벌면 내 몫의 비율이 훨씬 높아지겠죠.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>39:44</time><h3>VC의 현실</h3></div>
+      <div class="say"><span>선배님</span><p>VC 하고 싶은 이유가 "멋있어서", "스타트업이랑 엮이는 게 좋아서"라고 면접에서 말하면 큰일 나요. VC는 진짜 박봉이에요. 증권사 쪽보다 30% 정도 덜 받는다고 보면 돼요. 돈 다 필요 없고 회사를 인큐베이팅하는 데 내 인생을 쏟아붓고 싶다면 가세요.</p><p>VC 앞단에 AC(액셀러레이터)가 있어요. 은퇴하는 그날까지 내가 투자한 회사가 잘되는 걸 못 보고 죽을 수도 있어요. VC는 회사마다 색깔이 진짜 달라요. 시리즈 C랑 프리IPO만 하는 곳도 있고, A·B부터 끝까지 끌고 가는 곳도 있어요. 우리벤처파트너스, 컴퍼니케이, 하나벤처스 정도가 쭉 끌고 가는 곳이에요. 컴퍼니케이는 완전 바이오에 집중해요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p>스타트업은 단계마다 투자를 받아요. <b>시드</b>는 아이디어와 팀만 있을 때, <b>시리즈 A</b>는 제품이 나와 시장 반응을 확인할 때, <b>B·C</b>는 사업을 키울 때, <b>프리IPO</b>는 상장 직전이에요. 앞 단계일수록 망할 확률이 높지만 성공하면 수익이 커요.</p>
+        <p><b>AC</b>는 시드 단계에서 소액을 투자하고 교육·멘토링까지 해 주는 곳이에요. 투자한 회사가 상장까지 가는 데 10년 넘게 걸리기도 해서, 결과를 보기까지 아주 오래 걸려요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>44:48</time><h3>프리IPO: 신기사와 PEF</h3></div>
+      <div class="say"><span>선배님</span><p>프리IPO는 진짜 춘추전국시대예요. 신기사라는 게 있는데, 대기업만 아니면 모든 회사에 이 비히클로 투자할 수 있어요. 비교되는 게 PEF예요. 신기사는 여신금융법을 따르고 PEF는 법이 달라요. 설정할 때 행정적인 차이가 있는 것뿐이에요. 가장 큰 차이는 신기사는 대기업에 투자를 못 하는데 PEF는 제한이 아예 없어요. 프리IPO는 둘 다 할 수 있어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>비히클</b>(vehicle)은 투자할 때 쓰는 "그릇"이에요. 같은 회사에 투자하더라도 어떤 법적 형태의 펀드로 돈을 모으느냐에 따라 규제와 세금이 달라져요.</p>
+        <p><b>신기사</b>(신기술사업금융회사)는 기술 기업에 투자하라고 만든 제도예요. 신기술조합이라는 펀드를 만들어 돈을 모아요. <b>PEF</b>(사모투자펀드)는 상법상 합자회사 형태로 만들고 자본시장법을 따라요. 기업 경영권을 사서 가치를 올린 뒤 파는 바이아웃도 주로 PEF가 해요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>45:48</time><h3>돈은 누가 대나요: 캐피탈</h3></div>
+      <div class="say"><span>선배님</span><p>신기사들은 펀드를 만들어서 펀딩을 받는데, 제일 큰손이 캐피탈, 저축은행, 은행이에요. 우리 같은 애들은 조막손이에요. 프리IPO를 진짜 하고 싶다면 오히려 신기사가 아니라 돈 대는 쪽을 봐야 해요. 캐피탈 중에 KB, IBK, JB 같은 곳이요. 1년에 1조씩 쏴요. 우리나라에 신기사가 몇백 개인데 다 이 사람들한테 굽신굽신해요. 여의도에서 위상이 완전히 다른 곳이에요.</p><p>캐피탈 출신은 신기사에서 모셔 가요. 펀딩할 때 인맥이 있으니까요. 학연, 지연, 혈연의 끝판왕인 동네예요. 아직 아는 사람이 많지 않아서 증권 본사 못 간 사람이 지원하는 느낌이 있는데 전혀 그렇지 않아요. KDB캐피탈에 중앙대 선배도 엄청 많아요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>캐피탈</b>(여신전문금융회사)은 예금은 받지 않고, 빌린 돈으로 대출·리스·투자를 하는 회사예요. 자동차 할부로 유명하지만 기업금융과 투자도 크게 해요.</p>
+        <p>신기사나 PE가 펀드를 만들려면 돈을 낼 LP가 있어야 해요. 캐피탈은 그 LP 역할을 크게 해요. 돈을 주는 쪽이라 "갑"이 되고, 수많은 투자사의 딜을 검토하면서 시장 전체를 보게 돼요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>49:10</time><h3>은행계가 비상장 투자를 못 하는 이유: RWA</h3></div>
+      <div class="say"><span>선배님</span><p>은행은 RWA라는 게 있어요. 위험가중자산이에요. 금융회사들은 다 자기자본비율이 있어요. 증권사는 NCR, 은행은 BIS, 보험사는 RBC예요. 주식을 1만 원어치 들고 있으면 1만 원으로 안 쳐 주고, 위험도에 따라 1만 2천 원, 1만 3천 원으로 쳐요. RWA가 커지면 자기자본비율이 깎이고, 바젤3 기준으로 깎이면 대출 같은 걸 할 여력이 줄어요. 비상장이 RWA를 제일 많이 잡아먹어요. 그래서 엄청 큰 은행계 캐피탈이 아니면 많이 투자를 못 해요. JB는 예전에 부동산을 하다가 정리하면서, 그 돈을 다 기업금융으로 돌렸어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p>금융회사는 손실이 나도 버틸 수 있게 자기 돈(자기자본)을 일정 비율 이상 쌓아 둬야 해요. 이 비율을 계산할 때, 위험한 자산은 실제보다 크게 쳐서 분모에 넣어요. 이게 <b>RWA</b>예요.</p>
+        <p><b>바젤3</b>는 국제 은행 건전성 기준이에요. 은행은 BIS비율을 일정 수준 이상 지켜야 해요. 비상장 주식은 위험 가중치가 높아서, 조금만 사도 비율이 크게 떨어져요. 그래서 은행 계열은 비상장 투자를 많이 못 해요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span><p>자기자본 1조 원인 은행이 있어요. 대출 같은 일반 자산은 100억 원을 100억 원으로 쳐요. 비상장 주식 100억 원은 위험 가중치가 커서 몇백억 원으로 쳐요. 같은 돈을 써도 비율이 훨씬 많이 떨어지니까, 은행 입장에선 비상장 투자가 아주 비싼 셈이에요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>52:22</time><h3>캐피탈 지원 팁</h3></div>
+      <div class="say"><span>선배님</span><p>캐피탈에 기업금융으로 지원한다면, 다른 지원자보다 증권사 지원하듯 포인트를 맞추는 게 좋아요. "그럴 거면 증권사 가지 왜 캐피탈 왔어요?"라고 물으면, 자금력과 여러 딜을 볼 기회가 증권사보다 훨씬 많다는 것, 특히 프리IPO 펀드는 압도적으로 많다는 것, 그런 역학관계를 이해하고 있다는 걸 어필하면 엣지가 될 수 있어요. 캐피탈에서 다른 데로도 많이 가요. 신기사도 가고, IB나 PI로 가는 경우도 많아요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>53:37</time><h3>PB와 지점 영업, 그리고 성과급 구조</h3></div>
+      <div class="say"><span>선배님</span><p>PB는 개 빡세고 좋은 시절이 조금 많이 지났어요. 핵심은 지점과 본사의 성과급 차이예요. 지점은 분기 성과급이라 받으면 세금 떼고 그대로 들어와요. 본사, 특히 프론트는 이연 성과급이 있어요. 우리는 첫해 60%, 그다음 12%, 12%, 13% 식으로 4년에 나눠 받아요. 그사이 퇴사하면 없어져요.</p><p>성과급 1억이면 첫해 6천만 원이 나오는데, 성과급은 최고 세율 구간이라 세금 떼면 실제로 꽂히는 게 3,690만 원이에요. 충격적이죠. 지점은 1억 받으면 그해에 대략 6천 정도 꽂혀요. 빨리 돈을 당겨서 시드로 운용해 개인적으로 돈을 벌겠다면 지점이 맞아요. 본사는 5~6억 정도 받지 않는 이상 성과급으로 인생이 크게 안 바뀌어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>PB</b>(Private Banker)는 개인 고객의 자산을 관리하고 상품을 권하는 사람이에요. 지점 영업은 지점에서 개인 고객을 상대하는 일이에요.</p>
+        <p><b>이연 성과급</b>은 성과급을 한 번에 주지 않고 몇 년에 나눠 주는 제도예요. 금융회사가 단기 성과만 노리고 위험한 거래를 하지 않게 하려고 만든 장치예요. 받는 사람 입장에선 회사를 옮기기 어렵게 만드는 효과도 있어요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span>
+        <ul>
+          <li>본사 프론트, 성과급 1억 원: 올해 6천만 원 → 세금 떼고 약 3,690만 원. 나머지 4천만 원은 3년에 걸쳐 나눠 받고, 중간에 그만두면 못 받아요.</li>
+          <li>지점, 성과급 1억 원: 분기마다 바로 받아서 그해에 약 6천만 원이 들어와요.</li>
+        </ul>
+      </div>
+    </article>
+
+
+    <article class="tp">
+      <div class="tp-h"><time>1:02:18</time><h3>숏으로 돈 벌기가 어려운 이유</h3></div>
+      <div class="say"><span>선배님</span><p>프랍 쪽은 몸은 되게 편한데 스트레스가 엄청 많아요. "숏으로 먹으면 되는 거 아니냐"는 말을 하는데 정말 쉽지 않아요. 페이오프 그래프로 보면, 롱은 계속 먹을 수 있는데 숏은 빠져도 벌 수 있는 금액이 한정적이에요. 손익비가 매우 안 좋아요. 마이클 버리도 한 번밖에 못 먹었어요. 그걸로 설명이 끝나요.</p><p>롱은 빠지면 기다리면 돼요. 1억을 투자하면 빠질수록 원금이 줄어요. 근데 숏을 1억 쳤는데 오르면 잔고가 2억, 3억으로 커져요. 그 스트레스가 어마무시해요. 저도 작년에 방산 3사를 숏 쳤다가 로템에서 마이너스 40%까지 갔다가 살아남았어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>페이오프</b>는 가격에 따라 손익이 어떻게 되는지 그린 그래프예요. 주식을 사면 최대 손실은 산 금액(주가 0)이고, 이익은 끝이 없어요. 공매도는 반대예요. 최대 이익은 판 금액(주가 0)이고, 손실은 끝이 없어요.</p>
+        <p><b>마이클 버리</b>는 2008년 금융위기 때 주택담보대출 시장 붕괴에 베팅해 큰돈을 번 투자자예요. 영화 「빅쇼트」의 주인공이에요. 하락에 베팅해서 크게 성공한 대표적 사례지만, 그만큼 드물다는 뜻이에요.</p>
+      </div>
+      <div class="eg"><span>예를 들면</span>
+        <ul>
+          <li>1억 원어치 롱: 주가가 반 토막 나면 -5천만 원, 0이 되면 -1억 원이 최대예요. 2배가 되면 +1억 원이에요.</li>
+          <li>1억 원어치 숏: 주가가 반 토막 나면 +5천만 원, 0이 되면 +1억 원이 최대예요. 2배가 되면 -1억 원, 3배가 되면 -2억 원이에요. 손실에 끝이 없어요.</li>
+        </ul>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:05:17</time><h3>장이 빠질 때 좋은 비즈니스는 없어요</h3></div>
+      <div class="say"><span>선배님</span><p>처음 LIG넥스원, 현대로템을 숏 친 건 이런 논리였어요. 무기가 진짜 필요한 국가는 러시아·우크라이나 전쟁 접경 지역밖에 없는데, 사우디 기대감으로 엄청 올랐거든요. 사우디는 전차를 돌릴 수 있는 지역이 아니라는 게 다수설이었어요. 그러다 로템에서 죽을 뻔했고, 한화에어로스페이스가 유상증자를 하면서 방산이 다 빠져서 살았어요.</p><p>장이 빠질 때 좋은 비즈니스는 없어요. IB가 그나마 낫고, PB든 브로커리지든 다 덜 벌어요. 대차 요율은 전일 종가 기준으로 매일 정산하거든요. 종가가 빠지면 같은 수량을 빌려줘도 받는 돈이 줄어요. 다만 브로커리지는 덜 버는 거고, 우리 같은 애들은 깨지는 거예요. 깨지는 거에 대한 스트레스 관리를 절대 못 하겠다면 하면 안 돼요. 몸은 편하죠. 대신 IB는 몸이 개 힘들어요.</p></div>
+      <div class="ex"><span>풀어서 보면</span><p><b>유상증자</b>는 회사가 새 주식을 찍어 돈을 모으는 거예요. 기존 주주 입장에선 지분이 줄어서 주가가 빠지는 경우가 많아요. 대차 수수료는 "빌려준 주식의 가치 × 요율"이라, 주가가 내려가면 같은 주식 수를 빌려줘도 수수료가 줄어요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:06:21</time><h3>리서치의 진짜 일은 소통이에요</h3></div>
+      <div class="say"><span>선배님</span><p>리서치의 중요성이 실질적으로 많이 떨어졌냐 하면, 어마무시하게 떨어졌어요. 저도 옛날엔 리서치 리포트를 찾았는데 이젠 다 AI를 써요. 그래서 리서치는 회사를 잘 분석하는 것보다 펀드매니저랑 얼마나 잘 소통하느냐, 가교 역할이 중요해요. AI가 할 수 없는 게 네트워킹이잖아요. 글 잘 쓰는 게 잘하는 애널리스트가 아니에요.</p><p>한 섹터를 할지 여러 섹터를 할지는 커리어 패스에 따라 달라요. 자동차 애널리스트를 엄청 오래 하신 분이 그 섹터 혜안 덕분에 대형 PE에 스카웃된 적이 있어요. 대신 엄청 오래 걸렸어요. 여러 섹터는 깊이 공부하긴 어려워요. 그래서 주포는 하나 갖고 있는 게 좋고, 남들이 하기 어려운 섹터일수록 좋아요. 그게 반도체예요. 방산은 비즈니스 모델이 너무 심플하고, 화장품은 수출입 데이터가 나와서 애널리스트의 필요성이 상대적으로 낮아요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>애널리스트</b>는 기업과 산업을 분석해 리포트를 쓰는 사람이고, <b>RA</b>(Research Assistant)는 그 밑에서 데이터와 자료를 만드는 주니어예요. 보통 RA로 시작해 애널리스트가 돼요.</p>
+        <p>화장품은 관세청 수출입 통계가 매달 나와서 누구나 숫자로 실적을 추정할 수 있어요. 반도체는 소재·부품·장비·설계·제조까지 밸류체인이 길고 기술이 복잡해서, 오래 판 사람의 전문성이 쉽게 대체되지 않아요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:10:51</time><h3>IB가 리서치 출신에게 바라는 것</h3></div>
+      <div class="say"><span>선배님</span><p>AI가 없던 시절에는 리서치 출신 수요가 꽤 많았는데, AI가 생기고부터는 다른 부서에서 리서치 수요가 많이 줄었어요. 요즘 리서치 출신에게 기대하는 건 기술적인 거예요. IB는 고객에게 아이디어를 전달할 때 포장을 잘하는 게 중요해요. 우리나라 상품은 제한적이라 내실은 다 똑같아요. 금리나 할증률 같은 조건을 발행사에 최대한 유리하게 해 주는 치킨 게임이에요. 그래서 자료가 엄청 있어 보이게 만드는 게 중요한데, 리서치 출신은 기본적으로 엑셀을 잘하니까요.</p></div>
+      <div class="ex"><span>풀어서 보면</span><p><b>발행사</b>는 돈을 조달하려고 주식·채권을 찍는 회사예요. IB는 발행사와 투자자 사이를 이어 주는 일이라, 딜이 있어야 투자자도 만나요. 그래서 발행사를 잡는 게 제일 중요해요. <b>할증률</b>은 메자닌 전환가를 현재 주가보다 얼마나 높게 잡느냐예요. 높을수록 발행사에 유리해요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:15:31</time><h3>IB 안에서도 다 달라요</h3></div>
+      <div class="say"><span>선배님</span><p>커버리지는 옛날 말로 언더라이팅이에요. ECM은 중소·중견기업을 커버하는 섹터, 업계에서 커버리지라고 하면 대기업이라고 생각하면 돼요. RM마다 담당하는 회사가 다 있어요. 크레딧이 있는 대기업은 채권 조달이 싸요. 지배구조 때문에 지분율 1%에도 엄청 신경 쓰는 곳이라 고금리 땐 에쿼티로, 저금리 땐 채권으로 축을 옮겨요. 중소·중견은 크레딧이 없어서 채권 발행을 못 해요. 에쿼티와 메자닌밖에 없어요. 하는 일은 똑같고, 커버하는 회사 성격에 따라 조달 방식이 다른 거예요. ECM이 에쿼티와 가까워서 에쿼티 쪽으로 확장 가능성이 조금 더 높아요.</p><p>요즘은 대기업 커버리지에서도 메자닌 발행이 엄청 많았어요. 오늘도 HD현대 쪽에서 6천억 정도 했거든요. 메자닌 하우스가 IB 출신을 원하는 이유는 딜 소싱이에요. 그 딜이 나왔을 때 네가 있던 하우스, 없던 하우스와 얼마나 커넥션이 있어서 따 올 수 있냐. 그걸 레버리지 삼아 옮겨 가는 거예요.</p></div>
+      <div class="ex"><span>풀어서 보면</span>
+        <p><b>언더라이팅</b>(인수)은 증권사가 회사가 발행하는 주식·채권을 일단 사들인 뒤 투자자에게 파는 거예요. 안 팔리면 증권사가 떠안아요. <b>ECM</b>(Equity Capital Market)은 주식 관련 조달(IPO, 유상증자, 메자닌), <b>DCM</b>(Debt Capital Market)은 채권 조달이에요. <b>RM</b>(Relationship Manager)은 특정 기업들을 맡아 관계를 관리하며 딜을 따 오는 사람이에요.</p>
+        <p><b>에쿼티</b>는 주식(자기자본)이에요. 주식을 새로 찍으면 대주주 지분율이 낮아져서, 지배구조를 신경 쓰는 대기업은 웬만하면 채권으로 돈을 빌려요.</p>
+      </div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:18:58</time><h3>지도를 그리며: 어디서 어디로</h3></div>
+      <div class="say"><span>선배님</span><p>이건 전적으로 제 경험 데이터 기반이에요. 옛날 PE와 지금 PE는 많이 달라요. 경계가 엄청 많이 허물어졌어요. VC는 끝단이라 거꾸로 돌아간다고 생각하면 돼요. VC 있다가 IB로 갈 수 있고 왔다 갔다 할 수 있어요. 이렇게 연결된 선들 사이에서는 다시 돌아갈 수도 있어요.</p><p>상·중·하로 가능성을 말했지만 그건 일반적인 확률이에요. 실제로는 적 안 만들고 사람들이랑 커뮤니티를 잘 만들면 어디든 갈 수 있어요. 저도 리서치 갔다가 IB 갔다가 프랍 갔어요. PB에 있다가 IB 온 친구도, PB에서 리서치 갔다가 운용 간 친구도 있어요. 중대 나와서 갈 수 있냐고요? 다 갈 수 있어요. 쫄지 마요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:21:00</time><h3>평판, 그리고 나를 노출하기</h3></div>
+      <div class="say"><span>선배님</span><p>일단 들어가면 인생에 도움 안 되는 사람이 한 명도 없어요. 절대 적을 만들면 안 돼요. 아무리 꼴 보기 싫어도 겉으로 티 내면 안 돼요. 헤드헌팅을 통하거나 내가 지원해서 이직하는 건 대단히 불리해요. 우리 쪽은 레퍼런스 체크가 30초면 돼요. 한 다리 건너면 다 알아요.</p><p>엄청 많은 걸 바라지 않아요. 인사 한 번 잘하면 끝이에요. 그리고 이직을 잘하고 싶다면 본인을 계속 노출하세요. 우리는 타사 사람들이랑 점심 약속이 거의 매일 있고 저녁도 많아요. 줄 건 주고 받을 건 받으면서, 상대에게 "내가 필요한 사람"이라는 인식을 줘야 노출이 되고 오퍼가 와요.</p></div>
+      <div class="ex"><span>풀어서 보면</span><p><b>레퍼런스 체크</b>는 경력직을 뽑기 전에 예전 동료나 상사에게 그 사람이 어땠는지 물어보는 거예요. 여의도는 좁아서 공식 절차가 없어도 지인 한두 명에게 전화하면 바로 알 수 있어요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:25:56</time><h3>PF와 퇴직연금</h3></div>
+      <div class="say"><span>선배님</span><p>PF는 요새 진짜 힘들어요. 한투 같은 대형사 빼고는 먹고살 게 없어요. 지금 조금 살아나는 게 데이터센터 쪽이에요. 예전엔 시행사를 시작하는 자본금 기준이 낮았는데, 지금은 규제가 높아져서 자본력 많은 곳끼리만 해요.</p><p>퇴직연금은 IB 안에 있는데, 싸울 수 있는 무기가 연금밖에 없어요. 연금 영업만 해야 하고, 상품도 차별화가 안 돼요. 최근에 새로 부서를 만들어 많이 뽑는 곳이 있는데, 들어가면 딴 데 못 가요. 옮기려면 회사 안에서 인사나 경영전략 같은 부서를 거쳐 돌아가야 해요.</p></div>
+      <div class="ex"><span>풀어서 보면</span><p><b>PF</b>(프로젝트 파이낸싱)는 아파트·빌딩 같은 개발 사업에, 그 사업이 나중에 벌 돈을 담보로 돈을 빌려주는 거예요. <b>시행사</b>는 땅을 사고 개발을 기획하는 회사예요. 부동산 경기가 꺾이고 규제가 세지면서 PF 시장이 크게 줄었어요.</p></div>
+    </article>
+
+    <article class="tp">
+      <div class="tp-h"><time>1:39:02</time><h3>돈이냐, 직업적 만족이냐</h3></div>
+      <div class="say"><span>선배님</span><p>저도 제가 끝에 뭘 할지 몰라요. 근데 결정할 때 하나는 정해 줬으면 좋겠어요. 돈이냐, 직업적 만족감이냐. 저는 돈이에요. 그래서 커리어를 다 돈 많이 버는 쪽으로 옮겼어요. 구심점 하나를 꼭 잡아 놓고 하세요. 안 그러면 길을 완전히 잃어버려요.</p><p>지점 영업이 돈은 훨씬 잘 벌잖아요. 목표가 돈이면 지점 영업 가면 돼요. 사회적 위상이나 똑똑해 보이고 싶은 욕심이 있다면 본사를 고르면 돼요. 정답은 없어요. 그래도 이 업계에 오면 돈이 엄청 중요해져요. 상대적 박탈감 때문에 결국 다 돈을 따라가요.</p></div>
+    </article>
+
+
+    <article class="tp">
+      <div class="tp-h"><time>1:48:38</time><h3>마무리</h3></div>
+      <div class="say"><span>선배님</span><p>궁금한 게 있으면 카톡으로 연락 주세요. 제가 몸담았던 영역에 대해 쓴다면 자소서도 봐 드릴게요. 작은 운용사나 작은 신기사는 추천도 해 드릴 수 있어요. 대신 저한테도 노출을 많이 시켜야 해요. 제 머릿속에 남아 있어야 추천해도 저도 안 불편하거든요. 단톡방에 공고 뿌리는 건 안 해요. 불특정 다수에게 뿌리는 건 의미가 없어요. 누가 "추천해 줄 사람 있어?" 하고 개별적으로 물어볼 때, 그때 추천해 줄 수 있으니까 본인을 많이 보여 주세요.</p></div>
+    </article>
+  </section>
+
+  <section>
+    <span class="eyebrow">질문과 답</span>
+    <h2>그날 나온 질문들</h2>
+    <div class="qa">
+      <details open><summary>큰 운용사와 작은 운용사, 많이 달라요?</summary><p>배우기엔 작은 곳이 나아요. 큰 곳은 인턴 얘기를 잘 안 들어요. 작은 곳은 의견을 낼 기회가 많아요. 그래도 가만히 있으면 못 배워요. 먼저 의견을 내 보세요.</p></details>
+      <details open><summary>사모펀드·헤지펀드는 어떻게 들어가요?</summary><p>공채는 거의 없어요. 대부분 스카우트나 경력 채용이에요. 최근 실력자들이 차린 개인 자금 하우스가 많이 생겼는데, 거기서 인턴을 하고 추천받는 길도 있어요. 대신 운이 많이 따라야 해요.</p></details>
+      <details open><summary>캐피탈 지원할 땐 뭘 어필해요?</summary><p>증권사 지원하듯 기업금융 역량을 보여 주세요. "왜 증권사 말고 캐피탈이에요?"라고 물으면, 캐피탈이 상장 전 딜을 훨씬 많이 볼 수 있다는 걸 알고 왔다고 말하면 좋아요.</p></details>
+      <details open><summary>캐피탈에서 다른 데로 옮길 수 있어요?</summary><p>네, 많이 옮겨요. 투자사로도 가고, IB나 증권사 투자 부서로도 가요.</p></details>
+      <details open><summary>PF는 어때요?</summary><p>요즘 정말 힘들어요. 대형사 말고는 일이 거의 없어요. 데이터센터 쪽만 조금 살아나고 있어요.</p></details>
+      <details open><summary>퇴직연금은 어때요?</summary><p>최근에 많이 뽑긴 해요. 하지만 할 수 있는 게 연금 영업뿐이고, 한번 들어가면 다른 부서로 옮기기 어려워요.</p></details>
+      <details open><summary>술 못 마시면 힘들어요?</summary><p>처음엔 조금 중요해요. 선배님도 두 잔이면 취했는데 일하면서 늘었대요. 술이 아니어도 골프나 말솜씨로 분위기를 살릴 수 있으면 괜찮아요. 연차가 쌓이면 안 마셔도 아무도 뭐라 안 해요.</p></details>
+      <details open><summary>개인 주식 투자는 해도 돼요?</summary><p>회사와 부서마다 달라요. 국내 주식을 아예 못 하는 곳도 있고, 해외 주식과 ETF만 되는 곳도 있어요. 사고팔 때마다 미리 신고해야 하는 곳도 있어요.</p></details>
+      <details open><summary>인턴은 어디로 가야 많이 배워요?</summary><p>솔직히 인턴 때 배우는 건 많지 않아요. 배우고 싶다면 작은 곳, 이력서에 이름을 남기고 싶다면 큰 곳이에요. 큰 곳은 경쟁이 훨씬 세요.</p></details>
+      <details open><summary>인턴은 하나면 충분해요? 학점은요?</summary><p>정답은 채용 담당자만 알아요. 많이 할수록 좋지만, 적게 했다면 이유를 말할 수 있으면 돼요. 학점도 마찬가지예요. 면접에서 공격받을 틈을 줄이는 게 제일 좋아요.</p></details>
+      <details open><summary>일 잘한다는 건 뭐예요?</summary><p>눈치껏, 알아서, 잘. 실수했으면 바로 사과하고 다시 안 하면 돼요.</p></details>
+      <details open><summary>선배님의 목표는 뭐예요?</summary><p>선배님도 아직 모른대요. 대신 돈이냐 일이 좋아서냐 하나는 정해 두라고 했어요. 선배님은 돈이라서, 돈을 더 버는 쪽으로 계속 옮겼대요.</p></details>
+      <details open><summary>델타원은 큰 증권사에도 있어요?</summary><p>네, 많아요. 국내는 대차와 묶인 경우가 대부분이에요. 트레이딩 부서 아래면 투자 성격이, 법인영업 아래면 대차 성격이 강해요.</p></details>
+      <details open><summary>VC는 신입으로 어떻게 가요?</summary><p>신입으로 바로 가긴 어려워요. 꼭 가고 싶다면 IB의 IPO 부서로 먼저 가세요. 요즘 들어가기 쉬운 편이에요. 실제로 IPO를 거쳐 VC로 간 학교 후배가 있어요.</p></details>
+      <details open><summary>RA 때 섹터는요? 왜 옮겼어요?</summary><p>RA 땐 금융 섹터를 맡았어요. 옮긴 이유는 돈이에요. 몸은 RA가, 마음은 프랍이 제일 힘들었대요.</p></details>
+      <details open><summary>신입이 일 잘한다고 느낄 땐 언제예요?</summary><p>알아서 잘할 때예요. 시킨 일을 다 하겠다고 하기보다, 어려우면 미리 말해 주는 게 좋아요. 마감 직전에 "못 했어요"가 제일 곤란해요.</p></details>
+    </div>
+  </section>
+
+  <section>
+    <span class="eyebrow">용어</span>
+    <h2>처음 듣는 말이 있다면</h2>
+    <dl>
+      <dt>대차</dt><dd>공매도할 수 있게 주식을 빌려주는 일이에요. 빌려준 값은 전날 종가로 매일 계산해요.</dd>
+      <dt>델타원</dt><dd>고객이 주식을 사서 생긴 위험을 0으로 맞춰 주는 서비스예요. 대차와 묶여 있는 경우가 많아요.</dd>
+      <dt>프라임 브로커리지</dt><dd>헤지펀드에 필요한 일을 묶어서 해 주는 서비스예요. 펀드 설정, 대차, 델타원 등이 들어가요.</dd>
+      <dt>메자닌</dt><dd>CB, BW, EB처럼 주식과 채권을 섞은 투자예요. 만기는 보통 5년인데, 2년쯤 지나 돈을 돌려받는 경우가 많아요.</dd>
+      <dt>리픽싱</dt><dd>주가가 떨어지면 전환가도 낮춰 주는 조건이에요. 보통 30%까지 낮춰 줘요.</dd>
+      <dt>코벤 펀드</dt><dd>코스닥 벤처펀드예요. 공모주를 먼저 배정받을 수 있어요.</dd>
+      <dt>신기사</dt><dd>신기술사업금융회사예요. 상장 전 기업에 투자하지만, 대기업에는 투자할 수 없어요.</dd>
+      <dt>RWA</dt><dd>위험한 자산일수록 더 크게 쳐서 계산하는 자산이에요. 은행은 이게 커지면 투자를 줄여야 해서, 비상장 투자를 많이 못 해요.</dd>
+      <dt>이연 성과급</dt><dd>성과급을 한 번에 안 주고 몇 년에 나눠 주는 제도예요. 중간에 그만두면 남은 건 못 받아요.</dd>
+    </dl>
+    <p class="note">녹음을 글로 옮긴 거라 회사 이름이나 숫자가 조금 틀릴 수 있어요. 특정인 이야기와 회사 내부 사정은 뺐어요.</p>
+  </section>
+</div>
+
+<script>
+(function(){
+  const Z = {
+    sell:{name:'셀 사이드', x:20, w:300, fill:'var(--sell)', ink:'var(--sell-ink)'},
+    mid:{name:'셀 속 바이 · 출자자', x:350, w:300, fill:'var(--mid)', ink:'var(--mid-ink)'},
+    buy:{name:'바이 사이드', x:680, w:300, fill:'var(--buy)', ink:'var(--buy-ink)'}
+  };
+  const N = {
+    brk:{z:'sell', y:78, t:'브로커리지 · PBS', s:'주식·채권·FX · 대차 · 델타원',
+      q:'선배님이 가장 좋다고 꼽은 곳이에요. 가고 싶어 하는 학생이 거의 없어서 오히려 기회예요.',
+      li:['헤지펀드가 펀드를 만들 때 필요한 일을 대신 해 줘요','공매도용 주식을 빌려줘요 (대차)','프랍, 운용사, 메자닌 하우스와 다 거래해서 갈 곳이 많아요','장이 빠져도 덜 벌 뿐, 잃지는 않아요'],
+      sm:''},
+    ib:{z:'sell', y:188, t:'IB', s:'커버리지 · ECM · IPO · PF',
+      q:'몸이 정말 힘들어요. 꼼꼼하지 않다면 다시 생각해 보세요.',
+      li:['커버리지는 대기업, ECM은 중소·중견기업의 자금 조달을 도와요','결국 비슷한 상품이라, 발행사에 좋은 조건과 포장으로 경쟁해요','딜을 따 올 수 있는 인맥이 이직할 때 무기예요','PF는 요즘 대형사 말고는 일이 거의 없어요'],
+      sm:'VC에 가고 싶다면 IPO 부서를 먼저 거쳐 가는 걸 추천해요.'},
+    res:{z:'sell', y:298, t:'리서치', s:'애널리스트 · RA',
+      q:'글 잘 쓰는 사람보다 펀드매니저와 회사를 잘 이어 주는 사람이 잘하는 애널리스트예요.',
+      li:['AI 때문에 예전보다 비중이 줄었어요','내 주력 섹터 하나는 있는 게 좋아요. 반도체처럼 어려운 섹터일수록 좋아요','한 섹터를 오래 하면 PE로 스카우트되기도 해요'],
+      sm:'선배님은 리서치에서 IB를 거쳐 프랍으로 왔어요.'},
+    pb:{z:'sell', y:408, t:'PB · 지점 영업', s:'개인 고객 자산관리',
+      q:'많이 힘들어요. 그래도 빨리 목돈을 모으고 싶다면 지점이 나아요.',
+      li:['성과급을 분기마다 바로 받아요','본사는 몇 년에 나눠 받고, 그만두면 남은 건 못 받아요','PB에서 IB나 리서치로 옮긴 사람도 있어요'],
+      sm:''},
+    pen:{z:'sell', y:518, t:'퇴직연금', s:'연금 영업',
+      q:'한번 들어가면 다른 데로 옮기기 어려워요.',
+      li:['최근에 많이 뽑는 곳이 있어요','할 수 있는 일이 연금 영업뿐이에요','옮기려면 회사 안에서 다른 부서를 거쳐 돌아가야 해요'],
+      sm:'지도에서 나가는 길이 없는 유일한 칸이에요.'},
+    pi:{z:'mid', y:78, t:'PI · 프랍', s:'증권사 자기 돈으로 투자',
+      q:'몸은 편한데 마음이 제일 힘들어요. 잃는 걸 못 견디면 맞지 않아요.',
+      li:['주식도 하고 채권도 해요','채권은 돈이 아주 많은 대형사에서나 의미가 있어요','숏으로 돈 벌기는 거의 불가능해요','중소형사일수록 내 몫의 성과급 비율이 높아요'],
+      sm:'선배님이 지금 있는 곳이에요.'},
+    ima:{z:'mid', y:208, t:'발행어음 · IMA', s:'증권사 운용 업무',
+      q:'추천하지 않아요. 영업도, 운용도, 지원 부서도 아닌 애매한 자리예요.',
+      li:['딜은 IB가 가져오고, 여기는 같이 투자만 해요','계약직으로 바뀌는데 성과급은 적게 나와요','비슷한 일을 하는 부서보다 훨씬 적게 받아요'],
+      sm:'IMA는 올해 초에 생긴 부서예요.'},
+    cap:{z:'mid', y:378, t:'캐피탈', s:'투자사에 돈을 대는 곳',
+      q:'여의도에서 대접이 완전히 달라요. 아직 잘 안 알려져서 오히려 기회예요.',
+      li:['상장 전 기업 투자에 돈을 대는 큰손이에요','투자 딜을 정말 많이 볼 수 있어요','인맥 덕분에 투자사나 증권사로 옮기기 쉬워요','은행계 캐피탈은 비상장 투자를 많이 못 해요'],
+      sm:'KDB캐피탈에 중앙대 선배가 많대요.'},
+    am:{z:'buy', y:68, t:'자산운용', s:'주식형 펀드 · ETF',
+      q:'제일 중요한 건 규율이에요. 돈을 맡긴 사람과의 약속을 지켜야 해요.',
+      li:['수익률보다 BM보다 잘했는지를 봐요','펀드마다 정해진 색깔대로 운용해요','작은 운용사가 의견을 낼 기회가 더 많아요'],
+      sm:'면접에서 규율과 약속을 말하면 좋아요.'},
+    hf:{z:'buy', y:168, t:'헤지펀드 · 롱숏', s:'국내 롱숏 · 외국계',
+      q:'주식에 정말 미친 사람들이 모인 곳이에요. 그런 사람이 아니면 힘들어요.',
+      li:['국내 롱숏은 지수 선물로 숏을 쳐요','외국계는 3%만 빠져도 바로 정리해요','공채는 거의 없고 스카우트나 경력 채용이에요'],
+      sm:''},
+    mez:{z:'buy', y:268, t:'메자닌', s:'CB · BW · EB',
+      q:'주가만큼 그 회사가 돈을 갚을 수 있는지가 중요해요.',
+      li:['한국은 사모 메자닌이 대부분이에요','예전보다 조건이 나빠졌지만 시장이 커서 계속 돌아가요','회사의 심사 부서를 설득해야 해요','돈 갚을 능력을 보는 일이라 IB 출신이 많이 가요'],
+      sm:''},
+    pe:{z:'buy', y:378, t:'신기사 · PE', s:'상장 전 기업 투자',
+      q:'투자사가 정말 많아요. 이 일을 하고 싶다면 돈을 대는 캐피탈도 같이 보세요.',
+      li:['신기사는 대기업에 투자할 수 없고, PE는 제한이 없어요','캐피탈, 저축은행, 은행에서 돈을 받아요','인맥이 정말 중요한 곳이에요'],
+      sm:''},
+    vc:{z:'buy', y:488, t:'VC', s:'스타트업 투자',
+      q:'생각보다 박봉이에요. 증권사보다 30% 정도 덜 받아요.',
+      li:['VC마다 투자하는 단계가 달라요','신입으로 바로 가기는 정말 어려워요','모임이 많고 외향적인 사람들이 많아요'],
+      sm:'IB와 서로 오가기도 해요.'}
+  };
+  // [출발, 도착] : 선배님이 말한 이동 경로
+  const E = [['brk','pi'],['brk','am'],['brk','mez'],['res','ib'],['res','pi'],['res','am'],['res','pe'],['ib','mez'],['ib','pe'],['ib','vc'],['ib','pi'],['cap','pe'],['cap','ib'],['cap','pi'],['pb','ib'],['pb','res']];
+  const W = 240, H = 64;
+  const ns = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('m');
+  const el = (t, a, p) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); (p || svg).appendChild(e); return e; };
+  for (const k in Z) { const z = Z[k], g = el('g', {class:'zone'}); el('rect', {x:z.x, y:10, width:z.w, height:620, fill:z.fill}, g); const t = el('text', {x:z.x + 20, y:42, fill:z.ink}, g); t.textContent = z.name; }
+  const pos = (k) => { const n = N[k], z = Z[n.z]; return { x: z.x + (z.w - W) / 2, y: n.y }; };
+  const eg = el('g', {});
+  const edges = E.map(([a, b]) => {
+    const A = pos(a), B = pos(b);
+    let x1, y1, x2, y2, d;
+    if (N[a].z === N[b].z) { x1 = A.x; y1 = A.y + H / 2; x2 = B.x; y2 = B.y + H / 2; const bend = 26 + Math.abs(y2 - y1) * 0.12; d = `M${x1} ${y1} C${x1 - bend} ${y1} ${x2 - bend} ${y2} ${x2} ${y2}`; }
+    else { const r = Z[N[b].z].x > Z[N[a].z].x; x1 = r ? A.x + W : A.x; y1 = A.y + H / 2; x2 = r ? B.x : B.x + W; y2 = B.y + H / 2; const mx = (x1 + x2) / 2; d = `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`; }
+    return { a, b, p: el('path', {class:'edge', d}, eg) };
+  });
+  const nodes = {};
+  for (const k in N) {
+    const n = N[k], P = pos(k), z = Z[n.z];
+    const g = el('g', {class:'node', tabindex:'0', role:'button', 'aria-label':n.t});
+    el('rect', {x:P.x, y:P.y, width:W, height:H, rx:10}, g);
+    el('rect', {x:P.x, y:P.y + 12, width:4, height:H - 24, rx:2, style:`fill:${z.ink};stroke:none`}, g);
+    const t1 = el('text', {class:'t', x:P.x + 18, y:P.y + 28}, g); t1.textContent = n.t;
+    const t2 = el('text', {class:'s', x:P.x + 18, y:P.y + 48}, g); t2.textContent = n.s;
+    g.addEventListener('click', () => show(k));
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(k); } });
+    nodes[k] = g;
+  }
+  const card = document.getElementById('card');
+  function show(k) {
+    const n = N[k], z = Z[n.z];
+    const near = new Set([k]);
+    edges.forEach((e) => { const on = e.a === k || e.b === k; e.p.classList.toggle('on', on); e.p.classList.toggle('dim', !on); if (on) { near.add(e.a); near.add(e.b); } });
+    for (const j in nodes) { nodes[j].classList.toggle('on', j === k); nodes[j].classList.toggle('dim', !near.has(j)); }
+    const go = [...near].filter((j) => j !== k);
+    card.innerHTML = `<span class="zn" style="color:${z.ink}">${z.name}</span><h3>${n.t}</h3><p class="q">${n.q}</p>`
+      + `<span class="lbl">이런 일을 해요</span><ul>${n.li.map((x) => `<li>${x}</li>`).join('')}</ul>`
+      + (n.sm ? `<small>${n.sm}</small>` : '')
+      + `<span class="lbl">여기서 갈 수 있는 곳</span>` + (go.length ? `<div class="go">${go.map((j) => `<button type="button" data-k="${j}">${N[j].t}</button>`).join('')}</div>` : `<small>나가는 길이 없어요.</small>`);
+    card.querySelectorAll('.go button').forEach((b) => b.addEventListener('click', () => show(b.dataset.k)));
+  }
+  show('brk');
+})();
+</script>
+
+<footer class="foot">© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a></footer>
+</body>
+</html>
