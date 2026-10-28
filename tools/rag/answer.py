@@ -197,7 +197,7 @@ DECLINE = {
 CLUB_SYSTEM = """너는 중앙대학교 가치투자학회 R.F.S.의 안내 챗봇 Polaris다. 아래 [홈페이지 공개 내용]만 근거로 학회에 대한 질문에 답한다.
 - 존댓말, 짧게(3~6문장). 필요하면 짧은 목록. 마크다운 제목은 쓰지 않는다.
 - 공개 내용에 없는 것은 지어내지 말고 문의처(아래 내용의 이메일·인스타그램)를 안내한다.
-- 연락처를 물으면 문의 메일(일반 contact@caurfs.kr, 모집 recruiting@caurfs.kr)과 인스타그램 @cau_rfs를 알려 준다. 개인 전화번호는 말하지 않는다.
+- 연락처를 물으면 아래 문의처(회장 연락처, 문의 메일, 인스타그램)를 알려 준다. 회장 외 학회원 개인 연락처는 말하지 않는다.
 - 끝에 관련 페이지 하나를 링크로 붙인다: 모집·가입은 [신입 학회원 모집](/recruiting/), 학회·활동 소개는 [학회 소개](/about/).
 
 [홈페이지 공개 내용]
@@ -213,9 +213,15 @@ def club_info():
         if p.exists():
             h = re.sub(r'<(script|style)[\s\S]*?</\1>', '', p.read_text(errors='ignore'))
             out.append(re.sub(r'\s+', ' ', html.unescape(re.sub(r'<[^>]+>', ' ', h))).strip())
-    return '\n\n'.join(out) + '\n\n문의: contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
+    # 회장 연락처: 홈페이지 맨 아래에 공개된 것 그대로 (회장이 바뀌면 홈페이지만 고치면 된다)
+    home = (root / 'index.html').read_text(errors='ignore') if (root / 'index.html').exists() else ''
+    m = re.search(r'회장\s+([가-힣]{2,4})\s*(?:&nbsp;)?\s*<a href="tel:\d+"[^>]*>([\d-]+)</a>', home)
+    boss = f'회장 {m.group(1)} {m.group(2)} · ' if m else ''
+    return '\n\n'.join(out) + f'\n\n문의: {boss}contact@caurfs.kr (일반), recruiting@caurfs.kr (모집) · 인스타그램 @cau_rfs · 네이버 카페 cafe.naver.com/caurfs'
 
 
+# 축을 안 정하고 '잘 쓴 리포트'를 물으면 학회가 직접 꼽은 리포트를 이 순서로 낸다 (홈페이지 research/<id>/). 축을 물으면 평가표 점수 순
+PICKS = {'전체': ['trmd', 'vt', 'gtf'], '최근': ['nepesark', 'sanil', 'trmd']}
 BEST_ASK = re.compile(r'잘\s*(쓴|된|한|만든)|좋은\s*리포트|모범|베스트|참고할\s*(만한|리포트)|추천.*리포트|리포트.*추천')
 DECLINE_EXAMPLES = ['항공사 밸류에이션은 뭘 기준으로 해?', '산업 리서치는 어디서부터 시작해?', '내 리포트 문장 좀 봐줄래?']
 
@@ -283,8 +289,10 @@ class Answerer:
         return out
 
     def best(self, axes, recent, n=3):
-        """잘 쓴 리포트 n개: 물은 축(없으면 전체 축) 평균 점수 순, 같으면 최근 학기 먼저. recent면 최근 4개 학기 안에서만."""
-        pool = self.best_pool
+        """잘 쓴 리포트 n개: 축을 안 물으면 학회가 꼽은 리포트(PICKS) 먼저, 모자라면 점수 순으로 채운다.
+        점수 순 = 물은 축(없으면 전체 축) 평균 점수, 같으면 최근 학기 먼저. recent면 최근 4개 학기 안에서만."""
+        picks = [] if axes else [r for r in map(self.picked, PICKS['최근' if recent else '전체']) if r]
+        pool = [r for r in self.best_pool if r['name'] not in {p['name'] for p in picks} and r['doc'] not in {p['doc'] for p in picks}]
         if recent:
             sems = sorted({r['sem'] for r in pool}, reverse=True)[:4]
             pool = [r for r in pool if r['sem'] in sems]
@@ -292,7 +300,19 @@ class Answerer:
             v = [r['scores'].get(a) for a in (axes or r['scores'])]
             v = [x for x in v if isinstance(x, (int, float))]
             return sum(v) / len(v) if v else 0
-        return sorted(pool, key=lambda r: (score(r), r['sem']), reverse=True)[:n]
+        return (picks + sorted(pool, key=lambda r: (score(r), r['sem']), reverse=True))[:n]
+
+    def picked(self, page):
+        """홈페이지 리포트 id → best_pool 꼴 {doc, name, sem, scores, reasons}. 평가표에 있으면 그 줄(잘한 이유가 붙는다), 없으면 사이트판 문서로."""
+        docs = [d for d, v in self.site.items() if v['page'] == f'/research/{page}/' and d in self.by_doc and d not in self.dup]
+        if not docs:
+            return None
+        row = next((r for r in self.best_pool if r['doc'] in docs), None)
+        if row:
+            return row
+        v = self.site[docs[0]]
+        m = re.search(r'(\d\d-[12])_', v['pdf'])
+        return {'doc': max(docs, key=lambda d: len(self.by_doc[d])), 'name': v['name'], 'sem': m.group(1) if m else '', 'scores': {}, 'reasons': {}}
 
     def best_block(self, picks, axes):
         """고른 리포트의 평가 이유 (답이 '왜 잘 썼는지'를 설명할 근거). 출처로 다는 건 함께 넣는 리포트 1~2쪽 청크."""
@@ -300,11 +320,14 @@ class Answerer:
         for r in picks:
             good = [a for a, v in r['scores'].items() if v == 3 and (not axes or a in axes)] or \
                    sorted([a for a, v in r['scores'].items() if isinstance(v, (int, float)) and (not axes or a in axes)], key=lambda a: -r['scores'][a])[:2]
-            # 약점·지적은 뺀다: 평가표 이유는 "잘한 점. 약점: ..." 꼴이라 '약점' 앞까지만, 그리고 지적 문장('다만', '그러나'로 시작)도 자른다
-            cut = lambda t: re.split(r'\s*(?:약점|단점|다만,?|그러나|하지만|아쉬운|지적)\b', t)[0].strip()
-            lines.append(f"- {r['name']} ({r['sem']}학기): " + ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good))
-        return {'type': 'text', 'text': '[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. '
-                                        '왜 잘 썼는지는 이 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
+            # 약점·지적은 뺀다: 평가표 이유는 "잘한 점. 약점: ..." 꼴이라 '약점' 앞까지만, 남은 문장 중 지적하는 문장(오탈자·군더더기 등)도 뺀다
+            cut = lambda t: ' '.join(x for x in re.split(r'(?<=다\.)\s+', re.split(r'\s*(?:(?:약점|단점)\s*(?:은|는|:|으로)|다만,?|그러나|하지만|아쉬운|지적할)', t)[0].strip())
+                                     if not re.search(r'오탈자|오타|군더더기|아쉽|부족하|미흡|빠졌|없었다|근거가 약|근거 없|에 가깝다', x))
+            why = ' / '.join(f"{a}: {cut(r['reasons'].get(a, ''))}" for a in good) or '학회가 꼽은 리포트. 무엇이 좋은지는 아래 리포트 자료에서 찾아 설명한다'
+            lines.append(f"- {r['name']} ({r['sem']}학기): " + why)
+        head = ('[학회 평가표] 학회가 정규 리포트를 축별로 평가한 결과에서 고른 잘 쓴 리포트다. ' if axes else
+                '[학회 추천] 학회가 꼽은 잘 쓴 리포트다. 이 순서대로 소개하고, 평가 이유가 없는 리포트를 평가표에서 높게 평가받았다고 말하지 않는다. ')
+        return {'type': 'text', 'text': head + '왜 잘 썼는지는 평가 이유를 근거로, 숫자·인용은 아래 리포트 자료로 출처를 달아 설명한다. 잘한 점만 말하고 약점은 말하지 않는다.\n' + '\n'.join(lines)}
 
     def recommended(self, question, axis, n=REC_N):
         """질문의 축에서 학회가 잘한 리포트(rubric 3점) 청크 중 질문과 가장 맞는 n개.
