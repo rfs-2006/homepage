@@ -297,8 +297,15 @@ const chip = (mid, n) => { const m = SRC[mid] && SRC[mid][n]; return m ? `<butto
 
 // 답은 짧은 마크다운(굵게, 목록, 소제목)과 [1] 같은 출처 번호만 쓴다. 먼저 이스케이프하고 그 위에서만 바꾼다.
 // 목록은 공백 2칸 들여쓰기마다 한 단계 안으로 들어간다 (로직트리를 들여쓴 목록으로 그린다)
+// 출처 번호는 문장 끝(마침표 앞)으로 모은다. 같은 번호는 한 번만. 소수점(80.5%)은 문장 끝으로 보지 않는다
+const citeEnd = (s) => s.replace(/([.!?])\s*((?:\[\d{1,2}\]\s*)+)/g, (_, p, c) => c.trim() + p + (/\s$/.test(c) ? ' ' : ''))
+  .replace(/(?:[^.!?]|[.!?](?!\s|$))+(?:[.!?]+(?=\s|$))?/g, (seg) => {
+    const ns = [], p = (seg.match(/[.!?]+\s*$/) || [''])[0];
+    const body = seg.slice(0, seg.length - p.length).replace(/\s*\[(\d{1,2})\]/g, (_, n) => { if (!ns.includes(n)) ns.push(n); return ''; });
+    return ns.length ? body.trimEnd() + ' ' + ns.map((n) => `[${n}]`).join('') + p : seg;
+  });
 function render(text, mid) {
-  const inline = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(\d{1,2})\]/g, (_, n) => chip(mid, n));
+  const inline = (s) => esc(citeEnd(s)).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\[(\d{1,2})\]/g, (_, n) => chip(mid, n));
   const out = [], stack = [];
   const close = (depth) => { while (stack.length > depth) out.push(`</li></${stack.pop()}>`); };
   for (const raw of text.split('\n')) {
