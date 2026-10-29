@@ -53,7 +53,9 @@ def is_cap(l):
     t = l['text'].strip()
     if not t or SRC_RE.match(t):
         return False
-    return bool(CAP_RE.match(t)) or (l['font'].startswith('YGO') and l['size'] < 10.5 and len(t) < 90)
+    # YGO 글꼴은 캡션뿐 아니라 차트 축 숫자에도 쓰여서, 글자(한글·영문)가 4자 이상인 8.5pt 이상 줄만 캡션으로 본다
+    return bool(CAP_RE.match(t)) or (l['font'].startswith('YGO') and 8.5 <= l['size'] < 10.5 and len(t) < 90
+                                    and len(re.findall(r'[가-힣A-Za-z]', t)) >= 4)
 
 
 def exhibits(lines, H, page):
