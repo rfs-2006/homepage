@@ -7023,6 +7023,9 @@ class Component extends DCLogic {
 @media (max-width:640px){.rfs-bot{right:16px;bottom:calc(16px + env(safe-area-inset-bottom));height:48px;gap:0;padding-right:4px}.rfs-bot img{width:38px;height:38px}.rfs-bot span{display:none}}
 .rfs-chat{position:fixed;right:24px;bottom:calc(88px + env(safe-area-inset-bottom));z-index:61;width:min(420px,calc(100vw - 48px));height:min(680px,calc(100vh - 120px));background:#0E0B0B;border:1px solid rgba(244,241,235,.16);border-radius:16px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(0,0,0,.65);display:flex;flex-direction:column;transform-origin:bottom right;animation:rfsChatIn .28s cubic-bezier(.2,.8,.2,1)}
 .rfs-chat[hidden]{display:none}
+/* Polaris 창이 열리면 리포트 종이를 창 왼쪽 빈자리 가운데로 옮긴다 (창 폭 420 + 여백). 화면이 좁으면 종이를 줄인다 */
+.rpt-in{transition:margin .35s cubic-bezier(.2,.8,.2,1),max-width .35s cubic-bezier(.2,.8,.2,1)}
+@media (min-width:1240px){html.rc-open .rpt-in{max-width:min(930px,calc(100vw - 484px)) !important;margin-left:max(0px,calc((100vw - 468px - min(930px,calc(100vw - 484px))) / 2));margin-right:468px}}
 @keyframes rfsChatIn{from{opacity:0;transform:translateY(12px) scale(.96)}}
 .rc-bar{flex:none;display:flex;align-items:center;gap:8px;padding:11px 12px 11px 16px;color:#F4F1EB;font:500 13px 'Pretendard Variable',sans-serif;border-bottom:1px solid rgba(244,241,235,.12)}
 .rc-bar b{font-family:'Noto Serif KR',serif;font-weight:400;font-size:16px}
@@ -7049,18 +7052,20 @@ class Component extends DCLogic {
 // Polaris 버튼: 누르면 페이지를 떠나지 않고 오른쪽 아래에 챗봇 창(/chat/?embed)을 연다. 폰은 화면이 좁아 그냥 /chat/ 페이지로
 (function () {
   var box = document.getElementById('rfsChat'), btn = document.querySelector('.rfs-bot'), fr = box.querySelector('iframe');
-  var close = function () { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); };
+  // 창이 열린 동안 html.rc-open: 리포트 화면은 종이를 왼쪽으로 비켜 창이 리포트를 가리지 않게 한다
+  var mark = function () { document.documentElement.classList.toggle('rc-open', !box.hidden); };
+  var close = function () { box.hidden = true; btn.setAttribute('aria-expanded', 'false'); mark(); };
   btn.setAttribute('aria-controls', 'rfsChat'); btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', function (e) {
     if (window.innerWidth <= 640 || e.metaKey || e.ctrlKey || e.shiftKey) return;
     e.preventDefault();
     if (!fr.src) fr.src = '/chat/?embed';
-    box.hidden = !box.hidden; btn.setAttribute('aria-expanded', String(!box.hidden));
+    box.hidden = !box.hidden; btn.setAttribute('aria-expanded', String(!box.hidden)); mark();
     var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true;
   });
   box.querySelector('.rc-bar button').onclick = close;
   // 리포트 용어 카드 등에서 질문을 바로 보내며 창을 연다
-  window.rfsAsk = function (q) { fr.src = '/chat/?embed&send=1&q=' + encodeURIComponent(q); box.hidden = false; btn.setAttribute('aria-expanded', 'true'); var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true; };
+  window.rfsAsk = function (q) { fr.src = '/chat/?embed&send=1&q=' + encodeURIComponent(q); box.hidden = false; btn.setAttribute('aria-expanded', 'true'); mark(); var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true; };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
 })();
 // 챗봇이 있는 줄 모를 수 있어서 말풍선을 띄운다. 탭(세션)마다 한 번, 들어온 지 4초 뒤 (인트로가 그보다 길면 끝난 뒤). 닫거나 누르면 이 탭에서는 다시 안 띄운다
