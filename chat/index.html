@@ -82,10 +82,10 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 .hero.p3d canvas{opacity:1}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
 .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 15%,rgba(14,11,11,0) 22%,rgba(14,11,11,.35) 48%,rgba(14,11,11,.72) 68%,rgba(14,11,11,.9) 82%,var(--black) 97%)}
 .intro{max-width:760px;width:100%;margin:auto auto 0;position:relative;text-align:center;padding:0 16px clamp(20px,4.5vh,48px)}
-.intro .lab{color:rgba(244,241,235,.6)}
+.intro .lab{color:rgba(244,241,235,.8)}
 .intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:clamp(34px,5.4vh,50px);line-height:1.25;margin:clamp(8px,1.4vh,14px) 0 clamp(10px,1.6vh,16px)}
 .intro h1 em{font-style:normal;color:rgba(244,241,235,.45)}
-.intro p{color:rgba(244,241,235,.62);font-size:14.5px;line-height:1.8;margin:0 auto clamp(18px,3.2vh,32px);max-width:560px}
+.intro p{color:rgba(244,241,235,.92);font-size:14.5px;line-height:1.8;margin:0 auto clamp(18px,3.2vh,32px);max-width:560px}
 .box{background:#F8F6F1;border-radius:10px;padding:12px 12px 10px 18px;text-align:left;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);display:flex;align-items:flex-end;gap:10px}
 .box textarea{flex:1;border:0;background:none;resize:none;height:56px;max-height:160px;padding:6px 0;font:inherit;font-weight:300;font-size:16px;color:var(--text);outline:none}
 .send{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--text);color:#fff;font-size:16px;cursor:pointer}
@@ -746,12 +746,14 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   // 대화에서 첫 화면으로 돌아오면 다시 그린다
   new MutationObserver(wake).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 })();
-// ?q=: 리포트 용어 카드의 'POLARIS에게 더 물어보기'에서 넘어온 질문을 입력창에 채워 둔다 (보내기는 직접)
+// ?q=: 리포트 용어 카드의 'POLARIS에게 더 물어보기'에서 넘어온 질문
 (() => {
-  const q = new URLSearchParams(location.search).get('q'); const t = document.getElementById('t0');
+  const sp = new URLSearchParams(location.search), q = sp.get('q'), t = document.getElementById('t0');
   if (!q || !t) return;
-  t.value = q.slice(0, 1000); t.focus(); t.setSelectionRange(t.value.length, t.value.length);
-  history.replaceState(null, '', location.pathname + location.hash);
+  // send=1(사이트 오른쪽 Polaris 창에서 연 경우)이면 바로 보내고, 아니면 입력창에 채워만 둔다
+  if (sp.get('send') === '1') setTimeout(() => ask(q.slice(0, 1000)), 200);
+  else { t.value = q.slice(0, 1000); t.focus(); t.setSelectionRange(t.value.length, t.value.length); }
+  history.replaceState(null, '', location.pathname + (sp.has('embed') ? '?embed' : '') + location.hash);
 })();
 </script>
 </body>

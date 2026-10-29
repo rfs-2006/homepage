@@ -1631,27 +1631,19 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 /* 리포트 1쪽 용어 풀이: 점선 밑줄 → 눌러서 설명 카드 (모바일은 아래에서 올라오는 시트) */
 .rpt-paper .gl{text-decoration:underline solid rgba(143,170,220,0.85);text-decoration-thickness:2.5px;text-underline-offset:4px;text-decoration-skip-ink:none;cursor:pointer;border-radius:2px;transition:background .15s ease}
 .rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.25)}   /* 용어 풀이: 연한 남색 실선 밑줄(글자색은 본문 그대로). 누르면 설명 카드 */
-/* 리포트 오른쪽 따라오는 박스 (화면 1400px 이상). 종이는 가운데 그대로 두고, 종이 바깥 오른쪽 빈자리에 붙인다 */
-.rpt-float{display:none}
-@media (min-width:1400px){.rpt-cols{position:relative}.rpt-float{position:absolute;top:0;bottom:0;left:calc(100% + 26px);width:220px}
-  .rpt-float{display:block;margin-top:58px}.rpt-float-in{position:sticky;top:104px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .3s ease,transform .3s ease}
-  .rpt-float.show .rpt-float-in{opacity:1;transform:none;pointer-events:auto}}
-.rf-facts{background:#001F5F;color:#FFF;padding:2px 5px}.rf-facts>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:33px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,.55);font-size:11px}
-.rf-facts span{font-weight:300}.rf-facts b{font-family:'RFS Report Dotum',sans-serif;font-size:15.5px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
 .rf-sd-h{margin:16px 0 0;padding-bottom:3px;border-bottom:1px solid #595959;font-family:'RFS Report Dotum',sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.03em;color:#000}
 .rf-sd{width:100%;border-collapse:collapse;table-layout:fixed;font-family:'RFS Report Dotum',sans-serif;font-size:11px;font-weight:300;line-height:1.25;letter-spacing:-0.05em;color:#000;font-variant-numeric:tabular-nums}
 .rf-sd td{padding:2.5px 0;white-space:nowrap;overflow:hidden;text-overflow:clip;vertical-align:top}.rf-sd td.r{text-align:right}
 .rf-sd tr.sep td{border-top:1px solid #595959}.rf-sd tr.hd td{background:#F2F2F2;border-top:1px solid #595959}.rf-sd tr.last td{border-bottom:1px solid #595959}
 .rf-sd tr.hd td+td,.rf-sd tr.vals td+td{border-left:1px solid #D0CECE;padding-left:4px}
 .rf-sd-chart{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;margin-top:6px;padding-bottom:6px;border-bottom:1px solid #595959}
-.rf-dl{display:block;margin-top:12px;padding:11px 0;text-align:center;background:#001F5F;color:#FFF;font-size:11px;letter-spacing:.12em;font-weight:600}
-.rf-dl:hover{background:#203864}
 /* 리포트 전문: PDF 비율 그대로 왼쪽 220px에 요약 메모, 오른쪽에 본문(오른쪽 여백 35px). 차트는 전체 폭 */
 .rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
 .rf-h{margin:56px 35px 18px 220px;font:500 27px/1.3 'RFS Report Dotum',sans-serif;letter-spacing:-0.01em;color:#000}
 .rf-sub{margin:30px 35px 10px 220px;font:700 18px/1.45 'RFS Report Dotum',sans-serif;color:#000}
 .rf-toc{width:min(590px,100%);margin:40px auto 24px;padding:0 0 40px;border-bottom:1px solid #D0CECE;font-family:'RFS Report Dotum',sans-serif}   /* PDF 2쪽 CONTENTS 모양: 가운데 제목, 점선 리더, 쪽 번호 */
-.rf-toc-h{text-align:center;font-size:22px;font-weight:700;color:#203864;letter-spacing:0;margin-bottom:22px}
+.rf-toc-h{text-align:center;font-size:22px;font-weight:700;color:#203864;letter-spacing:0;margin-bottom:6px}
+.rf-toc-note{text-align:center;margin:0 0 26px;font-size:12.5px;color:#6B7684}
 .rf-toc a{display:flex;align-items:baseline;gap:0;color:#000;text-decoration:none;line-height:1.45}
 .rf-toc a i{flex:1;min-width:24px;margin:0 4px;border-bottom:2px dotted #8C8C8C;transform:translateY(-4px)}
 .rf-toc a em{font-style:normal;font-weight:300;font-size:14.5px;font-variant-numeric:tabular-nums;min-width:18px;text-align:right}
@@ -2291,7 +2283,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ rHasFull }}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
             <div class="rf">
-              <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-toc" aria-label="목차"><div class="rf-toc-h">CONTENTS</div><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" onClick="{{ t.go }}"><span>{{ t.t }}</span><i></i><em>{{ t.pg }}</em></a></sc-for></nav></sc-if>
+              <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-toc" aria-label="목차"><div class="rf-toc-h">CONTENTS</div><p class="rf-toc-note">제목을 누르면 그 장으로 바로 이동해요</p><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" onClick="{{ t.go }}"><span>{{ t.t }}</span><i></i><em>{{ t.pg }}</em></a></sc-for></nav></sc-if>
               <sc-for list="{{ rFull }}" as="b" hint-placeholder-count="6">
                 <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3 class="rf-h" id="{{ b.id }}">{{ b.text }}</h3></sc-if>
                 <sc-if value="{{ b.isSub }}" hint-placeholder-val="{{ false }}"><h4 class="rf-sub" id="{{ b.id }}">{{ b.text }}</h4></sc-if>
@@ -2328,13 +2320,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </sc-if>
       </div>
       </div>
-      <!-- 오른쪽 따라오는 박스: 투자의견·목표주가, PDF. 1쪽 정보 박스가 화면에서 사라지면 나타난다 -->
-      <aside class="rpt-float {{ rFloatCls }}">
-        <div class="rpt-float-in">
-          <div class="rf-facts"><sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4"><div><span>{{ f.label }}</span><b>{{ f.value }}</b></div></sc-for></div>
-          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
-        </div>
-      </aside>
       </div>
     </div>
   </main>
@@ -3579,7 +3564,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261029e';
+const DATA_VER = '20261029f';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 const FULL_REPORTS = ['sanil'];
 const REPORTS = [
@@ -4962,12 +4947,6 @@ class Component extends DCLogic {
       this.glClose();
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.glClose(); });
-    // 리포트 화면: 1쪽 오른쪽 정보 박스가 화면 위로 지나가면 바깥 오른쪽 따라오는 박스를 보여 준다
-    window.addEventListener('scroll', () => {
-      const side = this.state.page === 'report' || document.querySelector('.rpt') ? document.querySelector('.rpt-paper .detail-side') : null;
-      const on = !!side && side.getBoundingClientRect().bottom < 80;
-      if (on !== !!this.state.rptFloat) this.setState({ rptFloat: on });
-    }, { passive: true });
     window.addEventListener('hashchange', () => this.glClose());
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
@@ -5176,7 +5155,9 @@ class Component extends DCLogic {
     const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     pop.innerHTML = '<i class="gl-h"></i><span class="gl-k">' + esc(e.k) + '</span><button class="gl-x" aria-label="닫기">×</button><b class="gl-t">' + esc(e.t) + '</b><p class="gl-d">' + esc(e.d) + '</p>'
       + (e.c ? '<div class="gl-c"><small>이 리포트에서는</small><p>' + esc(e.c) + '</p></div>' : '')
-      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + '가 ' + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
+      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + (/[가-힣]$/.test(e.t) && (e.t.charCodeAt(e.t.length - 1) - 0xAC00) % 28 ? '이 ' : '가 ') + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
+    // 'POLARIS에게 더 물어보기': 넓은 화면은 페이지를 떠나지 않고 오른쪽 Polaris 창에서 바로 물어본다 (폰은 /chat/ 으로)
+    pop.querySelector('.gl-a').onclick = (ev) => { if (window.rfsAsk && window.innerWidth > 640 && !ev.metaKey && !ev.ctrlKey) { ev.preventDefault(); this.glClose(); window.rfsAsk(decodeURIComponent(ev.currentTarget.href.split('?q=')[1])); } };
     document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); el.classList.add('on');
     const mob = window.innerWidth < 720; pop.className = mob ? 'sheet' : '';
     let dim = document.getElementById('gl-dim');
@@ -6821,7 +6802,6 @@ class Component extends DCLogic {
           segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '300', c: 'inherit', parts: gl(g.t) })) })) })); })(),
       rHasFull: FULL_REPORTS.includes(active.id) && (this.loadFull(active.id), true),
       rFullShown: !!(s.full && s.full[active.id]),
-      rFloatCls: s.rptFloat ? 'show' : '',
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
       rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), href: '#research/' + active.id,
@@ -7079,6 +7059,8 @@ class Component extends DCLogic {
     var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true;
   });
   box.querySelector('.rc-bar button').onclick = close;
+  // 리포트 용어 카드 등에서 질문을 바로 보내며 창을 연다
+  window.rfsAsk = function (q) { fr.src = '/chat/?embed&send=1&q=' + encodeURIComponent(q); box.hidden = false; btn.setAttribute('aria-expanded', 'true'); var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true; };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
 })();
 // 챗봇이 있는 줄 모를 수 있어서 말풍선을 띄운다. 탭(세션)마다 한 번, 들어온 지 4초 뒤 (인트로가 그보다 길면 끝난 뒤). 닫거나 누르면 이 탭에서는 다시 안 띄운다
