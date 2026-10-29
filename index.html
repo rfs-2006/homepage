@@ -1632,9 +1632,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rpt-paper .gl{text-decoration:underline solid rgba(143,170,220,0.85);text-decoration-thickness:2.5px;text-underline-offset:4px;text-decoration-skip-ink:none;cursor:pointer;border-radius:2px;transition:background .15s ease}
 .rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.25)}   /* 용어 풀이: 연한 남색 실선 밑줄(글자색은 본문 그대로). 누르면 설명 카드 */
 @media (max-height:860px){.rpt-float .rf-sd-chart,.rpt-float .rf-sd-h2{display:none}}
-/* 리포트 오른쪽 따라오는 박스 (화면 1100px 이상). 종이는 그대로 두고 옆에 한 칸 더 */
+/* 리포트 오른쪽 따라오는 박스 (화면 1400px 이상). 종이는 가운데 그대로 두고, 종이 바깥 오른쪽 빈자리에 붙인다 */
 .rpt-float{display:none}
-@media (min-width:1100px){.rpt-in{max-width:1200px !important}.rpt-cols{display:grid;grid-template-columns:minmax(0,860px) 220px;gap:26px;justify-content:center}
+@media (min-width:1400px){.rpt-cols{position:relative}.rpt-float{position:absolute;top:0;bottom:0;left:calc(100% + 26px);width:220px}
   .rpt-float{display:block;margin-top:58px}.rpt-float-in{position:sticky;top:104px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .3s ease,transform .3s ease}
   .rpt-float.show .rpt-float-in{opacity:1;transform:none;pointer-events:auto}}
 .rf-facts{background:#001F5F;color:#FFF;padding:2px 5px}.rf-facts>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:33px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,.55);font-size:11px}
