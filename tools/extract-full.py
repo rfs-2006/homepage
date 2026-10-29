@@ -267,8 +267,17 @@ def extract(rid, pdf):
                 cells = [''] + cells
             stock['rows'].append(cells)
     if sp:
-        lab = [l for l in ls0 if l['y0'] > sp['y1'] and l['size'] < 6]
-        y1 = max(l['y1'] for l in lab) + 3 if lab else sp['y1'] + 130
+        # 차트 축 글씨(7.5pt 미만)가 이어지는 데까지만. 그 아래 재무 요약 표 제목·Research Team(8~9pt)이나 큰 빈칸(80pt)에서 멈춘다
+        below = sorted((l for l in ls0 if l['y0'] > sp['y1']), key=lambda l: l['y0'])
+        stop = next((l['y0'] for l in below if l['y0'] > sp['y1'] + 10 and l['size'] >= 7.5), None)   # 표 제목·Research Team
+        y1 = None
+        for l in below:
+            if (stop and l['y0'] > stop - 4) or l['y0'] > (y1 or sp['y1']) + 80:   # 표 제목과 같은 줄의 단위 글씨도 뺀다
+                break
+            y1 = max(y1 or 0, l['y1'])
+        y1 = y1 + 3 if y1 else sp['y1'] + 130   # 축 글씨가 없으면(차트가 통째로 그림) 130pt
+        if stop:
+            y1 = min(y1, stop - 2)
         stock['chart'] = save(p0, (sp['x0'] - 4, sp['y1'] + 2, p0.rect.width - 10, y1))
 
     # 본문 왼쪽 끝: 9~10.5pt 긴 줄(30자 이상)이 가장 많이 시작하는 x. 양식마다 다르다(145, 136, 170 등)
