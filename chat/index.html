@@ -737,6 +737,13 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   // 대화에서 첫 화면으로 돌아오면 다시 그린다
   new MutationObserver(wake).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 })();
+// ?q=: 리포트 용어 카드의 'POLARIS에게 더 물어보기'에서 넘어온 질문을 입력창에 채워 둔다 (보내기는 직접)
+(() => {
+  const q = new URLSearchParams(location.search).get('q'); const t = document.getElementById('t0');
+  if (!q || !t) return;
+  t.value = q.slice(0, 1000); t.focus(); t.setSelectionRange(t.value.length, t.value.length);
+  history.replaceState(null, '', location.pathname + location.hash);
+})();
 </script>
 </body>
 </html>
