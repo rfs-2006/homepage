@@ -180,8 +180,10 @@ def extract(rid, pdf):
             txt = ' '.join(x['text'].strip() for x in p)
             if f['size'] > 18:
                 items.append({'y': f['y0'], 'b': {'h': txt}})
-            elif f['size'] > 11:
+            elif f['size'] > 11.4:
                 items.append({'y': f['y0'], 'b': {'sub': txt}})
+            elif f['size'] > 10.4:                # 2-(1) 같은 한 단계 아래 소제목 (PDF 10.9pt)
+                items.append({'y': f['y0'], 'b': {'subm': txt}})
             elif f['x0'] >= 174 and f['x0'] < 200 and items and ('h' in items[-1]['b'] or 'sub' in items[-1]['b'] and len(items) > 1 and 'h' in items[-2]['b']):
                 items.append({'y': f['y0'], 'b': {'lead': segs_of(p)}})
             elif len(p) == 1 and all(b for _, b in f['spans'] if _.strip()) and len(txt) < 45 and f['x0'] < 200:
@@ -222,7 +224,21 @@ def extract(rid, pdf):
             prev['p'].extend(b['p'])
             continue
         merged.append(b)
-    return {'stock': stock, 'blocks': merged}
+    # 2쪽 목차: 항목마다 본문의 어느 제목으로 가는지(to = blocks 번호)
+    toc = []
+    norm = lambda t: re.sub(r'\s+', '', t)
+    heads = [(i, b.get('h') or b.get('sub') or b.get('subm') or b.get('sub2')) for i, b in enumerate(merged) if any(k in b for k in ('h', 'sub', 'subm', 'sub2'))]
+    if len(doc) > 1:
+        ls1 = [l for l in lines_of(doc[1]) if 45 < l['y0'] < doc[1].rect.height - 50 and l['size'] >= 10.4 and 'CONTENTS' not in l['text']]
+        x0s = sorted({round(l['x0']) for l in ls1})
+        for l in ls1:
+            t = re.sub(r'[·.…\s]*\d*\s*$', '', l['text']).strip()
+            if not t:
+                continue
+            lvl = min(2, sum(1 for x in x0s if x < round(l['x0']) - 5))
+            to = next((i for i, h in heads if norm(t) in norm(h) or norm(h) in norm(t)), None)
+            toc.append({'t': t, 'lvl': lvl, 'to': to})
+    return {'stock': stock, 'toc': toc, 'blocks': merged}
 
 
 if __name__ == '__main__':
