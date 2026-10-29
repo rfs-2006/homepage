@@ -14,7 +14,7 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'assets', 'reports', 'full')
 ZOOM = 3          # 차트 이미지 해상도 (PDF 1pt = 3px)
-BODY_X = 165      # 이 x보다 오른쪽이 본문, 왼쪽이 요약 메모
+BODY_X = 165      # 본문 왼쪽 끝 기본값. 리포트마다 실제 본문 줄의 x를 재서 바꾼다(body_x). 그보다 왼쪽이 요약 메모
 
 
 def load_reports():
@@ -144,6 +144,8 @@ def segs_of(ls):
 
 def extract(rid, pdf):
     doc = pymupdf.open(os.path.join(ROOT, pdf))
+    import shutil
+    shutil.rmtree(os.path.join(OUT, rid), ignore_errors=True)   # 다시 뽑을 때 예전 그림이 남지 않게
     os.makedirs(os.path.join(OUT, rid), exist_ok=True)
     blocks, fig_n = [], 0
 
@@ -185,6 +187,11 @@ def extract(rid, pdf):
         y1 = max(l['y1'] for l in lab) + 3 if lab else sp['y1'] + 130
         stock['chart'] = save(p0, (sp['x0'] - 4, sp['y1'] + 2, p0.rect.width - 10, y1))
 
+    # 본문 왼쪽 끝: 9~10.5pt 긴 줄(30자 이상)이 가장 많이 시작하는 x. 양식마다 다르다(145, 136, 170 등)
+    import collections
+    xs = collections.Counter(round(l['x0'] / 4) * 4 for p in range(1, len(doc)) for l in lines_of(doc[p])
+                             if 9.3 <= l['size'] <= 10.6 and len(l['text'].strip()) >= 30)
+    bx = (xs.most_common(1)[0][0] if xs else BODY_X) - 2
     # 2쪽이 목차(CONTENTS)면 본문은 3쪽부터, 아니면(예전 양식) 2쪽부터
     has_toc = len(doc) > 1 and bool(re.search(r'CONTENTS|목\s*차', doc[1].get_text()[:400]))
     for pno in range(2 if has_toc else 1, len(doc)):
@@ -199,8 +206,8 @@ def extract(rid, pdf):
             if f:
                 blocks.append({'fig': [dict(f, no='', cap='', unit='', src_t='')]})
             continue
-        body = sorted([l for l in text if l['x0'] >= BODY_X - 5], key=lambda l: (round(l['y0']), l['x0']))
-        notes = sorted([l for l in text if l['x1'] < BODY_X], key=lambda l: l['y0'])
+        body = sorted([l for l in text if l['x0'] >= bx - 5], key=lambda l: (round(l['y0']), l['x0']))
+        notes = sorted([l for l in text if l['x1'] < bx], key=lambda l: l['y0'])
         # 요약 메모: 가까운 줄끼리 묶는다
         ng = []
         for l in notes:
@@ -213,7 +220,7 @@ def extract(rid, pdf):
         paras = []
         for l in body:
             p = paras[-1] if paras else None
-            if p and l['y0'] - p[-1]['y1'] < 7 and abs(l['size'] - p[-1]['size']) < 1 and (l['x0'] < 200) == (p[-1]['x0'] < 200 or p[-1]['x0'] >= 174):
+            if p and l['y0'] - p[-1]['y1'] < 7 and abs(l['size'] - p[-1]['size']) < 1 and (l['x0'] < bx + 30) == (p[-1]['x0'] < bx + 30 or p[-1]['x0'] >= bx + 5):
                 p.append(l)
             else:
                 paras.append([l])
@@ -227,11 +234,11 @@ def extract(rid, pdf):
                 items.append({'y': f['y0'], 'b': {'sub': txt}})
             elif f['size'] > 10.4:                # 2-(1) 같은 한 단계 아래 소제목 (PDF 10.9pt)
                 items.append({'y': f['y0'], 'b': {'subm': txt}})
-            elif f['x0'] >= 174 and f['x0'] < 200 and items and ('h' in items[-1]['b'] or 'sub' in items[-1]['b'] and len(items) > 1 and 'h' in items[-2]['b']):
+            elif f['x0'] >= bx + 5 and f['x0'] < bx + 30 and items and ('h' in items[-1]['b'] or 'sub' in items[-1]['b'] and len(items) > 1 and 'h' in items[-2]['b']):
                 items.append({'y': f['y0'], 'b': {'lead': segs_of(p)}})
-            elif len(p) == 1 and all(b for _, b in f['spans'] if _.strip()) and len(txt) < 45 and f['x0'] < 200:
+            elif len(p) == 1 and all(b for _, b in f['spans'] if _.strip()) and len(txt) < 45 and f['x0'] < bx + 30:
                 items.append({'y': f['y0'], 'b': {'sub2': txt}})
-            elif f['x0'] > 200:
+            elif f['x0'] > bx + 30:
                 items.append({'y': f['y0'], 'b': {'li': segs_of(p)}})
             else:
                 items.append({'y': f['y0'], 'b': {'p': segs_of(p)}, 'y1': p[-1]['y1']})
