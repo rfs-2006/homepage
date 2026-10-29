@@ -281,7 +281,7 @@ def extract(rid, pdf):
     for pno in range(2 if has_toc else 1, len(doc)):
         page = doc[pno]
         H = page.rect.height
-        lines = [l for l in lines_of(page) if 45 < l['y0'] < H - 50 and 'Securities Research' not in l['text'] and not re.search(r'R\.F\.S\.?\s*Research Team\s*\d+\s*[|│]', l['text'])]
+        lines = [l for l in lines_of(page) if 45 < l['y0'] < H - 50 and 'Securities Research' not in l['text'] and not re.search(r'R\.F\.S\.?\s*Research Team\s*\d+\s*[|│Ⅰ丨l]', l['text'])]
         ex = exhibits(lines, H, page)
         boxes = [e['box'] for e in ex]
         text = [l for l in lines if not inside(l, boxes) and l['size'] >= 9.3]
