@@ -1639,12 +1639,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
   .rpt-float.show .rpt-float-in{opacity:1;transform:none;pointer-events:auto}}
 .rf-facts{background:#001F5F;color:#FFF;padding:2px 5px}.rf-facts>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:33px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,.55);font-size:11px}
 .rf-facts span{font-weight:300}.rf-facts b{font-family:'RFS Report Dotum',sans-serif;font-size:15.5px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
-.rf-sd-h{margin:16px 0 4px;padding-bottom:4px;border-bottom:1.5px solid #404040;font:700 12.5px 'RFS Report Dotum',sans-serif;color:#1A1A1A}
-.rf-sd{width:100%;border-collapse:collapse;font:300 11.5px/1.45 'RFS Report Dotum',sans-serif;color:#1A1A1A;font-variant-numeric:tabular-nums}
-.rf-sd th{font-weight:300;text-align:left;padding:3px 0;white-space:nowrap;vertical-align:top}.rf-sd td{text-align:right;padding:3px 0 3px 8px}
-.rf-sd tr.cont th,.rf-sd tr.cont td{padding-top:0}.rf-sd th{white-space:normal;padding-right:6px}.rf-sd td{white-space:nowrap}.rf-sd td span{display:inline-block;margin-left:8px}.rf-sd td span:first-child{margin-left:0}
-.rf-sd tr.multi th{width:0}.rf-sd tr.multi td{display:grid;grid-template-columns:repeat(3,auto);justify-content:end;column-gap:9px}.rf-sd tr.multi td span{margin:0}
-.rf-sd-chart{display:block;width:100%;height:auto;max-height:140px;object-fit:contain;margin-top:4px}
+.rf-sd-h{margin:16px 0 0;padding-bottom:3px;border-bottom:1px solid #595959;font-family:'RFS Report Dotum',sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.03em;color:#000}
+.rf-sd{width:100%;border-collapse:collapse;table-layout:fixed;font-family:'RFS Report Dotum',sans-serif;font-size:11px;font-weight:300;line-height:1.25;letter-spacing:-0.05em;color:#000;font-variant-numeric:tabular-nums}
+.rf-sd td{padding:2.5px 0;white-space:nowrap;overflow:hidden;text-overflow:clip;vertical-align:top}.rf-sd td.r{text-align:right}
+.rf-sd tr.sep td{border-top:1px solid #595959}.rf-sd tr.hd td{background:#F2F2F2;border-top:1px solid #595959}.rf-sd tr.last td{border-bottom:1px solid #595959}
+.rf-sd tr.hd td+td,.rf-sd tr.vals td+td{border-left:1px solid #D0CECE;padding-left:4px}
+.rf-sd-chart{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;margin-top:6px;padding-bottom:6px;border-bottom:1px solid #595959}
 .rf-dl{display:block;margin-top:12px;padding:11px 0;text-align:center;background:#001F5F;color:#FFF;font-size:11px;letter-spacing:.12em;font-weight:600}
 .rf-dl:hover{background:#203864}
 /* 리포트 전문: PDF처럼 왼쪽 150px에 요약 메모, 오른쪽에 본문. 차트는 전체 폭 */
@@ -2256,7 +2256,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 </div>
               </sc-for>
             </div>
-            <div style="padding:14px 0 0">
+            <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
+              <div class="rf-sd-h" style="margin-top:22px">Stock Data</div>
+              <table class="rf-sd"><colgroup><col style="width:37%"><col style="width:21%"><col style="width:21%"><col style="width:21%"></colgroup><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="2"><td colspan="{{ c.cs }}" class="{{ c.cls }}">{{ c.t }}</td></sc-for></tr></sc-for></table>
+              <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
+            </sc-if>
+            <div style="padding:18px 0 0">
               <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}">
                 <a class="btn btn-solid" href="{{ rPdfHref }}" download="" style="display:block;padding:12px 0;font-size:11px;background:#001F5F;border-color:#001F5F">DOWNLOAD PDF ↓</a>
                 <div style="font-size:12px;color:rgba(26,26,26,0.6);margin-top:8px;text-align:center;font-variant-numeric:tabular-nums">{{ rPdfMeta }}</div>
@@ -2265,11 +2270,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 <span style="display:block;text-align:center;border:1px solid #D0CECE;color:rgba(26,26,26,0.65);padding:13px 0;font-size:14px;font-weight:600">PDF 준비 중 [교체]</span>
               </sc-if>
             </div>
-            <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
-              <div class="rf-sd-h" style="margin-top:22px">Stock Data</div>
-              <table class="rf-sd"><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><th>{{ r.label }}</th><td><sc-for list="{{ r.vals }}" as="v" hint-placeholder-count="1"><span>{{ v }}</span></sc-for></td></tr></sc-for></table>
-              <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
-            </sc-if>
           </aside>
           <div class="rpt-meta" style="grid-column:2;grid-row:2;align-self:start">
             <div style="margin-top:0;font-size:13px;font-weight:700;letter-spacing:0.06em">Report</div>
@@ -2320,12 +2320,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <aside class="rpt-float {{ rFloatCls }}">
         <div class="rpt-float-in">
           <div class="rf-facts"><sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4"><div><span>{{ f.label }}</span><b>{{ f.value }}</b></div></sc-for></div>
-          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
           <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
             <div class="rf-sd-h">Stock Data</div>
-            <table class="rf-sd"><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><th>{{ r.label }}</th><td><sc-for list="{{ r.vals }}" as="v" hint-placeholder-count="1"><span>{{ v }}</span></sc-for></td></tr></sc-for></table>
+            <table class="rf-sd"><colgroup><col style="width:37%"><col style="width:21%"><col style="width:21%"><col style="width:21%"></colgroup><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><sc-for list="{{ r.cells }}" as="c" hint-placeholder-count="2"><td colspan="{{ c.cs }}" class="{{ c.cls }}">{{ c.t }}</td></sc-for></tr></sc-for></table>
             <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h rf-sd-h2">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
           </sc-if>
+          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
         </div>
       </aside>
       </div>
@@ -6815,7 +6815,11 @@ class Component extends DCLogic {
       rFloatCls: s.rptFloat ? 'show' : '',
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
-        return st.rows.map((r) => ({ label: r[0], vals: r.slice(1), cls: (r[0] ? '' : 'cont') + (r.length > 3 ? ' multi' : '') })); })(),
+        // PDF 1쪽 Stock Data 표 모양 그대로: 이름 | 값(오른쪽), 주요주주는 이름 | 주주 | 지분, 주가상승률은 회색 머리줄 + 값 줄
+        return st.rows.map((r, i) => { const nx = st.rows[i + 1] || [], pv = st.rows[i - 1] || [];
+          if (r.length >= 4) { const head = !!r[0]; return { cls: head ? 'hd' : 'vals' + (nx.length >= 4 && !nx[0] ? '' : ' last'), cells: [{ t: r[0], cs: 1, cls: '' }, ...r.slice(1, 4).map((t) => ({ t, cs: 1, cls: '' }))] }; }
+          if (r.length === 3) return { cls: r[0] && pv.length !== 3 ? 'sep' : '', cells: [{ t: r[0], cs: 1, cls: '' }, { t: r[1], cs: 2, cls: '' }, { t: r[2], cs: 1, cls: 'r' }] };
+          return { cls: '', cells: [{ t: r[0], cs: 2, cls: '' }, { t: r.slice(1).join(' '), cs: 2, cls: 'r' }] }; }); })(),
       rHasStockChart: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart),
       rStockChart: (() => { const c = s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart; return c ? '/assets/reports/full/' + c.src + '?v=' + DATA_VER : ''; })(),
       rFull: (() => { const B = s.full && s.full[active.id] && s.full[active.id].blocks; if (!B) return []; const gl = this.glSplit(active.id);
