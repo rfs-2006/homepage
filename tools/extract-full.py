@@ -6,6 +6,7 @@
 #   1쪽 오른쪽 Stock Data 표(글)와 Stock Price 차트(그림)도 함께 → {stock, blocks}
 #
 # 사용법: 사이트 루트에서  python3 tools/extract-full.py sanil [다른 id ...]   (pymupdf, pillow 필요)
+# 다시 뽑았으면 index.html의 DATA_VER를 올리고 FULL_REPORTS에 id를 넣는다 (/assets/는 브라우저가 하루 동안 다시 받지 않는다)
 import io, json, os, re, sys
 import pymupdf
 from PIL import Image

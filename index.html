@@ -3571,6 +3571,8 @@ function routeFromLocation() {
   if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) return { page: h };
   return { page: 'home' };
 }
+// 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
+const DATA_VER = '20261029b';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 const FULL_REPORTS = ['sanil'];
 const REPORTS = [
@@ -5132,15 +5134,15 @@ class Component extends DCLogic {
     if (this._p1req) return; this._p1req = true;
     const done = () => document.documentElement.classList.add('rp1');
     setTimeout(done, 6000);
-    fetch('/assets/reports/glossary.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ gl: j }); }, () => {});
-    fetch('/assets/reports/page1.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
+    fetch('/assets/reports/glossary.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ gl: j }); }, () => {});
+    fetch('/assets/reports/page1.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
   }
 
   // 리포트 전문(assets/reports/full/<id>.json)은 그 리포트를 처음 열 때 받는다
   loadFull(id) {
     this._fullReq = this._fullReq || {};
     if (this._fullReq[id]) return; this._fullReq[id] = true;
-    fetch('/assets/reports/full/' + id + '.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ full: { ...(this.state.full || {}), [id]: j } }); }, () => {});
+    fetch('/assets/reports/full/' + id + '.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ full: { ...(this.state.full || {}), [id]: j } }); }, () => {});
   }
 
   // 리포트 1쪽 용어 풀이 (assets/reports/glossary.json). 리포트마다 같은 용어는 처음 나온 곳에만 밑줄을 친다
@@ -6815,12 +6817,12 @@ class Component extends DCLogic {
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
         return st.rows.map((r) => ({ label: r[0], vals: r.slice(1), cls: (r[0] ? '' : 'cont') + (r.length > 3 ? ' multi' : '') })); })(),
       rHasStockChart: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart),
-      rStockChart: (() => { const c = s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart; return c ? '/assets/reports/full/' + c.src : ''; })(),
+      rStockChart: (() => { const c = s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart; return c ? '/assets/reports/full/' + c.src + '?v=' + DATA_VER : ''; })(),
       rFull: (() => { const B = s.full && s.full[active.id] && s.full[active.id].blocks; if (!B) return []; const gl = this.glSplit(active.id);
         const segs = (a) => a.map((g) => ({ w: g.b ? '700' : '300', parts: gl(g.t) }));
         const no = { isH: false, isSub: false, isSub2: false, isText: false, isFig: false, text: '', cls: '', segs: [], figs: [], hasNote: false, note: '' };
         return B.map((b) => b.h ? { ...no, isH: true, text: b.h } : b.sub ? { ...no, isSub: true, text: b.sub } : b.sub2 ? { ...no, isSub2: true, text: b.sub2 }
-          : b.fig ? { ...no, isFig: true, cls: 'rf-figs' + (b.fig.length > 1 ? ' two' : ''), figs: b.fig.map((f) => ({ src: '/assets/reports/full/' + f.src, w: f.w, h: f.h, no: f.no, cap: f.cap, unit: f.unit, srcT: f.src_t, alt: (f.no + ' ' + f.cap).trim() || '표' })) }
+          : b.fig ? { ...no, isFig: true, cls: 'rf-figs' + (b.fig.length > 1 ? ' two' : ''), figs: b.fig.map((f) => ({ src: '/assets/reports/full/' + f.src + '?v=' + DATA_VER, w: f.w, h: f.h, no: f.no, cap: f.cap, unit: f.unit, srcT: f.src_t, alt: (f.no + ' ' + f.cap).trim() || '표' })) }
           : { ...no, isText: true, cls: b.lead ? 'rf-lead' : b.li ? 'rf-li' : 'rf-p', segs: segs(b.lead || b.li || b.p), hasNote: !!b.note, note: (b.note || []).join('\n\n') }); })(),
       rHasFund: !!(s.p1 && s.p1._fund && s.p1._fund[active.id]),
       rFund: (() => { const f = s.p1 && s.p1._fund && s.p1._fund[active.id]; return f ? { unit: f.unit, cols: f.cols, rows: f.rows.map((r) => ({ label: r[0], vals: r.slice(1) })) } : { unit: '', cols: [], rows: [] }; })(),
