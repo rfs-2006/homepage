@@ -1650,10 +1650,16 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
 .rf-h{margin:56px 35px 18px 220px;font:500 27px/1.3 'RFS Report Dotum',sans-serif;letter-spacing:-0.01em;color:#000}
 .rf-sub{margin:30px 35px 10px 220px;font:700 18px/1.45 'RFS Report Dotum',sans-serif;color:#000}
-.rf-toc{margin:36px 35px 8px 220px;padding:18px 0 20px;border-bottom:1px solid #D0CECE}
-.rf-toc-h{font:500 15px 'RFS Report Dotum',sans-serif;letter-spacing:.14em;color:#000;margin-bottom:12px}
-.rf-toc a{display:block;padding:4px 0;color:#000;font-size:14.5px;line-height:1.5;text-decoration:none}.rf-toc a:hover{color:#203864;text-decoration:underline;text-underline-offset:3px}
-.rf-toc a.l0{font-weight:500;margin-top:6px}.rf-toc a.l1{padding-left:20px;font-size:13.5px;font-weight:300}.rf-toc a.l2{padding-left:40px;font-size:13px;font-weight:300;color:#404040}
+.rf-toc{width:min(590px,100%);margin:40px auto 24px;padding:0 0 40px;border-bottom:1px solid #D0CECE;font-family:'RFS Report Dotum',sans-serif}   /* PDF 2쪽 CONTENTS 모양: 가운데 제목, 점선 리더, 쪽 번호 */
+.rf-toc-h{text-align:center;font-size:22px;font-weight:700;color:#203864;letter-spacing:0;margin-bottom:22px}
+.rf-toc a{display:flex;align-items:baseline;gap:0;color:#000;text-decoration:none;line-height:1.45}
+.rf-toc a i{flex:1;min-width:24px;margin:0 4px;border-bottom:2px dotted #8C8C8C;transform:translateY(-4px)}
+.rf-toc a em{font-style:normal;font-weight:300;font-size:14.5px;font-variant-numeric:tabular-nums;min-width:18px;text-align:right}
+.rf-toc a.l0{margin-top:30px;font-size:17px;font-weight:700;color:#203864;letter-spacing:-0.02em}.rf-toc a.l0:first-of-type{margin-top:0}.rf-toc a.l0 em{color:#000}
+.rf-toc a.l1{margin-top:20px;padding-left:28px;font-size:15px;font-weight:700}.rf-toc a.l1+a.l1,.rf-toc a.l2+a.l1{margin-top:6px}
+.rf-toc a.l2{margin-top:6px;padding-left:58px;font-size:15px;font-weight:300}
+.rf-toc a.after{margin-top:34px}
+.rf-toc a:hover span{text-decoration:underline;text-underline-offset:3px}
 .rf-subm{margin:26px 35px 8px 220px;font:700 16px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-sub2{margin:24px 35px 8px 220px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-p,.rf-lead,.rf-li{position:relative;margin:0 35px 0 220px}
@@ -2285,7 +2291,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ rHasFull }}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
             <div class="rf">
-              <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-toc" aria-label="목차"><div class="rf-toc-h">CONTENTS</div><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" onClick="{{ t.go }}">{{ t.t }}</a></sc-for></nav></sc-if>
+              <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-toc" aria-label="목차"><div class="rf-toc-h">CONTENTS</div><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" onClick="{{ t.go }}"><span>{{ t.t }}</span><i></i><em>{{ t.pg }}</em></a></sc-for></nav></sc-if>
               <sc-for list="{{ rFull }}" as="b" hint-placeholder-count="6">
                 <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3 class="rf-h" id="{{ b.id }}">{{ b.text }}</h3></sc-if>
                 <sc-if value="{{ b.isSub }}" hint-placeholder-val="{{ false }}"><h4 class="rf-sub" id="{{ b.id }}">{{ b.text }}</h4></sc-if>
@@ -3573,7 +3579,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261029c';
+const DATA_VER = '20261029d';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 const FULL_REPORTS = ['sanil'];
 const REPORTS = [
@@ -6816,7 +6822,7 @@ class Component extends DCLogic {
       rFloatCls: s.rptFloat ? 'show' : '',
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
-      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t) => ({ t: t.t, cls: 'l' + t.lvl, href: '#research/' + active.id,
+      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), href: '#research/' + active.id,
         go: (e) => { e.preventDefault(); const el = t.to != null && document.getElementById('rf-' + t.to); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); } })),
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];

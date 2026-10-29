@@ -232,12 +232,13 @@ def extract(rid, pdf):
         ls1 = [l for l in lines_of(doc[1]) if 45 < l['y0'] < doc[1].rect.height - 50 and l['size'] >= 10.4 and 'CONTENTS' not in l['text']]
         x0s = sorted({round(l['x0']) for l in ls1})
         for l in ls1:
+            m = re.search(r'(\d+)\s*$', l['text'])
             t = re.sub(r'[·.…\s]*\d*\s*$', '', l['text']).strip()
             if not t:
                 continue
             lvl = min(2, sum(1 for x in x0s if x < round(l['x0']) - 5))
             to = next((i for i, h in heads if norm(t) in norm(h) or norm(h) in norm(t)), None)
-            toc.append({'t': t, 'lvl': lvl, 'to': to})
+            toc.append({'t': t, 'lvl': lvl, 'to': to, 'pg': int(m.group(1)) if m else None})
     return {'stock': stock, 'toc': toc, 'blocks': merged}
 
 
