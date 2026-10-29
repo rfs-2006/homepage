@@ -1662,6 +1662,13 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-side a:hover{color:#1A1A1A}
 .rf-side a.cur{color:#203864;border-left-color:#203864;font-weight:700}
 @media (min-width:1360px){html:not(.rc-open) .rf-side{display:block}}
+@media (min-width:1360px){html:not(.rc-open) .rf-toc{display:none}}   /* 넓은 화면은 왼쪽 목차가 대신한다. 좁은 화면·Polaris 창이 열렸을 때만 위 CONTENTS */
+.rf-jump{position:fixed;left:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:59;display:flex;flex-direction:column;gap:8px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .25s,transform .25s,visibility .25s}
+.rf-jump.on{opacity:1;visibility:visible;transform:none}
+.rf-jump button{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#F4F1EB;background:rgba(14,11,11,.55);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2);border:1px solid rgba(244,241,235,.22);box-shadow:0 14px 34px -14px rgba(0,0,0,.6);transition:background-color .2s}
+.rf-jump button:hover{background:rgba(32,56,100,.85)}
+.rf-jump button[disabled]{opacity:.35;cursor:default}
+@media (max-width:640px){.rf-jump{left:16px;bottom:calc(16px + env(safe-area-inset-bottom))}.rf-jump button{width:40px;height:40px}}
 .rf-subm{margin:26px 35px 8px 220px;font:700 16px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-sub2{margin:24px 35px 8px 220px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-p,.rf-lead,.rf-li{position:relative;margin:0 35px 0 220px}
@@ -7078,18 +7085,27 @@ class Component extends DCLogic {
   // 리포트 용어 카드 등에서 질문을 바로 보내며 창을 연다
   // 왼쪽 여백 목차: 위 CONTENTS가 화면 위로 지나가면 켜고, 화면 위쪽 1/3을 지난 마지막 제목을 현재 장으로 표시
   (function () {
-    var tick = false;
+    var tick = false, jump = null;
     function upd() {
       tick = false;
-      var side = document.querySelector('.rf-side'); if (!side) return;
+      var side = document.querySelector('.rf-side'); if (!side) { if (jump) jump.classList.remove('on'); return; }
       var toc = document.querySelector('.rf-toc');
       side.classList.toggle('on', !toc || toc.getBoundingClientRect().bottom < 80);
+      // 맨 위로·맨 아래로: 전문이 있는 리포트에서 조금 내려오면 왼쪽 아래에 뜬다. 맨 아래 = 리포트 종이 끝
+      var paper = side.closest('.rpt-paper'), end = paper ? paper.getBoundingClientRect().bottom + scrollY - innerHeight + 40 : 0;
+      if (!jump) { jump = document.createElement('div'); jump.className = 'rf-jump';
+        jump.innerHTML = '<button type="button" aria-label="맨 위로" data-k="up"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 16V4M5 9l5-5 5 5"/></svg></button><button type="button" aria-label="리포트 맨 아래로" data-k="down"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M10 4v12M5 11l5 5 5-5"/></svg></button>';
+        jump.addEventListener('click', function (e) { var bt = e.target.closest('button'); if (!bt) return; var pp = document.querySelector('.rf-side') && document.querySelector('.rf-side').closest('.rpt-paper');
+          scrollTo({ top: bt.getAttribute('data-k') === 'up' ? 0 : (pp ? pp.getBoundingClientRect().bottom + scrollY - innerHeight + 40 : document.documentElement.scrollHeight), behavior: 'smooth' }); });
+        document.body.appendChild(jump); }
+      jump.classList.toggle('on', scrollY > 500);
+      jump.lastChild.disabled = scrollY >= end - 4;
       var links = side.querySelectorAll('a[data-to]'), cur = null, lim = innerHeight / 3;
       for (var i = 0; i < links.length; i++) { var el = document.getElementById(links[i].getAttribute('data-to')); if (el && el.getBoundingClientRect().top < lim) cur = links[i]; }
       for (var j = 0; j < links.length; j++) links[j].classList.toggle('cur', links[j] === cur);
     }
     addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
-    addEventListener('resize', upd);
+    addEventListener('resize', upd); addEventListener('hashchange', function () { setTimeout(upd, 300); });
   })();
   window.rfsAsk = function (q) { fr.src = '/chat/?embed&send=1&q=' + encodeURIComponent(q); box.hidden = false; btn.setAttribute('aria-expanded', 'true'); mark(); var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true; };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
