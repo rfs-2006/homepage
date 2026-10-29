@@ -1652,6 +1652,16 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-toc a.l2{margin-top:6px;padding-left:58px;font-size:15px;font-weight:300}
 .rf-toc a.after{margin-top:34px}
 .rf-toc a:hover span{text-decoration:underline;text-underline-offset:3px}
+.rf{position:relative}
+.rf-side{display:none;position:absolute;top:0;bottom:0;right:calc(100% + 64px);width:188px}   /* 넓은 화면에서만, 종이 왼쪽 바깥 */
+.rf-side-in{position:sticky;top:120px;opacity:0;visibility:hidden;transform:translateY(6px);transition:opacity .25s,transform .25s,visibility .25s;font-family:'RFS Report Dotum',sans-serif}
+.rf-side.on .rf-side-in{opacity:1;visibility:visible;transform:none}
+.rf-side-h{font-size:11px;font-weight:700;letter-spacing:.14em;color:#203864;margin-bottom:12px}
+.rf-side a{display:block;color:rgba(26,26,26,.55);text-decoration:none;font-size:13px;line-height:1.4;padding:5px 0 5px 12px;border-left:2px solid rgba(26,26,26,.1);transition:color .2s,border-color .2s}
+.rf-side a.l1{padding-left:24px;font-size:12px}.rf-side a.l2{display:none}
+.rf-side a:hover{color:#1A1A1A}
+.rf-side a.cur{color:#203864;border-left-color:#203864;font-weight:700}
+@media (min-width:1360px){html:not(.rc-open) .rf-side{display:block}}
 .rf-subm{margin:26px 35px 8px 220px;font:700 16px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-sub2{margin:24px 35px 8px 220px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-p,.rf-lead,.rf-li{position:relative;margin:0 35px 0 220px}
@@ -2283,6 +2293,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
             <div class="rf">
               <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-toc" aria-label="목차"><div class="rf-toc-h">CONTENTS</div><p class="rf-toc-note">제목을 누르면 그 장으로 바로 이동해요</p><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" onClick="{{ t.go }}"><span>{{ t.t }}</span><i></i><em>{{ t.pg }}</em></a></sc-for></nav></sc-if>
+              <!-- 왼쪽 여백 목차: 종이 바깥에 붙어 스크롤을 따라온다. 위 CONTENTS가 화면에서 사라지면 나타나고, 지금 읽는 장을 표시 -->
+              <sc-if value="{{ rHasToc }}" hint-placeholder-val="{{ false }}"><nav class="rf-side" aria-label="목차"><div class="rf-side-in"><div class="rf-side-h">CONTENTS</div><sc-for list="{{ rToc }}" as="t" hint-placeholder-count="6"><a href="{{ t.href }}" class="{{ t.cls }}" data-to="{{ t.id }}" onClick="{{ t.go }}">{{ t.t }}</a></sc-for></div></nav></sc-if>
               <sc-for list="{{ rFull }}" as="b" hint-placeholder-count="6">
                 <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3 class="rf-h" id="{{ b.id }}">{{ b.text }}</h3></sc-if>
                 <sc-if value="{{ b.isSub }}" hint-placeholder-val="{{ false }}"><h4 class="rf-sub" id="{{ b.id }}">{{ b.text }}</h4></sc-if>
@@ -6803,7 +6815,7 @@ class Component extends DCLogic {
       rFullShown: !!(s.full && s.full[active.id]),
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
-      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), href: '#research/' + active.id,
+      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '#research/' + active.id,
         go: (e) => { e.preventDefault(); const el = t.to != null && document.getElementById('rf-' + t.to); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); } })),
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
@@ -7064,6 +7076,21 @@ class Component extends DCLogic {
   });
   box.querySelector('.rc-bar button').onclick = close;
   // 리포트 용어 카드 등에서 질문을 바로 보내며 창을 연다
+  // 왼쪽 여백 목차: 위 CONTENTS가 화면 위로 지나가면 켜고, 화면 위쪽 1/3을 지난 마지막 제목을 현재 장으로 표시
+  (function () {
+    var tick = false;
+    function upd() {
+      tick = false;
+      var side = document.querySelector('.rf-side'); if (!side) return;
+      var toc = document.querySelector('.rf-toc');
+      side.classList.toggle('on', !toc || toc.getBoundingClientRect().bottom < 80);
+      var links = side.querySelectorAll('a[data-to]'), cur = null, lim = innerHeight / 3;
+      for (var i = 0; i < links.length; i++) { var el = document.getElementById(links[i].getAttribute('data-to')); if (el && el.getBoundingClientRect().top < lim) cur = links[i]; }
+      for (var j = 0; j < links.length; j++) links[j].classList.toggle('cur', links[j] === cur);
+    }
+    addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
+    addEventListener('resize', upd);
+  })();
   window.rfsAsk = function (q) { fr.src = '/chat/?embed&send=1&q=' + encodeURIComponent(q); box.hidden = false; btn.setAttribute('aria-expanded', 'true'); mark(); var tip = document.getElementById('rfsBotTip'); if (tip) tip.hidden = true; };
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !box.hidden) close(); });
 })();
