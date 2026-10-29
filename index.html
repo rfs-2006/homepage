@@ -1664,7 +1664,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-fig{margin:0;min-width:0}
 .rf-fig figcaption{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding-bottom:5px;border-bottom:1.5px solid #404040;margin-bottom:4px}
 .rf-fig figcaption b{font-size:13px;font-weight:700}.rf-fig figcaption span{font-size:11px;color:#595959;white-space:nowrap}
-.rf-fig img{display:block;width:100%;height:auto}
+.rf-fig img{display:block;width:100%;height:auto;margin:0 auto}
 .rf-fig small{display:block;font-size:11px;color:#595959;margin-top:4px}
 .rf-end{margin:48px 35px 0 220px;padding-top:14px;border-top:1px solid #D0CECE;font-size:12.5px;color:#595959}
 @media (max-width:719px){.rf{margin:0 14px}.rf-h,.rf-sub,.rf-subm,.rf-sub2,.rf-toc,.rf-p,.rf-lead,.rf-li,.rf-end{margin-left:0;margin-right:0}.rf-h{font-size:22px;margin-top:44px}
@@ -2289,7 +2289,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 <sc-if value="{{ b.isSubm }}" hint-placeholder-val="{{ false }}"><h5 class="rf-subm" id="{{ b.id }}">{{ b.text }}</h5></sc-if>
                 <sc-if value="{{ b.isSub2 }}" hint-placeholder-val="{{ false }}"><h5 class="rf-sub2" id="{{ b.id }}">{{ b.text }}</h5></sc-if>
                 <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-if value="{{ b.hasNote }}" hint-placeholder-val="{{ false }}"><aside class="rf-note">{{ b.note }}</aside></sc-if><p><sc-for list="{{ b.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }}"><sc-for list="{{ g.parts }}" as="x" hint-placeholder-count="1"><span class="{{ x.cls }}" data-gl="{{ x.k }}">{{ x.t }}</span></sc-for></span></sc-for></p></div></sc-if>
-                <sc-if value="{{ b.isFig }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-for list="{{ b.figs }}" as="f" hint-placeholder-count="1"><figure class="rf-fig"><figcaption><b>{{ f.no }} {{ f.cap }}</b><span>{{ f.unit }}</span></figcaption><a href="{{ f.src }}" target="_blank" rel="noopener"><img src="{{ f.src }}" width="{{ f.w }}" height="{{ f.h }}" loading="lazy" decoding="async" alt="{{ f.alt }}"></a><small>{{ f.srcT }}</small></figure></sc-for></div></sc-if>
+                <sc-if value="{{ b.isFig }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-for list="{{ b.figs }}" as="f" hint-placeholder-count="1"><figure class="rf-fig"><figcaption><b>{{ f.no }} {{ f.cap }}</b><span>{{ f.unit }}</span></figcaption><a href="{{ f.src }}" target="_blank" rel="noopener"><img src="{{ f.src }}" width="{{ f.w }}" height="{{ f.h }}" loading="lazy" decoding="async" alt="{{ f.alt }}" style="max-width:{{ f.dw }}px"></a><small>{{ f.srcT }}</small></figure></sc-for></div></sc-if>
               </sc-for>
               <div class="rf-end">리포트 끝 · 전체 PDF는 DOWNLOAD PDF에서 받을 수 있어요</div>
             </div>
@@ -6818,7 +6818,7 @@ class Component extends DCLogic {
         const segs = (a) => a.map((g) => ({ w: g.b ? '700' : '300', parts: gl(g.t) }));
         const no = { isH: false, isSub: false, isSubm: false, isSub2: false, isText: false, isFig: false, text: '', cls: '', segs: [], figs: [], hasNote: false, note: '', id: '' };
         return B.map((b, i) => b.h ? (gl = this.glSplit(active.id), { ...no, isH: true, text: b.h, id: 'rf-' + i }) : b.sub ? { ...no, isSub: true, text: b.sub, id: 'rf-' + i } : b.subm ? { ...no, isSubm: true, text: b.subm, id: 'rf-' + i } : b.sub2 ? { ...no, isSub2: true, text: b.sub2, id: 'rf-' + i }
-          : b.fig ? { ...no, isFig: true, cls: 'rf-figs' + (b.fig.length > 1 ? ' two' : ''), figs: b.fig.map((f) => ({ src: '/assets/reports/full/' + f.src + '?v=' + DATA_VER, w: f.w, h: f.h, no: f.no, cap: f.cap, unit: f.unit, srcT: f.src_t, alt: (f.no + ' ' + f.cap).trim() || '표' })) }
+          : b.fig ? { ...no, isFig: true, cls: 'rf-figs' + (b.fig.length > 1 ? ' two' : ''), figs: b.fig.map((f) => ({ src: '/assets/reports/full/' + f.src + '?v=' + DATA_VER, w: f.w, h: f.h, dw: Math.round(f.w / 3 * 1.45), no: f.no, cap: f.cap, unit: f.unit, srcT: f.src_t, alt: (f.no + ' ' + f.cap).trim() || '표' })) }
           : { ...no, isText: true, cls: b.lead ? 'rf-lead' : b.li ? 'rf-li' : 'rf-p', segs: segs(b.lead || b.li || b.p), hasNote: !!b.note, note: (b.note || []).join('\n\n') }); })(),
       rHasFund: !!(s.p1 && s.p1._fund && s.p1._fund[active.id]),
       rFund: (() => { const f = s.p1 && s.p1._fund && s.p1._fund[active.id]; return f ? { unit: f.unit, cols: f.cols, rows: f.rows.map((r) => ({ label: r[0], vals: r.slice(1) })) } : { unit: '', cols: [], rows: [] }; })(),
