@@ -1631,9 +1631,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 /* 리포트 1쪽 용어 풀이: 점선 밑줄 → 눌러서 설명 카드 (모바일은 아래에서 올라오는 시트) */
 .rpt-paper .gl{text-decoration:underline solid rgba(143,170,220,0.85);text-decoration-thickness:2.5px;text-underline-offset:4px;text-decoration-skip-ink:none;cursor:pointer;border-radius:2px;transition:background .15s ease}
 .rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.25)}   /* 용어 풀이: 연한 남색 실선 밑줄(글자색은 본문 그대로). 누르면 설명 카드 */
-/* 리포트 오른쪽 따라오는 박스 (화면이 넓을 때만). 종이는 그대로 두고 옆에 한 칸 더 */
+@media (max-height:860px){.rpt-float .rf-sd-chart,.rpt-float .rf-sd-h2{display:none}}
+/* 리포트 오른쪽 따라오는 박스 (화면 1100px 이상). 종이는 그대로 두고 옆에 한 칸 더 */
 .rpt-float{display:none}
-@media (min-width:1240px){.rpt-in{max-width:1200px !important}.rpt-cols{display:grid;grid-template-columns:minmax(0,860px) 236px;gap:34px;justify-content:center}
+@media (min-width:1100px){.rpt-in{max-width:1200px !important}.rpt-cols{display:grid;grid-template-columns:minmax(0,860px) 220px;gap:26px;justify-content:center}
   .rpt-float{display:block;margin-top:58px}.rpt-float-in{position:sticky;top:104px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .3s ease,transform .3s ease}
   .rpt-float.show .rpt-float-in{opacity:1;transform:none;pointer-events:auto}}
 .rf-facts{background:#001F5F;color:#FFF;padding:2px 5px}.rf-facts>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:33px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,.55);font-size:11px}
@@ -1644,7 +1645,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-sd tr.cont th,.rf-sd tr.cont td{padding-top:0}.rf-sd th{white-space:normal;padding-right:6px}.rf-sd td{white-space:nowrap}.rf-sd td span{display:inline-block;margin-left:8px}.rf-sd td span:first-child{margin-left:0}
 .rf-sd tr.multi th{width:0}.rf-sd tr.multi td{display:grid;grid-template-columns:repeat(3,auto);justify-content:end;column-gap:9px}.rf-sd tr.multi td span{margin:0}
 .rf-sd-chart{display:block;width:100%;height:auto;max-height:140px;object-fit:contain;margin-top:4px}
-.rf-dl{display:block;margin-top:16px;padding:11px 0;text-align:center;background:#001F5F;color:#FFF;font-size:11px;letter-spacing:.12em;font-weight:600}
+.rf-dl{display:block;margin-top:12px;padding:11px 0;text-align:center;background:#001F5F;color:#FFF;font-size:11px;letter-spacing:.12em;font-weight:600}
 .rf-dl:hover{background:#203864}
 /* 리포트 전문: PDF처럼 왼쪽 150px에 요약 메모, 오른쪽에 본문. 차트는 전체 폭 */
 .rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
@@ -2264,12 +2265,16 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 <span style="display:block;text-align:center;border:1px solid #D0CECE;color:rgba(26,26,26,0.65);padding:13px 0;font-size:14px;font-weight:600">PDF 준비 중 [교체]</span>
               </sc-if>
             </div>
+            <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
+              <div class="rf-sd-h" style="margin-top:22px">Stock Data</div>
+              <table class="rf-sd"><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><th>{{ r.label }}</th><td><sc-for list="{{ r.vals }}" as="v" hint-placeholder-count="1"><span>{{ v }}</span></sc-for></td></tr></sc-for></table>
+              <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
+            </sc-if>
           </aside>
           <div class="rpt-meta" style="grid-column:2;grid-row:2;align-self:start">
             <div style="margin-top:0;font-size:13px;font-weight:700;letter-spacing:0.06em">Report</div>
             <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>섹터</span><span style="color:#1A1A1A">{{ rSector }}</span></div>
             <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>발간일</span><span style="color:#1A1A1A;font-variant-numeric:tabular-nums">{{ rDate }}</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>작성</span><a href="#people" onClick="{{ goPeople }}" style="color:#203864;font-weight:600">{{ rTeamName }} →</a></div>
           </div>
         </div>
         <!-- 리포트 전문: PDF 2쪽 이후를 웹으로 (tools/extract-full.py → assets/reports/full/<id>.json). 차트·표는 PDF에서 잘라 낸 그림 -->
@@ -2315,12 +2320,12 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <aside class="rpt-float {{ rFloatCls }}">
         <div class="rpt-float-in">
           <div class="rf-facts"><sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4"><div><span>{{ f.label }}</span><b>{{ f.value }}</b></div></sc-for></div>
+          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
           <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
             <div class="rf-sd-h">Stock Data</div>
             <table class="rf-sd"><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><th>{{ r.label }}</th><td><sc-for list="{{ r.vals }}" as="v" hint-placeholder-count="1"><span>{{ v }}</span></sc-for></td></tr></sc-for></table>
-            <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
+            <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h rf-sd-h2">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
           </sc-if>
-          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
         </div>
       </aside>
       </div>
@@ -3555,6 +3560,17 @@ const RECRUIT = {
     { step:'면접',     date:'8.8 (토)',    note:'대면 면접' },
     { step:'최종 발표', date:'8.9 (일)',    note:'정오' }]
 };
+// 주소(해시·정적 경로) → 화면. 첫 화면도 이걸로 정해서, 리포트 주소로 들어왔을 때 홈이 잠깐 보였다가 넘어가지 않게 한다
+function routeFromLocation() {
+  const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
+  const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit', '/fund/': 'fund', '/people/': 'people' }[location.pathname.replace(/\/?$/, '/')];
+  const h = (location.hash || (pm ? '#research/' + pm[1] : pp ? '#' + pp : '#home')).slice(1);
+  if (h.startsWith('research/')) return { page: 'report', reportId: h.split('/')[1] };
+  if (h.startsWith('intranet')) return { page: 'intranet', intraTab: h.split('/')[1] || 'dashboard' };
+  if (h === 'fund/strategy') return { page: 'strategy' };
+  if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) return { page: h };
+  return { page: 'home' };
+}
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 const FULL_REPORTS = ['sanil'];
 const REPORTS = [
@@ -4804,7 +4820,7 @@ const FUND_SECTOR = {
   '003490': '항공', '041830': '의료기기', 'TRMD': '해운', '035900': '엔터', '041510': '엔터', '352820': '엔터', '096770': '정유·화학',
 };
 class Component extends DCLogic {
-  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', page:'home', reportId:'trmd', fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, heroIdx:0, heroFade:false, bxIdx:0, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
+  state = { weekly: (() => { try { const c = JSON.parse(localStorage.getItem('rfs_wk_cache') || 'null'); return Array.isArray(c) ? c : undefined; } catch (e) { return undefined; } })(), posts:[], agoraLoaded:false, pTitle:'', pBody:'', posting:false, navMode:'dark', activeSec:'about-values', ...(() => { try { const r = routeFromLocation(); return { page: r.page, reportId: r.reportId || 'trmd', ...(r.intraTab ? { intraTab: r.intraTab } : {}) }; } catch (e) { return { page: 'home', reportId: 'trmd' }; } })(), fSector:'All sectors', fOp:'All ratings', fYear:'All terms', fRegion:'All regions', q:'', page1:1, sortKey:'date', sortDir:-1, faqOpen:-1, menuOpen:false, pastHero:false, counted:false, hoverSlice:null, drawn:false, heroIdx:0, heroFade:false, bxIdx:0, email:'', notified:false, cohort:'43기', user:null, intraTab:'dashboard', intraQ:'', intraCohort:43, intraData:null, rfmData:null, dirQ:'', dirInd:'전체', dirCoffee:false, coffeeFor:null, coffeeSent:false, cName:'', cCohort:'', cMsg:'', isMobile: typeof window !== 'undefined' && window.innerWidth <= 768 };
 
   prefetchHero() {
     if (this._pf) return;
@@ -6264,14 +6280,9 @@ class Component extends DCLogic {
 
   applyHash() {
     // 검색용 정적 주소(/research/<id>/, /research/, /about/, /recruiting/, /fund/, /people/)로 들어온 경우 해시 없이도 그 화면을 연다
-    const pm = location.pathname.match(/^\/research\/([^/]+)\/?$/);
-    const pp = { '/research/': 'research', '/about/': 'about', '/recruiting/': 'recruit', '/fund/': 'fund', '/people/': 'people' }[location.pathname.replace(/\/?$/, '/')];
-    const h = (location.hash || (pm ? '#research/' + pm[1] : pp ? '#' + pp : '#home')).slice(1);
-    let page = 'home', reportId = this.state.reportId;
-    if (h.startsWith('research/')) { page = 'report'; reportId = h.split('/')[1]; }
-    else if (h.startsWith('intranet')) { page = 'intranet'; const t = h.split('/')[1]; this.setState({ intraTab: t || 'dashboard' }); }
-    else if (h === 'fund/strategy') page = 'strategy';
-    else if (['home','research','about','people','activity','recruit','rfm','fund'].includes(h)) page = h;
+    const r = routeFromLocation();
+    let page = r.page, reportId = r.reportId || this.state.reportId;
+    if (r.intraTab !== undefined) this.setState({ intraTab: r.intraTab });
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
     const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;

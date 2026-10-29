@@ -34,6 +34,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preload" as="image" href="/assets/hero/polaris.webp">
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-light.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-medium.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-bold.woff2" crossorigin>
+<!-- 글꼴이 늦게 바뀌며 메뉴·제목이 한 번 밀리던 것: 글꼴이 준비될 때까지(최대 0.9초) 화면을 감췄다가 한 번에 보여 준다 -->
+<style>html.fwait body{opacity:0}body{transition:opacity .2s ease}</style>
+<script>
+(function(){var h=document.documentElement;h.classList.add('fwait');var done=function(){h.classList.remove('fwait')};setTimeout(done,900);
+document.addEventListener('DOMContentLoaded',function(){try{Promise.all(['300','500','700'].map(function(w){return document.fonts.load(w+' 16px "RFS Dotum UI"')})).then(done,done)}catch(e){done()}})})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 <style>
 /* 홈(index.html)과 같은 페이지 전환: 메뉴 POLARIS를 누르면 부드럽게 넘어온다 (지원 브라우저·PC만) */
