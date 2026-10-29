@@ -2266,7 +2266,6 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <div style="padding:18px 0 0">
               <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}">
                 <a class="btn btn-solid" href="{{ rPdfHref }}" download="" style="display:block;padding:12px 0;font-size:11px;background:#001F5F;border-color:#001F5F">DOWNLOAD PDF ↓</a>
-                <div style="font-size:12px;color:rgba(26,26,26,0.6);margin-top:8px;text-align:center;font-variant-numeric:tabular-nums">{{ rPdfMeta }}</div>
               </sc-if>
               <sc-if value="{{ rNoPdf }}" hint-placeholder-val="{{ true }}">
                 <span style="display:block;text-align:center;border:1px solid #D0CECE;color:rgba(26,26,26,0.65);padding:13px 0;font-size:14px;font-weight:600">PDF 준비 중 [교체]</span>
@@ -6837,7 +6836,7 @@ class Component extends DCLogic {
       rSummary: isPh ? '[교체] 요약 3~4문장을 입력하세요.' : active.summary,
       rPoints: active.points, rHasValuation: !!active.valuation, rValuation: active.valuation,
       rIsPlaceholder: isPh, rTeamName: active.team, rTeamMembers: active.members,
-      rHasPdf: !!active.pdf, rNoPdf: !active.pdf, rPdfHref: active.pdf, rPdfMeta: active.pdfMeta,
+      rHasPdf: !!active.pdf, rNoPdf: !active.pdf, rPdfHref: active.pdf,
       rFacts: [
         { label:'Rating', value:active.op, color:opc.c },
         { label:'Target', value:active.tp, color:'#1A1A1A' },
