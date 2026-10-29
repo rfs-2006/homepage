@@ -141,6 +141,9 @@ function rowsFromCsv(text) {
 // 만들어지는 내용을 페이지 안에서 함께 받아 둔다.
 const CAPTURE = () => {
   window.__rfmCsv = []; window.__rfmSeen = [];
+  // CSV 다운로드 버튼이 "'파일명' 로 다운로드할까요?" 확인 창을 먼저 띄운다 (2026-10 화면 변경).
+  // 헤드리스 브라우저는 확인 창을 자동으로 '취소'해서 다운로드가 안 되므로 '확인'으로 답한다
+  window.confirm = () => true;
   // 별칭 헤더가 있거나 쉼표로 된 줄이 많은 텍스트를 CSV로 본다. 진단용으로 첫 줄(헤더)만 따로 남긴다
   const keep = (t) => {
     if (typeof t !== 'string') return;
@@ -187,7 +190,7 @@ async function openRanking(page) {
 }
 
 let cut50 = null;     // 전체 50위 기준가
-let csvBroken = false; // 한 번 실패하면 이후 반복에서는 바로 검색 방식으로 간다
+let csvFailAt = 0;     // CSV가 실패하면 10분 동안은 바로 검색 방식으로 가고, 그 뒤 다시 CSV를 시도한다
 async function grabCsv(page) {
   await page.evaluate(() => { window.__rfmCsv = []; window.__rfmSeen = []; });
   const roleBtn = page.getByRole('button', { name: /CSV 다운로드/ }).first();
@@ -238,9 +241,10 @@ async function grabBySearch(page) {
 
 async function snapshot(page) {
   await openRanking(page);
-  let text = csvBroken ? null : await grabCsv(page);
+  let text = Date.now() - csvFailAt < 600e3 ? null : await grabCsv(page);
   let via = 'csv';
-  if (!text) { csvBroken = true; text = await grabBySearch(page); via = 'search'; }
+  if (text) { try { if (!rowsFromCsv(text).length) throw new Error('empty'); } catch (e) { console.log('csv parse failed: ' + e.message.split(':')[0]); text = null; } }
+  if (!text) { if (Date.now() - csvFailAt >= 600e3) csvFailAt = Date.now(); text = await grabBySearch(page); via = 'search'; }
   return { text, via, contest: await readContestName(page), total: await readTotal(page), start: await readStart(page) };
 }
 
@@ -250,6 +254,7 @@ async function withBrowser(fn) {
   await ctx.addInitScript(CAPTURE);
   const page = await ctx.newPage();
   page.setDefaultTimeout(30000);
+  page.on('dialog', (d) => d.accept().catch(() => {}));   // 위 confirm 덮어쓰기가 안 먹을 때를 대비
   try {
     await login(page);
     return await fn(page);
