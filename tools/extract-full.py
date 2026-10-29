@@ -44,11 +44,23 @@ def lines_of(page):
     return out
 
 
+CAP_RE = re.compile(r'^\s*[\[<(]?\s*(?:자료|그림|표|도표|차트|Figure|Table)\s*[\d][\d\-.]*\s*[\]>)]?')
+SRC_RE = re.compile(r'^\s*(?:출처|자료)\s*[:：]')
+
+
+def is_cap(l):
+    """차트·표 제목 줄: '[자료 1-1]' '그림2)' '[표 3]' 같은 번호로 시작하거나, 리포트 양식의 캡션 글꼴(YGO)로 쓴 짧은 줄"""
+    t = l['text'].strip()
+    if not t or SRC_RE.match(t):
+        return False
+    return bool(CAP_RE.match(t)) or (l['font'].startswith('YGO') and l['size'] < 10.5 and len(t) < 90)
+
+
 def exhibits(lines, H, page):
     """[자료 x-x] 캡션마다 차트 영역(캡션 아래 ~ 출처 줄 위)을 찾는다"""
     caps = []
     for l in lines:
-        if not l['text'].lstrip().startswith('[자료'):
+        if not is_cap(l):
             continue
         # 좌우 두 캡션이 PDF에서 한 줄로 붙어 나오는 경우가 있어, 두 번째 '[자료'가 시작되는 조각에서 나눈다
         parts = re.split(r'(?=\[자료)', l['text'].strip())
@@ -63,7 +75,7 @@ def exhibits(lines, H, page):
         for a, b in zip([0] + cut, cut + [len(l['raw'])]):
             sp = l['raw'][a:b]
             caps.append(dict(l, x0=sp[0]['bbox'][0], x1=sp[-1]['bbox'][2], text=''.join(x['text'] for x in sp)))
-    srcs = [l for l in lines if re.match(r'\s*(출처|자료)\s*:', l['text'])]
+    srcs = [l for l in lines if SRC_RE.match(l['text'])]
     res = []
     for c in caps:
         right = [o['x0'] for o in caps if o is not c and abs(o['y0'] - c['y0']) < 6 and o['x0'] > c['x0'] + 50]
@@ -77,10 +89,33 @@ def exhibits(lines, H, page):
             y1, src = s['y0'] - 1, s['text'].strip()
         else:
             y1, src = (min(nxt) - 4 if nxt else H - 50), ''
-        m = re.match(r'\s*(\[자료[^\]]*\])\s*(.*?)\s*(\((?:단위|단 위)[^)]*\))?\s*$', c['text'])
+        m = re.match(r'\s*([\[<(]?\s*(?:자료|그림|표|도표|차트|Figure|Table)\s*\d[\d\-.]*\s*[\]>)]?)?\s*(.*?)\s*(\((?:단위|단 위)[^)]*\))?\s*$', c['text'])
         res.append({'rect': (x0, c['y1'] + 3.5, x1, y1), 'box': (x0, c['y0'] - 2, x1, (s['y1'] + 2) if below else y1),
-                    'no': m.group(1) if m else '', 'cap': (m.group(2) if m else c['text']).strip(),
+                    'no': (m.group(1) or '').strip() if m else '', 'cap': (m.group(2) if m else c['text']).strip(),
                     'unit': (m.group(3) or '').strip() if m else '', 'src': src, 'y': c['y0']})
+    # 캡션 없이 '출처:' 줄만 있는 차트·표(예전 양식): 출처 줄에서 위로, 바로 위 본문 줄까지를 그림으로 본다
+    used = [r['box'] for r in res]
+    body = [l for l in lines if l['size'] >= 9.3 and not SRC_RE.match(l['text']) and not is_cap(l)]
+    for sl in srcs:
+        if inside(sl, used):
+            continue
+        row = sorted([o for o in srcs if abs(o['y0'] - sl['y0']) < 8], key=lambda o: o['x0'])
+        k = row.index(sl)
+        x0 = sl['x0'] - 4
+        x1 = row[k + 1]['x0'] - 8 if k + 1 < len(row) else 580
+        if k > 0:
+            x0 = max(x0, (row[k - 1]['x0'] + sl['x0']) / 2 - 1) if False else x0
+        above = [l for l in body if l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)]
+        # 위쪽 본문은 글자 줄이 2개 이상 이어진 곳(문단)만 경계로 친다. 차트 안 큰 숫자 하나를 경계로 오해하지 않게
+        top = 50
+        for l in sorted(above, key=lambda l: -l['y1']):
+            near = [o for o in above if 0 < abs(o['y0'] - l['y0']) < 20]
+            if near and l['size'] < 13:
+                top = l['y1'] + 6; break
+        if sl['y0'] - top < 40:
+            continue
+        res.append({'rect': (x0, top, x1, sl['y0'] - 1), 'box': (x0, top, x1, sl['y1'] + 2), 'no': '', 'cap': '', 'unit': '', 'src': sl['text'].strip(), 'y': top})
+        used.append(res[-1]['box'])
     return res
 
 
@@ -112,8 +147,11 @@ def extract(rid, pdf):
 
     def save(page, rect):
         nonlocal fig_n
+        rect = pymupdf.Rect(*rect) & page.rect
+        if rect.width < 20 or rect.height < 15:
+            return None
         fig_n += 1
-        pix = page.get_pixmap(matrix=pymupdf.Matrix(ZOOM, ZOOM), clip=pymupdf.Rect(*rect), alpha=False)
+        pix = page.get_pixmap(matrix=pymupdf.Matrix(ZOOM, ZOOM), clip=rect, alpha=False)
         im = Image.open(io.BytesIO(pix.tobytes('png')))
         name = f'{fig_n}.webp'
         im.save(os.path.join(OUT, rid, name), 'WEBP', quality=82, method=6)
@@ -145,7 +183,9 @@ def extract(rid, pdf):
         y1 = max(l['y1'] for l in lab) + 3 if lab else sp['y1'] + 130
         stock['chart'] = save(p0, (sp['x0'] - 4, sp['y1'] + 2, p0.rect.width - 10, y1))
 
-    for pno in range(2, len(doc)):
+    # 2쪽이 목차(CONTENTS)면 본문은 3쪽부터, 아니면(예전 양식) 2쪽부터
+    has_toc = len(doc) > 1 and bool(re.search(r'CONTENTS|목\s*차', doc[1].get_text()[:400]))
+    for pno in range(2 if has_toc else 1, len(doc)):
         page = doc[pno]
         H = page.rect.height
         lines = [l for l in lines_of(page) if 45 < l['y0'] < H - 50 and 'Securities Research' not in l['text']]
@@ -154,7 +194,8 @@ def extract(rid, pdf):
         text = [l for l in lines if not inside(l, boxes) and l['size'] >= 9.3]
         if not ex and len(text) < 3:          # 캡션 없는 표 쪽(재무제표 등): 쪽 전체를 그림으로
             f = save(page, (12, 40, page.rect.width - 12, H - 40))
-            blocks.append({'fig': [dict(f, no='', cap='', unit='', src_t='')]})
+            if f:
+                blocks.append({'fig': [dict(f, no='', cap='', unit='', src_t='')]})
             continue
         body = sorted([l for l in text if l['x0'] >= BODY_X - 5], key=lambda l: (round(l['y0']), l['x0']))
         notes = sorted([l for l in text if l['x1'] < BODY_X], key=lambda l: l['y0'])
@@ -212,8 +253,10 @@ def extract(rid, pdf):
             figs = []
             for e in r:
                 f = save(page, e['rect'])
-                figs.append(dict(f, no=e['no'], cap=e['cap'], unit=e['unit'], src_t=e['src']))
-            items.append({'y': r[0]['y'], 'b': {'fig': figs}})
+                if f:
+                    figs.append(dict(f, no=e['no'], cap=e['cap'], unit=e['unit'], src_t=e['src']))
+            if figs:
+                items.append({'y': r[0]['y'], 'b': {'fig': figs}})
         for it in sorted(items, key=lambda it: it['y']):
             blocks.append(it['b'])
     # 쪽을 넘어 이어지는 문단 붙이기: 앞 문단이 마침표 없이 끝나고 다음 블록이 문단이면 합친다
@@ -228,7 +271,7 @@ def extract(rid, pdf):
     toc = []
     norm = lambda t: re.sub(r'\s+', '', t)
     heads = [(i, b.get('h') or b.get('sub') or b.get('subm') or b.get('sub2')) for i, b in enumerate(merged) if any(k in b for k in ('h', 'sub', 'subm', 'sub2'))]
-    if len(doc) > 1:
+    if has_toc:
         ls1 = [l for l in lines_of(doc[1]) if 45 < l['y0'] < doc[1].rect.height - 50 and l['size'] >= 10.4 and 'CONTENTS' not in l['text']]
         x0s = sorted({round(l['x0']) for l in ls1})
         for l in ls1:
@@ -239,6 +282,8 @@ def extract(rid, pdf):
             lvl = min(2, sum(1 for x in x0s if x < round(l['x0']) - 5))
             to = next((i for i, h in heads if norm(t) in norm(h) or norm(h) in norm(t)), None)
             toc.append({'t': t, 'lvl': lvl, 'to': to, 'pg': int(m.group(1)) if m else None})
+    if len(toc) < 3 or sum(1 for t in toc if t['to'] is not None) < len(toc) / 2:   # 2쪽이 목차가 아닌 예전 양식
+        toc = []
     return {'stock': stock, 'toc': toc, 'blocks': merged}
 
 
