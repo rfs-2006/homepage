@@ -302,6 +302,7 @@ section.hero img{-webkit-user-drag:none}
 .bx-s-shots .bx-bg img,.bx-s-butler .bx-bg img{filter:blur(28px) saturate(.8);transform:scale(1.15)}
 .bx-shots{position:absolute;left:0;right:0;bottom:0;top:10%;display:flex;justify-content:center;align-items:flex-start;gap:clamp(16px,2vw,36px);padding:0 4%}
 .bx-shots img{flex:0 0 auto;width:min(20%,330px);height:auto;background:#fff;box-shadow:0 40px 80px rgba(0,0,0,.55)}
+.bx-shots img.bx-shot{cursor:pointer}
 .bx-shots img:nth-child(odd){margin-top:4%}
 .bx-s-butler .bx-shots{align-items:center;top:0}
 .bx-s-butler .bx-shots img{width:min(22%,380px);aspect-ratio:4/3;object-fit:cover;object-position:0 0;border-radius:10px;align-self:center;margin-top:0;transform:rotate(-2deg)}
@@ -1998,7 +1999,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
         <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
-        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g.src }}" alt="{{ g.name }}" class="bx-shot" onClick="{{ g.go }}"></sc-for></span></sc-if>
         <sc-if value="{{ bxIsButler }}" hint-placeholder-val="{{ false }}"><span class="bx-bt {{ bxAnim }}"><span class="bt-id"><img src="assets/partners/butler.webp" alt=""><b>Butler</b><small>기업분석 플랫폼 · 학회원 전원 유료 플랜</small></span><span class="bt-grid"><span><img src="assets/partners/butler-report.webp" alt=""><em>증권사 리포트 요약</em></span><span><img src="assets/partners/butler-dash.webp" alt=""><em>실적 · 공시</em></span><span><img src="assets/partners/butler-seg.webp" alt=""><em>사업부문</em></span><span><img src="assets/partners/butler-fin.webp" alt=""><em>재무 그래프</em></span></span></span></sc-if>
         <sc-if value="{{ bxIsChat }}" hint-placeholder-val="{{ false }}"><span class="bx-ch {{ bxAnim }}"><span class="ch-win"><span class="ch-hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>POLARIS</b><small>R.F.S. 리서치 챗봇</small></span><span class="ch-q">네패스아크 리포트 핵심만 알려줘</span><span class="ch-a"><span>26-2학기 1차 세미나 리포트는 네패스아크를 <b>‘삼성 파운드리 회복의 최대 수혜주’</b>로 봤어요. 투자의견은 BUY예요.</span><span class="ch-src"><i>출처</i>네패스아크 (330860.KQ) · Research Team 2 · p.1</span></span><span class="ch-in">학회 리포트에 대해 물어보세요<i>↑</i></span></span></span></sc-if>
       </a></div>
@@ -2038,7 +2039,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <span class="bx-bg {{ bxAnim }}"><img src="{{ bxImg }}" alt=""></span>
         <sc-if value="{{ bxIsCard }}" hint-placeholder-val="{{ true }}"><span class="bx-c {{ bxAnim }}"><div class="mcard"><div class="hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S.</b></div><div class="chip"></div><div class="big">60%</div><div class="ft"><div class="no"><small>MEMBER</small>CAU · VALUE · 2006</div><div class="cf"><small>WITH</small><span>Claude</span></div></div></div></span></sc-if>
         <sc-if value="{{ bxIsWord }}" hint-placeholder-val="{{ false }}"><span class="bx-w {{ bxAnim }}"><i>{{ bxWord }}</i><b>{{ bxTag }}</b></span></sc-if>
-        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g }}" alt=""></sc-for></span></sc-if>
+        <sc-if value="{{ bxIsShots }}" hint-placeholder-val="{{ false }}"><span class="bx-shots {{ bxAnim }}"><sc-for list="{{ bxShots }}" as="g" hint-placeholder-count="4"><img src="{{ g.src }}" alt="{{ g.name }}" class="bx-shot" onClick="{{ g.go }}"></sc-for></span></sc-if>
         <sc-if value="{{ bxIsButler }}" hint-placeholder-val="{{ false }}"><span class="bx-bt {{ bxAnim }}"><span class="bt-id"><img src="assets/partners/butler.webp" alt=""><b>Butler</b><small>기업분석 플랫폼 · 학회원 전원 유료 플랜</small></span><span class="bt-grid"><span><img src="assets/partners/butler-report.webp" alt=""><em>증권사 리포트 요약</em></span><span><img src="assets/partners/butler-dash.webp" alt=""><em>실적 · 공시</em></span><span><img src="assets/partners/butler-seg.webp" alt=""><em>사업부문</em></span><span><img src="assets/partners/butler-fin.webp" alt=""><em>재무 그래프</em></span></span></span></sc-if>
         <sc-if value="{{ bxIsChat }}" hint-placeholder-val="{{ false }}"><span class="bx-ch {{ bxAnim }}"><span class="ch-win"><span class="ch-hd"><img src="assets/rfs-seal-light-256.png" alt=""><b>POLARIS</b><small>R.F.S. 리서치 챗봇</small></span><span class="ch-q">네패스아크 리포트 핵심만 알려줘</span><span class="ch-a"><span>26-2학기 1차 세미나 리포트는 네패스아크를 <b>‘삼성 파운드리 회복의 최대 수혜주’</b>로 봤어요. 투자의견은 BUY예요.</span><span class="ch-src"><i>출처</i>네패스아크 (330860.KQ) · Research Team 2 · p.1</span></span><span class="ch-in">학회 리포트에 대해 물어보세요<i>↑</i></span></span></span></sc-if>
       </a></div>
@@ -3582,7 +3583,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261029j';
+const DATA_VER = '20261029m';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 const FULL_REPORTS = ['anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'celltrion', 'classys', 'crowdstrike', 'cswind', 'daewoong', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyundai', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair26', 'krafton', 'kyungdong', 'lges', 'lguplus', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'lselectric', 'lutronic', 'naver', 'nepesark', 'oci', 'orion', 'osstem', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samyang', 'sanil', 'sbl21', 'seers', 'semco', 'sena', 'silicon2', 'skgas', 'sm', 'sm21', 'soil', 'stpharm', 'taekwang', 'techwing', 'tesla', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'vt'];
 const REPORTS = [
@@ -6944,14 +6945,14 @@ class Component extends DCLogic {
       heroFadeCls: s.heroFade ? 'fading' : '',
       ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
         const B = [
-          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:['assets/covers/26-2_sanil-p1.webp','assets/covers/26-2_korean_air-p1.webp','assets/covers/26-2_inbody-p1.webp','assets/covers/26-2_nepes_ark-p1.webp'], title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
+          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:[['sanil','산일전기'],['koreanair26','대한항공'],['inbody','인바디'],['nepesark','네패스아크']].map(([id,name]) => ({ id, name, src:'assets/covers/26-2_' + ({ sanil:'sanil', koreanair26:'korean_air', inbody:'inbody', nepesark:'nepes_ark' })[id] + '-p1.webp' })), title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
           { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
           { kind:'butler', img:'', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
           { kind:'chat', img:'assets/hero/polaris.webp', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
         const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
         return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? '#' + b.page : '#'),
-          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsWord: b.kind === 'word', bxIsShots: b.kind === 'shots', bxIsButler: b.kind === 'butler', bxIsChat: b.kind === 'chat', bxShots: b.shots || [],
+          bxKind: b.kind, bxIsCard: b.kind === 'card', bxIsWord: b.kind === 'word', bxIsShots: b.kind === 'shots', bxIsButler: b.kind === 'butler', bxIsChat: b.kind === 'chat', bxShots: (b.shots || []).map((x) => ({ ...x, go: (e) => { e.preventDefault(); e.stopPropagation(); if (this._bxSwiped) { this._bxSwiped = false; return; } this.go('report', x.id); } })),
           bxGo: (e) => { e.preventDefault(); if (this._bxSwiped) { this._bxSwiped = false; return; } if (b.href) { window.location.href = b.href; return; } if (b.page) this.go(b.page); },
           bxTs: (e) => { this._bxX = e.touches[0].clientX; this._bxSwiped = false; },
           bxTe: (e) => { const dx = e.changedTouches[0].clientX - (this._bxX || 0); if (Math.abs(dx) > 40) { this._bxSwiped = true; to(i + (dx < 0 ? 1 : -1)); } },
