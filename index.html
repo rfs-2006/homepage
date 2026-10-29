@@ -1631,26 +1631,40 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 /* 리포트 1쪽 용어 풀이: 점선 밑줄 → 눌러서 설명 카드 (모바일은 아래에서 올라오는 시트) */
 .rpt-paper .gl{text-decoration:underline solid rgba(143,170,220,0.85);text-decoration-thickness:2.5px;text-underline-offset:4px;text-decoration-skip-ink:none;cursor:pointer;border-radius:2px;transition:background .15s ease}
 .rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.25)}   /* 용어 풀이: 연한 남색 실선 밑줄(글자색은 본문 그대로). 누르면 설명 카드 */
-@media (min-width:1100px){.rpt-in{max-width:1080px !important}.rpt-paper .detail-side{position:sticky;top:104px}}   /* 리포트는 조금 넓게, 오른쪽 투자의견·PDF 박스는 스크롤해도 따라온다 */
+/* 리포트 오른쪽 따라오는 박스 (화면이 넓을 때만). 종이는 그대로 두고 옆에 한 칸 더 */
+.rpt-float{display:none}
+@media (min-width:1240px){.rpt-in{max-width:1200px !important}.rpt-cols{display:grid;grid-template-columns:minmax(0,860px) 236px;gap:34px;justify-content:center}
+  .rpt-float{display:block;margin-top:58px}.rpt-float-in{position:sticky;top:104px;opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .3s ease,transform .3s ease}
+  .rpt-float.show .rpt-float-in{opacity:1;transform:none;pointer-events:auto}}
+.rf-facts{background:#001F5F;color:#FFF;padding:2px 5px}.rf-facts>div{display:grid;grid-template-columns:1fr 1fr;align-items:center;height:33px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,.55);font-size:11px}
+.rf-facts span{font-weight:300}.rf-facts b{font-family:'RFS Report Dotum',sans-serif;font-size:15.5px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.rf-sd-h{margin:16px 0 4px;padding-bottom:4px;border-bottom:1.5px solid #404040;font:700 12.5px 'RFS Report Dotum',sans-serif;color:#1A1A1A}
+.rf-sd{width:100%;border-collapse:collapse;font:300 11.5px/1.45 'RFS Report Dotum',sans-serif;color:#1A1A1A;font-variant-numeric:tabular-nums}
+.rf-sd th{font-weight:300;text-align:left;padding:3px 0;white-space:nowrap;vertical-align:top}.rf-sd td{text-align:right;padding:3px 0 3px 8px}
+.rf-sd tr.cont th,.rf-sd tr.cont td{padding-top:0}.rf-sd th{white-space:normal;padding-right:6px}.rf-sd td{white-space:nowrap}.rf-sd td span{display:inline-block;margin-left:8px}.rf-sd td span:first-child{margin-left:0}
+.rf-sd tr.multi th{width:0}.rf-sd tr.multi td{display:grid;grid-template-columns:repeat(3,auto);justify-content:end;column-gap:9px}.rf-sd tr.multi td span{margin:0}
+.rf-sd-chart{display:block;width:100%;height:auto;max-height:140px;object-fit:contain;margin-top:4px}
+.rf-dl{display:block;margin-top:16px;padding:11px 0;text-align:center;background:#001F5F;color:#FFF;font-size:11px;letter-spacing:.12em;font-weight:600}
+.rf-dl:hover{background:#203864}
 /* 리포트 전문: PDF처럼 왼쪽 150px에 요약 메모, 오른쪽에 본문. 차트는 전체 폭 */
-.rf{border-top:1px solid #1F3864;margin:44px 0 0;padding:8px 0 24px;color:#000;font-size:14.5px;line-height:1.75}
-.rf-h{margin:56px 0 18px 140px;font:500 27px/1.3 'RFS Report Dotum',sans-serif;letter-spacing:-0.01em;color:#000}
-.rf-sub{margin:30px 0 10px 140px;font:700 18px/1.45 'RFS Report Dotum',sans-serif;color:#000}
-.rf-sub2{margin:24px 0 8px 140px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
-.rf-p,.rf-lead,.rf-li{position:relative;margin:0 0 0 140px}
+.rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
+.rf-h{margin:56px 0 18px 160px;font:500 27px/1.3 'RFS Report Dotum',sans-serif;letter-spacing:-0.01em;color:#000}
+.rf-sub{margin:30px 0 10px 160px;font:700 18px/1.45 'RFS Report Dotum',sans-serif;color:#000}
+.rf-sub2{margin:24px 0 8px 160px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
+.rf-p,.rf-lead,.rf-li{position:relative;margin:0 0 0 160px}
 .rf-p p,.rf-lead p,.rf-li p{margin:0;text-align:justify;font-weight:300}
 .rf-p+.rf-p,.rf-li+.rf-p,.rf-p+.rf-li{margin-top:12px}
 .rf-lead{background:#F2F2F2;padding:14px 18px;margin-bottom:6px}
 .rf-li{margin-top:8px}.rf-li p{text-align:center}
-.rf-note{position:absolute;left:-140px;top:2px;width:122px;white-space:pre-line;font-size:13px;line-height:1.55;font-weight:700;text-align:center;color:#000}
+.rf-note{position:absolute;left:-160px;top:2px;width:138px;white-space:pre-line;font-size:13px;line-height:1.55;font-weight:700;text-align:center;color:#000}
 .rf-figs{display:grid;grid-template-columns:1fr;gap:20px;margin:26px 0 30px}.rf-figs.two{grid-template-columns:1fr 1fr}
 .rf-fig{margin:0;min-width:0}
 .rf-fig figcaption{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding-bottom:5px;border-bottom:1.5px solid #404040;margin-bottom:4px}
 .rf-fig figcaption b{font-size:13px;font-weight:700}.rf-fig figcaption span{font-size:11px;color:#595959;white-space:nowrap}
 .rf-fig img{display:block;width:100%;height:auto}
 .rf-fig small{display:block;font-size:11px;color:#595959;margin-top:4px}
-.rf-end{margin:48px 0 0 140px;padding-top:14px;border-top:1px solid #D0CECE;font-size:12.5px;color:#595959}
-@media (max-width:719px){.rf{margin:32px 0 0}.rf-h,.rf-sub,.rf-sub2,.rf-p,.rf-lead,.rf-li,.rf-end{margin-left:0}.rf-h{font-size:22px;margin-top:44px}
+.rf-end{margin:48px 0 0 160px;padding-top:14px;border-top:1px solid #D0CECE;font-size:12.5px;color:#595959}
+@media (max-width:719px){.rf{margin:0 14px}.rf-h,.rf-sub,.rf-sub2,.rf-p,.rf-lead,.rf-li,.rf-end{margin-left:0}.rf-h{font-size:22px;margin-top:44px}
   .rf-note{position:static;display:block;width:auto;text-align:left;font-size:12.5px;line-height:1.5;color:#203864;margin:0 0 8px;padding:2px 0 2px 10px;border-left:2px solid #8FAADC}.rf-figs.two{grid-template-columns:1fr}.rf-p p,.rf-lead p{text-align:left}.rf-fig figcaption{display:block}.rf-fig figcaption span{display:block;white-space:normal;margin-top:2px}}
 #gl-pop{position:absolute;z-index:90;width:340px;background:#FFFFFF;border-radius:14px;box-shadow:0 0 0 1px rgba(15,27,46,0.06),0 12px 32px rgba(15,27,46,0.16),0 2px 6px rgba(15,27,46,0.06);padding:20px 20px 16px;font-family:'Pretendard','Noto Sans KR',sans-serif;color:#191F28;animation:glIn .16s ease;transform-origin:var(--ax,24px) 0}
 #gl-pop::before{content:'';position:absolute;top:-6px;left:var(--ax,24px);width:12px;height:12px;margin-left:-6px;background:#FFFFFF;transform:rotate(45deg);box-shadow:-1px -1px 0 rgba(15,27,46,0.06);border-radius:2px 0 0 0}
@@ -2183,6 +2197,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <div data-nav="dark" class="rpt-band" style="position:absolute;top:0;left:0;right:0;height:440px;background:#0F1B2E"></div>
     <div class="wrap rpt-in" style="position:relative;max-width:930px;padding:104px 35px 96px">
       <a href="#research" onClick="{{ goResearch }}" style="font-size:13px;color:rgba(247,246,243,0.65)">← Research</a>
+      <div class="rpt-cols"><div class="rpt-main">
       <article class="rpt-paper" style="font-family:'RFS Report Dotum','Pretendard',sans-serif;background:#FFFFFF;margin-top:22px;box-shadow:0 1px 0 rgba(26,26,26,0.08),0 24px 60px rgba(15,27,46,0.22)">
         <!-- PDF 1페이지 양식: 날짜 줄, 회색 회사명 띠(오른쪽 위 로고), 남색 헤드라인 + 투자의견 박스 -->
         <div class="rpt-top" style="padding:22px 20px 9px;font-size:14px;font-weight:500;color:#595959;font-variant-numeric:tabular-nums">{{ rDate }}<span style="color:#A6A6A6;margin:0 7px">|</span>{{ rType }}</div>
@@ -2230,23 +2245,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <sc-if value="{{ rIsPlaceholder }}" hint-placeholder-val="{{ false }}">
               <p style="font-size:14px;color:rgba(26,26,26,0.65);border-top:1px solid #D0CECE;padding-top:20px">[교체] 이 리포트의 요약과 투자포인트를 입력하세요. 전문은 PDF로 제공됩니다.</p>
             </sc-if>
-            <!-- 리포트 전문: PDF 2쪽 이후를 웹으로 (tools/extract-full.py → assets/reports/full/<id>.json). 차트·표는 PDF에서 잘라 낸 그림 -->
-            <sc-if value="{{ rHasFull }}" hint-placeholder-val="{{ false }}">
-              <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
-                <div class="rf">
-                  <sc-for list="{{ rFull }}" as="b" hint-placeholder-count="6">
-                    <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3 class="rf-h">{{ b.text }}</h3></sc-if>
-                    <sc-if value="{{ b.isSub }}" hint-placeholder-val="{{ false }}"><h4 class="rf-sub">{{ b.text }}</h4></sc-if>
-                    <sc-if value="{{ b.isSub2 }}" hint-placeholder-val="{{ false }}"><h5 class="rf-sub2">{{ b.text }}</h5></sc-if>
-                    <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-if value="{{ b.hasNote }}" hint-placeholder-val="{{ false }}"><aside class="rf-note">{{ b.note }}</aside></sc-if><p><sc-for list="{{ b.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }}"><sc-for list="{{ g.parts }}" as="x" hint-placeholder-count="1"><span class="{{ x.cls }}" data-gl="{{ x.k }}">{{ x.t }}</span></sc-for></span></sc-for></p></div></sc-if>
-                    <sc-if value="{{ b.isFig }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-for list="{{ b.figs }}" as="f" hint-placeholder-count="1"><figure class="rf-fig"><figcaption><b>{{ f.no }} {{ f.cap }}</b><span>{{ f.unit }}</span></figcaption><a href="{{ f.src }}" target="_blank" rel="noopener"><img src="{{ f.src }}" width="{{ f.w }}" height="{{ f.h }}" loading="lazy" decoding="async" alt="{{ f.alt }}"></a><small>{{ f.srcT }}</small></figure></sc-for></div></sc-if>
-                  </sc-for>
-                  <div class="rf-end">리포트 끝 · 전체 PDF는 오른쪽 DOWNLOAD PDF에서 받을 수 있어요</div>
-                </div>
-              </sc-if>
-            </sc-if>
           </div>
-          <aside class="detail-side" style="grid-column:2;grid-row:1 / span 2;align-self:start">
+          <aside class="detail-side" style="grid-column:2;grid-row:1;align-self:start">
             <div style="background:#001F5F;color:#FFFFFF;padding:2px 0">
               <sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4">
                 <div class="rpt-fact" style="display:grid;grid-template-columns:1fr 1fr;align-items:center;margin:0 5px;height:35px;padding:0 9px;border-bottom:1px solid rgba(255,255,255,0.55);font-size:11.5px">
@@ -2264,14 +2264,29 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
                 <span style="display:block;text-align:center;border:1px solid #D0CECE;color:rgba(26,26,26,0.65);padding:13px 0;font-size:14px;font-weight:600">PDF 준비 중 [교체]</span>
               </sc-if>
             </div>
-            <div class="rpt-meta" style="margin-top:22px">
-              <div style="margin-top:0;font-size:13px;font-weight:700;letter-spacing:0.06em">Report</div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>섹터</span><span style="color:#1A1A1A">{{ rSector }}</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>발간일</span><span style="color:#1A1A1A;font-variant-numeric:tabular-nums">{{ rDate }}</span></div>
-              <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>작성</span><a href="#people" onClick="{{ goPeople }}" style="color:#203864;font-weight:600">{{ rTeamName }} →</a></div>
-            </div>
           </aside>
+          <div class="rpt-meta" style="grid-column:2;grid-row:2;align-self:start">
+            <div style="margin-top:0;font-size:13px;font-weight:700;letter-spacing:0.06em">Report</div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>섹터</span><span style="color:#1A1A1A">{{ rSector }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>발간일</span><span style="color:#1A1A1A;font-variant-numeric:tabular-nums">{{ rDate }}</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>작성</span><a href="#people" onClick="{{ goPeople }}" style="color:#203864;font-weight:600">{{ rTeamName }} →</a></div>
+          </div>
         </div>
+        <!-- 리포트 전문: PDF 2쪽 이후를 웹으로 (tools/extract-full.py → assets/reports/full/<id>.json). 차트·표는 PDF에서 잘라 낸 그림 -->
+        <sc-if value="{{ rHasFull }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
+            <div class="rf">
+              <sc-for list="{{ rFull }}" as="b" hint-placeholder-count="6">
+                <sc-if value="{{ b.isH }}" hint-placeholder-val="{{ false }}"><h3 class="rf-h">{{ b.text }}</h3></sc-if>
+                <sc-if value="{{ b.isSub }}" hint-placeholder-val="{{ false }}"><h4 class="rf-sub">{{ b.text }}</h4></sc-if>
+                <sc-if value="{{ b.isSub2 }}" hint-placeholder-val="{{ false }}"><h5 class="rf-sub2">{{ b.text }}</h5></sc-if>
+                <sc-if value="{{ b.isText }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-if value="{{ b.hasNote }}" hint-placeholder-val="{{ false }}"><aside class="rf-note">{{ b.note }}</aside></sc-if><p><sc-for list="{{ b.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }}"><sc-for list="{{ g.parts }}" as="x" hint-placeholder-count="1"><span class="{{ x.cls }}" data-gl="{{ x.k }}">{{ x.t }}</span></sc-for></span></sc-for></p></div></sc-if>
+                <sc-if value="{{ b.isFig }}" hint-placeholder-val="{{ false }}"><div class="{{ b.cls }}"><sc-for list="{{ b.figs }}" as="f" hint-placeholder-count="1"><figure class="rf-fig"><figcaption><b>{{ f.no }} {{ f.cap }}</b><span>{{ f.unit }}</span></figcaption><a href="{{ f.src }}" target="_blank" rel="noopener"><img src="{{ f.src }}" width="{{ f.w }}" height="{{ f.h }}" loading="lazy" decoding="async" alt="{{ f.alt }}"></a><small>{{ f.srcT }}</small></figure></sc-for></div></sc-if>
+              </sc-for>
+              <div class="rf-end">리포트 끝 · 전체 PDF는 DOWNLOAD PDF에서 받을 수 있어요</div>
+            </div>
+          </sc-if>
+        </sc-if>
       </article>
       <section style="margin-top:72px">
         <h2 style="font-family:'RFS Report Dotum',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.02em;margin:0 0 16px">Related Reports</h2>
@@ -2294,6 +2309,20 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ false }}">
           <a href="{{ nextReport.href }}" onClick="{{ nextReport.open }}" class="cardlink" style="font-weight:600;margin-left:auto">{{ nextReport.name }} →</a>
         </sc-if>
+      </div>
+      </div>
+      <!-- 오른쪽 따라오는 박스: 투자의견·목표주가, 1쪽 Stock Data, 주가 차트, PDF. 1쪽 정보 박스가 화면에서 사라지면 나타난다 -->
+      <aside class="rpt-float {{ rFloatCls }}">
+        <div class="rpt-float-in">
+          <div class="rf-facts"><sc-for list="{{ rFactsKo }}" as="f" hint-placeholder-count="4"><div><span>{{ f.label }}</span><b>{{ f.value }}</b></div></sc-for></div>
+          <sc-if value="{{ rHasStock }}" hint-placeholder-val="{{ false }}">
+            <div class="rf-sd-h">Stock Data</div>
+            <table class="rf-sd"><sc-for list="{{ rStock }}" as="r" hint-placeholder-count="6"><tr class="{{ r.cls }}"><th>{{ r.label }}</th><td><sc-for list="{{ r.vals }}" as="v" hint-placeholder-count="1"><span>{{ v }}</span></sc-for></td></tr></sc-for></table>
+            <sc-if value="{{ rHasStockChart }}" hint-placeholder-val="{{ false }}"><div class="rf-sd-h">Stock Price</div><img class="rf-sd-chart" src="{{ rStockChart }}" alt="주가 추이" loading="lazy"></sc-if>
+          </sc-if>
+          <sc-if value="{{ rHasPdf }}" hint-placeholder-val="{{ false }}"><a class="rf-dl" href="{{ rPdfHref }}" download="">DOWNLOAD PDF ↓</a></sc-if>
+        </div>
+      </aside>
       </div>
     </div>
   </main>
@@ -4908,6 +4937,12 @@ class Component extends DCLogic {
       this.glClose();
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.glClose(); });
+    // 리포트 화면: 1쪽 오른쪽 정보 박스가 화면 위로 지나가면 바깥 오른쪽 따라오는 박스를 보여 준다
+    window.addEventListener('scroll', () => {
+      const side = this.state.page === 'report' || document.querySelector('.rpt') ? document.querySelector('.rpt-paper .detail-side') : null;
+      const on = !!side && side.getBoundingClientRect().bottom < 80;
+      if (on !== !!this.state.rptFloat) this.setState({ rptFloat: on });
+    }, { passive: true });
     window.addEventListener('hashchange', () => this.glClose());
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
@@ -6764,7 +6799,13 @@ class Component extends DCLogic {
           segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '300', c: 'inherit', parts: gl(g.t) })) })) })); })(),
       rHasFull: FULL_REPORTS.includes(active.id) && (this.loadFull(active.id), true),
       rFullShown: !!(s.full && s.full[active.id]),
-      rFull: (() => { const B = s.full && s.full[active.id]; if (!B) return []; const gl = this.glSplit(active.id);
+      rFloatCls: s.rptFloat ? 'show' : '',
+      rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
+      rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
+        return st.rows.map((r) => ({ label: r[0], vals: r.slice(1), cls: (r[0] ? '' : 'cont') + (r.length > 3 ? ' multi' : '') })); })(),
+      rHasStockChart: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart),
+      rStockChart: (() => { const c = s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.chart; return c ? '/assets/reports/full/' + c.src : ''; })(),
+      rFull: (() => { const B = s.full && s.full[active.id] && s.full[active.id].blocks; if (!B) return []; const gl = this.glSplit(active.id);
         const segs = (a) => a.map((g) => ({ w: g.b ? '700' : '300', parts: gl(g.t) }));
         const no = { isH: false, isSub: false, isSub2: false, isText: false, isFig: false, text: '', cls: '', segs: [], figs: [], hasNote: false, note: '' };
         return B.map((b) => b.h ? { ...no, isH: true, text: b.h } : b.sub ? { ...no, isSub: true, text: b.sub } : b.sub2 ? { ...no, isSub2: true, text: b.sub2 }

@@ -3,6 +3,7 @@
 #   글(절 제목, 요약 박스, 소제목, 문단, 왼쪽 요약 메모) → assets/reports/full/<id>.json
 #   [자료 x-x] 차트·표 → 같은 자리를 잘라 assets/reports/full/<id>/<n>.webp (숫자를 옮겨 적지 않아 틀릴 일이 없다)
 #   캡션이 없는 표만 있는 쪽(재무제표 등)은 쪽 전체를 이미지로 넣는다.
+#   1쪽 오른쪽 Stock Data 표(글)와 Stock Price 차트(그림)도 함께 → {stock, blocks}
 #
 # 사용법: 사이트 루트에서  python3 tools/extract-full.py sanil [다른 id ...]   (pymupdf, pillow 필요)
 import io, json, os, re, sys
@@ -117,6 +118,32 @@ def extract(rid, pdf):
         im.save(os.path.join(OUT, rid, name), 'WEBP', quality=82, method=6)
         return {'src': f'{rid}/{name}', 'w': im.width, 'h': im.height}
 
+    # 1쪽 오른쪽 'Stock Data' 표와 'Stock Price' 차트 (리포트 화면 오른쪽 따라오는 박스에 쓴다)
+    stock = {'rows': [], 'chart': None}
+    p0 = doc[0]
+    ls0 = [l for l in lines_of(p0) if l['x0'] > p0.rect.width * 0.66]
+    sd = next((l for l in ls0 if l['text'].strip() == 'Stock Data'), None)
+    sp = next((l for l in ls0 if l['text'].strip() == 'Stock Price'), None)
+    if sd:
+        end = sp['y0'] if sp else sd['y0'] + 160
+        rows = []
+        for l in sorted([l for l in ls0 if sd['y1'] < l['y0'] < end], key=lambda l: (l['y0'], l['x0'])):
+            if rows and abs(rows[-1][0]['y0'] - l['y0']) < 3:
+                rows[-1].append(l)
+            else:
+                rows.append([l])
+        x_lab = min(l['x0'] for l in ls0 if sd['y1'] < l['y0'] < end)
+        for r in rows:
+            r.sort(key=lambda l: l['x0'])
+            cells = [x['text'].strip() for x in r]
+            if r[0]['x0'] > x_lab + 10:       # 이름표 없이 이어지는 줄(주요주주 둘째 줄 등)
+                cells = [''] + cells
+            stock['rows'].append(cells)
+    if sp:
+        lab = [l for l in ls0 if l['y0'] > sp['y1'] and l['size'] < 6]
+        y1 = max(l['y1'] for l in lab) + 3 if lab else sp['y1'] + 130
+        stock['chart'] = save(p0, (sp['x0'] - 4, sp['y1'] + 2, p0.rect.width - 10, y1))
+
     for pno in range(2, len(doc)):
         page = doc[pno]
         H = page.rect.height
@@ -194,13 +221,14 @@ def extract(rid, pdf):
             prev['p'].extend(b['p'])
             continue
         merged.append(b)
-    return merged
+    return {'stock': stock, 'blocks': merged}
 
 
 if __name__ == '__main__':
     reps = load_reports()
     for rid in sys.argv[1:]:
-        bl = extract(rid, reps[rid])
+        out = extract(rid, reps[rid])
         with open(os.path.join(OUT, rid + '.json'), 'w', encoding='utf-8') as f:
-            json.dump(bl, f, ensure_ascii=False, separators=(',', ':'))
-        print(rid, len(bl), 'blocks', sum(len(b['fig']) for b in bl if 'fig' in b), 'figs')
+            json.dump(out, f, ensure_ascii=False, separators=(',', ':'))
+        bl = out['blocks']
+        print(rid, len(bl), 'blocks', sum(len(b['fig']) for b in bl if 'fig' in b), 'figs', len(out['stock']['rows']), 'stock rows')
