@@ -27,5 +27,7 @@ Supabase Auth의 "Allow new users to sign up"은 **꺼진 채로 둔다.** 계�
 ## 알아 둘 것
 - 새 계정의 로그인 이메일은 `아이디@caurfs.kr` 형식이다 (로그인 칸에는 아이디만 쓰면 된다). 실제 메일함은 없으므로 비밀번호 찾기 메일은 가지 않는다.
   비밀번호를 잊으면 관리자가 Authentication → Users에서 바꿔 준다. 신청자가 적은 연락용 이메일은 user_metadata.contact_email에 있다.
-- 승인된 계정은 학회원 공용 계정과 같은 권한이다 (AGORA 명부 열람 포함). 외부인을 승인할 때 주의.
+- 승인은 두 가지다. **학회원 승인**은 AGORA(명부·선배님 연결·게시판·문자)까지, **일반 승인**은 로그인·POLARIS만. 등급은 `app_metadata.role`(`member`/`guest`)에 들어가고 본인은 못 바꾼다. 값이 없는 계정(공용 계정, 예전에 승인한 사람)은 학회원으로 본다.
+- DB 차단: `supabase/sql/agora_member_only.sql`을 SQL Editor에서 한 번 실행한다 (명부·게시판에 guest 차단 정책 추가). `agora-sms`도 guest를 막는다. `coffee-chat` 함수는 저장소에 코드가 없어서, 대시보드에서 로그인 확인 바로 아래에 `if (user.app_metadata?.role === 'guest') return 403` 한 줄을 넣어야 한다.
+- 등급을 바꾸면 그 사람이 다시 로그인해야(또는 최대 1시간 뒤 토큰이 갱신돼야) 적용된다. 바꾸는 SQL은 같은 파일 아래 주석에 있다.
 - 개인정보처리방침: `/privacy/` (tools/build-pages.js가 만든다). 수집 항목을 바꾸면 방침, `assets/join.js`의 동의 표, `member-signup`의 `POLICY_VERSION`을 같이 바꾼다.

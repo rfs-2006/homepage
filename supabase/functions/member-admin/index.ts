@@ -1,6 +1,6 @@
 // 가입 신청 승인: AGORA의 '가입 신청' 화면이 부른다. 관리자(MEMBER_ADMINS)만 쓸 수 있다.
 // - list: 승인 대기 중인 신청 목록
-// - approve: 정지를 풀어 로그인할 수 있게 한다
+// - approve: 정지를 풀어 로그인할 수 있게 한다. role로 학회원('member')·일반('guest')을 정한다 (app_metadata.role, 본인은 못 바꾼다)
 // - reject: 계정과 신청 정보를 바로 지운다 (개인정보처리방침: 거절하면 즉시 파기)
 //
 // 필요한 Secrets: MEMBER_ADMINS (관리자 로그인 이메일, 쉼표로 여러 개. 예: amt@caurfs.kr)
@@ -50,9 +50,10 @@ Deno.serve(async (req) => {
   if (!t?.user || t.user.app_metadata?.status !== 'pending') return json(404, { error: 'not_pending' });
 
   if (b.action === 'approve') {
+    if (b.role !== 'member' && b.role !== 'guest') return json(400, { error: 'role' });
     const { error } = await admin.auth.admin.updateUserById(uid, {
       ban_duration: 'none',
-      app_metadata: { ...t.user.app_metadata, status: 'approved', approved_at: new Date().toISOString(), approved_by: u.user.email, ip: null },
+      app_metadata: { ...t.user.app_metadata, status: 'approved', role: b.role === 'guest' ? 'guest' : 'member', approved_at: new Date().toISOString(), approved_by: u.user.email, ip: null },
     });
     return error ? json(500, { error: 'approve' }) : json(200, { ok: true });
   }

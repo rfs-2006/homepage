@@ -120,7 +120,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./assets/wk-rich.js?v=6" defer></script>
 <script src="./assets/wk-print.js?v=8" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
-<script src="./assets/join.js?v=4" defer></script>
+<script src="./assets/join.js?v=5" defer></script>
 <style>
 .rpaper{transition:transform 200ms cubic-bezier(0.23,1,0.32,1),box-shadow 200ms cubic-bezier(0.23,1,0.32,1)}
 .rpaper:hover{transform:translateY(-4px);box-shadow:0 1px 0 rgba(26,26,26,0.08),0 22px 44px rgba(15,27,46,0.2) !important}
@@ -1363,6 +1363,15 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .fd-hold .nm small{font-size:12px !important;color:rgba(247,246,243,0.55) !important}
 @media (max-width:760px){.fd-wrap{padding:48px 16px 56px !important}.fd-cw{grid-template-columns:36px minmax(0,1fr) 0}.fd-ends{display:none}.fd-ya,.fd-grid,.fd-plot .fd-chart{height:200px !important}.fd-th{display:none}.fd-chips>div{padding:8px 10px}.fd-alloc .bar i{font-size:0;padding:0}.fd-attr div{flex-basis:0}.fd-chips .cn,.fd-chips .cv{font-size:13px}}
 .pg-hero{position:relative;overflow:hidden}
+.ag-guest{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:96px 24px;background:radial-gradient(70% 60% at 50% 45%,#16284A,#0B1526 75%);color:#F7F6F3}
+.ag-guest-in{width:min(460px,100%);text-align:center}
+.ag-guest-in img{width:60px;height:auto;display:block;margin:0 auto}
+.ag-guest-in .sec-label{margin:26px 0 0;color:rgba(247,246,243,.65)}
+.ag-guest-in h1{margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:28px;font-weight:400;letter-spacing:-.02em;color:#F7F6F3 !important}
+.ag-guest-sub{margin:14px 0 0;font-size:14px;line-height:1.8;color:rgba(247,246,243,.72)}
+.ag-guest-bt{margin-top:28px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ag-guest-bt .btn{background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3;padding:14px 34px;font-size:12px}
+.ag-guest-bt a:not(.btn){font-size:13px;color:rgba(247,246,243,.7);display:inline-flex;align-items:center;min-height:44px}
 .pg-bg{position:absolute;inset:0;background:#0F1B2E}
 /* 첫 화면이 지나갈 때 사진·제목이 흐려진다 (heroIntro) */
 .pg-hero.pg-full .pg-bg,.pg-hero.pg-full .pg-hero-in{transition:opacity .9s ease}
@@ -3229,6 +3238,18 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
   <main data-screen-label="AGORA 로그인" data-nav="dark" style="min-height:100vh;background:#02050C"></main>
   </sc-if>
 
+  <sc-if value="{{ agoraGuest }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="AGORA 학회원 전용" data-nav="dark" class="ag-guest">
+    <div class="ag-guest-in">
+      <img src="assets/rfs-seal-light-256.png" alt="R.F.S.">
+      <p class="sec-label">MEMBERS ONLY</p>
+      <h1>AGORA는 학회원 전용입니다</h1>
+      <p class="ag-guest-sub">동문 명부와 선배님 연결은 R.F.S. 학회원에게만 열려 있습니다.<br>학회원이라면 contact@caurfs.kr로 아이디와 기수를 알려 주세요.</p>
+      <div class="ag-guest-bt"><a class="btn btn-photo" href="/chat/">POLARIS로 가기</a><a href="#" onClick="{{ intraLogout }}">로그아웃</a></div>
+    </div>
+  </main>
+  </sc-if>
+
   <sc-if value="{{ intraLocked }}" hint-placeholder-val="{{ false }}">
   <main data-screen-label="인트라넷 로그인">
     <section class="on-photo" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center">
@@ -4983,7 +5004,9 @@ class Component extends DCLogic {
       const markMember = (ses) => { if (!ses) return; try { localStorage.setItem('rfs_member', '1'); } catch (e) {} try { window.gtag && window.gtag('set', { traffic_type: 'internal' }); } catch (e) {} };
       // 다른 화면(Polaris 등)에서 로그인하러 왔으면 로그인하자마자 돌려보낸다 (10분 안에 온 요청만)
       const back = (ses) => { if (!ses) return; try { const r = JSON.parse(sessionStorage.getItem('rfs_after_login') || 'null'); sessionStorage.removeItem('rfs_after_login'); if (r && /^\/(?!\/)[\w/-]*$/.test(r.to) && Date.now() - r.at < 600000) location.href = r.to; } catch (e) {} };
-      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '' } : null }, () => { if (ses) { this.loadAgora(); this.loadIntra(); this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
+      // 학회원이 아닌 일반 회원은 app_metadata.role = 'guest' (가입 승인 때 관리자가 정한다). 값이 없으면 학회원(공용 계정·예전 승인)
+      const isGuest = (u) => !!(u && u.app_metadata && u.app_metadata.role === 'guest');
+      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '', guest: isGuest(ses.user) } : null }, () => { if (ses) { if (!isGuest(ses.user)) { this.loadAgora(); this.loadIntra(); } this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -5107,7 +5130,7 @@ class Component extends DCLogic {
     this.setTitle(this.state.page, this.state.reportId); this.pickNavMode(); this.setupReveal();
     if (this._heroPage !== this.state.page) { this._heroPage = this.state.page; this.heroIntro(this.state.page); }   // 이 엔진은 이전 state를 따로 주지 않아 직접 기억한다
     // AGORA는 '선배님께 여쭙기' 하나만 보여 준다. 로그인하고 명부를 받으면 바로 열고, 다른 페이지로 가면 닫는다
-    const onAgora = this.state.page === 'intranet' && !!this.state.user;
+    const onAgora = this.state.page === 'intranet' && !!this.state.user && !this.state.user.guest;
     if (!onAgora) this._askShut = false;
     if (onAgora && !this._askShut && this.state.intraData && window.RFSAsk && !window.RFSAsk.isOpen()) this.openAsk();
     else if (!onAgora && window.RFSAsk && window.RFSAsk.isOpen()) window.RFSAsk.close(true);
@@ -6225,7 +6248,7 @@ class Component extends DCLogic {
 
   // AGORA '선배님께 여쭙기': 분야를 하나씩 골라 선배님을 안내하고 첫 문자를 만들어 준다 (assets/ask.js)
   openAsk() {
-    if (!window.RFSAsk || !this.state.user) return;
+    if (!window.RFSAsk || !this.state.user || this.state.user.guest) return;
     const ID = this.state.intraData || {};
     window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
       onLogout: () => this.logout(), adminCount: this.state.joinPending, onAdmin: () => this.openJoinAdmin(),
@@ -6522,7 +6545,7 @@ class Component extends DCLogic {
         const el = [...document.querySelectorAll('[data-tab="' + t + '"]')].find((x) => x.offsetParent);
         if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - (el.hasAttribute('data-snap') ? 0 : window.innerWidth <= 860 ? 112 : 130), behavior: 'smooth' });
       },
-      isIntranet: s.page === 'intranet', agoraGate: s.page === 'intranet' && !authed, intraLocked: (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed, rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
+      isIntranet: s.page === 'intranet', agoraGate: s.page === 'intranet' && !authed, intraLocked: (s.page === 'strategy' && !!s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), intraOpen: s.page === 'intranet' && authed && !(s.user && s.user.guest), agoraGuest: s.page === 'intranet' && !!(s.user && s.user.guest), rfmOpen: s.page === 'rfm', fundOpen: s.page === 'fund', strategyOpen: s.page === 'strategy' && !(s.wkLogin && !(s.user && s.user.email === 'amt@caurfs.kr')), loginBack: s.page === 'strategy', loginBackGo: (e) => { e.preventDefault(); this.setState({ wkLogin: false, loginErr: '' }); },
       goFund: (e) => { e.preventDefault(); this.go('fund'); }, goRfm: (e) => { e.preventDefault(); this.go('rfm'); },
       loginLabel: s.page === 'rfm' ? 'RFM 순위' : s.page === 'strategy' ? 'Weekly Strategy 글쓰기' : 'Agora',
       loginPw: s.loginPw || '', loginErr: s.loginErr || '', hasLoginErr: !!s.loginErr, loginBusy: !!s.loginBusy,

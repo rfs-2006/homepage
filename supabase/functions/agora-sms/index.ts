@@ -52,6 +52,7 @@ Deno.serve(async (req) => {
   const asUser = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, { global: { headers: { Authorization: authHeader } } });
   const { data: u } = await asUser.auth.getUser();
   if (!u?.user) return json(401, { error: 'login' });
+  if (u.user.app_metadata?.role === 'guest') return json(403, { error: 'member_only' });   // 학회원만
   const admin = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
   let b: Record<string, unknown> = {};
