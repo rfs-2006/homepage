@@ -46,9 +46,9 @@
 .jn .row:first-of-type{margin-top:18px}\
 .jn .row .nm{font-size:15px}.jn .row .nm em{font-style:normal;color:rgba(247,246,243,.55);font-size:12.5px;margin-left:6px}\
 .jn .row .meta{margin-top:4px;font-size:12px;line-height:1.7;color:rgba(247,246,243,.6);word-break:break-all}\
-.jn .row .bt{display:flex;gap:6px}\
+.jn .row .bt{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}\
 .jn .row .bt button{height:36px;padding:0 14px;border:1px solid rgba(247,246,243,.35);background:none;color:#F7F6F3;font:inherit;font-size:12.5px;cursor:pointer}\
-.jn .row .bt button.ok{background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3}\
+.jn .row .bt button.mb{background:#F7F6F3;color:#0F1B2E;border-color:#F7F6F3}\
 .jn .row .bt button:disabled{opacity:.5;cursor:default}\
 .jn .empty{margin-top:20px;font-size:13.5px;color:rgba(247,246,243,.6)}\
 ';
@@ -147,7 +147,7 @@
   }
 
   function admin(o) {
-    var el = shell('<small class="k">ADMIN</small><h2>회원가입 승인</h2><p class="lead">승인하면 바로 로그인할 수 있어요. 거절하면 신청 정보가 바로 지워져요.</p><div class="ls"><p class="empty">불러오는 중…</p></div>');
+    var el = shell('<small class="k">ADMIN</small><h2>회원가입 승인</h2><p class="lead">학회원 승인은 AGORA까지, 일반 승인은 로그인과 POLARIS만 열려요. 거절하면 신청 정보가 바로 지워져요.</p><div class="ls"><p class="empty">불러오는 중…</p></div>');
     var ls = el.querySelector('.ls');
     var load = function () {
       call(o.sb, 'member-admin', { action: 'list' }).then(function (r) {
@@ -158,18 +158,20 @@
           var b = String(a.birth || ''), when = String(a.applied_at || '').slice(0, 16).replace('T', ' ');
           return '<div class="row" data-uid="' + esc(a.uid) + '"><div><div class="nm">' + esc(a.name) + '<em>' + (a.cohort ? esc(a.cohort) + '기' : '외부') + ' · ' + esc(a.nickname) + '</em></div>' +
             '<div class="meta">아이디 ' + esc(a.id) + ' · ' + esc(b.slice(0, 4) + '.' + b.slice(4, 6) + '.' + b.slice(6, 8)) + '<br>' + esc(a.email) + (a.blog ? '<br>' + esc(a.blog) : '') + '<br>신청 ' + esc(when) + ' (UTC)</div></div>' +
-            '<div class="bt"><button class="no" type="button">거절</button><button class="ok" type="button">승인</button></div></div>';
+            '<div class="bt"><button class="no" type="button">거절</button><button class="ok gs" type="button">일반 승인</button><button class="ok mb" type="button">학회원 승인</button></div></div>';
         }).join('');
         ls.querySelectorAll('.row').forEach(function (row) {
           var uid = row.getAttribute('data-uid'), bs = row.querySelectorAll('button');
-          var act = function (action) {
+          var act = function (action, role) {
             if (action === 'reject' && !window.confirm('거절하면 이 신청 정보가 바로 지워져요. 거절할까요?')) return;
             bs.forEach(function (x) { x.disabled = true; });
-            call(o.sb, 'member-admin', { action: action, uid: uid }).then(function (r2) {
+            call(o.sb, 'member-admin', { action: action, uid: uid, role: role }).then(function (r2) {
               if (r2 && r2.ok) load(); else { bs.forEach(function (x) { x.disabled = false; }); window.alert('처리하지 못했어요. 다시 시도해 주세요.'); }
             });
           };
-          row.querySelector('.ok').onclick = function () { act('approve'); };
+          // 학회원 승인: AGORA(명부·선배님 연결)까지. 일반 승인: 로그인·POLARIS만
+          row.querySelector('.mb').onclick = function () { act('approve', 'member'); };
+          row.querySelector('.gs').onclick = function () { if (window.confirm('일반 회원은 AGORA를 볼 수 없어요. 일반으로 승인할까요?')) act('approve', 'guest'); };
           row.querySelector('.no').onclick = function () { act('reject'); };
         });
       });
