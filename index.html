@@ -277,7 +277,21 @@ section.hero img{-webkit-user-drag:none}
 /* 홈 히어로 (블랙스톤형): 짙은 네이비, 계단식 세리프 제목, 아래 꽉 찬 소식 슬라이드. 양 끝은 메뉴(좌우 48px)와 맞춘다 */
 .bx-hero{position:relative;color:#F7F6F3;background:linear-gradient(180deg,#060D19 0%,#08111F 55%,#0B1524 100%);padding-top:clamp(150px,19vh,210px);overflow:hidden}
 .bx-x{box-sizing:border-box;width:100%;padding:0 35px}
-@media (min-width:1024px){.bx-x{padding:0 max(48px,calc((100vw - 1280px) / 2))}.nav.nav-home{padding:0 max(48px,calc((100vw - 1280px) / 2))}}   /* 블랙스톤처럼 본문 폭을 1280px로 모으고, 홈에서는 메뉴도 같은 폭에 맞춘다 */
+/* 데스크톱 홈은 화면 가로 비율로만 잡는다. 기준은 10/27에 정한 1920px 화면(가운데 1280px, 양옆 320px). 모니터·배율이 달라도 같은 비율. 다른 페이지는 그대로 */
+@media (min-width:1024px){
+.bx-x{padding:0 16.667vw}.nav.nav-home{padding:0 16.667vw}
+.nav.nav-home .navlinks{gap:2.083vw !important;font-size:max(10px,.729vw) !important}
+.nav.nav-home>a:first-child{zoom:var(--hz,1)}   /* 로고도 같은 비율로 (--hz = 화면 가로 / 1920, 아래 스크립트) */
+.bx-hero:not(.bx-m){padding-top:10.7vw}
+.bx-hero:not(.bx-m) .bx-h{font-size:4.8vw}
+.bx-hero:not(.bx-m) .bx-r{font-size:max(12px,1.146vw)}
+.bx-hero:not(.bx-m) .bx-bandx{margin-top:4.5vw}
+.bx-hero:not(.bx-m) .bx-band{height:34.9vw}
+.bx-hero:not(.bx-m) .bt-grid{width:min(48%,31.25vw)}
+.bx-hero:not(.bx-m) .bx-cap{margin-top:2.9vw;padding-bottom:6.25vw}
+.bx-hero:not(.bx-m) .bx-cap h3{font-size:2.5vw}
+.bx-hero:not(.bx-m) .bx-cap p{max-width:24vw;font-size:max(12px,.833vw)}
+}
 .bx-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px}
 .bx-hero .bx-h{margin:0;color:#F7F6F3;font-family:'Source Serif 4','Noto Serif KR',serif;font-weight:400;font-size:clamp(54px,4.8vw,92px);line-height:1.1;letter-spacing:-.014em}
 .bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
@@ -7107,6 +7121,8 @@ class Component extends DCLogic {
   });
   box.querySelector('.rc-bar button').onclick = close;
   // 리포트 용어 카드 등에서 질문을 바로 보내며 창을 연다
+  // 홈 로고 비율: 가로 1920px 기준 크기를 화면 폭에 맞춰 키우고 줄인다 (데스크톱 홈만 CSS에서 씀)
+  (function () { var f = function () { document.documentElement.style.setProperty('--hz', Math.max(0.6, innerWidth / 1920).toFixed(3)); }; f(); addEventListener('resize', f); })();
   // 왼쪽 여백 목차: 위 CONTENTS가 화면 위로 지나가면 켜고, 화면 위쪽 1/3을 지난 마지막 제목을 현재 장으로 표시
   (function () {
     var tick = false, jump = null;
