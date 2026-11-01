@@ -283,6 +283,7 @@ section.hero img{-webkit-user-drag:none}
 .bx-h b{font-weight:600}.bx-h span{display:inline-block;margin-left:1.6em}
 .bx-r{margin:0 0 .55em;font-family:'Noto Serif KR',serif;font-size:clamp(16px,1.3vw,22px);line-height:1.75;color:rgba(247,246,243,.9);white-space:nowrap}
 .bx-bandx{margin-top:clamp(56px,8vh,96px)}
+@media (min-width:1024px){.bx-hero:not(.bx-m) .bx-bandx{padding:0 max(9vw,calc((100vw - 1160px) / 2))}}   /* 소식 띠는 메뉴 폭보다 안쪽으로: 최대 1160px, 좁은 화면도 양옆 9% 여백 */
 .bx-band{position:relative;display:block;height:clamp(420px,62vh,720px);overflow:hidden;background:#0F1B2E;color:#F7F6F3;text-decoration:none;touch-action:pan-y}
 .bx-bg{position:absolute;inset:0}
 .bx-s-empty .bx-bg{display:none}.bx-s-empty{cursor:default}
