@@ -29,7 +29,7 @@ def load_reports():
 
 def is_bold(s):
     f = s['font'].lower()
-    return 'bold' in f or 'heavy' in f or 'black' in f
+    return 'bold' in f or 'heavy' in f or 'black' in f or bool(s.get('flags', 0) & 16)   # 글꼴 이름에 굵기가 없으면(CIDFont+F2) 굵음 표시로
 
 
 def lines_of(page):

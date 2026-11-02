@@ -17,7 +17,7 @@ def load_reports():
 
 def is_bold(span):
     f = span['font'].lower()
-    return 'bold' in f or 'heavy' in f or 'black' in f
+    return 'bold' in f or 'heavy' in f or 'black' in f or bool(span.get('flags', 0) & 16)   # 글꼴 이름이 CIDFont+F2처럼 굵기를 안 알려 주면 굵음 표시(flags 16)로
 
 def extract(path, xmax=0.55):
     page = pymupdf.open(path)[0]
