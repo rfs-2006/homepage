@@ -288,11 +288,71 @@
       fetchImgs(); sync();
     });
     node.addEventListener('drop', function (e) {
+      var zf = Array.prototype.filter.call((e.dataTransfer && e.dataTransfer.files) || [], function (f) { return /\.zip$/i.test(f.name); })[0];
+      if (zf) { e.preventDefault(); importZip(zf).catch(function (x) { window.alert(x.message || x); }); return; }
       var fs = Array.prototype.filter.call((e.dataTransfer && e.dataTransfer.files) || [], function (f) { return /^image\//.test(f.type); });
       if (!fs.length) return;
       e.preventDefault();
       if (document.caretRangeFromPoint) { var r = document.caretRangeFromPoint(e.clientX, e.clientY); if (r) lastRange = r; }
       insertHtml(fs.map(figFor).join(''));
+    });
+  }
+  // 노션 내보내기 zip(··· → 내보내기 → HTML): 안의 HTML과 사진 파일을 꺼내 편집기를 채운다. 개인 노션이어도 연결 없이 사진까지 들어온다
+  var zipLib = null;
+  function loadZip() {
+    if (window.JSZip) return Promise.resolve(window.JSZip);
+    if (!zipLib) zipLib = new Promise(function (ok, no) { var sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'; sc.onload = function () { ok(window.JSZip); }; sc.onerror = function () { zipLib = null; no(new Error('zip을 여는 도구를 불러오지 못했습니다. 잠시 후 다시 해 주세요')); }; document.head.appendChild(sc); });
+    return zipLib;
+  }
+  var MIME = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp' };
+  function importZip(file) {
+    if (!cur) return Promise.reject(new Error('글쓰기 칸을 먼저 열어 주세요'));
+    return loadZip().then(function (JSZip) {
+      var all = {};
+      // 노션은 큰 내보내기를 zip 안에 zip(Part-1…)으로 나눠 준다. 안쪽 zip까지 모두 펼친다
+      function open(data) {
+        return JSZip.loadAsync(data).then(function (z) {
+          var inner = [];
+          z.forEach(function (path, f) { if (f.dir || /(^|\/)__MACOSX\//.test(path)) return; if (/\.zip$/i.test(path)) inner.push(f); else all[path] = f; });
+          return Promise.all(inner.map(function (f) { return f.async('arraybuffer').then(open); }));
+        });
+      }
+      return open(file).then(function () {
+        var htmls = Object.keys(all).filter(function (k) { return /\.html?$/i.test(k); })
+          .sort(function (a, b) { return a.split('/').length - b.split('/').length || a.length - b.length; });
+        if (!htmls.length) throw new Error('zip 안에 노션 HTML이 없습니다. 노션에서 내보내기 형식을 HTML로 골라 주세요');
+        var hp = htmls[0];
+        return all[hp].async('string').then(function (txt) {
+          var doc = new DOMParser().parseFromString(txt, 'text/html');
+          var root = doc.querySelector('article') || doc.body;
+          // 노션은 사진을 같은 파일로 가는 링크로 감싼다. 링크는 벗겨 사진만 남긴다
+          root.querySelectorAll('a').forEach(function (a) { if (a.querySelector('img')) { while (a.firstChild) a.parentNode.insertBefore(a.firstChild, a); a.remove(); } });
+          var ims = Array.prototype.slice.call(root.querySelectorAll('img'));
+          return Promise.all(ims.map(function (im) {
+            var src = im.getAttribute('src') || '';
+            if (/^(https?:|data:)/i.test(src)) return;
+            var path = '';
+            try { path = decodeURIComponent(new URL(src, 'http://z/' + hp.split('/').map(encodeURIComponent).join('/')).pathname).replace(/^\//, ''); } catch (e) { path = src; }
+            var f = all[path] || all[src];
+            if (!f) { im.setAttribute('src', 'attachment:missing'); return; }
+            var ext = (path.split('.').pop() || '').toLowerCase();
+            return f.async('blob').then(function (b) { im.setAttribute('src', blobOf(new File([b], path.split('/').pop(), { type: MIME[ext] || b.type || 'image/png' }))); });
+          })).then(function () {
+            var has = (cur.textContent || '').trim() || cur.querySelector('img');
+            if (has && !window.confirm('지금 쓴 내용을 노션 내보내기 내용으로 바꿀까요?')) return;
+            pasting = true;
+            try { cur.innerHTML = clean(root.innerHTML); } finally { pasting = false; }
+            fetchImgs(); sync();
+          });
+        });
+      });
+    });
+  }
+  function pickZip() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.zip,application/zip'; inp.style.display = 'none'; document.body.appendChild(inp);
+    return new Promise(function (ok, no) {
+      inp.onchange = function () { var f = inp.files && inp.files[0]; inp.remove(); if (!f) return ok(); importZip(f).then(ok, no); };
+      inp.click();
     });
   }
   // 올리기: 사진을 저장소에 올려 주소를 바꾸고, 정리한 HTML을 돌려준다
@@ -320,6 +380,6 @@
   }
   function reset() { draft = ''; lastRange = null; files.forEach(function (_, u) { URL.revokeObjectURL(u); }); files.clear(); if (cur) { cur.innerHTML = ''; sync(); } }
 
-  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, report: report, text: text, attach: attach, pick: function () { pick(null); }, collect: collect, reset: reset, setProxy: function (f) { proxy = f; } };
+  window.RFSWk = { clean: clean, isRich: isRich, render: render, sheet: sheet, report: report, text: text, attach: attach, pick: function () { pick(null); }, pickZip: pickZip, importZip: importZip, collect: collect, reset: reset, setProxy: function (f) { proxy = f; } };
   if (window.__wkReady) window.__wkReady();
 })();
