@@ -196,7 +196,7 @@ TOOLS = [
          'part': {'type': 'string', 'enum': list(PARTS)},
          'semester': {'type': 'string', 'description': "같은 회사 리포트가 여럿이면 'YY-1'/'YY-2'. 비우면 최근 것"}},
          'required': ['company', 'part']}},
-    {'name': 'report_file', 'description': '홈페이지에 올라간 정규 리포트의 PDF 받기 버튼을 답 아래에 붙인다. 사용자가 파일을 달라고 할 때만.',
+    {'name': 'report_file', 'description': '홈페이지에 올라간 정규 기업·산업 리포트의 PDF 받기 버튼을 답 아래에 붙인다. 사용자가 파일을 달라고 할 때만.',
      'input_schema': {'type': 'object', 'properties': {
          'company': {'type': 'string'}, 'semester': {'type': 'string', 'description': "'YY-1'/'YY-2', 비우면 최근 것"}},
          'required': ['company']}},
@@ -319,7 +319,7 @@ class Chat:
             doc = self._find_report(inp['company'], inp.get('semester', ''))
             site = a.site.get(doc)
             if not site:
-                return [{'type': 'text', 'text': f"'{inp['company']}'는 홈페이지에 올라간 정규 리포트가 아니라 PDF가 없다. 사용자에게: 정규 리포트만 파일로 받을 수 있고, 내용은 설명해 드릴 수 있다고 한 문장으로."}]
+                return [{'type': 'text', 'text': f"'{inp['company']}'는 홈페이지에 올라간 정규 기업·산업 리포트가 아니라 PDF가 없다. 사용자에게: 정규 기업·산업 리포트만 파일로 받을 수 있고, 내용은 설명해 드릴 수 있다고 한 문장으로."}]
             f = {'name': site['name'], 'pdf': site['pdf'], 'page': site['page']}
             if f not in self.file_out:
                 self.file_out.append(f)
