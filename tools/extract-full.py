@@ -425,7 +425,8 @@ def industry_p1(doc, save):
     else:
         img = None
     if not secs and not view:   # 1쪽이 표지 그림뿐인 옛 양식(21-2 바이오 등): 1쪽은 비우고 제목 아래 바로 본문
-        return {'head': '', 'sections': [], 'view': [], 'side': None}
+        big = max(ls, key=lambda l: l['size'], default=None)
+        return {'head': '', 'sections': [], 'view': [], 'side': None, 'cover': {'title': big['text'].strip() if big else ''}}
     return {'head': head, 'sections': secs, 'view': view, 'side': img}
 
 
