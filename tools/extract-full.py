@@ -424,8 +424,8 @@ def industry_p1(doc, save):
         img = save(page, (sx - 4, tp['y0'] - 6, W - 12, min(y1, stop - 4)))
     else:
         img = None
-    if not secs and not view:   # 1쪽이 표지 그림뿐인 옛 양식(21-2 바이오 등): 1쪽을 통째로 그림으로
-        return {'head': '', 'sections': [], 'view': [], 'side': None, 'cover': save(page, page.rect)}
+    if not secs and not view:   # 1쪽이 표지 그림뿐인 옛 양식(21-2 바이오 등): 1쪽은 비우고 제목 아래 바로 본문
+        return {'head': '', 'sections': [], 'view': [], 'side': None}
     return {'head': head, 'sections': secs, 'view': view, 'side': img}
 
 

@@ -1427,7 +1427,6 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .ind-view{display:flex;flex-direction:column;align-items:center;gap:8px;padding:30px 10px 24px;background:#D9D9D9;margin:0 -14px;color:#000}
 .ind-view span{font-size:15px;font-weight:500}.ind-view b{font-size:30px;font-weight:400;text-decoration:underline;text-underline-offset:7px;text-decoration-thickness:1px}.ind-view small{font-size:12px;color:#404040}
 .ind-p1 aside img{width:100%;height:auto;display:block;mix-blend-mode:multiply}
-.ind-cover{display:block;width:100%;height:auto;margin-top:20px;border:1px solid #E4E2DC}
 .ind-p1 aside:not(:has(.ind-view)){padding-top:24px}
 .ind-p1-btn{display:block;text-align:center;background:#002060;color:#fff;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.08em;text-decoration:none}
 .ind-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid #D0CECE;color:rgba(26,26,26,.6)}.ind-meta b{font-weight:400;color:#1A1A1A;text-align:right}
@@ -2371,7 +2370,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ rIsInd }}" hint-placeholder-val="{{ false }}">
           <div class="ind-band"><img src="assets/rfs-seal-light-256.png" alt=""><span class="ib-l"><b>R.F.S</b><small>Rising Financial Stars</small></span><span class="ib-r">{{ rDate }}<i>│</i>Sector Analysis</span></div>
           <div class="ind-p1">
-            <div style="min-width:0"><h1 class="ind-title">{{ rNameOnly }}</h1><sc-if value="{{ rIndHasCover }}" hint-placeholder-val="{{ false }}"><img class="ind-cover" src="{{ rIndCover }}" alt="{{ rNameOnly }} 산업 리포트 1쪽"></sc-if>
+            <div style="min-width:0"><h1 class="ind-title">{{ rNameOnly }}</h1>
             <h2 class="ind-head">{{ rIndHead }}</h2>
             <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
               <sc-for list="{{ rP1 }}" as="sec" hint-placeholder-count="4">
@@ -7003,8 +7002,7 @@ class Component extends DCLogic {
       rIndView: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [],
       rIndViewTop: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[0] || '', rIndViewMain: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[1] || '', rIndViewSub: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[2] || '',
       rIndSide: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side) ? '/assets/reports/full/' + s.full[active.id].p1.side.src + '?v=' + DATA_VER : '',
-      rIndCover: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover) ? '/assets/reports/full/' + s.full[active.id].p1.cover.src + '?v=' + DATA_VER : '',
-      rIndHasCover: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover), rIndHasView: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && (s.full[active.id].p1.view || []).length),
+      rIndHasView: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && (s.full[active.id].p1.view || []).length),
       rIndHasSide: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side),
       rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
