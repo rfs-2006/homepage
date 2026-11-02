@@ -30,7 +30,7 @@ const BROWSERS = [
 ];
 
 function loadReports() {
-  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8') + '\n' + fs.readFileSync(path.join(ROOT, 'assets', 'app.js'), 'utf8');   // REPORTS는 assets/app.js에
   const start = html.indexOf('const REPORTS = [');
   const open = html.indexOf('[', start);
   let depth = 0, quote = null, i = open;

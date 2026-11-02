@@ -23,7 +23,7 @@ const json = (o) => JSON.stringify(o).replace(/<\//g, '<\\/');
 
 // ---------- index.html에서 데이터 읽기 ----------
 
-const HTML = read('index.html');
+const HTML = read('index.html') + '\n' + read('assets/app.js');   // 데이터(RECRUIT·REPORTS 등)는 assets/app.js에
 
 // start 위치의 '[' 또는 '{'부터 짝이 맞는 닫는 괄호까지 잘라 JS 리터럴로 평가한다
 function literalAt(start) {
@@ -263,12 +263,14 @@ function indPage(x) {
   const [yy, hh] = x.sem.split('-');
   const semKo = `20${yy}년 ${hh}학기`;
   const head1 = p1.head || (p1.cover && p1.cover.title) || '';
-  const title = `${x.name} 리포트${head1 ? ' — ' + head1 : ''} | R.F.S. 중앙대 가치투자학회`;
-  const desc = (`${semKo} R.F.S. 산업분석. ` + (first || toc.join(' · '))).slice(0, 155);
-  const nm = x.name.replace(/\s*산업$/, '');
+  const nm0 = x.name.replace(/\s*산업$/, '');
+  const dupOlder = indWeb.some((y) => y !== x && y.name.replace(/\s*산업$/, '') === nm0 && y.date > x.date);   // 같은 산업이 또 있으면 옛것에 연도
+  const title = `${nm0} 산업 전망${dupOlder ? ` (${x.date.slice(0, 4)})` : ''} | 산업분석 리포트 - 중앙대 RFS`;
+  const desc = (`${nm0} 산업 전망. ${semKo} R.F.S. 산업분석${head1 ? ' — ' + head1 : ''}. ` + (first || toc.join(' · '))).slice(0, 155);
+  const nm = nm0;
   const keywords = [`${x.name}`, `${nm} 산업 분석`, `${nm} 산업 전망`, `${x.name} 리포트`, `${x.name} 보고서`, '산업분석 리포트', ...C.PAGE_BRAND_KEYWORDS];
   const ld = [{
-    '@context': 'https://schema.org', '@type': 'Report', headline: `${x.name}${head1 ? ' — ' + head1 : ''}`, description: desc,
+    '@context': 'https://schema.org', '@type': 'Report', headline: title.replace(/ - 중앙대 RFS$/, ''), description: desc,
     datePublished: isoD(x.date), inLanguage: 'ko', url, author: ORG, publisher: ORG, about: { '@type': 'Thing', name: x.name },
     associatedMedia: { '@type': 'MediaObject', contentUrl: `${C.SITE}/${x.pdf}`, encodingFormat: 'application/pdf' },
   }, {
@@ -350,6 +352,17 @@ write('people/index.html', peoplePage());
 write('recruiting/index.html', recruitingPage());
 write('privacy/index.html', privacyPage());
 for (const x of indWeb) write(`research/ind-${x.id}/index.html`, indPage(x));
+
+// 홈 index.html의 <noscript>에 리포트 링크 전부 (화면은 JS로 그려서 검색엔진이 따라갈 링크가 HTML에 없다. JS가 켜진 화면에는 안 보인다)
+{
+  const reps = constant('REPORTS');
+  const links = [...reps].sort((a, b) => b.date.localeCompare(a.date)).map((r) => `<li><a href="/research/${r.id}/">${esc(`${r.name} (${r.ticker}) 기업분석 리포트`)}</a></li>`).join('') +
+    [...indWeb].sort((a, b) => b.date.localeCompare(a.date)).map((x) => `<li><a href="/research/ind-${x.id}/">${esc(`${x.name} 산업분석 리포트`)}</a></li>`).join('');
+  const block = `<!--seo-links--><nav aria-label="리포트"><h2>리포트</h2><ul>${links}</ul></nav><!--/seo-links-->`;
+  let home = read('index.html');
+  home = /<!--seo-links-->[\s\S]*?<!--\/seo-links-->/.test(home) ? home.replace(/<!--seo-links-->[\s\S]*?<!--\/seo-links-->/, () => block) : home.replace('\n</noscript>', () => '\n' + block + '\n</noscript>');
+  write('index.html', home);
+}
 
 // /research/ 목록에 산업 리포트 칸 (build-site.js가 새로 쓴 뒤에 붙인다)
 {

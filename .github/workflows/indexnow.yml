@@ -1,0 +1,33 @@
+name: IndexNow 알림
+
+# main에 페이지(HTML·sitemap·rss)가 바뀌어 올라오면, Netlify 배포가 끝나길 기다렸다가
+# 바뀐 주소만 네이버 서치어드바이저·빙에 IndexNow로 알린다. 실패해도 배포와는 상관없다.
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**/*.html'
+      - 'sitemap.xml'
+      - 'rss.xml'
+  workflow_dispatch:
+
+concurrency:
+  group: indexnow
+  cancel-in-progress: false
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    continue-on-error: true
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Notify
+        run: node tools/indexnow.js "${{ github.event.before || 'HEAD~1' }}" --wait

@@ -18,7 +18,7 @@ BODY_X = 165      # 본문 왼쪽 끝 기본값. 리포트마다 실제 본문 �
 
 
 def load_reports():
-    html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+    html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read() + '\n' + open(os.path.join(ROOT, 'assets', 'app.js'), encoding='utf-8').read()   # REPORTS 등은 assets/app.js에
     i = html.index('const REPORTS = [')
     reps = dict(re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", html[i:html.index('\n];', i)], re.S))
     # 산업 리포트(INDUSTRY)는 'ind-<카페 글 번호>'로 뽑는다

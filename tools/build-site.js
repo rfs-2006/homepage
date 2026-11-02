@@ -23,8 +23,11 @@ const SHELL = fs.readFileSync(path.join(__dirname, 'page-shell.html'), 'utf8');
 
 // ---------- 데이터 ----------
 
+// 앱 로직·데이터(REPORTS 등)는 assets/app.js에 있다 (예전 index.html 안 data-dc-script)
+const appSource = () => read('index.html') + '\n' + read('assets/app.js');
+
 function loadReports() {
-  const html = read('index.html');
+  const html = appSource();
   const start = html.indexOf('const REPORTS = [');
   if (start < 0) throw new Error('index.html에서 const REPORTS를 찾지 못했습니다');
   const open = html.indexOf('[', start);
@@ -117,15 +120,19 @@ function ogImage(r) {
   return { url: C.SITE + (og || cover || C.DEFAULT_IMAGE), large: Boolean(og || cover) };
 }
 
+// 검색어(Search Console 기준 '○○ 주가 전망', '○○ 리포트', '○○ 기업분석')가 60자 안쪽 앞부분에 오게
+function seoTitle(r, yearSuffix = '') {
+  const nm = koName(r) || r.name;
+  const head = hasTp(r) ? `${nm} 주가 전망·목표주가 ${r.tp}` : `${nm} 주가 전망`;
+  return `${head} | ${nm}(${r.ticker}) 기업분석 리포트${yearSuffix}`;
+}
 function reportSeo(r, { yearSuffix, groupKeywords }) {
-  const ko = koName(r);
-  const display = ko ? `${r.name} (${ko})` : r.name;
+  const nm = koName(r) || r.name;
   const url = `${C.SITE}/research/${r.id}/`;
-  const title = `${display} 기업분석 리포트${yearSuffix} | 중앙대 가치투자학회 RFS`;
-  const idPart = ko ? `${r.name}(${ko}, ${r.ticker})` : `${r.name}(${r.ticker})`;
-  const lead = `${idPart} 기업분석 리포트. 투자의견 ${r.op}${hasTp(r) ? `, 목표주가 ${r.tp}` : ''}. `;
-  const desc = clip(`${lead}${r.headline} — ${r.summary}`, 150);
-  const ogTitle = `${r.name} (${ko ? `${ko}, ` : ''}${r.ticker}) 기업분석 리포트 · ${r.op}${hasTp(r) ? ` · 목표주가 ${r.tp}` : ''} | R.F.S.`;
+  const title = `${seoTitle(r, yearSuffix)} - 중앙대 RFS`;
+  const lead = `${nm} 주가 전망, 투자의견 ${r.op}${hasTp(r) ? `, 목표주가 ${r.tp}` : ''}. `;
+  const desc = clip(`${lead}${r.summary}`, 155);
+  const ogTitle = title;
   const img = ogImage(r);
   const keywords = uniq([...groupKeywords, ...C.PAGE_BRAND_KEYWORDS]).join(', ');
   return [
@@ -160,7 +167,7 @@ function reportPage(r, sorted, seoOpts) {
   const ld = [
     {
       '@context': 'https://schema.org', '@type': 'Report',
-      headline: `${r.name} (${r.ticker}) — ${r.headline}`,
+      headline: seoTitle(r, seoOpts.yearSuffix),
       description: r.summary, datePublished: isoDate(r.date), inLanguage: 'ko', url,
       ...(r.cover ? { image: `${C.SITE}/${r.cover}` } : {}),
       author: ORG, publisher: ORG,
@@ -268,6 +275,19 @@ function sitemap(sorted) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join('\n')}\n</urlset>\n`;
 }
 
+// ---------- RSS ----------
+
+const RSS_LINK = `<link rel="alternate" type="application/rss+xml" title="R.F.S. 리포트" href="${C.SITE}/rss.xml">`;
+const xmlEsc = (s) => esc(s).replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+function rss(sorted) {
+  const rfc = (d) => new Date(`${isoDate(d)}T09:00:00+09:00`).toUTCString();
+  const items = sorted.slice(0, 50).map((r) => {
+    const url = `${C.SITE}/research/${r.id}/`;
+    return `<item><title>${xmlEsc(seoTitle(r))}</title><link>${url}</link><guid isPermaLink="true">${url}</guid><pubDate>${rfc(r.date)}</pubDate><description>${xmlEsc(r.summary || r.headline || '')}</description></item>`;
+  });
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n<channel>\n<title>R.F.S. 리포트 | 중앙대학교 가치투자학회</title>\n<link>${C.SITE}/research/</link>\n<atom:link href="${C.SITE}/rss.xml" rel="self" type="application/rss+xml"/>\n<description>중앙대학교 가치투자학회 R.F.S.가 발간한 기업분석 리포트</description>\n<language>ko</language>\n<lastBuildDate>${rfc(sorted[0].date)}</lastBuildDate>\n${items.join('\n')}\n</channel>\n</rss>\n`;
+}
+
 // ---------- 루트 index.html head ----------
 
 function patchRoot(rootKw) {
@@ -280,6 +300,18 @@ function patchRoot(rootKw) {
     root = root.replace(/<meta property="og:image" content="[^"]*">\n(?:<meta property="og:image:(?:width|height)" content="\d+">\n)*/,
       () => `<meta property="og:image" content="${C.SITE}${og}">\n<meta property="og:image:width" content="1200">\n<meta property="og:image:height" content="630">\n`);
     root = root.replace(/<meta name="twitter:card" content="[^"]*">/, '<meta name="twitter:card" content="summary_large_image">');
+  }
+  if (!root.includes('application/rss+xml')) root = root.replace(/(<link rel="canonical"[^>]*>\n)/, (m) => m + RSS_LINK + '\n');
+  write('index.html', root);
+}
+
+// index.html의 /assets/app.js·app.css 주소 뒤 ?v=를 파일 내용 해시로 (/assets/는 브라우저에 하루 남으므로 고치면 바뀌어야 한다)
+function stampApp() {
+  const crypto = require('crypto');
+  let root = read('index.html');
+  for (const f of ['app.js', 'app.css']) {
+    const v = crypto.createHash('sha1').update(fs.readFileSync(path.join(ROOT, 'assets', f))).digest('hex').slice(0, 10);
+    root = root.split(new RegExp(`/assets/${f.replace('.', '\\.')}\\?v=[0-9a-f]+`)).join(`/assets/${f}?v=${v}`);
   }
   write('index.html', root);
 }
@@ -314,6 +346,8 @@ function main() {
   patchRoot(rootKw);
 
   write('sitemap.xml', sitemap(sorted));
+  write('rss.xml', rss(sorted));
+  stampApp();
   const robots = read('robots.txt');
   if (!/^Sitemap:/m.test(robots)) write('robots.txt', robots.replace(/\n?$/, '\n') + `Sitemap: ${C.SITE}/sitemap.xml\n`);
 
