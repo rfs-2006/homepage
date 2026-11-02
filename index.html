@@ -117,7 +117,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <script src="./image-slot.js?v=2"></script>
 <script src="./assets/ask.js?v=19" defer></script>
-<script src="./assets/wk-rich.js?v=6" defer></script>
+<script src="./assets/wk-rich.js?v=8" defer></script>
 <script src="./assets/wk-print.js?v=8" defer></script>
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=5" defer></script>
@@ -1899,6 +1899,12 @@ html.wk-solid .nav{background:rgba(11,21,36,0.94) !important;-webkit-backdrop-fi
 .wk-rich.wkp code{background:#F2F2F2;color:#000}.wk-rich.wkp pre{background:#F7F7F7;border-color:#E3E3E3;color:#000;margin-top:10px}
 .wk-rich.wkp blockquote{margin:14px 0;border-left:2px solid #A6A6A6;color:#404040;font-family:'RFS Report Dotum',sans-serif;font-size:1em}
 .wk-rich.wkp aside.callout{margin:16px 0;background:#001F5F;border-left:0;color:#FFFFFF;padding:14px 18px;font-size:15.5px;font-weight:500;text-align:left}.wk-rich.wkp aside.callout p{margin:0}.wk-rich.wkp aside.callout strong{color:#FFFFFF}.wk-rich.wkp aside.callout a{color:#FFFFFF;border-bottom-color:rgba(255,255,255,0.5)}
+/* 남색 칸은 한두 줄 강조용. 제목·토글·목록·표·사진이 든 큰 콜아웃(노션에서 섹션을 통째로 콜아웃에 넣은 경우)은 연한 상자로 */
+.wk-rich.wkp aside.callout:has(h2,h3,details,ul,ol,.tbl,figure,p+p+p){background:#F2F5FB;color:#1A1A1A;border-left:3px solid #001F5F;font-weight:400;padding:16px 20px}
+.wk-rich.wkp aside.callout:has(h2,h3,details,ul,ol,.tbl,figure,p+p+p) strong{color:#000}
+.wk-rich.wkp aside.callout:has(h2,h3,details,ul,ol,.tbl,figure,p+p+p) a{color:#002060;border-bottom-color:rgba(0,32,96,0.35)}
+.wk-rich.wkp aside.callout:has(h2,h3,details,ul,ol,.tbl,figure,p+p+p) p+p{margin-top:6px}
+.wk-rich.wkp aside.callout>h2:first-child,.wk-rich.wkp aside.callout>h3:first-child{margin-top:0}
 .wk-rich.wkp hr{background:#A6A6A6;margin:24px 0;overflow:hidden}
 .wk-rich.wkp details,.wk-rich.wkp aside.callout,.wk-rich.wkp blockquote,.wk-rich.wkp figure,.wk-rich.wkp pre{overflow:hidden}.wk-rich.wkp .tbl{overflow-x:auto}
 .wk-rich.wkp figure{margin:16px 0 6px}.wk-rich.wkp figure img{box-shadow:none;border:0;max-height:560px}
@@ -1917,7 +1923,7 @@ html.wk-solid .nav{background:rgba(11,21,36,0.94) !important;-webkit-backdrop-fi
 .wk-ed.empty::before{content:attr(data-ph);color:rgba(247,246,243,0.4);pointer-events:none;display:block}
 .wk-ed figure.wait img{opacity:.35}.wk-ed figure.wait{position:relative}.wk-ed figure.wait::after{content:'노션 사진 불러오는 중…';position:absolute;left:12px;top:10px;font-size:12px;color:#F7F6F3}
 .wk-ed figure.miss{position:relative;cursor:pointer;outline:1px dashed #E8A1A1;min-height:80px}.wk-ed figure.miss img{opacity:.25}
-.wk-ed figure.miss::after{content:'이 사진은 노션에서 가져오지 못했습니다 · 눌러서 다시 올리기';position:absolute;left:12px;top:10px;right:12px;font-size:12.5px;color:#F2C6C6}
+.wk-ed figure.miss::after{content:'이 사진은 노션에서 가져오지 못했습니다 · 눌러서 사진 넣기 (여러 장 고르면 아래 빈 칸까지 차례로)';position:absolute;left:12px;top:10px;right:12px;font-size:12.5px;color:#F2C6C6}
 .wk-tip{font-size:12px;color:rgba(247,246,243,0.5)}
 .wk-pics .wk-add{width:auto;height:auto;padding:9px 14px;text-decoration:none}
 
@@ -3300,7 +3306,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><div class="wk-row"><input class="intra-input" type="date" value="{{ wkMon }}" onChange="{{ onWkMon }}"><div class="wk-auto"><small>제목 (자동)</small><b>{{ wkAutoTitle }}</b></div></div></sc-if>
         <sc-if value="{{ wkIsNotice }}" hint-placeholder-val="{{ false }}"><input class="intra-input" placeholder="공지 제목" value="{{ wkTitle }}" onChange="{{ onWkTitle }}"></sc-if>
         <div class="wk-ed wk-rich wkp empty" data-ph="본문. 노션 페이지에서 전체 선택(Ctrl+A / ⌘A) 후 복사해 여기에 붙여넣으면 제목·토글·콜아웃·표·사진이 그대로 들어옵니다."></div>
-        <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkPick }}">＋ 사진 추가</a><span class="wk-tip">캡처한 사진은 바로 붙여넣거나 끌어다 놓아도 됩니다</span></div>
+        <div class="wk-pics"><a href="#" class="wk-add" onClick="{{ wkZip }}">노션 내보내기(zip) 불러오기</a><span class="wk-tip">노션 ··· → 더 보기 → 내보내기 → HTML</span></div>
         <input class="intra-input" placeholder="노션 링크 (선택)" value="{{ wkLink }}" onChange="{{ onWkLink }}">
         <sc-if value="{{ wkIsStrat }}" hint-placeholder-val="{{ true }}"><label class="wk-lab">매니저의 한마디<input class="intra-input" placeholder="보고서 표지에 들어갈 한 줄 (비워 둬도 됨)" value="{{ wkNote }}" onChange="{{ onWkNote }}"></label><label class="wk-lab">운용 인력<textarea class="intra-input wk-team" rows="5" placeholder="한 줄에 한 명 · 이름 · 직책 · 담당 섹터 · 기수 · 주요 경력" value="{{ wkTeamTxt }}" onChange="{{ onWkTeam }}"></textarea></label></sc-if>
         <div class="wk-acts"><button class="wk-btn" type="submit">{{ wkSubmitLabel }}</button><a href="#" class="wk-fbbtn" onClick="{{ wkPolRun }}">{{ wkPolLabel }}</a><sc-if value="{{ wkPolUndo }}" hint-placeholder-val="{{ false }}"><a href="#" class="wk-fbbtn" onClick="{{ wkPolBack }}">되돌리기</a></sc-if><a href="#" class="wk-fbbtn" onClick="{{ wkFbRun }}">{{ wkFbLabel }}</a><a href="#" onClick="{{ wkToggleWrite }}">취소</a><p class="wk-err">{{ wkErr }}</p></div>
@@ -6037,6 +6043,7 @@ class Component extends DCLogic {
         this.setState({ wkFiles: [...cur, ...add], wkBody: next });
       },
       wkPick: (e) => { e.preventDefault(); window.RFSWk && window.RFSWk.pick(); },
+      wkZip: (e) => { e.preventDefault(); window.RFSWk && window.RFSWk.pickZip && window.RFSWk.pickZip().catch((x) => this.setState({ wkErr: (x && x.message) || String(x) })); },
       wkFileNote: (s.wkFiles || []).length ? '사진 ' + s.wkFiles.length + '장' : '',
       wkBusy: !!s.wkBusy, wkSubmitLabel: s.wkBusy ? '올리는 중…' : '올리기',
       wkSubmit: async (e) => {
