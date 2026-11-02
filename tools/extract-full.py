@@ -418,9 +418,14 @@ def industry_p1(doc, save):
     if tp:   # 아래 끝: Research Team 줄 앞, 그 사이 빈칸은 버리고 차트 축 글씨까지
         stop = rt['y0'] if rt else page.rect.height * 0.72
         y1 = max([l['y1'] for l in side if tp['y0'] <= l['y0'] < stop] + [tp['y1']]) + 8
+        si = next((l for l in side if l['text'].strip().lower().startswith('sector index')), None)
+        if si and y1 < si['y1'] + 60:   # 차트가 글자 없는 그림이면 축 글씨가 없어 제목에서 끊긴다 → Research Team 줄 앞까지
+            y1 = stop - 4
         img = save(page, (sx - 4, tp['y0'] - 6, W - 12, min(y1, stop - 4)))
     else:
         img = None
+    if not secs and not view:   # 1쪽이 표지 그림뿐인 옛 양식(21-2 바이오 등): 1쪽을 통째로 그림으로
+        return {'head': '', 'sections': [], 'view': [], 'side': None, 'cover': save(page, page.rect)}
     return {'head': head, 'sections': secs, 'view': view, 'side': img}
 
 
