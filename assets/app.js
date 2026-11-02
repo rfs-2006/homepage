@@ -2791,7 +2791,10 @@ class Component extends DCLogic {
     const r = REPORTS.find((x) => x.id === reportId);
     const ir = !r && /^ind-/.test(reportId || '') && INDUSTRY.find((x) => 'ind-' + x.id === reportId);
     // 정적 페이지(/research/<id>/ 등)로 들어온 첫 화면은 그 페이지가 정한 검색용 제목을 그대로 둔다 (tools/build-site.js·build-pages.js)
-    if (!this._titled) { this._titled = true; if (location.pathname !== '/' && document.title) return; }
+    const tk = page + '|' + (page === 'report' ? reportId : '');
+    if (this._titleKey === undefined) this._titleKey = location.pathname !== '/' && document.title ? tk : null;
+    if (tk === this._titleKey) return;
+    this._titleKey = null;
     document.title = page === 'report' && ir ? ir.name.replace(/\s*산업$/, '') + ' 산업 전망 | 산업분석 리포트 - 중앙대 RFS'
       : page === 'report' && r ? r.name + ' 주가 전망' + (r.tp && r.tp !== '-' ? '·목표주가 ' + r.tp : '') + ' | ' + r.name + '(' + r.ticker + ') 기업분석 리포트 - 중앙대 RFS'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
