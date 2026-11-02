@@ -254,7 +254,14 @@
     picker.onchange = function () {
       var fs = Array.prototype.filter.call(picker.files || [], function (f) { return /^image\//.test(f.type); }); picker.value = '';
       if (!fs.length) return;
-      if (replaceImg) { replaceImg.src = blobOf(fs[0]); replaceImg.setAttribute('data-k', 'ok'); var fg = replaceImg.closest('figure'); if (fg) { fg.classList.remove('miss'); fg.removeAttribute('contenteditable'); } sync(); return; }
+      if (replaceImg) {
+        // 여러 장을 고르면 누른 칸부터 아래로 빈 칸(빨간 칸)을 차례로 채운다
+        var slots = Array.prototype.slice.call(cur.querySelectorAll('img[data-k="miss"]'));
+        slots = slots.slice(Math.max(0, slots.indexOf(replaceImg)));
+        if (slots[0] !== replaceImg) slots.unshift(replaceImg);
+        fs.forEach(function (f, i) { var im = slots[i]; if (!im) return; im.src = blobOf(f); im.setAttribute('data-k', 'ok'); var fg = im.closest('figure'); if (fg) { fg.classList.remove('miss'); fg.removeAttribute('contenteditable'); } });
+        sync(); return;
+      }
       insertHtml(fs.map(figFor).join(''));
     };
     picker.click();
@@ -293,7 +300,11 @@
     var box = node.cloneNode(true);
     if (box.querySelector('img[data-k="wait"]')) return Promise.reject(new Error('노션 사진을 불러오는 중입니다. 잠시 후 다시 눌러 주세요'));
     var miss = box.querySelectorAll('img[data-k="miss"]').length;
-    if (miss) return Promise.reject(new Error('노션에서 가져오지 못한 사진이 ' + miss + '장 있습니다. 빨간 칸을 눌러 사진을 다시 올려 주세요'));
+    if (miss) {
+      if (!window.confirm('노션에서 가져오지 못한 사진이 ' + miss + '장 있습니다.\n이 사진만 빼고 올릴까요?\n\n(취소하면 빨간 칸을 눌러 사진을 넣을 수 있어요. 여러 장을 한꺼번에 고르면 빈 칸을 차례로 채워요)'))
+        return Promise.reject(new Error('노션에서 가져오지 못한 사진이 ' + miss + '장 있습니다. 빨간 칸을 눌러 사진을 넣어 주세요 (여러 장 한꺼번에 가능)'));
+      box.querySelectorAll('img[data-k="miss"]').forEach(function (im) { var fg = im.closest('figure'); (fg || im).remove(); });
+    }
     var ims = Array.prototype.slice.call(box.querySelectorAll('img'));
     return ims.reduce(function (pr, im) {
       return pr.then(function () {
