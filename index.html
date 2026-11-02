@@ -1428,12 +1428,18 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .ind-view span{font-size:15px;font-weight:500}.ind-view b{font-size:30px;font-weight:400;text-decoration:underline;text-underline-offset:7px;text-decoration-thickness:1px}.ind-view small{font-size:12px;color:#404040}
 .ind-p1 aside img{width:100%;height:auto;display:block;mix-blend-mode:multiply}
 .ind-p1 aside:not(:has(.ind-view)){padding-top:24px}
-.ind-cov{position:relative;background:#0B2266;color:#fff;aspect-ratio:1/1.1;max-height:640px;padding:22% 9% 8%;display:flex;flex-direction:column;box-sizing:border-box}
+.ind-cov{position:relative;background:#0B2266;color:#fff;aspect-ratio:210/297;padding:30% 9% 9%;display:flex;flex-direction:column;box-sizing:border-box}
 .ind-cov .ic-tag{margin:0;font-size:15px;letter-spacing:.04em}.ind-cov .ic-title{margin:10px 0 0;font-size:38px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
 .ind-cov .ic-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid rgba(255,255,255,.7);padding-bottom:10px}
 .ind-cov .ic-foot>span:first-child{display:flex;flex-direction:column;gap:6px;font-size:12px}.ind-cov .ic-foot b{font-weight:700;font-size:12px}.ind-cov .ic-foot i{font-style:normal;font-size:11px;opacity:.8;margin-top:6px}
 .ind-cov .ic-logo{display:flex;align-items:center;gap:8px}.ind-cov .ic-logo img{width:40px}.ind-cov .ic-logo b{font-size:20px;letter-spacing:.12em}
-@media (max-width:719px){.ind-cov .ic-title{font-size:28px}}
+@media (max-width:719px){.ind-cov .ic-title,.ind-p1.is-cov .ic-title{font-size:28px}.ind-p1.is-cov .ic-tag{font-size:14px}.ind-p1.is-cov .ic-foot>span:first-child,.ind-p1.is-cov .ic-foot b{font-size:11px}.ind-p1.is-cov .ic-logo img{width:34px}.ind-p1.is-cov .ic-logo b{font-size:17px}}
+.ind-p1.is-cov{grid-template-columns:1fr;margin:20px 20px 40px}
+.ind-p1.is-cov>div:first-child{padding:0}
+.ind-p1.is-cov aside{background:none;padding:14px 0 0;flex-direction:row;justify-content:flex-end;align-items:center;gap:16px}
+.ind-p1.is-cov aside .ind-meta{display:none}
+.ind-p1.is-cov .ind-p1-btn{padding:10px 22px;font-size:12.5px}
+.ind-p1.is-cov .ic-title{font-size:52px}.ind-p1.is-cov .ic-tag{font-size:19px}.ind-p1.is-cov .ic-foot>span:first-child,.ind-p1.is-cov .ic-foot b{font-size:15px}.ind-p1.is-cov .ic-logo img{width:56px}.ind-p1.is-cov .ic-logo b{font-size:26px}
 .ind-p1-btn{display:block;text-align:center;background:#002060;color:#fff;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.08em;text-decoration:none}
 .ind-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid #D0CECE;color:rgba(26,26,26,.6)}.ind-meta b{font-weight:400;color:#1A1A1A;text-align:right}
 @media (max-width:719px){.ind-band{margin:14px 14px 0;padding:12px 14px}.ind-band .ib-r{font-size:12px}.ind-p1{grid-template-columns:1fr;margin:0 14px 30px}.ind-p1>div:first-child{padding:22px 4px}.ind-title{font-size:30px}.ind-head{font-size:22px}}
@@ -2374,8 +2380,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
         </sc-if>
         <!-- 산업 리포트 1쪽: 왼쪽 헤드라인·본문(글), 오른쪽 전망 박스(글)와 Top-picks·Sector Index(PDF에서 잘라 낸 그림), PDF 받기 -->
         <sc-if value="{{ rIsInd }}" hint-placeholder-val="{{ false }}">
-          <div class="ind-band"><img src="assets/rfs-seal-light-256.png" alt=""><span class="ib-l"><b>R.F.S</b><small>Rising Financial Stars</small></span><span class="ib-r">{{ rDate }}<i>│</i>Sector Analysis</span></div>
-          <div class="ind-p1">
+          <sc-if value="{{ rIsNoCov }}" hint-placeholder-val="{{ true }}"><div class="ind-band"><img src="assets/rfs-seal-light-256.png" alt=""><span class="ib-l"><b>R.F.S</b><small>Rising Financial Stars</small></span><span class="ib-r">{{ rDate }}<i>│</i>Sector Analysis</span></div></sc-if>
+          <div class="ind-p1 {{ rIndP1Cls }}">
             <div style="min-width:0"><sc-if value="{{ rIndCover }}" hint-placeholder-val="{{ false }}"><div class="ind-cov"><p class="ic-tag">{{ rIndCoverTag }}</p><p class="ic-title">{{ rIndCoverTitle }}</p><div class="ic-foot"><span><b>{{ rIndCoverDate }}</b><i>RESEARCHER</i>{{ rIndTeam }}</span><span class="ic-logo"><img src="assets/rfs-seal-light-256.png" alt=""><b>R.F.S</b></span></div></div></sc-if><sc-if value="{{ rIsNoCov }}" hint-placeholder-val="{{ true }}"><h1 class="ind-title">{{ rNameOnly }}</h1></sc-if>
             <h2 class="ind-head">{{ rIndHead }}</h2>
             <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
@@ -7008,7 +7014,7 @@ class Component extends DCLogic {
       rIndView: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [],
       rIndViewTop: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[0] || '', rIndViewMain: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[1] || '', rIndViewSub: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[2] || '',
       rIndSide: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side) ? '/assets/reports/full/' + s.full[active.id].p1.side.src + '?v=' + DATA_VER : '',
-      rIsNoCov: !((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover), rIndCover: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover), rIndCoverTitle: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover && s.full[active.id].p1.cover.title) || '', rIndCoverTag: active.isInd ? ('REPORT │ ' + ({ '건강관리': 'BIO', 'IT': 'TECH', '금융': 'FINANCE', '산업재': 'INDUSTRIALS', '에너지 유틸리티': 'ENERGY', '커뮤니케이션': 'MEDIA', '소재': 'MATERIALS', '경기관련 소비재': 'CONSUMER' }[active.sector] || 'INDUSTRY')) : '', rIndCoverDate: active.isInd && active.date ? (() => { const [y, m, d] = active.date.split('.'); return 'DATE ' + (+d) + ' ' + ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][+m - 1] + ' ' + y; })() : '', rIndHasView: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && (s.full[active.id].p1.view || []).length),
+      rIndP1Cls: (active.isInd && s.full && s.full[active.id] && s.full[active.id].p1 && s.full[active.id].p1.cover) ? 'is-cov' : '', rIsNoCov: !((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover), rIndCover: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover), rIndCoverTitle: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.cover && s.full[active.id].p1.cover.title) || '', rIndCoverTag: active.isInd ? ('REPORT │ ' + ({ '건강관리': 'BIO', 'IT': 'TECH', '금융': 'FINANCE', '산업재': 'INDUSTRIALS', '에너지 유틸리티': 'ENERGY', '커뮤니케이션': 'MEDIA', '소재': 'MATERIALS', '경기관련 소비재': 'CONSUMER' }[active.sector] || 'INDUSTRY')) : '', rIndCoverDate: active.isInd && active.date ? (() => { const [y, m, d] = active.date.split('.'); return 'DATE ' + (+d) + ' ' + ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][+m - 1] + ' ' + y; })() : '', rIndHasView: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && (s.full[active.id].p1.view || []).length),
       rIndHasSide: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side),
       rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
