@@ -20,7 +20,11 @@ BODY_X = 165      # 본문 왼쪽 끝 기본값. 리포트마다 실제 본문 �
 def load_reports():
     html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
     i = html.index('const REPORTS = [')
-    return dict(re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", html[i:html.index('\n];', i)], re.S))
+    reps = dict(re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", html[i:html.index('\n];', i)], re.S))
+    # 산업 리포트(INDUSTRY)는 'ind-<카페 글 번호>'로 뽑는다
+    j = html.index('const INDUSTRY = [')
+    reps.update({'ind-' + a: b for a, b in re.findall(r"\{ id:'(\d+)'.*?pdf:'([^']+)'", html[j:html.index('\n];', j)])})
+    return reps
 
 
 def is_bold(s):
@@ -247,6 +251,7 @@ def extract(rid, pdf):
 
     # 1쪽 오른쪽 'Stock Data' 표와 'Stock Price' 차트 (리포트 화면 오른쪽 따라오는 박스에 쓴다)
     stock = {'rows': [], 'chart': None}
+    p1img = save(doc[0], doc[0].rect) if rid.startswith('ind-') else None   # 산업 리포트는 1쪽(표지·요약)을 통째로 그림으로
     p0 = doc[0]
     ls0 = [l for l in lines_of(p0) if l['x0'] > p0.rect.width * 0.66]
     sd = next((l for l in ls0 if l['text'].strip() == 'Stock Data'), None)
@@ -386,7 +391,10 @@ def extract(rid, pdf):
             toc.append({'t': t, 'lvl': lvl, 'to': to, 'pg': int(m.group(1)) if m else None})
     if len(toc) < 3 or sum(1 for t in toc if t['to'] is not None) < len(toc) / 2:   # 2쪽이 목차가 아닌 예전 양식
         toc = []
-    return {'stock': stock, 'toc': toc, 'blocks': merged}
+    out = {'stock': stock, 'toc': toc, 'blocks': merged}
+    if p1img:
+        out['p1img'] = p1img
+    return out
 
 
 if __name__ == '__main__':

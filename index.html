@@ -1415,6 +1415,12 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,0.68)}
 .rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
 .rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
+/* 산업 리포트 상세: 1쪽 그림 + 오른쪽 정보 */
+.ind-p1{display:grid;grid-template-columns:minmax(0,1fr) 237px;gap:23px;padding:28px 22px 40px 37px;align-items:start}
+.ind-p1 img{width:100%;height:auto;display:block;border:1px solid #E4E2DC}
+.ind-p1 aside{position:sticky;top:110px}.ind-p1-k{margin:0;font-size:13px;font-weight:700;letter-spacing:.06em;color:#203864}.ind-p1-t{margin:10px 0 0;font-size:15px;font-weight:700;color:#1A1A1A}.ind-p1-d{margin:4px 0 0;font-size:13px;color:rgba(26,26,26,.6)}
+.ind-p1-btn{display:block;margin-top:20px;text-align:center;background:#002060;color:#fff;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.08em;text-decoration:none}
+@media (max-width:719px){.ind-p1{grid-template-columns:1fr;padding:20px 14px}.ind-p1 aside{position:static;order:-1}}
 /* 산업 리포트: 학기별 묶음, 줄을 누르면 PDF를 받는다 */
 .ind-term{margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA}
 .indrow{display:grid;grid-template-columns:minmax(0,1fr) 140px 140px 56px 64px;gap:18px;align-items:center;padding:16px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none;transition:background .15s}
@@ -2182,7 +2188,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <h2 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Industry Reports</h2>
             <span style="font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ indCount }}편 · PDF로 받기</span>
           </div>
-          <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-for></sc-for>
+          <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
         </div>
 
       </div>
@@ -2257,7 +2263,7 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <section data-tab="industry" id="industry-m" data-nav="light" class="rind" style="background:#F7F6F3;padding:8px 22px 64px;scroll-margin-top:64px">
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Industry Reports</h2>
       <p style="margin:8px 0 0;padding-bottom:14px;border-bottom:2px solid #0F1B2E;font-size:13px;color:#1A1A1A">{{ indCount }}편 · 누르면 PDF로 받아요</p>
-      <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-for></sc-for>
+      <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
     </section>
   </main>
   </sc-if>
@@ -2279,8 +2285,9 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <div style="line-height:1"><div style="font-size:22px;font-weight:700;letter-spacing:0.12em">R.F.S</div><div style="font-size:9.5px;font-weight:300;margin-top:4px;letter-spacing:0.01em">Rising Financial Stars</div></div>
           </div>
           <div style="font-size:15px;font-weight:500;color:#FFFFFF"><span style="font-weight:300;color:rgba(255,255,255,0.75)">|</span> {{ rSector }} <span style="font-weight:300;color:rgba(255,255,255,0.75)">|</span></div>
-          <h1 class="rpt-name" style="color:#F2F2F2;margin:8px 0 0;font-family:'RFS Report Dotum',sans-serif;font-size:50px;font-weight:700;letter-spacing:-0.02em;line-height:1.1">{{ rNameOnly }} ({{ rTickerFull }})</h1>
+          <h1 class="rpt-name" style="color:#F2F2F2;margin:8px 0 0;font-family:'RFS Report Dotum',sans-serif;font-size:50px;font-weight:700;letter-spacing:-0.02em;line-height:1.1"><sc-if value="{{ rIsCo }}" hint-placeholder-val="{{ true }}">{{ rNameOnly }} ({{ rTickerFull }})</sc-if><sc-if value="{{ rIsInd }}" hint-placeholder-val="{{ false }}">{{ rNameOnly }}</sc-if></h1>
         </div>
+        <sc-if value="{{ rIsCo }}" hint-placeholder-val="{{ true }}">
         <div class="detail-grid" style="display:grid;grid-template-columns:minmax(0,1fr) 237px;grid-template-rows:auto 1fr;column-gap:23px;row-gap:22px;padding:28px 22px 48px 37px">
           <div style="grid-column:1;grid-row:1 / span 2;min-width:0">
             <h2 style="margin:0;font-family:'RFS Report Dotum',sans-serif;font-size:32px;font-weight:700;color:#002060;letter-spacing:-0.02em;line-height:1.3;padding:0 0 12px 14px;border-bottom:1px solid #1F3864">{{ rHeadline }}</h2>
@@ -2347,6 +2354,14 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
             <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,0.6)"><span>발간일</span><span style="color:#1A1A1A;font-variant-numeric:tabular-nums">{{ rDate }}</span></div>
           </div>
         </div>
+        </sc-if>
+        <!-- 산업 리포트: 1쪽(표지·요약)은 PDF 그대로 그림으로, 오른쪽에 학기·팀과 PDF 받기 -->
+        <sc-if value="{{ rIsInd }}" hint-placeholder-val="{{ false }}">
+          <div class="ind-p1">
+            <sc-if value="{{ rHasP1img }}" hint-placeholder-val="{{ false }}"><img src="{{ rP1img }}" alt="{{ rNameOnly }} 산업 리포트 1쪽"></sc-if>
+            <aside><p class="ind-p1-k">Industry Report</p><p class="ind-p1-t">{{ rIndTeam }}</p><p class="ind-p1-d">{{ rDate }}</p><a class="ind-p1-btn" href="{{ rIndPdf }}" target="_blank" rel="noopener" download>DOWNLOAD PDF ↓</a></aside>
+          </div>
+        </sc-if>
         <!-- 리포트 전문: PDF 2쪽 이후를 웹으로 (tools/extract-full.py → assets/reports/full/<id>.json). 차트·표는 PDF에서 잘라 낸 그림 -->
         <sc-if value="{{ rHasFull }}" hint-placeholder-val="{{ false }}">
           <sc-if value="{{ rFullShown }}" hint-placeholder-val="{{ false }}">
@@ -3650,62 +3665,64 @@ const DATA_VER = '20261029n';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 // 정규 세미나 산업 리포트 (rfs-cafe-data 원본 PDF, 21-1~25-2). 리서치 '산업 리포트' 칸에서 PDF로 받는다. 상세 화면은 없다
 const INDUSTRY = [
-  { id:'4195', sem:'21-2', name:'반도체 후공정 산업', team:'1', sector:'IT', pages:45, pdf:'assets/reports/industry/21-2_4195.pdf' },
-  { id:'4197', sem:'21-2', name:'AI반도체 산업', team:'2', sector:'IT', pages:34, pdf:'assets/reports/industry/21-2_4197.pdf' },
-  { id:'4278', sem:'22-1', name:'비메모리 반도체 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/22-1_4278.pdf' },
-  { id:'4427', sem:'22-2', name:'전기전자 및 IT부품장비 산업', team:'2', sector:'IT', pages:33, pdf:'assets/reports/industry/22-2_4427.pdf' },
-  { id:'4544', sem:'23-1', name:'반도체·반도체장비', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/23-1_4544.pdf' },
-  { id:'4548', sem:'23-1', name:'AI반도체 산업', team:'2', sector:'IT', pages:30, pdf:'assets/reports/industry/23-1_4548.pdf' },
-  { id:'4550', sem:'23-1', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
-  { id:'4665', sem:'23-2', name:'디스플레이 및 소재장비', team:'4', sector:'IT', pages:34, pdf:'assets/reports/industry/23-2_4665.pdf' },
-  { id:'4666', sem:'23-2', name:'반도체 산업', team:'5', sector:'IT', pages:32, pdf:'assets/reports/industry/23-2_4666.pdf' },
-  { id:'4667', sem:'23-2', name:'사이버보안', team:'1', sector:'IT', pages:30, pdf:'assets/reports/industry/23-2_4667.pdf' },
-  { id:'4894', sem:'24-2', name:'AI소프트웨어-클라우드 산업', team:'5', sector:'IT', pages:22, pdf:'assets/reports/industry/24-2_4894.pdf' },
-  { id:'4895', sem:'24-2', name:'AI반도체', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/24-2_4895.pdf' },
-  { id:'4991', sem:'25-1', name:'통신장비', team:'3', sector:'IT', pages:25, pdf:'assets/reports/industry/25-1_4991.pdf' },
-  { id:'5082', sem:'25-2', name:'AI 전력 인프라', team:'6', sector:'IT', pages:20, pdf:'assets/reports/industry/25-2_5082.pdf' },
-  { id:'5084', sem:'25-2', name:'메모리반도체', team:'5', sector:'IT', pages:26, pdf:'assets/reports/industry/25-2_5084.pdf' },
-  { id:'5086', sem:'25-2', name:'휴머노이드', team:'1', sector:'IT', pages:25, pdf:'assets/reports/industry/25-2_5086.pdf' },
-  { id:'4193', sem:'21-2', name:'바이오 산업', team:'4', sector:'건강관리', pages:38, pdf:'assets/reports/industry/21-2_4193.pdf' },
-  { id:'4275', sem:'22-1', name:'미용의료 산업', team:'3', sector:'건강관리', pages:33, pdf:'assets/reports/industry/22-1_4275.pdf' },
-  { id:'4546', sem:'23-1', name:'제약·바이오', team:'4', sector:'건강관리', pages:32, pdf:'assets/reports/industry/23-1_4546.pdf' },
-  { id:'4778', sem:'24-1', name:'제약·바이오', team:'3', sector:'건강관리', pages:30, pdf:'assets/reports/industry/24-1_4778.pdf' },
-  { id:'4897', sem:'24-2', name:'수술로봇', team:'2', sector:'건강관리', pages:25, pdf:'assets/reports/industry/24-2_4897.pdf' },
-  { id:'5081', sem:'25-2', name:'글로벌 헬스케어', team:'4', sector:'건강관리', pages:25, pdf:'assets/reports/industry/25-2_5081.pdf' },
-  { id:'4276', sem:'22-1', name:'화장품 산업', team:'4', sector:'경기관련 소비재', pages:26, pdf:'assets/reports/industry/22-1_4276.pdf' },
-  { id:'4423', sem:'22-2', name:'자동차 모빌리티', team:'3', sector:'경기관련 소비재', pages:29, pdf:'assets/reports/industry/22-2_4423.pdf' },
-  { id:'4668', sem:'23-2', name:'화장품 산업', team:'2', sector:'경기관련 소비재', pages:30, pdf:'assets/reports/industry/23-2_4668.pdf' },
-  { id:'4781', sem:'24-1', name:'자동차', team:'6', sector:'경기관련 소비재', pages:23, pdf:'assets/reports/industry/24-1_4781.pdf' },
-  { id:'4891', sem:'24-2', name:'카지노', team:'6', sector:'경기관련 소비재', pages:33, pdf:'assets/reports/industry/24-2_4891.pdf' },
-  { id:'5085', sem:'25-2', name:'자동차', team:'3', sector:'경기관련 소비재', pages:26, pdf:'assets/reports/industry/25-2_5085.pdf' },
-  { id:'4194', sem:'21-2', name:'은행·증권·보험', team:'5', sector:'금융', pages:40, pdf:'assets/reports/industry/21-2_4194.pdf' },
-  { id:'4990', sem:'25-1', name:'증권', team:'5', sector:'금융', pages:28, pdf:'assets/reports/industry/25-1_4990.pdf' },
-  { id:'4277', sem:'22-1', name:'건설 산업', team:'2', sector:'산업재', pages:30, pdf:'assets/reports/industry/22-1_4277.pdf' },
-  { id:'4777', sem:'24-1', name:'조선', team:'2', sector:'산업재', pages:26, pdf:'assets/reports/industry/24-1_4777.pdf' },
-  { id:'4780', sem:'24-1', name:'방위산업', team:'4', sector:'산업재', pages:27, pdf:'assets/reports/industry/24-1_4780.pdf' },
-  { id:'4994', sem:'25-1', name:'방위산업', team:'6', sector:'산업재', pages:30, pdf:'assets/reports/industry/25-1_4994.pdf' },
-  { id:'4995', sem:'25-1', name:'건설', team:'4', sector:'산업재', pages:29, pdf:'assets/reports/industry/25-1_4995.pdf' },
-  { id:'5080', sem:'25-2', name:'우주', team:'2', sector:'산업재', pages:23, pdf:'assets/reports/industry/25-2_5080.pdf' },
-  { id:'4132', sem:'21-1', name:'철강 산업', team:'1', sector:'소재', pages:12, pdf:'assets/reports/industry/21-1_4132.pdf' },
-  { id:'4664', sem:'23-2', name:'전장부품', team:'6', sector:'소재', pages:31, pdf:'assets/reports/industry/23-2_4664.pdf' },
-  { id:'4192', sem:'21-2', name:'원자력 산업', team:'3', sector:'에너지 유틸리티', pages:44, pdf:'assets/reports/industry/21-2_4192.pdf' },
-  { id:'4280', sem:'22-1', name:'2차전지 및 소재 산업', team:'1', sector:'에너지 유틸리티', pages:39, pdf:'assets/reports/industry/22-1_4280.pdf' },
-  { id:'4425', sem:'22-2', name:'이차전지 산업', team:'4', sector:'에너지 유틸리티', pages:38, pdf:'assets/reports/industry/22-2_4425.pdf' },
-  { id:'4428', sem:'22-2', name:'2차전지 분리막 산업', team:'6', sector:'에너지 유틸리티', pages:18, pdf:'assets/reports/industry/22-2_4428.pdf' },
-  { id:'4545', sem:'23-1', name:'폐배터리 산업', team:'1', sector:'에너지 유틸리티', pages:23, pdf:'assets/reports/industry/23-1_4545.pdf' },
-  { id:'4547', sem:'23-1', name:'이차전지 산업', team:'5', sector:'에너지 유틸리티', pages:32, pdf:'assets/reports/industry/23-1_4547.pdf' },
-  { id:'4775', sem:'24-1', name:'에너지', team:'5', sector:'에너지 유틸리티', pages:26, pdf:'assets/reports/industry/24-1_4775.pdf' },
-  { id:'4776', sem:'24-1', name:'전력기기', team:'1', sector:'에너지 유틸리티', pages:26, pdf:'assets/reports/industry/24-1_4776.pdf' },
-  { id:'4896', sem:'24-2', name:'원자력', team:'1', sector:'에너지 유틸리티', pages:25, pdf:'assets/reports/industry/24-2_4896.pdf' },
-  { id:'4898', sem:'24-2', name:'전력기기', team:'4', sector:'에너지 유틸리티', pages:22, pdf:'assets/reports/industry/24-2_4898.pdf' },
-  { id:'4992', sem:'25-1', name:'LNG', team:'2', sector:'에너지 유틸리티', pages:27, pdf:'assets/reports/industry/25-1_4992.pdf' },
-  { id:'4130', sem:'21-1', name:'암호화폐 분석', team:'4', sector:'기타', pages:39, pdf:'assets/reports/industry/21-1_4130.pdf' },
-  { id:'4424', sem:'22-2', name:'플랫폼', team:'5', sector:'기타', pages:26, pdf:'assets/reports/industry/22-2_4424.pdf' },
-  { id:'4133', sem:'21-1', name:'메타버스 산업', team:'2', sector:'커뮤니케이션', pages:47, pdf:'assets/reports/industry/21-1_4133.pdf' },
-  { id:'4196', sem:'21-2', name:'엔터 산업', team:'6', sector:'커뮤니케이션', pages:40, pdf:'assets/reports/industry/21-2_4196.pdf' },
-  { id:'4279', sem:'22-1', name:'미디어 콘텐츠 산업', team:'5', sector:'커뮤니케이션', pages:32, pdf:'assets/reports/industry/22-1_4279.pdf' },
-  { id:'4993', sem:'25-1', name:'음악 엔터테인먼트', team:'1', sector:'커뮤니케이션', pages:29, pdf:'assets/reports/industry/25-1_4993.pdf' }
+  { id:'4195', sem:'21-2', date:'2021.11.11', name:'반도체 후공정 산업', team:'1', sector:'IT', pages:45, pdf:'assets/reports/industry/21-2_4195.pdf' },
+  { id:'4197', sem:'21-2', date:'2021.11.11', name:'AI반도체 산업', team:'2', sector:'IT', pages:34, pdf:'assets/reports/industry/21-2_4197.pdf' },
+  { id:'4278', sem:'22-1', date:'2022.05.10', name:'비메모리 반도체 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/22-1_4278.pdf' },
+  { id:'4427', sem:'22-2', date:'2022.11.08', name:'전기전자 및 IT부품장비 산업', team:'2', sector:'IT', pages:33, pdf:'assets/reports/industry/22-2_4427.pdf' },
+  { id:'4544', sem:'23-1', date:'2023.05.09', name:'반도체·반도체장비', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/23-1_4544.pdf' },
+  { id:'4548', sem:'23-1', date:'2023.05.09', name:'AI반도체 산업', team:'2', sector:'IT', pages:30, pdf:'assets/reports/industry/23-1_4548.pdf' },
+  { id:'4550', sem:'23-1', date:'2023.05.10', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
+  { id:'4665', sem:'23-2', date:'2023.11.07', name:'디스플레이 및 소재장비', team:'4', sector:'IT', pages:34, pdf:'assets/reports/industry/23-2_4665.pdf' },
+  { id:'4666', sem:'23-2', date:'2023.11.07', name:'반도체 산업', team:'5', sector:'IT', pages:32, pdf:'assets/reports/industry/23-2_4666.pdf' },
+  { id:'4667', sem:'23-2', date:'2023.11.07', name:'사이버보안', team:'1', sector:'IT', pages:30, pdf:'assets/reports/industry/23-2_4667.pdf' },
+  { id:'4894', sem:'24-2', date:'2024.11.10', name:'AI소프트웨어-클라우드 산업', team:'5', sector:'IT', pages:22, pdf:'assets/reports/industry/24-2_4894.pdf' },
+  { id:'4895', sem:'24-2', date:'2024.11.10', name:'AI반도체', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/24-2_4895.pdf' },
+  { id:'4991', sem:'25-1', date:'2025.05.13', name:'통신장비', team:'3', sector:'IT', pages:25, pdf:'assets/reports/industry/25-1_4991.pdf' },
+  { id:'5082', sem:'25-2', date:'2025.11.09', name:'AI 전력 인프라', team:'6', sector:'IT', pages:20, pdf:'assets/reports/industry/25-2_5082.pdf' },
+  { id:'5084', sem:'25-2', date:'2025.11.09', name:'메모리반도체', team:'5', sector:'IT', pages:26, pdf:'assets/reports/industry/25-2_5084.pdf' },
+  { id:'5086', sem:'25-2', date:'2025.11.09', name:'휴머노이드', team:'1', sector:'IT', pages:25, pdf:'assets/reports/industry/25-2_5086.pdf' },
+  { id:'4193', sem:'21-2', date:'2021.11.11', name:'바이오 산업', team:'4', sector:'건강관리', pages:38, pdf:'assets/reports/industry/21-2_4193.pdf' },
+  { id:'4275', sem:'22-1', date:'2022.05.10', name:'미용의료 산업', team:'3', sector:'건강관리', pages:33, pdf:'assets/reports/industry/22-1_4275.pdf' },
+  { id:'4546', sem:'23-1', date:'2023.05.09', name:'제약·바이오', team:'4', sector:'건강관리', pages:32, pdf:'assets/reports/industry/23-1_4546.pdf' },
+  { id:'4778', sem:'24-1', date:'2024.05.08', name:'제약·바이오', team:'3', sector:'건강관리', pages:30, pdf:'assets/reports/industry/24-1_4778.pdf' },
+  { id:'4897', sem:'24-2', date:'2024.11.10', name:'수술로봇', team:'2', sector:'건강관리', pages:25, pdf:'assets/reports/industry/24-2_4897.pdf' },
+  { id:'5081', sem:'25-2', date:'2025.11.09', name:'글로벌 헬스케어', team:'4', sector:'건강관리', pages:25, pdf:'assets/reports/industry/25-2_5081.pdf' },
+  { id:'4276', sem:'22-1', date:'2022.05.10', name:'화장품 산업', team:'4', sector:'경기관련 소비재', pages:26, pdf:'assets/reports/industry/22-1_4276.pdf' },
+  { id:'4423', sem:'22-2', date:'2022.11.08', name:'자동차 모빌리티', team:'3', sector:'경기관련 소비재', pages:29, pdf:'assets/reports/industry/22-2_4423.pdf' },
+  { id:'4668', sem:'23-2', date:'2023.11.07', name:'화장품 산업', team:'2', sector:'경기관련 소비재', pages:30, pdf:'assets/reports/industry/23-2_4668.pdf' },
+  { id:'4781', sem:'24-1', date:'2024.05.08', name:'자동차', team:'6', sector:'경기관련 소비재', pages:23, pdf:'assets/reports/industry/24-1_4781.pdf' },
+  { id:'4891', sem:'24-2', date:'2024.11.07', name:'카지노', team:'6', sector:'경기관련 소비재', pages:33, pdf:'assets/reports/industry/24-2_4891.pdf' },
+  { id:'5085', sem:'25-2', date:'2025.11.09', name:'자동차', team:'3', sector:'경기관련 소비재', pages:26, pdf:'assets/reports/industry/25-2_5085.pdf' },
+  { id:'4194', sem:'21-2', date:'2021.11.09', name:'은행·증권·보험', team:'5', sector:'금융', pages:40, pdf:'assets/reports/industry/21-2_4194.pdf' },
+  { id:'4990', sem:'25-1', date:'2025.05.09', name:'증권', team:'5', sector:'금융', pages:28, pdf:'assets/reports/industry/25-1_4990.pdf' },
+  { id:'4277', sem:'22-1', date:'2022.05.10', name:'건설 산업', team:'2', sector:'산업재', pages:30, pdf:'assets/reports/industry/22-1_4277.pdf' },
+  { id:'4777', sem:'24-1', date:'2024.05.08', name:'조선', team:'2', sector:'산업재', pages:26, pdf:'assets/reports/industry/24-1_4777.pdf' },
+  { id:'4780', sem:'24-1', date:'2024.05.08', name:'방위산업', team:'4', sector:'산업재', pages:27, pdf:'assets/reports/industry/24-1_4780.pdf' },
+  { id:'4994', sem:'25-1', date:'2025.05.13', name:'방위산업', team:'6', sector:'산업재', pages:30, pdf:'assets/reports/industry/25-1_4994.pdf' },
+  { id:'4995', sem:'25-1', date:'2025.05.13', name:'건설', team:'4', sector:'산업재', pages:29, pdf:'assets/reports/industry/25-1_4995.pdf' },
+  { id:'5080', sem:'25-2', date:'2025.11.08', name:'우주', team:'2', sector:'산업재', pages:23, pdf:'assets/reports/industry/25-2_5080.pdf' },
+  { id:'4132', sem:'21-1', date:'2021.05.27', name:'철강 산업', team:'1', sector:'소재', pages:12, pdf:'assets/reports/industry/21-1_4132.pdf' },
+  { id:'4664', sem:'23-2', date:'2023.11.07', name:'전장부품', team:'6', sector:'소재', pages:31, pdf:'assets/reports/industry/23-2_4664.pdf' },
+  { id:'4192', sem:'21-2', date:'2021.11.09', name:'원자력 산업', team:'3', sector:'에너지 유틸리티', pages:44, pdf:'assets/reports/industry/21-2_4192.pdf' },
+  { id:'4280', sem:'22-1', date:'2022.05.10', name:'2차전지 및 소재 산업', team:'1', sector:'에너지 유틸리티', pages:39, pdf:'assets/reports/industry/22-1_4280.pdf' },
+  { id:'4425', sem:'22-2', date:'2022.11.08', name:'이차전지 산업', team:'4', sector:'에너지 유틸리티', pages:38, pdf:'assets/reports/industry/22-2_4425.pdf' },
+  { id:'4428', sem:'22-2', date:'2022.11.08', name:'2차전지 분리막 산업', team:'6', sector:'에너지 유틸리티', pages:18, pdf:'assets/reports/industry/22-2_4428.pdf' },
+  { id:'4545', sem:'23-1', date:'2023.05.09', name:'폐배터리 산업', team:'1', sector:'에너지 유틸리티', pages:23, pdf:'assets/reports/industry/23-1_4545.pdf' },
+  { id:'4547', sem:'23-1', date:'2023.05.10', name:'이차전지 산업', team:'5', sector:'에너지 유틸리티', pages:32, pdf:'assets/reports/industry/23-1_4547.pdf' },
+  { id:'4775', sem:'24-1', date:'2024.05.08', name:'에너지', team:'5', sector:'에너지 유틸리티', pages:26, pdf:'assets/reports/industry/24-1_4775.pdf' },
+  { id:'4776', sem:'24-1', date:'2024.05.08', name:'전력기기', team:'1', sector:'에너지 유틸리티', pages:26, pdf:'assets/reports/industry/24-1_4776.pdf' },
+  { id:'4896', sem:'24-2', date:'2024.11.10', name:'원자력', team:'1', sector:'에너지 유틸리티', pages:25, pdf:'assets/reports/industry/24-2_4896.pdf' },
+  { id:'4898', sem:'24-2', date:'2024.11.10', name:'전력기기', team:'4', sector:'에너지 유틸리티', pages:22, pdf:'assets/reports/industry/24-2_4898.pdf' },
+  { id:'4992', sem:'25-1', date:'2025.05.13', name:'LNG', team:'2', sector:'에너지 유틸리티', pages:27, pdf:'assets/reports/industry/25-1_4992.pdf' },
+  { id:'4130', sem:'21-1', date:'2021.05.26', name:'암호화폐 분석', team:'4', sector:'기타', pages:39, pdf:'assets/reports/industry/21-1_4130.pdf' },
+  { id:'4424', sem:'22-2', date:'2022.11.08', name:'플랫폼', team:'5', sector:'기타', pages:26, pdf:'assets/reports/industry/22-2_4424.pdf' },
+  { id:'4133', sem:'21-1', date:'2021.05.26', name:'메타버스 산업', team:'2', sector:'커뮤니케이션', pages:47, pdf:'assets/reports/industry/21-1_4133.pdf' },
+  { id:'4196', sem:'21-2', date:'2021.11.09', name:'엔터 산업', team:'6', sector:'커뮤니케이션', pages:40, pdf:'assets/reports/industry/21-2_4196.pdf' },
+  { id:'4279', sem:'22-1', date:'2022.05.10', name:'미디어 콘텐츠 산업', team:'5', sector:'커뮤니케이션', pages:32, pdf:'assets/reports/industry/22-1_4279.pdf' },
+  { id:'4993', sem:'25-1', date:'2025.05.13', name:'음악 엔터테인먼트', team:'1', sector:'커뮤니케이션', pages:29, pdf:'assets/reports/industry/25-1_4993.pdf' }
 ];
+// 웹에서 전문으로 읽는 산업 리포트 (assets/reports/full/ind-<id>.json)
+const IND_FULL = ['ind-5082', 'ind-5084', 'ind-5086', 'ind-5081', 'ind-5085', 'ind-5080', 'ind-4991', 'ind-4990', 'ind-4994', 'ind-4995', 'ind-4992', 'ind-4993'];
 const FULL_REPORTS = ['anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'celltrion', 'classys', 'crowdstrike', 'cswind', 'daewoong', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyundai', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair26', 'krafton', 'kyungdong', 'lges', 'lguplus', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'lselectric', 'lutronic', 'naver', 'nepesark', 'oci', 'orion', 'osstem', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samyang', 'sanil', 'sbl21', 'seers', 'semco', 'sena', 'silicon2', 'skgas', 'sm', 'sm21', 'soil', 'stpharm', 'taekwang', 'techwing', 'tesla', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'vt'];
 const REPORTS = [
   { id:'sanil', name:'산일전기', ticker:'062040', sector:'전력기기', type:'Company Analysis', op:'BUY', tp:'367,000원', buy:'', cur:'205,500원', upside:'+78.6%', upNum:78.6, tpNum:367000, date:'2026.09.29', team:'Research Team 4', region:'Korea',
@@ -6400,7 +6417,9 @@ class Component extends DCLogic {
   setTitle(page, reportId) {
     if (page === 'report' && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
     const r = REPORTS.find((x) => x.id === reportId);
-    document.title = page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
+    const ir = !r && /^ind-/.test(reportId || '') && INDUSTRY.find((x) => 'ind-' + x.id === reportId);
+    document.title = page === 'report' && ir ? ir.name + ' 산업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
+      : page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'about' ? '학회 소개 | 중앙대 가치투자학회 R.F.S.'
       : page === 'people' ? '학회원·알럼나이 | 중앙대 가치투자학회 R.F.S.'
@@ -6580,7 +6599,10 @@ class Component extends DCLogic {
     const covCols = cols.map((c) => ({ ...c,
       label: c.label + (s.sortKey === c.key ? (s.sortDir === -1 ? ' ▾' : ' ▴') : ''),
       onSort: () => this.setState(s.sortKey === c.key ? { sortDir: -s.sortDir } : { sortKey: c.key, sortDir: -1 }) }));
-    const active = REPORTS.find((r) => r.id === s.reportId) || hero;
+    // 산업 리포트(research/ind-<id>)는 기업 리포트 화면을 같이 쓰되, 투자의견·주가 칸 대신 1쪽 그림을 보여 준다
+    const indA = /^ind-/.test(s.reportId || '') && INDUSTRY.find((x) => 'ind-' + x.id === s.reportId);
+    const active = indA ? { ...hero, id: s.reportId, name: indA.name, ticker: '', sector: indA.sector, date: indA.date, type: 'Industry Analysis', headline: '', pdf: indA.pdf, pdfMeta: 'PDF · ' + indA.pages + ' pages', isInd: true, ind: indA }
+      : REPORTS.find((r) => r.id === s.reportId) || hero;
     const ai = byDate.findIndex((r) => r.id === active.id);
     const prevNext = {
       prev: ai > 0 ? vm(byDate[ai - 1]) : null,
@@ -6904,7 +6926,7 @@ class Component extends DCLogic {
       onRegion: (e) => this.setState({ fRegion: e.target.value, page1: 1 }),
       covCols, filteredReports: pageRows.map(vm), covCount: filtered.length,
       indGroups: (() => { const by = {}; INDUSTRY.forEach((x) => { (by[x.sem] = by[x.sem] || []).push(x); });
-        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => ({ ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽' })) })); })(),
+        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽', web, pdfOnly: !web, href: '#research/ind-' + x.id, open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
       indCount: INDUSTRY.length,
       covGroups, isGrouped: s.sortKey === 'date', isFlat: s.sortKey !== 'date',
       covEmpty: filtered.length === 0,
@@ -6946,7 +6968,12 @@ class Component extends DCLogic {
       rP1: (() => { const gl = this.glSplit(active.id); return ((s.p1 && s.p1[active.id]) || []).map((sec, si) => ({ hasH: !!sec.h, h: sec.h || '',
         ps: sec.ps.map((p, pi) => ({ mt: (!sec.h && si === 0 && pi === 0) ? '26px' : (pi === 0 ? '0' : '12px'),
           segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '300', c: 'inherit', parts: gl(g.t) })) })) })); })(),
-      rHasFull: FULL_REPORTS.includes(active.id) && (this.loadFull(active.id), true),
+      rHasFull: (FULL_REPORTS.includes(active.id) || IND_FULL.includes(active.id)) && (this.loadFull(active.id), true),
+      rIsInd: !!active.isInd, rIsCo: !active.isInd,
+      rIndTeam: active.isInd ? ('20' + active.ind.sem.replace('-', '년 ') + '학기 · ' + (active.ind.team ? 'Research Team ' + active.ind.team : '') ) : '',
+      rP1img: (active.isInd && s.full && s.full[active.id] && s.full[active.id].p1img) ? '/assets/reports/full/' + s.full[active.id].p1img.src + '?v=' + DATA_VER : '',
+      rHasP1img: !!(active.isInd && s.full && s.full[active.id] && s.full[active.id].p1img),
+      rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
