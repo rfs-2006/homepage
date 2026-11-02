@@ -377,7 +377,7 @@ class Answerer:
         # 정규 세미나 산업 리포트: index.html의 INDUSTRY(카페 글 번호 → assets/reports/industry/ PDF)
         ind = {}
         try:
-            html = (root / 'index.html').read_text(errors='ignore')
+            html = (root / 'index.html').read_text(errors='ignore') + '\n' + ((root / 'assets' / 'app.js').read_text(errors='ignore') if (root / 'assets' / 'app.js').exists() else '')   # INDUSTRY·IND_FULL은 assets/app.js에
             full = set(re.findall(r"'ind-(\d+)'", html[html.find('const IND_FULL'):][:4000]))   # 웹 전문이 있는 산업 리포트
             for m in re.finditer(r"\{ id:'(\d+)', sem:'(\d\d-[12])',[^}]*?name:'([^']+)',[^}]*pdf:'(assets/reports/industry/[^']+\.pdf)' \}", html):   # 사이에 date: 등 칸이 더 있어도 된다
                 if (root / m.group(4)).exists():

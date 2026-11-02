@@ -24,7 +24,7 @@ for hi in range(0xB0, 0xC9):           # KS X 1001 완성형 한글 2,350자
         try: chars.add(bytes([hi, lo]).decode('euc-kr'))
         except UnicodeDecodeError: pass
 chars |= set(open(os.path.join(ROOT, 'assets', 'reports', 'page1.json'), encoding='utf-8').read())
-html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read() + '\n' + open(os.path.join(ROOT, 'assets', 'app.js'), encoding='utf-8').read()   # REPORTS는 assets/app.js에
 i = html.index('const REPORTS = ['); chars |= set(html[i:html.index('\n];', i)])
 chars = {c for c in chars if c.isprintable()}
 

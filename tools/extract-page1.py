@@ -10,7 +10,7 @@ import pymupdf
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def load_reports():
-    html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
+    html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read() + '\n' + open(os.path.join(ROOT, 'assets', 'app.js'), encoding='utf-8').read()   # REPORTS 등은 assets/app.js에
     i = html.index('const REPORTS = [')
     body = html[i:html.index('\n];', i)]
     return re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", body, re.S)
