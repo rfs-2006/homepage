@@ -19,7 +19,7 @@ def is_bold(span):
     f = span['font'].lower()
     return 'bold' in f or 'heavy' in f or 'black' in f
 
-def extract(path):
+def extract(path, xmax=0.55):
     page = pymupdf.open(path)[0]
     W = page.rect.width
     lines = []
@@ -28,7 +28,7 @@ def extract(path):
             continue
         for l in b['lines']:
             spans = [s for s in l['spans'] if s['text'].strip()]
-            if not spans or l['bbox'][0] > 0.55 * W:
+            if not spans or l['bbox'][0] > xmax * W:
                 continue
             lines.append({'y': l['bbox'][1], 'y1': l['bbox'][3], 'spans': l['spans'],
                           'size': max(s['size'] for s in spans),

@@ -1415,12 +1415,15 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,0.68)}
 .rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
 .rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
-/* 산업 리포트 상세: 1쪽 그림 + 오른쪽 정보 */
-.ind-p1{display:grid;grid-template-columns:minmax(0,1fr) 237px;gap:23px;padding:28px 22px 40px 37px;align-items:start}
-.ind-p1 img{width:100%;height:auto;display:block;border:1px solid #E4E2DC}
-.ind-p1 aside{position:sticky;top:110px}.ind-p1-k{margin:0;font-size:13px;font-weight:700;letter-spacing:.06em;color:#203864}.ind-p1-t{margin:10px 0 0;font-size:15px;font-weight:700;color:#1A1A1A}.ind-p1-d{margin:4px 0 0;font-size:13px;color:rgba(26,26,26,.6)}
-.ind-p1-btn{display:block;margin-top:20px;text-align:center;background:#002060;color:#fff;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.08em;text-decoration:none}
-@media (max-width:719px){.ind-p1{grid-template-columns:1fr;padding:20px 14px}.ind-p1 aside{position:static;order:-1}}
+/* 산업 리포트 상세 1쪽: 기업 리포트 1쪽과 같은 두 칸 */
+.ind-p1{display:grid;grid-template-columns:minmax(0,1fr) 237px;column-gap:23px;padding:28px 22px 48px 37px;align-items:start}
+.ind-p1 aside{display:flex;flex-direction:column;gap:14px}
+.ind-view{display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 10px;background:#F2F2F2;color:#000}
+.ind-view span{font-size:14px;font-weight:500}.ind-view b{font-size:26px;font-weight:500;text-decoration:underline;text-underline-offset:6px}.ind-view small{font-size:12px;color:#404040}
+.ind-p1 aside img{width:100%;height:auto;display:block}
+.ind-p1-btn{display:block;text-align:center;background:#002060;color:#fff;padding:13px 0;font-size:14px;font-weight:600;letter-spacing:.08em;text-decoration:none}
+.ind-meta{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:8px 0;border-bottom:1px solid #E4E2DC;color:rgba(26,26,26,.6)}.ind-meta b{font-weight:400;color:#1A1A1A;text-align:right}
+@media (max-width:719px){.ind-p1{grid-template-columns:1fr;row-gap:24px;padding:26px 14px 40px}}
 /* 산업 리포트: 학기별 묶음, 줄을 누르면 PDF를 받는다 */
 .ind-term{margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA}
 .indrow{display:grid;grid-template-columns:minmax(0,1fr) 140px 140px 56px 64px;gap:18px;align-items:center;padding:16px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none;transition:background .15s}
@@ -2355,11 +2358,26 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
           </div>
         </div>
         </sc-if>
-        <!-- 산업 리포트: 1쪽(표지·요약)은 PDF 그대로 그림으로, 오른쪽에 학기·팀과 PDF 받기 -->
+        <!-- 산업 리포트 1쪽: 왼쪽 헤드라인·본문(글), 오른쪽 전망 박스(글)와 Top-picks·Sector Index(PDF에서 잘라 낸 그림), PDF 받기 -->
         <sc-if value="{{ rIsInd }}" hint-placeholder-val="{{ false }}">
           <div class="ind-p1">
-            <sc-if value="{{ rHasP1img }}" hint-placeholder-val="{{ false }}"><img src="{{ rP1img }}" alt="{{ rNameOnly }} 산업 리포트 1쪽"></sc-if>
-            <aside><p class="ind-p1-k">Industry Report</p><p class="ind-p1-t">{{ rIndTeam }}</p><p class="ind-p1-d">{{ rDate }}</p><a class="ind-p1-btn" href="{{ rIndPdf }}" target="_blank" rel="noopener" download>DOWNLOAD PDF ↓</a></aside>
+            <div style="min-width:0">
+            <h2 style="margin:0;font-family:'RFS Report Dotum',sans-serif;font-size:32px;font-weight:700;color:#002060;letter-spacing:-0.02em;line-height:1.3;padding:0 0 12px 14px;border-bottom:1px solid #1F3864">{{ rIndHead }}</h2>
+            <sc-if value="{{ rHasP1 }}" hint-placeholder-val="{{ false }}">
+              <sc-for list="{{ rP1 }}" as="sec" hint-placeholder-count="4">
+                <sc-if value="{{ sec.hasH }}" hint-placeholder-val="{{ true }}"><div style="margin:22px 0 8px;font-weight:700;font-size:17.5px;line-height:1.45;color:#000000;letter-spacing:-0.01em">{{ sec.h }}</div></sc-if>
+                <sc-for list="{{ sec.ps }}" as="p" hint-placeholder-count="2"><p style="margin:{{ p.mt }} 0 0;font-size:14.5px;line-height:1.75;color:#000000;text-align:justify"><sc-for list="{{ p.segs }}" as="g" hint-placeholder-count="2"><span style="font-weight:{{ g.w }};color:{{ g.c }}"><sc-for list="{{ g.parts }}" as="x" hint-placeholder-count="1"><span class="{{ x.cls }}" data-gl="{{ x.k }}">{{ x.t }}</span></sc-for></span></sc-for></p></sc-for>
+              </sc-for>
+            </sc-if>
+            </div>
+            <aside>
+              <div class="ind-view"><span>{{ rIndViewTop }}</span><b>{{ rIndViewMain }}</b><small>{{ rIndViewSub }}</small></div>
+              <sc-if value="{{ rIndHasSide }}" hint-placeholder-val="{{ false }}"><img src="{{ rIndSide }}" alt="Top-picks와 Sector Index"></sc-if>
+              <a class="ind-p1-btn" href="{{ rIndPdf }}" target="_blank" rel="noopener" download>DOWNLOAD PDF ↓</a>
+              <div class="ind-meta"><span>팀</span><b>{{ rIndTeam }}</b></div>
+              <div class="ind-meta"><span>섹터</span><b>{{ rSector }}</b></div>
+              <div class="ind-meta"><span>발간일</span><b>{{ rDate }}</b></div>
+            </aside>
           </div>
         </sc-if>
         <!-- 리포트 전문: PDF 2쪽 이후를 웹으로 (tools/extract-full.py → assets/reports/full/<id>.json). 차트·표는 PDF에서 잘라 낸 그림 -->
@@ -6964,15 +6982,18 @@ class Component extends DCLogic {
         { name:'직무 세미나', desc:'증권사, 은행, IB 현직 선배들이 직무별 커리어와 실무를 강연합니다.' },
         { name:'창립제', desc:'매년 알럼나이와 현역이 함께 모이는 행사. 현직 연사 세션이 함께 열립니다.' }],
       rMeta: active.sector + ' · ' + active.type + ' · ' + active.date,
-      rHasP1: !!(s.p1 && s.p1[active.id]), rNoP1: !(s.p1 && s.p1[active.id]),
-      rP1: (() => { const gl = this.glSplit(active.id); return ((s.p1 && s.p1[active.id]) || []).map((sec, si) => ({ hasH: !!sec.h, h: sec.h || '',
+      rHasP1: !!((s.p1 && s.p1[active.id]) || (active.isInd && s.full && s.full[active.id] && s.full[active.id].p1)), rNoP1: !(s.p1 && s.p1[active.id]),
+      rP1: (() => { const gl = this.glSplit(active.id); return ((s.p1 && s.p1[active.id]) || (s.full && s.full[active.id] && s.full[active.id].p1 && s.full[active.id].p1.sections) || []).map((sec, si) => ({ hasH: !!sec.h, h: sec.h || '',
         ps: sec.ps.map((p, pi) => ({ mt: (!sec.h && si === 0 && pi === 0) ? '26px' : (pi === 0 ? '0' : '12px'),
           segs: p.map((g) => ({ t: g.t, w: g.b ? '700' : '300', c: 'inherit', parts: gl(g.t) })) })) })); })(),
       rHasFull: (FULL_REPORTS.includes(active.id) || IND_FULL.includes(active.id)) && (this.loadFull(active.id), true),
       rIsInd: !!active.isInd, rIsCo: !active.isInd,
-      rIndTeam: active.isInd ? ('20' + active.ind.sem.replace('-', '년 ') + '학기 · ' + (active.ind.team ? 'Research Team ' + active.ind.team : '') ) : '',
-      rP1img: (active.isInd && s.full && s.full[active.id] && s.full[active.id].p1img) ? '/assets/reports/full/' + s.full[active.id].p1img.src + '?v=' + DATA_VER : '',
-      rHasP1img: !!(active.isInd && s.full && s.full[active.id] && s.full[active.id].p1img),
+      rIndTeam: active.isInd ? ('20' + active.ind.sem.replace('-', '년 ') + '학기' + (active.ind.team ? ' · Research Team ' + active.ind.team : '')) : '',
+      rIndHead: (active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) ? s.full[active.id].p1.head : '',
+      rIndView: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [],
+      rIndViewTop: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[0] || '', rIndViewMain: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[1] || '', rIndViewSub: (((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.view) || [])[2] || '',
+      rIndSide: ((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side) ? '/assets/reports/full/' + s.full[active.id].p1.side.src + '?v=' + DATA_VER : '',
+      rIndHasSide: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side),
       rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
