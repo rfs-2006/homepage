@@ -365,7 +365,7 @@ class Answerer:
     def site_reports(self, cafe):
         """홈페이지에 올라간 정규 리포트(research/<id>/index.html + assets/reports/<학기>_<id>.pdf)를 데이터 문서에 잇는다.
         사이트판 문서(source site)는 파일 이름으로, 카페 PDF 같은 다른 판은 청크 절반 이상이 사이트판과 같으면 같은 리포트로 본다.
-        쓰임: 답에 원본 PDF 받기 버튼을 달고(정규 리포트만), 파일 이름 제목('inbody') 대신 한글 회사명을 보여 준다."""
+        쓰임: 답에 원본 PDF 받기 버튼을 달고(정규 기업·산업 리포트만), 파일 이름 제목('inbody') 대신 한글 회사명을 보여 준다."""
         root = Path(__file__).resolve().parents[2]
         by_file = {}
         for f in (root / 'research').glob('*/index.html'):
@@ -374,6 +374,15 @@ class Answerer:
             m = re.search(r'/assets/((?:reports/)?[^"\'/]+\.pdf)', h)   # 보통 assets/reports/, 예전에 올린 TORM만 assets/torm-report.pdf
             if t and m and (root / 'assets' / m.group(1)).exists():
                 by_file[m.group(1).split('/')[-1]] = {'name': t.group(1).strip(), 'pdf': '/assets/' + m.group(1), 'page': f'/research/{f.parent.name}/'}
+        # 정규 세미나 산업 리포트: index.html의 INDUSTRY(카페 글 번호 → assets/reports/industry/ PDF)
+        ind = {}
+        try:
+            html = (root / 'index.html').read_text(errors='ignore')
+            for m in re.finditer(r"\{ id:'(\d+)', sem:'(\d\d-[12])', name:'([^']+)',[^}]*pdf:'(assets/reports/industry/[^']+\.pdf)' \}", html):
+                if (root / m.group(4)).exists():
+                    ind[m.group(1)] = {'name': f'[{m.group(2)}] {m.group(3)}', 'pdf': '/' + m.group(4), 'page': '/research/#industry'}
+        except OSError:
+            pass
         docs, subj = {}, {}
         p = Path(cafe) / 'parsed' / 'docs.jsonl.gz'
         if p.exists():
@@ -382,6 +391,8 @@ class Answerer:
                 d = json.loads(line)
                 if d.get('source') == 'site' and d.get('file') in by_file:
                     docs[d['doc_id']] = by_file[d['file']]
+                elif d.get('source') == 'cafe' and str(d.get('article_id')) in ind and d['doc_id'] in self.by_doc:
+                    docs[d['doc_id']] = ind[str(d['article_id'])]
                 elif d.get('source') in ('cafe', 'upload') and d['doc_id'] in self.by_doc and d.get('ext') != '.xlsx':   # upload: 카페 밖에서 받은 리포트(삼양식품 24-1 SOHKA)
                     subj[d['doc_id']] = d.get('subject') or ''
         # 사이트판 문서가 데이터에 없는 페이지(TORM)는 카페 글 제목 '[26-1] TORM_…'의 회사명으로 잇는다 (같은 회사가 여럿이면 최근 학기)
@@ -652,7 +663,7 @@ class Chat:
         """파일만 달라는 요청: 홈페이지에 올라간 정규 리포트면 PDF 버튼, 아니면 없다고 말한다. 답변 모델 대화(msgs)에는 남기지 않는다."""
         f = self.files()
         text = (f"{f[0]['name']} 리포트 PDF예요. 아래 버튼으로 받을 수 있어요." if f else
-                '죄송해요, 그 리포트는 홈페이지에 올라간 정규 리포트가 아니라서 파일을 드릴 수 없어요. 정규 리포트만 받을 수 있고, 내용은 물어보시면 설명해 드릴게요.')
+                '죄송해요, 그 리포트는 홈페이지에 올라간 정규 리포트가 아니라서 파일을 드릴 수 없어요. 정규 기업·산업 리포트만 받을 수 있고, 내용은 물어보시면 설명해 드릴게요.')
         self.turns.append({'question': question, 'answer': text, 'kind': 'file'})
         return {'answer': text, 'options': [], 'sources': [], 'searches': [], 'shown': [], 'files': f, 'trace': self.trace,
                 'stop_reason': None, 'kind': 'file', 'standalone': standalone}

@@ -20,12 +20,16 @@ BODY_X = 165      # 본문 왼쪽 끝 기본값. 리포트마다 실제 본문 �
 def load_reports():
     html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read()
     i = html.index('const REPORTS = [')
-    return dict(re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", html[i:html.index('\n];', i)], re.S))
+    reps = dict(re.findall(r"\{ id:'([^']+)'.*?pdf:'([^']+)'", html[i:html.index('\n];', i)], re.S))
+    # 산업 리포트(INDUSTRY)는 'ind-<카페 글 번호>'로 뽑는다
+    j = html.index('const INDUSTRY = [')
+    reps.update({'ind-' + a: b for a, b in re.findall(r"\{ id:'(\d+)'.*?pdf:'([^']+)'", html[j:html.index('\n];', j)])})
+    return reps
 
 
 def is_bold(s):
     f = s['font'].lower()
-    return 'bold' in f or 'heavy' in f or 'black' in f
+    return 'bold' in f or 'heavy' in f or 'black' in f or bool(s.get('flags', 0) & 16)   # 글꼴 이름에 굵기가 없으면(CIDFont+F2) 굵음 표시로
 
 
 def lines_of(page):
@@ -247,6 +251,7 @@ def extract(rid, pdf):
 
     # 1쪽 오른쪽 'Stock Data' 표와 'Stock Price' 차트 (리포트 화면 오른쪽 따라오는 박스에 쓴다)
     stock = {'rows': [], 'chart': None}
+    p1 = industry_p1(doc, save) if rid.startswith('ind-') else None   # 산업 리포트 1쪽: 왼쪽 글 + 오른쪽 전망 박스·Top-picks·Sector Index
     p0 = doc[0]
     ls0 = [l for l in lines_of(p0) if l['x0'] > p0.rect.width * 0.66]
     sd = next((l for l in ls0 if l['text'].strip() == 'Stock Data'), None)
@@ -386,7 +391,37 @@ def extract(rid, pdf):
             toc.append({'t': t, 'lvl': lvl, 'to': to, 'pg': int(m.group(1)) if m else None})
     if len(toc) < 3 or sum(1 for t in toc if t['to'] is not None) < len(toc) / 2:   # 2쪽이 목차가 아닌 예전 양식
         toc = []
-    return {'stock': stock, 'toc': toc, 'blocks': merged}
+    out = {'stock': stock, 'toc': toc, 'blocks': merged}
+    if p1:
+        out['p1'] = p1
+    return out
+
+
+def industry_p1(doc, save):
+    """산업 리포트(Sector Analysis 양식) 1쪽. 왼쪽 본문은 extract-page1.py와 같은 방식(오른쪽 칸 앞까지), 헤드라인은 제목 아래 남색 줄,
+    오른쪽 칸: 전망·투자의견 세 줄(글), Top-picks 표부터 Sector Index 차트까지(그림, Research Team 줄 앞에서 자름)"""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location('p1', os.path.join(ROOT, 'tools', 'extract-page1.py'))
+    m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+    page = doc[0]; W = page.rect.width
+    ls = lines_of(page)
+    side = [l for l in ls if l['x0'] > W * 0.68 and l['y0'] > 60]
+    sx = min((l['x0'] for l in side), default=W * 0.69) - 6
+    secs = m.extract(doc.name, xmax=(sx - 2) / W) or []
+    left = [l for l in ls if l['x1'] < sx and l['y0'] > 50]
+    title = max(left, key=lambda l: l['size'], default=None)
+    head = ' '.join(l['text'].strip() for l in sorted(left, key=lambda l: l['y0'])
+                    if title and l['y0'] > title['y0'] and 15 <= l['size'] < title['size'] - 1)
+    view = [l['text'].strip() for l in sorted(side, key=lambda l: l['y0']) if l['y0'] < 190 and l['size'] >= 8.5][:3]
+    tp = next((l for l in side if re.match(r'top[- ]?picks?', l['text'].strip(), re.I)), None)
+    rt = next((l for l in side if 'Research Team' in l['text']), None)
+    if tp:   # 아래 끝: Research Team 줄 앞, 그 사이 빈칸은 버리고 차트 축 글씨까지
+        stop = rt['y0'] if rt else page.rect.height * 0.72
+        y1 = max([l['y1'] for l in side if tp['y0'] <= l['y0'] < stop] + [tp['y1']]) + 8
+        img = save(page, (sx - 4, tp['y0'] - 6, W - 12, min(y1, stop - 4)))
+    else:
+        img = None
+    return {'head': head, 'sections': secs, 'view': view, 'side': img}
 
 
 if __name__ == '__main__':
