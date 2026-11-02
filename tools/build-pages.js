@@ -55,6 +55,9 @@ function constant(name) {
 }
 
 const RECRUIT = constant('RECRUIT');
+const INDUSTRY = constant('INDUSTRY');
+const IND_FULL = constant('IND_FULL');
+const officers = field('people');
 const CHART = constant('CHART');
 const stats = field('aboutStats');
 const history = field('history');
@@ -80,7 +83,7 @@ const FOOTER = `<footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 �
 </html>
 `;
 
-function head({ title, desc, url, keywords }) {
+function head({ title, desc, url, keywords, image }) {
   return `<!DOCTYPE html>\n<html lang="ko">\n<head>\n<meta charset="utf-8">\n` + [
     `<title>${esc(title)}</title>`,
     `<meta name="description" content="${attr(desc)}">`,
@@ -91,9 +94,7 @@ function head({ title, desc, url, keywords }) {
     `<meta property="og:locale" content="ko_KR">`,
     `<meta property="og:title" content="${attr(title)}">`,
     `<meta property="og:description" content="${attr(desc)}">`,
-    `<meta property="og:image" content="${C.SITE}/assets/og/site.jpg">`,
-    `<meta property="og:image:width" content="1200">`,
-    `<meta property="og:image:height" content="630">`,
+    ...(image ? [`<meta property="og:image" content="${C.SITE}/${image}">`] : [`<meta property="og:image" content="${C.SITE}/assets/og/site.jpg">`, `<meta property="og:image:width" content="1200">`, `<meta property="og:image:height" content="630">`]),
     `<meta property="og:url" content="${url}">`,
     `<meta name="twitter:card" content="summary_large_image">`,
     '',
@@ -217,8 +218,17 @@ function peoplePage() {
   const careers = CHART.map((x) => `${x.label} ${x.pct}%`).join(' · ');
   const desc = `중앙대학교 가치투자학회 R.F.S.의 조직과 알럼나이 ${ALUMNI}명. 진로: ${careers}.`;
   const keywords = ['중앙대 가치투자학회 알럼나이', 'RFS 동문', '중앙대 금융권 취업', '중앙대 증권사', '중앙대 학회 진로', '중앙대 RFS'];
-  return head({ title, desc, url, keywords }) +
+  const ko = { President: '회장', 'Vice President': '부회장', 'Asset Management': '운용팀장' };
+  const job = (o) => ko[o.role] || o.desc;
+  const orgLd = {
+    '@context': 'https://schema.org', '@type': 'Organization', name: C.SITE_NAME, alternateName: ['R.F.S.', 'RFS', 'Rising Financial Stars', '중앙대 RFS'], url: `${C.SITE}/`,
+    logo: `${C.SITE}/assets/rfs-seal-navy.png`, foundingDate: '2006', parentOrganization: { '@type': 'CollegeOrUniversity', name: '중앙대학교' },
+    member: officers.map((o) => ({ '@type': 'Person', name: o.name, jobTitle: `${COHORT}기 ${job(o)} (${o.role})`, image: `${C.SITE}/${o.photo}`, memberOf: { '@type': 'Organization', name: C.SITE_NAME } })),
+  };
+  const cards = officers.map((o) => `<figure style="margin:0"><img src="/${o.photo}" alt="중앙대학교 가치투자학회 R.F.S. ${COHORT}기 ${attr(job(o))} ${attr(o.name)}" width="300" height="400" loading="lazy" style="width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;border-radius:8px"><figcaption style="padding-top:8px"><strong>${esc(o.name)}</strong><br><span style="color:var(--muted)">${esc(`${job(o)} · ${o.role}`)}</span></figcaption></figure>`).join('');
+  return head({ title, desc, url, keywords, image: 'assets/people-group.webp' }) +
 `<script type="application/ld+json">${json(crumbLd('People', url))}</script>
+<script type="application/ld+json">${json(orgLd)}</script>
 <script src="/research/spa.js"></script>
 </head>
 <body>
@@ -227,12 +237,68 @@ ${NAV}
 <div class="crumb"><a href="/">R.F.S.</a> › People</div>
 <h1>People</h1>
 <p class="headline">${COHORT}기까지 이어진 알럼나이 ${ALUMNI}명</p>
+<img class="cover" src="/assets/people-group.webp" alt="중앙대학교 가치투자학회 R.F.S. ${COHORT}기 단체 사진" style="width:100%;height:auto;border-radius:8px">
+<section><h2>${COHORT}기 임원진</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:18px">${cards}</div></section>
+<img class="cover" src="/assets/people-group.webp" alt="중앙대학교 가치투자학회 R.F.S. ${COHORT}기 단체 사진" style="width:100%;height:auto;border-radius:8px">
+<section><h2>${COHORT}기 임원진</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:18px">${cards}</div></section>
 <section><h2>조직</h2>${dl(teams)}</section>
 <section><h2>알럼나이 진로</h2><p>${esc(careers)}</p><p>증권사, 자산운용사, 은행, IB·PE·VC, 회계법인 등 금융권 전반에 R.F.S. 동문이 있습니다. 현역 학회원은 직무 세미나와 선배님 멘토링으로 진로를 준비합니다.</p></section>
 <div class="btns"><a class="btn solid" href="/#people">People 페이지 열기</a><a class="btn" href="/about/">학회 소개</a><a class="btn" href="/recruiting/">신입 학회원 모집</a></div>
 </main>
 ${FOOTER}`;
 }
+
+// ---------- /research/ind-<id>/ 산업 리포트 ----------
+// 웹 전문이 있는 산업 리포트(IND_FULL)마다 검색용 페이지. 1쪽 요약·목차는 assets/reports/full/ind-<id>.json에서
+
+const isoD = (d) => d.replace(/\./g, '-');
+const plain = (ps) => ps.map((seg) => seg.t).join('').replace(/\s+/g, ' ').trim();
+function indPage(x) {
+  const id = 'ind-' + x.id, url = `${C.SITE}/research/${id}/`;
+  const full = JSON.parse(read(`assets/reports/full/${id}.json`));
+  const p1 = full.p1 || {};
+  const secs = (p1.sections || []).filter((sc) => sc.h || sc.ps.length);
+  const toc = (full.blocks || []).filter((b) => b.h).map((b) => b.h);
+  const first = secs.flatMap((sc) => sc.ps.map(plain)).find((t) => t.length > 40) || '';
+  const [yy, hh] = x.sem.split('-');
+  const semKo = `20${yy}년 ${hh}학기`;
+  const head1 = p1.head || (p1.cover && p1.cover.title) || '';
+  const title = `${x.name} 리포트${head1 ? ' — ' + head1 : ''} | R.F.S. 중앙대 가치투자학회`;
+  const desc = (`${semKo} R.F.S. 산업분석. ` + (first || toc.join(' · '))).slice(0, 155);
+  const nm = x.name.replace(/\s*산업$/, '');
+  const keywords = [`${x.name}`, `${nm} 산업 분석`, `${nm} 산업 전망`, `${x.name} 리포트`, `${x.name} 보고서`, '산업분석 리포트', ...C.PAGE_BRAND_KEYWORDS];
+  const ld = [{
+    '@context': 'https://schema.org', '@type': 'Report', headline: `${x.name}${head1 ? ' — ' + head1 : ''}`, description: desc,
+    datePublished: isoD(x.date), inLanguage: 'ko', url, author: ORG, publisher: ORG, about: { '@type': 'Thing', name: x.name },
+    associatedMedia: { '@type': 'MediaObject', contentUrl: `${C.SITE}/${x.pdf}`, encodingFormat: 'application/pdf' },
+  }, {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'R.F.S.', item: `${C.SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'Research', item: `${C.SITE}/research/` },
+      { '@type': 'ListItem', position: 3, name: x.name, item: url },
+    ],
+  }];
+  const body = secs.map((sc) => (sc.h ? `<h3>${esc(sc.h)}</h3>` : '') + sc.ps.map((ps) => `<p>${esc(plain(ps))}</p>`).join('')).join('');
+  return head({ title, desc, url, keywords }) +
+`<script type="application/ld+json">${json(ld)}</script>
+<script src="/research/spa.js"></script>
+</head>
+<body>
+${NAV}
+<main>
+<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › ${esc(x.name)}</div>
+<h1>${esc(/산업$/.test(x.name) ? x.name + ' 분석' : x.name + ' 산업분석')}</h1>
+${head1 ? `<p class="headline">${esc(head1)}</p>` : ''}
+<dl class="stats"><div><dt>발간</dt><dd>${esc(x.date)}</dd></div><div><dt>학기</dt><dd>${esc(semKo)}</dd></div><div><dt>섹터</dt><dd>${esc(x.sector)}</dd></div><div><dt>분량</dt><dd>${x.pages}쪽</dd></div>${x.team ? `<div><dt>작성</dt><dd>Research Team ${esc(x.team)}</dd></div>` : ''}</dl>
+${body ? `<section><h2>요약</h2>${body}</section>` : ''}
+${toc.length ? `<section><h2>목차</h2><ul class="list">${toc.map((t) => `<li style="padding:8px 0">${esc(t)}</li>`).join('')}</ul></section>` : ''}
+<div class="btns"><a class="btn solid" href="/${x.pdf}">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(${x.pages}쪽)</span></a><a class="btn" href="/#research/${id}">R.F.S. 사이트에서 전문 읽기</a></div>
+<p class="note">본 자료는 중앙대학교 가치투자학회 R.F.S.의 학술 리서치 결과물이며, 특정 종목의 매매를 권유하지 않습니다.</p>
+</main>
+${FOOTER}`;
+}
+const indWeb = INDUSTRY.filter((x) => IND_FULL.includes('ind-' + x.id));
 
 // ---------- /privacy/ ----------
 // 가입 신청 폼(assets/join.js)의 수집·이용 동의와 같은 내용. 바꾸면 join.js의 동의 표와 member-signup의 POLICY_VERSION도 같이 바꾼다
@@ -283,13 +349,28 @@ write('fund/index.html', fundPage());
 write('people/index.html', peoplePage());
 write('recruiting/index.html', recruitingPage());
 write('privacy/index.html', privacyPage());
+for (const x of indWeb) write(`research/ind-${x.id}/index.html`, indPage(x));
+
+// /research/ 목록에 산업 리포트 칸 (build-site.js가 새로 쓴 뒤에 붙인다)
+{
+  let ri = read('research/index.html').replace(/\n<section id="industry">[\s\S]*?<\/section>/, '');
+  const rows = [...indWeb].sort((a, b) => b.date.localeCompare(a.date)).map((x) => `<li><a href="/research/ind-${x.id}/"><span>${esc(x.name)}</span><span class="meta">${esc(`${x.sector} · ${x.date}`)}</span></a></li>`).join('');
+  ri = ri.replace('\n</main>', `\n<section id="industry"><h2>산업분석 보고서 ${indWeb.length}편</h2><ul class="list">${rows}</ul></section>\n</main>`);
+  write('research/index.html', ri);
+}
 
 // sitemap에 두 페이지를 넣는다 (build-site.js가 sitemap을 새로 쓰므로 그 다음에 실행)
 let sm = read('sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
-for (const p of ['about', 'recruiting', 'fund', 'people', 'privacy']) {
+for (const p of ['about', 'recruiting', 'fund', 'privacy']) {
   const loc = `${C.SITE}/${p}/`;
   if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>\n</urlset>`);
 }
+// People: 사진을 구글 이미지 검색에 올리도록 image:image를 단다
+sm = sm.replace(/  <url><loc>[^<]*\/people\/<\/loc>[\s\S]*?<\/url>\n/, '').replace(/  <url><loc>[^<]*\/research\/ind-\d+\/<\/loc>[^\n]*\n/g, '');
+if (!sm.includes('xmlns:image')) sm = sm.replace('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">');
+const imgs = [{ src: 'assets/people-group.webp' }, ...officers.map((o) => ({ src: o.photo }))];
+sm = sm.replace('</urlset>', `  <url><loc>${C.SITE}/people/</loc><lastmod>${today}</lastmod>${imgs.map((i) => `<image:image><image:loc>${C.SITE}/${i.src}</image:loc></image:image>`).join('')}</url>\n` +
+  indWeb.map((x) => `  <url><loc>${C.SITE}/research/ind-${x.id}/</loc><lastmod>${isoD(x.date)}</lastmod></url>\n`).join('') + '</urlset>');
 write('sitemap.xml', sm);
-console.log(`about/, recruiting/, fund/, people/, privacy/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);
+console.log(`산업 리포트 ${indWeb.length}편, about/, recruiting/, fund/, people/, privacy/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);

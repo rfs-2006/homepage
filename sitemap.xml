@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url><loc>https://caurfs.kr/</loc><lastmod>2026-09-29</lastmod></url>
   <url><loc>https://caurfs.kr/research/</loc><lastmod>2026-09-29</lastmod></url>
   <url><loc>https://caurfs.kr/research/sanil/</loc><lastmod>2026-09-29</lastmod></url>
@@ -95,9 +95,61 @@
   <url><loc>https://caurfs.kr/research/kolmar/</loc><lastmod>2021-10-03</lastmod></url>
   <url><loc>https://caurfs.kr/research/ecopro21/</loc><lastmod>2021-05-12</lastmod></url>
   <url><loc>https://caurfs.kr/research/lottechem/</loc><lastmod>2021-03-31</lastmod></url>
-  <url><loc>https://caurfs.kr/about/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://caurfs.kr/recruiting/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://caurfs.kr/fund/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://caurfs.kr/people/</loc><lastmod>2026-10-28</lastmod></url>
-  <url><loc>https://caurfs.kr/privacy/</loc><lastmod>2026-10-28</lastmod></url>
+  <url><loc>https://caurfs.kr/about/</loc><lastmod>2026-11-02</lastmod></url>
+  <url><loc>https://caurfs.kr/recruiting/</loc><lastmod>2026-11-02</lastmod></url>
+  <url><loc>https://caurfs.kr/fund/</loc><lastmod>2026-11-02</lastmod></url>
+  <url><loc>https://caurfs.kr/privacy/</loc><lastmod>2026-11-02</lastmod></url>
+  <url><loc>https://caurfs.kr/people/</loc><lastmod>2026-11-02</lastmod><image:image><image:loc>https://caurfs.kr/assets/people-group.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/president.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/vice.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/team1.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/team2.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/team3.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/team4.webp</image:loc></image:image><image:image><image:loc>https://caurfs.kr/assets/officers/am.webp</image:loc></image:image></url>
+  <url><loc>https://caurfs.kr/research/ind-4195/</loc><lastmod>2021-11-11</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4197/</loc><lastmod>2021-11-11</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4278/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4427/</loc><lastmod>2022-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4544/</loc><lastmod>2023-05-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4548/</loc><lastmod>2023-05-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4550/</loc><lastmod>2023-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4665/</loc><lastmod>2023-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4666/</loc><lastmod>2023-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4667/</loc><lastmod>2023-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4894/</loc><lastmod>2024-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4895/</loc><lastmod>2024-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4991/</loc><lastmod>2025-05-13</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5082/</loc><lastmod>2025-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5084/</loc><lastmod>2025-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5086/</loc><lastmod>2025-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4193/</loc><lastmod>2021-11-11</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4275/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4546/</loc><lastmod>2023-05-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4778/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4897/</loc><lastmod>2024-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5081/</loc><lastmod>2025-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4276/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4423/</loc><lastmod>2022-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4668/</loc><lastmod>2023-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4781/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4891/</loc><lastmod>2024-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5085/</loc><lastmod>2025-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4194/</loc><lastmod>2021-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4990/</loc><lastmod>2025-05-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4277/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4777/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4780/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4994/</loc><lastmod>2025-05-13</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4995/</loc><lastmod>2025-05-13</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-5080/</loc><lastmod>2025-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4664/</loc><lastmod>2023-11-07</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4192/</loc><lastmod>2021-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4280/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4425/</loc><lastmod>2022-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4428/</loc><lastmod>2022-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4545/</loc><lastmod>2023-05-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4547/</loc><lastmod>2023-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4775/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4776/</loc><lastmod>2024-05-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4896/</loc><lastmod>2024-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4898/</loc><lastmod>2024-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4992/</loc><lastmod>2025-05-13</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4424/</loc><lastmod>2022-11-08</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4196/</loc><lastmod>2021-11-09</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4279/</loc><lastmod>2022-05-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/ind-4993/</loc><lastmod>2025-05-13</lastmod></url>
 </urlset>

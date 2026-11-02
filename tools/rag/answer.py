@@ -378,9 +378,10 @@ class Answerer:
         ind = {}
         try:
             html = (root / 'index.html').read_text(errors='ignore')
-            for m in re.finditer(r"\{ id:'(\d+)', sem:'(\d\d-[12])', name:'([^']+)',[^}]*pdf:'(assets/reports/industry/[^']+\.pdf)' \}", html):
+            full = set(re.findall(r"'ind-(\d+)'", html[html.find('const IND_FULL'):][:4000]))   # 웹 전문이 있는 산업 리포트
+            for m in re.finditer(r"\{ id:'(\d+)', sem:'(\d\d-[12])',[^}]*?name:'([^']+)',[^}]*pdf:'(assets/reports/industry/[^']+\.pdf)' \}", html):   # 사이에 date: 등 칸이 더 있어도 된다
                 if (root / m.group(4)).exists():
-                    ind[m.group(1)] = {'name': f'[{m.group(2)}] {m.group(3)}', 'pdf': '/' + m.group(4), 'page': '/research/#industry'}
+                    ind[m.group(1)] = {'name': f'[{m.group(2)}] {m.group(3)}', 'pdf': '/' + m.group(4), 'page': f'/#research/ind-{m.group(1)}' if m.group(1) in full else '/research/#industry'}
         except OSError:
             pass
         docs, subj = {}, {}

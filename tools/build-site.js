@@ -318,7 +318,7 @@ function main() {
   if (!/^Sitemap:/m.test(robots)) write('robots.txt', robots.replace(/\n?$/, '\n') + `Sitemap: ${C.SITE}/sitemap.xml\n`);
 
   // REPORTS에서 빠진 리포트 폴더는 지우지 않고 알려만 준다
-  const orphan = fs.readdirSync(path.join(ROOT, 'research')).filter((d) => fs.statSync(path.join(ROOT, 'research', d)).isDirectory() && !ids.has(d));
+  const orphan = fs.readdirSync(path.join(ROOT, 'research')).filter((d) => fs.statSync(path.join(ROOT, 'research', d)).isDirectory() && !ids.has(d) && !/^ind-\d+$/.test(d));
   for (const d of orphan) console.warn(`경고: research/${d}/ 는 REPORTS에 없습니다`);
 
   console.log(`리포트 ${reports.length}건 (새 페이지 ${created}개), 고유 기업 ${groups.size}개, 루트 keywords ${rootKw.length}개, sitemap URL ${sorted.length + 2}개`);

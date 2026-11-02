@@ -2957,11 +2957,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
       <div class="wrap secpad">
         <div class="rv rv-up"><h2 class="sec-title">{{ currentCohort }}기 임원진</h2></div>
         <p class="og-h"><span>Executive Board</span></p>
-        <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+        <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
         <p class="og-h"><span>Research Team</span></p>
-        <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+        <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
         <p class="og-h"><span>Asset Management Team</span></p>
-        <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+        <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
       </div>
     </section>
 
@@ -3053,11 +3053,11 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
     <section data-tab="officers" data-nav="light" style="background:#FFFFFF">
       <h2 class="sec-title">{{ currentCohort }}기 임원진</h2>
       <p class="og-h"><span>Executive Board</span></p>
-      <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+      <div class="og-row"><sc-for list="{{ peopleLead }}" as="p" hint-placeholder-count="2"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
       <p class="og-h"><span>Research Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+      <div class="og-row"><sc-for list="{{ peopleRT }}" as="p" hint-placeholder-count="4"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
       <p class="og-h"><span>Asset Management Team</span></p>
-      <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="{{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
+      <div class="og-row"><sc-for list="{{ peopleAM }}" as="p" hint-placeholder-count="1"><div class="oc"><div class="ph"><img src="{{ p.photo }}" alt="중앙대학교 가치투자학회 R.F.S. {{ p.desc }} {{ p.name }}" loading="lazy"></div><b>{{ p.name }}</b><em>{{ p.role }}</em></div></sc-for></div>
     </section>
 
     <section data-tab="network" id="m-people-alumni" data-nav="dark" style="background:#111c2e;padding:60px 24px 56px">
@@ -6457,7 +6457,7 @@ class Component extends DCLogic {
     if (page === 'report' && window.__rfsFont) window.__rfsFont();   // 글꼴을 아직 안 받았으면 지금 받는다 (받는 동안 본문은 감춰짐)
     const r = REPORTS.find((x) => x.id === reportId);
     const ir = !r && /^ind-/.test(reportId || '') && INDUSTRY.find((x) => 'ind-' + x.id === reportId);
-    document.title = page === 'report' && ir ? ir.name + ' 산업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
+    document.title = page === 'report' && ir ? (/산업$/.test(ir.name) ? ir.name + ' 분석' : ir.name + ' 산업분석') + ' 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'report' && r ? r.name + ' (' + r.ticker + ') 기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'about' ? '학회 소개 | 중앙대 가치투자학회 R.F.S.'
@@ -6965,7 +6965,7 @@ class Component extends DCLogic {
       onRegion: (e) => this.setState({ fRegion: e.target.value, page1: 1 }),
       covCols, filteredReports: pageRows.map(vm), covCount: filtered.length,
       indGroups: (() => { const by = {}; INDUSTRY.forEach((x) => { (by[x.sem] = by[x.sem] || []).push(x); });
-        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽', web, pdfOnly: !web, href: '#research/ind-' + x.id, open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
+        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽', web, pdfOnly: !web, href: '/research/ind-' + x.id + '/', open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
       indCount: INDUSTRY.length,
       covGroups, isGrouped: s.sortKey === 'date', isFlat: s.sortKey !== 'date',
       covEmpty: filtered.length === 0,
