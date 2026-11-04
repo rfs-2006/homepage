@@ -1670,12 +1670,12 @@ class Component extends DCLogic {
     fetch('/assets/reports/page1.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
   }
 
-  // 기업 리포트 목록의 평가 기간 주가(assets/data/track.json, tools/build-prices.js가 매일 갱신). Research를 열 때 받는다.
+  // 기업 리포트 목록의 평가 기간 주가(assets/data/track.json, tools/build-prices.js가 주 1회 갱신). Research를 열 때 받는다.
   // /assets/는 하루 캐시라 6시간 단위 값을 붙여 새로 받게 한다
   loadTrack() {
     if (this._trackReq) return; this._trackReq = true;
     const none = { r: {} };
-    fetch('/assets/data/track.json?t=' + Math.floor(Date.now() / 216e5)).then((r) => (r.ok ? r.json() : null)).then((j) => this.setState({ track: (j && j.r) ? j : none }), () => this.setState({ track: none }));
+    fetch('/assets/data/track.json', { cache: 'no-cache' })   /* 주 1회 바뀌므로 매번 바뀌었는지만 확인(ETag) */.then((r) => (r.ok ? r.json() : null)).then((j) => this.setState({ track: (j && j.r) ? j : none }), () => this.setState({ track: none }));
   }
 
   // 리포트 전문(assets/reports/full/<id>.json)은 그 리포트를 처음 열 때 받는다
