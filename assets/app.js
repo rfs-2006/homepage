@@ -2994,7 +2994,8 @@ class Component extends DCLogic {
       const showT = T.t && T.t <= hi * 1.25;
       if (showT) hi = Math.max(hi, T.t);
       const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
-      const X = (i) => i / (p.length - 1 || 1) * 1000;   // 진행 중이어도 지금까지 주가를 칸 전체 폭으로 (남은 기간을 비우면 선이 납작해진다)
+      const W = (run && T.x != null ? T.x : 1000) * 0.98;   // 끝 점이 칸 끝에 잘리지 않게 조금 안쪽까지   // 진행 중이면 12개월 중 지난 만큼만 그린다
+      const X = (i) => i / (p.length - 1 || 1) * W;
       const Y = (v) => 10 + (1 - (v - lo) / (hi - lo || 1)) * 80;
       const f1 = (v) => Math.round(v * 10) / 10;
       const pct = (v, u) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v * 100).toFixed(1) + u;
@@ -3002,20 +3003,20 @@ class Component extends DCLogic {
       const kst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
       const left = Math.max(0, Math.round((Date.parse(T.e) - Date.parse(kst)) / 864e5));
       const mo = (d) => (d < 30 ? d + '일' : Math.max(1, Math.round(d / 30.44)) + '개월');
-      const ex = T.b == null ? null : T.r - T.b;
+      const ex = T.m == null ? null : T.m;
       const L = p.length - 1, H = T.hi != null ? T.hi : -1;
       return { ok: true, none: false,
         d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
         c: T.r >= 0 ? '#D6404E' : '#2F64C2',
-        by: f1(Y(1000)), ty: showT ? f1(Y(T.t)) : -10, px: run ? f1(X(L)) : -50, py: run ? f1(Y(p[L])) : -50,
+        by: f1(Y(1000)), ty: showT ? f1(Y(T.t)) : -10, 
         rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
         lx: f1(X(L)), ly: f1(Y(p[L])),
         hx: H >= 0 ? f1(X(H)) : -50, hy: H >= 0 ? f1(Y(p[H])) : -50,
         chip: T.st === 'hit' ? '목표가 도달 · ' + mo(T.hd) : T.st === 'end' ? '기간 종료 ' + pct(T.r, '%') : '진행 중 D-' + left,
         cc: 'tk-chip tk-' + T.st,
         ret: pct(T.r, '%'), rc: cl(T.r),
-        ex: ex == null ? '—' : pct(ex, '%p'), ec: ex == null ? '' : cl(ex),
-        mkt: (T.mk === 'K' ? 'KOSPI' : 'S&P 500') + ' 대비' };
+        ex: ex == null ? '—' : pct(ex, '%'), ec: ex == null ? '' : cl(ex),
+        mkt: '최고 수익률' };
     };
     const rowVm = (r) => ({ ...vm(r), tk: tkVm(r.id) });
     const covGroups = (() => {

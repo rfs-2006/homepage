@@ -78,7 +78,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<link rel="stylesheet" href="/assets/app.css?v=351676bb01">
+<link rel="stylesheet" href="/assets/app.css?v=2a2e2f2e02">
 </head>
 <body>
 <noscript>
@@ -125,7 +125,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=7" defer></script>
 <script src="./assets/ops.js?v=9" defer></script>
-<link rel="stylesheet" href="/assets/app.css?v=351676bb01">
+<link rel="stylesheet" href="/assets/app.css?v=2a2e2f2e02">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
@@ -284,7 +284,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
               <select value="{{ fRegion }}" onChange="{{ onRegion }}"><sc-for list="{{ regionOpts }}" as="o" hint-placeholder-count="3"><option value="{{ o.v }}">{{ o.l }}</option></sc-for></select>
               <span style="margin-left:auto;font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ covCount }}편</span>
             </div>
-            <div class="covg covhead"><span>기업</span><span class="col-s">섹터</span><span>의견</span><span class="col-tp" style="text-align:right">목표주가</span><span style="text-align:right">상승여력</span><span class="tkx"><span class="tk-w">평가 기간 주가</span><span class="tk-st">기간 결과</span><span class="tk-n">기간 수익률</span><span class="tk-n">시장 대비</span></span></div>
+            <div class="covg covhead"><span>기업</span><span class="col-s">섹터</span><span>의견</span><span class="col-tp" style="text-align:right">목표주가</span><span style="text-align:right">상승여력</span><span class="tkx"><span class="tk-w">평가 기간 주가</span><span class="tk-st">기간 결과</span><span class="tk-n">현재 수익률</span><span class="tk-n">최고 수익률</span></span></div>
             <sc-for list="{{ covGroups }}" as="g" hint-placeholder-count="2">
               <div style="margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA;display:flex;justify-content:space-between"><span>{{ g.date }}</span></div>
               <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4">
@@ -294,14 +294,14 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
                 <span style="font-size:12.5px;font-weight:700;letter-spacing:0.08em;color:{{ r.opColor }};opacity:{{ r.opAlpha }}">{{ r.op }}</span>
                 <span class="col-tp" style="text-align:right;font-size:14px;font-variant-numeric:tabular-nums">{{ r.tp }}</span>
                 <span style="text-align:right;font-weight:700;color:#8f6410;font-variant-numeric:tabular-nums">{{ r.upside }}</span>
-                <span class="tkx"><sc-if value="{{ r.tk.ok }}" hint-placeholder-val="{{ false }}"><span class="tk-w"><svg class="tk-sp" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><line class="tk-base" x1="0" x2="1000" y1="{{ r.tk.by }}" y2="{{ r.tk.by }}"></line><line class="tk-tp" x1="0" x2="1000" y1="{{ r.tk.ty }}" y2="{{ r.tk.ty }}"></line><line class="tk-eline" x1="999" x2="999" y1="0" y2="100"></line><path class="tk-line" d="{{ r.tk.d }}" stroke="{{ r.tk.c }}"></path><line class="tk-pulse" x1="{{ r.tk.px }}" x2="{{ r.tk.px }}" y1="{{ r.tk.py }}" y2="{{ r.tk.py }}" stroke="{{ r.tk.c }}"></line><line class="tk-dot" x1="{{ r.tk.lx }}" x2="{{ r.tk.lx }}" y1="{{ r.tk.ly }}" y2="{{ r.tk.ly }}" stroke="{{ r.tk.c }}"></line><line class="tk-ho" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line><line class="tk-hi" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line></svg></span><span class="tk-st"><span class="{{ r.tk.cc }}">{{ r.tk.chip }}</span></span><span class="tk-n tk-ret {{ r.tk.rc }}">{{ r.tk.ret }}</span><span class="tk-n tk-ex {{ r.tk.ec }}" title="{{ r.tk.mkt }}">{{ r.tk.ex }}</span></sc-if><sc-if value="{{ r.tk.none }}" hint-placeholder-val="{{ false }}"><span class="tk-na">—</span></sc-if></span>
+                <span class="tkx"><sc-if value="{{ r.tk.ok }}" hint-placeholder-val="{{ false }}"><span class="tk-w"><svg class="tk-sp" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><line class="tk-base" x1="0" x2="1000" y1="{{ r.tk.by }}" y2="{{ r.tk.by }}"></line><line class="tk-tp" x1="0" x2="1000" y1="{{ r.tk.ty }}" y2="{{ r.tk.ty }}"></line><line class="tk-eline" x1="999" x2="999" y1="0" y2="100"></line><path class="tk-line" d="{{ r.tk.d }}" stroke="{{ r.tk.c }}"></path><line class="tk-dot" x1="{{ r.tk.lx }}" x2="{{ r.tk.lx }}" y1="{{ r.tk.ly }}" y2="{{ r.tk.ly }}" stroke="{{ r.tk.c }}"></line><line class="tk-ho" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line><line class="tk-hi" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line></svg></span><span class="tk-st"><span class="{{ r.tk.cc }}">{{ r.tk.chip }}</span></span><span class="tk-n tk-ret {{ r.tk.rc }}">{{ r.tk.ret }}</span><span class="tk-n tk-ex {{ r.tk.ec }}" title="{{ r.tk.mkt }}">{{ r.tk.ex }}</span></sc-if><sc-if value="{{ r.tk.none }}" hint-placeholder-val="{{ false }}"><span class="tk-na">—</span></sc-if></span>
               </a>
               </sc-for>
             </sc-for>
             <sc-if value="{{ covEmpty }}" hint-placeholder-val="{{ false }}">
               <p style="padding:28px 6px;font-size:14px;color:rgba(26,26,26,0.6)">조건에 맞는 리포트가 없습니다.</p>
             </sc-if>
-            <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 수익률은 기간 안(진행 중이면 지금까지) 최고 종가 기준이고, 시장 대비도 그 최고가 날까지입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
+            <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 현재 수익률은 지금 종가(기간이 끝났으면 기간 끝 종가), 최고 수익률은 기간 안 가장 높았던 종가 기준입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
             <sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
               <div class="pager" style="margin-top:32px">
                 <sc-for list="{{ pagerItems }}" as="p" hint-placeholder-count="5"><a onClick="{{ p.on }}" class="{{ p.cls }}">{{ p.label }}</a></sc-for>
@@ -374,7 +374,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
               <span>{{ r.sector }}</span>
               <span style="margin-left:auto;color:#1A1A1A">{{ r.tp }}</span>
             </div>
-            <sc-if value="{{ r.tk.ok }}" hint-placeholder-val="{{ false }}"><div class="tkm"><div class="tk-w"><svg class="tk-sp" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><line class="tk-base" x1="0" x2="1000" y1="{{ r.tk.by }}" y2="{{ r.tk.by }}"></line><line class="tk-tp" x1="0" x2="1000" y1="{{ r.tk.ty }}" y2="{{ r.tk.ty }}"></line><line class="tk-eline" x1="999" x2="999" y1="0" y2="100"></line><path class="tk-line" d="{{ r.tk.d }}" stroke="{{ r.tk.c }}"></path><line class="tk-pulse" x1="{{ r.tk.px }}" x2="{{ r.tk.px }}" y1="{{ r.tk.py }}" y2="{{ r.tk.py }}" stroke="{{ r.tk.c }}"></line><line class="tk-dot" x1="{{ r.tk.lx }}" x2="{{ r.tk.lx }}" y1="{{ r.tk.ly }}" y2="{{ r.tk.ly }}" stroke="{{ r.tk.c }}"></line><line class="tk-ho" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line><line class="tk-hi" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line></svg></div><div class="tkm-r"><span class="{{ r.tk.cc }}">{{ r.tk.chip }}</span><b class="tk-n tk-ret {{ r.tk.rc }}">{{ r.tk.ret }}</b></div><div class="tkm-m"><span>기간 수익률 · {{ r.tk.mkt }}</span><b class="tk-n tk-ex {{ r.tk.ec }}">{{ r.tk.ex }}</b></div></div></sc-if>
+            <sc-if value="{{ r.tk.ok }}" hint-placeholder-val="{{ false }}"><div class="tkm"><div class="tk-w"><svg class="tk-sp" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"><line class="tk-base" x1="0" x2="1000" y1="{{ r.tk.by }}" y2="{{ r.tk.by }}"></line><line class="tk-tp" x1="0" x2="1000" y1="{{ r.tk.ty }}" y2="{{ r.tk.ty }}"></line><line class="tk-eline" x1="999" x2="999" y1="0" y2="100"></line><path class="tk-line" d="{{ r.tk.d }}" stroke="{{ r.tk.c }}"></path><line class="tk-dot" x1="{{ r.tk.lx }}" x2="{{ r.tk.lx }}" y1="{{ r.tk.ly }}" y2="{{ r.tk.ly }}" stroke="{{ r.tk.c }}"></line><line class="tk-ho" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line><line class="tk-hi" x1="{{ r.tk.hx }}" x2="{{ r.tk.hx }}" y1="{{ r.tk.hy }}" y2="{{ r.tk.hy }}"></line></svg></div><div class="tkm-r"><span class="{{ r.tk.cc }}">{{ r.tk.chip }}</span><b class="tk-n tk-ret {{ r.tk.rc }}">{{ r.tk.ret }}</b></div><div class="tkm-m"><span>{{ r.tk.mkt }}</span><b class="tk-n tk-ex {{ r.tk.ec }}">{{ r.tk.ex }}</b></div></div></sc-if>
             <sc-if value="{{ r.tk.none }}" hint-placeholder-val="{{ false }}"><div class="tkm tkm-na">평가 기간 주가 —</div></sc-if>
           </a>
         </sc-for>
@@ -382,7 +382,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
       <sc-if value="{{ covEmpty }}" hint-placeholder-val="{{ false }}">
         <p style="padding:24px 0;font-size:14px;color:rgba(26,26,26,0.6)">조건에 맞는 리포트가 없습니다.</p>
       </sc-if>
-      <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 수익률은 기간 안(진행 중이면 지금까지) 최고 종가 기준이고, 시장 대비도 그 최고가 날까지입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
+      <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 현재 수익률은 지금 종가(기간이 끝났으면 기간 끝 종가), 최고 수익률은 기간 안 가장 높았던 종가 기준입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
       <sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
         <div class="pager" style="margin-top:26px">
           <sc-for list="{{ pagerItems }}" as="p" hint-placeholder-count="5"><a onClick="{{ p.on }}" class="{{ p.cls }}">{{ p.label }}</a></sc-for>
@@ -1784,7 +1784,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;recruitStatus&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;모집 중&quot;,&quot;서류 심사 중&quot;,&quot;마감&quot;],&quot;default&quot;:&quot;마감&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitSemester&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;26-2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitCohort&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:43,&quot;min&quot;:1,&quot;max&quot;:99,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitDeadline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;7월 31일 (금) 23:59&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitFormUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://forms.gle/[교체]&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;nextRecruit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;27-1학기, 2027년 1월&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;intranetPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;인트라넷&quot;},&quot;mobilePreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;미리보기&quot;}}"></script>
-<script src="/assets/app.js?v=a3bf732a3b"></script>
+<script src="/assets/app.js?v=2d41387514"></script>
 <script>
 // 메뉴 로고 옆 'with Claude'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
 (function(){
