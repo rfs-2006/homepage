@@ -261,6 +261,10 @@ def exhibits(lines, H, page):
         above = [l for l in wide if l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)
                  and (l['x1'] - l['x0']) > 0.55 * (x1 - x0)]
         # 위쪽 경계는 칸 폭의 절반 넘게 이어진 본문 줄(문단)만. 표의 행이나 차트 안 글자를 경계로 오해하지 않게
+        # 문단 끝의 짧은 줄('가될 것으로 기대된다.')은 바로 위 문단 줄에 붙어 있으면 문단으로 본다
+        for _ in range(2):
+            above += [l for l in body if l not in above and l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)
+                      and any(0 <= l['y0'] - a['y1'] < 6 and abs(l['x0'] - a['x0']) < 4 and abs(l['size'] - a['size']) < 0.5 for a in above)]
         top = max([l['y1'] + 6 for l in above], default=50)
         g = [gg for gg in graphics if gg[3] <= sl['y0'] + 2 and gg[3] > top and gg[0] < x1 and gg[2] > x0]
         if g:
