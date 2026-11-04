@@ -13,7 +13,7 @@
     { name: '솔라피 (문자)', amount: 5000, cur: 'KRW', cycle: 'month', next: '', note: '충전식' },
     { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-09-14', note: '호스팅케이알(hosting.kr) · 자동연장 확인 · DNS는 Netlify' },
     { name: '도메인 caurfs.com', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-08-24', note: '가비아 · caurfs.kr로 넘기는 용도' },
-    { name: 'Polaris 서버 (네이버 클라우드)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
+    { name: 'Polaris 서버 (네이버 클라우드)', amount: 0, cur: 'KRW', cycle: 'month', next: '2027-01-31', note: '크레딧 296,490원 남음 · 2027-01-31 만료 뒤 카드 결제' },
     { name: 'Supabase', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 요금제' },
     { name: 'Resend (알림 메일)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 월 3,000통 · caurfs.kr 인증됨', owner: 'kmss2036@gmail.com', moved: 'personal' },
     { name: 'GitHub (저장소 rfs-2006)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료' },
