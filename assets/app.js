@@ -33,7 +33,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261102b';
+const DATA_VER = '20261104b';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 // 정규 세미나 산업 리포트 (rfs-cafe-data 원본 PDF, 21-1~25-2). 리서치 '산업 리포트' 칸에서 PDF로 받는다. 상세 화면은 없다
 const INDUSTRY = [
@@ -43,7 +43,7 @@ const INDUSTRY = [
   { id:'4427', sem:'22-2', date:'2022.11.08', name:'전기전자 및 IT부품장비 산업', team:'2', sector:'IT', pages:33, pdf:'assets/reports/industry/22-2_4427.pdf' },
   { id:'4544', sem:'23-1', date:'2023.05.09', name:'반도체·반도체장비', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/23-1_4544.pdf' },
   { id:'4548', sem:'23-1', date:'2023.05.09', name:'AI반도체 산업', team:'2', sector:'IT', pages:30, pdf:'assets/reports/industry/23-1_4548.pdf' },
-  { id:'4550', sem:'23-1', date:'2023.05.10', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
+  { id:'4550', sem:'23-1', date:'2023.05.10', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
   { id:'4665', sem:'23-2', date:'2023.11.07', name:'디스플레이 및 소재장비', team:'4', sector:'IT', pages:34, pdf:'assets/reports/industry/23-2_4665.pdf' },
   { id:'4666', sem:'23-2', date:'2023.11.07', name:'반도체 산업', team:'5', sector:'IT', pages:32, pdf:'assets/reports/industry/23-2_4666.pdf' },
   { id:'4667', sem:'23-2', date:'2023.11.07', name:'사이버보안', team:'1', sector:'IT', pages:30, pdf:'assets/reports/industry/23-2_4667.pdf' },
@@ -1430,7 +1430,9 @@ class Component extends DCLogic {
         });
       };
       // 히어로를 지나면 상단 메뉴에 배경을 깔아 아래 고정 탭과 한 덩어리로 보이게
-      const solid = (on) => { const d = document.documentElement; if (document.querySelector('main.pgx .story')) on = false; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      const solid = (on) => { const d = document.documentElement; if (document.querySelector('main.pgx .story')) on = false; if (document.querySelector('.rpt-paper, .rf-side')) on = window.scrollY > 60; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      // 리포트 화면엔 큰 사진(.pg-hero)이 없어서, 조금 내리면 바로 메뉴 바탕을 깐다 (안 그러면 투명한 메뉴가 본문 글자와 겹친다)
+      window.addEventListener('scroll', () => { if (document.querySelector('.rpt-paper, .rf-side')) solid(false); }, { passive: true });
       const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-84px 0px 0px 0px' });
       const scanHero = () => {
         const h = document.querySelector('.pg-hero');
@@ -1468,14 +1470,14 @@ class Component extends DCLogic {
     // 히어로가 6.5초마다 넘어가므로 다음 리포트 사진을 가장 먼저 받고, 그다음 메뉴 첫 화면 사진, 마지막으로 나머지
     idle(() => { this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); this._prefetch && this._prefetch();
       // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
-      window.__rfsFont && window.__rfsFont(); this.loadP1(); });
+      window.__rfsFont && window.__rfsFont(); });   // 용어집(5.8MB)은 Research·리포트에 들어갈 때만 받는다
     document.addEventListener('click', (e) => {
       const t = e.target.closest && e.target.closest('.gl');
       if (t) { e.preventDefault(); this.glOpen(t); return; }
       if (e.target.closest && e.target.closest('#gl-pop') && !e.target.closest('.gl-x, .gl-ok')) return;
       this.glClose();
     });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.glClose(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { this.glClose(); if (this.state.menuOpen) this.setState({ menuOpen:false }); } });
     window.addEventListener('hashchange', () => this.glClose());
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
@@ -1495,7 +1497,7 @@ class Component extends DCLogic {
       const back = (ses) => { if (!ses) return; try { const r = JSON.parse(sessionStorage.getItem('rfs_after_login') || 'null'); sessionStorage.removeItem('rfs_after_login'); if (r && /^\/(?!\/)[\w/-]*$/.test(r.to) && Date.now() - r.at < 600000) location.href = r.to; } catch (e) {} };
       // 학회원이 아닌 일반 회원은 app_metadata.role = 'guest' (가입 승인 때 관리자가 정한다). 값이 없으면 학회원(공용 계정·예전 승인)
       const isGuest = (u) => !!(u && u.app_metadata && u.app_metadata.role === 'guest');
-      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '', guest: isGuest(ses.user) } : null }, () => { if (ses) { if (!isGuest(ses.user)) { this.loadAgora(); this.loadIntra(); } this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
+      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '', phone: (ses.user.user_metadata && ses.user.user_metadata.phone) || '', guest: isGuest(ses.user) } : null }, () => { if (ses) { if (!isGuest(ses.user)) { this.loadAgora(); this.loadIntra(); } this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -1647,12 +1649,33 @@ class Component extends DCLogic {
   // ABOUT·FUND·RFM·PEOPLE·AGORA 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
   // 리포트 1페이지 본문(page1.json)은 리포트를 열기 전에 미리 받아 둔다. 받기 전에 열면 본문을 잠깐 감췄다가 한 번에 보인다 (html.rp1)
+  // 목차: PDF 2쪽 목차(toc)가 있으면 그것, 없으면 본문의 장 제목(h)으로 만든다 (예전 양식·목차 쪽이 없는 산업 리포트)
+  tocOf(f) {
+    if (!f) return [];
+    if (f._toc) return f._toc;
+    let t = f.toc || [];
+    if (!t.length) {
+      t = (f.blocks || []).map((b, i) => (b.h && b.h.replace(/[\s\d,.%\-–—/()원~]/g, '').length >= 2 ? { t: b.h.replace(/\s+/g, ' ').trim(), lvl: 0, to: i, pg: null } : null)).filter(Boolean);
+      // 'II.'처럼 번호만 떨어진 장 제목은 다음 제목과 합친다
+      t = t.reduce((a, e) => { const p = a[a.length - 1]; if (p && /^([IVXⅠ-Ⅻ]+|\d+)\s*[.)]?$/.test(p.t)) { p.t += ' ' + e.t; return a; } a.push(e); return a; }, []);
+      if (t.length < 3) t = [];
+    }
+    return (f._toc = t);
+  }
   loadP1() {
     if (this._p1req) return; this._p1req = true;
     const done = () => document.documentElement.classList.add('rp1');
     setTimeout(done, 6000);
     fetch('/assets/reports/glossary.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ gl: j }); }, () => {});
     fetch('/assets/reports/page1.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
+  }
+
+  // 기업 리포트 목록의 평가 기간 주가(assets/data/track.json, tools/build-prices.js가 주 1회 갱신). Research를 열 때 받는다.
+  // /assets/는 하루 캐시라 6시간 단위 값을 붙여 새로 받게 한다
+  loadTrack() {
+    if (this._trackReq) return; this._trackReq = true;
+    const none = { r: {} };
+    fetch('/assets/data/track.json', { cache: 'no-cache' })   /* 주 1회 바뀌므로 매번 바뀌었는지만 확인(ETag) */.then((r) => (r.ok ? r.json() : null)).then((j) => this.setState({ track: (j && j.r) ? j : none }), () => this.setState({ track: none }));
   }
 
   // 리포트 전문(assets/reports/full/<id>.json)은 그 리포트를 처음 열 때 받는다
@@ -1686,7 +1709,7 @@ class Component extends DCLogic {
     const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     pop.innerHTML = '<i class="gl-h"></i><span class="gl-k">' + esc(e.k) + '</span><button class="gl-x" aria-label="닫기">×</button><b class="gl-t">' + esc(e.t) + '</b><p class="gl-d">' + esc(e.d) + '</p>'
       + (e.c ? '<div class="gl-c"><small>이 리포트에서는</small><p>' + esc(e.c) + '</p></div>' : '')
-      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + (/[가-힣]$/.test(e.t) && (e.t.charCodeAt(e.t.length - 1) - 0xAC00) % 28 ? '이 ' : '가 ') + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
+      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + (/[가-힣]$/.test(e.t) && (e.t.charCodeAt(e.t.length - 1) - 0xAC00) % 28 ? '이 ' : '가 ') + ((document.querySelector('.rpt-name, .ind-title, .ic-title') || {}).textContent || '이') + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
     // 'POLARIS에게 더 물어보기': 넓은 화면은 페이지를 떠나지 않고 오른쪽 Polaris 창에서 바로 물어본다 (폰은 /chat/ 으로)
     pop.querySelector('.gl-a').onclick = (ev) => { if (window.rfsAsk && window.innerWidth > 640 && !ev.metaKey && !ev.ctrlKey) { ev.preventDefault(); this.glClose(); window.rfsAsk(decodeURIComponent(ev.currentTarget.href.split('?q=')[1])); } };
     document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); el.classList.add('on');
@@ -2741,7 +2764,7 @@ class Component extends DCLogic {
   openAsk() {
     if (!window.RFSAsk || !this.state.user || this.state.user.guest) return;
     const ID = this.state.intraData || {};
-    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), myPhone: this.state.user.phone || '', myName: this.state.user.name || this.me().name, onSaveMe: (n, c) => this.saveMe(n, c),
       onLogout: () => this.logout(), adminCount: this.state.joinPending, onAdmin: () => this.openJoinAdmin(),
       // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
       sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
@@ -2798,7 +2821,7 @@ class Component extends DCLogic {
     this._titleKey = null;
     document.title = page === 'report' && ir ? ir.name.replace(/\s*산업$/, '') + ' 산업 전망 | 산업분석 리포트 - 중앙대 RFS'
       : page === 'report' && r ? r.name + ' 주가 전망' + (r.tp && r.tp !== '-' ? '·목표주가 ' + r.tp : '') + ' | ' + r.name + '(' + r.ticker + ') 기업분석 리포트 - 중앙대 RFS'
-      : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
+      : page === 'research' ? '기업·산업 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'about' ? '학회 소개 | 중앙대 가치투자학회 R.F.S.'
       : page === 'people' ? '학회원·알럼나이 | 중앙대 가치투자학회 R.F.S.'
       : page === 'activity' ? '활동 | 중앙대 가치투자학회 R.F.S.'
@@ -2864,6 +2887,7 @@ class Component extends DCLogic {
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
     }
     if (s.page === 'report' || s.page === 'research') this.loadP1();
+    if (s.page === 'research') this.loadTrack();
     const status = this.props.recruitStatus ?? '마감';
     const nextRecruit = this.props.nextRecruit ?? '27-1학기, 2027년 1월';
     const rSem = this.props.recruitSemester ?? '26-2';
@@ -2960,12 +2984,47 @@ class Component extends DCLogic {
       if (cur < pageCount) items.push({ label: '다음 ›', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
       return items;
     })();
+    // 평가 기간 결과 (목록 오른쪽 음영 칸). 주가선은 0~1000 x 0~100 좌표에 그리고 칸 너비에 맞춰 늘린다
+    const tkVm = (id) => {
+      const T = s.track && s.track.r[id];
+      if (!T || !T.p || !T.p.length) return { ok: false, none: !!s.track };
+      const p = T.p, run = T.st === 'run' || T.x != null;
+      // 세로 범위는 주가에 맞춘다 (목표가가 너무 위면 선이 납작해져서, 가까울 때만 범위에 넣고 아니면 목표가 선은 안 그린다)
+      let lo = Math.min(...p, 1000), hi = Math.max(...p, 1000);
+      const showT = T.t && T.t <= hi * 1.25;
+      if (showT) hi = Math.max(hi, T.t);
+      const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+      const W = (run && T.x != null ? T.x : 1000) * 0.98;   // 끝 점이 칸 끝에 잘리지 않게 조금 안쪽까지   // 진행 중이면 12개월 중 지난 만큼만 그린다
+      const X = (i) => i / (p.length - 1 || 1) * W;
+      const Y = (v) => 10 + (1 - (v - lo) / (hi - lo || 1)) * 80;
+      const f1 = (v) => Math.round(v * 10) / 10;
+      const pct = (v, u) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v * 100).toFixed(1) + u;
+      const cl = (v) => (v > 0 ? 'tk-up' : v < 0 ? 'tk-dn' : '');
+      const kst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+      const left = Math.max(0, Math.round((Date.parse(T.e) - Date.parse(kst)) / 864e5));
+      const mo = (d) => (d < 30 ? d + '일' : Math.max(1, Math.round(d / 30.44)) + '개월');
+      const ex = T.mx == null ? null : T.mx;   // m은 평가 기간(개월)
+      const L = p.length - 1, H = T.hi != null ? T.hi : -1;
+      return { ok: true, none: false,
+        d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
+        c: (run ? T.r : (T.mx != null ? T.mx : T.r)) > 0 ? '#D6404E' : '#2F64C2',
+        by: f1(Y(1000)), ty: showT ? f1(Y(T.t)) : -10, 
+        rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
+        lx: f1(X(L)), ly: f1(Y(p[L])),
+        hx: H >= 0 ? f1(X(H)) : -50, hy: H >= 0 ? f1(Y(p[H])) : -50,
+        chip: T.st === 'hit' ? '목표가 도달 · ' + mo(T.hd) : T.st === 'end' ? '기간 종료' : '진행 중 D-' + left,
+        cc: 'tk-chip tk-' + T.st,
+        ret: run ? pct(T.r, '%') : '', rc: cl(T.r),   
+        ex: ex == null ? '—' : pct(ex, '%'), ec: ex == null ? '' : cl(ex),
+        mkt: '최고 수익률' };
+    };
+    const rowVm = (r) => ({ ...vm(r), tk: tkVm(r.id) });
     const covGroups = (() => {
       const out = [];
       pageRows.forEach((r) => {
         const last = out[out.length - 1];
-        if (last && last.date === r.term) last.rows.push(vm(r));
-        else out.push({ date: r.term, rows: [vm(r)] });
+        if (last && last.date === r.term) last.rows.push(rowVm(r));
+        else out.push({ date: r.term, rows: [rowVm(r)] });
       });
       return out.map((g) => ({ ...g, count: g.rows.length + '편' }));
     })();
@@ -3255,7 +3314,7 @@ class Component extends DCLogic {
         { label:'활동', href:'#home-process', id:'home-process' },
         { label:'커리큘럼', href:'#about-calendar', id:'about-calendar' }
       ].map((a) => ({ ...a, cls: s.activeSec === a.id ? 'active' : '', go: (e) => { e.preventDefault(); const el = document.getElementById(a.id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); } })),
-      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }), menuExp: s.menuOpen ? 'true' : 'false',
       goHome: (e) => { e.preventDefault(); this.go('home'); },
       goResearch: (e) => { e.preventDefault(); this.go('research'); },
       goRecruit: () => this.go('recruit'),
@@ -3306,10 +3365,11 @@ class Component extends DCLogic {
       onRegion: (e) => this.setState({ fRegion: e.target.value, page1: 1 }),
       covCols, filteredReports: pageRows.map(vm), covCount: filtered.length,
       indGroups: (() => { const by = {}; INDUSTRY.forEach((x) => { (by[x.sem] = by[x.sem] || []).push(x); });
-        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽', web, pdfOnly: !web, href: '/research/ind-' + x.id + '/', open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
+        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: k, rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Team ' + x.team : '', dateLine: x.date, web, pdfOnly: !web, href: '/research/ind-' + x.id + '/', open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
       indCount: INDUSTRY.length,
       covGroups, isGrouped: s.sortKey === 'date', isFlat: s.sortKey !== 'date',
       covEmpty: filtered.length === 0,
+      trackOn: !!(s.track && s.track.asOf), trackAsOf: s.track && s.track.asOf ? s.track.asOf.replace(/-/g, '.') : '',
       // 리서치 화면: 최신 학기 카드, 학기 목록, 섹터 칩
       latestTerm: byDate[0].term,
       latestCards: byDate.filter((r) => r.term === byDate[0].term).slice(0, 4).map((r) => ({ ...vm(r), teamShort: String(r.team || '').replace('Research ', '') })),
@@ -3359,9 +3419,9 @@ class Component extends DCLogic {
       rIndHasSide: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side),
       rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
-      rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
+      rHasToc: this.tocOf(s.full && s.full[active.id]).length > 0,
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
-      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
+      rToc: this.tocOf(s.full && s.full[active.id]).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : '') + (t.to == null ? ' nt' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
         go: (e) => { e.preventDefault(); const el = t.to != null && document.getElementById('rf-' + t.to); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); } })),
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
@@ -3486,7 +3546,7 @@ class Component extends DCLogic {
           { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:[['sanil','산일전기'],['koreanair26','대한항공'],['inbody','인바디'],['nepesark','네패스아크']].map(([id,name]) => ({ id, name, src:'assets/covers/26-2_' + ({ sanil:'sanil', koreanair26:'korean_air', inbody:'inbody', nepesark:'nepes_ark' })[id] + '-p1.webp' })), title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
           { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
           { kind:'butler', img:'', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
-          { kind:'chat', img:'assets/hero/polaris.webp', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
+          { kind:'chat', img:'assets/hero/polaris.webp?v=2', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
         const to = (n) => this.setState({ bxIdx: ((n % L) + L) % L });
         return { bxImg: b.img, bxWord: b.word || '', bxTag: b.tag || '', bxTitle: b.title, bxDesc: b.desc, bxHref: b.href || (b.page ? ({ home: '/', about: '/about/', research: '/research/', fund: '/fund/', people: '/people/', recruit: '/recruiting/' }[b.page] || '#' + b.page) : '#'),

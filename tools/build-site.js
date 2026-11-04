@@ -202,7 +202,7 @@ ${cover ? `<img class="cover" src="/${r.cover}" alt="${attr(r.name)} 기업분�
 <section><h2>요약</h2><p>${esc(r.summary)}</p></section>
 <section><h2>투자포인트</h2>${points}</section>
 <section><h2>밸류에이션</h2><p>${esc(r.valuation)}</p></section>
-<section><h2>작성</h2><p>${esc(`${r.team} · ${r.members}`)}</p></section>
+<section><h2>작성</h2><p>${esc(r.members && r.members !== r.team ? `${r.team} · ${r.members}` : r.team)}</p></section>
 <div class="btns">
 <a class="btn solid" href="/${r.pdf}">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(${esc(r.pdfMeta)})</span></a>
 <a class="btn" href="/#research/${r.id}">R.F.S. 사이트에서 보기</a>
@@ -225,7 +225,7 @@ function indexPage(sorted, groups) {
   const keywords = uniq(['중앙대 RFS', '중앙대 가치투자학회', '기업분석 리포트', '기업분석 보고서', '리서치 보고서', '에쿼티 리서치', ...names]).join(', ');
   const ogImg = resolveAsset('assets/og/site.jpg');
   const seo = [
-    `<title>기업분석 보고서 ${n}편 | R.F.S. 중앙대학교 가치투자학회 Research</title>`,
+    `<title>기업·산업 리포트 | 기업분석 보고서 ${n}편 - R.F.S. 중앙대학교 가치투자학회</title>`,
     `<meta name="description" content="${attr(desc)}">`,
     `<meta name="keywords" content="${attr(keywords)}">`,
     `<link rel="canonical" href="${C.SITE}/research/">`,
