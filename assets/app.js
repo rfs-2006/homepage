@@ -2989,8 +2989,12 @@ class Component extends DCLogic {
       const T = s.track && s.track.r[id];
       if (!T || !T.p || !T.p.length) return { ok: false, none: !!s.track };
       const p = T.p, run = T.st === 'run' || T.x != null;
-      const lo = Math.min(...p, 1000, T.t || 1000), hi = Math.max(...p, 1000, T.t || 1000);
-      const X = (i) => (run && i === p.length - 1 ? T.x : i / 59 * 1000);
+      // 세로 범위는 주가에 맞춘다 (목표가가 너무 위면 선이 납작해져서, 가까울 때만 범위에 넣고 아니면 목표가 선은 안 그린다)
+      let lo = Math.min(...p, 1000), hi = Math.max(...p, 1000);
+      const showT = T.t && T.t <= hi * 1.25;
+      if (showT) hi = Math.max(hi, T.t);
+      const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
+      const X = (i) => i / (p.length - 1 || 1) * 1000;   // 진행 중이어도 지금까지 주가를 칸 전체 폭으로 (남은 기간을 비우면 선이 납작해진다)
       const Y = (v) => 10 + (1 - (v - lo) / (hi - lo || 1)) * 80;
       const f1 = (v) => Math.round(v * 10) / 10;
       const pct = (v, u) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v * 100).toFixed(1) + u;
@@ -3003,7 +3007,7 @@ class Component extends DCLogic {
       return { ok: true, none: false,
         d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
         c: T.r >= 0 ? '#D6404E' : '#2F64C2',
-        by: f1(Y(1000)), ty: T.t ? f1(Y(T.t)) : -10,
+        by: f1(Y(1000)), ty: showT ? f1(Y(T.t)) : -10, px: run ? f1(X(L)) : -50, py: run ? f1(Y(p[L])) : -50,
         rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
         lx: f1(X(L)), ly: f1(Y(p[L])),
         hx: H >= 0 ? f1(X(H)) : -50, hy: H >= 0 ? f1(Y(p[H])) : -50,

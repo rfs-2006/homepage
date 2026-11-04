@@ -74,7 +74,7 @@ function compute(r, p, bm, asOf) {
   const pub = r.date.replace(/\./g, '-');
   const i0 = p.findIndex((x) => x[0] > pub);
   if (i0 < 0) return null;
-  const base = p[i0][1], d0 = p[i0][0];
+  let base = p[i0][1]; const d0 = p[i0][0];
   const months = (OV.months && OV.months[r.id]) || 12;
   const end = addM(d0, months);
   const run = end > asOf;
@@ -87,6 +87,8 @@ function compute(r, p, bm, asOf) {
     const cur = num(r.cur || r.buy), ref = i0 > 0 ? p[i0 - 1][1] : base;
     if (cur && Math.abs(ref / cur - 1) > MISMATCH) { f = ref / cur; console.warn(`분할 추정 ${r.id}: 리포트 ${r.cur || r.buy} vs 발간 직전 ${ref} → f=${f.toFixed(4)}. price-overrides.json에 확인해 적어 두세요`); }
   }
+  // 리포트에 매수가(buy)가 따로 있으면 그 값을 기준가로 (분할 보정 같이)
+  if (num(r.buy)) base = num(r.buy) * f;
   const tp0 = r.tpNum || num(r.tp);
   const tp = tp0 ? tp0 * f : null;
   let hit = null;
@@ -97,7 +99,7 @@ function compute(r, p, bm, asOf) {
   // 이상치 점검: 하루 ±60%는 분할 미반영 가능성
   for (let k = 1; k < win.length; k++) { const c = win[k][1] / win[k - 1][1] - 1; if (Math.abs(c) > 0.6) console.warn(`하루 ${(c * 100).toFixed(0)}% ${r.id} ${win[k][0]} (분할 미반영인지 확인)`); }
   // 주가선: 평가 기간을 N칸으로 나눈 시점마다 그날까지의 종가 (진행 중이면 지금까지만)
-  const t0 = ts(d0), t1 = ts(end), lastT = ts(last[0]);
+  const t0 = ts(d0), lastT = ts(last[0]), t1 = Math.min(ts(end), lastT);   // 진행 중이면 지금까지를 N칸으로 (선이 촘촘하게)
   const cal = [];
   for (let k = 0; k < N; k++) { const t = t0 + (t1 - t0) * k / (N - 1); if (t > lastT) break; cal.push(new Date(t).toISOString().slice(0, 10)); }
   const vals = ffill(win, cal);
@@ -110,9 +112,10 @@ function compute(r, p, bm, asOf) {
     vals[k] = win.find((x) => x[0] === hit)[1]; o.hi = k;
   }
   // 수익률: 방향을 봤으니 기간 안(진행 중이면 지금까지) 최고 종가까지로 본다. 시장도 그 최고가 날까지
-  { const pk = win.reduce((a, x) => (x[1] > a[1] ? x : a)); const pb = ffill(bm, [d0, pk[0]]);
-    o.r = r4(pk[1] / base - 1); o.b = pb[0] && pb[1] ? r4(pb[1] / pb[0] - 1) : null; o.pk = pk[0]; }
-  if (run) { vals.push(last[1]); o.x = Math.round((lastT - t0) / (t1 - t0) * 1000); o.l = last[0]; }
+  // 기준가 위로 한 번도 못 올라갔으면(계속 흘러내림) 기간 끝·지금 값 그대로
+  { const pk = win.reduce((a, x) => (x[1] > a[1] ? x : a));
+    if (pk[1] > base) { const pb = ffill(bm, [d0, pk[0]]); o.r = r4(pk[1] / base - 1); o.b = pb[0] && pb[1] ? r4(pb[1] / pb[0] - 1) : null; o.pk = pk[0]; } }
+  if (run && cal[cal.length - 1] !== last[0]) { vals.push(last[1]); o.x = Math.round((lastT - t0) / (t1 - t0) * 1000); o.l = last[0]; }
   o.p = vals.map((v) => Math.round(v / base * 1000));
   if (tp) o.t = Math.round(tp / base * 1000);
   return o;
