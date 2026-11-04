@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
   const phone = digits(b.phone).slice(0, 11);
   const birth = digits(b.birth).slice(0, 8), blog = str(b.blog, 200), cohort = digits(b.cohort).slice(0, 3);
   if (b.agree !== true) return json(400, { error: 'agree' });
-  if (!/^[a-z][a-z0-9._-]{3,19}$/.test(id) || RESERVED.includes(id)) return json(400, { error: 'id' });
+  if (!/^[a-z][a-z0-9._-]{3,21}$/.test(id) || RESERVED.includes(id)) return json(400, { error: 'id' });
   if (pw.length < 8 || pw.length > 72) return json(400, { error: 'password' });
   if (!name || !nickname) return json(400, { error: 'name' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { error: 'email' });

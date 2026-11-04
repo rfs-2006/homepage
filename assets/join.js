@@ -53,7 +53,7 @@
 .jn .empty{margin-top:20px;font-size:13.5px;color:rgba(247,246,243,.6)}\
 ';
   var MSG = {
-    agree: '개인정보 수집·이용에 동의해 주세요.', id: '아이디는 영문 소문자로 시작하는 4~20자(영문·숫자·._-)로 정해 주세요. 쓸 수 없는 아이디일 수도 있어요.',
+    agree: '개인정보 수집·이용에 동의해 주세요.', id: '아이디는 영문 소문자로 시작하는 4~22자(영문·숫자·._-)로 정해 주세요. 쓸 수 없는 아이디일 수도 있어요.',
     password: '비밀번호는 8자 이상으로 정해 주세요.', name: '이름과 닉네임을 입력해 주세요.', email: '이메일 주소를 확인해 주세요.', phone: '휴대폰 번호를 숫자만 입력해 주세요 (예: 01012345678).',
     birth: '생년월일을 8자리 숫자로 입력해 주세요 (예: 20030315).', age: '만 14세 미만은 가입할 수 없어요.', blog: '블로그 주소는 https://로 시작하게 입력해 주세요.',
     taken: '이미 쓰고 있는 아이디예요. 다른 아이디로 해 주세요.', limit: '같은 곳에서 신청이 너무 많아요. 내일 다시 시도해 주세요.', busy: '승인 대기 중인 신청이 많아요. 잠시 후 다시 시도해 주세요.'
@@ -105,7 +105,7 @@
   function open(o) {
     var inp = function (name, ph, type, extra) { return '<input name="' + name + '" type="' + (type || 'text') + '" placeholder="' + ph + '" aria-label="' + ph + '"' + (extra || '') + '>'; };
     var el = shell('<h2>JOIN</h2><form class="sm" novalidate>' +
-      inp('login', '아이디', 'text', ' autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20"') +
+      inp('login', '아이디', 'text', ' autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="22"') +
       inp('pw', '비밀번호 (8자 이상)', 'password', ' autocomplete="new-password" maxlength="72"') +
       inp('pw2', '비밀번호 확인', 'password', ' autocomplete="new-password" maxlength="72"') +
       inp('realname', '이름', 'text', ' autocomplete="name" maxlength="30"') +
@@ -133,7 +133,7 @@
       if (go.disabled) return;
       var v = function (n) { return f[n].value.trim(); };
       var fail = function (m) { er.textContent = m; };
-      if (!/^[a-z][a-z0-9._-]{3,19}$/.test(v('login').toLowerCase())) return fail(MSG.id);
+      if (!/^[a-z][a-z0-9._-]{3,21}$/.test(v('login').toLowerCase())) return fail(MSG.id);
       if (f.pw.value.length < 8) return fail(MSG.password);
       if (f.pw.value !== f.pw2.value) return fail('비밀번호 확인이 맞지 않아요.');
       if (!v('realname') || !v('nickname')) return fail(MSG.name);
