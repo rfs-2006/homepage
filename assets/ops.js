@@ -195,7 +195,7 @@
 
     // 문자 기록 + 알림
     var smsP = '<div class="op-p"><h3>문자 기록<i>AGORA 선배님 연락처 · 최근 50건</i></h3>' + (s.sms && s.sms.length ? '<div class="tw" style="max-height:280px;overflow-y:auto"><table><thead><tr><th>시각</th><th>받은 사람</th><th>선배님</th><th>결과</th></tr></thead><tbody>' + s.sms.map(function (x) {
-      return '<tr><td>' + esc(new Date(x.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</td><td>' + esc(String(x.user_email || '').replace(/@caurfs\.kr$/, '')) + '</td><td>' + esc(x.alumni_cohort + '기 ' + x.alumni_name) + '</td><td>' + (x.status === 'sent' ? '보냄' : '<span class="tag bad">실패</span>') + '</td></tr>';
+      return '<tr><td>' + esc(new Date(x.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</td><td>' + (x.who ? esc(x.who) + ' <span class="sub" style="margin:0">' + esc(x.id) + '</span>' : esc(x.id === 'member' ? '공용 계정' : x.id) + (x.phone4 ? ' <span class="sub" style="margin:0">번호 …' + esc(x.phone4) + '</span>' : '')) + '</td><td>' + esc(x.alumni_cohort + '기 ' + x.alumni_name) + '</td><td>' + (x.status === 'sent' ? '보냄' : '<span class="tag bad">실패</span>') + '</td></tr>';
     }).join('') + '</tbody></table></div>' : '<p class="s">아직 보낸 문자가 없어요.</p>') + '</div>';
     var nt = set.notify || {};
     var mailP = '<div class="op-p w" style="max-width:640px"><h3>알림 메일<i>' + (s.mail ? '메일 발송 켜짐' : 'RESEND_API_KEY를 넣으면 켜져요') + '</i></h3>' +

@@ -133,11 +133,20 @@ Deno.serve(async (req) => {
   if (b.action === 'ops_get') {
     const [{ data: rows }, { data: sms }] = await Promise.all([
       admin.from('ops_state').select('key, value, updated_at, updated_by'),
-      admin.from('agora_sms_log').select('created_at, user_email, alumni_name, alumni_cohort, status').order('created_at', { ascending: false }).limit(50),
+      admin.from('agora_sms_log').select('created_at, user_id, user_email, alumni_name, alumni_cohort, to_phone, status').order('created_at', { ascending: false }).limit(50),
     ]);
+    // 받은 사람: 계정 아이디 대신 가입 때 적은 이름·기수. 공용 계정(member)은 사람을 알 수 없어서 받은 번호 끝 4자리를 같이 보여 준다
+    const names: Record<string, string> = {};
+    const ids: string[] = Array.from(new Set((sms || []).map((x) => String(x.user_id))));
+    for (const id of ids) {
+      const { data: w } = await admin.auth.admin.getUserById(id);
+      const m = w?.user?.user_metadata || {};
+      if (m.name) names[id] = `${m.cohort ? m.cohort + '기 ' : ''}${m.name}`;
+    }
+    const smsOut = (sms || []).map((x) => ({ created_at: x.created_at, who: names[String(x.user_id)] || '', id: String(x.user_email || '').replace(/@caurfs\.kr$/, ''), phone4: String(x.to_phone || '').slice(-4), alumni_name: x.alumni_name, alumni_cohort: x.alumni_cohort, status: x.status }));
     const state: Record<string, unknown> = {};
     for (const r of rows || []) state[r.key] = { value: r.value, updated_at: r.updated_at, updated_by: r.updated_by };
-    return json(200, { ok: true, state, sms: sms || [], mail: !!Deno.env.get('RESEND_API_KEY') });
+    return json(200, { ok: true, state, sms: smsOut, mail: !!Deno.env.get('RESEND_API_KEY') });
   }
 
   if (b.action === 'ga') {
