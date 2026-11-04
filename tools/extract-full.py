@@ -41,20 +41,67 @@ def _body(t):
     return _tk(re.sub(r'^\s*([IVXⅠ-Ⅻ]+|\d+)([-.)\s]*\(?\d*\)?)*[.)]?\s*', '', unicodedata.normalize('NFKC', t or '')))
 
 
+JUNK_H = re.compile(r'^[\s\d,.%~+\-–—/()원억조만배xX]*$|^N/?A$', re.I)
+
+
+def head_ok(h):
+    """목차와 맞춰 볼 만한 제목인가: 표 칸('30,000원' '-' 'N/A')이나 한두 글자는 뺀다"""
+    t = (h or '').strip()
+    return len(_tk(t)) >= 2 and not JUNK_H.match(t)
+
+
+PUA = {'\uf0e0': '→', '\uf0e8': '→', '\uf0d7': '▸', '\uf0da': '▸', '\uf09e': '·', '\uf0a7': '·'}
+
+
+def pua(s):
+    """Wingdings 글꼴 기호(사용자 정의 영역 글자, 화면에 안 보임)를 보통 기호로. 모르는 것은 뺀다"""
+    s = ''.join(PUA.get(c, c) for c in s)
+    return re.sub('[\ue000-\uf8ff]', '', s)
+
+
+def merge_num(toc):
+    """번호만 따로 떨어진 목차 줄('1' '2)' 'Ⅲ.')은 다음 줄 제목과 합친다"""
+    out = []
+    for e in toc:
+        if out and re.fullmatch(r'\s*([IVXⅠ-Ⅻ]+|\d+)\s*[.)]?\s*', out[-1]['t']) and out[-1].get('_num'):
+            n = out.pop(); e = dict(e, t=n['t'].strip() + ' ' + e['t'], lvl=n['lvl'], pg=e.get('pg') or n.get('pg'))
+        if re.fullmatch(r'\s*([IVXⅠ-Ⅻ]+|\d+)\s*[.)]?\s*', e['t']):
+            e = dict(e, _num=True)
+        out.append(e)
+    m = min((e['lvl'] for e in out), default=0)   # 가장 바깥 단계가 0이 되게
+    for e in out:
+        e.pop('_num', None)
+        e['lvl'] -= m
+    return out
+
+
 def match_toc(toc, heads):
     """목차 항목마다 본문 제목(blocks 번호)을 찾는다. 앞에서 찾은 곳보다 뒤에서만 찾고(순서 유지),
-    ① 글자 그대로 포함 ② 번호 뗀 제목 포함 ③ 비슷한 정도 0.6 이상 순서로 본다"""
-    last = -1
+    ⓪ 글자가 같음 ① 목차 글이 제목 안에 있음(짧은 제목이 목차 글 안에 든 경우는 길이가 비슷할 때만)
+    ② 번호 뗀 제목으로 같은 검사 ③ 비슷한 정도 0.6 이상 순서로 본다.
+    ⓪이 아닌 검사는 뒤 항목이 글자 그대로 맞는 자리를 넘어가지 않는다 (엉뚱한 곳으로 건너뛰면 뒤가 줄줄이 끊긴다)"""
+    heads = [(i, h) for i, h in heads if head_ok(h)]
+    exact = []
     for e in toc:
         t, tb = _tk(e['t']), _body(e['t'])
+        exact.append({i for i, h in heads if (t and _tk(h) == t) or (len(tb) >= 2 and _body(h) == tb)})
+    near = lambda a, b: a and b and (a in b or (b in a and len(b) >= 0.6 * len(a)))
+    last = -1
+    for k, e in enumerate(toc):
+        t, tb = _tk(e['t']), _body(e['t'])
         cand = [(i, h) for i, h in heads if i > last]
-        hit = next((i for i, h in cand if t and (t in _tk(h) or _tk(h) in t)), None)
-        if hit is None and len(tb) >= 2:
-            hit = next((i for i, h in cand if _body(h) and (tb in _body(h) or _body(h) in tb)), None)
-        if hit is None and tb:
-            best = max(cand[:12], key=lambda x: difflib.SequenceMatcher(None, tb, _body(x[1])).ratio(), default=None)
-            if best and difflib.SequenceMatcher(None, tb, _body(best[1])).ratio() >= 0.6:
-                hit = best[0]
+        hit = next((i for i, h in cand if i in exact[k]), None)
+        if hit is None:
+            nxt = min((i for ex in exact[k + 1:] for i in ex if i > last), default=None)
+            if nxt is not None:
+                cand = [(i, h) for i, h in cand if i < nxt]
+            hit = next((i for i, h in cand if near(t, _tk(h))), None)
+            if hit is None and len(tb) >= 2:
+                hit = next((i for i, h in cand if near(tb, _body(h))), None)
+            if hit is None and tb:
+                best = max(cand[:20], key=lambda x: difflib.SequenceMatcher(None, tb, _body(x[1])).ratio(), default=None)
+                if best and difflib.SequenceMatcher(None, tb, _body(best[1])).ratio() >= 0.6:
+                    hit = best[0]
         e['to'] = hit
         if hit is not None:
             last = hit
@@ -172,7 +219,10 @@ def exhibits(lines, H, page):
         right = [o['x0'] for o in caps if o is not c and abs(o['y0'] - c['y0']) < 6 and o['x0'] > c['x0'] + 50]
         x1 = min(right) - 6 if right else 580
         left = [o for o in caps if o is not c and abs(o['y0'] - c['y0']) < 6 and o['x0'] < c['x0']]
-        x0 = c['x0'] - 3 if not left else c['x0'] - 3
+        x0 = c['x0'] - 3
+        # 같은 줄 왼쪽·오른쪽에 다른 캡션이 있으면 그 칸 경계를 넘어 넓히지 않는다(옆 차트가 같이 잘려 들어가지 않게)
+        lo = c['x0'] - 5 if left else 0
+        hi = x1 if right else 585
         nxt = [o['y0'] for o in caps if o['y0'] > c['y1'] + 5 and o['x0'] < x1 and o['x1'] > x0]
         stop = min(nxt) if nxt else H - 50
         # 출처 줄은 캡션보다 왼쪽에서 시작하기도 해서(축 눈금이 왼쪽에 있을 때) 캡션 칸 전체에서 찾는다
@@ -180,7 +230,7 @@ def exhibits(lines, H, page):
         if below:
             s = min(below, key=lambda s: s['y0'])
             y1, src = s['y0'] - 1, s['text'].strip()
-            x0 = min(x0, s['x0'] - 3)
+            x0 = max(lo, min(x0, s['x0'] - 3))
         else:
             # 출처가 없으면 쪽 끝까지 가지 않고, 아래 그림 영역 끝이나 첫 본문 줄에서 멈춘다
             g = [gg for gg in graphics if gg[1] < c['y1'] + 40 and gg[3] > c['y1'] and gg[0] < x1 and gg[2] > x0]
@@ -192,7 +242,7 @@ def exhibits(lines, H, page):
         # 그림 영역이 캡션 칸보다 넓으면(왼쪽 축 등) 그만큼 넓힌다
         for gg in graphics:
             if gg[1] < y1 and gg[3] > c['y1'] and gg[0] < x1 and gg[2] > x0 and (min(gg[2], x1) - max(gg[0], x0)) > 0.5 * (gg[2] - gg[0]):
-                x0 = min(x0, gg[0] - 2); x1 = max(x1, min(gg[2] + 2, 585))
+                x0 = max(lo, min(x0, gg[0] - 2)); x1 = min(hi, max(x1, min(gg[2] + 2, 585)))
         m = re.match(r'\s*([\[<(]?\s*(?:자료|그림|표|도표|차트|Figure|Table)\s*\d[\d\-.]*\s*[\]>)]?)?\s*(.*?)\s*(\((?:단위|단 위)[^)]*\))?\s*$', c['text'])
         res.append({'rect': (x0, c['y1'] + 3.5, x1, y1), 'box': (x0, c['y0'] - 2, x1, (s['y1'] + 2) if below else y1),
                     'no': (m.group(1) or '').strip() if m else '', 'cap': (m.group(2) if m else c['text']).strip(),
@@ -207,15 +257,14 @@ def exhibits(lines, H, page):
         k = row.index(sl)
         x0 = sl['x0'] - 4
         x1 = row[k + 1]['x0'] - 8 if k + 1 < len(row) else 580
-        if k > 0:
-            x0 = max(x0, (row[k - 1]['x0'] + sl['x0']) / 2 - 1) if False else x0
+        lo = sl['x0'] - 7 if k > 0 else 0   # 왼쪽 옆 차트의 오른쪽 끝(그 출처 줄 x - 8) 너머로는 넓히지 않는다
         above = [l for l in wide if l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)
                  and (l['x1'] - l['x0']) > 0.55 * (x1 - x0)]
         # 위쪽 경계는 칸 폭의 절반 넘게 이어진 본문 줄(문단)만. 표의 행이나 차트 안 글자를 경계로 오해하지 않게
         top = max([l['y1'] + 6 for l in above], default=50)
         g = [gg for gg in graphics if gg[3] <= sl['y0'] + 2 and gg[3] > top and gg[0] < x1 and gg[2] > x0]
         if g:
-            x0 = min(x0, min(gg[0] for gg in g) - 2)
+            x0 = max(lo, min(x0, min(gg[0] for gg in g) - 2))
         # 출처 바로 위의 짧은 굵은 줄(번호 없는 캡션)이 있으면 캡션으로 따로 뺀다
         cap_l = next((l for l in sorted(lines, key=lambda l: l['y0']) if top - 2 <= l['y0'] <= top + 24 and l['x0'] < x1 and l['x1'] > x0
                       and len(l['text'].strip()) < 60 and (l['size'] >= 9 or any(b for _, b in l['spans']))), None)
@@ -417,11 +466,12 @@ def extract(rid, pdf):
         x0s = sorted({round(l['x0']) for l in ls1})
         for l in ls1:
             m = re.search(r'(\d+)\s*$', l['text'])
-            t = re.sub(r'[·.…\s]*\d*\s*$', '', l['text']).strip()
+            t = re.sub(r'\s+', ' ', re.sub(r'[·.…∙•‧\s]*\d*\s*$', '', l['text'])).strip()
             if not t:
                 continue
             lvl = min(2, sum(1 for x in x0s if x < round(l['x0']) - 5))
             toc.append({'t': t, 'lvl': lvl, 'to': None, 'pg': int(m.group(1)) if m else None})
+        toc = merge_num(toc)
         match_toc(toc, heads)
     if len(toc) < 3 or sum(1 for t in toc if t['to'] is not None) < len(toc) / 2:   # 2쪽이 목차가 아닌 예전 양식
         toc = []
@@ -469,6 +519,6 @@ if __name__ == '__main__':
     for rid in sys.argv[1:]:
         out = extract(rid, reps[rid])
         with open(os.path.join(OUT, rid + '.json'), 'w', encoding='utf-8') as f:
-            json.dump(out, f, ensure_ascii=False, separators=(',', ':'))
+            f.write(pua(json.dumps(out, ensure_ascii=False, separators=(',', ':'))))
         bl = out['blocks']
         print(rid, len(bl), 'blocks', sum(len(b['fig']) for b in bl if 'fig' in b), 'figs', len(out['stock']['rows']), 'stock rows')
