@@ -43,6 +43,22 @@ async function solapiSend(to: string, text: string) {
   return body;
 }
 
+// 관리자 알림 메일 (Resend). 받는 주소는 운영 대시보드 설정(ops_state.settings.notify_email), 없으면 NOTIFY_EMAIL. 실패해도 본 작업은 그대로
+// deno-lint-ignore no-explicit-any
+async function mailAdmin(admin: any, kind: string, subject: string, text: string) {
+  const key = Deno.env.get('RESEND_API_KEY');
+  if (!key) return;
+  const { data } = await admin.from('ops_state').select('value').eq('key', 'settings').maybeSingle();
+  // deno-lint-ignore no-explicit-any
+  const s = (data?.value || {}) as Record<string, any>;
+  const to = String(s.notify_email || Deno.env.get('NOTIFY_EMAIL') || '').trim();
+  if (!to || (s.notify && s.notify[kind] === false)) return;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: Deno.env.get('MAIL_FROM') || 'R.F.S. 알림 <onboarding@resend.dev>', to: [to], subject, text }),
+  }).catch(() => {});
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json(405, { error: 'method' });
@@ -95,5 +111,8 @@ Deno.serve(async (req) => {
     return json(502, { error: log.error.startsWith('solapi_not_configured') ? 'not_configured' : 'send' });
   }
   await admin.from('agora_sms_log').insert(log);
+  const me = u.user.user_metadata || {}, who = me.name ? `${me.cohort ? me.cohort + '기 ' : ''}${me.name}(${String(u.user.email || '').replace(/@caurfs\.kr$/, '')})` : String(u.user.email || '');
+  await mailAdmin(admin, 'agora_sms', `[R.F.S. AGORA] ${who} → ${a.name} 선배님 연락처`,
+    `${new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' })}\n${who}이(가) ${cohort}기 ${a.name} 선배님${a.company ? ' (' + a.company + ')' : ''} 연락처를 문자로 받았어요.\n받은 번호: ${to.slice(0, 3)}-****-${to.slice(-4)}`);
   return json(200, { ok: true });
 });

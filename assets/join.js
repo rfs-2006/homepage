@@ -1,5 +1,5 @@
 /* 가입 신청과 승인.
- * RFSJoin.open({ sb })  : 로그인 화면의 '회원가입'. 아이디·비밀번호·이름·닉네임·이메일·생년월일·블로그·기수 + 개인정보 수집·이용 동의.
+ * RFSJoin.open({ sb })  : 로그인 화면의 '회원가입'. 아이디·비밀번호·이름·닉네임·이메일·휴대폰·생년월일·블로그·기수 + 개인정보 수집·이용 동의.
  *                         Supabase 함수 member-signup이 '정지된' 계정을 만든다 → 승인 전에는 로그인이 안 된다.
  * RFSJoin.admin({ sb }) : 관리자(member-admin의 MEMBER_ADMINS)가 AGORA에서 여는 승인 화면. 승인하면 로그인 가능, 거절하면 즉시 삭제.
  * RFSJoin.isAdmin(sb)   : 관리자면 대기 건수, 아니면 null (화면에 '회원가입 승인' 메뉴를 보일지 정할 때). */
@@ -54,7 +54,7 @@
 ';
   var MSG = {
     agree: '개인정보 수집·이용에 동의해 주세요.', id: '아이디는 영문 소문자로 시작하는 4~20자(영문·숫자·._-)로 정해 주세요. 쓸 수 없는 아이디일 수도 있어요.',
-    password: '비밀번호는 8자 이상으로 정해 주세요.', name: '이름과 닉네임을 입력해 주세요.', email: '이메일 주소를 확인해 주세요.',
+    password: '비밀번호는 8자 이상으로 정해 주세요.', name: '이름과 닉네임을 입력해 주세요.', email: '이메일 주소를 확인해 주세요.', phone: '휴대폰 번호를 숫자만 입력해 주세요 (예: 01012345678).',
     birth: '생년월일을 8자리 숫자로 입력해 주세요 (예: 20030315).', age: '만 14세 미만은 가입할 수 없어요.', blog: '블로그 주소는 https://로 시작하게 입력해 주세요.',
     taken: '이미 쓰고 있는 아이디예요. 다른 아이디로 해 주세요.', limit: '같은 곳에서 신청이 너무 많아요. 내일 다시 시도해 주세요.', busy: '승인 대기 중인 신청이 많아요. 잠시 후 다시 시도해 주세요.'
   };
@@ -99,12 +99,13 @@
       inp('realname', '이름', 'text', ' autocomplete="name" maxlength="30"') +
       inp('nickname', '닉네임', 'text', ' maxlength="30"') +
       inp('email', '이메일', 'email', ' autocomplete="email" maxlength="120"') +
+      inp('phone', '휴대폰 (승인 결과 문자)', 'text', ' inputmode="numeric" autocomplete="tel" maxlength="11"') +
       inp('birth', '생년월일 (숫자 8자리)', 'text', ' inputmode="numeric" maxlength="8"') +
       inp('cohort', '기수 (학회원만)', 'text', ' inputmode="numeric" maxlength="3"') +
       inp('blog', '블로그 (선택)', 'url', ' maxlength="200"') +
       '<div class="pol" tabindex="0"><b>개인정보 수집·이용 동의 (필수)</b>' +
-      '<p>수집 항목: 아이디, 비밀번호, 이름, 닉네임, 이메일, 생년월일 (선택: 기수, 블로그). 로그인한 채 쓴 Polaris 질문과 답은 지난 대화 보기용으로 저장</p>' +
-      '<p>목적: 학회원 확인과 가입 승인, 로그인, 학회원 전용 서비스, 운영 공지</p>' +
+      '<p>수집 항목: 아이디, 비밀번호, 이름, 닉네임, 이메일, 휴대폰 번호, 생년월일 (선택: 기수, 블로그). 로그인한 채 쓴 Polaris 질문과 답은 지난 대화 보기용으로 저장</p>' +
+      '<p>목적: 학회원 확인과 가입 승인, 승인 결과 문자 안내, 로그인, 학회원 전용 서비스, 운영 공지</p>' +
       '<p>보유 기간: 탈퇴할 때까지. 승인하지 않은 신청은 즉시 파기</p>' +
       '<p>정보는 Supabase(미국) 클라우드에 저장됩니다. 동의하지 않을 수 있으나 이 경우 가입할 수 없습니다. 만 14세 미만은 가입할 수 없습니다.</p>' +
       '<p><a href="/privacy/" target="_blank" rel="noopener">개인정보처리방침 전문</a></p></div>' +
@@ -113,6 +114,7 @@
     var f = el.querySelector('form'), er = el.querySelector('.er'), go = el.querySelector('.go');
     setTimeout(function () { try { f.login.focus({ preventScroll: true }); } catch (e) {} }, 200);
     f.birth.oninput = function () { f.birth.value = f.birth.value.replace(/\D/g, '').slice(0, 8); };
+    f.phone.oninput = function () { f.phone.value = f.phone.value.replace(/\D/g, '').slice(0, 11); };
     f.cohort.oninput = function () { f.cohort.value = f.cohort.value.replace(/\D/g, '').slice(0, 3); };
     f.onsubmit = function (e) {
       e.preventDefault();
@@ -125,13 +127,14 @@
       if (!v('realname') || !v('nickname')) return fail(MSG.name);
       if (!/^\d{8}$/.test(v('birth'))) return fail(MSG.birth);
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email'))) return fail(MSG.email);
+      if (!/^01[016789]\d{7,8}$/.test(v('phone'))) return fail(MSG.phone);
       if (v('blog') && !/^https?:\/\/\S+$/i.test(v('blog'))) return fail(MSG.blog);
       if (!f.agree.checked) return fail(MSG.agree);
       er.textContent = ''; go.disabled = true; go.textContent = '보내는 중';
-      call(o.sb, 'member-signup', { id: v('login').toLowerCase(), password: f.pw.value, name: v('realname'), nickname: v('nickname'), email: v('email'), birth: v('birth'), cohort: v('cohort'), blog: v('blog'), agree: true }).then(function (r) {
+      call(o.sb, 'member-signup', { id: v('login').toLowerCase(), password: f.pw.value, name: v('realname'), nickname: v('nickname'), email: v('email'), phone: v('phone'), birth: v('birth'), cohort: v('cohort'), blog: v('blog'), agree: true }).then(function (r) {
         if (r && r.ok) {
           el.querySelector('.jn-in').innerHTML = '<button class="jn-x" type="button" aria-label="닫기">×</button><h2>신청했어요</h2>' +
-            '<p class="done">운영진이 확인하고 승인하면 <b>' + esc(v('login').toLowerCase()) + '</b>(으)로 로그인할 수 있어요.<br>승인 전에 로그인하면 \'승인 대기 중\'으로 나와요.</p>' +
+            '<p class="done">운영진이 확인하고 승인하면 문자로 알려 드려요. 그다음 <b>' + esc(v('login').toLowerCase()) + '</b>(으)로 로그인할 수 있어요.<br>승인 전에 로그인하면 \'승인 대기 중\'으로 나와요.</p>' +
             '<button class="go" type="button" style="width:100%;margin-top:22px">확인</button>';
           el.querySelector('.jn-x').onclick = close; el.querySelector('.go').onclick = close;
           return;
@@ -157,7 +160,7 @@
         ls.innerHTML = r.list.map(function (a) {
           var b = String(a.birth || ''), when = String(a.applied_at || '').slice(0, 16).replace('T', ' ');
           return '<div class="row" data-uid="' + esc(a.uid) + '"><div><div class="nm">' + esc(a.name) + '<em>' + (a.cohort ? esc(a.cohort) + '기' : '외부') + ' · ' + esc(a.nickname) + '</em></div>' +
-            '<div class="meta">아이디 ' + esc(a.id) + ' · ' + esc(b.slice(0, 4) + '.' + b.slice(4, 6) + '.' + b.slice(6, 8)) + '<br>' + esc(a.email) + (a.blog ? '<br>' + esc(a.blog) : '') + '<br>신청 ' + esc(when) + ' (UTC)</div></div>' +
+            '<div class="meta">아이디 ' + esc(a.id) + ' · ' + esc(b.slice(0, 4) + '.' + b.slice(4, 6) + '.' + b.slice(6, 8)) + '<br>' + esc(a.email) + (a.phone ? ' · ' + esc(a.phone) : ' · 휴대폰 없음') + (a.blog ? '<br>' + esc(a.blog) : '') + '<br>신청 ' + esc(when) + ' (UTC)</div></div>' +
             '<div class="bt"><button class="no" type="button">거절</button><button class="ok gs" type="button">일반 승인</button><button class="ok mb" type="button">학회원 승인</button></div></div>';
         }).join('');
         ls.querySelectorAll('.row').forEach(function (row) {
@@ -166,7 +169,7 @@
             if (action === 'reject' && !window.confirm('거절하면 이 신청 정보가 바로 지워져요. 거절할까요?')) return;
             bs.forEach(function (x) { x.disabled = true; });
             call(o.sb, 'member-admin', { action: action, uid: uid, role: role }).then(function (r2) {
-              if (r2 && r2.ok) load(); else { bs.forEach(function (x) { x.disabled = false; }); window.alert('처리하지 못했어요. 다시 시도해 주세요.'); }
+              if (r2 && r2.ok) { if (action === 'approve' && r2.sms && r2.sms !== 'sent') window.alert(r2.sms === 'no_phone' ? '승인했어요. 휴대폰 번호가 없어서 문자는 못 보냈어요.' : '승인했어요. 다만 안내 문자를 보내지 못했어요.'); load(); } else { bs.forEach(function (x) { x.disabled = false; }); window.alert('처리하지 못했어요. 다시 시도해 주세요.'); }
             });
           };
           // 학회원 승인: AGORA(명부·선배님 연결)까지. 일반 승인: 로그인·POLARIS만

@@ -15,8 +15,11 @@
   LOG_PATH               질문·답·출처를 jsonl로 남길 파일 (평가셋 보강용). 비우면 남기지 않는다. 사람 정보는 남기지 않는다.
   TELEGRAM_BOT_TOKEN     질문이 들어올 때마다 텔레그램으로 알림 (질문·답 앞부분·유형·도구·시간·출처 수). 둘 다 있어야 보낸다. IP 등 사람 정보는 안 보낸다
   TELEGRAM_CHAT_ID       알림 받을 대화 id (봇에게 아무 말이나 보낸 뒤 getUpdates로 확인)
+  USAGE_PATH             사용량 기록 파일, 기본 ~/polaris-usage.json
+  OPS_ADMINS             /usage를 볼 수 있는 로그인 이메일 (쉼표로 여러 개), 기본 WK_WRITERS와 같음
 API
   GET  /health                   준비됐는지
+  GET  /usage                    운영 관리자(OPS_ADMINS)만. 날짜별 Voyage 토큰·질문 수 (usage.py, 운영 대시보드 assets/ops.js)
   POST /wk/polish  {html}  운용팀 계정만. 위클리 초안을 운용사 문체로 다듬은 HTML (wk_feedback.polish)
   POST /wk/feedback  {text}  운용팀 계정만. 위클리 초안의 빠진 맥락·용어·문장 피드백 (wk_feedback.py)
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
@@ -45,6 +48,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from agent_search import MODELS  # noqa: E402
 from answer import Answerer, Chat  # noqa: E402
 import polaris_v2  # noqa: E402
+import usage  # noqa: E402
 import wk_feedback  # noqa: E402
 
 SB_URL = 'https://xyewclvpshldjucryapr.supabase.co'
@@ -89,6 +93,7 @@ lock = threading.Lock()
 convs = {}            # id → {'chat', 'used', 'lock'}
 tokens_ok = {}        # access token → (확인 시각, 이메일) (5분 캐시)
 WK_WRITERS = [e.strip().lower() for e in os.environ.get('WK_WRITERS', 'amt@caurfs.kr').split(',') if e.strip()]
+OPS_ADMINS = [e.strip().lower() for e in os.environ.get('OPS_ADMINS', ','.join(WK_WRITERS)).split(',') if e.strip()]
 counts = defaultdict(int)  # (날짜, ip 또는 '*') → 질문 수
 answerer = None
 
@@ -131,7 +136,9 @@ def take_quota(ip, member):
         counts[(day, key)] += 1
         for k in [k for k in counts if k[0] != day]:
             del counts[k]
-        return None, cap - counts[(day, key)]
+        left = cap - counts[(day, key)]
+    usage.add('q_member' if member else 'q_anon', 1)
+    return None, left
 
 
 def give_back(ip, member, left):
@@ -184,6 +191,12 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/health':
             return self._json(200, {'ok': answerer is not None})
+        if self.path == '/usage':
+            auth = self.headers.get('Authorization', '')
+            email = token_email(auth[7:]) if auth.startswith('Bearer ') else ''
+            if email not in OPS_ADMINS:
+                return self._json(403, {'error': 'admin'})
+            return self._json(200, {'ok': True, 'days': usage.snapshot()})
         self._json(404, {'error': 'not found'})
 
     def _sse_start(self):
@@ -298,6 +311,7 @@ def main():
     print('자료 불러오는 중 (BM25 색인 10초쯤)', flush=True)
     # 12절: 검색은 Haiku로 바꿔도 품질이 그대로, 답변은 Sonnet이어야 한다
     # 답변 모델은 /etc/polaris.env의 ANSWER_MODEL로 바꿀 수 있다 (기본 Sonnet 5.5. 예: claude-opus-5-5로 품질 비교)
+    usage.enable(os.environ.get('USAGE_PATH') or Path.home() / 'polaris-usage.json')
     answerer = Answerer(cafe, mode='routed', search_model=MODELS['haiku'], answer_model=os.environ.get('ANSWER_MODEL', MODELS['sonnet']), ask=True)
     print('답변 모델', answerer.answer_model, flush=True)
     print(f'준비됨 {host}:{port}, 허용 주소 {ORIGINS}', flush=True)

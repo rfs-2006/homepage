@@ -26,6 +26,8 @@ BATCH, WORKERS = 64, 4
 OUT = CAFE / 'vectors'
 PART = OUT / f'{MODEL}.parts'
 
+import usage  # noqa: E402
+
 
 def voyage_headers():
     # 이 개발 환경은 프록시가 api.voyageai.com 요청에 키를 붙여 준다. 서버처럼 프록시가 없는 곳은 VOYAGE_API_KEY로 넣는다
@@ -42,6 +44,7 @@ def embed(texts, input_type='document', model=MODEL, tries=6):
         try:
             with urllib.request.urlopen(req, timeout=180) as r:
                 j = json.load(r)
+            usage.add(model, j['usage']['total_tokens'])   # 운영 대시보드 (서버에서만 켜짐)
             return [d['embedding'] for d in sorted(j['data'], key=lambda d: d['index'])], j['usage']['total_tokens']
         except urllib.error.HTTPError as e:
             if e.code in (429, 500, 502, 503) and k < tries - 1:

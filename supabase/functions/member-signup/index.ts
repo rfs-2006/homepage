@@ -13,7 +13,7 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
-const POLICY_VERSION = '2026-11-02';
+const POLICY_VERSION = '2026-11-04';
 const RESERVED = ['admin', 'root', 'amt', 'member', 'members', 'contact', 'recruiting', 'rfs', 'caurfs', 'agora', 'test', 'support', 'help', 'info', 'noreply', 'no-reply', 'postmaster', 'webmaster'];
 const MAX_PENDING = 60, PER_IP_DAY = 3;
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
@@ -56,6 +56,22 @@ async function pending(admin: ReturnType<typeof createClient>) {
   return out;
 }
 
+// 관리자 알림 메일 (Resend). 받는 주소는 운영 대시보드 설정(ops_state.settings.notify_email), 없으면 NOTIFY_EMAIL. 실패해도 본 작업은 그대로
+// deno-lint-ignore no-explicit-any
+async function mailAdmin(admin: any, kind: string, subject: string, text: string) {
+  const key = Deno.env.get('RESEND_API_KEY');
+  if (!key) return;
+  const { data } = await admin.from('ops_state').select('value').eq('key', 'settings').maybeSingle();
+  // deno-lint-ignore no-explicit-any
+  const s = (data?.value || {}) as Record<string, any>;
+  const to = String(s.notify_email || Deno.env.get('NOTIFY_EMAIL') || '').trim();
+  if (!to || (s.notify && s.notify[kind] === false)) return;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from: Deno.env.get('MAIL_FROM') || 'R.F.S. 알림 <onboarding@resend.dev>', to: [to], subject, text }),
+  }).catch(() => {});
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json(405, { error: 'method' });
@@ -64,12 +80,14 @@ Deno.serve(async (req) => {
 
   const id = str(b.id, 40).toLowerCase(), pw = String(b.password ?? '');
   const name = str(b.name, 30), nickname = str(b.nickname, 30), email = str(b.email, 120).toLowerCase();
+  const phone = digits(b.phone).slice(0, 11);
   const birth = digits(b.birth).slice(0, 8), blog = str(b.blog, 200), cohort = digits(b.cohort).slice(0, 3);
   if (b.agree !== true) return json(400, { error: 'agree' });
   if (!/^[a-z][a-z0-9._-]{3,19}$/.test(id) || RESERVED.includes(id)) return json(400, { error: 'id' });
   if (pw.length < 8 || pw.length > 72) return json(400, { error: 'password' });
   if (!name || !nickname) return json(400, { error: 'name' });
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json(400, { error: 'email' });
+  if (!/^01[016789]\d{7,8}$/.test(phone)) return json(400, { error: 'phone' });
   const y = +birth.slice(0, 4), m = +birth.slice(4, 6), d = +birth.slice(6, 8), bd = new Date(Date.UTC(y, m - 1, d));
   if (birth.length !== 8 || bd.getUTCMonth() !== m - 1 || bd.getUTCDate() !== d || y < 1940) return json(400, { error: 'birth' });
   // 만 14세 미만은 법정대리인 동의가 필요해 받지 않는다
@@ -88,11 +106,12 @@ Deno.serve(async (req) => {
   const { error } = await admin.auth.admin.createUser({
     email: `${id}@caurfs.kr`, password: pw, email_confirm: true,
     ban_duration: '876000h', // 승인 전까지 로그인 불가
-    user_metadata: { name, nickname, cohort: cohort || '', birth, blog, contact_email: email },
+    user_metadata: { name, nickname, cohort: cohort || '', birth, blog, contact_email: email, phone },   // 휴대폰은 승인 결과 문자용 (member-admin)
     app_metadata: { status: 'pending', applied_at: now.toISOString(), privacy_agreed_at: now.toISOString(), privacy_version: POLICY_VERSION, ip: ipHash },
   });
   if (error) return json(/already|exists|registered/i.test(error.message) ? 409 : 500, { error: /already|exists|registered/i.test(error.message) ? 'taken' : 'create' });
 
   await notify(`[R.F.S.] 회원가입 1건: ${cohort ? cohort + '기 ' : '외부 '}${name}. AGORA에서 승인해 주세요.`);
+  await mailAdmin(admin, 'signup', `[R.F.S.] 회원가입 신청: ${cohort ? cohort + '기 ' : '외부 '}${name}`, `아이디 ${id} · ${nickname}\nAGORA 위쪽 '운영'에서 승인해 주세요.`);
   return json(200, { ok: true });
 });

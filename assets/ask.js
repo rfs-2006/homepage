@@ -425,11 +425,11 @@
     requestAnimationFrame(function () { el.classList.add('show'); });
   }
 
-  // 관리자면 위쪽에 '회원가입 승인 N' (null이면 숨김)
+  // 관리자면 위쪽에 '운영' (승인 대기가 있으면 '운영 · 승인 N'). null이면 숨김
   function setAdmin(n) {
     if (!st) return;
     var b = st.el.querySelector('.ad');
-    b.hidden = n == null; b.innerHTML = '<span class="lg">회원가입 </span>승인' + (n ? ' ' + n : '');
+    b.hidden = n == null; b.innerHTML = '운영' + (n ? ' · <span class="lg">승인 </span>' + n : '');
   }
 
   window.RFSAsk = { open: open, close: close, setAdmin: setAdmin, isOpen: function () { return !!st; } };

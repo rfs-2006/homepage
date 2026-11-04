@@ -2182,9 +2182,10 @@ class Component extends DCLogic {
     };
   }
 
-  // 가입 신청 (assets/join.js). 관리자면 AGORA 위쪽 바에 '회원가입 승인 N'이 생긴다 (assets/ask.js). 관리자 여부는 member-admin 함수가 정한다
+  // 가입 신청 (assets/join.js). 관리자면 AGORA 위쪽 바에 '운영'(승인 대기 N)이 생긴다 (assets/ask.js). 관리자 여부는 member-admin 함수가 정한다
   openJoin() { if (window.RFSJoin && this.sb) window.RFSJoin.open({ sb: this.sb }); }
-  openJoinAdmin() { if (window.RFSJoin && this.sb) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setJoinPending(n) }); }
+  // 관리자 버튼은 운영 대시보드(assets/ops.js: 승인·계좌·유지비·API 사용량)를 연다. ops.js가 없으면 예전처럼 승인 화면만
+  openJoinAdmin() { if (!this.sb) return; if (window.RFSOps) window.RFSOps.open({ sb: this.sb, onPending: (n) => this.setJoinPending(n) }); else if (window.RFSJoin) window.RFSJoin.admin({ sb: this.sb, onChange: (n) => this.setJoinPending(n) }); }
   setJoinPending(n) { this.setState({ joinPending: n }); if (window.RFSAsk && window.RFSAsk.setAdmin) window.RFSAsk.setAdmin(n); }
   logout() { if (this.sb) this.sb.auth.signOut(); this.setState({ user: null }); this.go('home'); }
   loadJoinAdmin(email) {
