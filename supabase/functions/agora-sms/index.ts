@@ -1,5 +1,5 @@
-// AGORA '선배님께 여쭙기' 마지막 단계: 로그인한 학회원이 자기 번호를 넣으면,
-// 고른 선배님의 이름·기수·회사·연락처를 그 번호로 문자(솔라피)로 보내 준다.
+// AGORA '선배님께 여쭙기' 마지막 단계: 고른 선배님의 이름·기수·회사·연락처를
+// 로그인한 학회원 본인 번호(가입 때 남긴 번호, 없으면 입력한 번호)로 문자(솔라피)로 보내 준다.
 // - 선배님 번호는 클라이언트가 보내는 값을 믿지 않고, 서버가 명부(intranet_content 'main')에서 찾는다
 // - 누가 언제 어느 선배님 번호를 받았는지 agora_sms_log에 남긴다 (RLS로 관리자만 열람)
 // - 한 사람당 하루 5건까지
@@ -73,7 +73,9 @@ Deno.serve(async (req) => {
 
   let b: Record<string, unknown> = {};
   try { b = await req.json(); } catch { return json(400, { error: 'body' }); }
-  const to = digits(b.toPhone);
+  // 받는 번호: 가입할 때 남긴 본인 번호(user_metadata.phone)로만 보낸다. 번호 없이 가입한 예전 계정만 입력한 번호를 쓴다
+  const mine = digits(u.user.user_metadata?.phone);
+  const to = /^01[016789]\d{7,8}$/.test(mine) ? mine : digits(b.toPhone);
   if (!/^01[016789]\d{7,8}$/.test(to)) return json(400, { error: 'toPhone' });
   const name = String(b.alumniName ?? '').trim(), cohort = digits(b.alumniCohort);
   if (!name || !cohort) return json(400, { error: 'alumni' });

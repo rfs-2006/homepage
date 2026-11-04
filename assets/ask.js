@@ -314,6 +314,25 @@
   function done() {
     st.stage = 2; prog(100);
     // 문자 받기가 연결돼 있으면(로그인한 학회원): 내 번호만 넣으면 선배님 연락처가 문자로 온다. 연락 문구는 학회원이 직접 쓴다
+    if (st.sendSms && /^01[016789]\d{7,8}$/.test(digits(st.myPhone))) {
+      // 가입할 때 남긴 내 번호로 바로 보낸다 (번호를 다시 넣지 않는다)
+      st.el.querySelector('.bk').disabled = false;
+      var mp = digits(st.myPhone), mask = mp.slice(0, 3) + '-****-' + mp.slice(-4);
+      st.bx.innerHTML = crumbs() + '<h2 class="q">' + esc(st.pick.name) + ' 선배님 번호를<br>' + esc(st.myName || st.me.name || '') + '님 번호로 보내 드릴게요</h2><div class="ms"><div class="mine"><p style="margin:0;font-size:15px;opacity:.75">' + mask + '</p>' +
+        '<p class="er" aria-live="polite"></p></div></div>';
+      var er2 = st.bx.querySelector('.er');
+      var send2 = function () {
+        btn('보내는 중', true);
+        er2.textContent = '';
+        Promise.resolve(st.sendSms({ alumniName: st.pick.name, alumniCohort: String(st.pick.cohort || '') })).then(function (r) {
+          if (r && r.ok) return sent();
+          er2.textContent = ({ limit: '오늘은 더 보낼 수 없어요. 하루 5건까지예요.', no_phone: '이 선배님은 연락처가 등록되지 않았어요.', toPhone: '등록된 번호를 확인할 수 없어요. 운영진에게 알려 주세요.', login: '로그인이 풀렸어요. 다시 로그인해 주세요.', not_configured: '문자 보내기를 준비하고 있어요. 잠시 후 다시 시도해 주세요.' })[r && r.error] || '보내지 못했어요. 잠시 후 다시 시도해 주세요.';
+          btn('문자로 받기', false, send2);
+        });
+      };
+      btn('문자로 받기', false, send2);
+      return;
+    }
     if (st.sendSms) {
       st.el.querySelector('.bk').disabled = false;
       var saved = ''; try { saved = localStorage.getItem('rfs_my_phone') || ''; } catch (e) {}
@@ -407,7 +426,7 @@
       '<div class="ask-top"><button class="ib bk" aria-label="이전"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button><span class="sl"><img src="/assets/rfs-seal-light-256.png" alt=""><span>AGORA</span></span><div class="tr"><button class="tx ad" type="button" hidden></button><button class="tx lo" type="button">로그아웃</button><button class="ib cl" aria-label="닫기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>' +
       '<main class="ask-wrap"></main><button class="nx" type="button"></button>';
     document.body.appendChild(el);
-    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, sendSms: o.sendSms, onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
+    st = { el: el, bx: el.querySelector('.ask-wrap'), pool: pool, path: [], pick: null, stage: 0, draft: '', how: '짧은 문자', me: { name: (o.me && o.me.name) || '', cohort: String((o.me && o.me.cohort) || '').replace(/\D/g, '') }, onSaveMe: o.onSaveMe, sendSms: o.sendSms, myPhone: o.myPhone || "", myName: o.myName || "", onClose: o.onClose, ov: document.documentElement.style.overflow, ret: document.activeElement, kbd: false };
     document.documentElement.style.overflow = 'hidden';
     el.querySelector('.bk').onclick = back;
     st.onLogout = o.onLogout; st.onAdmin = o.onAdmin;

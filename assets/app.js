@@ -1497,7 +1497,7 @@ class Component extends DCLogic {
       const back = (ses) => { if (!ses) return; try { const r = JSON.parse(sessionStorage.getItem('rfs_after_login') || 'null'); sessionStorage.removeItem('rfs_after_login'); if (r && /^\/(?!\/)[\w/-]*$/.test(r.to) && Date.now() - r.at < 600000) location.href = r.to; } catch (e) {} };
       // 학회원이 아닌 일반 회원은 app_metadata.role = 'guest' (가입 승인 때 관리자가 정한다). 값이 없으면 학회원(공용 계정·예전 승인)
       const isGuest = (u) => !!(u && u.app_metadata && u.app_metadata.role === 'guest');
-      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '', guest: isGuest(ses.user) } : null }, () => { if (ses) { if (!isGuest(ses.user)) { this.loadAgora(); this.loadIntra(); } this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
+      const setU = (ses) => back(ses) || markMember(ses) || this.setState({ user: ses ? { email: ses.user.email, name: (ses.user.user_metadata && ses.user.user_metadata.name) || '', cohort: (ses.user.user_metadata && ses.user.user_metadata.cohort) || '', phone: (ses.user.user_metadata && ses.user.user_metadata.phone) || '', guest: isGuest(ses.user) } : null }, () => { if (ses) { if (!isGuest(ses.user)) { this.loadAgora(); this.loadIntra(); } this.loadRfm(); this.loadJoinAdmin(ses.user.email); } else { this._joinFor = null; this.setState({ intraData: null, fundLive: null, joinPending: null }); this.loadRfm(); } });
       this.sb.auth.getSession().then(({ data }) => setU(data.session));
       this.sb.auth.onAuthStateChange((_e, ses) => setU(ses));
     }
@@ -2764,7 +2764,7 @@ class Component extends DCLogic {
   openAsk() {
     if (!window.RFSAsk || !this.state.user || this.state.user.guest) return;
     const ID = this.state.intraData || {};
-    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), onSaveMe: (n, c) => this.saveMe(n, c),
+    window.RFSAsk.open({ alumni: ID.ALUMNI || [], me: this.me(), myPhone: this.state.user.phone || '', myName: this.state.user.name || this.me().name, onSaveMe: (n, c) => this.saveMe(n, c),
       onLogout: () => this.logout(), adminCount: this.state.joinPending, onAdmin: () => this.openJoinAdmin(),
       // 마지막 단계: 내 번호로 선배님 연락처와 문구를 문자로 받는다 (Supabase 함수 agora-sms, 솔라피)
       sendSms: (body) => this.sb.functions.invoke('agora-sms', { body }).then(async ({ error }) => {
