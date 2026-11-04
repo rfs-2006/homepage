@@ -1,6 +1,7 @@
 /* 운영 대시보드: 관리자(member-admin의 MEMBER_ADMINS)만. AGORA 위쪽 바의 '운영'에서 연다 (app.js openJoinAdmin).
  * 한 화면에 ① 계좌 잔액·이번 달 유지비·버틸 수 있는 기간·승인 대기 ② 회원가입 승인 ③ 계좌 잔액 기록(손으로 입력)
  * ③-2 방문자(Google Analytics, member-admin의 ga) ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
+ * ⑧ 학회원증: 카드 목록·발급/수정·정지, QR 보기(https://caurfs.kr/v/#토큰, member-admin의 card_*, 확인 화면은 /v/ + member-verify)
  * 저장은 member-admin의 ops_save → ops_state 테이블(사이트에서는 못 읽음). 금액은 공개 화면 어디에도 나가지 않는다.
  * RFSOps.open({ sb, onPending }) */
 (function () {
@@ -21,6 +22,10 @@
   ];
   // 학회 공용 계정으로 옮겼는지 (docs/운영인수인계.md)
   var MOVED = [['', '모름'], ['personal', '개인 계정'], ['club', '학회 계정']];
+  // 학회원증 QR: 주소는 우리 도메인만. QR 그림은 브라우저에서 그린다 (qrcode-generator, 버전 고정 + SRI)
+  var CARD_URL = 'https://caurfs.kr/v/#';
+  var QR_LIB = { src: 'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js', sri: 'sha384-8FWZA6BGMXhsfO+BLtrJK0We6gg5o1JyO8xQm6peWDEUs17ACA5ziE/NIAkl9z2k' };
+  var CARD_ERR = { no: '카드 번호는 영문·숫자·하이픈만 (예: RFS-41-001)', name: '이름을 적어 주세요', photo: '사진은 사이트 경로로 (예: /assets/officers/president.webp)', cohort: '기수는 숫자로', dates: '유효기간 시작이 끝보다 늦어요', card_save: '저장하지 못했어요. member_cards 테이블(supabase/sql/member_cards.sql)을 만들었는지 확인해 주세요.' };
   // 디자인: FUND 페이지 '토스버전'(templates/toss/fund.html)과 같은 결 — 미색 바탕, 모서리 없는 흰 카드, 남색 SUMMARY, 큰 숫자, 자간 넓은 작은 라벨, 굵은 윗선 표
   var CSS = '\
 .op{position:fixed;inset:0;z-index:3500;background:#EDEBE5;color:#191F28;overflow-y:auto;opacity:0;transition:opacity .25s;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}\
@@ -102,7 +107,13 @@
 .op .chk input{width:20px;height:20px;accent-color:#203864}\
 .op .msg{font-size:13.5px;color:#203864;min-height:20px;margin-top:12px}\
 .op .mailbox{max-width:560px}\
-@media (max-width:860px){.op-s{padding:32px 20px}.op-sum .pn{padding:14px 18px}.op-sum .pn .row b{font-size:17px}.op .bars{height:110px}.op-sum{grid-template-columns:1fr;gap:28px}.op-sum .big{font-size:48px}.op-hl{font-size:26px}.op .two{grid-template-columns:1fr;gap:28px}.op .trio b{font-size:22px}.op .frm{grid-template-columns:1fr 1fr}.op-top h2{font-size:36px}.op-tabs a{flex:0 0 auto}}\
+.op .cfrm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:28px 0 0}\
+.op .cfrm label{display:grid;gap:6px;font-size:12.5px;color:#6B7684;min-width:0}\
+.op .qrbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:32px;align-items:center;margin-top:32px;padding:28px;background:#F7F6F3;border-top:2px solid #191F28}\
+.op .qrbox canvas{width:220px;height:220px;background:#fff;image-rendering:pixelated;display:block}\
+.op .qrbox .u{font-size:13px;color:#6B7684;word-break:break-all;margin:8px 0 0}\
+.op .qrbox h4{margin:0;font-size:20px;font-weight:700}\
+@media (max-width:860px){.op-s{padding:32px 20px}.op-sum .pn{padding:14px 18px}.op-sum .pn .row b{font-size:17px}.op .bars{height:110px}.op-sum{grid-template-columns:1fr;gap:28px}.op-sum .big{font-size:48px}.op-hl{font-size:26px}.op .two{grid-template-columns:1fr;gap:28px}.op .trio b{font-size:22px}.op .frm{grid-template-columns:1fr 1fr}.op .cfrm{grid-template-columns:1fr 1fr}.op .qrbox{grid-template-columns:1fr;padding:20px}.op-top h2{font-size:36px}.op-tabs a{flex:0 0 auto}}\
 @media (prefers-reduced-motion:reduce){.op{transition:none}}\
 ';
   var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
@@ -165,6 +176,65 @@
     return '<section class="op-s' + (dark ? ' dk' : '') + '" id="op-' + id + '"><div class="op-h"><span class="lb">' + label + '</span><span class="mt">' + meta + '</span></div>' + body + '</section>';
   };
   var num = function (n) { return Math.round(n || 0).toLocaleString('ko-KR'); };
+
+  // ---- 학회원증
+  function cardState(c) {
+    var t = today();
+    if (c.revoked) return ['bad', '정지'];
+    if (c.valid_to && t > c.valid_to) return ['w', '기간 지남'];
+    if (c.valid_from && t < c.valid_from) return ['', '시작 전'];
+    return ['ok', '유효'];
+  }
+  function cardSection(s) {
+    var cards = s.cards, e = s.editCard || {};
+    var f = function (k, label, attrs) { return '<label>' + label + '<input data-c="' + k + '" value="' + esc(e[k] == null ? '' : e[k]) + '" ' + (attrs || '') + '></label>'; };
+    var form = '<form data-f="card"><div class="cfrm">' +
+      f('no', '카드 번호', 'placeholder="RFS-41-001" maxlength="40" autocapitalize="characters"' + (e.no && s.editCardOld ? ' readonly' : '')) +
+      f('name', '이름', 'placeholder="김민석" maxlength="40"') + f('name_en', '영문 이름', 'placeholder="KIM MIN-SEOK" maxlength="60"') + f('cohort', '기수', 'inputmode="numeric" placeholder="41"') +
+      f('role', '직책', 'placeholder="회장 · President" maxlength="60"') + f('valid_from', '유효기간 시작', 'type="date"') + f('valid_to', '유효기간 끝', 'type="date"') + f('photo', '사진 경로 (선택)', 'placeholder="/assets/officers/president.webp"') +
+      '</div><div class="acts"><button class="bt p" type="submit">' + (s.editCardOld ? '수정 저장' : '발급') + '</button>' + (s.editCardOld ? '<button class="bt" type="button" data-a="cardnew">새 카드</button>' : '') + '</div></form><div class="msg" data-m="card"></div>';
+    var list;
+    if (s.cardErr) list = '<p class="note" style="margin-top:20px">카드 목록을 불러오지 못했어요 (' + esc(s.cardErr) + '). member_cards 테이블(supabase/sql/member_cards.sql)과 member-admin 함수를 최신으로 올렸는지 확인해 주세요.</p>';
+    else if (!cards) list = '<p class="note" style="margin-top:20px">불러오는 중…</p>';
+    else if (!cards.length) list = '<p class="note" style="margin-top:20px">아직 발급한 카드가 없어요. 아래에서 발급해요.</p>';
+    else list = '<div class="tw" style="margin-top:24px"><table><thead><tr><th>카드 번호</th><th>이름</th><th class="n">기수</th><th>직책</th><th>유효기간</th><th>상태</th><th></th></tr></thead><tbody>' + cards.map(function (c, i) {
+      var cs = cardState(c);
+      return '<tr><td><b>' + esc(c.no) + '</b></td><td>' + esc(c.name) + (c.name_en ? ' <span class="sb">' + esc(c.name_en) + '</span>' : '') + '</td><td class="n">' + (c.cohort ? esc(c.cohort) + '기' : '—') + '</td><td>' + esc(c.role || '—') + '</td>' +
+        '<td class="sb">' + esc((c.valid_from || '').replace(/-/g, '.')) + ' – ' + esc((c.valid_to || '').replace(/-/g, '.')) + '</td><td><span class="tag ' + cs[0] + '">' + cs[1] + '</span></td>' +
+        '<td class="n"><button class="bt s" type="button" data-cq="' + i + '"' + (c.token ? '' : ' disabled title="CARD_SECRET이 없어요"') + '>QR 보기</button> <button class="bt s" type="button" data-ce="' + i + '">수정</button> <button class="bt s" type="button" data-cr="' + i + '">' + (c.revoked ? '정지 풀기' : '정지') + '</button></td></tr>';
+    }).join('') + '</tbody></table></div>';
+    var qc = s.qr != null && cards && cards[s.qr];
+    var qr = qc ? '<div class="qrbox"><canvas data-qr width="10" height="10" aria-label="QR 코드"></canvas><div><div class="op-h"><span class="lb">QR · ' + esc(qc.no) + '</span></div><h4 style="margin-top:10px">' + esc(qc.name) + '</h4><p class="u" data-qu>' + esc(CARD_URL + qc.token) + '</p>' +
+      '<div class="acts"><button class="bt p" type="button" data-a="qrpng">PNG 저장</button><button class="bt" type="button" data-a="qrcopy">주소 복사</button><button class="bt" type="button" data-a="qrclose">닫기</button></div><div class="msg" data-m="qr"></div>' +
+      '<p class="note" style="margin-top:8px">오류 복원 H(30%) · 카드에 인쇄할 때는 2cm 이상으로. 카드를 정지하면 같은 QR이 바로 “효력이 정지된 카드”로 나와요.</p></div></div>' : '';
+    return sec('card', '학회원증', (cards ? cards.length + '장' : '') + (s.cardSecret === false ? ' · CARD_SECRET을 넣어야 QR이 나와요' : ' · QR → caurfs.kr/v/'), list + qr + form);
+  }
+  function loadQR() {
+    if (window.qrcode) return Promise.resolve(window.qrcode);
+    return new Promise(function (ok, no) {
+      var sc = document.createElement('script');
+      sc.src = QR_LIB.src; sc.integrity = QR_LIB.sri; sc.crossOrigin = 'anonymous';
+      sc.onload = function () { window.qrcode ? ok(window.qrcode) : no(); }; sc.onerror = no;
+      document.head.appendChild(sc);
+    });
+  }
+  // QR을 캔버스에 그린다: 모듈당 12px, 둘레 4모듈 여백 (PNG로 저장해도 인쇄에 충분)
+  function drawQR(cv, text) {
+    return loadQR().then(function (qrcode) {
+      var q = qrcode(0, 'H'); q.addData(text, 'Byte'); q.make();
+      var n = q.getModuleCount(), px = 12, m = 4, size = (n + m * 2) * px, g = cv.getContext('2d');
+      cv.width = size; cv.height = size;
+      g.fillStyle = '#fff'; g.fillRect(0, 0, size, size); g.fillStyle = '#0F1B2E';
+      for (var r = 0; r < n; r++) for (var c = 0; c < n; c++) if (q.isDark(r, c)) g.fillRect((c + m) * px, (r + m) * px, px, px);
+    });
+  }
+  function loadCards() {
+    return call(st.sb, { action: 'card_list' }).then(function (r) {
+      if (!st) return;
+      if (r && r.ok) { st.cards = r.list || []; st.cardSecret = !!r.secret; st.cardErr = ''; } else { st.cards = null; st.cardErr = (r && r.error) || 'fail'; }
+      render();
+    });
+  }
 
   function render() {
     var s = st, el = s.el.querySelector('.op-body');
@@ -264,7 +334,7 @@
       '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입을 승인했을 때 (안내 문자 결과 포함)</label></div>' +
       '<div class="acts"><button class="bt p" type="submit">저장</button></div></form><div class="msg" data-m="set"></div>');
 
-    el.innerHTML = summary + visit + account + cost + sms + mail;
+    el.innerHTML = summary + visit + account + cost + sms + cardSection(s) + mail;
     wire();
   }
 
@@ -320,6 +390,55 @@
       var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked } });
       save('settings', set, 'set');
     };
+    wireCards(el);
+  }
+  function wireCards(el) {
+    var msg = function (m, t) { var b = el.querySelector('[data-m="' + m + '"]'); if (b) b.textContent = t; };
+    var cards = st.cards || [];
+    el.querySelector('[data-f="card"]').onsubmit = function (e) {
+      e.preventDefault();
+      var c = {};
+      el.querySelectorAll('[data-c]').forEach(function (x) { c[x.getAttribute('data-c')] = x.value.trim(); });
+      if (!c.no || !c.name) { msg('card', '카드 번호와 이름을 적어 주세요.'); return; }
+      if (!st.editCardOld && cards.some(function (x) { return x.no === c.no.toUpperCase(); }) && !confirm(c.no + ' 카드가 이미 있어요. 덮어쓸까요?')) return;
+      msg('card', '저장하는 중…');
+      call(st.sb, { action: 'card_save', card: c }).then(function (r) {
+        if (!r || !r.ok) { st.editCard = c; msg('card', CARD_ERR[r && r.error] || '저장하지 못했어요. 다시 시도해 주세요.'); return; }
+        var i = cards.findIndex(function (x) { return x.no === r.card.no; });
+        if (i >= 0) cards[i] = r.card; else { cards.push(r.card); cards.sort(function (a, b) { return a.no < b.no ? -1 : 1; }); }
+        st.cards = cards; st.editCard = null; st.editCardOld = null; st.qr = cards.indexOf(r.card); render();
+        msg('card', r.card.no + ' 저장했어요.');
+      });
+    };
+    var nw = el.querySelector('[data-a="cardnew"]');
+    if (nw) nw.onclick = function () { st.editCard = null; st.editCardOld = null; render(); };
+    el.querySelectorAll('[data-ce]').forEach(function (b) {
+      b.onclick = function () { var c = cards[+b.getAttribute('data-ce')]; st.editCard = Object.assign({}, c); st.editCardOld = c.no; render(); var f = el.querySelector('[data-f="card"]'); if (f) el.scrollTo({ top: f.offsetTop - 120, behavior: 'smooth' }); };
+    });
+    el.querySelectorAll('[data-cr]').forEach(function (b) {
+      b.onclick = function () {
+        var c = cards[+b.getAttribute('data-cr')], on = !c.revoked;
+        if (on && !confirm(c.no + ' ' + c.name + ' 카드를 정지할까요? QR을 찍으면 “효력이 정지된 카드”로 나와요.')) return;
+        b.disabled = true;
+        call(st.sb, { action: 'card_revoke', no: c.no, revoked: on }).then(function (r) {
+          if (r && r.ok) { cards[cards.indexOf(c)] = r.card; render(); } else { b.disabled = false; alert('바꾸지 못했어요. 다시 시도해 주세요.'); }
+        });
+      };
+    });
+    el.querySelectorAll('[data-cq]').forEach(function (b) { b.onclick = function () { st.qr = +b.getAttribute('data-cq'); render(); var x = el.querySelector('.qrbox'); if (x) el.scrollTo({ top: x.offsetTop - 120, behavior: 'smooth' }); }; });
+    var cv = el.querySelector('[data-qr]'), qc = st.qr != null && cards[st.qr];
+    if (!cv || !qc || !qc.token) return;
+    var url = CARD_URL + qc.token;
+    drawQR(cv, url).catch(function () { msg('qr', 'QR 라이브러리를 불러오지 못했어요. 네트워크를 확인해 주세요.'); });
+    el.querySelector('[data-a="qrclose"]').onclick = function () { st.qr = null; render(); };
+    el.querySelector('[data-a="qrpng"]').onclick = function () {
+      var a = document.createElement('a'); a.href = cv.toDataURL('image/png'); a.download = qc.no + '-qr.png'; document.body.appendChild(a); a.click(); a.remove();
+    };
+    el.querySelector('[data-a="qrcopy"]').onclick = function () {
+      var done = function () { msg('qr', '주소를 복사했어요.'); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { prompt('주소', url); });
+      else prompt('주소', url);
+    };
   }
 
   function load() {
@@ -335,6 +454,7 @@
       var g = r[0];
       if (!g || !g.ok) { st.el.querySelector('.op-body').innerHTML = '<p class="s" style="margin-top:24px">운영 데이터를 불러오지 못했어요' + (g && g.error === 'admin' ? ' (관리자 계정이 아니에요)' : ' (member-admin 함수를 최신으로 올렸는지 확인해 주세요)') + '.</p>'; return; }
       st.state = g.state || {}; st.sms = g.sms; st.mail = g.mail;
+      loadCards();
       st.pending = r[1] && r[1].ok ? (r[1].list || []).length : null;
       if (st.onPending && st.pending != null) st.onPending(st.pending);
       var u = r[2];
@@ -350,7 +470,7 @@
     close();
     var el = document.createElement('div');
     el.className = 'op'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '운영 대시보드');
-    var tabs = [['sum', 'Summary'], ['visit', '방문자'], ['acc', '계좌'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['mail', '알림 메일']];
+    var tabs = [['sum', 'Summary'], ['visit', '방문자'], ['acc', '계좌'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['card', '학회원증'], ['mail', '알림 메일']];
     el.innerHTML = '<div class="op-top"><div class="op-top-in"><button class="x" type="button" aria-label="닫기">×</button><div class="ey">R.F.S. OPERATIONS</div><h2>Operations</h2><div class="meta"><span class="op-up"></span><button type="button" data-a="reload">새로고침</button></div></div></div>' +
       '<nav class="op-tabs" aria-label="운영 메뉴"><div class="op-tabs-in">' + tabs.map(function (t, i) { return '<a href="#op-' + t[0] + '" data-t="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</a>'; }).join('') + '</div></nav>' +
       '<div class="op-in op-body"><p class="note">불러오는 중…</p></div>';

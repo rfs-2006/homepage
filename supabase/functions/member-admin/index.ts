@@ -6,9 +6,12 @@
 // - ops_get: 대시보드 데이터 (계좌 잔액 기록·유지비 표·설정, 문자 기록 최근 50건)
 // - ops_save: 대시보드의 계좌·유지비·설정 저장 (ops_state 테이블, supabase/sql/ops_state.sql)
 // - ga: Google Analytics 방문자 (최근 30일 일별 사용자·페이지뷰, 많이 본 페이지, 유입 경로). GA4 Data API, 서비스 계정
+// - card_list · card_save · card_revoke: 학회원증 (member_cards 테이블, supabase/sql/member_cards.sql). 각 카드의 QR 토큰도 같이 준다
+//   (QR 주소 https://caurfs.kr/v/#<토큰>, 확인은 member-verify 함수). card_revoke는 { no, revoked: false }면 정지를 푼다
 //
 // 필요한 Secrets: MEMBER_ADMINS (관리자 로그인 이메일, 쉼표로 여러 개. 예: amt@caurfs.kr), 솔라피 키 3개(커피챗·agora-sms와 같은 것)
 // 선택 Secrets: RESEND_API_KEY·MAIL_FROM (알림 메일), GA_PROPERTY_ID·GA_SA_KEY (방문자: GA 속성 ID 숫자, 서비스 계정 키 JSON 전체)
+//             CARD_SECRET (학회원증 QR 서명 키, member-verify와 같은 값)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const CORS = {
@@ -21,6 +24,20 @@ const json = (status: number, body: unknown) => new Response(JSON.stringify(body
 const digits = (s: unknown) => String(s ?? '').replace(/\D/g, '');
 const env = (...names: string[]) => names.map((n) => Deno.env.get(n)).find((v) => !!v) || '';
 type DB = ReturnType<typeof createClient>;
+
+// 학회원증 QR 토큰: `<카드 번호>.<base64url(HMAC-SHA256(CARD_SECRET, 번호)) 앞 16바이트>` (member-verify와 같은 계산)
+const CARD_NO = /^[A-Za-z0-9-]{1,40}$/;
+const CARD_COLS = 'no, name, name_en, cohort, role, valid_from, valid_to, photo, revoked, created_at';
+async function cardToken(no: string) {
+  const secret = Deno.env.get('CARD_SECRET') || '';
+  if (secret.length < 16) return null;
+  const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(no))).slice(0, 16);
+  let bin = ''; for (const x of sig) bin += String.fromCharCode(x);
+  return no + '.' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+const withToken = async (c: Record<string, unknown>) => ({ ...c, token: await cardToken(String(c.no)) });
+const day = (v: unknown) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
 
 async function hmac(secret: string, text: string) {
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
@@ -160,6 +177,36 @@ Deno.serve(async (req) => {
     if (JSON.stringify(value).length > 60000) return json(413, { error: 'size' });
     const { error } = await admin.from('ops_state').upsert({ key, value, updated_at: new Date().toISOString(), updated_by: u.user.email });
     return error ? json(500, { error: 'save' }) : json(200, { ok: true });
+  }
+
+  if (b.action === 'card_list') {
+    const { data, error } = await admin.from('member_cards').select(CARD_COLS).order('no');
+    if (error) return json(500, { error: 'cards' });
+    return json(200, { ok: true, secret: !!(await cardToken('x')), list: await Promise.all((data || []).map(withToken)) });
+  }
+  if (b.action === 'card_save') {
+    const c = (b.card || {}) as Record<string, unknown>;
+    const no = String(c.no || '').trim().toUpperCase(), name = String(c.name || '').trim().slice(0, 40);
+    if (!CARD_NO.test(no)) return json(400, { error: 'no' });
+    if (!name) return json(400, { error: 'name' });
+    const photo = String(c.photo || '').trim();
+    if (photo && !/^\/(?!\/)[A-Za-z0-9._\/-]{1,200}$/.test(photo)) return json(400, { error: 'photo' });
+    const cohort = c.cohort === '' || c.cohort == null ? null : Math.trunc(+c.cohort);
+    if (cohort != null && !(cohort > 0 && cohort < 1000)) return json(400, { error: 'cohort' });
+    const row = {
+      no, name, name_en: String(c.name_en || '').trim().slice(0, 60) || null, cohort,
+      role: String(c.role || '').trim().slice(0, 60) || null, valid_from: day(c.valid_from), valid_to: day(c.valid_to), photo: photo || null,
+    };
+    if (row.valid_from && row.valid_to && row.valid_from > row.valid_to) return json(400, { error: 'dates' });
+    const { data, error } = await admin.from('member_cards').upsert(row, { onConflict: 'no' }).select(CARD_COLS).single();
+    return error ? json(500, { error: 'card_save' }) : json(200, { ok: true, card: await withToken(data) });
+  }
+  if (b.action === 'card_revoke') {
+    const no = String(b.no || '');
+    if (!CARD_NO.test(no)) return json(400, { error: 'no' });
+    const { data, error } = await admin.from('member_cards').update({ revoked: b.revoked !== false }).eq('no', no).select(CARD_COLS).maybeSingle();
+    if (error) return json(500, { error: 'card_revoke' });
+    return data ? json(200, { ok: true, card: await withToken(data) }) : json(404, { error: 'no_card' });
   }
 
   const uid = String(b.uid || '');
