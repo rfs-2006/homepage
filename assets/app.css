@@ -156,7 +156,7 @@ section.hero img{-webkit-user-drag:none}
 /* 데스크톱 홈은 화면 가로 비율로만 잡는다. 기준은 10/27에 정한 1920px 화면(가운데 1280px, 양옆 320px). 모니터·배율이 달라도 같은 비율. 다른 페이지는 그대로 */
 @media (min-width:1024px){
 .bx-x{padding:0 16.667vw}.nav.nav-home{padding:0 16.667vw}
-.nav.nav-home .navlinks{gap:2.083vw !important;font-size:max(10px,.729vw) !important}
+.nav.nav-home .navlinks{gap:2.083vw !important;font-size:max(14px,.729vw) !important}
 .nav.nav-home>a:first-child{zoom:var(--hz,1)}   /* 로고도 같은 비율로 (--hz = 화면 가로 / 1920, 아래 스크립트) */
 .bx-hero:not(.bx-m){padding-top:10.7vw}
 .bx-hero:not(.bx-m) .bx-h{font-size:4.8vw}
