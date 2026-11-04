@@ -4,7 +4,7 @@
 // 메인 앱은 주소(/research/<id>/ 등)를 읽어 해당 화면을 연다. 실패하면 정적 페이지를 그대로 보여 준다.
 (function () {
   // 리포트 글꼴은 메인 HTML을 받는 동안 같이 받기 시작한다 (메인 HTML이 다 와서야 받기 시작하면 늦다)
-  ['light', 'medium', 'bold'].forEach(function (w) {
+  if (/^\/research\/[^/]+\/$/.test(location.pathname)) ['light', 'medium', 'bold'].forEach(function (w) {
     var l = document.createElement('link'); l.rel = 'preload'; l.as = 'font'; l.type = 'font/woff2'; l.crossOrigin = 'anonymous';
     l.href = '/assets/fonts/rfs-report-dotum-' + w + '.woff2'; document.head.appendChild(l);
   });

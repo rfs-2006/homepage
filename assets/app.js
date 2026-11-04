@@ -1468,14 +1468,14 @@ class Component extends DCLogic {
     // 히어로가 6.5초마다 넘어가므로 다음 리포트 사진을 가장 먼저 받고, 그다음 메뉴 첫 화면 사진, 마지막으로 나머지
     idle(() => { this.prefetchHero(); Object.keys(this._menuHeroes()).forEach((p) => this.preloadHero(p)); this._prefetch && this._prefetch();
       // 리포트 글꼴을 미리 받아 둔다 (리포트를 열었을 때 바로 보이게)
-      window.__rfsFont && window.__rfsFont(); this.loadP1(); });
+      window.__rfsFont && window.__rfsFont(); });   // 용어집(5.8MB)은 Research·리포트에 들어갈 때만 받는다
     document.addEventListener('click', (e) => {
       const t = e.target.closest && e.target.closest('.gl');
       if (t) { e.preventDefault(); this.glOpen(t); return; }
       if (e.target.closest && e.target.closest('#gl-pop') && !e.target.closest('.gl-x, .gl-ok')) return;
       this.glClose();
     });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') this.glClose(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { this.glClose(); if (this.state.menuOpen) this.setState({ menuOpen:false }); } });
     window.addEventListener('hashchange', () => this.glClose());
     this._onHash = () => this.applyHash();
     window.addEventListener('hashchange', this._onHash);
@@ -3255,7 +3255,7 @@ class Component extends DCLogic {
         { label:'활동', href:'#home-process', id:'home-process' },
         { label:'커리큘럼', href:'#about-calendar', id:'about-calendar' }
       ].map((a) => ({ ...a, cls: s.activeSec === a.id ? 'active' : '', go: (e) => { e.preventDefault(); const el = document.getElementById(a.id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' }); } })),
-      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }),
+      toggleMenu: () => this.setState({ menuOpen: !s.menuOpen }), menuExp: s.menuOpen ? 'true' : 'false',
       goHome: (e) => { e.preventDefault(); this.go('home'); },
       goResearch: (e) => { e.preventDefault(); this.go('research'); },
       goRecruit: () => this.go('recruit'),

@@ -63,22 +63,34 @@
 
   function shell(html, cls) {
     if (!document.getElementById('jn-css')) { var c = document.createElement('style'); c.id = 'jn-css'; c.textContent = CSS; document.head.appendChild(c); }
-    close();
+    var opener = cur ? cur.opener : document.activeElement;
+    close(true);
     var el = document.createElement('div');
     el.className = 'jn'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
     el.innerHTML = '<div class="jn-in' + (cls ? ' ' + cls : '') + '"><button class="jn-x" type="button" aria-label="닫기">×</button>' + html + '</div>';
     document.body.appendChild(el);
     el.querySelector('.jn-x').onclick = close;
     el.addEventListener('click', function (e) { if (e.target === el) close(); });
-    cur = { el: el, key: function (e) { if (e.key === 'Escape') close(); } };
+    // Tab은 창 안에서만 돈다. 닫으면 연 버튼으로 포커스를 돌려준다
+    cur = { el: el, opener: opener, key: function (e) {
+      if (e.key === 'Escape') return close();
+      if (e.key !== 'Tab') return;
+      var f = [].filter.call(el.querySelectorAll('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'), function (n) { return !n.disabled && n.offsetParent !== null; });
+      if (!f.length) return;
+      var a = f[0], z = f[f.length - 1];
+      if (!el.contains(document.activeElement)) { e.preventDefault(); a.focus(); }
+      else if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+      else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+    } };
     document.addEventListener('keydown', cur.key);
     requestAnimationFrame(function () { el.classList.add('show'); });
     return el;
   }
-  function close() {
+  function close(swap) {
     if (!cur) return;
     document.removeEventListener('keydown', cur.key);
-    var el = cur.el; cur = null; el.classList.remove('show'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 350);
+    var el = cur.el, op = cur.opener; cur = null;
+    if (!swap && op && op.focus && document.contains(op)) try { op.focus(); } catch (e) {} el.classList.remove('show'); setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 350);
   }
   // functions.invoke 오류에서 서버가 준 error 코드를 꺼낸다
   function call(sb, name, body) {
