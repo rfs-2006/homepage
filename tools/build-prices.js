@@ -104,9 +104,10 @@ function compute(r, p, bm, asOf) {
   const o = { d: d0, e: end, m: months, st: hit ? 'hit' : run ? 'run' : 'end', r: r4(ret), b: mret == null ? null : r4(mret), mk: /^\d{6}$/.test(r.ticker) ? 'K' : 'S' };
   if (hit) {
     o.h = hit; o.hd = days(d0, hit);
-    // 수익률: 목표가에 닿은 날까지로 본다. 그 뒤로 더 올랐으면(기간 끝·지금이 더 높으면) 그 값을 쓴다
-    const hc = win.find((x) => x[0] === hit)[1], hr = hc / base - 1;
-    if (ret < hr) { const hb = ffill(bm, [d0, hit]); o.r = r4(hr); o.b = hb[0] && hb[1] ? r4(hb[1] / hb[0] - 1) : null; o.rh = 1; }
+    // 수익률: 목표가에 닿았으면 방향은 맞힌 것 → 닿은 뒤 기간 안 최고 종가까지로 본다. 시장도 그 최고가 날까지
+    const pk = win.filter((x) => x[0] >= hit).reduce((a, x) => (x[1] > a[1] ? x : a));
+    const pb = ffill(bm, [d0, pk[0]]);
+    o.r = r4(pk[1] / base - 1); o.b = pb[0] && pb[1] ? r4(pb[1] / pb[0] - 1) : null; o.pk = pk[0];
     // 도달한 종가가 선 위에 오도록 그 칸 값을 도달 종가로 바꾼다
     const k = Math.min(cal.length - 1, Math.max(0, Math.round((ts(hit) - t0) / (t1 - t0) * (N - 1))));
     vals[k] = win.find((x) => x[0] === hit)[1]; o.hi = k;

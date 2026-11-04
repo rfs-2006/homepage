@@ -301,7 +301,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
             <sc-if value="{{ covEmpty }}" hint-placeholder-val="{{ false }}">
               <p style="padding:28px 6px;font-size:14px;color:rgba(26,26,26,0.6)">조건에 맞는 리포트가 없습니다.</p>
             </sc-if>
-            <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 목표가에 닿았으면 수익률은 닿은 날까지로 보고, 그 뒤 더 올랐으면 그 값을 씁니다(시장 대비도 같은 날까지). 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
+            <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 목표가에 닿았으면 수익률은 닿은 뒤 기간 안 최고 종가까지로 봅니다(시장 대비도 그날까지). 못 닿았으면 기간 끝 값입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
             <sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
               <div class="pager" style="margin-top:32px">
                 <sc-for list="{{ pagerItems }}" as="p" hint-placeholder-count="5"><a onClick="{{ p.on }}" class="{{ p.cls }}">{{ p.label }}</a></sc-for>
@@ -382,7 +382,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
       <sc-if value="{{ covEmpty }}" hint-placeholder-val="{{ false }}">
         <p style="padding:24px 0;font-size:14px;color:rgba(26,26,26,0.6)">조건에 맞는 리포트가 없습니다.</p>
       </sc-if>
-      <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 목표가에 닿았으면 수익률은 닿은 날까지로 보고, 그 뒤 더 올랐으면 그 값을 씁니다(시장 대비도 같은 날까지). 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
+      <sc-if value="{{ trackOn }}" hint-placeholder-val="{{ false }}"><p class="tk-foot">평가 기간 = 발간 다음 거래일 종가부터 12개월. 목표가에 닿았으면 수익률은 닿은 뒤 기간 안 최고 종가까지로 봅니다(시장 대비도 그날까지). 못 닿았으면 기간 끝 값입니다. 진행 중이면 지금까지 값이고, 주가선의 남은 기간은 비워 둡니다. 빨간 점선은 목표주가, 원은 처음 도달한 날. 시장 대비는 같은 기간 KOSPI(국내)·S&amp;P 500(해외) 수익률과의 차이입니다. 일별 종가(분할 반영, 배당 미반영), {{ trackAsOf }} 기준.</p></sc-if>
       <sc-if value="{{ showPager }}" hint-placeholder-val="{{ false }}">
         <div class="pager" style="margin-top:26px">
           <sc-for list="{{ pagerItems }}" as="p" hint-placeholder-count="5"><a onClick="{{ p.on }}" class="{{ p.cls }}">{{ p.label }}</a></sc-for>
