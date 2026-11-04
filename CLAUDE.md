@@ -1,6 +1,7 @@
 # 메모
 - "토스버전" = `templates/toss/fund.html` (FUND 페이지 토스 스타일 디자인 보관본). 템플릿 목록은 `templates/README.md`.
 - 홈 앱 로직·데이터(REPORTS·INDUSTRY 등)는 `assets/app.js`, 큰 CSS는 `assets/app.css` (index.html에는 화면 틀만). 고친 뒤 `node tools/build-site.js && node tools/build-pages.js`로 ?v=·검색용 페이지·sitemap·rss를 다시 만든다.
+- 운영에 쓰는 서비스·키 위치·학회 계정 이전 방법은 `docs/운영인수인계.md` (키 값은 넣지 않는다). 관리자 운영 대시보드는 `assets/ops.js`.
 
 # 작업 규칙
 - 답은 한국어로, 짧고 AI 티 안 나게.

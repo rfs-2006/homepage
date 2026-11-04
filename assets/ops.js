@@ -15,7 +15,12 @@
     { name: '도메인 caurfs.com', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-08-24', note: '가비아 · caurfs.kr로 넘기는 용도' },
     { name: 'Polaris 서버', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
     { name: 'Supabase', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 요금제' },
+    { name: 'Resend (알림 메일)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 월 3,000통', owner: '개인 계정', moved: 'personal' },
+    { name: 'GitHub (저장소 rfs-2006)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료' },
+    { name: 'Google Analytics·Cloud', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 · GA 연결용 서비스 계정' },
   ];
+  // 학회 공용 계정으로 옮겼는지 (docs/운영인수인계.md)
+  var MOVED = [['', '모름'], ['personal', '개인 계정'], ['club', '학회 계정']];
   var CSS = '\
 .op{position:fixed;inset:0;z-index:3500;background:#070D18;color:#E9E7E1;overflow-y:auto;opacity:0;transition:opacity .25s;font-family:Pretendard Variable,Pretendard,"Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased}\
 .op.show{opacity:1}\
@@ -171,7 +176,8 @@
 
     // 유지비 표
     var soon = function (d) { if (!d) return ''; var n = Math.round((Date.parse(d) - Date.parse(today())) / 864e5); return n < 0 ? '<span class="tag bad">지남</span>' : n <= 30 ? '<span class="tag warn">' + n + '일 남음</span>' : ''; };
-    var costP = '<div class="op-p w"><h3>유지비<i>바꾼 뒤 저장 · 연 단위는 12로 나눠 월에 더해요 · 자동 칸은 이번 달 사용량으로 월말 예상</i></h3><div class="tw"><table data-t="costs"><thead><tr><th>서비스</th><th class="n">금액</th><th>통화</th><th>주기</th><th>다음 결제·갱신</th><th class="n">월 환산</th><th>메모</th><th></th></tr></thead><tbody>' +
+    var movedN = costs.filter(function (c) { return c.moved === 'club'; }).length;
+    var costP = '<div class="op-p w"><h3>유지비 · 계정<i>학회 계정으로 이전 ' + movedN + '/' + costs.length + ' · 바꾼 뒤 저장 · 연 단위는 12로 나눠 월에 더해요 · 자동 칸은 이번 달 사용량으로 월말 예상</i></h3><div class="tw"><table data-t="costs"><thead><tr><th>서비스</th><th class="n">금액</th><th>통화</th><th>주기</th><th>다음 결제·갱신</th><th class="n">월 환산</th><th>메모</th><th>관리 계정</th><th>이전</th><th></th></tr></thead><tbody>' +
       costs.map(function (c, i) {
         return '<tr data-i="' + i + '"><td><input data-k="name" value="' + esc(c.name) + '" aria-label="서비스"></td>' +
           '<td class="n">' + (c.auto ? '<span class="tag">자동</span>' : '<input data-k="amount" inputmode="decimal" value="' + esc(c.amount) + '" style="text-align:right;width:96px" aria-label="금액">') + '</td>' +
@@ -180,9 +186,11 @@
           '<td><input data-k="next" type="date" value="' + esc(c.next || '') + '" aria-label="다음 결제일" style="width:140px"> ' + soon(c.next) + '</td>' +
           '<td class="n">' + won(monthlyKRW(c, rate)) + '</td>' +
           '<td><input data-k="note" value="' + esc(c.note || '') + '" aria-label="메모"></td>' +
+          '<td><input data-k="owner" value="' + esc(c.owner || '') + '" placeholder="가입한 이메일" aria-label="관리 계정" style="width:170px"></td>' +
+          '<td><select data-k="moved" aria-label="학회 계정으로 이전">' + MOVED.map(function (o) { return '<option value="' + o[0] + '"' + ((c.moved || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></td>' +
           '<td class="n">' + (c.auto ? '' : '<button class="bt" type="button" data-rm="' + i + '" style="height:26px;padding:0 8px;font-size:11.5px">빼기</button>') + '</td></tr>';
       }).join('') +
-      '</tbody><tfoot><tr><td colspan="5"><b>합계</b></td><td class="n"><b>' + won(month) + '</b></td><td colspan="2"></td></tr></tfoot></table></div>' +
+      '</tbody><tfoot><tr><td colspan="5"><b>합계</b></td><td class="n"><b>' + won(month) + '</b></td><td colspan="4"></td></tr></tfoot></table></div>' +
       '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center"><button class="bt" type="button" data-a="add">줄 추가</button><button class="bt p" type="button" data-a="savecosts">유지비 저장</button><label style="display:flex;gap:6px;align-items:center;font-size:12.5px;color:rgba(233,231,225,.65)">환율 <input id="op-rate" inputmode="numeric" value="' + rate + '" style="width:80px"> 원/달러</label></div><div class="msg" data-m="costs"></div></div>';
 
     // 문자 기록 + 알림
