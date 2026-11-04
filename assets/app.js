@@ -3012,9 +3012,9 @@ class Component extends DCLogic {
         rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
         lx: f1(X(L)), ly: f1(Y(p[L])),
         hx: H >= 0 ? f1(X(H)) : -50, hy: H >= 0 ? f1(Y(p[H])) : -50,
-        chip: T.st === 'hit' ? '목표가 도달 · ' + mo(T.hd) : T.st === 'end' ? '기간 종료 · 최고 ' + pct(T.mx != null ? T.mx : T.r, '%') : '진행 중 D-' + left,
+        chip: T.st === 'hit' ? '목표가 도달 · ' + mo(T.hd) : T.st === 'end' ? '기간 종료' : '진행 중 D-' + left,
         cc: 'tk-chip tk-' + T.st,
-        ret: pct(T.r, '%'), rc: cl(T.r),
+        ret: run ? pct(T.r, '%') : '', rc: cl(T.r),   
         ex: ex == null ? '—' : pct(ex, '%'), ec: ex == null ? '' : cl(ex),
         mkt: '최고 수익률' };
     };
