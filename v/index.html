@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0F1B2E">
+<meta name="format-detection" content="telephone=no">
+<title>R.F.S. 학회원 확인</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,600;1,8..60,400&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!--
+  학회원증 QR 확인 화면. 카드 QR → https://caurfs.kr/v/#<토큰>.
+  토큰은 주소의 # 뒤에만 있어서 서버·로그로 가지 않고, 이 페이지가 member-verify 함수에 POST로 보내 확인한다.
+  이 파일에는 회원 정보가 하나도 없다. 확인된 응답만 화면에 그린다 (textContent).
+  캡처 방지: 초 단위 시계(서버 시각 기준), 움직이는 물결 무늬, 흐르는 마이크로 문구, 기울이면 움직이는 홀로그램, 30초마다 다시 조회.
+-->
+<style>
+:root{--navy:#0F1B2E;--navy2:#203864;--acc:#8FAADC;--paper:#F7F6F3;--ink:#141B26;--sub:#5D6878;--line:#E3E0D8;--ok:#2E8B57;--hx:50;--hy:50}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+.wrap{position:relative;z-index:1;min-height:100%;max-width:440px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px max(20px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.top{display:flex;align-items:center;justify-content:space-between;height:44px;color:var(--paper)}
+.top .b{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;letter-spacing:-.01em}
+.top .b img{width:26px;height:26px}
+.dom{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--acc);border:1px solid rgba(143,170,220,.35);border-radius:999px;padding:4px 10px 4px 8px}
+.dom svg{width:11px;height:11px}
+
+/* 시계 */
+.clock{margin:14px 0 14px;text-align:center;color:var(--paper)}
+.clock .d{font-size:13px;color:rgba(247,246,243,.62);letter-spacing:.02em}
+.clock .t{font-size:44px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-top:2px}
+.clock .t .s{color:var(--acc)}
+.clock .z{font-size:11px;letter-spacing:.16em;color:rgba(247,246,243,.45);margin-top:4px}
+
+/* 카드 */
+.card{position:relative;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45),0 0 0 1px rgba(143,170,220,.18)}
+.hd{position:relative;height:104px;background:linear-gradient(160deg,#16274A,#0F1B2E 70%);color:var(--paper);display:flex;align-items:center;gap:14px;padding:0 20px;overflow:hidden}
+.hd canvas{position:absolute;inset:0;width:100%;height:100%}
+.hd>*{position:relative}
+.seal{position:relative;width:62px;height:62px;flex:none}
+.seal img{width:62px;height:62px;display:block;border-radius:50%}
+.seal .ring{position:absolute;inset:-5px;border-radius:50%;border:1px dashed rgba(143,170,220,.7);animation:spin 18s linear infinite}
+.hd .nm{font:600 30px/1 "Source Serif 4",Georgia,serif;letter-spacing:.01em}
+.hd .ko{font-size:13px;color:rgba(247,246,243,.75);margin-top:6px}
+.hd .en{position:absolute;right:18px;top:16px;font:italic 400 11px/1.35 "Source Serif 4",Georgia,serif;color:var(--acc);text-align:right}
+.band{position:relative;height:16px;background:var(--acc);overflow:hidden;color:var(--navy);font-size:7.5px;font-weight:700;letter-spacing:.22em;line-height:16px;white-space:nowrap}
+.band.b2{background:#E9E6DE;color:#8A90A0;height:13px;line-height:13px;font-size:6.5px}
+.band span{display:inline-block;padding-left:0;animation:slide 26s linear infinite}
+.band.b2 span{animation-duration:34s;animation-direction:reverse}
+.bd{position:relative;padding:22px 20px 6px}
+.bd::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(32,56,100,.035) 0 1px,transparent 1px 7px);pointer-events:none}
+.who{position:relative;display:flex;gap:16px;align-items:flex-start}
+.ph{position:relative;width:100px;height:128px;flex:none;background:#E4E9F1;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;display:block}
+.ph .ini{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:700 34px "Noto Serif KR",serif;color:var(--navy2)}
+.holo{position:absolute;inset:0;pointer-events:none;overflow:hidden;mix-blend-mode:screen}
+.holo::before{content:"";position:absolute;inset:-50%;background:linear-gradient(115deg,transparent 41%,rgba(143,170,220,.55) 46%,rgba(255,255,255,.8) 50%,rgba(255,196,232,.5) 53.5%,rgba(160,240,226,.45) 56%,transparent 61%);animation:sweep 4.8s ease-in-out infinite alternate;transform:translate(calc((var(--hx) - 50) * .9%),calc((var(--hy) - 50) * .4%))}
+.tilt .holo::before{animation:none;transition:transform .12s linear}
+.ph .mk{position:absolute;right:4px;bottom:4px;width:30px;height:30px;opacity:.55;mix-blend-mode:multiply}
+.nmb{min-width:0;flex:1;padding-top:2px}
+.name{font:700 32px/1.12 "Noto Serif KR",serif;letter-spacing:.02em;color:var(--ink);word-break:keep-all}
+.ename{margin-top:6px;font:600 12.5px/1.3 "Source Serif 4",Georgia,serif;letter-spacing:.2em;color:var(--navy2);text-transform:uppercase}
+.pill{display:inline-flex;align-items:center;gap:7px;margin-top:16px;height:32px;padding:0 13px 0 7px;border-radius:999px;background:var(--navy);color:#fff;font-size:13.5px;font-weight:700;position:relative}
+.pill i{width:20px;height:20px;border-radius:50%;background:var(--ok);display:flex;align-items:center;justify-content:center}
+.pill i svg{width:12px;height:12px}
+.pill::after{content:"";position:absolute;inset:-4px;border-radius:999px;border:2px solid var(--acc);opacity:0;animation:pulse 2s ease-out infinite}
+.rows{position:relative;margin:20px 0 0;border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;min-height:46px;border-bottom:1px solid var(--line);font-size:15.5px}
+.row dt{width:84px;flex:none;color:var(--navy2);font-size:13.5px}
+.row dd{margin:0;font-weight:500;color:var(--ink);min-width:0}
+.row dd.no{font:600 16px "Source Serif 4",Georgia,serif;letter-spacing:.03em}
+.ft{position:relative;display:flex;justify-content:space-between;align-items:center;padding:12px 0 14px;font:italic 400 12px "Source Serif 4",Georgia,serif;color:#80889A}
+.ft b{font:600 11px "Pretendard Variable",Pretendard,sans-serif;font-style:normal;color:var(--sub);letter-spacing:0}
+
+.chk{margin-top:14px;display:flex;justify-content:space-between;align-items:center;color:rgba(247,246,243,.72);font-size:12.5px;gap:10px}
+.chk b{color:var(--paper);font-weight:600}
+.chk .live{display:inline-flex;align-items:center;gap:6px}
+.chk .live::before{content:"";width:7px;height:7px;border-radius:50%;background:#4CD38A;box-shadow:0 0 0 0 rgba(76,211,138,.6);animation:dot 1.6s infinite}
+.note{margin:14px 2px 0;font-size:12px;line-height:1.65;color:rgba(247,246,243,.5);text-align:center;word-break:keep-all}
+
+/* 상태 화면 */
+.msgc{margin-top:8vh;background:#fff;border-radius:20px;padding:40px 24px 30px;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.4)}
+.msgc .ic{width:64px;height:64px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#ECEAE4;color:#7A8291}
+.msgc.rv .ic{background:#FBE9E9;color:#C2413F}
+.msgc .ic svg{width:30px;height:30px}
+.msgc h1{margin:0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
+.msgc p{margin:10px 0 0;font-size:14px;line-height:1.65;color:var(--sub);word-break:keep-all}
+.msgc button{margin-top:20px;height:44px;padding:0 20px;border:0;border-radius:10px;background:var(--navy2);color:#fff;font:inherit;font-weight:600;font-size:14.5px;cursor:pointer}
+.load{margin-top:22vh;text-align:center;color:rgba(247,246,243,.75);font-size:14px}
+.load .sp{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid rgba(143,170,220,.25);border-top-color:var(--acc);animation:spin .9s linear infinite}
+[hidden]{display:none!important}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes sweep{from{transform:translate(-30%,-6%)}to{transform:translate(30%,6%)}}
+@keyframes pulse{0%{opacity:.85;transform:scale(1)}100%{opacity:0;transform:scale(1.18)}}
+@keyframes dot{0%{box-shadow:0 0 0 0 rgba(76,211,138,.6)}100%{box-shadow:0 0 0 8px rgba(76,211,138,0)}}
+@media (prefers-reduced-motion:reduce){
+  .band span,.seal .ring,.pill::after,.chk .live::before{animation:none}
+  .holo::before{animation-duration:14s}
+}
+@media (max-width:360px){.clock .t{font-size:38px}.name{font-size:28px}.ph{width:88px;height:114px}.hd .en{display:none}}
+.rows .row:last-child{border-bottom:0}.bd{padding-bottom:18px!important}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <div class="top">
+    <div class="b"><img src="/assets/rfs-seal-light-256.png" alt="" width="26" height="26">R.F.S. 학회원 확인</div>
+    <div class="dom"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.6a3 3 0 0 1 6 0V5h.6c.5 0 .9.4.9.9v4.6c0 .5-.4.9-.9.9H2.4a.9.9 0 0 1-.9-.9V5.9c0-.5.4-.9.9-.9H3Zm1.3 0h3.4V3.6a1.7 1.7 0 0 0-3.4 0V5Z"/></svg>caurfs.kr</div>
+  </div>
+  <main id="app" aria-live="polite">
+    <div class="load"><div class="sp"></div>확인하는 중…</div>
+  </main>
+</div>
+
+<template id="t-ok">
+  <div class="clock" aria-label="현재 시각">
+    <div class="d" data-k="date"></div>
+    <div class="t"><span data-k="hm"></span><span class="s" data-k="sec"></span></div>
+    <div class="z">KOREA STANDARD TIME</div>
+  </div>
+  <section class="card">
+    <div class="hd">
+      <canvas data-k="hdc" aria-hidden="true"></canvas>
+      <div class="seal"><img src="/assets/rfs-seal-light-256.png" alt="R.F.S. 인장" width="62" height="62"><span class="ring"></span><span class="holo" style="border-radius:50%"></span></div>
+      <div><div class="nm">R.F.S.</div><div class="ko">중앙대학교 가치투자학회</div></div>
+      <div class="en">Chung-Ang University<br>Value Investing Society</div>
+    </div>
+    <div class="band" aria-hidden="true"><span data-k="micro"></span></div>
+    <div class="bd">
+      <div class="who">
+        <div class="ph"><span class="ini" data-k="ini"></span><img data-k="photo" alt="" hidden><img class="mk" src="/assets/rfs-seal-light-256.png" alt=""><span class="holo"></span></div>
+        <div class="nmb">
+          <div class="name" data-k="name"></div>
+          <div class="pill"><i><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3 5 8.7l4.6-5.2" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>유효한 학회원</div>
+        </div>
+      </div>
+      <dl class="rows">
+        <div class="row"><dt>기수</dt><dd data-k="cohort"></dd></div>
+        <div class="row"><dt>직책</dt><dd data-k="role"></dd></div>
+        <div class="row"><dt>유효기간</dt><dd data-k="valid"></dd></div>
+      </dl>
+    </div>
+    <div class="band b2" aria-hidden="true"><span data-k="micro2"></span></div>
+  </section>
+  <div class="chk"><span class="live">실시간 확인됨</span><span>조회 시각 <b data-k="checked"></b> · <span data-k="ago"></span></span></div>
+  <p class="note">중앙대학교 가치투자학회 R.F.S.(고유번호 140-82-93254)가 발급한 학회원 증명입니다.</p>
+</template>
+
+<script>
+(function () {
+  'use strict';
+  // 사이트가 쓰는 Supabase 공개(anon) 키 (chat/index.html과 같은 값). 비밀 키가 아니다
+  var SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
+  var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
+  var FN = SB_URL + '/functions/v1/member-verify';
+  var TOKEN_RE = /^[A-Za-z0-9-]{1,40}\.[A-Za-z0-9_-]{22}$/;
+  var RECHECK = 30000;
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var app = document.getElementById('app');
+  var offset = 0, checkedAt = 0, timer = null, recheck = null, view = 'load';
+
+  // ---- 서버 시각에 맞춘 한국 시각
+  var now = function () { return new Date(Date.now() + offset); };
+  var KST = { timeZone: 'Asia/Seoul' };
+  function parts(d) {
+    var o = {};
+    new Intl.DateTimeFormat('ko-KR', Object.assign({ year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }, KST))
+      .formatToParts(d).forEach(function (p) { o[p.type] = p.value; });
+    return o;
+  }
+  var dot = function (s) { return String(s || '').slice(0, 10).replace(/-/g, '.'); };
+
+  // ---- 상태 화면 (회원 정보 없음)
+  var ICON = {
+    q: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .8-1 1.5v.6"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></svg>',
+    x: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9.5"/><path d="M5.5 18.5 18.5 5.5"/></svg>',
+    w: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 8.5a15 15 0 0 1 20 0M5.5 12a10 10 0 0 1 13 0M9 15.5a5 5 0 0 1 6 0"/><circle cx="12" cy="19" r=".8" fill="currentColor"/></svg>'
+  };
+  function message(kind, title, text, retry) {
+    stopLive();
+    view = kind;
+    app.innerHTML = '<div class="msgc' + (kind === 'revoked' ? ' rv' : '') + '"><div class="ic">' + ICON[kind === 'revoked' ? 'x' : kind === 'error' ? 'w' : 'q'] + '</div><h1></h1><p></p>' + (retry ? '<button type="button">다시 확인</button>' : '') + '</div>';
+    app.querySelector('h1').textContent = title;
+    app.querySelector('p').textContent = text;
+    if (retry) app.querySelector('button').onclick = function () { start(); };
+  }
+  var invalid = function () { message('invalid', '확인할 수 없는 카드입니다', 'R.F.S.에서 발급한 카드가 아니거나 QR이 손상되었어요.'); };
+
+  // ---- 확인
+  function token() {
+    var h = location.hash.replace(/^#/, '');
+    try { h = decodeURIComponent(h); } catch (e) { return ''; }
+    return h.trim();
+  }
+  function verify(t) {
+    var t0 = Date.now();
+    return fetch(FN, {
+      method: 'POST', cache: 'no-store', referrerPolicy: 'no-referrer',
+      headers: { 'Content-Type': 'application/json', apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY },
+      body: JSON.stringify({ t: t })
+    }).then(function (r) {
+      var t1 = Date.now();
+      if (r.status === 404) return { kind: 'invalid' };
+      if (!r.ok) return { kind: 'error', status: r.status };
+      return r.json().then(function (j) {
+        if (j && j.ok === true && j.name) {
+          var st = Date.parse(j.server_time);
+          if (isFinite(st)) offset = st - (t0 + t1) / 2;
+          return { kind: 'ok', card: j };
+        }
+        if (j && j.ok === false && (j.status === 'revoked' || j.status === 'expired')) return { kind: 'revoked', status: j.status };
+        return { kind: 'invalid' };
+      });
+    }, function () { return { kind: 'error' }; });
+  }
+  function handle(res, first) {
+    if (res.kind === 'ok') { if (view !== 'ok') showCard(res.card); else fill(res.card); checkedAt = Date.now() + offset; tick(); return; }
+    if (res.kind === 'invalid') return invalid();
+    if (res.kind === 'revoked') return message('revoked', '효력이 정지된 카드입니다', res.status === 'expired' ? '유효기간이 지난 카드예요. 지금은 R.F.S. 학회원으로 확인되지 않아요.' : '발급이 취소되었거나 정지된 카드예요. 지금은 R.F.S. 학회원으로 확인되지 않아요.');
+    // 연결 문제: 처음이면 다시 시도 화면, 보고 있던 중이면 다음 조회까지 그대로 (단, 조회 시각은 멈춘다)
+    if (first || view !== 'ok') message('error', '지금은 확인할 수 없어요', res.status === 429 ? '잠시 뒤 다시 시도해 주세요.' : '인터넷 연결을 확인하고 다시 시도해 주세요.', true);
+  }
+  function start() {
+    var t = token();
+    if (!TOKEN_RE.test(t)) return invalid();
+    if (view !== 'ok') { stopLive(); view = 'load'; app.innerHTML = '<div class="load"><div class="sp"></div>확인하는 중…</div>'; }
+    verify(t).then(function (r) { handle(r, true); });
+  }
+
+  // ---- 유효한 카드 화면
+  function q(k) { return app.querySelector('[data-k="' + k + '"]'); }
+  function fill(c) {
+    q('name').textContent = c.name;
+    q('cohort').textContent = c.cohort ? c.cohort + '기' : '—';
+    q('role').textContent = c.role || '—';
+    q('valid').textContent = (c.valid_from ? dot(c.valid_from) : '') + ' – ' + (c.valid_to ? dot(c.valid_to) : '');
+    q('ini').textContent = String(c.name).slice(0, 1);
+    var img = q('photo');
+    // 사진은 우리 사이트 경로만
+    if (typeof c.photo === 'string' && /^\/(?!\/)[A-Za-z0-9._\/-]+$/.test(c.photo)) {
+      if (img.getAttribute('src') !== c.photo) { img.onload = function () { img.hidden = false; q('ini').hidden = true; }; img.onerror = function () { img.hidden = true; q('ini').hidden = false; }; img.src = c.photo; }
+    } else img.hidden = true;
+  }
+  function showCard(c) {
+    view = 'ok';
+    app.innerHTML = '';
+    app.appendChild(document.getElementById('t-ok').content.cloneNode(true));
+    var m = 'R.F.S. · VERIFIED · CAURFS.KR · ', m2 = 'RISING FINANCIAL STARS · CHUNG-ANG UNIVERSITY · EST. 2006 · ';
+    q('micro').textContent = new Array(13).join(m) + new Array(13).join(m);
+    q('micro2').textContent = new Array(9).join(m2) + new Array(9).join(m2);
+    fill(c);
+    hd = q('hdc');
+    if (timer) clearInterval(timer);
+    timer = setInterval(tick, 250);
+    if (recheck) clearInterval(recheck);
+    recheck = setInterval(function () { if (!document.hidden) verify(token()).then(function (r) { handle(r, false); }); }, RECHECK);
+    tick();
+  }
+  function stopLive() { if (timer) clearInterval(timer); if (recheck) clearInterval(recheck); timer = recheck = null; hd = null; }
+  function tick() {
+    if (view !== 'ok') return;
+    var p = parts(now());
+    q('date').textContent = p.year + '.' + p.month + '.' + p.day + ' (' + p.weekday + ')';
+    q('hm').textContent = p.hour + ':' + p.minute + ':';
+    q('sec').textContent = p.second;
+    var c = parts(new Date(checkedAt));
+    q('checked').textContent = c.hour + ':' + c.minute + ':' + c.second;
+    var ago = Math.max(0, Math.round((Date.now() + offset - checkedAt) / 1000));
+    q('ago').textContent = ago < 2 ? '방금' : ago + '초 전';
+  }
+
+  // ---- 움직이는 물결 무늬 (배경·카드 머리)
+  var bg = document.getElementById('bg'), hd = null, last = 0;
+  function waves(cv, t, o) {
+    var dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, h = cv.clientHeight;
+    if (!w || !h) return;
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+    var g = cv.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    g.clearRect(0, 0, w, h);
+    g.lineWidth = o.lw;
+    for (var k = 0; k < o.n; k++) {
+      var y0 = (k + .5) * h / o.n;
+      g.strokeStyle = 'rgba(143,170,220,' + (o.a * (0.55 + 0.45 * Math.sin(k * .7 + t * .0004))) + ')';
+      g.beginPath();
+      for (var x = 0; x <= w; x += 4) {
+        var y = y0 + o.amp * Math.sin(x * o.f1 + t * o.s1 + k * .42) + o.amp * .55 * Math.sin(x * o.f2 - t * o.s2 + k * .9);
+        x ? g.lineTo(x, y) : g.moveTo(x, y);
+      }
+      g.stroke();
+    }
+  }
+  var BG = { n: 46, lw: .7, a: .16, amp: 16, f1: .012, f2: .027, s1: .0007, s2: .00045 };
+  var HD = { n: 18, lw: .6, a: .32, amp: 6, f1: .02, f2: .045, s1: .0011, s2: .0008 };
+  function frame(t) {
+    if (!document.hidden && t - last > 33) { last = t; waves(bg, t, BG); if (hd) waves(hd, t, HD); }
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  if (reduce) { setInterval(function () { var t = performance.now(); waves(bg, t, BG); if (hd) waves(hd, t, HD); }, 1000); }
+  requestAnimationFrame(frame);
+
+  // ---- 홀로그램: 폰을 기울이면 빛이 움직인다 (없으면 CSS 애니메이션)
+  var root = document.documentElement;
+  function setHolo(x, y) { root.style.setProperty('--hx', Math.max(0, Math.min(100, x)).toFixed(1)); root.style.setProperty('--hy', Math.max(0, Math.min(100, y)).toFixed(1)); }
+  function onTilt(e) {
+    if (e.gamma == null || e.beta == null) return;
+    document.body.classList.add('tilt');
+    setHolo(50 + e.gamma * 1.6, 50 + (e.beta - 45) * 1.2);
+  }
+  window.addEventListener('deviceorientation', onTilt);
+  // iOS는 화면을 한 번 누를 때 기울기 권한을 묻는다
+  document.addEventListener('click', function ask() {
+    document.removeEventListener('click', ask);
+    var D = window.DeviceOrientationEvent;
+    if (D && typeof D.requestPermission === 'function') D.requestPermission().catch(function () {});
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (e.pointerType !== 'mouse') return;
+    document.body.classList.add('tilt');
+    setHolo(e.clientX / innerWidth * 100, e.clientY / innerHeight * 100);
+  });
+
+  window.addEventListener('hashchange', function () { view = 'load'; start(); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && view === 'ok' && Date.now() + offset - checkedAt > RECHECK) verify(token()).then(function (r) { handle(r, false); }); });
+  start();
+})();
+</script>
+</body>
+</html>
