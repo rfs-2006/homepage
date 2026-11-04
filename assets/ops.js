@@ -8,14 +8,14 @@
   // Voyage 단가 (USD / 100만 토큰). 계정마다 첫 2억 토큰은 무료라, 무료분이 남아 있으면 실제 청구는 0
   var VOYAGE = { 'voyage-3.5': 0.06, 'rerank-2.5': 0.05 };
   var DEFAULT_COSTS = [
-    { name: 'Netlify (호스팅)', amount: 9, cur: 'USD', cycle: 'month', next: '', note: '배포 크레딧을 넘기면 추가 요금' },
+    { name: 'Netlify (호스팅)', amount: 9, cur: 'USD', cycle: 'month', next: '2026-11-29', note: 'Personal · 월 1,000 크레딧, 넘기면 추가 요금' },
     { name: 'Voyage (Polaris 검색)', auto: 'voyage', cur: 'USD', cycle: 'month', note: '서버가 센 토큰 × 단가' },
     { name: '솔라피 (문자)', amount: 5000, cur: 'KRW', cycle: 'month', next: '', note: '충전식' },
-    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-09-14', note: '호스팅케이알(hosting.kr) · DNS는 Netlify' },
+    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-09-14', note: '호스팅케이알(hosting.kr) · 자동연장 확인 · DNS는 Netlify' },
     { name: '도메인 caurfs.com', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-08-24', note: '가비아 · caurfs.kr로 넘기는 용도' },
-    { name: 'Polaris 서버', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
+    { name: 'Polaris 서버 (네이버 클라우드)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
     { name: 'Supabase', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 요금제' },
-    { name: 'Resend (알림 메일)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 월 3,000통', owner: '개인 계정', moved: 'personal' },
+    { name: 'Resend (알림 메일)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 월 3,000통 · caurfs.kr 인증됨', owner: 'kmss2036@gmail.com', moved: 'personal' },
     { name: 'GitHub (저장소 rfs-2006)', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료' },
     { name: 'Google Analytics·Cloud', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 · GA 연결용 서비스 계정' },
   ];
