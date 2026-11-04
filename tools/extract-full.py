@@ -289,6 +289,25 @@ def exhibits(lines, H, page):
         res.append({'rect': (gg[0] - 2, gg[1] - 2, gg[2] + 2, gg[3] + 2), 'box': (gg[0] - 2, top, gg[2] + 2, gg[3] + 2),
                     'no': '', 'cap': cap_l['text'].strip() if cap_l else '', 'unit': '', 'src': '', 'y': top})
         used.append(res[-1]['box'])
+    # 좌우로 붙은 두 그림의 경계가 축 눈금 같은 글자를 가로지르면, 글자 가운데가 있는 쪽 그림에 통째로 넣고 다른 쪽에서는 뺀다
+    spans = [s['bbox'] for l in lines for s in l['raw'] if s['text'].strip()]
+    for a in res:
+        for b in res:
+            ra, rb = a['rect'], b['rect']
+            if a is b or not (ra[0] < rb[0] and rb[0] - 20 < ra[2] < rb[2]) or min(ra[3], rb[3]) - max(ra[1], rb[1]) < 0.5 * min(ra[3] - ra[1], rb[3] - rb[1]):
+                continue
+            x1, x0 = ra[2], rb[0]
+            for s in spans:
+                cy = (s[1] + s[3]) / 2
+                if not (max(ra[1], rb[1]) < cy < min(ra[3], rb[3])) or not any(s[0] + 1 < e < s[2] - 1 for e in (x1, x0)):
+                    continue
+                if (s[0] + s[2]) / 2 >= (ra[2] + rb[0]) / 2:
+                    x0 = min(x0, s[0] - 1); x1 = min(x1, s[0] - 1)
+                else:
+                    x1 = max(x1, s[2] + 1); x0 = max(x0, s[2] + 1)
+            if (x1, x0) != (ra[2], rb[0]):
+                a['rect'] = (ra[0], ra[1], x1, ra[3]); a['box'] = (a['box'][0], a['box'][1], x1, a['box'][3])
+                b['rect'] = (x0, rb[1], rb[2], rb[3]); b['box'] = (x0, b['box'][1], b['box'][2], b['box'][3])
     return res
 
 
