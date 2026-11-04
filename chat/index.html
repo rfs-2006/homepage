@@ -33,7 +33,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400&amp;display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
-<link rel="preload" as="image" href="/assets/hero/polaris.webp">
+<link rel="preload" as="image" href="/assets/hero/polaris.webp?v=2" media="(min-width:761px)">
+<link rel="preload" as="image" href="/assets/hero/polaris-m.webp" media="(max-width:760px)">
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-light.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-medium.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-bold.woff2" crossorigin>
@@ -76,7 +77,8 @@ body.start{background:var(--black);color:var(--ink);min-height:100vh}
 /* 첫 화면은 한 화면 안에: 사진은 뒤에 깔고(위 68%), 글과 입력창은 아래에 붙인다 */
 .startv{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
 .hero{position:absolute;left:0;right:0;top:0;height:82vh;height:82svh;overflow:hidden;background:var(--black)}
-.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp) center 38%/cover;filter:brightness(.78) contrast(1.06)}
+.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp?v=2) center 38%/cover;filter:brightness(.78) contrast(1.06)}
+@media (max-width:760px){.hero::before{background-image:url(/assets/hero/polaris-m.webp)}}   /* 폰은 작은 사진만 받는다 */
 /* 사진 입체 (홈 별자리 화면과 같은 방식): 깊이 지도로 앞 소나무·도시·하늘을 다른 속도로. 준비되면 위 사진 대신 보인다 */
 .hero canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .6s}
 .hero.p3d canvas{opacity:1}   /* 사진만 어둡게 (덮는 검정은 그대로라 경계가 안 생긴다) */
@@ -365,9 +367,9 @@ const WAIT = ['학회 자료에서 찾는 중…', 'Polaris 아빠 김민석 선
   '세미나 녹화본 1.5배속으로 보는 중…', '카페 게시판 37페이지 넘기는 중…', 'DART 공시 다시 뒤지는 중…',
   'WACC 한 번 더 계산하는 중…', '투자포인트를 세 개로 줄이는 중…', '북두칠성 따라 북극성 찾는 중…', '목표주가 말고 근거 찾는 중…'];
 const STAR = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 1.5l1.9 7.1 7.1 1.9-7.1 1.9L12 19.5l-1.9-7.1L3 10.5l7.1-1.9z"/><circle cx="12" cy="10.5" r="1.3" fill="#fff"/></svg>';
-// 무작위 선배님 문구: 홈페이지(index.html)에 이미 공개된 기수별 명단 ROSTER를 읽어 와 쓴다 (따로 복사해 두지 않는다)
+// 무작위 선배님 문구: 홈페이지에 이미 공개된 기수별 명단 ROSTER를 읽어 와 쓴다 (assets/roster.json, 빌드 때 app.js에서 만든다)
 let ROSTER = null;
-fetch('/index.html').then((r) => r.text()).then((t) => { const m = t.match(/^const ROSTER = (\{.*?\});\s*$/m); if (m) ROSTER = JSON.parse(m[1]); }).catch(() => {});
+fetch('/assets/roster.json').then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) ROSTER = j; }).catch(() => {});   // tools/build-pages.js가 app.js의 ROSTER로 만든다
 const DOING = ['께 물어보는 중…', '께 전화하는 중…', '께 카톡하는 중…', '께 문자하는 중…', '께 DM 보내는 중…', '을 깨우는 중…', '께 커피 사 드리며 여쭤보는 중…', '의 옛날 리포트 꺼내는 중…'];
 function senior() {
   const ks = ROSTER && Object.keys(ROSTER).filter((k) => ROSTER[k].length);
@@ -694,7 +696,7 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   if (!g) return;
   const mob = innerWidth <= 760;
   const img = new Image(), dimg = new Image();
-  img.src = mob ? '/assets/hero/polaris-m.webp' : '/assets/hero/polaris.webp';
+  img.src = mob ? '/assets/hero/polaris-m.webp' : '/assets/hero/polaris.webp?v=2';
   dimg.src = mob ? '/assets/hero/polaris-depth-m.png?v=3' : '/assets/hero/polaris-depth.png?v=3';   // 깊이 지도를 바꾸면 v를 올린다 (예전 지도가 캐시에 남지 않게)
   const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
   const fs = `precision highp float;
@@ -703,7 +705,7 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
       if(sr>ir){ float h=ir/sr; uv.y=uv.y*h+(1.-h)*Y; } else { float w=sr/ir; uv.x=uv.x*w+(1.-w)*.5; } return uv; }
     void main(){
       vec2 uv=cover(gl_FragCoord.xy), c=vec2(.5,.5), q=uv;
-      for(int i=0;i<4;i++){ float d=texture2D(D,q).r; float s=1.03+Z*(.3+.7*d); q=c+(uv-c)/s - M*(d-.25)*A; }
+      for(int i=0;i<3;i++){ float d=texture2D(D,q).r; float s=1.03+Z*(.3+.7*d); q=c+(uv-c)/s - M*(d-.25)*A; }
       vec3 col=texture2D(I,clamp(q,.001,.999)).rgb*.78;          // CSS filter: brightness(.78) contrast(1.06)
       gl_FragColor=vec4(clamp((col-.5)*1.06+.5,0.,1.),1.);
     }`;
@@ -725,7 +727,11 @@ document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', a
   document.addEventListener('visibilitychange', wake);
   const draw = (now) => {
     if (!live()) { drawing = false; return; }
-    const dpr = Math.min(1.5, devicePixelRatio || 1), w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    // 그리는 해상도 상한: 화면이 커도 약 180만 화소까지만 (사진이 흐린 배경이라 차이가 안 보이고, 노트북 내장 그래픽에서 버벅이지 않게)
+    // 처음 12초(저절로 움직이는 동안)는 더 낮게 그린다. 움직이는 동안은 해상도 차이가 안 보이고, 들어올 때 버벅임이 준다
+    const cap = (now - t0) / 1000 < 12 && !on ? 0.9e6 : 1.8e6;
+    let dpr = Math.min(1.25, devicePixelRatio || 1); const px = cv.clientWidth * cv.clientHeight * dpr * dpr; if (px > cap) dpr *= Math.sqrt(cap / px);
+    const w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
     if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; g.viewport(0, 0, w, h); }
     const t = (now - t0) / 1000, intro = t < 12;
     const gx = intro && !on ? Math.sin(t * .2) * .6 : tx * 2, gy = intro && !on ? Math.cos(t * .14) * .35 : -ty * 2;

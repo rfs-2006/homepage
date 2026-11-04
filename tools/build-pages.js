@@ -352,6 +352,8 @@ write('fund/index.html', fundPage());
 write('people/index.html', peoplePage());
 write('recruiting/index.html', recruitingPage());
 write('privacy/index.html', privacyPage());
+// Polaris 화면(chat/)의 무작위 선배님 문구용 기수별 명단 (홈에 이미 공개된 ROSTER 그대로, 423KB app.js를 받지 않게 따로 뺀다)
+write('assets/roster.json', JSON.stringify(constant('ROSTER')));
 for (const x of indWeb) write(`research/ind-${x.id}/index.html`, indPage(x));
 
 // 홈 index.html의 <noscript>에 리포트 링크 전부 (화면은 JS로 그려서 검색엔진이 따라갈 링크가 HTML에 없다. JS가 켜진 화면에는 안 보인다)
