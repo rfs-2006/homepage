@@ -3007,7 +3007,7 @@ class Component extends DCLogic {
       const L = p.length - 1, H = T.hi != null ? T.hi : -1;
       return { ok: true, none: false,
         d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
-        c: T.r >= 0 ? '#D6404E' : '#2F64C2',
+        c: (run ? T.r : (T.mx != null ? T.mx : T.r)) > 0 ? '#D6404E' : '#2F64C2',
         by: f1(Y(1000)), ty: showT ? f1(Y(T.t)) : -10, 
         rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
         lx: f1(X(L)), ly: f1(Y(p[L])),
