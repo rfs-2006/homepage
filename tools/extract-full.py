@@ -221,7 +221,7 @@ def exhibits(lines, H, page):
         left = [o for o in caps if o is not c and abs(o['y0'] - c['y0']) < 6 and o['x0'] < c['x0']]
         x0 = c['x0'] - 3
         # 같은 줄 왼쪽·오른쪽에 다른 캡션이 있으면 그 칸 경계를 넘어 넓히지 않는다(옆 차트가 같이 잘려 들어가지 않게)
-        lo = c['x0'] - 5 if left else 0
+        lo = c['x0'] - 10 if left else 0
         hi = x1 if right else 585
         nxt = [o['y0'] for o in caps if o['y0'] > c['y1'] + 5 and o['x0'] < x1 and o['x1'] > x0]
         stop = min(nxt) if nxt else H - 50
@@ -257,9 +257,12 @@ def exhibits(lines, H, page):
         k = row.index(sl)
         x0 = sl['x0'] - 4
         x1 = row[k + 1]['x0'] - 8 if k + 1 < len(row) else 580
-        lo = sl['x0'] - 7 if k > 0 else 0   # 왼쪽 옆 차트의 오른쪽 끝(그 출처 줄 x - 8) 너머로는 넓히지 않는다
+        lo = sl['x0'] - 10 if k > 0 else 0   # 왼쪽 옆 차트 칸 안으로는 넓히지 않는다(옆 차트가 같이 잘려 들어가지 않게)
+        # 칸 안에 들어가고 같은 높이 옆 칸에도 글이 있는 줄은 나란히 놓인 캡션이라 위쪽 경계로 보지 않는다
+        side_cap = lambda l: len(row) > 1 and l['x0'] >= x0 - 6 and l['x1'] <= x1 + 6 and any(
+            o is not l and abs(o['y0'] - l['y0']) < 3 and o['x0'] >= row[0]['x0'] - 10 and (o['x0'] > x1 or o['x1'] < x0) for o in lines)
         above = [l for l in wide if l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)
-                 and (l['x1'] - l['x0']) > 0.55 * (x1 - x0)]
+                 and (l['x1'] - l['x0']) > 0.55 * (x1 - x0) and not side_cap(l)]
         # 위쪽 경계는 칸 폭의 절반 넘게 이어진 본문 줄(문단)만. 표의 행이나 차트 안 글자를 경계로 오해하지 않게
         top = max([l['y1'] + 6 for l in above], default=50)
         g = [gg for gg in graphics if gg[3] <= sl['y0'] + 2 and gg[3] > top and gg[0] < x1 and gg[2] > x0]
