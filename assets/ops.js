@@ -11,7 +11,7 @@
     { name: 'Netlify (호스팅)', amount: 9, cur: 'USD', cycle: 'month', next: '', note: '배포 크레딧을 넘기면 추가 요금' },
     { name: 'Voyage (Polaris 검색)', auto: 'voyage', cur: 'USD', cycle: 'month', note: '서버가 센 토큰 × 단가' },
     { name: '솔라피 (문자)', amount: 5000, cur: 'KRW', cycle: 'month', next: '', note: '충전식' },
-    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '', note: '등록 업체 확인 (DNS는 Netlify)' },
+    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-09-14', note: '호스팅케이알(hosting.kr) · DNS는 Netlify' },
     { name: '도메인 caurfs.com', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-08-24', note: '가비아 · caurfs.kr로 넘기는 용도' },
     { name: 'Polaris 서버', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
     { name: 'Supabase', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 요금제' },
