@@ -179,7 +179,18 @@ Deno.serve(async (req) => {
     let sms = 'no_phone';
     if (/^01[016789]\d{7,8}$/.test(phone)) {
       try {
-        await solapiSend(phone, `[R.F.S.] ${m.name || ''}님, 회원가입이 승인됐어요.\n아이디 ${id}로 caurfs.kr에서 로그인하세요.${b.role === 'guest' ? '' : '\n학회원 전용 AGORA도 열려 있어요.'}`);
+        // 승인 안내 문구 (공식): 학회원 승인이면 AGORA 안내 한 줄을 더한다
+        await solapiSend(phone, [
+          '[R.F.S. 중앙대학교 가치투자학회]',
+          '',
+          `${m.name || ''}님의 회원가입이 승인되었습니다.`,
+          '',
+          `아이디: ${id}`,
+          '로그인: caurfs.kr',
+          ...(b.role === 'guest' ? [] : ['학회원 전용 서비스(AGORA)를 이용하실 수 있습니다.']),
+          '',
+          '문의: contact@caurfs.kr',
+        ].join('\n'));
         sms = 'sent';
       } catch { sms = 'failed'; }
     }
