@@ -19,6 +19,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).parent))
 from embed import embed, voyage_headers  # noqa: E402
+import usage  # noqa: E402
 
 MODEL = 'voyage-3.5'
 
@@ -156,4 +157,5 @@ class Retriever:
         req = urllib.request.Request('https://api.voyageai.com/v1/rerank', data=body, headers=voyage_headers())
         with urllib.request.urlopen(req, timeout=120) as r:
             j = json.load(r)
+        usage.add('rerank-2.5', (j.get('usage') or {}).get('total_tokens', 0))   # 운영 대시보드
         return [cand[d['index']] for d in j['data']] + cand[top:]
