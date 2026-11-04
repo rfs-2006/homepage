@@ -43,7 +43,7 @@ const INDUSTRY = [
   { id:'4427', sem:'22-2', date:'2022.11.08', name:'전기전자 및 IT부품장비 산업', team:'2', sector:'IT', pages:33, pdf:'assets/reports/industry/22-2_4427.pdf' },
   { id:'4544', sem:'23-1', date:'2023.05.09', name:'반도체·반도체장비', team:'3', sector:'IT', pages:31, pdf:'assets/reports/industry/23-1_4544.pdf' },
   { id:'4548', sem:'23-1', date:'2023.05.09', name:'AI반도체 산업', team:'2', sector:'IT', pages:30, pdf:'assets/reports/industry/23-1_4548.pdf' },
-  { id:'4550', sem:'23-1', date:'2023.05.10', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
+  { id:'4550', sem:'23-1', date:'2023.05.10', name:'클라우드 산업', team:'6', sector:'IT', pages:29, pdf:'assets/reports/industry/23-1_4550.pdf' },
   { id:'4665', sem:'23-2', date:'2023.11.07', name:'디스플레이 및 소재장비', team:'4', sector:'IT', pages:34, pdf:'assets/reports/industry/23-2_4665.pdf' },
   { id:'4666', sem:'23-2', date:'2023.11.07', name:'반도체 산업', team:'5', sector:'IT', pages:32, pdf:'assets/reports/industry/23-2_4666.pdf' },
   { id:'4667', sem:'23-2', date:'2023.11.07', name:'사이버보안', team:'1', sector:'IT', pages:30, pdf:'assets/reports/industry/23-2_4667.pdf' },
@@ -1430,7 +1430,9 @@ class Component extends DCLogic {
         });
       };
       // 히어로를 지나면 상단 메뉴에 배경을 깔아 아래 고정 탭과 한 덩어리로 보이게
-      const solid = (on) => { const d = document.documentElement; if (document.querySelector('main.pgx .story')) on = false; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      const solid = (on) => { const d = document.documentElement; if (document.querySelector('main.pgx .story')) on = false; if (document.querySelector('.rpt-paper, .rf-side')) on = window.scrollY > 60; d.classList.toggle('nav-solid', on); d.classList.toggle('nav-dark', on && !!document.querySelector('main.fdpage')); };
+      // 리포트 화면엔 큰 사진(.pg-hero)이 없어서, 조금 내리면 바로 메뉴 바탕을 깐다 (안 그러면 투명한 메뉴가 본문 글자와 겹친다)
+      window.addEventListener('scroll', () => { if (document.querySelector('.rpt-paper, .rf-side')) solid(false); }, { passive: true });
       const hio = new IntersectionObserver((es) => es.forEach((e) => solid(!e.isIntersecting && e.boundingClientRect.top < 0)), { rootMargin: '-84px 0px 0px 0px' });
       const scanHero = () => {
         const h = document.querySelector('.pg-hero');
@@ -1686,7 +1688,7 @@ class Component extends DCLogic {
     const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     pop.innerHTML = '<i class="gl-h"></i><span class="gl-k">' + esc(e.k) + '</span><button class="gl-x" aria-label="닫기">×</button><b class="gl-t">' + esc(e.t) + '</b><p class="gl-d">' + esc(e.d) + '</p>'
       + (e.c ? '<div class="gl-c"><small>이 리포트에서는</small><p>' + esc(e.c) + '</p></div>' : '')
-      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + (/[가-힣]$/.test(e.t) && (e.t.charCodeAt(e.t.length - 1) - 0xAC00) % 28 ? '이 ' : '가 ') + (document.querySelector('.rpt-name') || {}).textContent + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
+      + '<a class="gl-a" href="/chat/?q=' + encodeURIComponent(e.t + (/[가-힣]$/.test(e.t) && (e.t.charCodeAt(e.t.length - 1) - 0xAC00) % 28 ? '이 ' : '가 ') + ((document.querySelector('.rpt-name, .ind-title, .ic-title') || {}).textContent || '이') + ' 리포트에서 왜 중요한지 설명해 줘') + '">POLARIS에게 더 물어보기</a><button class="gl-ok">확인</button>';
     // 'POLARIS에게 더 물어보기': 넓은 화면은 페이지를 떠나지 않고 오른쪽 Polaris 창에서 바로 물어본다 (폰은 /chat/ 으로)
     pop.querySelector('.gl-a').onclick = (ev) => { if (window.rfsAsk && window.innerWidth > 640 && !ev.metaKey && !ev.ctrlKey) { ev.preventDefault(); this.glClose(); window.rfsAsk(decodeURIComponent(ev.currentTarget.href.split('?q=')[1])); } };
     document.querySelectorAll('.gl.on').forEach((n) => n.classList.remove('on')); el.classList.add('on');
