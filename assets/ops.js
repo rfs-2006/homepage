@@ -21,53 +21,89 @@
   ];
   // 학회 공용 계정으로 옮겼는지 (docs/운영인수인계.md)
   var MOVED = [['', '모름'], ['personal', '개인 계정'], ['club', '학회 계정']];
+  // 디자인: FUND 페이지 '토스버전'(templates/toss/fund.html)과 같은 결 — 미색 바탕, 모서리 없는 흰 카드, 남색 SUMMARY, 큰 숫자, 자간 넓은 작은 라벨, 굵은 윗선 표
   var CSS = '\
-.op{position:fixed;inset:0;z-index:3500;background:#070D18;color:#E9E7E1;overflow-y:auto;opacity:0;transition:opacity .25s;font-family:Pretendard Variable,Pretendard,"Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased}\
+.op{position:fixed;inset:0;z-index:3500;background:#EDEBE5;color:#191F28;overflow-y:auto;opacity:0;transition:opacity .25s;font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}\
 .op.show{opacity:1}\
 .op *{box-sizing:border-box}\
-.op-in{max-width:1180px;margin:0 auto;padding:28px max(20px,env(safe-area-inset-right,0px)) 60px max(20px,env(safe-area-inset-left,0px))}\
-.op-hd{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(233,231,225,.14);padding-bottom:16px}\
-.op-hd small{display:block;font-size:11px;letter-spacing:.24em;color:rgba(233,231,225,.55)}\
-.op-hd h2{margin:4px 0 0;font:400 28px "Noto Serif KR",serif;letter-spacing:-.02em}\
-.op-hd .r{display:flex;gap:8px;align-items:center;font-size:12px;color:rgba(233,231,225,.55)}\
 .op button{font:inherit;cursor:pointer}\
-.op .bt{height:34px;padding:0 14px;border:1px solid rgba(233,231,225,.3);background:none;color:#E9E7E1;font-size:12.5px;border-radius:6px}\
-.op .bt.p{background:#E9E7E1;color:#0F1B2E;border-color:#E9E7E1}\
-.op .bt:disabled{opacity:.5;cursor:default}\
-.op .x{width:40px;height:40px;border:0;background:none;color:rgba(233,231,225,.7);font-size:22px}\
-.op-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:20px}\
-.op-k{background:#0E182B;border:1px solid rgba(143,170,220,.16);border-radius:10px;padding:16px 18px;min-width:0}\
-.op-k span{display:block;font-size:12px;color:rgba(233,231,225,.6)}\
-.op-k b{display:block;margin-top:6px;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
-.op-k em{display:block;margin-top:4px;font-style:normal;font-size:12px;color:rgba(233,231,225,.5)}\
-.op-k.warn b{color:#F0B77A}.op-k.bad b{color:#EE9A9A}\
-.op-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}\
-.op-p{background:#0E182B;border:1px solid rgba(143,170,220,.16);border-radius:10px;padding:18px;min-width:0}\
-.op-p.w{grid-column:1/-1}\
-.op-p h3{margin:0 0 12px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:baseline;gap:8px}\
-.op-p h3 i{font-style:normal;font-weight:400;font-size:12px;color:rgba(233,231,225,.5)}\
-.op-p p.s{margin:0;font-size:12.5px;line-height:1.7;color:rgba(233,231,225,.6)}\
-.op table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}\
-.op th,.op td{padding:8px 6px;border-bottom:1px solid rgba(233,231,225,.08);text-align:left;vertical-align:middle}\
-.op th{font-weight:500;font-size:11.5px;color:rgba(233,231,225,.5)}\
+.op-top{background:#0F1B2E;color:#F7F6F3}\
+.op-top-in{max-width:1208px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-right,0px)) 40px max(24px,env(safe-area-inset-left,0px));position:relative}\
+.op-top .x{position:absolute;top:14px;right:max(14px,env(safe-area-inset-right,0px));width:44px;height:44px;border:0;background:none;color:rgba(247,246,243,.75);font-size:24px}\
+.op-top .ey{font-size:12px;letter-spacing:.18em;color:#8FAADC;font-weight:600;margin-top:28px}\
+.op-top h2{margin:8px 0 0;font:400 46px/1.1 "Source Serif 4","Noto Serif KR",Georgia,serif;letter-spacing:-.01em}\
+.op-top .meta{margin-top:14px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:13px;color:rgba(247,246,243,.6)}\
+.op-top .meta button{height:30px;padding:0 12px;border:1px solid rgba(247,246,243,.3);background:none;color:#F7F6F3;font-size:12.5px;border-radius:6px}\
+.op-tabs{position:sticky;top:0;z-index:2;background:#F7F6F3;border-bottom:1px solid #E5E8EB}\
+.op-tabs-in{max-width:1208px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;padding:0 max(24px,env(safe-area-inset-left,0px))}\
+.op-tabs a{flex:1 0 auto;text-align:center;padding:20px 14px 18px;font-size:14px;color:#6B7684;text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap}\
+.op-tabs a:hover,.op-tabs a:focus-visible{color:#191F28;outline:none}\
+.op-tabs a.on{color:#191F28;font-weight:600;border-bottom-color:#203864}\
+.op-in{max-width:1208px;margin:0 auto;padding:24px max(24px,env(safe-area-inset-right,0px)) 72px max(24px,env(safe-area-inset-left,0px));display:grid;gap:20px}\
+.op-s{background:#fff;padding:52px 64px;scroll-margin-top:72px;min-width:0}\
+.op-s.dk{background:#0F1B2E;color:#F7F6F3}\
+.op-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}\
+.op-h .lb{font-size:12px;font-weight:700;letter-spacing:.14em;color:#203864}\
+.op-s.dk .op-h .lb{color:#8FAADC}\
+.op-h .mt{font-size:13px;color:#6B7684}\
+.op-s.dk .op-h .mt{color:rgba(247,246,243,.55)}\
+.op-hl{margin:20px 0 28px;font-size:34px;font-weight:700;letter-spacing:-.02em;line-height:1.25}\
+.op-hl small{font-size:.55em;font-weight:600;color:#6B7684;margin-left:4px}\
+.op-hl .dot{color:#B0B8C1;margin:0 12px;font-weight:400}\
+.op-hl .up{color:#D6404E}.op-hl .dn{color:#2F64C2}\
+.op .note{font-size:13.5px;line-height:1.75;color:#6B7684;margin:0}\
+.op-sum{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:end;margin-top:20px}\
+.op-sum .k{font-size:15px;color:rgba(247,246,243,.65)}\
+.op-sum .big{font-size:76px;font-weight:700;letter-spacing:-.03em;line-height:1.05;margin-top:10px;white-space:nowrap}\
+.op-sum .big small{font-size:.36em;font-weight:600;margin-left:6px;color:rgba(247,246,243,.75)}\
+.op-sum .chg{margin-top:14px;font-size:17px;color:rgba(247,246,243,.65)}\
+.op-sum .chg b{margin-left:8px;font-weight:700}\
+.op-sum .chg .up{color:#F08A93}.op-sum .chg .dn{color:#8FAADC}\
+.op-sum .pn{background:#1B2940;padding:26px 30px}\
+.op-sum .pn .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(247,246,243,.08);font-size:14px;color:rgba(247,246,243,.65)}\
+.op-sum .pn .row:last-child{border-bottom:0}\
+.op-sum .pn .row b{font-size:20px;font-weight:700;color:#F7F6F3;white-space:nowrap}\
+.op-sum .pn .row>span:last-child{display:flex;align-items:center;white-space:nowrap}\
+.op-sum .pn .row b.w{color:#F0B77A}.op-sum .pn .row b.bad{color:#F08A93}\
+.op-sum .pn .go{height:30px;padding:0 12px;border:0;background:#8FAADC;color:#0F1B2E;font-size:12.5px;font-weight:600;border-radius:6px;margin-left:10px}\
+.op table{width:100%;border-collapse:collapse;font-size:14.5px}\
+.op .tw{overflow-x:auto;border-top:2px solid #191F28}\
+.op th{padding:14px 12px;font-weight:500;font-size:13px;color:#6B7684;text-align:left;border-bottom:1px solid #E5E8EB;white-space:nowrap}\
+.op td{padding:14px 12px;border-bottom:1px solid #E5E8EB;vertical-align:middle;white-space:nowrap}\
 .op td.n,.op th.n{text-align:right}\
-.op .tw{overflow-x:auto}\
-.op .tw td,.op .tw th{white-space:nowrap}\
-.op input,.op select{height:34px;padding:0 10px;border:1px solid rgba(233,231,225,.22);background:rgba(233,231,225,.04);color:#E9E7E1;font:inherit;font-size:13px;border-radius:6px;min-width:0;width:100%}\
-.op input:focus,.op select:focus,.op button:focus-visible{outline:2px solid #8FAADC;outline-offset:1px}\
-.op .frm{display:grid;grid-template-columns:1.3fr 1fr 1.4fr auto;gap:8px;margin-bottom:12px}\
-.op .bars{display:flex;align-items:flex-end;gap:2px;height:84px;margin:10px 0 4px;border-bottom:1px solid rgba(233,231,225,.14)}\
-.op .bars i{flex:1;min-width:2px;background:#8FAADC;border-radius:2px 2px 0 0;opacity:.85}\
-.op .bars i.z{background:rgba(233,231,225,.12)}\
-.op .ax{display:flex;justify-content:space-between;font-size:11px;color:rgba(233,231,225,.45)}\
-.op .big{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}\
-.op .sub{font-size:12px;color:rgba(233,231,225,.55);margin-left:6px}\
-.op .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:4px;background:rgba(143,170,220,.16);color:#BFD0EE}\
-.op .tag.warn{background:rgba(240,183,122,.16);color:#F0B77A}.op .tag.bad{background:rgba(238,154,154,.16);color:#EE9A9A}\
-.op .mini{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}\
-.op .chk{display:flex;gap:8px;align-items:center;font-size:13px;margin-top:8px}.op .chk input{width:16px;height:16px}\
-.op .msg{font-size:12.5px;color:#BFD0EE;min-height:18px;margin-top:8px}\
-@media (max-width:860px){.op-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}.op-k b{font-size:19px}.op-k{padding:14px}.op-g,.op .mini{grid-template-columns:1fr}.op .frm{grid-template-columns:1fr 1fr}}\
+.op td.sb,.op td .sb{color:#6B7684;font-size:13px}\
+.op tfoot td{border-top:1px solid #191F28;font-weight:700}\
+.op .bars{display:flex;align-items:flex-end;gap:3px;height:150px;border-bottom:1px solid #191F28}\
+.op .bars i{flex:1;min-width:2px;background:#203864;transition:background .15s}\
+.op .bars i:hover{background:#8FAADC}\
+.op .bars i.z{background:#E5E8EB}\
+.op .ax{display:flex;justify-content:space-between;font-size:12px;color:#8B95A1;margin-top:8px}\
+.op .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;margin-top:40px}\
+.op .two h4{margin:0 0 12px;font-size:15px;font-weight:700}\
+.op .trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#E5E8EB;border-top:2px solid #191F28;margin-bottom:36px}\
+.op .trio div{background:#fff;padding:20px 4px 20px 0}\
+.op .trio span{display:block;font-size:13px;color:#6B7684}\
+.op .trio b{display:block;margin-top:6px;font-size:30px;font-weight:700;letter-spacing:-.02em}\
+.op .trio em{display:block;margin-top:2px;font-style:normal;font-size:13px;color:#8B95A1}\
+.op input,.op select{height:44px;padding:0 14px;border:1px solid transparent;background:#F4F5F7;color:#191F28;font:inherit;font-size:14.5px;border-radius:8px;min-width:0;width:100%}\
+.op td input,.op td select{height:38px;font-size:14px;padding:0 10px}\
+.op input:focus,.op select:focus{outline:none;border-color:#203864;background:#fff}\
+.op button:focus-visible,.op a:focus-visible{outline:2px solid #8FAADC;outline-offset:2px}\
+.op .bt{height:44px;padding:0 18px;border:1px solid #D1D6DB;background:#fff;color:#191F28;font-size:14px;font-weight:600;border-radius:8px}\
+.op .bt.p{background:#203864;border-color:#203864;color:#fff}\
+.op .bt.s{height:32px;padding:0 10px;font-size:12.5px;font-weight:500;color:#6B7684}\
+.op .bt:disabled{opacity:.5;cursor:default}\
+.op .frm{display:grid;grid-template-columns:1.2fr .9fr 1.6fr auto;gap:10px;margin:28px 0 24px}\
+.op .tag{display:inline-block;font-size:12px;font-weight:600;padding:3px 8px;border-radius:6px;background:#E6ECF7;color:#203864}\
+.op .tag.w{background:#FDF1E2;color:#B5651D}.op .tag.bad{background:#FDECEC;color:#D6404E}.op .tag.ok{background:#E8F3EC;color:#2E7D4F}\
+.op .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;align-items:center}\
+.op .acts label{display:flex;gap:8px;align-items:center;font-size:14px;color:#6B7684}\
+.op .chk{display:flex;gap:10px;align-items:center;font-size:15px;padding:14px 0;border-bottom:1px solid #E5E8EB;cursor:pointer}\
+.op .chk input{width:20px;height:20px;accent-color:#203864}\
+.op .msg{font-size:13.5px;color:#203864;min-height:20px;margin-top:12px}\
+.op .mailbox{max-width:560px}\
+@media (max-width:860px){.op-s{padding:32px 20px}.op-sum .pn{padding:14px 18px}.op-sum .pn .row b{font-size:17px}.op .bars{height:110px}.op-sum{grid-template-columns:1fr;gap:28px}.op-sum .big{font-size:48px}.op-hl{font-size:26px}.op .two{grid-template-columns:1fr;gap:28px}.op .trio b{font-size:22px}.op .frm{grid-template-columns:1fr 1fr}.op-top h2{font-size:36px}.op-tabs a{flex:0 0 auto}}\
+@media (prefers-reduced-motion:reduce){.op{transition:none}}\
 ';
   var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
   var won = function (n) { return Math.round(n || 0).toLocaleString('ko-KR') + '원'; };
@@ -123,8 +159,12 @@
     return '<div class="bars" role="img" aria-label="최근 30일">' + series.map(function (x) {
       var h = x[key] > 0 ? Math.max(3, x[key] / max * 100) : 2;
       return '<i class="' + (x[key] > 0 ? '' : 'z') + '" style="height:' + h + '%" title="' + esc(x.k + ' · ' + fmt(x[key])) + '"></i>';
-    }).join('') + '</div><div class="ax"><span>' + esc(series[0].k.slice(5)) + '</span><span>최고 ' + esc(fmt(max)) + '</span><span>' + esc(series[series.length - 1].k.slice(5)) + '</span></div>';
+    }).join('') + '</div><div class="ax"><span>' + esc(series[0].k.slice(5).replace('-', '.')) + '</span><span>최고 ' + esc(fmt(max)) + '</span><span>' + esc(series[series.length - 1].k.slice(5).replace('-', '.')) + '</span></div>';
   }
+  var sec = function (id, label, meta, body, dark) {
+    return '<section class="op-s' + (dark ? ' dk' : '') + '" id="op-' + id + '"><div class="op-h"><span class="lb">' + label + '</span><span class="mt">' + meta + '</span></div>' + body + '</section>';
+  };
+  var num = function (n) { return Math.round(n || 0).toLocaleString('ko-KR'); };
 
   function render() {
     var s = st, el = s.el.querySelector('.op-body');
@@ -135,77 +175,96 @@
     var last = acc[0], prev = acc[1];
     var month = costs.reduce(function (a, c) { return a + monthlyKRW(c, rate); }, 0);
     var runway = last && month > 0 ? last.balance / month : null;
-    var kpi = '<div class="op-kpi">' +
-      '<div class="op-k"><span>계좌 잔액</span><b>' + (last ? won(last.balance) : '—') + '</b><em>' + (last ? esc(last.date) + ' 기준' + (prev ? ' · 지난 기록보다 ' + (last.balance - prev.balance >= 0 ? '+' : '') + won(last.balance - prev.balance) : '') : '아래에서 잔액을 입력해 주세요') + '</em></div>' +
-      '<div class="op-k"><span>이번 달 유지비 (예상)</span><b>' + won(month) + '</b><em>연 ' + won(month * 12) + ' · 환율 ' + rate.toLocaleString() + '원</em></div>' +
-      '<div class="op-k ' + (runway != null && runway < 6 ? (runway < 3 ? 'bad' : 'warn') : '') + '"><span>잔액으로 버틸 수 있는 기간</span><b>' + (runway == null ? '—' : runway >= 120 ? '10년 이상' : runway.toFixed(1) + '개월') + '</b><em>잔액 ÷ 월 유지비</em></div>' +
-      '<div class="op-k ' + (s.pending ? 'warn' : '') + '"><span>가입 승인 대기</span><b>' + (s.pending == null ? '—' : s.pending + '건') + '</b><em><button class="bt" type="button" data-a="approve" style="height:26px;padding:0 10px;font-size:12px">승인 화면 열기</button></em></div>' +
-      '</div>';
+    var ga = s.ga, gaOk = ga && ga.configured && !ga.error && ga.days;
 
-    // 계좌
-    var accP = '<div class="op-p"><h3>계좌 잔액 기록<i>손으로 입력 · 최근 12건</i></h3>' +
-      '<form class="frm" data-f="acc"><input id="op-bal" inputmode="numeric" placeholder="잔액 (원)" aria-label="잔액 (원)"><input id="op-date" type="date" value="' + today() + '" aria-label="기준일"><input id="op-memo" placeholder="메모 (예: 회비 입금, 서버비)" aria-label="메모" maxlength="60"><button class="bt p" type="submit">기록</button></form>' +
-      (acc.length ? '<div class="tw"><table><thead><tr><th>기준일</th><th class="n">잔액</th><th class="n">변동</th><th>메모</th><th></th></tr></thead><tbody>' + acc.slice(0, 12).map(function (e, i) {
-        var d = acc[i + 1] ? e.balance - acc[i + 1].balance : null;
-        return '<tr><td>' + esc(e.date) + '</td><td class="n">' + won(e.balance) + '</td><td class="n">' + (d == null ? '' : (d >= 0 ? '+' : '') + won(d)) + '</td><td>' + esc(e.memo || '') + '</td><td class="n"><button class="bt" type="button" data-del="' + i + '" style="height:26px;padding:0 8px;font-size:11.5px" aria-label="이 기록 지우기">지우기</button></td></tr>';
-      }).join('') + '</tbody></table></div>' : '<p class="s">아직 기록이 없어요. 은행 앱에서 잔액을 보고 적어 주세요. 금액은 이 화면(관리자)에서만 보여요.</p>') +
-      '<div class="msg" data-m="acc"></div></div>';
+    // ① SUMMARY
+    var diff = last && prev ? last.balance - prev.balance : null;
+    var summary = sec('sum', 'SUMMARY', last ? esc(last.date) + ' 기준 · 관리자만 보는 화면' : '관리자만 보는 화면',
+      '<div class="op-sum"><div><div class="k">법인계좌 잔액</div>' +
+        '<div class="big">' + (last ? num(last.balance) + '<small>원</small>' : '—') + '</div>' +
+        '<div class="chg">' + (diff == null ? (last ? '첫 기록이에요' : '아래 계좌 칸에 잔액을 적어 주세요') : '지난 기록 대비<b class="' + (diff >= 0 ? 'up' : 'dn') + '">' + (diff >= 0 ? '+' : '−') + num(Math.abs(diff)) + '원</b>') + '</div></div>' +
+      '<div class="pn">' +
+        '<div class="row"><span>이번 달 유지비 (예상)</span><b>' + won(month) + '</b></div>' +
+        '<div class="row"><span>잔액으로 버틸 수 있는 기간</span><b class="' + (runway != null && runway < 6 ? (runway < 3 ? 'bad' : 'w') : '') + '">' + (runway == null ? '—' : runway >= 120 ? '10년 이상' : runway.toFixed(1) + '개월') + '</b></div>' +
+        '<div class="row"><span>최근 30일 방문자</span><b>' + (gaOk ? num(ga.users30) + '명' : '—') + '</b></div>' +
+        '<div class="row"><span>가입 승인 대기</span><span><b class="' + (s.pending ? 'w' : '') + '">' + (s.pending == null ? '—' : s.pending + '건') + '</b><button class="go" type="button" data-a="approve">승인하기</button></span></div>' +
+      '</div></div>', true);
 
-    // API 사용량
-    var v = s.voyage;
-    var vHtml = s.usageErr ? '<p class="s">Polaris 서버에서 사용량을 못 받았어요 (' + esc(s.usageErr) + '). 서버를 최신으로 올리고(polaris-update main) OPS_ADMINS에 이 계정을 넣어 주세요.</p>'
-      : !v ? '<p class="s">불러오는 중…</p>'
-      : '<div><span class="big">' + usd(v.usd) + '</span><span class="sub">이번 달 · 질문 ' + v.q.toLocaleString() + '개 · 임베딩 ' + (v.tok['voyage-3.5'] / 1e3).toFixed(0) + 'K · 리랭크 ' + (v.tok['rerank-2.5'] / 1e6).toFixed(2) + 'M 토큰</span></div>' +
-        bars(v.series, 'usd', usd) + '<p class="s" style="margin-top:8px">지난달(' + esc(v.lastKey) + '): ' + (v.last.n ? usd(v.last.usd) + ' (' + won(v.last.usd * rate) + ') · 질문 ' + v.last.q.toLocaleString() + '개' + (v.last.n < 28 ? ' · ' + v.last.n + '일치만 기록됨' : '') : '기록 없음 (서버가 사용량을 세기 시작한 뒤부터 나와요. 그 전 달은 dashboard.voyageai.com의 Usage에서 확인)') + '</p><p class="s">하루 질문 수: ' + v.series.slice(-7).map(function (x) { return x.q; }).join(' · ') + ' (최근 7일). 무료 토큰이 남아 있으면 실제 청구는 0이에요.</p>';
-    var ga = s.ga, gaHtml;
-    if (!ga) gaHtml = '<p class="s">불러오는 중…</p>';
-    else if (!ga.configured) gaHtml = '<p class="s">Supabase Secret에 GA_PROPERTY_ID·GA_SA_KEY를 넣으면 방문자 수가 나와요.</p>';
-    else if (ga.error) gaHtml = '<p class="s">Google Analytics를 불러오지 못했어요 (' + esc(ga.error) + '). 서비스 계정이 GA 속성에 뷰어로 들어가 있는지 확인해 주세요.</p>';
+    // ② 방문자
+    var gaBody;
+    if (!ga) gaBody = '<p class="note" style="margin-top:20px">불러오는 중…</p>';
+    else if (!ga.configured) gaBody = '<p class="note" style="margin-top:20px">Supabase Secret에 GA_PROPERTY_ID·GA_SA_KEY를 넣으면 방문자 수가 나와요.</p>';
+    else if (ga.error) gaBody = '<p class="note" style="margin-top:20px">Google Analytics를 불러오지 못했어요 (' + esc(ga.error) + '). 서비스 계정이 GA 속성에 뷰어로 들어가 있는지 확인해 주세요.</p>';
     else {
       var gd = ga.days || [], sum = function (n) { return gd.slice(-n).reduce(function (a, x) { return a + x.users; }, 0); };
       var tdy = gd.length ? gd[gd.length - 1] : { users: 0, views: 0 };
-      gaHtml = '<div class="mini" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><span class="sub" style="margin:0">오늘 방문자</span><div class="big">' + tdy.users.toLocaleString() + '</div><span class="sub" style="margin:0">페이지뷰 ' + tdy.views.toLocaleString() + '</span></div>' +
-        '<div><span class="sub" style="margin:0">최근 7일 (일별 합)</span><div class="big">' + sum(7).toLocaleString() + '</div></div>' +
-        '<div><span class="sub" style="margin:0">최근 30일 방문자</span><div class="big">' + (ga.users30 || 0).toLocaleString() + '</div><span class="sub" style="margin:0">페이지뷰 ' + (ga.views30 || 0).toLocaleString() + '</span></div></div>' +
+      var list = function (rows, k, v) { return '<div class="tw"><table><tbody>' + rows.map(function (x, i) { return '<tr><td class="sb" style="width:28px">' + (i + 1) + '</td><td style="white-space:normal">' + esc(x[k]) + '</td><td class="n">' + num(x[v]) + '</td></tr>'; }).join('') + '</tbody></table></div>'; };
+      gaBody = '<div class="op-hl">오늘 ' + num(tdy.users) + '<small>명</small><span class="dot">·</span>7일 ' + num(sum(7)) + '<small>명</small><span class="dot">·</span>30일 ' + num(ga.users30) + '<small>명</small></div>' +
         (gd.length > 1 ? bars(gd.map(function (x) { return { k: x.date, u: x.users }; }), 'u', function (n) { return Math.round(n) + '명'; }) : '') +
-        '<div class="mini" style="margin-top:12px"><div><h3 style="font-size:13px">많이 본 페이지 (30일)</h3><div class="tw"><table><tbody>' + (ga.pages || []).map(function (x) { return '<tr><td style="max-width:320px;overflow:hidden;text-overflow:ellipsis">' + esc(x.title) + '</td><td class="n">' + x.views.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></div>' +
-        '<div><h3 style="font-size:13px">들어온 경로 (30일)</h3><div class="tw"><table><tbody>' + (ga.sources || []).map(function (x) { return '<tr><td>' + esc(x.source) + '</td><td class="n">' + x.sessions.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></div></div>';
+        '<div class="two"><div><h4>많이 본 페이지</h4>' + list(ga.pages || [], 'title', 'views') + '</div><div><h4>들어온 경로</h4>' + list(ga.sources || [], 'source', 'sessions') + '</div></div>';
     }
-    var gaP = '<div class="op-p w"><h3>방문자<i>Google Analytics · 최근 30일 · 학회원 로그인 접속은 내부 트래픽으로 표시</i></h3>' + gaHtml + '</div>';
-    var apiP = '<div class="op-p w"><h3>Voyage · Polaris 사용량<i>Polaris 서버가 센 토큰 × 단가 · 최근 30일</i></h3>' + vHtml + '</div>';
+    var visit = sec('visit', '방문자', 'Google Analytics · 최근 30일' + (gaOk ? ' · 페이지뷰 ' + num(ga.views30) : ''), gaBody);
 
-    // 유지비 표
-    var soon = function (d) { if (!d) return ''; var n = Math.round((Date.parse(d) - Date.parse(today())) / 864e5); return n < 0 ? '<span class="tag bad">지남</span>' : n <= 30 ? '<span class="tag warn">' + n + '일 남음</span>' : ''; };
+    // ③ 계좌
+    var accBody = '<form class="frm" data-f="acc"><input id="op-bal" inputmode="numeric" placeholder="잔액 (원)" aria-label="잔액 (원)"><input id="op-date" type="date" value="' + today() + '" aria-label="기준일"><input id="op-memo" placeholder="메모 (예: 회비 입금, 서버비)" aria-label="메모" maxlength="60"><button class="bt p" type="submit">기록</button></form>' +
+      (acc.length ? '<div class="tw"><table><thead><tr><th>기준일</th><th class="n">잔액</th><th class="n">변동</th><th>메모</th><th></th></tr></thead><tbody>' + acc.slice(0, 12).map(function (e, i) {
+        var d = acc[i + 1] ? e.balance - acc[i + 1].balance : null;
+        return '<tr><td>' + esc(e.date.replace(/-/g, '.')) + '</td><td class="n"><b>' + won(e.balance) + '</b></td><td class="n" style="color:' + (d == null ? '#8B95A1' : d >= 0 ? '#D6404E' : '#2F64C2') + '">' + (d == null ? '—' : (d >= 0 ? '+' : '−') + num(Math.abs(d))) + '</td><td class="sb">' + esc(e.memo || '') + '</td><td class="n"><button class="bt s" type="button" data-del="' + i + '" aria-label="이 기록 지우기">지우기</button></td></tr>';
+      }).join('') + '</tbody></table></div>' : '<p class="note">은행 앱에서 잔액을 보고 한 달에 한 번, 그리고 큰 입출금이 있을 때 적어 주세요.</p>') +
+      '<div class="msg" data-m="acc"></div>';
+    var account = sec('acc', '계좌', '손으로 입력 · 최근 12건', accBody);
+
+    // ④ 유지비 · 계정
+    var soon = function (d) { if (!d) return ''; var n = Math.round((Date.parse(d) - Date.parse(today())) / 864e5); return n < 0 ? ' <span class="tag bad">지남</span>' : n <= 30 ? ' <span class="tag w">' + n + '일 남음</span>' : ''; };
     var movedN = costs.filter(function (c) { return c.moved === 'club'; }).length;
-    var costP = '<div class="op-p w"><h3>유지비 · 계정<i>학회 계정으로 이전 ' + movedN + '/' + costs.length + ' · 바꾼 뒤 저장 · 연 단위는 12로 나눠 월에 더해요 · 자동 칸은 이번 달 사용량으로 월말 예상</i></h3><div class="tw"><table data-t="costs"><thead><tr><th>서비스</th><th class="n">금액</th><th>통화</th><th>주기</th><th>다음 결제·갱신</th><th class="n">월 환산</th><th>메모</th><th>관리 계정</th><th>이전</th><th></th></tr></thead><tbody>' +
+    var v = s.voyage;
+    var costBody = '<div class="op-hl">월 ' + num(month) + '<small>원</small><span class="dot">·</span>연 ' + num(month * 12) + '<small>원</small></div>' +
+      (!s.editCosts ? '<div class="tw"><table><thead><tr><th>서비스</th><th class="n">금액</th><th>다음 결제·갱신</th><th class="n">월 환산</th><th>관리 계정</th></tr></thead><tbody>' + costs.map(function (c) {
+          var amt = c.auto ? '<span class="tag">자동</span>' : (c.cur === 'USD' ? '$' + (+c.amount || 0) : num(c.amount) + '원') + ' <span class="sb">' + ({ month: '/ 월', year: '/ 년', once: '한 번' }[c.cycle] || '') + '</span>';
+          var mv = c.moved === 'club' ? '<span class="tag ok">학회 계정</span>' : c.moved === 'personal' ? '<span class="tag w">개인 계정</span>' : '<span class="tag" style="background:#F2F4F6;color:#8B95A1">모름</span>';
+          return '<tr><td style="white-space:normal"><b>' + esc(c.name) + '</b>' + (c.note ? '<div class="sb" style="margin-top:3px">' + esc(c.note) + '</div>' : '') + '</td><td class="n">' + amt + '</td><td>' + (c.next ? esc(c.next.replace(/-/g, '.')) + soon(c.next) : '<span class="sb">—</span>') + '</td><td class="n"><b>' + won(monthlyKRW(c, rate)) + '</b></td><td>' + mv + (c.owner ? ' <span class="sb">' + esc(c.owner) + '</span>' : '') + '</td></tr>';
+        }).join('') + '</tbody><tfoot><tr><td colspan="3">합계</td><td class="n">' + won(month) + '</td><td></td></tr></tfoot></table></div><div class="acts"><button class="bt" type="button" data-a="editcosts">편집</button><span class="sb" style="font-size:13px;color:#8B95A1">환율 ' + num(rate) + '원/달러</span></div><div class="msg" data-m="costs"></div>'
+      : (      '<div class="tw"><table data-t="costs"><thead><tr><th>서비스</th><th class="n">금액</th><th>통화</th><th>주기</th><th>다음 결제·갱신</th><th class="n">월 환산</th><th>메모</th><th>관리 계정</th><th>이전</th><th></th></tr></thead><tbody>' +
       costs.map(function (c, i) {
-        return '<tr data-i="' + i + '"><td><input data-k="name" value="' + esc(c.name) + '" aria-label="서비스"></td>' +
-          '<td class="n">' + (c.auto ? '<span class="tag">자동</span>' : '<input data-k="amount" inputmode="decimal" value="' + esc(c.amount) + '" style="text-align:right;width:96px" aria-label="금액">') + '</td>' +
-          '<td>' + (c.auto ? 'USD' : '<select data-k="cur" aria-label="통화"><option' + (c.cur === 'KRW' ? ' selected' : '') + '>KRW</option><option' + (c.cur === 'USD' ? ' selected' : '') + '>USD</option></select>') + '</td>' +
-          '<td><select data-k="cycle" aria-label="주기"><option value="month"' + (c.cycle === 'month' ? ' selected' : '') + '>매월</option><option value="year"' + (c.cycle === 'year' ? ' selected' : '') + '>매년</option><option value="once"' + (c.cycle === 'once' ? ' selected' : '') + '>한 번</option></select></td>' +
-          '<td><input data-k="next" type="date" value="' + esc(c.next || '') + '" aria-label="다음 결제일" style="width:140px"> ' + soon(c.next) + '</td>' +
-          '<td class="n">' + won(monthlyKRW(c, rate)) + '</td>' +
-          '<td><input data-k="note" value="' + esc(c.note || '') + '" aria-label="메모"></td>' +
-          '<td><input data-k="owner" value="' + esc(c.owner || '') + '" placeholder="가입한 이메일" aria-label="관리 계정" style="width:170px"></td>' +
-          '<td><select data-k="moved" aria-label="학회 계정으로 이전">' + MOVED.map(function (o) { return '<option value="' + o[0] + '"' + ((c.moved || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></td>' +
-          '<td class="n">' + (c.auto ? '' : '<button class="bt" type="button" data-rm="' + i + '" style="height:26px;padding:0 8px;font-size:11.5px">빼기</button>') + '</td></tr>';
+        return '<tr data-i="' + i + '"><td><input data-k="name" value="' + esc(c.name) + '" aria-label="서비스" style="min-width:190px"></td>' +
+          '<td class="n">' + (c.auto ? '<span class="tag">자동</span>' : '<input data-k="amount" inputmode="decimal" value="' + esc(c.amount) + '" style="text-align:right;width:100px" aria-label="금액">') + '</td>' +
+          '<td>' + (c.auto ? '<span class="sb">USD</span>' : '<select data-k="cur" aria-label="통화" style="width:84px"><option' + (c.cur === 'KRW' ? ' selected' : '') + '>KRW</option><option' + (c.cur === 'USD' ? ' selected' : '') + '>USD</option></select>') + '</td>' +
+          '<td><select data-k="cycle" aria-label="주기" style="width:84px"><option value="month"' + (c.cycle === 'month' ? ' selected' : '') + '>매월</option><option value="year"' + (c.cycle === 'year' ? ' selected' : '') + '>매년</option><option value="once"' + (c.cycle === 'once' ? ' selected' : '') + '>한 번</option></select></td>' +
+          '<td><input data-k="next" type="date" value="' + esc(c.next || '') + '" aria-label="다음 결제일" style="width:150px">' + soon(c.next) + '</td>' +
+          '<td class="n"><b>' + won(monthlyKRW(c, rate)) + '</b></td>' +
+          '<td><input data-k="note" value="' + esc(c.note || '') + '" aria-label="메모" style="min-width:220px"></td>' +
+          '<td><input data-k="owner" value="' + esc(c.owner || '') + '" placeholder="가입한 이메일" aria-label="관리 계정" style="width:190px"></td>' +
+          '<td><select data-k="moved" aria-label="학회 계정으로 이전" style="width:110px">' + MOVED.map(function (o) { return '<option value="' + o[0] + '"' + ((c.moved || '') === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select></td>' +
+          '<td class="n">' + (c.auto ? '' : '<button class="bt s" type="button" data-rm="' + i + '">빼기</button>') + '</td></tr>';
       }).join('') +
-      '</tbody><tfoot><tr><td colspan="5"><b>합계</b></td><td class="n"><b>' + won(month) + '</b></td><td colspan="4"></td></tr></tfoot></table></div>' +
-      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center"><button class="bt" type="button" data-a="add">줄 추가</button><button class="bt p" type="button" data-a="savecosts">유지비 저장</button><label style="display:flex;gap:6px;align-items:center;font-size:12.5px;color:rgba(233,231,225,.65)">환율 <input id="op-rate" inputmode="numeric" value="' + rate + '" style="width:80px"> 원/달러</label></div><div class="msg" data-m="costs"></div></div>';
+      '</tbody><tfoot><tr><td colspan="5">합계</td><td class="n">' + won(month) + '</td><td colspan="4"></td></tr></tfoot></table></div>' +
+      '<div class="acts"><button class="bt" type="button" data-a="add">줄 추가</button><button class="bt" type="button" data-a="cancelcosts">취소</button><button class="bt p" type="button" data-a="savecosts">저장</button><label>환율 <input id="op-rate" inputmode="numeric" value="' + rate + '" style="width:96px"> 원/달러</label></div><div class="msg" data-m="costs"></div>')) +
+      // Voyage
+      '<div style="margin-top:56px"><div class="op-h"><span class="lb">VOYAGE · POLARIS</span><span class="mt">Polaris 서버가 센 토큰 × 단가 · 무료 토큰이 남아 있으면 실제 청구는 0원</span></div>' +
+      (s.usageErr ? '<p class="note" style="margin-top:16px">Polaris 서버에서 사용량을 못 받았어요 (' + esc(s.usageErr) + '). 서버를 최신으로 올리고(polaris-update main) OPS_ADMINS에 이 계정을 넣어 주세요.</p>'
+        : !v ? '<p class="note" style="margin-top:16px">불러오는 중…</p>'
+        : '<div class="op-hl">이번 달 ' + usd(v.usd) + '<span class="dot">·</span>지난달 ' + (v.last.n ? usd(v.last.usd) : '—') + '<span class="dot">·</span>질문 ' + num(v.q) + '<small>개</small></div>' +
+          '<div class="trio"><div><span>임베딩 (이번 달)</span><b>' + num(v.tok['voyage-3.5'] / 1e3) + 'K</b><em>voyage-3.5 토큰</em></div><div><span>리랭크 (이번 달)</span><b>' + (v.tok['rerank-2.5'] / 1e6).toFixed(2) + 'M</b><em>rerank-2.5 토큰</em></div><div><span>최근 7일 질문</span><b>' + num(v.series.slice(-7).reduce(function (a, x) { return a + x.q; }, 0)) + '</b><em>' + v.series.slice(-7).map(function (x) { return x.q; }).join(' · ') + '</em></div></div>' +
+          bars(v.series, 'usd', usd) + (v.last.n ? '' : '<p class="note" style="margin-top:12px">지난달 기록은 서버가 사용량을 세기 시작한 뒤부터 나와요. 그 전은 dashboard.voyageai.com → Usage에서 확인해요.</p>')) + '</div>';
+    var cost = sec('cost', '유지비 · 계정', '학회 계정으로 이전 ' + movedN + '/' + costs.length + ' · 연 단위는 12로 나눠 월에 더해요', costBody);
 
-    // 문자 기록 + 알림
-    var smsP = '<div class="op-p"><h3>문자 기록<i>AGORA 선배님 연락처 · 최근 50건</i></h3>' + (s.sms && s.sms.length ? '<div class="tw" style="max-height:280px;overflow-y:auto"><table><thead><tr><th>시각</th><th>받은 사람</th><th>선배님</th><th>결과</th></tr></thead><tbody>' + s.sms.map(function (x) {
-      return '<tr><td>' + esc(new Date(x.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</td><td>' + esc(String(x.user_email || '').replace(/@caurfs\.kr$/, '')) + '</td><td>' + esc(x.alumni_cohort + '기 ' + x.alumni_name) + '</td><td>' + (x.status === 'sent' ? '보냄' : '<span class="tag bad">실패</span>') + '</td></tr>';
-    }).join('') + '</tbody></table></div>' : '<p class="s">아직 보낸 문자가 없어요.</p>') + '</div>';
+    // ⑤ 문자 기록
+    var smsBody = s.sms && s.sms.length ? '<div class="op-hl">' + num(s.sms.length) + '<small>건</small><span class="dot">·</span>최근 ' + esc(new Date(s.sms[0].created_at).toLocaleDateString('ko-KR', { timeZone: 'Asia/Seoul', month: 'long', day: 'numeric' })) + '</div><div class="tw" style="max-height:420px;overflow-y:auto"><table><thead><tr><th>시각</th><th>받은 사람</th><th>선배님</th><th class="n">결과</th></tr></thead><tbody>' + s.sms.map(function (x) {
+      var who = x.who ? '<b>' + esc(x.who) + '</b> <span class="sb">' + esc(x.id) + '</span>' : esc(x.id === 'member' ? '공용 계정' : x.id) + (x.phone4 ? ' <span class="sb">번호 …' + esc(x.phone4) + '</span>' : '');
+      return '<tr><td class="sb">' + esc(new Date(x.created_at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</td><td>' + who + '</td><td>' + esc(x.alumni_cohort + '기 ' + x.alumni_name) + '</td><td class="n">' + (x.status === 'sent' ? '<span class="tag ok">보냄</span>' : '<span class="tag bad">실패</span>') + '</td></tr>';
+    }).join('') + '</tbody></table></div>' : '<p class="note" style="margin-top:20px">아직 보낸 문자가 없어요.</p>';
+    var sms = sec('sms', '문자 기록', 'AGORA 선배님 연락처 · 최근 50건', smsBody);
+
+    // ⑥ 알림 메일
     var nt = set.notify || {};
-    var mailP = '<div class="op-p w" style="max-width:640px"><h3>알림 메일<i>' + (s.mail ? '메일 발송 켜짐' : 'RESEND_API_KEY를 넣으면 켜져요') + '</i></h3>' +
-      '<form data-f="set"><input id="op-mail" type="email" placeholder="알림 받을 이메일" aria-label="알림 받을 이메일" value="' + esc(set.notify_email || '') + '">' +
-      '<label class="chk"><input type="checkbox" id="op-n1"' + (nt.agora_sms === false ? '' : ' checked') + '>AGORA에서 누가 어느 선배님 연락처를 문자로 받았을 때</label>' +
+    var mail = sec('mail', '알림 메일', s.mail ? '메일 발송 켜짐' : 'RESEND_API_KEY를 넣으면 켜져요',
+      '<form data-f="set" class="mailbox" style="margin-top:24px"><input id="op-mail" type="email" placeholder="알림 받을 이메일" aria-label="알림 받을 이메일" value="' + esc(set.notify_email || '') + '">' +
+      '<div style="margin-top:12px"><label class="chk"><input type="checkbox" id="op-n1"' + (nt.agora_sms === false ? '' : ' checked') + '>AGORA에서 선배님 연락처를 문자로 받았을 때</label>' +
       '<label class="chk"><input type="checkbox" id="op-n2"' + (nt.signup === false ? '' : ' checked') + '>회원가입 신청이 들어왔을 때</label>' +
-      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입을 승인했을 때 (안내 문자 결과 포함)</label>' +
-      '<button class="bt p" type="submit" style="margin-top:12px">설정 저장</button></form><div class="msg" data-m="set"></div></div>';
+      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입을 승인했을 때 (안내 문자 결과 포함)</label></div>' +
+      '<div class="acts"><button class="bt p" type="submit">저장</button></div></form><div class="msg" data-m="set"></div>');
 
-    el.innerHTML = kpi + '<div class="op-g">' + gaP + accP + smsP + apiP + costP + mailP + '</div>';
+    el.innerHTML = summary + visit + account + cost + sms + mail;
     wire();
   }
 
@@ -243,13 +302,16 @@
         save('account', { entries: acc }, 'acc');
       };
     });
-    el.querySelector('[data-a="add"]').onclick = function () { var rows = readCosts(); rows.push({ name: '', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '' }); st.state.costs = { value: { rows: rows } }; render(); };
+    var q = function (sel, fn) { var x = el.querySelector(sel); if (x) x.onclick = fn; };
+    q('[data-a="editcosts"]', function () { st.editCosts = true; render(); });
+    q('[data-a="cancelcosts"]', function () { st.editCosts = false; render(); });
+    if (el.querySelector('[data-a="add"]')) el.querySelector('[data-a="add"]').onclick = function () { var rows = readCosts(); rows.push({ name: '', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '' }); st.state.costs = { value: { rows: rows } }; render(); };
     el.querySelectorAll('[data-rm]').forEach(function (b) { b.onclick = function () { var rows = readCosts(); rows.splice(+b.getAttribute('data-rm'), 1); st.state.costs = { value: { rows: rows } }; render(); }; });
-    el.querySelector('[data-a="savecosts"]').onclick = function () {
+    if (el.querySelector('[data-a="savecosts"]')) el.querySelector('[data-a="savecosts"]').onclick = function () {
       var rows = readCosts().filter(function (c) { return c.auto || String(c.name).trim(); });
       var rate = +el.querySelector('#op-rate').value.replace(/\D/g, '') || 1400;
       var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { usd_krw: rate });
-      save('costs', { rows: rows }, 'costs', function () { call(st.sb, { action: 'ops_save', key: 'settings', value: set }); st.state.settings = { value: set }; });
+      save('costs', { rows: rows }, 'costs', function () { st.editCosts = false; call(st.sb, { action: 'ops_save', key: 'settings', value: set }); st.state.settings = { value: set }; });
     };
     el.querySelector('[data-f="set"]').onsubmit = function (e) {
       e.preventDefault();
@@ -288,11 +350,23 @@
     close();
     var el = document.createElement('div');
     el.className = 'op'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '운영 대시보드');
-    el.innerHTML = '<div class="op-in"><div class="op-hd"><div><small>ADMIN</small><h2>운영</h2></div><div class="r"><span class="op-up"></span><button class="bt" type="button" data-a="reload">새로고침</button><button class="x" type="button" aria-label="닫기">×</button></div></div><div class="op-body"><p class="s" style="margin-top:24px;color:rgba(233,231,225,.6)">불러오는 중…</p></div></div>';
+    var tabs = [['sum', 'Summary'], ['visit', '방문자'], ['acc', '계좌'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['mail', '알림 메일']];
+    el.innerHTML = '<div class="op-top"><div class="op-top-in"><button class="x" type="button" aria-label="닫기">×</button><div class="ey">R.F.S. OPERATIONS</div><h2>Operations</h2><div class="meta"><span class="op-up"></span><button type="button" data-a="reload">새로고침</button></div></div></div>' +
+      '<nav class="op-tabs" aria-label="운영 메뉴"><div class="op-tabs-in">' + tabs.map(function (t, i) { return '<a href="#op-' + t[0] + '" data-t="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</a>'; }).join('') + '</div></nav>' +
+      '<div class="op-in op-body"><p class="note">불러오는 중…</p></div>';
     document.body.appendChild(el);
     st = { el: el, sb: o.sb, onPending: o.onPending, state: {} };
     el.querySelector('.x').onclick = close;
     el.querySelector('[data-a="reload"]').onclick = load;
+    // 위쪽 탭: 누르면 그 칸으로, 스크롤하면 지금 칸에 밑줄 (화면 주소는 바꾸지 않는다)
+    el.querySelectorAll('.op-tabs a').forEach(function (a) {
+      a.onclick = function (e) { e.preventDefault(); var t = el.querySelector('#op-' + a.getAttribute('data-t')); if (t) el.scrollTo({ top: t.offsetTop - 64, behavior: 'smooth' }); };
+    });
+    el.addEventListener('scroll', function () {
+      var cur = 'sum';
+      el.querySelectorAll('.op-s').forEach(function (x) { if (x.offsetTop - 90 <= el.scrollTop) cur = x.id.slice(3); });
+      el.querySelectorAll('.op-tabs a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-t') === cur); });
+    }, { passive: true });
     st.key = function (e) { if (e.key === 'Escape' && !document.querySelector('.jn')) close(); };
     document.addEventListener('keydown', st.key);
     requestAnimationFrame(function () { el.classList.add('show'); });
