@@ -259,8 +259,10 @@ def exhibits(lines, H, page):
         x1 = row[k + 1]['x0'] - 8 if k + 1 < len(row) else 580
         lo = sl['x0'] - 10 if k > 0 else 0   # 왼쪽 옆 차트 칸 안으로는 넓히지 않는다(옆 차트가 같이 잘려 들어가지 않게)
         # 칸 안에 들어가고 같은 높이 옆 칸에도 글이 있는 줄은 나란히 놓인 캡션이라 위쪽 경계로 보지 않는다
-        side_cap = lambda l: len(row) > 1 and l['x0'] >= x0 - 6 and l['x1'] <= x1 + 6 and any(
-            o is not l and abs(o['y0'] - l['y0']) < 3 and o['x0'] >= row[0]['x0'] - 10 and (o['x0'] > x1 or o['x1'] < x0) for o in lines)
+        cols = [(o['x0'] - 15, row[j + 1]['x0'] if j + 1 < len(row) else 585) for j, o in enumerate(row) if j != k]
+        side_cap = lambda l: l['x0'] >= x0 - 6 and l['x1'] <= x1 + 6 and any(
+            o is not l and abs(o['y0'] - l['y0']) < 3 and o['font'] == l['font'] and abs(o['size'] - l['size']) < 1.5
+            and any(a <= o['x0'] and o['x1'] <= b for a, b in cols) for o in lines)
         above = [l for l in wide if l['y1'] < sl['y0'] - 2 and l['x1'] > x0 + 4 and l['x0'] < x1 - 4 and not inside(l, used)
                  and (l['x1'] - l['x0']) > 0.55 * (x1 - x0) and not side_cap(l)]
         # 위쪽 경계는 칸 폭의 절반 넘게 이어진 본문 줄(문단)만. 표의 행이나 차트 안 글자를 경계로 오해하지 않게
