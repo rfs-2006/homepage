@@ -225,7 +225,7 @@ function indexPage(sorted, groups) {
   const keywords = uniq(['중앙대 RFS', '중앙대 가치투자학회', '기업분석 리포트', '기업분석 보고서', '리서치 보고서', '에쿼티 리서치', ...names]).join(', ');
   const ogImg = resolveAsset('assets/og/site.jpg');
   const seo = [
-    `<title>기업분석 보고서 ${n}편 | R.F.S. 중앙대학교 가치투자학회 Research</title>`,
+    `<title>기업·산업 리포트 | 기업분석 보고서 ${n}편 - R.F.S. 중앙대학교 가치투자학회</title>`,
     `<meta name="description" content="${attr(desc)}">`,
     `<meta name="keywords" content="${attr(keywords)}">`,
     `<link rel="canonical" href="${C.SITE}/research/">`,

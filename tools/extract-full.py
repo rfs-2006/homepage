@@ -27,6 +27,40 @@ def load_reports():
     return reps
 
 
+import unicodedata, difflib
+
+
+def _tk(t):
+    """목차·제목 비교용: 'Ⅰ'→'I'(NFKC), 공백·문장부호 빼고 소문자"""
+    t = unicodedata.normalize('NFKC', t or '').lower()
+    return re.sub(r"[\s·.,:;'\"‘’“”()\[\]<>\-–—~!?/|]", '', t)
+
+
+def _body(t):
+    """앞 번호(Ⅰ. / 1-(1). / 2-2. / IV.)를 뗀 제목"""
+    return _tk(re.sub(r'^\s*([IVXⅠ-Ⅻ]+|\d+)([-.)\s]*\(?\d*\)?)*[.)]?\s*', '', unicodedata.normalize('NFKC', t or '')))
+
+
+def match_toc(toc, heads):
+    """목차 항목마다 본문 제목(blocks 번호)을 찾는다. 앞에서 찾은 곳보다 뒤에서만 찾고(순서 유지),
+    ① 글자 그대로 포함 ② 번호 뗀 제목 포함 ③ 비슷한 정도 0.6 이상 순서로 본다"""
+    last = -1
+    for e in toc:
+        t, tb = _tk(e['t']), _body(e['t'])
+        cand = [(i, h) for i, h in heads if i > last]
+        hit = next((i for i, h in cand if t and (t in _tk(h) or _tk(h) in t)), None)
+        if hit is None and len(tb) >= 2:
+            hit = next((i for i, h in cand if _body(h) and (tb in _body(h) or _body(h) in tb)), None)
+        if hit is None and tb:
+            best = max(cand[:12], key=lambda x: difflib.SequenceMatcher(None, tb, _body(x[1])).ratio(), default=None)
+            if best and difflib.SequenceMatcher(None, tb, _body(best[1])).ratio() >= 0.6:
+                hit = best[0]
+        e['to'] = hit
+        if hit is not None:
+            last = hit
+    return toc
+
+
 def is_bold(s):
     f = s['font'].lower()
     return 'bold' in f or 'heavy' in f or 'black' in f or bool(s.get('flags', 0) & 16)   # 글꼴 이름에 굵기가 없으면(CIDFont+F2) 굵음 표시로
@@ -387,8 +421,8 @@ def extract(rid, pdf):
             if not t:
                 continue
             lvl = min(2, sum(1 for x in x0s if x < round(l['x0']) - 5))
-            to = next((i for i, h in heads if norm(t) in norm(h) or norm(h) in norm(t)), None)
-            toc.append({'t': t, 'lvl': lvl, 'to': to, 'pg': int(m.group(1)) if m else None})
+            toc.append({'t': t, 'lvl': lvl, 'to': None, 'pg': int(m.group(1)) if m else None})
+        match_toc(toc, heads)
     if len(toc) < 3 or sum(1 for t in toc if t['to'] is not None) < len(toc) / 2:   # 2쪽이 목차가 아닌 예전 양식
         toc = []
     out = {'stock': stock, 'toc': toc, 'blocks': merged}

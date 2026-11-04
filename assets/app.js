@@ -2798,7 +2798,7 @@ class Component extends DCLogic {
     this._titleKey = null;
     document.title = page === 'report' && ir ? ir.name.replace(/\s*산업$/, '') + ' 산업 전망 | 산업분석 리포트 - 중앙대 RFS'
       : page === 'report' && r ? r.name + ' 주가 전망' + (r.tp && r.tp !== '-' ? '·목표주가 ' + r.tp : '') + ' | ' + r.name + '(' + r.ticker + ') 기업분석 리포트 - 중앙대 RFS'
-      : page === 'research' ? '기업분석 리포트 | 중앙대 가치투자학회 R.F.S.'
+      : page === 'research' ? '기업·산업 리포트 | 중앙대 가치투자학회 R.F.S.'
       : page === 'about' ? '학회 소개 | 중앙대 가치투자학회 R.F.S.'
       : page === 'people' ? '학회원·알럼나이 | 중앙대 가치투자학회 R.F.S.'
       : page === 'activity' ? '활동 | 중앙대 가치투자학회 R.F.S.'
@@ -3306,7 +3306,7 @@ class Component extends DCLogic {
       onRegion: (e) => this.setState({ fRegion: e.target.value, page1: 1 }),
       covCols, filteredReports: pageRows.map(vm), covCount: filtered.length,
       indGroups: (() => { const by = {}; INDUSTRY.forEach((x) => { (by[x.sem] = by[x.sem] || []).push(x); });
-        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: '20' + k.replace('-', '년 ') + '학기', rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Research Team ' + x.team : '', pagesLine: x.pages + '쪽', web, pdfOnly: !web, href: '/research/ind-' + x.id + '/', open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
+        return Object.keys(by).sort((a, b) => b.localeCompare(a)).map((k) => ({ term: k, rows: by[k].sort((a, b) => (+a.team || 9) - (+b.team || 9)).map((x) => { const web = IND_FULL.includes('ind-' + x.id); return { ...x, teamLine: x.team ? 'Team ' + x.team : '', dateLine: x.date, web, pdfOnly: !web, href: '/research/ind-' + x.id + '/', open: (e) => { e.preventDefault(); this.go('report', 'ind-' + x.id); } }; }) })); })(),
       indCount: INDUSTRY.length,
       covGroups, isGrouped: s.sortKey === 'date', isFlat: s.sortKey !== 'date',
       covEmpty: filtered.length === 0,
@@ -3361,7 +3361,7 @@ class Component extends DCLogic {
       rFullShown: !!(s.full && s.full[active.id]),
       rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
-      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
+      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : '') + (t.to == null ? ' nt' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
         go: (e) => { e.preventDefault(); const el = t.to != null && document.getElementById('rf-' + t.to); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); } })),
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];

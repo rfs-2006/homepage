@@ -1319,10 +1319,10 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 @media (max-width:719px){.ind-band{margin:14px 14px 0;padding:12px 14px}.ind-band .ib-r{font-size:12px}.ind-p1{grid-template-columns:1fr;margin:0 14px 30px}.ind-p1>div:first-child{padding:22px 4px}.ind-title{font-size:30px}.ind-head{font-size:22px}}
 /* 산업 리포트: 학기별 묶음, 줄을 누르면 PDF를 받는다 */
 .ind-term{margin-top:30px;padding:0 6px 8px;font-size:14px;font-weight:700;letter-spacing:0.08em;color:#203864;border-bottom:1px solid #E2E0DA}
-.indrow{display:grid;grid-template-columns:minmax(0,1fr) 140px 140px 56px 64px;gap:18px;align-items:center;padding:16px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none;transition:background .15s}
+.indrow{display:grid;grid-template-columns:minmax(0,1fr) 120px 64px 112px 84px;gap:18px;align-items:center;padding:16px 6px;border-bottom:1px solid #E2E0DA;color:inherit;text-decoration:none;transition:background .15s}
 .indrow:hover{background:#EFEDE7}
-.indrow b{font-size:18px;letter-spacing:-0.02em;font-weight:700}
-.indrow .ind-s,.indrow .ind-t{font-size:13.5px;color:#1A1A1A}.indrow .ind-p{font-size:13px;color:rgba(26,26,26,.6);text-align:right;font-variant-numeric:tabular-nums}
+.indrow b{font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-0.02em;font-weight:700}
+.indrow .ind-s,.indrow .ind-t{font-size:13.5px;color:#1A1A1A}.indrow .ind-p{font-size:14px;color:#1A1A1A;text-align:right;font-variant-numeric:tabular-nums}
 .indrow .ind-d{text-align:right;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#203864}
 main.pgx [data-tab="industry"],main.pgx [data-tab="industry"] *{font-family:'RFS Dotum UI','Pretendard Variable',Pretendard,sans-serif !important}
 @media (max-width:719px){.indrow{grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:14px 4px}.indrow b{font-size:16.5px}.indrow .ind-d{grid-column:2;grid-row:1 / span 2}.indrow .ind-s{grid-column:1;font-size:12.5px;color:rgba(26,26,26,.65)}.indrow .ind-t,.indrow .ind-p{display:none}}
@@ -1596,6 +1596,7 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-side a.l1{padding-left:24px;font-size:12px}.rf-side a.l2{display:none}
 .rf-side a:hover{color:#1A1A1A}
 .rf-side a.cur{color:#203864;border-left-color:#203864;font-weight:700}
+.rf-side a.nt,.rf-toc a.nt{pointer-events:none;cursor:default;opacity:.45}   /* 본문에서 그 제목을 못 찾은 목차 항목: 누를 수 없게 흐리게 */
 @media (min-width:1360px){html:not(.rc-open) .rf-side{display:block}}
 @media (min-width:1360px){html:not(.rc-open) .rf-toc{display:none}}   /* 넓은 화면은 왼쪽 목차가 대신한다. 좁은 화면·Polaris 창이 열렸을 때만 위 CONTENTS */
 .rf-jump{position:fixed;left:24px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:59;display:flex;flex-direction:column;gap:8px;opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .25s,transform .25s,visibility .25s}

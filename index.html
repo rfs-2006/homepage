@@ -78,7 +78,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<link rel="stylesheet" href="/assets/app.css?v=eddbf19c66">
+<link rel="stylesheet" href="/assets/app.css?v=3566b62ccb">
 </head>
 <body>
 <noscript>
@@ -125,7 +125,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=6" defer></script>
 <script src="./assets/ops.js?v=9" defer></script>
-<link rel="stylesheet" href="/assets/app.css?v=eddbf19c66">
+<link rel="stylesheet" href="/assets/app.css?v=3566b62ccb">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
@@ -178,7 +178,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
     </section>
 
     <section id="home-sky-m" class="on-photo" data-nav="dark" style="position:relative;height:100svh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1020" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1105" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section id="home-recruit" class="on-photo" data-nav="dark" style="position:relative;min-height:88svh;display:flex;align-items:flex-end;overflow:hidden">
@@ -218,7 +218,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
     </section>
 
     <section data-snap="" id="home-sky" class="on-photo" data-nav="dark" style="position:relative;height:100vh;min-height:560px;background:#0B1524;overflow:hidden">
-      <iframe src="assets/dipper.html?v=1020" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
+      <iframe src="assets/dipper.html?v=1105" title="R.F.S. 메뉴" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;border:0;display:block"></iframe>
     </section>
     <sc-if value="{{ isRecruiting }}" hint-placeholder-val="{{ false }}">
     <section data-snap="" id="home-recruit" data-about-sec="" class="on-photo bigsec" data-nav="dark" style="position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:flex-end">
@@ -309,9 +309,9 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
         <div data-tab="industry" id="industry" class="rind" style="padding:0 0 120px;margin-top:-24px;scroll-margin-top:80px">
           <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;padding-bottom:16px;border-bottom:2px solid #0F1B2E">
             <h2 style="margin:10px 0 0;font-family:'Noto Serif KR',serif;font-size:34px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Industry Reports</h2>
-            <span style="font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ indCount }}편 · PDF로 받기</span>
+            <span style="font-size:13px;color:#1A1A1A;font-variant-numeric:tabular-nums">{{ indCount }}편</span>
           </div>
-          <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
+          <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.dateLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.dateLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
         </div>
 
       </div>
@@ -386,7 +386,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
     <section data-tab="industry" id="industry-m" data-nav="light" class="rind" style="background:#F7F6F3;padding:8px 22px 64px;scroll-margin-top:64px">
       <h2 style="margin:0;font-family:'Noto Serif KR',serif;font-size:30px;font-weight:700;letter-spacing:-0.025em;color:#0F1B2E">Industry Reports</h2>
       <p style="margin:8px 0 0;padding-bottom:14px;border-bottom:2px solid #0F1B2E;font-size:13px;color:#1A1A1A">{{ indCount }}편 · 누르면 PDF로 받아요</p>
-      <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.pagesLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
+      <sc-for list="{{ indGroups }}" as="g" hint-placeholder-count="2"><div class="ind-term">{{ g.term }}</div><sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="4"><sc-if value="{{ r.pdfOnly }}" hint-placeholder-val="{{ true }}"><a href="{{ r.pdf }}" target="_blank" rel="noopener" download class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.dateLine }}</span><span class="ind-d">PDF ↓</span></a></sc-if><sc-if value="{{ r.web }}" hint-placeholder-val="{{ false }}"><a href="{{ r.href }}" onClick="{{ r.open }}" class="indrow"><b>{{ r.name }}</b><span class="ind-s">{{ r.sector }}</span><span class="ind-t">{{ r.teamLine }}</span><span class="ind-p">{{ r.dateLine }}</span><span class="ind-d">읽기 →</span></a></sc-if></sc-for></sc-for>
     </section>
   </main>
   </sc-if>
@@ -1778,7 +1778,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;recruitStatus&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;모집 중&quot;,&quot;서류 심사 중&quot;,&quot;마감&quot;],&quot;default&quot;:&quot;마감&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitSemester&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;26-2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitCohort&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:43,&quot;min&quot;:1,&quot;max&quot;:99,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitDeadline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;7월 31일 (금) 23:59&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitFormUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://forms.gle/[교체]&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;nextRecruit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;27-1학기, 2027년 1월&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;intranetPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;인트라넷&quot;},&quot;mobilePreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;미리보기&quot;}}"></script>
-<script src="/assets/app.js?v=09c127af6b"></script>
+<script src="/assets/app.js?v=18a04e68d3"></script>
 <script>
 // 메뉴 로고 옆 'with Claude'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
 (function(){
@@ -1871,7 +1871,9 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
       jump.classList.toggle('on', scrollY > 500);
       jump.lastChild.disabled = scrollY >= end - 4;
       var links = side.querySelectorAll('a[data-to]'), cur = null, lim = innerHeight / 3;
-      for (var i = 0; i < links.length; i++) { var el = document.getElementById(links[i].getAttribute('data-to')); if (el && el.getBoundingClientRect().top < lim) cur = links[i]; }
+      for (var i = 0; i < links.length; i++) { var id = links[i].getAttribute('data-to'), el = id && document.getElementById(id); if (el && el.getBoundingClientRect().top < lim) cur = links[i]; }
+      // 왼쪽 목차에 안 보이는 하위 항목(l2)이면 바로 위의 보이는 항목을 현재 장으로
+      while (cur && cur.offsetParent === null && cur.previousElementSibling) cur = cur.previousElementSibling;
       for (var j = 0; j < links.length; j++) links[j].classList.toggle('cur', links[j] === cur);
     }
     addEventListener('scroll', function () { if (!tick) { tick = true; requestAnimationFrame(upd); } }, { passive: true });
