@@ -5,9 +5,10 @@
 // - reject: 계정과 신청 정보를 바로 지운다 (개인정보처리방침: 거절하면 즉시 파기)
 // - ops_get: 대시보드 데이터 (계좌 잔액 기록·유지비 표·설정, 문자 기록 최근 50건)
 // - ops_save: 대시보드의 계좌·유지비·설정 저장 (ops_state 테이블, supabase/sql/ops_state.sql)
+// - ga: Google Analytics 방문자 (최근 30일 일별 사용자·페이지뷰, 많이 본 페이지, 유입 경로). GA4 Data API, 서비스 계정
 //
 // 필요한 Secrets: MEMBER_ADMINS (관리자 로그인 이메일, 쉼표로 여러 개. 예: amt@caurfs.kr), 솔라피 키 3개(커피챗·agora-sms와 같은 것)
-// 선택 Secrets: RESEND_API_KEY·MAIL_FROM (알림 메일)
+// 선택 Secrets: RESEND_API_KEY·MAIL_FROM (알림 메일), GA_PROPERTY_ID·GA_SA_KEY (방문자: GA 속성 ID 숫자, 서비스 계정 키 JSON 전체)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const CORS = {
@@ -54,6 +55,50 @@ async function mailAdmin(admin: DB, kind: string, subject: string, text: string)
   }).catch(() => {});
 }
 
+// Google Analytics: 서비스 계정 키로 토큰을 받아(JWT, RS256) GA4 Data API batchRunReports를 부른다. 키는 Secret에만 있다
+const b64u = (buf: ArrayBuffer | Uint8Array | string) => {
+  const bytes = typeof buf === 'string' ? new TextEncoder().encode(buf) : new Uint8Array(buf as ArrayBuffer);
+  let bin = ''; for (const x of bytes) bin += String.fromCharCode(x);
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
+async function gaToken(sa: { client_email: string; private_key: string }) {
+  const pem = sa.private_key.replace(/-----[^-]+-----/g, '').replace(/\s+/g, '');
+  const der = Uint8Array.from(atob(pem), (c) => c.charCodeAt(0));
+  const key = await crypto.subtle.importKey('pkcs8', der, { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' }, false, ['sign']);
+  const now = Math.floor(Date.now() / 1000);
+  const unsigned = b64u(JSON.stringify({ alg: 'RS256', typ: 'JWT' })) + '.' + b64u(JSON.stringify({ iss: sa.client_email, scope: 'https://www.googleapis.com/auth/analytics.readonly', aud: 'https://oauth2.googleapis.com/token', iat: now, exp: now + 3600 }));
+  const sig = await crypto.subtle.sign('RSASSA-PKCS1-v1_5', key, new TextEncoder().encode(unsigned));
+  const r = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer', assertion: unsigned + '.' + b64u(sig) }),
+  });
+  if (!r.ok) throw new Error('token_' + r.status);
+  return (await r.json()).access_token as string;
+}
+async function gaReport() {
+  const prop = digits(Deno.env.get('GA_PROPERTY_ID')), raw = Deno.env.get('GA_SA_KEY');
+  if (!prop || !raw) return { configured: false };
+  const tok = await gaToken(JSON.parse(raw));
+  const range = [{ startDate: '29daysAgo', endDate: 'today' }];
+  const r = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${prop}:batchRunReports`, {
+    method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests: [
+      { dateRanges: range, dimensions: [{ name: 'date' }], metrics: [{ name: 'activeUsers' }, { name: 'screenPageViews' }], orderBys: [{ dimension: { dimensionName: 'date' } }] },
+      { dateRanges: range, dimensions: [{ name: 'pageTitle' }], metrics: [{ name: 'screenPageViews' }], orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }], limit: 10 },
+      { dateRanges: range, dimensions: [{ name: 'sessionSource' }], metrics: [{ name: 'sessions' }], orderBys: [{ metric: { metricName: 'sessions' }, desc: true }], limit: 8 },
+      { dateRanges: range, metrics: [{ name: 'activeUsers' }, { name: 'screenPageViews' }] },
+    ] }),
+  });
+  if (!r.ok) return { configured: true, error: 'http_' + r.status };
+  // deno-lint-ignore no-explicit-any
+  const rep = ((await r.json()).reports || []) as any[];
+  // deno-lint-ignore no-explicit-any
+  const rows = (i: number) => (rep[i]?.rows || []).map((x: any) => ({ d: x.dimensionValues?.map((v: any) => v.value) || [], m: x.metricValues.map((v: any) => +v.value) }));
+  const days = rows(0).map((x: { d: string[]; m: number[] }) => ({ date: `${x.d[0].slice(0, 4)}-${x.d[0].slice(4, 6)}-${x.d[0].slice(6, 8)}`, users: x.m[0], views: x.m[1] }));
+  const total = rows(3)[0]?.m || [0, 0];
+  return { configured: true, days, pages: rows(1).map((x: { d: string[]; m: number[] }) => ({ title: x.d[0], views: x.m[0] })), sources: rows(2).map((x: { d: string[]; m: number[] }) => ({ source: x.d[0], sessions: x.m[0] })), users30: total[0], views30: total[1] };
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json(405, { error: 'method' });
@@ -93,6 +138,10 @@ Deno.serve(async (req) => {
     const state: Record<string, unknown> = {};
     for (const r of rows || []) state[r.key] = { value: r.value, updated_at: r.updated_at, updated_by: r.updated_by };
     return json(200, { ok: true, state, sms: sms || [], mail: !!Deno.env.get('RESEND_API_KEY') });
+  }
+
+  if (b.action === 'ga') {
+    try { return json(200, { ok: true, ga: await gaReport() }); } catch (e) { return json(200, { ok: true, ga: { configured: true, error: String((e as Error).message).slice(0, 80) } }); }
   }
 
   if (b.action === 'ops_save') {

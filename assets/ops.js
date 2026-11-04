@@ -1,6 +1,6 @@
 /* 운영 대시보드: 관리자(member-admin의 MEMBER_ADMINS)만. AGORA 위쪽 바의 '운영'에서 연다 (app.js openJoinAdmin).
  * 한 화면에 ① 계좌 잔액·이번 달 유지비·버틸 수 있는 기간·승인 대기 ② 회원가입 승인 ③ 계좌 잔액 기록(손으로 입력)
- * ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
+ * ③-2 방문자(Google Analytics, member-admin의 ga) ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
  * 저장은 member-admin의 ops_save → ops_state 테이블(사이트에서는 못 읽음). 금액은 공개 화면 어디에도 나가지 않는다.
  * RFSOps.open({ sb, onPending }) */
 (function () {
@@ -152,6 +152,21 @@
       : !v ? '<p class="s">불러오는 중…</p>'
       : '<div><span class="big">' + usd(v.usd) + '</span><span class="sub">이번 달 · 질문 ' + v.q.toLocaleString() + '개 · 임베딩 ' + (v.tok['voyage-3.5'] / 1e3).toFixed(0) + 'K · 리랭크 ' + (v.tok['rerank-2.5'] / 1e6).toFixed(2) + 'M 토큰</span></div>' +
         bars(v.series, 'usd', usd) + '<p class="s" style="margin-top:8px">지난달(' + esc(v.lastKey) + '): ' + (v.last.n ? usd(v.last.usd) + ' (' + won(v.last.usd * rate) + ') · 질문 ' + v.last.q.toLocaleString() + '개' + (v.last.n < 28 ? ' · ' + v.last.n + '일치만 기록됨' : '') : '기록 없음 (서버가 사용량을 세기 시작한 뒤부터 나와요. 그 전 달은 dashboard.voyageai.com의 Usage에서 확인)') + '</p><p class="s">하루 질문 수: ' + v.series.slice(-7).map(function (x) { return x.q; }).join(' · ') + ' (최근 7일). 무료 토큰이 남아 있으면 실제 청구는 0이에요.</p>';
+    var ga = s.ga, gaHtml;
+    if (!ga) gaHtml = '<p class="s">불러오는 중…</p>';
+    else if (!ga.configured) gaHtml = '<p class="s">Supabase Secret에 GA_PROPERTY_ID·GA_SA_KEY를 넣으면 방문자 수가 나와요.</p>';
+    else if (ga.error) gaHtml = '<p class="s">Google Analytics를 불러오지 못했어요 (' + esc(ga.error) + '). 서비스 계정이 GA 속성에 뷰어로 들어가 있는지 확인해 주세요.</p>';
+    else {
+      var gd = ga.days || [], sum = function (n) { return gd.slice(-n).reduce(function (a, x) { return a + x.users; }, 0); };
+      var tdy = gd.length ? gd[gd.length - 1] : { users: 0, views: 0 };
+      gaHtml = '<div class="mini" style="grid-template-columns:repeat(3,minmax(0,1fr))"><div><span class="sub" style="margin:0">오늘 방문자</span><div class="big">' + tdy.users.toLocaleString() + '</div><span class="sub" style="margin:0">페이지뷰 ' + tdy.views.toLocaleString() + '</span></div>' +
+        '<div><span class="sub" style="margin:0">최근 7일 (일별 합)</span><div class="big">' + sum(7).toLocaleString() + '</div></div>' +
+        '<div><span class="sub" style="margin:0">최근 30일 방문자</span><div class="big">' + (ga.users30 || 0).toLocaleString() + '</div><span class="sub" style="margin:0">페이지뷰 ' + (ga.views30 || 0).toLocaleString() + '</span></div></div>' +
+        (gd.length > 1 ? bars(gd.map(function (x) { return { k: x.date, u: x.users }; }), 'u', function (n) { return Math.round(n) + '명'; }) : '') +
+        '<div class="mini" style="margin-top:12px"><div><h3 style="font-size:13px">많이 본 페이지 (30일)</h3><div class="tw"><table><tbody>' + (ga.pages || []).map(function (x) { return '<tr><td style="max-width:320px;overflow:hidden;text-overflow:ellipsis">' + esc(x.title) + '</td><td class="n">' + x.views.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></div>' +
+        '<div><h3 style="font-size:13px">들어온 경로 (30일)</h3><div class="tw"><table><tbody>' + (ga.sources || []).map(function (x) { return '<tr><td>' + esc(x.source) + '</td><td class="n">' + x.sessions.toLocaleString() + '</td></tr>'; }).join('') + '</tbody></table></div></div></div>';
+    }
+    var gaP = '<div class="op-p w"><h3>방문자<i>Google Analytics · 최근 30일 · 학회원 로그인 접속은 내부 트래픽으로 표시</i></h3>' + gaHtml + '</div>';
     var apiP = '<div class="op-p w"><h3>Voyage · Polaris 사용량<i>Polaris 서버가 센 토큰 × 단가 · 최근 30일</i></h3>' + vHtml + '</div>';
 
     // 유지비 표
@@ -182,7 +197,7 @@
       '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입을 승인했을 때 (안내 문자 결과 포함)</label>' +
       '<button class="bt p" type="submit" style="margin-top:12px">설정 저장</button></form><div class="msg" data-m="set"></div></div>';
 
-    el.innerHTML = kpi + '<div class="op-g">' + accP + smsP + apiP + costP + mailP + '</div>';
+    el.innerHTML = kpi + '<div class="op-g">' + gaP + accP + smsP + apiP + costP + mailP + '</div>';
     wire();
   }
 
@@ -245,6 +260,7 @@
       call(sb, { action: 'list' }),
       polarisUsage(sb),
     ]).then(function (r) {
+      call(sb, { action: 'ga' }).then(function (x) { if (!st) return; st.ga = x && x.ok ? x.ga : { configured: true, error: (x && x.error) || 'fail' }; render(); });
       if (!st) return;
       var g = r[0];
       if (!g || !g.ok) { st.el.querySelector('.op-body').innerHTML = '<p class="s" style="margin-top:24px">운영 데이터를 불러오지 못했어요' + (g && g.error === 'admin' ? ' (관리자 계정이 아니에요)' : ' (member-admin 함수를 최신으로 올렸는지 확인해 주세요)') + '.</p>'; return; }
