@@ -3,11 +3,11 @@
 // - approve: 정지를 풀어 로그인할 수 있게 한다. role로 학회원('member')·일반('guest')을 정한다 (app_metadata.role, 본인은 못 바꾼다)
 //            신청 때 받은 휴대폰으로 승인 안내 문자를 보내고(솔라피), 알림 이메일이 켜져 있으면 관리자에게도 메일
 // - reject: 계정과 신청 정보를 바로 지운다 (개인정보처리방침: 거절하면 즉시 파기)
-// - ops_get: 대시보드 데이터 (계좌 잔액 기록·유지비 표·설정, 문자 기록 최근 50건, Claude API 비용)
+// - ops_get: 대시보드 데이터 (계좌 잔액 기록·유지비 표·설정, 문자 기록 최근 50건)
 // - ops_save: 대시보드의 계좌·유지비·설정 저장 (ops_state 테이블, supabase/sql/ops_state.sql)
 //
 // 필요한 Secrets: MEMBER_ADMINS (관리자 로그인 이메일, 쉼표로 여러 개. 예: amt@caurfs.kr), 솔라피 키 3개(커피챗·agora-sms와 같은 것)
-// 선택 Secrets: ANTHROPIC_ADMIN_KEY (Claude Console의 Admin 키 sk-ant-admin…, 비용 조회용), RESEND_API_KEY·MAIL_FROM (알림 메일)
+// 선택 Secrets: RESEND_API_KEY·MAIL_FROM (알림 메일)
 import { createClient } from 'npm:@supabase/supabase-js@2.45.4';
 
 const CORS = {
@@ -54,36 +54,6 @@ async function mailAdmin(admin: DB, kind: string, subject: string, text: string)
   }).catch(() => {});
 }
 
-// Claude API 비용 (Admin API cost_report: 하루 단위, 금액은 USD 센트 단위 소수 문자열). 이번 달 1일부터 오늘까지
-async function claudeCost() {
-  const key = Deno.env.get('ANTHROPIC_ADMIN_KEY');
-  if (!key) return { configured: false };
-  const now = new Date();
-  const start = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-  const days: Record<string, number> = {}, models: Record<string, number> = {};
-  let page = '', total = 0;
-  for (let i = 0; i < 5; i++) {
-    const q = new URLSearchParams({ starting_at: start, bucket_width: '1d', limit: '31' });
-    q.append('group_by[]', 'description');
-    if (page) q.set('page', page);
-    const r = await fetch('https://api.anthropic.com/v1/organizations/cost_report?' + q, { headers: { 'x-api-key': key, 'anthropic-version': '2023-06-01' } });
-    if (!r.ok) return { configured: true, error: 'http_' + r.status };
-    const j = await r.json();
-    for (const b of j.data || []) {
-      const day = String(b.starting_at || '').slice(0, 10);
-      for (const x of b.results || []) {
-        const usd = Number(x.amount || 0) / 100;
-        total += usd; days[day] = (days[day] || 0) + usd;
-        const m = x.model || x.description || '기타';
-        models[m] = (models[m] || 0) + usd;
-      }
-    }
-    if (!j.has_more || !j.next_page) break;
-    page = j.next_page;
-  }
-  return { configured: true, month_usd: total, days, models };
-}
-
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS });
   if (req.method !== 'POST') return json(405, { error: 'method' });
@@ -116,14 +86,13 @@ Deno.serve(async (req) => {
   }
 
   if (b.action === 'ops_get') {
-    const [{ data: rows }, { data: sms }, cost] = await Promise.all([
+    const [{ data: rows }, { data: sms }] = await Promise.all([
       admin.from('ops_state').select('key, value, updated_at, updated_by'),
       admin.from('agora_sms_log').select('created_at, user_email, alumni_name, alumni_cohort, status').order('created_at', { ascending: false }).limit(50),
-      claudeCost().catch(() => ({ configured: true, error: 'fetch' })),
     ]);
     const state: Record<string, unknown> = {};
     for (const r of rows || []) state[r.key] = { value: r.value, updated_at: r.updated_at, updated_by: r.updated_by };
-    return json(200, { ok: true, state, sms: sms || [], claude: cost, mail: !!Deno.env.get('RESEND_API_KEY') });
+    return json(200, { ok: true, state, sms: sms || [], mail: !!Deno.env.get('RESEND_API_KEY') });
   }
 
   if (b.action === 'ops_save') {

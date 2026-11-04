@@ -1,6 +1,6 @@
 /* 운영 대시보드: 관리자(member-admin의 MEMBER_ADMINS)만. AGORA 위쪽 바의 '운영'에서 연다 (app.js openJoinAdmin).
  * 한 화면에 ① 계좌 잔액·이번 달 유지비·버틸 수 있는 기간·승인 대기 ② 회원가입 승인 ③ 계좌 잔액 기록(손으로 입력)
- * ④ API 사용량(Claude: Admin API 비용 / Voyage·질문 수: Polaris 서버 /usage) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정.
+ * ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
  * 저장은 member-admin의 ops_save → ops_state 테이블(사이트에서는 못 읽음). 금액은 공개 화면 어디에도 나가지 않는다.
  * RFSOps.open({ sb, onPending }) */
 (function () {
@@ -9,10 +9,10 @@
   var VOYAGE = { 'voyage-3.5': 0.06, 'rerank-2.5': 0.05 };
   var DEFAULT_COSTS = [
     { name: 'Netlify (호스팅)', amount: 9, cur: 'USD', cycle: 'month', next: '', note: '배포 크레딧을 넘기면 추가 요금' },
-    { name: 'Claude API', auto: 'claude', cur: 'USD', cycle: 'month', note: 'Admin API 실제 비용' },
     { name: 'Voyage (Polaris 검색)', auto: 'voyage', cur: 'USD', cycle: 'month', note: '서버가 센 토큰 × 단가' },
     { name: '솔라피 (문자)', amount: 5000, cur: 'KRW', cycle: 'month', next: '', note: '충전식' },
-    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '', note: '자동 연장 확인' },
+    { name: '도메인 caurfs.kr', amount: 20000, cur: 'KRW', cycle: 'year', next: '', note: '등록 업체 확인 (DNS는 Netlify)' },
+    { name: '도메인 caurfs.com', amount: 20000, cur: 'KRW', cycle: 'year', next: '2027-08-24', note: '가비아 · caurfs.kr로 넘기는 용도' },
     { name: 'Polaris 서버', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 크레딧 30만 원 사용 중 (만료일 확인)' },
     { name: 'Supabase', amount: 0, cur: 'KRW', cycle: 'month', next: '', note: '무료 요금제' },
   ];
@@ -91,21 +91,23 @@
     return { key: t.slice(0, 7), day: d, days: new Date(y, m, 0).getDate() };
   }
   function voyageMonth(days) {
-    var mi = monthInfo(), tok = { 'voyage-3.5': 0, 'rerank-2.5': 0 }, q = 0, series = [];
+    var mi = monthInfo(), tok = { 'voyage-3.5': 0, 'rerank-2.5': 0 }, q = 0, series = [], lm = { usd: 0, q: 0, n: 0 };
+    var pm = new Date(Date.UTC(+mi.key.slice(0, 4), +mi.key.slice(5, 7) - 2, 1)).toISOString().slice(0, 7);
     Object.keys(days || {}).sort().forEach(function (k) {
       var v = days[k];
       if (k.slice(0, 7) === mi.key) { tok['voyage-3.5'] += v['voyage-3.5'] || 0; tok['rerank-2.5'] += v['rerank-2.5'] || 0; q += (v.q_member || 0) + (v.q_anon || 0); }
+      if (k.slice(0, 7) === pm) { lm.n++; lm.q += (v.q_member || 0) + (v.q_anon || 0); lm.usd += (v['voyage-3.5'] || 0) / 1e6 * VOYAGE['voyage-3.5'] + (v['rerank-2.5'] || 0) / 1e6 * VOYAGE['rerank-2.5']; }
     });
     for (var i = 29; i >= 0; i--) {
       var k = new Date(Date.now() + 9 * 3600e3 - i * 864e5).toISOString().slice(0, 10), v = (days || {})[k] || {};
       series.push({ k: k, usd: (v['voyage-3.5'] || 0) / 1e6 * VOYAGE['voyage-3.5'] + (v['rerank-2.5'] || 0) / 1e6 * VOYAGE['rerank-2.5'], q: (v.q_member || 0) + (v.q_anon || 0) });
     }
-    return { tok: tok, q: q, usd: tok['voyage-3.5'] / 1e6 * VOYAGE['voyage-3.5'] + tok['rerank-2.5'] / 1e6 * VOYAGE['rerank-2.5'], series: series };
+    return { last: lm, lastKey: pm, tok: tok, q: q, usd: tok['voyage-3.5'] / 1e6 * VOYAGE['voyage-3.5'] + tok['rerank-2.5'] / 1e6 * VOYAGE['rerank-2.5'], series: series };
   }
   // 이번 달 쓴 만큼 → 월말 예상
   var project = function (soFar) { var mi = monthInfo(); return soFar / Math.max(1, mi.day) * mi.days; };
   function monthlyKRW(c, rate) {
-    var a = c.auto === 'claude' ? project(st.claudeUsd || 0) : c.auto === 'voyage' ? project(st.voyage ? st.voyage.usd : 0) : +c.amount || 0;
+    var a = c.auto === 'voyage' ? project(st.voyage ? st.voyage.usd : 0) : +c.amount || 0;
     if (c.cur === 'USD') a *= rate;
     return c.cycle === 'year' ? a / 12 : c.cycle === 'once' ? 0 : a;
   }
@@ -122,13 +124,12 @@
   function render() {
     var s = st, el = s.el.querySelector('.op-body');
     var acc = (s.state.account && s.state.account.value && s.state.account.value.entries) || [];
-    var costs = (s.state.costs && s.state.costs.value && s.state.costs.value.rows) || DEFAULT_COSTS;
+    var costs = ((s.state.costs && s.state.costs.value && s.state.costs.value.rows) || DEFAULT_COSTS).filter(function (c) { return c.auto !== 'claude'; });
     var set = (s.state.settings && s.state.settings.value) || {};
     var rate = +set.usd_krw || 1400;
     var last = acc[0], prev = acc[1];
     var month = costs.reduce(function (a, c) { return a + monthlyKRW(c, rate); }, 0);
     var runway = last && month > 0 ? last.balance / month : null;
-    var cl = s.claude || {};
     var kpi = '<div class="op-kpi">' +
       '<div class="op-k"><span>계좌 잔액</span><b>' + (last ? won(last.balance) : '—') + '</b><em>' + (last ? esc(last.date) + ' 기준' + (prev ? ' · 지난 기록보다 ' + (last.balance - prev.balance >= 0 ? '+' : '') + won(last.balance - prev.balance) : '') : '아래에서 잔액을 입력해 주세요') + '</em></div>' +
       '<div class="op-k"><span>이번 달 유지비 (예상)</span><b>' + won(month) + '</b><em>연 ' + won(month * 12) + ' · 환율 ' + rate.toLocaleString() + '원</em></div>' +
@@ -146,18 +147,12 @@
       '<div class="msg" data-m="acc"></div></div>';
 
     // API 사용량
-    var mi = monthInfo();
-    var clHtml = !cl.configured ? '<p class="s">Claude Console에서 Admin 키를 만들어 Supabase Secret <b>ANTHROPIC_ADMIN_KEY</b>에 넣으면 실제 비용이 나와요.</p>'
-      : cl.error ? '<p class="s">비용을 불러오지 못했어요 (' + esc(cl.error) + '). Admin 키를 확인해 주세요.</p>'
-      : '<div><span class="big">' + usd(cl.month_usd) + '</span><span class="sub">이번 달 · 월말 예상 ' + usd(project(cl.month_usd)) + ' (' + won(project(cl.month_usd) * rate) + ')</span></div>' +
-        bars((function () { var out = []; for (var i = mi.day - 1; i >= 0; i--) { var k = new Date(Date.now() + 9 * 3600e3 - i * 864e5).toISOString().slice(0, 10); out.push({ k: k, usd: (cl.days || {})[k] || 0 }); } return out.length > 1 ? out : out.concat(out); })(), 'usd', usd) +
-        '<div class="tw"><table><tbody>' + Object.keys(cl.models || {}).sort(function (a, b) { return cl.models[b] - cl.models[a]; }).slice(0, 6).map(function (m) { return '<tr><td>' + esc(m) + '</td><td class="n">' + usd(cl.models[m]) + '</td></tr>'; }).join('') + '</tbody></table></div>';
     var v = s.voyage;
     var vHtml = s.usageErr ? '<p class="s">Polaris 서버에서 사용량을 못 받았어요 (' + esc(s.usageErr) + '). 서버를 최신으로 올리고(polaris-update main) OPS_ADMINS에 이 계정을 넣어 주세요.</p>'
       : !v ? '<p class="s">불러오는 중…</p>'
       : '<div><span class="big">' + usd(v.usd) + '</span><span class="sub">이번 달 · 질문 ' + v.q.toLocaleString() + '개 · 임베딩 ' + (v.tok['voyage-3.5'] / 1e3).toFixed(0) + 'K · 리랭크 ' + (v.tok['rerank-2.5'] / 1e6).toFixed(2) + 'M 토큰</span></div>' +
-        bars(v.series, 'usd', usd) + '<p class="s" style="margin-top:8px">하루 질문 수: ' + v.series.slice(-7).map(function (x) { return x.q; }).join(' · ') + ' (최근 7일). 무료 토큰이 남아 있으면 실제 청구는 0이에요.</p>';
-    var apiP = '<div class="op-p w"><h3>API 사용량<i>Claude: Admin API · Voyage: Polaris 서버가 센 토큰</i></h3><div class="mini"><div><h3 style="font-size:13px">Claude</h3>' + clHtml + '</div><div><h3 style="font-size:13px">Voyage · Polaris 질문</h3>' + vHtml + '</div></div></div>';
+        bars(v.series, 'usd', usd) + '<p class="s" style="margin-top:8px">지난달(' + esc(v.lastKey) + '): ' + (v.last.n ? usd(v.last.usd) + ' (' + won(v.last.usd * rate) + ') · 질문 ' + v.last.q.toLocaleString() + '개' + (v.last.n < 28 ? ' · ' + v.last.n + '일치만 기록됨' : '') : '기록 없음 (서버가 사용량을 세기 시작한 뒤부터 나와요. 그 전 달은 dashboard.voyageai.com의 Usage에서 확인)') + '</p><p class="s">하루 질문 수: ' + v.series.slice(-7).map(function (x) { return x.q; }).join(' · ') + ' (최근 7일). 무료 토큰이 남아 있으면 실제 청구는 0이에요.</p>';
+    var apiP = '<div class="op-p w"><h3>Voyage · Polaris 사용량<i>Polaris 서버가 센 토큰 × 단가 · 최근 30일</i></h3>' + vHtml + '</div>';
 
     // 유지비 표
     var soon = function (d) { if (!d) return ''; var n = Math.round((Date.parse(d) - Date.parse(today())) / 864e5); return n < 0 ? '<span class="tag bad">지남</span>' : n <= 30 ? '<span class="tag warn">' + n + '일 남음</span>' : ''; };
@@ -200,7 +195,7 @@
     });
   }
   function readCosts() {
-    var base = (st.state.costs && st.state.costs.value && st.state.costs.value.rows) || DEFAULT_COSTS;
+    var base = ((st.state.costs && st.state.costs.value && st.state.costs.value.rows) || DEFAULT_COSTS).filter(function (c) { return c.auto !== 'claude'; });
     return [].map.call(st.el.querySelectorAll('[data-t="costs"] tbody tr'), function (tr) {
       var c = Object.assign({}, base[+tr.getAttribute('data-i')]);
       tr.querySelectorAll('[data-k]').forEach(function (x) { c[x.getAttribute('data-k')] = x.value; });
@@ -253,8 +248,7 @@
       if (!st) return;
       var g = r[0];
       if (!g || !g.ok) { st.el.querySelector('.op-body').innerHTML = '<p class="s" style="margin-top:24px">운영 데이터를 불러오지 못했어요' + (g && g.error === 'admin' ? ' (관리자 계정이 아니에요)' : ' (member-admin 함수를 최신으로 올렸는지 확인해 주세요)') + '.</p>'; return; }
-      st.state = g.state || {}; st.sms = g.sms; st.claude = g.claude; st.mail = g.mail;
-      st.claudeUsd = g.claude && g.claude.month_usd || 0;
+      st.state = g.state || {}; st.sms = g.sms; st.mail = g.mail;
       st.pending = r[1] && r[1].ok ? (r[1].list || []).length : null;
       if (st.onPending && st.pending != null) st.onPending(st.pending);
       var u = r[2];
