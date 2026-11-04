@@ -202,7 +202,7 @@ ${cover ? `<img class="cover" src="/${r.cover}" alt="${attr(r.name)} 기업분�
 <section><h2>요약</h2><p>${esc(r.summary)}</p></section>
 <section><h2>투자포인트</h2>${points}</section>
 <section><h2>밸류에이션</h2><p>${esc(r.valuation)}</p></section>
-<section><h2>작성</h2><p>${esc(`${r.team} · ${r.members}`)}</p></section>
+<section><h2>작성</h2><p>${esc(r.members && r.members !== r.team ? `${r.team} · ${r.members}` : r.team)}</p></section>
 <div class="btns">
 <a class="btn solid" href="/${r.pdf}">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(${esc(r.pdfMeta)})</span></a>
 <a class="btn" href="/#research/${r.id}">R.F.S. 사이트에서 보기</a>

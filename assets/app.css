@@ -534,7 +534,7 @@ nav.nav{view-transition-name:rfs-nav}
 ::view-transition-group(rfs-nav){animation-duration:200ms}
 
 /* Curriculum 별 배경 */
-.rv.cur-bg{position:absolute;inset:-2%;background:url("assets/hero/curriculum.webp") center 45%/cover no-repeat;opacity:0;transform:scale(1.22) !important;filter:brightness(.25) saturate(.6) blur(8px);transition:opacity 1.4s ease,transform 3.2s cubic-bezier(.16,.84,.24,1),filter 2.6s ease}
+.rv.cur-bg{position:absolute;inset:-2%;background:url("/assets/hero/curriculum.webp") center 45%/cover no-repeat;opacity:0;transform:scale(1.22) !important;filter:brightness(.25) saturate(.6) blur(8px);transition:opacity 1.4s ease,transform 3.2s cubic-bezier(.16,.84,.24,1),filter 2.6s ease}
 .rv.cur-bg.is-in{opacity:1;transform:scale(1) !important;filter:brightness(.62) saturate(.95) blur(0)}
 .cur-tw{position:absolute;inset:0;pointer-events:none;opacity:0;background-image:radial-gradient(1.4px 1.4px at 12% 18%,#fff,transparent),radial-gradient(1.2px 1.2px at 34% 62%,#fff,transparent),radial-gradient(1.6px 1.6px at 58% 26%,#fff,transparent),radial-gradient(1.1px 1.1px at 77% 71%,#fff,transparent),radial-gradient(1.5px 1.5px at 89% 14%,#fff,transparent),radial-gradient(1.2px 1.2px at 22% 84%,#fff,transparent),radial-gradient(1.3px 1.3px at 66% 88%,#fff,transparent);background-size:520px 420px;transition:opacity 2s ease 1s}
 .cur-tw2{background-size:380px 300px;background-position:140px 90px}
@@ -829,8 +829,8 @@ main.agora,main.agora.ag-dash{background:#0F1B2E}
 @keyframes fdRise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 
 /* 질감: 밝은 페이지 배경에 옅은 종이 결 */
-body main.pgx{background-image:url("assets/grain.png") !important;background-size:160px 160px}
-main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inset:0;pointer-events:none;background:url("assets/grain.png");background-size:160px 160px;opacity:.6;mix-blend-mode:normal;z-index:0}
+body main.pgx{background-image:url("/assets/grain.png") !important;background-size:160px 160px}
+main.pgx>section.on-photo:not(.pg-hero)::after{content:'';position:absolute;inset:0;pointer-events:none;background:url("/assets/grain.png");background-size:160px 160px;opacity:.6;mix-blend-mode:normal;z-index:0}
 
 /* 상단 메뉴: PC에서 크게 + 마우스 올리면 밑줄이 왼쪽부터 그어짐 */
 .navlink{position:relative}
