@@ -1649,6 +1649,19 @@ class Component extends DCLogic {
   // ABOUT·FUND·RFM·PEOPLE·AGORA 첫 화면(사진 + 제목): 처음 열면 잠깐 보여 준 뒤 그 자리에서 흐려지고, 다음 내용이 같은 자리에 나타난다 (스크롤해 내려가는 모습 없이).
   // 기다리는 동안 스크롤·터치·키를 쓰면 그만둔다. 같은 탭에서 다시 열면 바로 내용부터. 위로 올리면 첫 화면이 다시 보인다
   // 리포트 1페이지 본문(page1.json)은 리포트를 열기 전에 미리 받아 둔다. 받기 전에 열면 본문을 잠깐 감췄다가 한 번에 보인다 (html.rp1)
+  // 목차: PDF 2쪽 목차(toc)가 있으면 그것, 없으면 본문의 장 제목(h)으로 만든다 (예전 양식·목차 쪽이 없는 산업 리포트)
+  tocOf(f) {
+    if (!f) return [];
+    if (f._toc) return f._toc;
+    let t = f.toc || [];
+    if (!t.length) {
+      t = (f.blocks || []).map((b, i) => (b.h && b.h.replace(/[\s\d,.%\-–—/()원~]/g, '').length >= 2 ? { t: b.h.replace(/\s+/g, ' ').trim(), lvl: 0, to: i, pg: null } : null)).filter(Boolean);
+      // 'II.'처럼 번호만 떨어진 장 제목은 다음 제목과 합친다
+      t = t.reduce((a, e) => { const p = a[a.length - 1]; if (p && /^([IVXⅠ-Ⅻ]+|\d+)\s*[.)]?$/.test(p.t)) { p.t += ' ' + e.t; return a; } a.push(e); return a; }, []);
+      if (t.length < 3) t = [];
+    }
+    return (f._toc = t);
+  }
   loadP1() {
     if (this._p1req) return; this._p1req = true;
     const done = () => document.documentElement.classList.add('rp1');
@@ -3361,9 +3374,9 @@ class Component extends DCLogic {
       rIndHasSide: !!((active.isInd && s.full && s.full[active.id] && s.full[active.id].p1) && s.full[active.id].p1.side),
       rIndPdf: active.isInd ? active.pdf : '',
       rFullShown: !!(s.full && s.full[active.id]),
-      rHasToc: !!(s.full && s.full[active.id] && (s.full[active.id].toc || []).length),
+      rHasToc: this.tocOf(s.full && s.full[active.id]).length > 0,
       // 목차: 누르면 그 제목으로 스크롤 (주소의 해시는 화면 이동에 쓰므로 바꾸지 않는다)
-      rToc: ((s.full && s.full[active.id] && s.full[active.id].toc) || []).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : '') + (t.to == null ? ' nt' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
+      rToc: this.tocOf(s.full && s.full[active.id]).map((t, i, a) => ({ t: t.t, pg: t.pg == null ? '' : String(t.pg), cls: 'l' + t.lvl + (t.lvl === 0 && i && a[i - 1].lvl > 0 ? ' after' : '') + (t.to == null ? ' nt' : ''), id: t.to == null ? '' : 'rf-' + t.to, href: '/research/' + active.id + '/',
         go: (e) => { e.preventDefault(); const el = t.to != null && document.getElementById('rf-' + t.to); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' }); } })),
       rHasStock: !!(s.full && s.full[active.id] && s.full[active.id].stock && s.full[active.id].stock.rows.length),
       rStock: (() => { const st = s.full && s.full[active.id] && s.full[active.id].stock; if (!st) return [];
