@@ -104,6 +104,9 @@ function compute(r, p, bm, asOf) {
   const o = { d: d0, e: end, m: months, st: hit ? 'hit' : run ? 'run' : 'end', r: r4(ret), b: mret == null ? null : r4(mret), mk: /^\d{6}$/.test(r.ticker) ? 'K' : 'S' };
   if (hit) {
     o.h = hit; o.hd = days(d0, hit);
+    // 수익률: 목표가에 닿은 날까지로 본다. 그 뒤로 더 올랐으면(기간 끝·지금이 더 높으면) 그 값을 쓴다
+    const hc = win.find((x) => x[0] === hit)[1], hr = hc / base - 1;
+    if (ret < hr) { const hb = ffill(bm, [d0, hit]); o.r = r4(hr); o.b = hb[0] && hb[1] ? r4(hb[1] / hb[0] - 1) : null; o.rh = 1; }
     // 도달한 종가가 선 위에 오도록 그 칸 값을 도달 종가로 바꾼다
     const k = Math.min(cal.length - 1, Math.max(0, Math.round((ts(hit) - t0) / (t1 - t0) * (N - 1))));
     vals[k] = win.find((x) => x[0] === hit)[1]; o.hi = k;

@@ -1,11 +1,11 @@
 name: 리포트 평가 기간 주가
 
-# 평일 하루 한 번, 한국·미국 장이 모두 끝난 뒤(06:17 KST) 종가를 받아 assets/data/track.json을 다시 만든다.
+# 일주일에 한 번, 금요일 한국·미국 장이 모두 끝난 뒤(토 06:17 KST) 종가를 받아 assets/data/track.json을 다시 만든다.
 # 바뀐 게 있을 때만 커밋하고, 그 커밋으로 Netlify가 배포한다. 키는 필요 없다 (Yahoo·Naver 공개 시세).
 # (cron은 UTC 기준, GitHub 사정으로 몇 분 늦게 시작될 수 있음)
 on:
   schedule:
-    - cron: '17 21 * * 1-5'   # 06:17 KST 화~토 = 한국 월~금 장 + 미국 월~금 장 마감 뒤
+    - cron: '17 21 * * 5'   # 토 06:17 KST = 금요일 한국·미국 장 마감 뒤 (배포가 잦으면 Netlify 크레딧이 들어서 주 1회)
   workflow_dispatch:
 
 concurrency:
