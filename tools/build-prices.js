@@ -112,8 +112,8 @@ function compute(r, p, bm, asOf) {
     vals[k] = win.find((x) => x[0] === hit)[1]; o.hi = k;
   }
   // 수익률: 방향을 봤으니 기간 안(진행 중이면 지금까지) 최고 종가까지로 본다. 시장도 그 최고가 날까지
-  // r = 기간 끝(진행 중이면 지금) 수익률, m = 기간 안 최고 종가 수익률
-  { const pk = win.reduce((a, x) => (x[1] > a[1] ? x : a)); o.m = r4(pk[1] / base - 1); o.pk = pk[0]; }
+  // r = 기간 끝(진행 중이면 지금) 수익률, mx = 기간 안 최고 종가 수익률
+  { const pk = win.reduce((a, x) => (x[1] > a[1] ? x : a)); o.mx = r4(pk[1] / base - 1); o.pk = pk[0]; }
   if (run) { if (cal[cal.length - 1] !== last[0]) vals.push(last[1]); o.x = Math.round((lastT - t0) / (ts(end) - t0) * 1000); o.l = last[0]; }   // x = 12개월 중 지난 만큼(0~1000)
   o.p = vals.map((v) => Math.round(v / base * 1000));
   if (tp) o.t = Math.round(tp / base * 1000);

@@ -3003,7 +3003,7 @@ class Component extends DCLogic {
       const kst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
       const left = Math.max(0, Math.round((Date.parse(T.e) - Date.parse(kst)) / 864e5));
       const mo = (d) => (d < 30 ? d + '일' : Math.max(1, Math.round(d / 30.44)) + '개월');
-      const ex = T.m == null ? null : T.m;
+      const ex = T.mx == null ? null : T.mx;   // m은 평가 기간(개월)
       const L = p.length - 1, H = T.hi != null ? T.hi : -1;
       return { ok: true, none: false,
         d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
