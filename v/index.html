@@ -107,6 +107,7 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
   .holo::before{animation-duration:14s}
 }
 @media (max-width:360px){.clock .t{font-size:38px}.name{font-size:28px}.ph{width:88px;height:114px}.hd .en{display:none}}
+.rows .row:last-child{border-bottom:0}.bd{padding-bottom:18px!important}
 </style>
 </head>
 <body>
@@ -125,7 +126,6 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
   <div class="clock" aria-label="현재 시각">
     <div class="d" data-k="date"></div>
     <div class="t"><span data-k="hm"></span><span class="s" data-k="sec"></span></div>
-    <div class="z">KOREA STANDARD TIME</div>
   </div>
   <section class="card">
     <div class="hd">
@@ -134,7 +134,6 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
       <div><div class="nm">R.F.S.</div><div class="ko">중앙대학교 가치투자학회</div></div>
       <div class="en">Chung-Ang University<br>Value Investing Society</div>
     </div>
-    <div class="band" aria-hidden="true"><span data-k="micro"></span></div>
     <div class="bd">
       <div class="who">
         <div class="ph"><span class="ini" data-k="ini"></span><img data-k="photo" alt="" hidden><img class="mk" src="/assets/rfs-seal-light-256.png" alt=""><span class="holo"></span></div>
@@ -148,12 +147,8 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
         <div class="row"><dt>직책</dt><dd data-k="role"></dd></div>
         <div class="row"><dt>유효기간</dt><dd data-k="valid"></dd></div>
       </dl>
-      <div class="ft"><span>Est. 2006 · caurfs.kr</span><b>R.F.S. 실시간 확인</b></div>
     </div>
-    <div class="band b2" aria-hidden="true"><span data-k="micro2"></span></div>
   </section>
-  <div class="chk"><span class="live">실시간 확인됨</span><span>조회 시각 <b data-k="checked"></b> · <span data-k="ago"></span></span></div>
-  <p class="note">이 화면은 caurfs.kr 서버에서 방금 확인한 결과예요. 시계가 멈춰 있거나 무늬가 움직이지 않으면 캡처한 화면일 수 있어요.</p>
 </template>
 
 <script>
@@ -238,7 +233,7 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
   }
 
   // ---- 유효한 카드 화면
-  function q(k) { return app.querySelector('[data-k="' + k + '"]'); }
+  function q(k) { return app.querySelector('[data-k="' + k + '"]') || { textContent: '', style: {}, setAttribute: function () {}, getAttribute: function () {} }; }
   function fill(c) {
     q('name').textContent = c.name;
     q('cohort').textContent = c.cohort ? c.cohort + '기' : '—';
@@ -256,8 +251,6 @@ body{background:var(--navy);color:var(--ink);font-family:"Pretendard Variable",P
     app.innerHTML = '';
     app.appendChild(document.getElementById('t-ok').content.cloneNode(true));
     var m = 'R.F.S. · VERIFIED · CAURFS.KR · ', m2 = 'RISING FINANCIAL STARS · CHUNG-ANG UNIVERSITY · EST. 2006 · ';
-    q('micro').textContent = new Array(13).join(m) + new Array(13).join(m);
-    q('micro2').textContent = new Array(9).join(m2) + new Array(9).join(m2);
     fill(c);
     hd = q('hdc');
     if (timer) clearInterval(timer);
