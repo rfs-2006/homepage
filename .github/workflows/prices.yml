@@ -1,0 +1,38 @@
+name: 리포트 평가 기간 주가
+
+# 평일 하루 한 번, 한국·미국 장이 모두 끝난 뒤(06:17 KST) 종가를 받아 assets/data/track.json을 다시 만든다.
+# 바뀐 게 있을 때만 커밋하고, 그 커밋으로 Netlify가 배포한다. 키는 필요 없다 (Yahoo·Naver 공개 시세).
+# (cron은 UTC 기준, GitHub 사정으로 몇 분 늦게 시작될 수 있음)
+on:
+  schedule:
+    - cron: '17 21 * * 1-5'   # 06:17 KST 화~토 = 한국 월~금 장 + 미국 월~금 장 마감 뒤
+  workflow_dispatch:
+
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build track.json
+        run: node tools/build-prices.js
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- assets/data/track.json; then
+            echo "바뀐 것 없음"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/data/track.json
+          git commit -m "리포트 평가 기간 주가 갱신 ($(date -u +%Y-%m-%d))"
+          git push

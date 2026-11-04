@@ -1900,3 +1900,52 @@ html.wk-solid .nav{background:rgba(11,21,36,0.94) !important;-webkit-backdrop-fi
 .rfmpage .fd-kc>div:first-child{background:rgba(230,224,210,.06) !important}
 .rfmpage .fd-row:hover{background:rgba(230,224,210,.05) !important}
 html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage) .nav{background:rgba(11,12,14,.96) !important}
+/* 기업 리포트 목록: 평가 기간 결과 (오른쪽 음영 칸, tools/build-prices.js → assets/data/track.json) */
+.covg{display:grid;grid-template-columns:minmax(0,1fr) 96px 64px 96px 84px auto;column-gap:18px;align-items:center}
+.covhead{padding:14px 6px 12px;font-size:12.5px;font-weight:600;color:rgba(26,26,26,.55);border-bottom:1px solid #E2E0DA}
+.tkx{display:grid;grid-template-columns:150px 140px 88px 84px;column-gap:12px;align-items:center;align-self:stretch;margin:-18px 0 -18px 10px;padding:18px 16px 18px 20px;background:rgba(32,56,100,.055)}
+.covhead .tkx{margin:-14px 0 -12px 10px;padding:14px 16px 12px 20px;color:#203864}
+.tkx sc-if,.tkm sc-if{display:contents}
+.tk-st{padding-left:4px}
+.tk-n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tk-ret{font-size:17px;font-weight:700;letter-spacing:-.02em}
+.tk-ex{font-size:14px;font-weight:600}
+.covhead .tk-n{font-size:12.5px;font-weight:600}
+.tk-up{color:#D6404E}.tk-dn{color:#2F64C2}
+.tk-na{grid-column:1/-1;color:rgba(26,26,26,.35)}
+.tk-chip{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;white-space:nowrap;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.tk-hit{background:#FBEAEC;color:#C03343}
+.tk-end{background:#E9ECF0;color:#4E5968}
+.tk-run{background:#DFE6F2;color:#203864}
+.tk-sp{display:block;width:100%;height:36px;overflow:hidden}
+.tk-sp *{vector-effect:non-scaling-stroke;fill:none}
+.tk-sp .tk-rest{fill:#fff;fill-opacity:.7;stroke:none}
+.tk-sp .tk-base{stroke:#C9CED6;stroke-dasharray:2 3}
+.tk-sp .tk-tp{stroke:#D6404E;stroke-opacity:.45;stroke-dasharray:3 3}
+.tk-sp .tk-eline{stroke:#203864;stroke-opacity:.35}
+.tk-sp .tk-line{stroke-width:1.6;stroke-linejoin:round}
+.tk-sp .tk-dot{stroke-width:4.4;stroke-linecap:round}
+.tk-sp .tk-ho{stroke:#D6404E;stroke-width:8.4;stroke-linecap:round}
+.tk-sp .tk-hi{stroke:#fff;stroke-width:5;stroke-linecap:round}
+.tk-foot{margin:18px 6px 0;font-size:12.5px;line-height:1.75;color:rgba(26,26,26,.55)}
+@media (max-width:1320px){
+  .covg{grid-template-columns:minmax(0,1fr) 64px 96px 84px auto}
+  .covg .col-s{display:none}
+}
+@media (max-width:1200px){
+  .covg{grid-template-columns:minmax(0,1fr) 64px 84px auto}
+  .covg .col-tp{display:none}
+}
+@media (max-width:1120px){
+  .covg{grid-template-columns:minmax(0,1fr) 64px 84px}
+  .covg .tkx{grid-column:1/-1;grid-template-columns:minmax(0,1fr) 140px 88px 84px;margin:14px -6px -18px;padding:12px 16px}
+  .covhead .tkx{margin:10px -6px -12px;padding:10px 16px}
+}
+/* 모바일: 이름 → 주가선 → 결과 */
+.tkm{margin-top:12px}
+.tkm .tk-sp{height:44px}
+.tkm-r,.tkm-m{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.tkm-r{margin-top:8px}
+.tkm-m{margin-top:2px;font-size:12.5px;color:rgba(26,26,26,.6)}
+.tkm-m .tk-ex{font-size:13.5px}
+.tkm-na{font-size:12.5px;color:rgba(26,26,26,.35)}

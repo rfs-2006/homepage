@@ -1670,6 +1670,14 @@ class Component extends DCLogic {
     fetch('/assets/reports/page1.json?v=' + DATA_VER).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j) this.setState({ p1: j }); done(); }, done);
   }
 
+  // 기업 리포트 목록의 평가 기간 주가(assets/data/track.json, tools/build-prices.js가 매일 갱신). Research를 열 때 받는다.
+  // /assets/는 하루 캐시라 6시간 단위 값을 붙여 새로 받게 한다
+  loadTrack() {
+    if (this._trackReq) return; this._trackReq = true;
+    const none = { r: {} };
+    fetch('/assets/data/track.json?t=' + Math.floor(Date.now() / 216e5)).then((r) => (r.ok ? r.json() : null)).then((j) => this.setState({ track: (j && j.r) ? j : none }), () => this.setState({ track: none }));
+  }
+
   // 리포트 전문(assets/reports/full/<id>.json)은 그 리포트를 처음 열 때 받는다
   loadFull(id) {
     this._fullReq = this._fullReq || {};
@@ -2879,6 +2887,7 @@ class Component extends DCLogic {
       if (!this._rfmTimer) this._rfmTimer = setInterval(() => { if (this.state.page === 'rfm' && !document.hidden) this.loadRfm(); }, 15000);
     }
     if (s.page === 'report' || s.page === 'research') this.loadP1();
+    if (s.page === 'research') this.loadTrack();
     const status = this.props.recruitStatus ?? '마감';
     const nextRecruit = this.props.nextRecruit ?? '27-1학기, 2027년 1월';
     const rSem = this.props.recruitSemester ?? '26-2';
@@ -2975,12 +2984,42 @@ class Component extends DCLogic {
       if (cur < pageCount) items.push({ label: '다음 ›', cls: '', gap: false, on: () => this.setState({ page1: cur + 1 }, () => { const t = document.querySelector('.covtbl'); if (t) window.scrollTo({ top: Math.max(0, t.getBoundingClientRect().top + window.scrollY - 140) }); }) });
       return items;
     })();
+    // 평가 기간 결과 (목록 오른쪽 음영 칸). 주가선은 0~1000 x 0~100 좌표에 그리고 칸 너비에 맞춰 늘린다
+    const tkVm = (id) => {
+      const T = s.track && s.track.r[id];
+      if (!T || !T.p || !T.p.length) return { ok: false, none: !!s.track };
+      const p = T.p, run = T.st === 'run' || T.x != null;
+      const lo = Math.min(...p, 1000, T.t || 1000), hi = Math.max(...p, 1000, T.t || 1000);
+      const X = (i) => (run && i === p.length - 1 ? T.x : i / 59 * 1000);
+      const Y = (v) => 10 + (1 - (v - lo) / (hi - lo || 1)) * 80;
+      const f1 = (v) => Math.round(v * 10) / 10;
+      const pct = (v, u) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v * 100).toFixed(1) + u;
+      const cl = (v) => (v > 0 ? 'tk-up' : v < 0 ? 'tk-dn' : '');
+      const kst = new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+      const left = Math.max(0, Math.round((Date.parse(T.e) - Date.parse(kst)) / 864e5));
+      const mo = (d) => (d < 30 ? d + '일' : Math.max(1, Math.round(d / 30.44)) + '개월');
+      const ex = T.b == null ? null : T.r - T.b;
+      const L = p.length - 1, H = T.hi != null ? T.hi : -1;
+      return { ok: true, none: false,
+        d: p.map((v, i) => (i ? 'L' : 'M') + f1(X(i)) + ' ' + f1(Y(v))).join(''),
+        c: T.r >= 0 ? '#D6404E' : '#2F64C2',
+        by: f1(Y(1000)), ty: T.t ? f1(Y(T.t)) : -10,
+        rx: run ? f1(X(L)) : 1000, rw: run ? f1(1000 - X(L)) : 0,
+        lx: f1(X(L)), ly: f1(Y(p[L])),
+        hx: H >= 0 ? f1(X(H)) : -50, hy: H >= 0 ? f1(Y(p[H])) : -50,
+        chip: T.st === 'hit' ? '목표가 도달 · ' + mo(T.hd) : T.st === 'end' ? '기간 종료 ' + pct(T.r, '%') : '진행 중 D-' + left,
+        cc: 'tk-chip tk-' + T.st,
+        ret: pct(T.r, '%'), rc: cl(T.r),
+        ex: ex == null ? '—' : pct(ex, '%p'), ec: ex == null ? '' : cl(ex),
+        mkt: (T.mk === 'K' ? 'KOSPI' : 'S&P 500') + ' 대비' };
+    };
+    const rowVm = (r) => ({ ...vm(r), tk: tkVm(r.id) });
     const covGroups = (() => {
       const out = [];
       pageRows.forEach((r) => {
         const last = out[out.length - 1];
-        if (last && last.date === r.term) last.rows.push(vm(r));
-        else out.push({ date: r.term, rows: [vm(r)] });
+        if (last && last.date === r.term) last.rows.push(rowVm(r));
+        else out.push({ date: r.term, rows: [rowVm(r)] });
       });
       return out.map((g) => ({ ...g, count: g.rows.length + '편' }));
     })();
@@ -3325,6 +3364,7 @@ class Component extends DCLogic {
       indCount: INDUSTRY.length,
       covGroups, isGrouped: s.sortKey === 'date', isFlat: s.sortKey !== 'date',
       covEmpty: filtered.length === 0,
+      trackOn: !!(s.track && s.track.asOf), trackAsOf: s.track && s.track.asOf ? s.track.asOf.replace(/-/g, '.') : '',
       // 리서치 화면: 최신 학기 카드, 학기 목록, 섹터 칩
       latestTerm: byDate[0].term,
       latestCards: byDate.filter((r) => r.term === byDate[0].term).slice(0, 4).map((r) => ({ ...vm(r), teamShort: String(r.team || '').replace('Research ', '') })),
