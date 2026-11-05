@@ -130,6 +130,8 @@ def fundamentals(path):
         if cl and x - sum(cl[-1]) / len(cl[-1]) < 16: cl[-1].append(x)
         else: cl.append([x])
     cx = [sum(c) / len(c) for c in cl if len(c) >= 3]
+    if not cx:   # 값 칸이 잡히지 않는 옛 양식
+        return None
     near = lambda x: min(range(len(cx)), key=lambda i: abs(x - cx[i]))
     cols = [''] * len(cx)
     for w in hw:
