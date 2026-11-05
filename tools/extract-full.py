@@ -366,7 +366,7 @@ def extract(rid, pdf):
                 rows[-1].append(l)
             else:
                 rows.append([l])
-        x_lab = min(l['x0'] for l in ls0 if sd['y1'] < l['y0'] < end)
+        x_lab = min((l['x0'] for l in ls0 if sd['y1'] < l['y0'] < end), default=sd['x0'])   # 표 글자가 없는(그림) 옛 양식
         for r in rows:
             r.sort(key=lambda l: l['x0'])
             cells = [x['text'].strip() for x in r]
