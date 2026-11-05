@@ -14,6 +14,8 @@ from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'assets', 'reports', 'full')
 ZOOM = 3          # 차트 이미지 해상도 (PDF 1pt = 3px)
+OLD = False       # 2018~2020 옛 양식인지 (extract에서 정한다)
+OVERLAP = False   # 글자 층이 겹친 PDF인지 (extract에서 정한다)
 BODY_X = 165      # 본문 왼쪽 끝 기본값. 리포트마다 실제 본문 줄의 x를 재서 바꾼다(body_x). 그보다 왼쪽이 요약 메모
 
 
@@ -113,9 +115,61 @@ def is_bold(s):
     return 'bold' in f or 'heavy' in f or 'black' in f or bool(s.get('flags', 0) & 16)   # 글꼴 이름에 굵기가 없으면(CIDFont+F2) 굵음 표시로
 
 
+def _zero_w(c):
+    return c['c'].strip() and c['bbox'][2] - c['bbox'][0] < 0.3
+
+
+def overlap_blocks(page):
+    """글자 층이 겹쳐 찍힌 PDF(18-2 삼성전기): 조각 끝의 폭 0 글자들은 바로 오른쪽 조각 앞과 같은 글자를 한 번 더 찍은 것이라 뺀다.
+    같은 높이에 흩어진 조각들은 한 줄로 합친다. 글꼴 표가 어긋나 받침 ㄲ·ㄳ으로 나오는 글자(젂·읷)는 ㄴ·ㄹ로 되돌린다.
+    폭 0 글자가 없는 PDF에서는 쓰지 않는다(None)"""
+    d = page.get_text('rawdict')
+    spans = [s for b in d['blocks'] if b.get('type') == 0 for l in b['lines'] for s in l['spans']]
+    if sum(1 for s in spans for c in s['chars'] if _zero_w(c)) < 5:
+        return None
+    fix = lambda ch: '일' if ch == '읷' else chr(ord(ch) + 2) if '가' <= ch <= '힣' and (ord(ch) - 0xAC00) % 28 == 2 else ch
+    for s in spans:
+        ch = s['chars']
+        k = len(ch)
+        while k and _zero_w(ch[k - 1]):
+            k -= 1
+        if k < len(ch):
+            run = ''.join(c['c'] for c in ch[k:])
+            nxt = min((o for o in spans if o is not s and o['chars'] and abs(o['bbox'][1] - s['bbox'][1]) < 2.5 and -1 <= o['bbox'][0] - s['bbox'][2] < 20),
+                      key=lambda o: o['bbox'][0], default=None)
+            if nxt:
+                nt = ''.join(c['c'] for c in nxt['chars']).lstrip()
+                j = next((j for j in range(len(run), 0, -1) if nt.startswith(run[-j:])), 0)
+                if j:
+                    s['chars'] = ch[:len(ch) - j]
+        s['text'] = ''.join(fix(c['c']) for c in s['chars'])
+    # 같은 높이 조각을 x 순서로 한 줄에
+    rows = []
+    for s in sorted((s for s in spans if s['text']), key=lambda s: (s['bbox'][1], s['bbox'][0])):
+        r = next((r for r in rows if abs(r['bbox'][1] - s['bbox'][1]) < 2.5 and abs(r['size'] - s['size']) < 1.5), None)
+        if r:
+            r['spans'].append(s); r['bbox'] = (min(r['bbox'][0], s['bbox'][0]), min(r['bbox'][1], s['bbox'][1]), max(r['bbox'][2], s['bbox'][2]), max(r['bbox'][3], s['bbox'][3]))
+        else:
+            rows.append({'bbox': tuple(s['bbox']), 'size': s['size'], 'spans': [s]})
+    lines = []
+    for r in rows:
+        r['spans'].sort(key=lambda s: s['bbox'][0])
+        # 왼쪽 메모 칸과 본문처럼 멀리 떨어진 조각은 따로 둔다
+        cur = [r['spans'][0]]
+        for s in r['spans'][1:]:
+            if s['bbox'][0] - cur[-1]['bbox'][2] > 25:
+                lines.append(cur); cur = [s]
+            else:
+                cur.append(s)
+        lines.append(cur)
+    return [{'type': 0, 'lines': [{'bbox': (min(s['bbox'][0] for s in l), min(s['bbox'][1] for s in l), max(s['bbox'][2] for s in l), max(s['bbox'][3] for s in l)),
+                                   'spans': l}]} for l in lines]
+
+
 def lines_of(page):
     out = []
-    for b in page.get_text('dict')['blocks']:
+    blocks = overlap_blocks(page) if OVERLAP else None
+    for b in blocks or page.get_text('dict')['blocks']:
         if b.get('type') != 0:
             continue
         for l in b['lines']:
@@ -311,6 +365,78 @@ def exhibits(lines, H, page):
     return res
 
 
+CAP_START = re.compile(r'^\s*(?:[\[［<〈《【]|\((?:단위|자료|그림|표|출처|도표)|(?:그림|표|자료|도표|차트|Figure|Chart|Table|Fig)\s*\.?\s*\d|자료|Figure|Chart)', re.I)
+SENT_END = re.compile(r'(?:다|요|함|음|임|됨|니다)\s*[.。]?\s*$')
+FRAG_START = re.compile(r'^(?:은|는|을|를|의|이|가|에|와|과|로|으로|도|만|며|고|다|서|게|지|할|하|한|된|상의|을 때|이며)\s')
+
+
+def cap_like(c, no=''):
+    """옛 양식(2018~2020) 캡션으로 둘 만한가: 캡션처럼 시작하거나([그림] [표] <…> 그림1 표2 자료 Figure Chart)
+    40자 이하의 짧은 제목 줄(문장 끝맺음·조사 조각으로 시작하지 않음). 빈 캡션은 그대로 둔다"""
+    t = (c or '').strip()
+    if no:   # '[도표 25]의 자료에 따르면 …'처럼 번호 뒤에 조사가 바로 붙으면 그림을 가리키는 본문 문장이다
+        return not re.match(r'^(?:의|에|은|는|을|를|와|과|에서|로|으로|처럼|을 보면|를 보면)\s', t)
+    if not t or CAP_START.match(t):
+        return True
+    return len(t) <= 40 and not SENT_END.search(t) and not FRAG_START.match(t) and not t.endswith('.')
+
+
+def old_stock(p0, ls, save):
+    """2018~2020 옛 양식 1쪽 오른쪽 칸: 'Stock Data'(또는 'DATA') 아래 이름 | 값 목록이 'Valuation 지표'·'주요투자지표' 앞까지 이어지는 양식만 읽는다.
+    차트는 '주가추이' 제목 아래 ~ '자료:' 줄 위, 그 안에 선·그림이 있을 때만. 2020년 'Stock Data | Price Change Rate' 두 칸 양식은 비운다"""
+    W = p0.rect.width
+    side = [l for l in ls if l['x0'] > W * 0.62]
+    sd = next((l for l in side if l['text'].strip() in ('Stock Data', 'DATA')), None)
+    if not sd or any(l['text'].strip() == 'Price Change Rate' for l in side):
+        return {'rows': [], 'chart': None}
+    ends = [l for l in side if l['y0'] > sd['y1'] and re.match(r'(Valuation\s*지표|주요투자지표|주가상승률)', l['text'].strip())]
+    if not ends:
+        return {'rows': [], 'chart': None}
+    end = min(l['y0'] for l in ends)
+    grp = []
+    for l in sorted([l for l in side if sd['y1'] < l['y0'] < end - 1], key=lambda l: (l['y0'], l['x0'])):
+        if grp and abs(grp[-1][0]['y0'] - l['y0']) < 3:
+            grp[-1].append(l)
+        else:
+            grp.append([l])
+    for g in grp:
+        g.sort(key=lambda l: l['x0'])
+    # 이름표 칸 오른쪽 끝(이름표는 왼쪽·오른쪽 정렬 둘 다 있다). 그보다 오른쪽에서 시작하는 줄은 이름표 없이 이어지는 줄(주요주주 둘째 줄)
+    names = [g[1]['x0'] for g in grp if len(g) == 3]   # 주주 이름 칸 x
+    lab_x1 = min(names) - 6 if names else min(g[0]['x0'] for g in grp) + 30 if grp else W
+    rows = []
+    for g in grp:
+        cells = [x['text'].strip() for x in g]
+        if OVERLAP:   # 겹쳐 찍힌 글자('평균거래대금평균거래대금' '지분율율')
+            cells = [re.sub(r'율율|자자', lambda m: m.group(0)[0], re.sub(r'(.{3,8}?)\1', r'\1', c)) for c in cells]
+        if len(cells) == 1 and re.search(r'\S\s{3,}\S', cells[0]):   # 'KOSPI(4/3)      2442' 한 조각
+            cells = re.split(r'\s{3,}', cells[0])
+        if g[0]['x0'] > lab_x1 + 2 and len(cells) >= 2:
+            cells = [''] + cells
+        rows.append(cells)
+    out = []
+    for r in rows:   # '주요주주(%)' 이름표만 따로 떨어진 줄은 바로 위(이름표 빈) 주주 줄에 붙인다
+        if len(r) == 1 and out and out[-1][0] == '' and len(out[-1]) >= 3:
+            out[-1][0] = r[0]; continue
+        out.append(r)
+    rows = out
+    ok = 6 <= len(rows) <= 13 and all(2 <= len(r) <= 3 and r[-1] for r in rows) and sum(1 for r in rows if r[0]) >= len(rows) - 3
+    if not ok:
+        return {'rows': [], 'chart': None}
+    chart = None
+    ttl = next((l for l in side if l['y0'] > end and l['text'].strip().startswith('주가추이')), None)
+    if ttl:
+        src = next((l for l in sorted(side, key=lambda l: l['y0']) if ttl['y1'] < l['y0'] < ttl['y1'] + 240 and re.match(r'자료\s*[:：]', l['text'].strip())), None)
+        if src:
+            r = pymupdf.Rect(ttl['x0'] - 4, ttl['y1'] + 2, W - 10, src['y0'] - 1)
+            # 주가 선은 꺾은 점이 많은 도형 하나(50개 넘는 선분). 눈금·테두리만 있는 빈 차트 틀은 넣지 않는다
+            line = any(r.intersects(pymupdf.Rect(d['rect'])) and len(d['items']) >= 50 for d in p0.get_drawings())
+            im = any(r.intersects(q) for x in p0.get_images() for q in p0.get_image_rects(x[0]) if q.get_area() > 2000)
+            if line or im:
+                chart = save(p0, r)
+    return {'rows': rows, 'chart': chart}
+
+
 def inside(l, boxes):
     cx, cy = (l['x0'] + l['x1']) / 2, (l['y0'] + l['y1']) / 2
     return any(b[0] - 2 <= cx <= b[2] + 2 and b[1] - 2 <= cy <= b[3] + 2 for b in boxes)
@@ -333,7 +459,10 @@ def segs_of(ls):
 
 
 def extract(rid, pdf):
+    global OVERLAP, OLD
     doc = pymupdf.open(os.path.join(ROOT, pdf))
+    OLD = bool(re.search(r'(?:^|/)(?:18|19|20)-[12]_', pdf))   # 2018~2020 옛 양식 (캡션·제목 정리 규칙은 여기에만)
+    OVERLAP = OLD and any(overlap_blocks(doc[i]) is not None for i in range(min(3, len(doc))))
     import shutil
     shutil.rmtree(os.path.join(OUT, rid), ignore_errors=True)   # 다시 뽑을 때 예전 그림이 남지 않게
     os.makedirs(os.path.join(OUT, rid), exist_ok=True)
@@ -358,6 +487,9 @@ def extract(rid, pdf):
     ls0 = [l for l in lines_of(p0) if l['x0'] > p0.rect.width * 0.66]
     sd = next((l for l in ls0 if l['text'].strip() == 'Stock Data'), None)
     sp = next((l for l in ls0 if l['text'].strip() == 'Stock Price'), None)
+    if OLD:
+        stock = old_stock(p0, lines_of(p0), save)
+        sd = sp = None
     if sd:
         end = sp['y0'] if sp else sd['y0'] + 160
         rows = []
@@ -366,7 +498,7 @@ def extract(rid, pdf):
                 rows[-1].append(l)
             else:
                 rows.append([l])
-        x_lab = min(l['x0'] for l in ls0 if sd['y1'] < l['y0'] < end)
+        x_lab = min((l['x0'] for l in ls0 if sd['y1'] < l['y0'] < end), default=sd['x0'])   # 표 글자가 없는(그림) 옛 양식
         for r in rows:
             r.sort(key=lambda l: l['x0'])
             cells = [x['text'].strip() for x in r]
@@ -458,16 +590,46 @@ def extract(rid, pdf):
                 rows[-1].append(e)
             else:
                 rows.append([e])
+        moved = set()
         for r in rows:
             figs = []
             for e in r:
                 f = save(page, e['rect'])
                 if f:
-                    figs.append(dict(f, no=e['no'], cap=e['cap'], unit=e['unit'], src_t=e['src']))
+                    cap = e['cap']
+                    no = e['no']
+                    if OLD and not cap_like(cap, no):
+                        # 옛 양식: 그림 바로 위 본문 줄을 캡션으로 잘못 잡은 것 → 그림 자리(바로 앞)에 본문으로 되돌린다 (같은 줄이 두 그림에 걸리면 한 번만)
+                        t = (no + cap).strip()
+                        if t not in moved:
+                            moved.add(t)
+                            items.append({'y': e['y'] - 0.5, 'b': {'p': [{'t': t, 'b': False}]}})
+                        cap, no = '', ''
+                    figs.append(dict(f, no=no, cap=cap, unit=e['unit'], src_t=e['src']))
             if figs:
                 items.append({'y': r[0]['y'], 'b': {'fig': figs}})
         for it in sorted(items, key=lambda it: it['y']):
             blocks.append(it['b'])
+    if OVERLAP:   # 글자 층이 겹친 PDF는 굵기·글자 크기로 소제목을 못 가른다: 문단 앞 '1-1-2 제목' 조각을 소제목으로, 쪽 번호·'.' 한 글자는 뺀다
+        bl = []
+        for b in blocks:
+            if 'li' in b and re.fullmatch(r'\s*\d{1,2}\s*', ''.join(x['t'] for x in b['li'])):
+                continue
+            if any(k in b for k in ('sub', 'sub2')) and len(_tk(b.get('sub') or b.get('sub2'))) < 2:
+                continue
+            if 'p' in b:
+                sg = [dict(x) for x in b['p']]
+                while len(sg) > 1 and not sg[0]['t'].strip():
+                    sg.pop(0)
+                if len(sg) >= 3 and re.fullmatch(r'\s*\d(-\d)+\s*', sg[0]['t']) and not sg[1]['t'].strip():   # '1-1' ' ' '제목'
+                    sg = [{'t': sg[0]['t'].strip() + ' ' + sg[2]['t'], 'b': False}] + sg[3:]
+                while sg and re.match(r'\s*\d(-\d)+\s+\S', sg[0]['t']) and len(sg[0]['t']) < 45:
+                    bl.append({'sub2': sg.pop(0)['t'].strip()})
+                if not sg:
+                    continue
+                b = dict(b, p=sg)
+            bl.append(b)
+        blocks = bl
     # 쪽을 넘어 이어지는 문단 붙이기: 앞 문단이 마침표 없이 끝나고 다음 블록이 문단이면 합친다
     merged = []
     for b in blocks:

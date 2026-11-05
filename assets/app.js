@@ -33,7 +33,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261104b';
+const DATA_VER = '20261105c';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 // 정규 세미나 산업 리포트 (rfs-cafe-data 원본 PDF, 21-1~25-2). 리서치 '산업 리포트' 칸에서 PDF로 받는다. 상세 화면은 없다
 const INDUSTRY = [
@@ -91,11 +91,36 @@ const INDUSTRY = [
   { id:'4133', sem:'21-1', date:'2021.05.26', name:'메타버스 산업', team:'2', sector:'커뮤니케이션', pages:47, pdf:'assets/reports/industry/21-1_4133.pdf' },
   { id:'4196', sem:'21-2', date:'2021.11.09', name:'엔터 산업', team:'6', sector:'커뮤니케이션', pages:40, pdf:'assets/reports/industry/21-2_4196.pdf' },
   { id:'4279', sem:'22-1', date:'2022.05.10', name:'미디어 콘텐츠 산업', team:'5', sector:'커뮤니케이션', pages:32, pdf:'assets/reports/industry/22-1_4279.pdf' },
-  { id:'4993', sem:'25-1', date:'2025.05.13', name:'음악 엔터테인먼트', team:'1', sector:'커뮤니케이션', pages:29, pdf:'assets/reports/industry/25-1_4993.pdf' }
+  { id:'4993', sem:'25-1', date:'2025.05.13', name:'음악 엔터테인먼트', team:'1', sector:'커뮤니케이션', pages:29, pdf:'assets/reports/industry/25-1_4993.pdf' },
+  { id:'3613', sem:'18-1', date:'2018.05.08', name:'해운 산업', team:'5', sector:'산업재', pages:44, pdf:'assets/reports/industry/18-1_3613.pdf' },
+  { id:'3619', sem:'18-1', date:'2018.05.22', name:'부동산 투자', team:'5', sector:'금융', pages:67, pdf:'assets/reports/industry/18-1_3619.pdf' },
+  { id:'3622', sem:'18-1', date:'2018.05.24', name:'CJ제일제당 인수·매각', team:'3', sector:'기타', pages:10, pdf:'assets/reports/industry/18-1_3622.pdf' },
+  { id:'3720', sem:'18-2', date:'2018.11.27', name:'이스타항공 IPO', team:'2', sector:'기타', pages:8, pdf:'assets/reports/industry/18-2_3720.pdf' },
+  { id:'3771', sem:'19-1', date:'2019.05.28', name:'바젤Ⅲ와 IFRS9', team:'3', sector:'기타', pages:15, pdf:'assets/reports/industry/19-1_3771.pdf' },
+  { id:'3772', sem:'19-1', date:'2019.05.29', name:'아시아나항공 M&A', team:'2', sector:'기타', pages:13, pdf:'assets/reports/industry/19-1_3772.pdf' },
+  { id:'3773', sem:'19-1', date:'2019.05.29', name:'미중 무역전쟁', team:'4', sector:'기타', pages:25, pdf:'assets/reports/industry/19-1_3773.pdf' },
+  { id:'3804', sem:'19-2', date:'2019.09.29', name:'카카오 vs 네이버', team:'1', sector:'커뮤니케이션', pages:15, pdf:'assets/reports/industry/19-2_3804.pdf' },
+  { id:'3813', sem:'19-2', date:'2019.11.07', name:'HMR 산업', team:'1', sector:'필수 소비재', pages:21, pdf:'assets/reports/industry/19-2_3813.pdf' },
+  { id:'3814', sem:'19-2', date:'2019.11.06', name:'게임 산업', team:'3', sector:'커뮤니케이션', pages:25, pdf:'assets/reports/industry/19-2_3814.pdf' },
+  { id:'3815', sem:'19-2', date:'2019.11.07', name:'정유·석유화학', team:'2', sector:'소재', pages:31, pdf:'assets/reports/industry/19-2_3815.pdf' },
+  { id:'3817', sem:'19-2', date:'2019.11.13', name:'미디어·콘텐츠', team:'5', sector:'커뮤니케이션', pages:22, pdf:'assets/reports/industry/19-2_3817.pdf' },
+  { id:'3818', sem:'19-2', date:'2019.11.13', name:'엔터테인먼트 산업', team:'4', sector:'커뮤니케이션', pages:34, pdf:'assets/reports/industry/19-2_3818.pdf' },
+  { id:'3820', sem:'19-2', date:'2019.11.26', name:'문재인 정부 부동산 정책', team:'1', sector:'금융', pages:43, pdf:'assets/reports/industry/19-2_3820.pdf' },
+  { id:'3823', sem:'19-2', date:'2019.11.27', name:'미투젠 IPO', team:'5', sector:'기타', pages:12, pdf:'assets/reports/industry/19-2_3823.pdf' },
+  { id:'3890', sem:'20-1', date:'2020.06.02', name:'국민연금', team:'5', sector:'기타', pages:35, pdf:'assets/reports/industry/20-1_3890.pdf' },
+  { id:'3891', sem:'20-1', date:'2020.06.03', name:'두산그룹', team:'3', sector:'산업재', pages:30, pdf:'assets/reports/industry/20-1_3891.pdf' },
+  { id:'3893', sem:'20-1', date:'2020.06.03', name:'간편결제 산업', team:'4', sector:'IT', pages:35, desc:'간편결제의 개념과 결제 방식, 카드사와 간편결제의 관계, 미국·중국·한국 지자체 페이 사례, 유통사·하드웨어 업체의 페이 경쟁, 페이팔·아마존페이·애플페이·페이티엠 등 글로벌 업체를 다룬다.', pdf:'assets/reports/industry/20-1_3893.pdf' },
+  { id:'3895', sem:'20-1', date:'2020.06.03', name:'금리 인하 vs 동결', team:'1', sector:'기타', pages:21, pdf:'assets/reports/industry/20-1_3895.pdf' },
+  { id:'4024', sem:'20-2', date:'2020.11.24', name:'드론 산업', team:'5', sector:'IT', pages:25, pdf:'assets/reports/industry/20-2_4024.pdf' },
+  { id:'4026', sem:'20-2', date:'2020.11.25', name:'게임 산업', team:'1', sector:'커뮤니케이션', pages:32, pdf:'assets/reports/industry/20-2_4026.pdf' },
+  { id:'4027', sem:'20-2', date:'2020.11.25', name:'ESG 투자', team:'6', sector:'기타', pages:18, pdf:'assets/reports/industry/20-2_4027.pdf' },
+  { id:'4029', sem:'20-2', date:'2020.11.26', name:'파운드리 산업', team:'2', sector:'IT', pages:28, pdf:'assets/reports/industry/20-2_4029.pdf' },
+  { id:'4030', sem:'20-2', date:'2020.11.26', name:'AI 헬스케어 산업', team:'4', sector:'건강관리', pages:69, pdf:'assets/reports/industry/20-2_4030.pdf' },
+  { id:'4031', sem:'20-2', date:'2020.11.25', name:'SK그룹', team:'3', sector:'산업재', pages:25, pdf:'assets/reports/industry/20-2_4031.pdf' }
 ];
 // 웹에서 전문으로 읽는 산업 리포트 (assets/reports/full/ind-<id>.json)
-const IND_FULL = ['ind-4192', 'ind-4193', 'ind-4194', 'ind-4195', 'ind-4196', 'ind-4197', 'ind-4275', 'ind-4276', 'ind-4277', 'ind-4278', 'ind-4279', 'ind-4280', 'ind-4423', 'ind-4424', 'ind-4425', 'ind-4427', 'ind-4428', 'ind-4544', 'ind-4545', 'ind-4546', 'ind-4547', 'ind-4548', 'ind-4550', 'ind-4664', 'ind-4665', 'ind-4666', 'ind-4667', 'ind-4668', 'ind-4775', 'ind-4776', 'ind-4777', 'ind-4778', 'ind-4780', 'ind-4781', 'ind-4891', 'ind-4894', 'ind-4895', 'ind-4896', 'ind-4897', 'ind-4898', 'ind-4990', 'ind-4991', 'ind-4992', 'ind-4993', 'ind-4994', 'ind-4995', 'ind-5080', 'ind-5081', 'ind-5082', 'ind-5084', 'ind-5085', 'ind-5086'];
-const FULL_REPORTS = ['anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'celltrion', 'classys', 'crowdstrike', 'cswind', 'daewoong', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyundai', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair26', 'krafton', 'kyungdong', 'lges', 'lguplus', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'lselectric', 'lutronic', 'naver', 'nepesark', 'oci', 'orion', 'osstem', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samyang', 'sanil', 'sbl21', 'seers', 'semco', 'sena', 'silicon2', 'skgas', 'sm', 'sm21', 'soil', 'stpharm', 'taekwang', 'techwing', 'tesla', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'vt'];
+const IND_FULL = ['ind-3613', 'ind-3619', 'ind-3622', 'ind-3720', 'ind-3771', 'ind-3772', 'ind-3815', 'ind-3818', 'ind-3890', 'ind-3891', 'ind-3893', 'ind-4024', 'ind-4026', 'ind-4027', 'ind-4029', 'ind-4030', 'ind-4031', 'ind-4192', 'ind-4193', 'ind-4194', 'ind-4195', 'ind-4196', 'ind-4197', 'ind-4275', 'ind-4276', 'ind-4277', 'ind-4278', 'ind-4279', 'ind-4280', 'ind-4423', 'ind-4424', 'ind-4425', 'ind-4427', 'ind-4428', 'ind-4544', 'ind-4545', 'ind-4546', 'ind-4547', 'ind-4548', 'ind-4550', 'ind-4664', 'ind-4665', 'ind-4666', 'ind-4667', 'ind-4668', 'ind-4775', 'ind-4776', 'ind-4777', 'ind-4778', 'ind-4780', 'ind-4781', 'ind-4891', 'ind-4894', 'ind-4895', 'ind-4896', 'ind-4897', 'ind-4898', 'ind-4990', 'ind-4991', 'ind-4992', 'ind-4993', 'ind-4994', 'ind-4995', 'ind-5080', 'ind-5081', 'ind-5082', 'ind-5084', 'ind-5085', 'ind-5086'];
+const FULL_REPORTS = ['afreeca', 'anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'cafe24', 'celltrion', 'cjcj', 'cjlogis', 'ckd', 'classys', 'coway', 'crowdstrike', 'cswind', 'daewoong', 'dbins', 'dongjin', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'emart', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanssem', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hitejinro', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyosungam', 'hyundai', 'hyundai20', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kai', 'kbfg', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair20', 'koreanair26', 'krafton', 'ktng', 'kyungdong', 'kyungdong18', 'lgchem', 'lges', 'lginnotek', 'lguplus', 'lguplus18', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'ls', 'lselectric', 'lutronic', 'mkif', 'naver', 'naver20', 'nepesark', 'nhis', 'oci', 'oci18', 'orion', 'orion20', 'osstem', 'osstem19', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samsungsdi18', 'samsungsds', 'samyang', 'sanil', 'saramin', 'sbl21', 'seers', 'semco', 'semco18', 'sena', 'shinsegae', 'sikorea', 'silicon2', 'skckpi', 'skgas', 'skhynix', 'sm', 'sm21', 'soil', 'stpharm', 'studiodragon', 'taekwang', 'techwing', 'tesla', 'tesla19', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'unison', 'vt'];
 const REPORTS = [
   { id:'sanil', name:'산일전기', ticker:'062040', sector:'전력기기', type:'Company Analysis', op:'BUY', tp:'367,000원', buy:'', cur:'205,500원', upside:'+78.6%', upNum:78.6, tpNum:367000, date:'2026.09.29', team:'Research Team 4', region:'Korea',
     headline:'지금이 가장 ‘싼’ 일전기',
@@ -1120,7 +1145,700 @@ const REPORTS = [
     ],
     valuation:'21년 예상 매출액 21조 원(YoY +72%), 영업이익 2조 9,500억 원(YoY +738%)을 기반으로 목표주가 540,000원, 상승여력 79%, 투자의견 BUY를 제시한다.',
     members:'RFS Research Team 5',
-    pdf:'assets/reports/21-1_lotte_chem.pdf', pdfMeta:'PDF · 48 pages', cover:'', heroCover:'', credit:'', creditHref:'' }
+    pdf:'assets/reports/21-1_lotte_chem.pdf', pdfMeta:'PDF · 48 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'ls', name:'LS', ticker:'006260', sector:'산업재', type:'Company Analysis', op:'BUY', tp:'75,084원', buy:'', cur:'58,800원', upside:'+27.7%', upNum:27.7, tpNum:75084, date:'2020.11.12', team:'Research Team 2', region:'Korea',
+    headline:'엘에스, 묻고 더블로 가!',
+    summary:'전선, 일렉트릭, 엠트론, 아이앤디 사업부문을 거느린 순수지주회사다. 탄소중립 기조로 해상풍력 시장이 성장하며 자회사 LS전선의 해저케이블 수혜가 기대된다. 자회사 순자산가치에 지분율을 곱해 동사에 귀속되는 투자자산가치를 산출했다.',
+    heroSummary:'해상풍력 성장과 자회사 해저케이블. NAV 기반 PBR로 목표주가 75,084원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 탄소중립이 낳은 우량아, 해상풍력', body:'유럽의 2050 탄소중립 법안과 한국의 해상풍력 12GW 목표 등으로 해상풍력 시장이 커지며 자회사 해저케이블 수요가 늘어난다.' },
+      { title:'투자포인트 2. 자회사 가치 재평가', body:'자회사 투자가치와 LS 상표권 등 지주사 고유 영업가치가 기업가치에 반영된다.' }
+    ],
+    valuation:'NAV를 활용한 PBR 방식을 채택했다. 추정 BPS에 12M FWD Target PBR을 곱해 목표주가 75,084원, 투자의견 매수를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-2_ls.pdf', pdfMeta:'PDF · 17 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'naver20', name:'NAVER', ticker:'035420', sector:'인터넷/플랫폼', type:'Company Analysis', op:'BUY', tp:'501,000원', buy:'', cur:'299,000원', upside:'+67.6%', upNum:67.6, tpNum:501000, date:'2020.11.12', team:'Research Team 4', region:'Korea',
+    headline:'‘FAANG’, ‘MAGA’, ‘BATH’ 악당들아 기다려라',
+    summary:'3분기 매출액 1조 3,608억 원(YoY +24.2%), 영업이익 2,917억 원(YoY +1.8%)으로 분기 사상 최고 실적을 냈다. 커머스, 핀테크, 콘텐츠가 고르게 성장했고, LINE과 Z HOLDINGS의 경영통합으로 동아시아에서의 영향력이 커질 전망이다. 이익이 아닌 매출 기준 평가가 적절하다고 판단해 PSR을 적용했다.',
+    heroSummary:'공수 밸런스를 갖춘 포트폴리오와 Z Holdings. PSR로 목표주가 501,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 공수 밸런스를 갖춘 포트폴리오', body:'서치플랫폼의 안정적 수익에 커머스(YoY +40.9%), 핀테크(1,039억→1,740억 원), 콘텐츠(872억→1,150억 원)의 성장이 더해졌다.' },
+      { title:'투자포인트 2. 성장대로 시작, Z-Holdings', body:'LINE과 Z HOLDINGS 통합으로 광고·간편결제·이커머스 시너지가 기대되고 마케팅비 부담도 줄어들 전망이다.' }
+    ],
+    valuation:'사업부별 Peer PSR로 Target PSR을 구해 총기업가치 84조 원, 목표주가 501,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/20-2_naver20.pdf', pdfMeta:'PDF · 54 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cjlogis20', name:'CJ대한통운', ticker:'000120', sector:'물류', type:'Company Analysis', op:'BUY', tp:'210,000원', buy:'', cur:'155,500원', upside:'+35.0%', upNum:35.0, tpNum:210000, date:'2020.11.11', team:'Research Team 5', region:'Korea',
+    headline:'대한통운, 운수대통',
+    summary:'3분기 연결 매출액 2조 7,745억 원(YoY +5.8%)을 기록했다. 이커머스 성장으로 택배 물량이 늘고 단가 인상이 수익성에 긍정적일 전망이다. CL, 택배, 글로벌, 건설 사업부를 나눠 EV/EBITDA로 가치를 산정했다.',
+    heroSummary:'이커머스 택배 물량과 단가 인상. EV/EBITDA로 2021년 목표주가 210,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 단가 인상, CJ대한통운에겐 득', body:'이커머스 성장으로 택배 물량이 늘어나는 가운데 단가 인상이 수익성 개선으로 이어질 전망이다.' },
+      { title:'투자포인트 2. 물류 산업 성장', body:'CL·글로벌 물류 사업이 이커머스·물류 산업 성장과 함께 커지고 있다.' }
+    ],
+    valuation:'UPS, Fedex, Yamato Holdings를 Peer로 EV/EBITDA를 적용해 2021년 목표주가 210,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/20-2_cjlogis20.pdf', pdfMeta:'PDF · 29 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hyundai20', name:'현대차', ticker:'005380', sector:'자동차', type:'Company Analysis', op:'BUY', tp:'272,983원', buy:'', cur:'173,000원', upside:'+57.8%', upNum:57.8, tpNum:272983, date:'2020.11.10', team:'Research Team 1', region:'Korea',
+    headline:'친환경차와 신차 라인업',
+    summary:'국내 최대 자동차 기업으로 전기차와 수소차 시장에 집중하고 있다. COVID-19와 3분기 충당금 보수적 계상으로 2020년 매출액은 전년 대비 15.8% 줄 것으로 추정한다. 올해 모든 라인업에서 신차를 출시해 이후 성장 가능성이 크다고 판단한다.',
+    heroSummary:'전기차·수소차 집중과 전 라인업 신차. DCF로 2024년 목표주가 272,983원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 빠르게 성장 중인 친환경차 시장', body:'전기차와 수소차 시장이 빠르게 성장하고 있으며 동사는 두 분야에 집중하고 있다.' },
+      { title:'투자포인트 2. 수요 확대와 신차 출시', body:'불경기에도 차급별 수요가 확대됐고 모든 라인업에서 올해 신차를 출시했다.' }
+    ],
+    valuation:'DCF Valuation을 채택했다. 영구성장률 1.0%를 가정해 2024년 목표주가 272,983원, 상승여력 59%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/20-2_hyundai20.pdf', pdfMeta:'PDF · 22 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'ktng', name:'KT&G', ticker:'033780', sector:'소비재', type:'Company Analysis', op:'BUY', tp:'100,000원', buy:'', cur:'84,500원', upside:'+18.3%', upNum:18.3, tpNum:100000, date:'2020.11.11', team:'Research Team 6', region:'Korea',
+    headline:'배당천사 KT&G',
+    summary:'4Q20 매출액 1조 2,233억 원(YoY +2.1%), 영업이익 3,246억 원(YoY +28.6%)으로 2020년 영업이익 1조 4,689억 원(YoY +6.3%)을 전망한다. 2019년 배당성향 53%, 배당수익률 5.21%로 대표적인 배당주다. 궐련형 전자담배 비중 확대와 부동산 매매수익이 사업 다각화를 돕는다.',
+    heroSummary:'배당성향 확대와 전자담배 성장. 배당할인모형으로 목표주가 100,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 담배시장 변화와 전자담배', body:'세계 담배 산업은 저성장이지만 국내 궐련형 전자담배 판매 비중이 커지고 있다.' },
+      { title:'투자포인트 2. 배당 확대', body:'배당성향이 2017년 43%에서 2018년 56%로 높아졌고 2021년 예상 배당금은 5,300원이다.' }
+    ],
+    valuation:'배당성장모형을 채택했다. 2021년 예상배당금 5,300원으로 적정주가 99,400원을 구해 목표주가 100,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 6',
+    pdf:'assets/reports/20-2_ktng.pdf', pdfMeta:'PDF · 17 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'nhis', name:'NH투자증권', ticker:'005940', sector:'금융서비스', type:'Company Analysis', op:'BUY', tp:'12,300원', buy:'', cur:'10,250원', upside:'+20.0%', upNum:20.0, tpNum:12300, date:'2020.11.11', team:'Research Team 3', region:'Korea',
+    headline:'NH, Necessary go Higher!',
+    summary:'낮은 금리와 오른 부동산값으로 개인투자자가 증시에 몰리며 3분기까지 국내 증시 순매수가 58조 원을 넘었다. 업계 최초로 실적평가 기준을 바꾼 WM 부문과 대형 딜을 이어가는 IB 부문이 성장 요인이다. 옵티머스 펀드 환매는 리스크 요인이다.',
+    heroSummary:'개인투자자 수수료와 IB 경쟁력. 배당할인모형으로 목표주가 12,300원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 개미떼가 물어다준 수수료', body:'개인투자자는 3·4분기까지 국내 증시에서 58조 8,002억 원을 순매수했다. 공모시장 참여도 늘며 수수료 수익이 커졌다.' },
+      { title:'투자포인트 2. WM과 IB 경쟁력', body:'WM 부문은 실적평가 기준 변경으로 성장하고 있고 IB 사업부는 올해도 대형 딜을 이어가고 있다.' }
+    ],
+    valuation:'배당할인모형을 채택했다. 배당금 948원을 적용해 목표주가 12,300원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/20-2_nhis.pdf', pdfMeta:'PDF · 20 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hyosungam', name:'효성첨단소재', ticker:'298050', sector:'소재', type:'Company Analysis', op:'BUY', tp:'146,400원', buy:'', cur:'131,000원', upside:'+11.8%', upNum:11.8, tpNum:146400, date:'2020.09.29', team:'Research Team 6', region:'Korea',
+    headline:'신소재 업고 본업 턴어라운드',
+    summary:'2Q20 매출 3,772억 원(YoY -52.4%), 영업이익 -428억 원으로 적자전환했다. 펀더멘털은 COVID-19 영향에서 벗어나 회복되고 있으며 3Q20 흑자전환을 전망한다. 탄소섬유와 아라미드 등 신소재의 약진이 성장 동력이다.',
+    heroSummary:'3Q20 흑자전환과 탄소섬유·아라미드. 테마 멀티플을 반영해 목표주가 146,400원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 본업 턴어라운드', body:'타이어코드 등 본업이 COVID-19 영향에서 벗어나 3Q20 흑자전환할 전망이다.' },
+      { title:'투자포인트 2. 꿈의 신소재, 탄소섬유와 아라미드', body:'탄소섬유 시장이 성장하고 있으며 동사의 신소재 사업이 새 성장 동력이 된다.' }
+    ],
+    valuation:'테마 멀티플 2.0을 반영해 목표주가 146,400원, 투자의견 매수를 제시한다. 현재 밸류에이션 부담은 존재한다.',
+    members:'Research Team 6',
+    pdf:'assets/reports/20-2_hyosungam.pdf', pdfMeta:'PDF · 19 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'dongjin', name:'동진쎄미켐', ticker:'005290', sector:'소재', type:'Company Analysis', op:'BUY', tp:'54,450원', buy:'', cur:'29,750원', upside:'+83.0%', upNum:83.0, tpNum:54450, date:'2020.09.29', team:'Research Team 4', region:'Korea',
+    headline:'21세기판 물산장려운동, 조선 반도체엔 조선 소재!',
+    summary:'반도체·디스플레이용 포토레지스트 등 소재를 생산한다. 삼성전자가 지분 4.8%를 매입해 협업 관계를 이어가고 있으며, 평택 신규 공장의 EUV용 PR 3순위 공급사로 선정됐다. EUV PR 개발 기대감을 21년 목표주가에 반영했다.',
+    heroSummary:'EUV 포토레지스트 개발과 소재 국산화. 21년 목표주가 54,450원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 소재 국산화 흐름', body:'반도체·디스플레이 소재 국산화가 진행되며 국내 포토레지스트 업체인 동사의 입지가 커지고 있다.' },
+      { title:'투자포인트 2. EUV PR과 삼성전자 협업', body:'삼성전자가 지분 4.8%를 매수했고 평택 공장 EUV용 PR 3순위 공급사로 선정돼 장기 성장 동력을 얻을 전망이다.' }
+    ],
+    valuation:'PER Valuation을 채택했다. EUV 기대감을 반영해 20년 목표주가 36,250원, 21년 목표주가 54,450원과 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/20-2_dongjin.pdf', pdfMeta:'PDF · 27 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hanssem', name:'한샘', ticker:'009240', sector:'소비재', type:'Company Analysis', op:'BUY', tp:'150,000원', buy:'', cur:'107,000원', upside:'+40.2%', upNum:40.2, tpNum:150000, date:'2020.09.28', team:'Research Team 5', region:'Korea',
+    headline:'한샘, 다시 샘솟나?',
+    summary:'소비자 대상 B2C와 기업 대상 B2B 두 사업부로 나뉜다. 2014년 이케아 진입 때처럼 시장 자체가 커지는 국면에서 실적 성장이 기대된다. 2020년 매출액 2조 856억 원, 영업이익 1,179억 원, 2021년 영업이익 1,941억 원을 추정한다.',
+    heroSummary:'인테리어·가구 수요 회복. SOTP로 2021년 목표주가 150,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. B2C 부엌·건자재와 인테리어 가구', body:'인테리어·가구 시장이 커지며 부엌, 건자재, 인테리어 가구 매출이 늘어날 전망이다.' },
+      { title:'투자포인트 2. B2B 부문', body:'기업 대상 B2B 사업부는 B2C와 다른 투자포인트를 가져 사업부별로 따로 평가했다.' }
+    ],
+    valuation:'사업부별 Target PER을 적용한 SOTP Valuation으로 2021년 목표주가 150,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/20-2_hanssem.pdf', pdfMeta:'PDF · 23 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'unison', name:'유니슨', ticker:'018000', sector:'풍력', type:'Company Analysis', op:'SELL', tp:'3,470원', buy:'', cur:'4,750원', upside:'-26.9%', upNum:-26.9, tpNum:3470, date:'2020.09.28', team:'Research Team 1', region:'Korea',
+    headline:'과도한 애국심은 계좌에 해롭습니다.',
+    summary:'국내 최초로 750kW 기어리스형 풍력발전시스템을 개발했고 4.2MW, 4.3MW 시스템으로 세계 시장에 도전하고 있다. 최근 최대주주 변경으로 국민연금이 실질 최대주주가 됐다는 단기 이슈로 주가가 8월 말 1,900원대에서 7,910원까지 올랐다. 2024년 목표주가 3,470원 이하로 내려올 때 매수를 권한다.',
+    heroSummary:'최대주주 변경 이슈에 따른 과열. PBR로 2024년 목표주가 3,470원, SELL을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 풍력발전의 국내 성장성', body:'문재인 정부의 재생에너지 3020 정책으로 국내 풍력발전 시장은 성장할 전망이다.' },
+      { title:'Sell Point. 단기 이슈로 과열된 주가', body:'최대주주 변경이라는 단기 이슈로 주가가 급등했다. 펀더멘털 대비 현재 주가는 높다고 판단한다.' }
+    ],
+    valuation:'PBR Multiple Valuation을 채택했다. 2024년 예상 BPS 기준 목표주가 3,470원을 제시하고 현재 주가에서는 매도를 권장한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/20-2_unison.pdf', pdfMeta:'PDF · 21 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'emart', name:'이마트', ticker:'139480', sector:'유통/소비재', type:'Company Analysis', op:'BUY', tp:'225,183원', buy:'', cur:'141,500원', upside:'+59.1%', upNum:59.1, tpNum:225183, date:'2020.09.28', team:'Research Team 2', region:'Korea',
+    headline:'이마트, 이만 올라갈게요',
+    summary:'국내 최초로 할인점을 선보였고 트레이더스·노브랜드 등 전문점과 SSG닷컴으로 사업을 넓혔다. 2020년 총매출액 15조 1,972억 원(YoY +3.6%), 영업이익 2,958억 원(YoY +17.8%)을 전망한다. 경쟁사 폐점에 따른 오프라인 구조조정 수혜와 신선식품 강점을 활용한 온라인 확장이 기대된다.',
+    heroSummary:'경쟁사 폐점 수혜와 신선식품 기반 온라인. 2021년 목표주가 225,183원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 같은 불황, 다른 행보', body:'COVID-19 이후 대형마트 구조조정이 가속화되며 경쟁사 폐점에 따른 기존점 성장률 수혜가 예상된다.' },
+      { title:'투자포인트 2. 신선식품 강점과 유동성 확보', body:'신선식품 분야 강점으로 온라인 시장을 공략하고, 기존 사업의 수익구조 안정을 위한 유동성을 확보했다.' }
+    ],
+    valuation:'2021년 목표주가 225,183원, 상승여력 59%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-2_emart.pdf', pdfMeta:'PDF · 15 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'koreanair20', name:'대한항공', ticker:'003490', sector:'항공운송', type:'Company Analysis', op:'BUY', tp:'24,850원', buy:'', cur:'18,800원', upside:'+32.2%', upNum:32.2, tpNum:24850, date:'2020.09.28', team:'Research Team 3', region:'Korea',
+    headline:'죽지 않아, 대한항공!',
+    summary:'2분기 항공수요 위축에도 세계적 수준의 화물 수송능력과 진단키트·방역물품 수송으로 호실적을 냈다. 코로나19 백신과 치료제 항공수송도 수혜 요인이다. 2021년 예상 당기순이익은 3,373억 원으로 흑자전환할 전망이다.',
+    heroSummary:'항공화물 호조와 백신 수송 수혜. 적정 PBR 1.42배로 목표주가 24,850원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 여객으로 잃은 다리, 화물로 날개 달다', body:'세계적인 항공화물 경쟁력으로 코로나 진단키트와 방역물품 수송이 늘었다. 화물 덕에 FSC와 LCC의 실적이 갈렸다.' },
+      { title:'투자포인트 2. 백신 수송과 유동성 관리', body:'백신과 치료제 항공수송이 뜻밖의 화물 수혜가 될 전망이다. 유동성 위기 대처도 계획대로 진행 중이다.' }
+    ],
+    valuation:'절대가치로 산출한 Fair PBR 1.42배를 21년 BPS 추정치 17,511원에 적용해 목표주가 24,850원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/20-2_koreanair20.pdf', pdfMeta:'PDF · 20 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'saramin', name:'사람인에이치알', ticker:'143240', sector:'인터넷/플랫폼', type:'Company Analysis', op:'BUY', tp:'30,000원', buy:'', cur:'21,900원', upside:'+37.0%', upNum:37.0, tpNum:30000, date:'2020.08.28', team:'Research Team 5', region:'Korea',
+    headline:'人r 람 人 HR',
+    summary:'코로나19로 2020년 5월 실업률이 4.5%로 치솟았고 한국은행은 2020년 GDP 성장률을 -1.3%로 제시했다. 실업률 증가에 따른 구직 수요 증가와 정부의 공공 일자리·한국판 뉴딜 정책이 동사에 우호적이다. 고용시장 유연화와 중장년층 재취업 수요도 늘고 있다.',
+    heroSummary:'구직 수요 증가와 고용시장 유연화. 2020년 목표주가 30,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 고용시장의 유연화', body:'정규직 중심 고용에서 유연한 고용 형태로 바뀌며 채용 플랫폼 이용이 늘어난다.' },
+      { title:'투자포인트 2. 프리랜서·중장년층 재취업과 모바일 플랫폼', body:'프리랜서와 재취업을 원하는 중장년층이 늘고, 모바일 플랫폼 이용도 증가하고 있다.' }
+    ],
+    valuation:'과거 3개년 평균 PER과 EV/EBITDA를 함께 적용해 2020년 목표주가 30,000원(2021년 37,559원), 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/20-1_saramin.pdf', pdfMeta:'PDF · 11 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'fnf', name:'F&F', ticker:'007700', sector:'소비재', type:'Company Analysis', op:'HOLD', tp:'93,000원', buy:'', cur:'95,000원', upside:'-2.1%', upNum:-2.1, tpNum:93000, date:'2020.08.28', team:'Research Team 6', region:'Korea',
+    headline:'COVID-19, DISCOVERY가 COVER한다!',
+    summary:'2Q20 매출액은 1,670억 원(YoY -17%)으로 면세 부진 영향을 받았다. 디스커버리 익스페디션은 백화점·대리점 중심 유통 덕에 2분기 매출이 645억 원(YoY +28%)으로 늘었다. 2020년 매출 7,718억 원(YoY -15%), 영업이익 1,080억 원(YoY -28%)을 전망하며 단기 불확실성은 여전하다.',
+    heroSummary:'디스커버리 성장과 면세 부진. Peer P/E 17배로 목표주가 93,000원, 중립을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 디스커버리가 버틴다', body:'면세점 비중이 높은 브랜드와 달리 디스커버리는 백화점 40%, 대리점 40% 구성으로 코로나19 직격탄을 피했다. 애슬레저·아웃도어 수요도 늘고 있다.' },
+      { title:'투자포인트 2. MLB 중국과 면세 회복은 지켜볼 부분', body:'면세 채널의 점진적 회복과 MLB 중국 확장, 온라인 채널이 매출을 이끌 것이나 중국인 인바운드가 아직 저조하다.' }
+    ],
+    valuation:'한섬, 신세계인터내셔날 등 Peer P/E 가중평균 17배를 2020년 추정 EPS에 적용해 목표주가 93,000원, 투자의견 중립을 제시한다.',
+    members:'Research Team 6',
+    pdf:'assets/reports/20-1_fnf.pdf', pdfMeta:'PDF · 7 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'leeno', name:'리노공업', ticker:'058470', sector:'반도체 장비', type:'Company Analysis', op:'BUY', tp:'195,300원', buy:'', cur:'128,400원', upside:'+52.1%', upNum:52.1, tpNum:195300, date:'2020.08.28', team:'Research Team 2', region:'Korea',
+    headline:'LEENO공업, 주가 오르는 소리 안들LEENO?',
+    summary:'수입에 의존하던 검사용 PROBE와 반도체 테스트 SOCKET을 국내 최초로 자체 브랜드로 개발했다. 2019년 3분기에는 PROBE 기술을 응용한 초음파 진단기용 의료기기 부품 공장을 지었다. 2020년 매출액 2,108억 원, EPS 4,472원을 추정한다.',
+    heroSummary:'반도체 테스트 소켓과 의료기기 부품. Peer PER로 목표주가 195,300원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 테스트 소켓 시장 성장', body:'LEENO PIN과 IC Test Socket 매출 비중이 커지고 있으며 세계 테스트 소켓 시장도 성장할 전망이다.' },
+      { title:'투자포인트 2. 의료기기 부품으로 확장', body:'PROBE 기술을 응용한 초음파 진단기 부품으로 국내 의료기기 시장에 진출했다.' }
+    ],
+    valuation:'Cohu, ISC 등 Peer PER을 추정 EPS에 곱해 목표주가 195,300원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-1_leeno.pdf', pdfMeta:'PDF · 5 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'sikorea', name:'신세계인터내셔날', ticker:'031430', sector:'소비재', type:'Company Analysis', op:'SELL', tp:'91,000원', buy:'', cur:'137,000원', upside:'-33.6%', upNum:-33.6, tpNum:91000, date:'2020.08.27', team:'Research Team 3', region:'Korea',
+    headline:'2Q20이 저점? 아직은 이른 매수 시점',
+    summary:'해외 패션 브랜드 수입·유통, 자체 의류 브랜드, 코스메틱 사업을 영위한다. COVID-19 재확산으로 면세점과 백화점 수익성 악화가 이어지고 있다. 의류 부문의 계절성과 코스메틱 성장 둔화, 판관비 대응 전략 부재로 매출 감소세를 전망한다.',
+    heroSummary:'면세·백화점 수익성 악화와 코스메틱 성장 둔화. 4Q20 예상주가 91,000원, SELL을 제시한다.',
+    points:[
+      { title:'Sell Point 1. 면세점·백화점 수익성 악화 지속', body:'COVID-19 재확산으로 주요 유통망인 면세점과 백화점의 수익성 악화가 이어질 전망이다.' },
+      { title:'Sell Point 2. 사업부 성장 제동과 비용 대응 부재', body:'계절성을 가진 의류 부문과 성장성이 높던 코스메틱 부문 모두 제동이 걸렸고, 매출 감소에 따른 판관비 대응 전략도 보이지 않는다.' }
+    ],
+    valuation:'추정 시가총액을 가중평균주식수 714만 주로 나눠 적정주가 91,600원을 산출했다. 2020년 4분기 예상주가 91,000원, 투자의견 SELL을 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/20-1_sikorea.pdf', pdfMeta:'PDF · 7 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hitejinro', name:'하이트진로', ticker:'000080', sector:'음식료', type:'Company Analysis', op:'BUY', tp:'49,250원', buy:'', cur:'36,650원', upside:'+34.4%', upNum:34.4, tpNum:49250, date:'2020.08.28', team:'Research Team 4', region:'Korea',
+    headline:'주류업계 ‘왕좌’ 탈환',
+    summary:'맥주, 소주, 생수 사업을 영위하는 주류 기업이다. 2019년 신제품 성공으로 매출액 2조 351억 원, 영업이익 825억 원을 기록했지만 마산공장 재편과 마케팅비 확대로 당기순손실 323억 원을 냈다. 코로나로 가정용 시장과 혼술 문화가 커지며 동사 제품 판매가 늘고 있다.',
+    heroSummary:'신제품 흥행과 가정용 주류 시장 확대. EV/EBITDA로 목표주가 49,250원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 신제품 성공과 점유율 회복', body:'2019년 출시한 신제품이 흥행하며 맥주·소주 시장에서 점유율을 되찾고 있다. 신제품 출회로 주가가 저평가돼 있다는 점을 들어 20% 프리미엄을 부여했다.' },
+      { title:'투자포인트 2. 코로나로 바뀐 주류 시장', body:'외식 시장에서 가정용 시장과 혼술 문화로 소비가 옮겨가며 동사 제품 판매가 늘고 있다.' }
+    ],
+    valuation:'EV/EBITDA Valuation을 채택했다. 영업가치에 비영업가치를 더하고 순차입금을 빼 목표주가 49,250원, 상승여력 34%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/20-1_hitejinro.pdf', pdfMeta:'PDF · 11 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'lgchem', name:'LG화학', ticker:'051910', sector:'화학', type:'Company Analysis', op:'BUY', tp:'1,075,790원', buy:'', cur:'762,000원', upside:'+41.2%', upNum:41.2, tpNum:1075790, date:'2020.08.28', team:'Research Team 1', region:'Korea',
+    headline:'확대되는 전기차 시장의 수혜',
+    summary:'석유화학, 전지, 첨단소재, 생명과학 사업을 보유하며 주력은 전기차용 전지와 첨단소재다. 전기차·ESS 시장 확대와 생산능력 증설로 전지 사업부 매출이 늘어날 전망이다. 저유가 기조로 석유화학 제품 스프레드도 개선됐다.',
+    heroSummary:'전기차 배터리 수요와 생산능력 확대. DCF로 목표주가 1,075,790원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 확대되는 전기차 시장', body:'전기차 판매량과 배터리 시장, 글로벌 ESS 시장이 함께 커지며 전지 사업부 매출이 늘어날 전망이다.' },
+      { title:'투자포인트 2. 생산능력 확대와 개선된 스프레드', body:'생산능력을 늘리고 기술력을 높이고 있다. 저유가 기조로 석유화학 제품 스프레드도 개선됐다.' }
+    ],
+    valuation:'DCF Valuation을 채택했다. WACC과 영구성장률을 적용해 2020년 말 기준 목표주가 1,075,790원, 상승여력 41%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/20-1_lgchem.pdf', pdfMeta:'PDF · 12 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'mkif', name:'맥쿼리인프라', ticker:'088980', sector:'금융서비스', type:'Company Analysis', op:'BUY', tp:'-', buy:'', cur:'11,800원', upside:'-', upNum:0, tpNum:0, date:'2020.06.03', team:'Research Team 2', region:'Korea',
+    headline:'저금리 시대, 더욱 빛나는 맥쿼리',
+    summary:'1Q20 운용수익 1,408억 원(YoY +2.6%), 당기순이익 1,301억 원(YoY +4.7%)을 기록했다. 배당 단계 자산은 모두 MRG(최소 보장수익)가 적용돼 교통량 감소에도 견고하다. 천안논산고속도로의 미수 MRG 약 840억 원으로 2021~2022년 연평균 750억 원의 배당수익이 예상된다.',
+    heroSummary:'MRG 기반 안정적 수익과 배당수익률 6.33%. 투자의견 BUY를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 안정적인 수익구조와 높은 배당성향', body:'배당수익은 MRG 적용 자산이 많아 통행량과 관계없이 일정 수익이 보전된다. 배당가능이익의 90% 이상을 배당하며 배당수익률은 6.33%다.' },
+      { title:'투자포인트 2. SOC 산업 독점', body:'도로 11개, 항만 1개, 철도 1개 등 13개 자산을 보유하고 있다. 재정정책으로 SOC 투자가 늘어날 전망이다.' }
+    ],
+    valuation:'투자의견 BUY를 제시했다. 목표주가는 따로 제시하지 않았다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-1_mkif.pdf', pdfMeta:'PDF · 17 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'sbl20', name:'삼성바이오로직스', ticker:'207940', sector:'제약/바이오', type:'Company Analysis', op:'BUY', tp:'745,000원', buy:'', cur:'600,000원', upside:'+24.2%', upNum:24.2, tpNum:745000, date:'2020.05.21', team:'Research Team 1', region:'Korea',
+    headline:'제조부터 개발까지, 바이오 부문을 장악한다!',
+    summary:'2020년 매출액 9,016억 원(YoY +28%), 영업이익 3,180억 원(YoY +246%)을 전망한다. 2018년 18만 리터 규모 3공장 가동으로 CMO 최강자로 자리 잡았고, CDMO 체제로 개발부터 제조까지 One-stop 서비스를 제공한다. 글로벌 바이오의약품 생산 시장 성장의 수혜가 예상된다.',
+    heroSummary:'압도적 CAPA와 CDMO One-stop 서비스. 2020년 영업이익 YoY +246%를 전망한다.',
+    points:[
+      { title:'투자포인트 1. 압도적인 CAPA로 전세계 수주를 장악한다', body:'3공장 가동으로 세계 최대 생산 규모를 확보했다. 론자, 베링거인겔하임 등이 증설하고 있지만 동사의 위세를 꺾기는 어렵다.' },
+      { title:'투자포인트 2. 수주 건전성과 삼성바이오에피스 시너지', body:'강점은 수주 규모만이 아니라 건전성에 있다. 삼성바이오에피스와의 시너지도 기대된다.' }
+    ],
+    valuation:'목표주가 745,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/20-1_sbl20.pdf', pdfMeta:'PDF · 57 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'samsungsds', name:'삼성SDS', ticker:'018260', sector:'IT서비스', type:'Company Analysis', op:'BUY', tp:'246,900원', buy:'', cur:'175,500원', upside:'+40.7%', upNum:40.7, tpNum:246900, date:'2020.05.20', team:'Research Team 2', region:'Korea',
+    headline:'Digital Transformation 수요 회복',
+    summary:'1Q20 매출액 2조 4,361억 원(YoY -2.7%), 영업이익 1,712억 원(YoY -13.7%)으로 코로나19에 따른 사업 지연 영향을 받았다. 다만 공공·금융·제조 등 대외사업 매출은 20% 늘었다. 하반기 IT 투자 회복으로 2020년 매출액 10조 881억 원, 영업이익 9,049억 원을 전망한다.',
+    heroSummary:'대외사업 성장과 4대 IT 전략사업. 추정 EPS에 PER 22.67배로 목표주가 246,900원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. IT 소프트웨어 기술과 시장의 성장', body:'코로나19로 비대면 업무가 확산되며 기업의 IT 투자가 본격화될 전망이다. 한국판 뉴딜도 IT서비스 업체의 역할 확대를 시사한다.' },
+      { title:'투자포인트 2. 4대 IT 전략사업과 물류 BPO', body:'인텔리전트팩토리, 클라우드, AI·Analytics, 솔루션 사업이 성장하고 물류 BPO 대외 매출 비중도 늘고 있다.' }
+    ],
+    valuation:'1Q21까지의 추정 EPS 10,892원에 PER 22.67배를 적용해 목표주가 246,900원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-1_samsungsds.pdf', pdfMeta:'PDF · 18 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'ckd', name:'종근당', ticker:'185750', sector:'제약/바이오', type:'Company Analysis', op:'BUY', tp:'134,200원', buy:'', cur:'99,500원', upside:'+34.9%', upNum:34.9, tpNum:134200, date:'2020.05.20', team:'Research Team 5', region:'Korea',
+    headline:'종근당 R&D로 간당~!',
+    summary:'탄탄한 의약품 매출을 바탕으로 R&D 파이프라인이 미래 성장을 이끌 전망이다. 2020년 매출액 1조 2,403억 원, 영업이익 1,011억 원을 추정한다. Jak 억제제 임상이 통과할 때마다 주가가 올라 2024년에는 최대 250,000원까지 상승할 수 있다고 판단한다.',
+    heroSummary:'안정적 의약품 매출과 R&D 파이프라인. 2020년 영업이익 1,011억 원을 추정한다.',
+    points:[
+      { title:'투자포인트 1. 탄탄하고 안정적인 의약품', body:'기존 의약품 매출이 꾸준해 실적의 바탕이 된다. 2020년 매출액 1조 2,403억 원을 추정한다.' },
+      { title:'투자포인트 2. 미래를 견인할 R&D와 보톡스', body:'Jak 억제제 등 임상 파이프라인과 보톡스 시장 진출이 성장 동력이다.' }
+    ],
+    valuation:'Jak 억제제 추가 상승분은 성공 확률에 반영된 것으로 보수적으로 보고 목표주가 134,200원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/20-1_ckd.pdf', pdfMeta:'PDF · 38 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'orion20', name:'오리온', ticker:'271560', sector:'음식료', type:'Company Analysis', op:'BUY', tp:'173,597원', buy:'', cur:'131,000원', upside:'+32.5%', upNum:32.5, tpNum:173597, date:'2020.05.20', team:'Research Team 4', region:'Korea',
+    headline:'중국 시장 호조와 신제품',
+    summary:'2016년 사드 배치 이후 중국 불매 운동으로 타격을 받았지만 2017년부터 매출이 회복되고 있다. 온라인 유통 비중을 늘리며 코로나19 상황에서 수혜를 받았고 시장점유율도 높였다. 중국 김스낵·생수 시장 진입과 신제품 성공으로 성장이 기대된다.',
+    heroSummary:'중국 매출 회복과 온라인 채널 확대. Peer PER로 목표주가 173,597원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 중국 시장에서의 호조세', body:'유통 채널을 온라인으로 넓혀 코로나19 수혜를 받았고 점유율을 높였다. 제과 시장 점유율은 쉽게 바뀌지 않아 추세가 유지될 전망이다.' },
+      { title:'투자포인트 2. 신규 제품 라인업의 성공', body:'2017년 이후 출시한 신제품이 성공을 이어가고 있으며 중국 김스낵·생수 시장에도 진입했다.' }
+    ],
+    valuation:'국내 제과·식품사와 Pepsi 등 6개 Peer의 PER을 적용하고 가중평균유통주식수로 나눠 적정주가 173,597원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/20-1_orion20.pdf', pdfMeta:'PDF · 33 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'kbfg', name:'KB금융', ticker:'105560', sector:'금융서비스', type:'Company Analysis', op:'BUY', tp:'42,400원', buy:'', cur:'31,950원', upside:'+32.7%', upNum:32.7, tpNum:42400, date:'2020.05.20', team:'Research Team 3', region:'Korea',
+    headline:'막연한 우려와의 전쟁',
+    summary:'푸르덴셜생명 인수로 생명보험 부문과 비은행 포트폴리오를 강화하며 리딩 금융그룹을 겨냥하고 있다. 2020년 영업이익 5조 7,560억 원, 당기순이익 3조 5,350억 원을 전망한다. 코로나19에 따른 우려로 PBR이 0.3배 수준까지 낮아졌다.',
+    heroSummary:'푸르덴셜생명 인수로 비은행 강화. 배당할인모형으로 목표주가 42,400원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 푸르덴셜생명 인수, 리딩 금융그룹 정조준', body:'푸르덴셜생명 인수로 생명보험 부문을 강화하고 비은행 포트폴리오를 넓혔다.' },
+      { title:'투자포인트 2. 막연한 우려 대비 저평가', body:'2020E PBR 0.3배로 코로나19 우려가 과도하게 반영됐다고 판단한다. 배당성향은 25% 수준을 유지할 전망이다.' }
+    ],
+    valuation:'배당할인모형을 채택했다. 2021년 예상 배당금을 (자본비용-영구성장률)로 나눠 목표주가 42,400원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/20-1_kbfg.pdf', pdfMeta:'PDF · 32 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'lginnotek', name:'LG이노텍', ticker:'011070', sector:'전자부품', type:'Company Analysis', op:'BUY', tp:'179,700원', buy:'', cur:'123,000원', upside:'+46.1%', upNum:46.1, tpNum:179700, date:'2020.04.16', team:'Research Team 5', region:'Korea',
+    headline:'혁신적인 연구개발을 통해 첨단기술 기업을 지향하라',
+    summary:'광학솔루션, 기판소재, 전장부품, LED 4개 사업부를 운영한다. 2019년 매출 8.3조 원(YoY +4%), 영업이익 4,031억 원(YoY +53%)을 기록했고 광학솔루션이 매출의 65.4%를 차지한다. 수익성이 낮은 HDI 사업을 정리하고 반도체 기판에 집중할 예정이다.',
+    heroSummary:'애플향 카메라 모듈과 자율주행·전기차 부품. 목표주가 179,700원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 든든한 아군, 애플의 지원', body:'카메라 모듈 중심의 광학솔루션 사업부가 2019년 매출 5조 4천억 원으로 전체의 65.4%를 차지한다. 미국 시가총액 1위 애플이 주요 고객이다.' },
+      { title:'투자포인트 2. 자율주행차와 전기차 부품', body:'자율주행차와 전기차 시장이 새 성장 산업으로 떠오르며 전장부품 사업부의 품질·기술 경쟁력이 부각된다.' }
+    ],
+    valuation:'2020년 말 목표주가 179,700원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/20-1_lginnotek.pdf', pdfMeta:'PDF · 18 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'inicis', name:'KG이니시스', ticker:'035600', sector:'IT서비스', type:'Company Analysis', op:'BUY', tp:'27,000원', buy:'', cur:'19,450원', upside:'+38.8%', upNum:38.8, tpNum:27000, date:'2020.04.16', team:'Research Team 1', region:'Korea',
+    headline:'전자결제서비스 시장의 성장',
+    summary:'2019년 국내 온라인쇼핑 거래액은 134.6조 원(YoY +9.4%)으로 전자결제 서비스 수요가 커지고 있다. 2020년 매출액은 1조 원(YoY +13.8%), 영업이익은 687억 원(YoY -20%)으로 전망한다. 경쟁사 NHN KCP 대비 ROE에 비해 PER이 저평가돼 있다고 판단한다.',
+    heroSummary:'온라인쇼핑 성장에 따른 PG 수요. 12M Fwd PER 15.5배로 목표주가 27,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 전자결제서비스 시장의 성장성', body:'전자상거래 시장 성장에 따라 결제 서비스 사업 성장이 기대된다. 2019년 온라인쇼핑 거래액은 134.6조 원이다.' },
+      { title:'투자포인트 2. 경쟁사 대비 저평가', body:'NHN KCP와 비교했을 때 ROE 대비 PER이 낮아 저평가 상태로 판단한다.' }
+    ],
+    valuation:'PER Valuation을 채택했다. Reuters 12M Fwd PER에 5를 가중한 15.53배를 적용해 목표주가 27,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/20-1_inicis.pdf', pdfMeta:'PDF · 34 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'skhynix', name:'SK하이닉스', ticker:'000660', sector:'반도체', type:'Company Analysis', op:'BUY', tp:'78,000~105,000원', buy:'', cur:'81,300원', upside:'+12.5%', upNum:12.5, tpNum:91500, date:'2020.04.16', team:'Research Team 4', region:'Korea',
+    headline:'언택트 수요와 서버 DRAM',
+    summary:'코로나19로 모바일·PC 수요는 주춤하지만 원격근무와 온라인 쇼핑 증가로 서버용 반도체 수요가 크게 늘었다. 2Q20부터 코로나 영향에서 벗어나 본격적인 성장세를 기록할 전망이다. 2019년 매출액 26조 9,907억 원, 영업이익 2조 7,127억 원으로 전년 대비 크게 감소했다.',
+    heroSummary:'서버 DRAM 수요와 낸드 반등. Peer PER 밴드로 목표주가 78,000~105,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. DRAM 가격 상승과 서버 DRAM 수요 증가', body:'클라우드 중심 데이터센터 투자가 이어지며 캐시카우인 DRAM의 가격과 서버 수요가 오른다.' },
+      { title:'투자포인트 2. SSD를 앞세운 낸드플래시와 비메모리', body:'SSD를 필두로 낸드플래시가 반등을 준비하고 있으며 정부 지원을 받는 비메모리 반도체도 성장 동력이다.' }
+    ],
+    valuation:'Peer 8개사의 FY2 Forward PER로 목표주가를 추정했다. 현실적인 시황을 고려해 PER 밴드 하한 기준 78,000~105,000원 범위, 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/20-1_skhynix.pdf', pdfMeta:'PDF · 30 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'studiodragon', name:'스튜디오드래곤', ticker:'253450', sector:'미디어/엔터', type:'Company Analysis', op:'BUY', tp:'121,880원', buy:'', cur:'77,800원', upside:'+56.7%', upNum:56.7, tpNum:121880, date:'2020.04.15', team:'Research Team 2', region:'Korea',
+    headline:'압도적 제작능력과 해외 판권',
+    summary:'1Q20은 <사랑의 불시착> 흥행과 언택트 소비 확대, 넷플릭스와의 콘텐츠 공급계약(3년간 최소 21건) 효과로 흑자전환을 예상한다. 2Q20 매출액 1,590억 원(YoY +23.6%), 영업이익 180억 원(YoY +66.8%)을 전망한다. OTT 경쟁 심화로 콘텐츠 기업의 협상력이 커지고 있다.',
+    heroSummary:'넷플릭스 공급계약과 대작 라인업. 2020년 EPS 2,090원에 PER 58.3배를 적용했다.',
+    points:[
+      { title:'투자포인트 1. 성장하는 미디어 산업', body:'VOD·OTT 시장이 급성장하고 코로나19로 시청률이 계절성을 타지 않았다. OTT 경쟁 심화로 콘텐츠 제작사의 협상력이 강해졌다.' },
+      { title:'투자포인트 2. 압도적인 제작능력과 해외 판권', body:'올해 33편 제작을 예정하며 김은숙·노희경 작가 작품과 넷플릭스 오리지널 ‘스위트홈’이 확정됐다. 해외 판권 판매도 늘어날 전망이다.' }
+    ],
+    valuation:'PER Valuation을 채택했다. 추정 EPS 2,090원에 PER 58.3배를 적용해 목표주가 121,880원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/20-1_studiodragon.pdf', pdfMeta:'PDF · 15 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cjcj', name:'CJ제일제당', ticker:'097950', sector:'음식료', type:'Company Analysis', op:'BUY', tp:'382,000원', buy:'', cur:'236,000원', upside:'+61.9%', upNum:61.9, tpNum:382000, date:'2020.04.15', team:'Research Team 3', region:'Korea',
+    headline:'코로나에도 안정적 성장! 떨어진 지금이 매수 타이밍!',
+    summary:'2019년 매출액 22조 3,520억 원(YoY +19.7%), 영업이익 8,969억 원(YoY +7.7%)을 기록했다. 2020년은 코로나 수혜, SKU 디마케팅, 구조조정, 판관비 절감으로 매출액 25조 6,710억 원, 영업이익 2조 4,090억 원을 추정한다. 1인 가구와 시니어층의 HMR 수요 증가로 식품 사업부가 높은 성장률을 기록할 전망이다.',
+    heroSummary:'HMR 수요 증가와 수익성 개선. 사업부별 SOTP로 목표주가 382,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 모두의 입맛을 사로잡은 HMR', body:'1인 가구 증가와 시니어층 침투율 상승, 코로나 수혜로 HMR 매출이 크게 늘 전망이다. 2019년 1분기부터 슈완즈 실적도 반영됐다.' },
+      { title:'투자포인트 2. 수익성 개선', body:'SKU 디마케팅과 구조조정, 판관비 절감으로 OPM이 개선될 전망이다. 바이오 사업부는 코로나 영향권 밖에 있다.' }
+    ],
+    valuation:'사업부별 EV/EBITDA를 이용한 SOTP Valuation으로 2020년 말 기준 목표주가 382,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/20-1_cjcj.pdf', pdfMeta:'PDF · 22 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hyundai19', name:'현대차', ticker:'005380', sector:'자동차', type:'Company Analysis', op:'NR', tp:'-', buy:'', cur:'-', upside:'-', upNum:0, tpNum:0, date:'2019.11.28', team:'Research Team 3', region:'Korea',
+    headline:'내연기관의 위기, 미래차의 기회',
+    summary:'2018년 글로벌 완성차 판매가 0.5% 줄어든 가운데 동사는 미국(-2.6%)과 중국(-18.6%)에서 점유율을 잃었다. 반면 전기차는 글로벌 10위, 중국 자국 브랜드를 빼면 4위로 아이오닉·코나를 중심으로 확대 중이다. 수소 전기상용차와 자율주행 분야에서 미래 경쟁력을 분석했다.',
+    heroSummary:'내연기관 점유율 하락과 전기차·수소차·자율주행 경쟁력. 투자의견은 제시하지 않았다.',
+    points:[
+      { title:'투자포인트 1. 전기자동차에서의 현대차', body:'글로벌 10위 전기차 생산 업체로 중국 자국 브랜드를 제외하면 판매량 4위다. 전기차 전용 플랫폼 도입과 함께 모델을 늘릴 계획이다.' },
+      { title:'투자포인트 2. 수소차와 자율주행', body:'수소 자동차는 수소 전기상용차부터 개발하는 것이 바람직하다고 판단한다. 자율주행 분야에서도 B2B 확장 가능성을 검토했다.' }
+    ],
+    valuation:'사업 경쟁력 분석 위주의 보고서로 목표주가와 투자의견은 제시하지 않았다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/19-2_hyundai19.pdf', pdfMeta:'PDF · 29 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'afreeca', name:'아프리카TV', ticker:'067160', sector:'인터넷/플랫폼', type:'Company Analysis', op:'BUY', tp:'64,000~86,000원', buy:'', cur:'68,600원', upside:'+9.3%', upNum:9.3, tpNum:75000, date:'2019.11.28', team:'Research Team 2', region:'Korea',
+    headline:'1인 미디어 산업 성장의 원동력',
+    summary:'스마트폰 보유율 95%와 1인 가구 증가가 1인 미디어 산업 성장을 이끌고 있다. 동사는 e스포츠 리그를 직접 열고 스포츠 중계권을 BJ에게 제공하며 콘텐츠를 다각화하고 있다. 실시간 소통 중계가 재미와 전문성을 함께 잡았다.',
+    heroSummary:'1인 미디어 성장과 중계권 확보. 적정주가 64,000~86,000원, Trading Buy를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 기술의 진보와 인구구조 변화', body:'스마트폰 기능 혁신과 데이터 속도 향상이 동영상 스트리밍 성장을 뒷받침하고 1인 가구 증가가 이용을 늘린다.' },
+      { title:'투자포인트 2. 중계권의 1인 미디어화와 콘텐츠 다각화', body:'e스포츠 리그 개최와 스포츠 중계권 재구매로 콘텐츠를 늘렸다. BJ 아시안컵 중계 누적 시청자는 1천만 명을 넘었다.' }
+    ],
+    valuation:'20.4Q 기준 적정주가 중심 64,281원, 상한 85,802원을 바탕으로 적정주가 범위 64,000~86,000원, 투자의견 Trading Buy를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/19-2_afreeca.pdf', pdfMeta:'PDF · 37 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'tesla19', name:'Tesla', ticker:'TSLA', sector:'자동차/모빌리티', type:'Company Analysis', op:'BUY', tp:'-', buy:'', cur:'-', upside:'-', upNum:0, tpNum:0, date:'2019.11.27', team:'Research Team 4', region:'Global',
+    headline:'전기자동차 시대의 도래',
+    summary:'3Q19 매출액 6조 303억 원, 영업이익 2,610억 원으로 7분기 만에 흑자전환했다. 2019년 상반기 내연기관 차량 판매는 5% 줄었지만 전기차는 36% 늘었다. 2020년 자동차 판매 매출액 47조 6천억 원(YoY +129%)을 전망한다.',
+    heroSummary:'7분기 만의 흑자전환과 전기차 대중화. 2020년 자동차 매출 YoY +129%를 전망한다.',
+    points:[
+      { title:'투자포인트 1. 내연기관 시대가 저물고 전기차 시대가 도래한다', body:'전기차 판매는 전년 대비 51% 늘 전망이며 충전소 확대가 신규 고객 증가와 충전비 인하로 이어진다. 환경 보조금과 규제 정책도 전기차 전환을 앞당긴다.' },
+      { title:'투자포인트 2. 세계 완성차 업체의 전기차 전환', body:'폭스바겐이 2026년 내연차 생산 종료를 밝히는 등 업계 전반이 전기차로 옮겨가며 선두 업체인 동사가 수혜를 본다.' }
+    ],
+    valuation:'투자의견 Buy를 제시했으며 목표주가는 표기하지 않았다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/19-2_tesla19.pdf', pdfMeta:'PDF · 19 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'lottereit', name:'롯데리츠', ticker:'330590', sector:'금융서비스', type:'Company Analysis', op:'BUY', tp:'6,748원', buy:'', cur:'5,000원', upside:'+35.0%', upNum:35.0, tpNum:6748, date:'2019.10.03', team:'Research Team 3', region:'Korea',
+    headline:'리츠도 롯데가 하면 자이언츠',
+    summary:'2019년 10월 30일 상장 예정이던 국내 최대 규모의 공모 리츠다. 경기 둔화로 배당 수익이 보장되는 리츠 수요가 늘고, 정부의 공모 리츠 활성화 방안과 세제 개편도 우호적이다. 롯데쇼핑 점포 80여 곳에 대한 우선매수협상권으로 자산 확대 가능성이 높다.',
+    heroSummary:'공모 리츠 활성화와 롯데쇼핑 점포 우선매수권. 2020년 FFO 417억 원을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 올 겨울 공모 리츠의 매력이 폭발한다', body:'경기 둔화로 안정적인 배당을 원하는 수요가 늘었고, 공모형 부동산간접투자 활성화 방안과 세제 혜택이 투자자와 사업자 모두에게 매력적이다.' },
+      { title:'투자포인트 2. 자산 확대 가능성', body:'롯데쇼핑이 보유한 전국 80여 개 점포(약 8.5조 원)에 대한 우선매수협상권을 갖고 있어 추가 자산 편입 가능성이 높다.' }
+    ],
+    valuation:'2020년 예상 FFO 417억 원에 시장 예상 Multiple 15배를 적용해 적정주가 6,748원, 투자의견 BUY를 제시한다. 현재가 칸은 공모가 상단 5,000원 기준이다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/19-2_lottereit.pdf', pdfMeta:'PDF · 30 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'kai', name:'한국항공우주', ticker:'047810', sector:'우주항공/방산', type:'Company Analysis', op:'BUY', tp:'59,000~75,000원', buy:'', cur:'39,100원', upside:'+71.4%', upNum:71.4, tpNum:67000, date:'2019.10.01', team:'Research Team 2', region:'Korea',
+    headline:'Ask and go to the Maesu!',
+    summary:'Boeing과 Airbus에 동체·주익 등 주요 구조물을 납품하는 민수 부품 사업이 안정적인 버팀목이다. 마린온 추락 원인이 부품 결함으로 밝혀지며 수리온 안정성 논란이 마무리됐고 대규모 발주와 수출이 기대된다. 17년 적자 이후 1년 만에 흑자전환했다.',
+    heroSummary:'민수 부품 안정성과 수리온·국산 제트기 수출. 목표주가 59,000~75,000원 범위를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 하청인데 클라스가 다르다, 민수용 부품', body:'글로벌 항공수송량 증가와 차세대 고효율 항공기 개발로 Boeing·Airbus향 구조물 납품이 꾸준할 전망이다.' },
+      { title:'투자포인트 2. 수리온과 국산 제트기', body:'수리온 안정성 논란이 해소되며 국군·민간 발주와 수출이 기대된다. 국산 제트기 수출도 성장 요인이다.' }
+    ],
+    valuation:'PER Valuation으로 분기별 적정주가를 도출해 목표주가 범위 59,000~75,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/19-2_kai.pdf', pdfMeta:'PDF · 25 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'skckpi', name:'SKC코오롱PI', ticker:'178920', sector:'소재', type:'Company Analysis', op:'BUY', tp:'29,400원', buy:'', cur:'28,250원', upside:'+4.1%', upNum:4.1, tpNum:29400, date:'2019.10.01', team:'Research Team 4', region:'Korea',
+    headline:'OLED·EV 수요와 매각 프리미엄',
+    summary:'2Q19 매출액 623억 원(QoQ +55%), 영업이익 99억 원(QoQ +315%)으로 신규 라인 가동과 재고 소진에 힘입어 회복세에 들어섰다. 폴더블폰 상용화에 따른 PI 필름 수요와 EV 배터리 절연 테이프 수요가 늘 전망이다. 매각이 진행 중이어서 경영권 프리미엄에 따른 추가 상승 여력도 있다.',
+    heroSummary:'OLED·폴더블과 EV 배터리용 PI 필름 수요. 매각 프리미엄 30~40%를 추가 상승여력으로 제시한다.',
+    points:[
+      { title:'투자포인트 1. OLED 시장 속 기회', body:'이녹스와 한화첨단소재가 폴더블폰 상용화에 대비해 생산시설을 늘렸고 이에 따라 PI 필름 수요가 증가할 것이다.' },
+      { title:'투자포인트 2. EV 시장과 재고 사이클', body:'2020년부터 EV 수요가 급격히 늘고 배터리 절연 테이프 수요도 커진다. 중간 기업의 재고 소진 사이클이 더해져 현금흐름이 늘어날 전망이다.' }
+    ],
+    valuation:'EV/EBITDA Valuation을 채택했다. 19년 EBITDA 560억 원을 바탕으로 목표주가 29,400원을 제시하고, 매각 시 최대 41,160원까지 추가 상승여력을 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/19-2_skckpi.pdf', pdfMeta:'PDF · 24 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'hfr', name:'에치에프알', ticker:'230240', sector:'네트워크 장비', type:'Company Analysis', op:'BUY', tp:'32,100원', buy:'', cur:'25,450원', upside:'+26.1%', upNum:26.1, tpNum:32100, date:'2019.10.01', team:'Research Team 5', region:'Korea',
+    headline:'5G 상용화에 따른 기대가 실적으로 변모하는 원년',
+    summary:'유무선 통신장비를 개발·제조하며 2019년 매출 비중은 무선 65%, 유선 35%다. 5G용 Fronthaul 장비 5G-PON 공급을 시작했고 주요 고객은 SK텔레콤, Verizon, AT&T, NTT Docomo다. 한국의 세계 최초 5G 상용화로 장비 매출 성장이 실적으로 나타나고 있다.',
+    heroSummary:'5G Fronthaul 장비 공급 본격화. 2019년 EPS 1,531원에 PER 21배로 목표주가 32,100원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 5G 시장의 선두주자, 대한민국', body:'한국이 세계 최초로 5G를 상용화하며 기술력을 입증했고, 동사의 Fronthaul 장비가 5G 필수 장비로 쓰이고 있다.' },
+      { title:'투자포인트 2. 넘쳐나는 국내 수요', body:'5G 인프라 구축이 이어지며 국내 통신사향 장비 수요가 늘고 있다.' }
+    ],
+    valuation:'PER Valuation을 채택했다. 2019년 예상 EPS 1,531원에 PER 21배를 적용해 목표주가 32,100원, 투자의견 매수를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/19-2_hfr.pdf', pdfMeta:'PDF · 10 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cowell', name:'코웰패션', ticker:'033290', sector:'소비재', type:'Company Analysis', op:'BUY', tp:'12,000원', buy:'', cur:'8,050원', upside:'+49.1%', upNum:49.1, tpNum:12000, date:'2019.05.09', team:'Research Team 4', region:'Korea',
+    headline:'코웰시코기!',
+    summary:'라이선스 계약을 기반으로 글로벌 브랜드를 온라인·홈쇼핑 유통망에 판매하는 사업 모델을 갖췄다. 재고회전율은 업계 평균 3.5회보다 높은 4.5회로 재고 위험이 적다. 홈쇼핑에서 T커머스로 판매 구조를 옮기며 매년 약 68억 원의 수수료 절감이 기대된다.',
+    heroSummary:'라이선스 기반 사업 모델과 T커머스 전환. 연 68억 원 수수료 절감을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 라이선스 기반의 효율적 비즈니스 모델', body:'새 브랜드를 개발할 필요 없이 글로벌 브랜드와 계약해 위험 부담이 적다. 재고회전율 4.5회로 업계 평균을 웃돈다.' },
+      { title:'투자포인트 2. T커머스로의 변화', body:'T커머스 시장은 최근 5년간 CAGR 160%로 성장했다. 매출 대비 판매수수료가 28%인 기존 홈쇼핑 구조보다 약 40% 수수료를 줄일 수 있다.' }
+    ],
+    valuation:'목표주가 12,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/19-1_cowell.pdf', pdfMeta:'PDF · 15 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'binggrae', name:'빙그레', ticker:'005180', sector:'음식료', type:'Company Analysis', op:'BUY', tp:'87,000원', buy:'', cur:'70,800원', upside:'+22.9%', upNum:22.9, tpNum:87000, date:'2019.05.08', team:'Research Team 3', region:'Korea',
+    headline:'꾸준함의 비결은 스테디셀러와 마케팅',
+    summary:'우유·유음료(매출 55.3%)와 아이스크림(44.7%)을 생산·판매한다. 바나나맛우유는 출시 후 45년간 우유 단일품목 판매 1위를 지켰고 메로나·투게더 등 스테디셀러를 보유했다. 해외 진출과 바나나우유 가격 인상, 가격 정찰제 도입이 실적 개선 요인이다.',
+    heroSummary:'바나나맛우유 45년 1위와 우수한 가격 전가력. 목표주가 87,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 꾸준함의 비결은 스테디셀러와 마케팅', body:'바나나맛우유, 요플레, 메로나, 투게더 등 스테디셀러를 갖췄고 슈퍼콘 같은 신제품 마케팅도 성과를 내고 있다.' },
+      { title:'투자포인트 2. 우수한 가격 전가력', body:'원유 가격에 크게 영향을 받지 않는 구조로 가격 인상을 판매가에 반영할 수 있다.' }
+    ],
+    valuation:'목표주가 87,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/19-1_binggrae.pdf', pdfMeta:'PDF · 10 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'shi', name:'삼성중공업', ticker:'010140', sector:'조선', type:'Company Analysis', op:'BUY', tp:'8,420원', buy:'', cur:'8,330원', upside:'+1.1%', upNum:1.1, tpNum:8420, date:'2019.05.08', team:'Research Team 2', region:'Korea',
+    headline:'저 넓은 수주의 바다로',
+    summary:'LNG 무역량 증가로 LNG운반선 글로벌 발주량이 2017년 13척에서 2018년 76척으로 늘었다. 고부가 LNG운반선 수요 회복과 해양플랜트 수주로 흑자전환이 가능할 전망이다. IMO 환경규제도 기술력 있는 국내 조선사에 유리하다.',
+    heroSummary:'LNG운반선 발주 회복과 해양플랜트. 보수적 수주 가정으로 목표주가 8,420원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 믿을건 너뿐이야~ LNG운반선', body:'중국의 탈석탄 정책과 카타르·호주·미국의 LNG 증산으로 무역량이 늘어난다. 동사가 강점을 가진 LNG운반선 발주가 회복세다.' },
+      { title:'투자포인트 2. 해양플랜트, 강력한 한 방!', body:'해양플랜트는 프로젝트 규모와 단가가 높아 수주 시 실적 기여가 크다. IMO 규제와 시장 점유율도 우호적이다.' }
+    ],
+    valuation:'추가 수주가 없다는 보수적 가정 아래 BPS에 적정 PBR을 곱해 목표주가 8,420원, 투자의견 매수를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/19-1_shi.pdf', pdfMeta:'PDF · 13 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'osstem19', name:'오스템임플란트', ticker:'048260', sector:'헬스케어', type:'Company Analysis', op:'BUY', tp:'65,000원', buy:'', cur:'57,800원', upside:'+12.5%', upNum:12.5, tpNum:65000, date:'2019.05.08', team:'Research Team 1', region:'Korea',
+    headline:'매도하지마. 어금니 날라간다.',
+    summary:'국내 임플란트 시장 점유율 50%로 매출이 연평균 12.1% 성장하고 있다. 2016~2018년 이익 감소는 북경법인 영업허가 지연, 환차손, 법인세 개정, 대손상각비 등 일회성 비용 때문이었다. 2019년부터 일회성 비용이 해소되고 해외 고정비 레버리지 효과가 나타날 전망이다.',
+    heroSummary:'국내 점유율 50%와 일회성 비용 해소. Target PER 31배로 목표주가 65,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 안정적인 국내 시장', body:'Total solution provider 제품군으로 국내 점유율 50%를 차지한다. 2018년 8월 개정된 임플란트 보험 급여 정책도 우호적이다.' },
+      { title:'투자포인트 2. 일회성 비용 해소와 글로벌 경쟁력', body:'터키 리라·러시아 루블 급락에 따른 외환차손, 미국 법인세 비용 45억 원 등은 일회성이다. 중국 시장 성장과 AIC 교육 연수로 해외 침투력도 높다.' }
+    ],
+    valuation:'국내·미국·중국·기타로 매출을 나눠 추정하고 Target PER 31배를 적용해 목표주가 65,000원, 상승여력 13.4%, 투자의견 매수를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/19-1_osstem19.pdf', pdfMeta:'PDF · 17 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'koreanair19', name:'대한항공', ticker:'003490', sector:'항공운송', type:'Company Analysis', op:'BUY', tp:'39,500원', buy:'', cur:'33,550원', upside:'+17.7%', upNum:17.7, tpNum:39500, date:'2019.05.08', team:'Research Team 5', region:'Korea',
+    headline:'항공산업의 RM(Risk Manager)',
+    summary:'2015년부터 파생상품 평가이익이 연평균 약 33% 늘었고 올해는 약 41% 증가가 기대된다. 토지 매각으로 유동성을 확보하고 신용등급이 A-로 오르면 연간 748억 원의 이자비용을 줄일 수 있다. 델타항공과의 조인트벤처와 화물 부문이 성장 기반이다.',
+    heroSummary:'파생상품을 통한 리스크 관리와 델타 조인트벤처. 목표주가 39,500원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 항공산업의 Risk Manager', body:'유가·환율·금리 변동에 대해 파생상품으로 리스크를 헤지하고 평가이익까지 인식하고 있다. 재무구조 개선으로 이자보상배율이 3.02배로 오를 전망이다.' },
+      { title:'투자포인트 2. 조인트벤처와 화물 부문', body:'델타항공과의 조인트벤처로 미주 노선 경쟁력이 커진다. 화물 부문은 안정적인 Cash-Cow 역할을 한다.' }
+    ],
+    valuation:'목표주가 39,500원, 투자의견 매수를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/19-1_koreanair19.pdf', pdfMeta:'PDF · 13 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cjlogis', name:'CJ대한통운', ticker:'000120', sector:'물류', type:'Company Analysis', op:'BUY', tp:'200,000원', buy:'', cur:'149,000원', upside:'+34.2%', upNum:34.2, tpNum:200000, date:'2018.11.30', team:'Research Team 5', region:'Korea',
+    headline:'택배 시장 성장과 글로벌 매출처 확보',
+    summary:'온라인 쇼핑 성장으로 택배 시장은 매년 큰 폭으로 커지고 있으며, 물량을 안정적으로 처리할 인프라가 핵심 경쟁력이다. 세계 경제의 중심이 아시아로 옮겨가면서 동북아 중심의 물류 거점 확보가 중요해졌다. 동사는 국내 택배 1위 인프라와 글로벌 매출처 확대로 성장할 전망이다.',
+    heroSummary:'온라인 쇼핑 성장에 따른 택배 물량 증가와 글로벌 물류 확대. 목표주가 200,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 국내 택배산업 성장', body:'소비자가 오프라인 구매를 온라인으로 옮기면서 택배 산업은 계속 성장할 전망이다. 배송 서비스 차별성과 물량 처리 인프라가 경쟁우위 요소다.' },
+      { title:'투자포인트 2. 글로벌 매출처 확보', body:'생산기지 이동과 교역 확대로 동북아 중심의 물류 거점이 형성되고 있다. 글로벌 매출처를 확보한 업체가 유리하다.' }
+    ],
+    valuation:'목표주가 200,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/18-2_cjlogis.pdf', pdfMeta:'PDF · 11 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'dbins', name:'DB손해보험', ticker:'005830', sector:'금융서비스', type:'Company Analysis', op:'BUY', tp:'89,000~125,000원', buy:'', cur:'68,800원', upside:'+55.5%', upNum:55.5, tpNum:107000, date:'2018.11.29', team:'Research Team 4', region:'Korea',
+    headline:'안사면 손해봄',
+    summary:'2019년 자동차 보험료 3% 인상과 실손보험료 6~12% 인상이 예상되고 실손 갱신주기가 맞물려 수익성이 개선될 전망이다. 매출의 55~60%를 차지하는 독립보험대리점(GA) 시책 경쟁으로 늘어난 수수료비는 정상화될 것으로 본다. 재무건전성도 양호하다.',
+    heroSummary:'보험료 인상과 실손 갱신주기. 목표주가 89,000~125,000원 범위를 제시한다.',
+    points:[
+      { title:'투자포인트 1. BYE Risk, HI Return', body:'자동차 손해율이 83.7%까지 올랐지만 보험료 3% 인상이 예상된다. 표준화 이전 실손 8~12%, 표준화 실손 6~12% 인상과 2019년 갱신주기가 겹쳐 시너지가 기대된다.' },
+      { title:'투자포인트 2. GA 시책과 재무건전성', body:'GA 시책 상향 경쟁으로 대리점 수수료비가 늘었지만 시책 경쟁 완화가 예상된다. 재무건전성도 안정적이다.' }
+    ],
+    valuation:'목표주가 범위 89,000~125,000원(11/29 종가 대비 상승여력 29.4~81.7%), 투자의견 매수를 제시한다. 하한과 상한은 각각 보수적·긍정적 전망 기준이다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/18-2_dbins.pdf', pdfMeta:'PDF · 12 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'youngone', name:'영원무역', ticker:'111770', sector:'소비재', type:'Company Analysis', op:'BUY', tp:'40,600원', buy:'', cur:'34,850원', upside:'+16.5%', upNum:16.5, tpNum:40600, date:'2018.11.08', team:'Research Team 2', region:'Korea',
+    headline:'미국 경제호황과 전기자전거 턴어라운드',
+    summary:'2018년 매출액 1조 4,884억 원, 영업이익 1,427억 원을 전망한다. OEM 사업은 미국 의류 소매 시장 성장과 원재료 비용 절감으로 2019년 실적 반등이 예상된다. 2015년 인수한 Scott은 전기자전거 시장 성장으로 턴어라운드가 기대된다.',
+    heroSummary:'미국 의류 소비 호황과 Scott 전기자전거. 2018년 영업이익 1,427억 원을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 미국 경제호황에 따라 늘어나는 전방업체 판매량', body:'OEM 매출 대부분이 미국에서 나온다. 실질개인소비지출(PCE) 등 소비 지표가 계속 오르고 있어 전방업체 판매량이 늘어날 전망이다.' },
+      { title:'투자포인트 2. 전기자전거 실적 턴어라운드', body:'2015년 Scott 인수 뒤 브랜드·유통 사업부가 적자였지만, 세계 전기자전거 시장이 빠르게 커지며 실적 반전이 예상된다.' }
+    ],
+    valuation:'목표주가 40,600원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/18-2_youngone.pdf', pdfMeta:'PDF · 12 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'soil18', name:'S-Oil', ticker:'010950', sector:'정유', type:'Company Analysis', op:'BUY', tp:'163,000원', buy:'', cur:'120,000원', upside:'+35.8%', upNum:35.8, tpNum:163000, date:'2018.11.08', team:'Research Team 5', region:'Korea',
+    headline:'RUC/ODC 가동과 끝나지 않은 유가 랠리',
+    summary:'RUC/ODC 공장 가동으로 고부가 제품 비중이 늘어 마진이 개선될 전망이다. 중장기적으로 유가 상승 흐름이 이어질 것으로 판단한다. 2019년 EPS는 18,655원으로 추정한다.',
+    heroSummary:'RUC/ODC 공장 가동에 따른 마진 개선. 2019년 EPS 18,655원을 추정한다.',
+    points:[
+      { title:'투자포인트 1. RUC/ODC 공장 가동에 따른 Margin 개선', body:'잔사유 고도화(RUC)와 올레핀 다운스트림(ODC) 공장이 가동되며 저가 원료를 고부가 제품으로 바꾸는 비중이 커진다.' },
+      { title:'투자포인트 2. 끝나지 않은 유가상승 랠리', body:'유가와 주가의 상관성을 분석했을 때 중장기 유가 상승 흐름이 동사 실적과 주가에 우호적이다.' }
+    ],
+    valuation:'목표주가 163,000원으로 11월 6일 종가 대비 약 37% 높은 수준이며 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/18-2_soil18.pdf', pdfMeta:'PDF · 9 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'samsungsdi18', name:'삼성SDI', ticker:'006400', sector:'2차전지', type:'Company Analysis', op:'BUY', tp:'343,000원', buy:'', cur:'229,500원', upside:'+49.5%', upNum:49.5, tpNum:343000, date:'2018.11.08', team:'Research Team 4', region:'Korea',
+    headline:'매도하지마. 손모가지 날라가붕게.',
+    summary:'소형전지는 매출의 36%를 차지하며 세계 점유율 20% 이상이다. 무선 전동공구용 원통형 전지와 플래그십 폴리머전지 수요로 3Q18 영업이익이 크게 늘었다. 전기차·ESS용 중대형전지와 OLED용 편광필름도 수요 증가가 예상된다.',
+    heroSummary:'소형전지 판매 호조와 중대형전지 수요. SOTP로 목표주가 343,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 작지만 강하다, 소형전지', body:'원형전지 어플리케이션 다변화와 중저가 스마트폰의 고용량 폴리머전지 채택으로 소형전지 판매 호조가 이어질 전망이다.' },
+      { title:'투자포인트 2. Environment Saving SDI, 중대형전지', body:'자동차 배터리, 산업용 ESS, 가정용 ESS 모두 수요가 크게 늘 전망이다. 전기차 배터리·충전기 시장은 연 22.3% 성장이 예상된다.' }
+    ],
+    valuation:'사업부별 Peer EV/EBITDA(에너지 17.72배, 전자재료 8.56배)를 적용해 19.4Q까지 목표주가 343,000원, 상승여력 49.7%, 투자의견 매수를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/18-2_samsungsdi18.pdf', pdfMeta:'PDF · 18 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'coway', name:'코웨이', ticker:'021240', sector:'소비재', type:'Company Analysis', op:'BUY', tp:'97,053원', buy:'', cur:'66,500원', upside:'+45.9%', upNum:45.9, tpNum:97053, date:'2018.11.06', team:'Research Team 3', region:'Korea',
+    headline:'웅진과 코웨이의 재결합',
+    summary:'2019년 3월 웅진그룹이 코웨이를 다시 인수해 5년 7개월 만에 재결합한다. 해외 사업 매출은 2017년 2,597억 원(YoY +19.7%)이며 말레이시아 법인이 70%를 차지한다. 렌탈을 통한 합리적 소비 트렌드도 우호적이다.',
+    heroSummary:'웅진그룹 재인수와 말레이시아 중심 해외 성장. 적정 PER 17배로 목표주가 97,053원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 웅진과 코웨이의 재결합', body:'렌탈 사업을 하는 웅진그룹과 코웨이가 합치면 방문판매 인력과 인프라가 통합돼 시너지가 생긴다.' },
+      { title:'투자포인트 2. 성장하는 해외사업', body:'해외 사업은 전체 매출의 10% 수준으로 2017년 YoY 19.7% 성장했다. 말레이시아 정수기 시장 점유율 1위로 해외 매출의 70%를 만든다.' }
+    ],
+    valuation:'적정 PER 17배를 적용해 목표주가 97,053원, 투자의견 매수를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/18-2_coway.pdf', pdfMeta:'PDF · 14 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'haesung', name:'해성디에스', ticker:'195870', sector:'반도체', type:'Company Analysis', op:'BUY', tp:'19,950원', buy:'', cur:'16,400원', upside:'+21.6%', upNum:21.6, tpNum:19950, date:'2018.11.06', team:'Research Team 1', region:'Korea',
+    headline:'자동차 전장화의 최대 수혜자',
+    summary:'매출의 75% 이상을 리드프레임에서 내며, 독자 기술인 마이크로 PPF 도금으로 15년 이상 신뢰도를 보장한다. 자동차용 반도체 시장은 2017년 280억 달러에서 2020년 387억 달러로 연 11% 성장할 전망이다. 데이터센터 투자에 따른 패키지 서브스트레이트 수요도 늘고 있다.',
+    heroSummary:'리드프레임 마이크로 PPF 기술과 차량용 반도체 연 11% 성장. 목표주가 19,950원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 자동차 전장화의 최대 수혜자 리드프레임', body:'니켈·금·은·팔라듐을 섞어 도금하는 마이크로 PPF 기술로 신뢰도 우위를 갖는다. 자율주행차·전기차 상용화로 차량용 반도체 수요 증가가 확실해 보인다.' },
+      { title:'투자포인트 2. 반도체 기판 수요 확대', body:'Microsoft, 구글 등의 데이터센터 투자로 패키지 서브스트레이트 수요가 늘고 있다.' }
+    ],
+    valuation:'목표주가 19,950원, 투자의견 매수를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/18-2_haesung.pdf', pdfMeta:'PDF · 13 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'kefin', name:'한국전자금융', ticker:'063570', sector:'IT서비스', type:'Company Analysis', op:'BUY', tp:'15,000원', buy:'', cur:'13,100원', upside:'+14.5%', upNum:14.5, tpNum:15000, date:'2018.10.04', team:'Research Team 2', region:'Korea',
+    headline:'ATM·CD-VAN 1위와 무인화 성장',
+    summary:'2018년 매출액 3,239억 원(YoY +34%), 영업이익 264억 원(YoY +25%)을 전망한다. 국내 점유율 1위 ATM 관리·CD-VAN 사업이 안정적인 현금흐름을 만들고, BGF링크 인수로 원가 경쟁력을 확보했다. 최저임금 상승과 주 52시간 이슈로 키오스크·무인주차장 사업이 빠르게 성장할 전망이다.',
+    heroSummary:'ATM·CD-VAN 1위와 키오스크·무인주차장 성장. 2018년 매출액 YoY +34%를 전망한다.',
+    points:[
+      { title:'투자포인트 1. 안정적 Cash-cow, ATM/CD-VAN 1위', body:'편의점 외형 성장과 인터넷은행 성장이 CD-VAN 시장의 새 기회가 된다. BGF링크 인수로 규모의 경제를 확보해 영업이익률이 구조적으로 오를 전망이다.' },
+      { title:'투자포인트 2. 키오스크와 무인주차장', body:'최저임금 상승과 주 52시간 이슈로 무인화 수요가 늘고 있다. 기존 사업 인프라를 활용해 고정비를 분산할 수 있다.' }
+    ],
+    valuation:'사업부별 매출을 추정해 합산한 뒤 PER Valuation을 적용했다. 목표주가 15,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/18-2_kefin.pdf', pdfMeta:'PDF · 12 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'semco18', name:'삼성전기', ticker:'009150', sector:'전자부품', type:'Company Analysis', op:'BUY', tp:'202,000원', buy:'', cur:'138,000원', upside:'+46.4%', upNum:46.4, tpNum:202000, date:'2018.10.04', team:'Research Team 5', region:'Korea',
+    headline:'전장을 누비는 장수, MLCC',
+    summary:'MLCC의 전장용 확대는 고질적인 저평가 요소를 떨쳐낼 기회다. 중국 톈진 공장 증설로 전장용 MLCC 생산이 늘고, 전기차·전장 고도화에 따른 수요를 흡수할 전망이다. 고성능 MLCC 과점 체제 속에 ASP 상승 여력이 유효해 OPM 개선이 기대된다.',
+    heroSummary:'전장용 MLCC 확대와 톈진 공장 증설. 고성능 MLCC ASP 상승을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 전장을 누비는 장수, MLCC', body:'반도체 위주 생산라인에서 중국 톈진 공장 증설을 기점으로 전장용 비중이 커진다. 전기차 시장 성장과 자동차 전장품 고도화로 MLCC 과잉 수요의 수혜를 본다.' },
+      { title:'투자포인트 2. 과도한 주가조정, 탄탄한 실적', body:'무라타 증설 발표와 공매도로 주가가 조정됐지만 고성능 MLCC 과점 체제는 유지된다. ASP 상승 여력에 따른 OPM 개선이 기대된다.' }
+    ],
+    valuation:'목표주가 202,000원, 투자의견 BUY를 제시한다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/18-2_semco18.pdf', pdfMeta:'PDF · 8 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'oci18', name:'OCI', ticker:'010060', sector:'화학', type:'Company Analysis', op:'BUY', tp:'195,000원', buy:'', cur:'115,500원', upside:'+68.8%', upNum:68.8, tpNum:195000, date:'2018.10.02', team:'Research Team 4', region:'Korea',
+    headline:'태양왕의 귀환',
+    summary:'매출의 절반을 차지하는 Basic Chemical 부문의 폴리실리콘 가격이 공급과잉으로 10$/kg까지 떨어졌다. 그러나 중국 외 신흥국 중심의 태양광 수요 성장(향후 18~28%)으로 가격 하락은 곧 진정될 전망이다. Carbon Chemical은 수요가 견조한 Cash cow이고 Energy Solution이 새 성장축이다.',
+    heroSummary:'폴리실리콘 가격 바닥과 Carbon Chemical 현금흐름. 목표주가 195,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. Basic Chemical, 오래 기다리셨습니다', body:'폴리실리콘 판가가 사상 최저 수준이고 판매량도 7% 줄었지만, 글로벌 태양광 신규 설치량이 연 18~28% 성장할 것으로 보여 가격 하락은 진정세에 들어갈 전망이다.' },
+      { title:'투자포인트 2. Carbon Chemical, 철옹성 같은 수요', body:'Pitch와 Carbon Black은 수요 탄력성이 낮다. 유연탄·유가 상승으로 제품 가격이 올랐고 중국 환경규제로 공급이 줄어 Cash cow 역할을 하고 있다.' }
+    ],
+    valuation:'사업부별 가치를 합산해 총 상장주식수로 나눈 적정주가 195,149원을 바탕으로 목표주가 195,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/18-2_oci18.pdf', pdfMeta:'PDF · 9 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'lguplus18', name:'LG유플러스', ticker:'032640', sector:'통신', type:'Company Analysis', op:'BUY', tp:'19,700원', buy:'', cur:'17,000원', upside:'+15.9%', upNum:15.9, tpNum:19700, date:'2018.10.02', team:'Research Team 3', region:'Korea',
+    headline:'IPTV 시장의 지각변동을 예고, 3등의 반란',
+    summary:'5G 네트워크 슬라이싱을 통한 Fast Lane 허용 논의로 B2B2C와 4차 산업 신사업이 새 수익원으로 기대된다. 11월부터 넷플릭스를 독점 공급하고 CJ헬로 인수 가능성이 커지고 있다. 2Q18 영업이익 증가율은 +19.3%로 통신 3사 중 유일하게 늘었다.',
+    heroSummary:'넷플릭스 독점 공급과 CJ헬로 인수 가능성. 통신 3사 중 유일한 영업이익 증가를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 5G 도입에 따른 기대감', body:'과방위가 5G 네트워크 슬라이싱을 통한 Fast Lane 허용에 주목하고 있다. 제로레이팅을 통한 B2B2C, 스마트 팩토리, 자율주행차 등이 새 수익원이 된다.' },
+      { title:'투자포인트 2. IPTV 시장의 지각변동', body:'넷플릭스 독점 공급과 CJ헬로-딜라이브 합병법인 인수가 이뤄지면 유료방송 점유율이 30.53%로 올라 선두권에 선다. 멀티플 상향에 따른 주가 상승이 기대된다.' }
+    ],
+    valuation:'2019년 EPS 추정치에 적정 PER을 적용해 목표주가 19,700원, 투자의견 매수를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/18-2_lguplus18.pdf', pdfMeta:'PDF · 9 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'huons', name:'휴온스', ticker:'243070', sector:'제약/바이오', type:'Company Analysis', op:'BUY', tp:'108,000원', buy:'', cur:'96,400원', upside:'+12.0%', upNum:12.0, tpNum:108000, date:'2018.10.02', team:'Research Team 1', region:'Korea',
+    headline:'제약계의 골든트리 세계로 뻗어나가다!',
+    summary:'국소마취제 시장은 2016년 약 5조 원으로 2025년까지 연 3.7%씩 커질 전망이다. 화이자의 공급 문제로 미국 시장에 공급 부족이 생기자 동사가 해외 승인을 받아 독점적 공급자로 진입했다. 안구건조증 치료제 시장 확대도 성장 요인이다.',
+    heroSummary:'미국 국소마취제 공급 부족 수혜와 안구건조증 치료제. DCF로 목표주가 108,000원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 타사의 위기를 자사의 기회로', body:'세계 국소마취제 시장의 절반을 차지하는 미국에서 화이자의 공급 문제로 부족 현상이 생겼다. 동사는 해외 식약청 승인을 받아 미국·사우디아라비아 등에서 독점적 공급자로 진입했다.' },
+      { title:'투자포인트 2. 안구건조증 치료제 시장 확대', body:'건조한 환경과 눈의 과도한 사용으로 안구건조증 환자가 늘면서 치료제 시장도 커지고 있다. 동사는 이에 맞춰 관련 제품을 확대하고 있다.' }
+    ],
+    valuation:'DCF Valuation을 채택했다. 목표주가 108,000원, 투자의견 매수를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/18-2_huons.pdf', pdfMeta:'PDF · 19 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cafe24', name:'카페24', ticker:'042000', sector:'인터넷/플랫폼', type:'Company Analysis', op:'BUY', tp:'170,250원', buy:'', cur:'155,300원', upside:'+9.6%', upNum:9.6, tpNum:170250, date:'2018.05.24', team:'Research Team 2', region:'Korea',
+    headline:'웹 호스팅·쇼핑몰 솔루션의 성장',
+    summary:'웹 호스팅과 쇼핑몰 솔루션을 제공하는 기업이다. 2018년 온라인 쇼핑 판매액은 소매업의 20%를 넘어설 전망이며, 2019년에는 온라인 소비의 70% 이상이 모바일에서 이뤄질 것으로 예상된다. 온라인 쇼핑몰 성장에 따라 호스팅·솔루션 수요가 계속 늘어날 것으로 판단한다.',
+    heroSummary:'온라인 쇼핑 비중 20% 돌파와 모바일 전환. 목표주가 170,250원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 무섭게 성장하는 온라인 시장', body:'온라인 쇼핑 비중은 2013년 10%를 넘은 지 5년 만에 두 배가 됐다. 오프라인 사업자도 온라인으로 유통망을 넓히고 있어 쇼핑몰 구축 수요가 커진다.' },
+      { title:'투자포인트 2. 웹 호스팅·쇼핑몰 솔루션 핵심역량', body:'쇼핑몰 제작, 광고, 오픈마켓 연동, PG, 해외판매까지 온라인 창업에 필요한 서비스를 한곳에서 제공한다.' }
+    ],
+    valuation:'2017년 매출액 1,426억 원에 PSR 9.97배를 적용하고 순현금을 더해 목표주가 170,250원, 투자의견 매수를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/18-1_cafe24.pdf', pdfMeta:'PDF · 18 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'cjenm', name:'CJ ENM', ticker:'035760', sector:'미디어/엔터', type:'Company Analysis', op:'NR', tp:'273,900원', buy:'', cur:'219,000원', upside:'+25.1%', upNum:25.1, tpNum:273900, date:'2018.05.23', team:'Research Team 1', region:'Korea',
+    headline:'대한민국 엔터테인먼트 대장주',
+    summary:'CJ오쇼핑이 CJ E&M을 1:0.41 비율로 흡수합병하는 과정을 M&A 사례로 분석했다. 합병 법인은 2018년 매출 4조 4천억 원, 영업이익 3,500억 원을 목표로 하며 2021년 신규 사업 매출 약 8천억 원을 노린다. 커머스 역량과 콘텐츠 역량을 합친 융복합 미디어 커머스 기업으로의 도약을 전망한다.',
+    heroSummary:'CJ오쇼핑·CJ E&M 합병 사례 분석. 존속법인 CJ오쇼핑 목표주가 273,900원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 커머스와 콘텐츠의 결합', body:'CJ오쇼핑은 2017년 TV홈쇼핑과 인터넷쇼핑몰 부문 모두 1위를 기록했고, CJ E&M은 방송·영화·음악·공연을 아우르는 국내 최대 미디어 기업이다. 두 역량을 합쳐 미디어 커머스 기업으로 도약한다.' },
+      { title:'투자포인트 2. 합병 법인의 성장 목표', body:'합병 법인은 2018년 매출 4조 4천억 원, 영업이익 3,500억 원을 목표로 제시했다. 합병 3년 뒤인 2021년 신규 사업 매출 약 8천억 원을 목표로 한다.' }
+    ],
+    valuation:'합병 전 기준으로 CJ오쇼핑(035760) 목표주가 273,900원, CJ E&M(130960) 목표주가 117,067원을 제시했다. 투자의견은 따로 적지 않았다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/18-1_cjenm.pdf', pdfMeta:'PDF · 34 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'seoho', name:'서호전기', ticker:'065710', sector:'산업재', type:'Company Analysis', op:'BUY', tp:'-', buy:'', cur:'16,900원', upside:'-', upNum:0, tpNum:0, date:'2018.05.11', team:'Research Team 2', region:'Korea',
+    headline:'약은 약사에게, 항구는 서호전기에게',
+    summary:'항만 자동화 시스템과 크레인을 제조·납품하는 국내 유일 업체다. 대북 SOC 테마와 새만금개발공사 설립 수혜주로 꼽히며, 배당률 6.1%로 코스피·코스닥 2,045개 종목 중 11위의 고배당주다. 선진국 항만 자동화율이 11.4%, 아시아가 2.3%에 그쳐 성장 여지가 크다.',
+    heroSummary:'국내 유일 항만 자동화 업체이자 배당률 6.1% 고배당주. 투자의견 매수를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 테마 종합 선물세트', body:'노후 북한 항만 자동화 수혜와 새만금 발전소 크레인 공급 기대가 있다. 배당률 6.1%의 초고배당주라는 점도 수요를 높인다.' },
+      { title:'투자포인트 2. 국내 독점과 건실한 재무', body:'외국 기업이 독점하던 항만 자동화 시스템·크레인 시장에서 국내 유일 공급업체다. 중국·베트남·인도네시아와 가까워 유럽계 경쟁사 대비 수출에 비교우위가 있다.' }
+    ],
+    valuation:'투자의견 매수를 제시했으나 목표주가는 확정하지 않았다(PDF에 ‘?’로 표기).',
+    members:'Research Team 2',
+    pdf:'assets/reports/18-1_seoho.pdf', pdfMeta:'PDF · 14 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'paradise', name:'파라다이스', ticker:'034230', sector:'레저', type:'Company Analysis', op:'BUY', tp:'26,400원', buy:'', cur:'22,100원', upside:'+19.5%', upNum:19.5, tpNum:26400, date:'2018.05.09', team:'Research Team 1', region:'Korea',
+    headline:'올해가 변곡점, 앞으로 우상향',
+    summary:'서울, 부산, 인천, 제주에서 외국인 전용 카지노를 운영하며 2017년 점유율은 48.8%다. 1분기 카지노 Drop액은 1조 3,604억 원(YoY +13.5%)이었다. 파라다이스시티 완공에 따른 하반기 매출 성장으로 2018년 영업이익 흑자전환을 전망한다.',
+    heroSummary:'파라다이스시티 완공과 한한령 해제. 2018년 영업이익 흑자전환을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 일본·동남아 VIP 증가와 한한령 해제', body:'세가사미와의 협업으로 일본인 VIP가 꾸준히 늘고 동남아 고객도 증가하고 있다. 중국인 VIP 드랍액은 바닥을 확인했고 1분기 중국인 입국도 회복세다.' },
+      { title:'투자포인트 2. 파라다이스시티의 잠재력', body:'동북아 유일의 복합리조트로 Mass 고객 증가가 기대된다. 보유 유·무형자산 가치가 시가총액을 넘어선다고 판단한다.' }
+    ],
+    valuation:'주당가치에 20% 할증을 적용해 목표주가 26,400원, 상승여력 20%, 투자의견 매수를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/18-1_paradise.pdf', pdfMeta:'PDF · 16 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'jejuair', name:'제주항공', ticker:'089590', sector:'항공운송', type:'Company Analysis', op:'BUY', tp:'56,350원', buy:'', cur:'48,900원', upside:'+15.2%', upNum:15.2, tpNum:56350, date:'2018.05.08', team:'Research Team 3', region:'Korea',
+    headline:'가벼움과 공격적인 투자로 승부하다!',
+    summary:'2017년 말 국내 LCC 중 가장 많은 31대의 항공기를 보유했고 2018년 8대를 더 들여올 예정이다. 워라밸 문화와 근거리 여행 수요 증가가 탑승객 증가로 이어질 전망이다. 국내 항공사 브랜드 이미지 1위로 장기 성장의 기반을 갖췄다.',
+    heroSummary:'국내 LCC 최다 기단(31대)과 2018년 8대 추가 도입. 근거리 여행 수요 증가를 전망한다.',
+    points:[
+      { title:'투자포인트 1. 여행 수요 증가', body:'소득 증가와 워라밸 중시 문화, 여행 관련 방송과 정부 정책이 겹쳐 일본 등 근거리 여행 수요가 늘고 있다.' },
+      { title:'투자포인트 2. 국내 LCC 최다 기단과 브랜드', body:'진에어 26대, 에어부산 23대 대비 많은 31대를 보유하며 올해 8대를 추가한다. 연예인 마케팅과 SNS 소통으로 국내 항공사 브랜드 이미지 1위에 올랐다.' }
+    ],
+    valuation:'2018년 EPS 3,954원 추정을 바탕으로 목표주가 56,350원, 투자의견 매수를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/18-1_jejuair.pdf', pdfMeta:'PDF · 12 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'skinno', name:'SK이노베이션', ticker:'096770', sector:'정유', type:'Company Analysis', op:'BUY', tp:'264,600원', buy:'', cur:'210,000원', upside:'+26.0%', upNum:26.0, tpNum:264600, date:'2018.04.04', team:'Research Team 2', region:'Korea',
+    headline:'셰일의 해일에서 SK를 외치다',
+    summary:'국내 정유사 매출 1위(SK에너지 40조 3,196억 원)를 자회사로 둔 종합 에너지 지주사다. 석유개발, 석유, 화학, 윤활유 4개 사업을 영위하며 9개국 13개 광구와 4개 LNG 프로젝트에서 원유 5.3억 배럴을 확보했다. 유가 안정과 정제마진 개선을 반영해 목표주가를 제시했다.',
+    heroSummary:'정제능력 국내 1위와 석유개발 매장량. 정제마진 시나리오로 목표주가 264,600원을 제시한다.',
+    points:[
+      { title:'투자포인트 1. 국내 1위 정제 능력', body:'SK에너지는 일 1,115,000배럴을 정제할 수 있어 GS칼텍스(865,000배럴), S-Oil(669,000배럴)을 앞선다. 정유 사업이 동사 실적의 중심을 이룬다.' },
+      { title:'투자포인트 2. 석유개발 사업 매장량', body:'2017년 9월 기준 9개국 13개 광구와 4개 LNG 프로젝트를 통해 확인 매장량 5.3억 배럴을 확보했다. 이는 국내 경쟁사 대비 압도적 1위 보유량이다.' }
+    ],
+    valuation:'최근 3년 평균 성장률, 정제마진 증가, 환율 변동 세 가지 시나리오로 분석해 목표주가 264,600원, 투자의견 매수를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/18-1_skinno.pdf', pdfMeta:'PDF · 19 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'sm18', name:'에스엠', ticker:'041510', sector:'엔터테인먼트', type:'Company Analysis', op:'BUY', tp:'53,000원', buy:'', cur:'44,800원', upside:'+18.3%', upNum:18.3, tpNum:53000, date:'2018.04.04', team:'Research Team 4', region:'Korea',
+    headline:'2018년 문화콘텐츠 시장의 우사인볼트',
+    summary:'음반, 매니지먼트, 일본, 중국 사업으로 매출을 다시 구성했다. 키이스트 인수로 일본 디지털 아카이브 수익이 생기고, 한한령 해제로 중국 사업 수익이 늘어날 전망이다. 2018년 총영업이익을 756.5억 원으로 추정한다.',
+    heroSummary:'키이스트 인수와 한한령 해제. 2018년 영업이익 756.5억 원을 추정한다.',
+    points:[
+      { title:'투자포인트 1. 새로운 매출 구성', body:'음반 사업과 매니지먼트(출연료·로열티, 광고, 콘텐츠 제작)에 일본·중국 사업을 더해 매출원을 넓혔다. 키이스트 인수로 일본 DA 수익이 발생한다.' },
+      { title:'투자포인트 2. 중국 사업 회복', body:'한한령 해제에 따라 중국 사업 수익이 크게 늘어날 것으로 본다. 2018년 영업이익 기여도는 중국 36%, 일본 19% 수준으로 추정한다.' }
+    ],
+    valuation:'2018년 사업부별 영업이익 추정을 바탕으로 목표주가 53,000원, 상승여력 18.3%, 투자의견 Buy를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/18-1_sm18.pdf', pdfMeta:'PDF · 26 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'shinsegae', name:'신세계', ticker:'004170', sector:'유통/소비재', type:'Company Analysis', op:'NR', tp:'-', buy:'', cur:'-', upside:'-', upNum:0, tpNum:0, date:'2018.04.03', team:'Research Team 5', region:'Korea',
+    headline:'신세계, 전 사업부문 순항',
+    summary:'백화점(매출 비중 48.0%), 의류 제조·수출입(28.2%), 면세점(23.2%) 등으로 사업을 나눠 운영한다. 강남점 증축과 센트럴시티 지분 인수로 고속터미널 상권까지 영업 부지를 넓혔다. 동종업계 대비 PER이 절반 수준으로 낮아 저평가 상태로 판단한다.',
+    heroSummary:'강남점 증축과 면세점 성장. 동종업계 대비 낮은 PER을 근거로 저평가를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 유통 채널 재편 속 백화점·면세점 성장', body:'2017년 유통업 매출은 온라인 부문 성장에 힘입어 6.2% 증가했다. 동사는 백화점 강남점을 증축하고 센트럴시티와 고속버스터미널 지분을 인수해 터미널 이용객을 백화점으로 끌어들이는 구조를 갖췄다.' },
+      { title:'투자포인트 2. 기술적 지표로 본 상승 여지', body:'이동평균선이 정배열 상태이고 RSI는 60 수준으로 과열 구간 아래에 있다. 실적 개선과 진행 중인 투자 프로젝트가 마무리되면 주가 상승 여지는 충분하다고 판단한다.' }
+    ],
+    valuation:'동종업계 PER·베타와 기술적 지표를 비교했다. 목표주가와 투자의견은 제시하지 않았다.',
+    members:'Research Team 5',
+    pdf:'assets/reports/18-1_shinsegae.pdf', pdfMeta:'PDF · 54 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'kyungdong18', name:'경동나비엔', ticker:'009450', sector:'보일러/온수기', type:'Company Analysis', op:'BUY', tp:'81,800원', buy:'', cur:'66,300원', upside:'+23.4%', upNum:23.4, tpNum:81800, date:'2018.04.03', team:'Research Team 3', region:'Korea',
+    headline:'뿌연 하늘… 경동나비엔은 화창!',
+    summary:'미세먼지 대책으로 정부가 2022년까지 콘덴싱 보일러 교체 보조금을 지원한다. 중국은 석탄 난방을 가스 보일러로 바꾸고 있어 가정용 가스보일러 시장이 2017~2021년 연평균 36% 성장할 것으로 추정된다. 신축 주택 물량과 교체 수요가 맞물려 국내 매출도 안정적일 전망이다.',
+    heroSummary:'국내 콘덴싱 보일러 보조금과 중국 가스보일러 전환. 중국 시장 연평균 36% 성장을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 미세먼지 대책과 콘덴싱 보일러', body:'서울시 초미세먼지 발생 원인 1위가 난방발전으로 조사되면서 콘덴싱 보일러 교체가 주요 대책으로 떠올랐다. 정부는 수도권 중심으로 2022년까지 교체 보조금을 지원할 예정이다.' },
+      { title:'투자포인트 2. 중국 보일러 시장 청신호', body:'중국은 2+26개 도시를 대상으로 석탄 개조 사업을 진행하고 있으며 해당 지역 가스보일러 보급률은 5년 내 50%를 넘을 전망이다. 국내 시장은 연 140만 대 규모로 신축·교체 수요가 안정적이다.' }
+    ],
+    valuation:'2018년 EPS 3,270원 추정을 바탕으로 목표주가 81,800원, 투자의견 매수를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/18-1_kyungdong18.pdf', pdfMeta:'PDF · 16 pages', cover:'', heroCover:'', credit:'', creditHref:'' },
+  { id:'medipost', name:'메디포스트', ticker:'078160', sector:'바이오', type:'Company Analysis', op:'NR', tp:'-', buy:'', cur:'-', upside:'-', upNum:0, tpNum:0, date:'2018.04.03', team:'Research Team 1', region:'Korea',
+    headline:'제대로 된 Re-rating이 필요한 시점',
+    summary:'제대혈 보관, 줄기세포치료제, 건강기능식품·화장품 사업을 영위한다. 카티스템은 5년간 국내 판매로 임상 데이터를 쌓아 상용화 가능성이 높아지고 있다. 제대혈 은행과 코스메슈티컬·건강식품 부문은 2017년 YoY 80% 성장했다.',
+    heroSummary:'카티스템 등 파이프라인과 제대혈 은행 현금흐름. Peer 대비 저평가를 제시한다.',
+    points:[
+      { title:'투자포인트 1. 카티스템과 파이프라인 기대감', body:'줄기세포 규제 완화와 다케다의 TiGenix 인수로 줄기세포 시장에 변화가 감지된다. 카티스템은 국내 판매 데이터를 바탕으로 상용화 가능성이 높아지고 있으며 R&D 비용 약 470억 원을 무형자산으로 계상했다.' },
+      { title:'투자포인트 2. Cash cow 제대혈 은행과 신사업', body:'매출 구성은 제대혈은행 47.5%, 줄기세포치료제 20.6%, 건강기능식품 16.7%다. 제대혈 은행과 코스메슈티컬·건강식품 부문이 2017년 YoY 80% 성장하며 안정적인 현금흐름을 만든다.' }
+    ],
+    valuation:'Peer group 대비 파이프라인 가치가 저평가됐다고 판단했다. 목표주가와 투자의견은 제시하지 않았다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/18-1_medipost.pdf', pdfMeta:'PDF · 10 pages', cover:'', heroCover:'', credit:'', creditHref:'' }
 ];
 const termOf = (d) => { const y = +d.slice(0,4), m = +d.slice(5,7); return m >= 3 && m <= 8 ? (y % 100) + '-1' : (m >= 9 ? (y % 100) + '-2' : ((y - 1) % 100) + '-2'); };
 REPORTS.forEach((r) => { r.term = termOf(r.date); });
@@ -3356,7 +4074,7 @@ class Component extends DCLogic {
       bandCtaEn: recruiting ? 'APPLY NOW' : 'GET NOTIFIED',
       fSector: s.fSector, fOp: s.fOp, fYear: s.fYear, fRegion: s.fRegion,
       sectorOpts: ['All sectors', ...new Set(REPORTS.map((r) => r.sector))].map((v) => ({ v, l: v === 'All sectors' ? '전체 섹터' : v })),
-      opOpts: ['All ratings','BUY','HOLD','SELL'].map((v) => ({ v, l: v === 'All ratings' ? '전체 의견' : v })),
+      opOpts: ['All ratings','BUY','HOLD','SELL','NR'].map((v) => ({ v, l: v === 'All ratings' ? '전체 의견' : v })),
       yearOpts: ['All terms', ...new Set(REPORTS.map((r) => r.term))].map((v) => ({ v, l: v === 'All terms' ? '전체 학기' : v })),
       regionOpts: ['All regions','Korea','Global'].map((v) => ({ v, l: { 'All regions': '국내·해외', Korea: '국내', Global: '해외' }[v] })),
       onSector: (e) => this.setState({ fSector: e.target.value, page1: 1 }),

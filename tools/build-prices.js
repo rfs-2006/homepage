@@ -92,7 +92,9 @@ function compute(r, p, bm, asOf) {
   const tp0 = r.tpNum || num(r.tp);
   const tp = tp0 ? tp0 * f : null;
   let hit = null;
-  if (tp) for (const x of win) if (x[1] >= tp) { hit = x[0]; break; }
+  // SELL은 목표가 아래로 내려가야 도달 (종가 <= 목표가). 그 밖에는 목표가 이상
+  const down = r.op === 'SELL';
+  if (tp) for (const x of win) if (down ? x[1] <= tp : x[1] >= tp) { hit = x[0]; break; }
   const last = win[win.length - 1];
   const bmv = ffill(bm, [d0, last[0]]);
   const ret = last[1] / base - 1, mret = bmv[0] && bmv[1] ? bmv[1] / bmv[0] - 1 : null;

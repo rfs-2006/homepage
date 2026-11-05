@@ -266,7 +266,8 @@ function indPage(x) {
   const nm0 = x.name.replace(/\s*산업$/, '');
   const dupOlder = indWeb.some((y) => y !== x && y.name.replace(/\s*산업$/, '') === nm0 && y.date > x.date);   // 같은 산업이 또 있으면 옛것에 연도
   const title = `${nm0} 산업 전망${dupOlder ? ` (${x.date.slice(0, 4)})` : ''} | 산업분석 리포트 - 중앙대 RFS`;
-  const desc = (`${nm0} 산업 전망. ${semKo} R.F.S. 산업분석${head1 ? ' — ' + head1 : ''}. ` + (first || toc.join(' · '))).slice(0, 155);
+  // 1쪽 요약도 장 제목도 없는 옛 양식은 INDUSTRY의 desc(손으로 쓴 한 줄 소개)를 쓴다
+  const desc = (`${nm0} 산업 전망. ${semKo} R.F.S. 산업분석${head1 ? ' — ' + head1 : ''}. ` + (first || x.desc || toc.join(' · '))).slice(0, 155);
   const nm = nm0;
   const keywords = [`${x.name}`, `${nm} 산업 분석`, `${nm} 산업 전망`, `${x.name} 리포트`, `${x.name} 보고서`, '산업분석 리포트', ...C.PAGE_BRAND_KEYWORDS];
   const ld = [{

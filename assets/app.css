@@ -1567,10 +1567,12 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rpt-paper .gl{text-decoration:underline solid rgba(143,170,220,0.85);text-decoration-thickness:2.5px;text-underline-offset:4px;text-decoration-skip-ink:none;cursor:pointer;border-radius:2px;transition:background .15s ease}
 .rpt-paper .gl:hover,.rpt-paper .gl.on{background:rgba(143,170,220,0.25)}   /* 용어 풀이: 연한 남색 실선 밑줄(글자색은 본문 그대로). 누르면 설명 카드 */
 .rf-sd-h{margin:16px 0 0;padding-bottom:3px;border-bottom:1px solid #595959;font-family:'RFS Report Dotum',sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.03em;color:#000}
-.rf-sd{width:100%;border-collapse:collapse;table-layout:fixed;font-family:'RFS Report Dotum',sans-serif;font-size:11px;font-weight:300;line-height:1.25;letter-spacing:-0.05em;color:#000;font-variant-numeric:tabular-nums}
-.rf-sd td{padding:2.5px 0;white-space:nowrap;overflow:hidden;text-overflow:clip;vertical-align:top}.rf-sd td.r{text-align:right}
-.rf-sd tr.sep td{border-top:1px solid #595959}.rf-sd tr.hd td{background:#F2F2F2;border-top:1px solid #595959}.rf-sd tr.last td{border-bottom:1px solid #595959}
-.rf-sd tr.hd td+td,.rf-sd tr.vals td+td{border-left:1px solid #D0CECE;padding-left:4px}
+.rf-sd{width:100%;font-family:'RFS Report Dotum',sans-serif;font-size:11px;font-weight:300;line-height:1.25;letter-spacing:-0.05em;color:#000;font-variant-numeric:tabular-nums}
+/* 표(table) 안에 sc-for를 넣으면 브라우저가 sc-for를 표 밖으로 빼 버려 줄이 안 그려진다 → 칸은 div 격자로 */
+.rf-sd .tr{display:grid;grid-template-columns:37% 21% 21% 21%}
+.rf-sd .td{padding:2.5px 0;white-space:nowrap;overflow:hidden;text-overflow:clip;min-width:0}.rf-sd .td.r{text-align:right}
+.rf-sd .tr.sep .td{border-top:1px solid #595959}.rf-sd .tr.hd .td{background:#F2F2F2;border-top:1px solid #595959}.rf-sd .tr.last .td{border-bottom:1px solid #595959}
+.rf-sd .tr.hd .td+.td,.rf-sd .tr.vals .td+.td{border-left:1px solid #D0CECE;padding-left:4px}
 .rf-sd-chart{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;margin-top:6px;padding-bottom:6px;border-bottom:1px solid #595959}
 /* 리포트 전문: PDF 비율 그대로 왼쪽 220px에 요약 메모, 오른쪽에 본문(오른쪽 여백 35px). 차트는 전체 폭 */
 .rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
