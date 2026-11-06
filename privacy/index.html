@@ -59,6 +59,9 @@ p{margin:0 0 10px}
 .list li{border-bottom:1px solid var(--line)}
 .list a{display:flex;justify-content:space-between;gap:12px;padding:12px 0;text-decoration:none;color:var(--ink)}
 .list .meta{color:var(--muted);font-size:13px;white-space:nowrap}
+.years{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 32px}
+.years a{padding:8px 14px;border:1px solid var(--line);text-decoration:none;font-size:14px;color:var(--ink)}
+.years a[aria-current]{background:var(--navy);border-color:var(--navy);color:var(--bg)}
 footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;line-height:2.4;color:var(--muted);border-top:1px solid var(--line)}footer a{display:inline-block;padding:6px 2px}
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}main>p+section{margin-top:28px}section{margin-bottom:40px}h2{margin-bottom:12px}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
