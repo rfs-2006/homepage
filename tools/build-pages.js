@@ -12,9 +12,12 @@ const C = require('./seo-config');
 
 const ROOT = path.resolve(__dirname, '..');
 const read = (p) => fs.readFileSync(path.join(ROOT, p), 'utf8');
+const changed = new Set();   // 이번 실행에서 내용이 바뀐 파일 (sitemap lastmod용)
 const write = (p, s) => {
-  fs.mkdirSync(path.dirname(path.join(ROOT, p)), { recursive: true });
-  fs.writeFileSync(path.join(ROOT, p), s);
+  const f = path.join(ROOT, p);
+  fs.mkdirSync(path.dirname(f), { recursive: true });
+  if (!fs.existsSync(f) || fs.readFileSync(f, 'utf8') !== s) changed.add(p);
+  fs.writeFileSync(f, s);
 };
 const SHELL = fs.readFileSync(path.join(__dirname, 'page-shell.html'), 'utf8');
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -55,6 +58,7 @@ function constant(name) {
 }
 
 const RECRUIT = constant('RECRUIT');
+const REPORTS = constant('REPORTS');
 const INDUSTRY = constant('INDUSTRY');
 const IND_FULL = constant('IND_FULL');
 const officers = field('people');
@@ -239,8 +243,6 @@ ${NAV}
 <p class="headline">${COHORT}기까지 이어진 알럼나이 ${ALUMNI}명</p>
 <img class="cover" src="/assets/people-group.webp" alt="중앙대학교 가치투자학회 R.F.S. ${COHORT}기 단체 사진" style="width:100%;height:auto;border-radius:8px">
 <section><h2>${COHORT}기 임원진</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:18px">${cards}</div></section>
-<img class="cover" src="/assets/people-group.webp" alt="중앙대학교 가치투자학회 R.F.S. ${COHORT}기 단체 사진" style="width:100%;height:auto;border-radius:8px">
-<section><h2>${COHORT}기 임원진</h2><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:18px">${cards}</div></section>
 <section><h2>조직</h2>${dl(teams)}</section>
 <section><h2>알럼나이 진로</h2><p>${esc(careers)}</p><p>증권사, 자산운용사, 은행, IB·PE·VC, 회계법인 등 금융권 전반에 R.F.S. 동문이 있습니다. 현역 학회원은 직무 세미나와 선배님 멘토링으로 진로를 준비합니다.</p></section>
 <div class="btns"><a class="btn solid" href="/#people">People 페이지 열기</a><a class="btn" href="/about/">학회 소개</a><a class="btn" href="/recruiting/">신입 학회원 모집</a></div>
@@ -261,6 +263,7 @@ function indPage(x) {
   const toc = (full.blocks || []).filter((b) => b.h).map((b) => b.h);
   const first = secs.flatMap((sc) => sc.ps.map(plain)).find((t) => t.length > 40) || '';
   const [yy, hh] = x.sem.split('-');
+  const year = x.date.slice(0, 4), yearUrl = `${C.SITE}/research/${year}/`;
   const semKo = `20${yy}년 ${hh}학기`;
   const head1 = p1.head || (p1.cover && p1.cover.title) || '';
   const nm0 = x.name.replace(/\s*산업$/, '');
@@ -273,15 +276,22 @@ function indPage(x) {
   const ld = [{
     '@context': 'https://schema.org', '@type': 'Report', headline: title.replace(/ - 중앙대 RFS$/, ''), description: desc,
     datePublished: isoD(x.date), inLanguage: 'ko', url, author: ORG, publisher: ORG, about: { '@type': 'Thing', name: x.name },
+    isPartOf: { '@type': 'CollectionPage', '@id': yearUrl, url: yearUrl, name: `${year}년 R.F.S. 리포트` },
     associatedMedia: { '@type': 'MediaObject', contentUrl: `${C.SITE}/${x.pdf}`, encodingFormat: 'application/pdf' },
   }, {
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'R.F.S.', item: `${C.SITE}/` },
       { '@type': 'ListItem', position: 2, name: 'Research', item: `${C.SITE}/research/` },
-      { '@type': 'ListItem', position: 3, name: x.name, item: url },
+      { '@type': 'ListItem', position: 3, name: year, item: yearUrl },
+      { '@type': 'ListItem', position: 4, name: x.name, item: url },
     ],
   }];
+  // 같은 섹터의 다른 산업 리포트, 발간일이 가까운 순으로 5편
+  const near = indWeb.filter((y) => y !== x && y.sector === x.sector)
+    .sort((a, b) => Math.abs(Date.parse(isoD(a.date)) - Date.parse(isoD(x.date))) - Math.abs(Date.parse(isoD(b.date)) - Date.parse(isoD(x.date))) || b.date.localeCompare(a.date))
+    .slice(0, 5);
+  const nearHtml = near.map((y) => `<li><a href="/research/ind-${y.id}/"><span>${esc(y.name)}</span><span class="meta">${esc(`${y.sector} · ${y.date}`)}</span></a></li>`).join('');
   const body = secs.map((sc) => (sc.h ? `<h3>${esc(sc.h)}</h3>` : '') + sc.ps.map((ps) => `<p>${esc(plain(ps))}</p>`).join('')).join('');
   return head({ title, desc, url, keywords }) +
 `<script type="application/ld+json">${json(ld)}</script>
@@ -290,18 +300,95 @@ function indPage(x) {
 <body>
 ${NAV}
 <main>
-<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › ${esc(x.name)}</div>
+<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › <a href="/research/${year}/">${year}</a> › ${esc(x.name)}</div>
 <h1>${esc(/산업$/.test(x.name) ? x.name + ' 분석' : x.name + ' 산업분석')}</h1>
 ${head1 ? `<p class="headline">${esc(head1)}</p>` : ''}
 <dl class="stats"><div><dt>발간</dt><dd>${esc(x.date)}</dd></div><div><dt>학기</dt><dd>${esc(semKo)}</dd></div><div><dt>섹터</dt><dd>${esc(x.sector)}</dd></div><div><dt>분량</dt><dd>${x.pages}쪽</dd></div>${x.team ? `<div><dt>작성</dt><dd>Research Team ${esc(x.team)}</dd></div>` : ''}</dl>
 ${body ? `<section><h2>요약</h2>${body}</section>` : ''}
 ${toc.length ? `<section><h2>목차</h2><ul class="list">${toc.map((t) => `<li style="padding:8px 0">${esc(t)}</li>`).join('')}</ul></section>` : ''}
 <div class="btns"><a class="btn solid" href="/${x.pdf}">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(${x.pages}쪽)</span></a><a class="btn" href="/#research/${id}">R.F.S. 사이트에서 전문 읽기</a></div>
+${nearHtml ? `<section><h2>같은 섹터 리포트</h2><ul class="list">${nearHtml}</ul>` : '<section>'}
+<p style="margin-top:14px"><a href="/research/${year}/">${year}년 리포트 전체 보기 →</a> · <a href="/research/">전체 보고서 보기 →</a></p></section>
 <p class="note">본 자료는 중앙대학교 가치투자학회 R.F.S.의 학술 리서치 결과물이며, 특정 종목의 매매를 권유하지 않습니다.</p>
 </main>
 ${FOOTER}`;
 }
 const indWeb = INDUSTRY.filter((x) => IND_FULL.includes('ind-' + x.id));
+
+// ---------- /research/<연도>/ 연도별 모음 ----------
+// 기업분석·산업분석을 연도별로 묶은 허브. spa.js를 넣지 않는다: 메인 앱은 /research/<x>/를 리포트 id로 읽어
+// 없는 리포트 화면을 띄우고, 앱의 Research 화면에는 연도 필터가 없어서 이 페이지가 브라우저에서도 그대로 보여야 한다
+
+const repSorted = [...REPORTS].sort((a, b) => b.date.localeCompare(a.date));
+const indSorted = [...INDUSTRY].sort((a, b) => b.date.localeCompare(a.date));
+const YEARS = [...new Set([...REPORTS, ...INDUSTRY].map((r) => r.date.slice(0, 4)))].sort().reverse();
+const hasIndPage = (x) => IND_FULL.includes('ind-' + x.id);
+const yearLastmod = (y) => isoD([...REPORTS, ...INDUSTRY].filter((r) => r.date.startsWith(y)).map((r) => r.date).sort().pop());
+
+function yearPage(y) {
+  const url = `${C.SITE}/research/${y}/`;
+  const reps = repSorted.filter((r) => r.date.startsWith(y));
+  const inds = indSorted.filter((x) => x.date.startsWith(y));
+  const title = `${y} 기업분석 보고서${inds.length ? ' · 산업 리포트' : ''} | R.F.S. 중앙대학교 가치투자학회`;
+  const names = [...new Set(reps.map((r) => r.name))];
+  const desc = (`중앙대학교 가치투자학회 R.F.S.가 ${y}년에 발간한 기업분석 보고서 ${reps.length}편${inds.length ? `과 산업분석 리포트 ${inds.length}편` : ''}. ` +
+    `${names.slice(0, 6).join(', ')}${names.length > 6 ? ' 등' : ''}의 투자의견·목표주가·밸류에이션${inds.length ? `, ${[...new Set(inds.map((x) => x.name.replace(/\s*산업$/, '')))].slice(0, 3).join('·')} 등 산업 전망` : ''}.`).slice(0, 160);
+  const keywords = [`${y} 기업분석 보고서`, `${y} 기업분석 리포트`, `${y} 산업분석`, ...names.slice(0, 10).map((n) => `${n} 리포트`), ...C.PAGE_BRAND_KEYWORDS];
+  const items = [
+    ...reps.map((r) => ({ url: `${C.SITE}/research/${r.id}/`, name: `${r.name} (${r.ticker}) 기업분석` })),
+    ...inds.map((x) => ({ url: hasIndPage(x) ? `${C.SITE}/research/ind-${x.id}/` : `${C.SITE}/${x.pdf}`, name: `${x.name} 산업분석` })),
+  ];
+  const ld = [{
+    '@context': 'https://schema.org', '@type': 'CollectionPage', '@id': url, name: title.replace(/ \| .*$/, ''), description: desc, url, inLanguage: 'ko', publisher: ORG,
+    isPartOf: { '@type': 'CollectionPage', url: `${C.SITE}/research/` },
+    mainEntity: { '@type': 'ItemList', numberOfItems: items.length, itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, url: it.url, name: it.name })) },
+  }, {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'R.F.S.', item: `${C.SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'Research', item: `${C.SITE}/research/` },
+      { '@type': 'ListItem', position: 3, name: y, item: url },
+    ],
+  }];
+  const repRows = reps.map((r) => `<li><a href="/research/${r.id}/"><span>${esc(`${r.name} (${r.ticker}) — ${r.headline}`)}</span><span class="meta">${esc(`${r.team} · ${r.op} · ${r.tp || '-'} · ${r.date}`)}</span></a></li>`).join('');
+  const indRows = inds.map((x) => `<li><a href="${hasIndPage(x) ? `/research/ind-${x.id}/` : `/${x.pdf}`}"><span>${esc(x.name)}${hasIndPage(x) ? '' : ' <small style="color:var(--muted)">(PDF)</small>'}</span><span class="meta">${esc(`${x.sector}${x.team ? ` · Research Team ${x.team}` : ''} · ${x.date}`)}</span></a></li>`).join('');
+  return head({ title, desc, url, keywords }) +
+`<script type="application/ld+json">${json(ld)}</script>
+</head>
+<body>
+${NAV}
+<main>
+<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › ${y}</div>
+<h1>${y}년 리포트</h1>
+<p class="headline">중앙대학교 가치투자학회 R.F.S. 기업분석 보고서 ${reps.length}편${inds.length ? ` · 산업분석 리포트 ${inds.length}편` : ''}</p>
+<nav class="years" aria-label="연도별 리포트">${YEARS.map((z) => `<a href="/research/${z}/"${z === y ? ' aria-current="page"' : ''}>${z}</a>`).join('')}</nav>
+${reps.length ? `<section><h2>기업분석 보고서 ${reps.length}편</h2><ul class="list">${repRows}</ul></section>` : ''}
+${inds.length ? `<section id="industry"><h2>산업분석 리포트 ${inds.length}편</h2><ul class="list">${indRows}</ul></section>` : ''}
+<div class="btns"><a class="btn solid" href="/research/">전체 보고서 보기</a><a class="btn" href="/#research">R.F.S. 사이트에서 보기</a></div>
+<p class="note">본 자료는 중앙대학교 가치투자학회 R.F.S.의 학술 리서치 결과물이며, 특정 종목의 매매를 권유하지 않습니다. 투자의견·목표주가는 각 보고서 발간일 기준입니다.</p>
+</main>
+${FOOTER}`;
+}
+
+// ---------- _headers: 리포트 PDF → HTML 페이지 canonical ----------
+// 구글이 PDF를 HTML 리포트 페이지와 따로 색인해 서로 경쟁한다. PDF 응답에 Link rel=canonical 헤더를 붙인다.
+// 보안·캐시 헤더는 netlify.toml의 [[headers]]에 있고, Netlify는 경로가 맞는 규칙을 모두 합쳐 적용한다 (여기는 Link만)
+
+function headersFile() {
+  const real = (rel) => {   // 디스크의 실제 대소문자로 (Netlify 경로 매칭은 대소문자를 가린다)
+    let dir = ROOT;
+    for (const part of rel.split('/')) {
+      const hit = fs.existsSync(dir) && fs.readdirSync(dir).find((f) => f.toLowerCase() === part.toLowerCase());
+      if (!hit) return null;
+      dir = path.join(dir, hit);
+    }
+    return path.relative(ROOT, dir).split(path.sep).join('/');
+  };
+  const rows = [...REPORTS.map((r) => [r.pdf, `research/${r.id}/`]), ...indWeb.map((x) => [x.pdf, `research/ind-${x.id}/`])]
+    .map(([pdf, page]) => [real(pdf), page]).filter(([pdf]) => pdf);
+  const body = rows.map(([pdf, page]) => `/${encodeURI(pdf)}\n  Link: <${C.SITE}/${page}>; rel="canonical"`).join('\n');
+  return { n: rows.length, text: `# 자동 생성 (tools/build-pages.js). 손으로 고치지 않는다.\n# 리포트 PDF가 검색 결과에서 HTML 리포트 페이지와 경쟁하지 않게 canonical을 HTML로 지정한다.\n# 보안·캐시 헤더는 netlify.toml에 있고 Netlify가 함께 적용한다.\n\n${body}\n` };
+}
 
 // ---------- /privacy/ ----------
 // 가입 신청 폼(assets/join.js)의 수집·이용 동의와 같은 내용. 바꾸면 join.js의 동의 표와 member-signup의 POLICY_VERSION도 같이 바꾼다
@@ -356,13 +443,16 @@ write('privacy/index.html', privacyPage());
 // Polaris 화면(chat/)의 무작위 선배님 문구용 기수별 명단 (홈에 이미 공개된 ROSTER 그대로, 423KB app.js를 받지 않게 따로 뺀다)
 write('assets/roster.json', JSON.stringify(constant('ROSTER')));
 for (const x of indWeb) write(`research/ind-${x.id}/index.html`, indPage(x));
+for (const y of YEARS) write(`research/${y}/index.html`, yearPage(y));
+const hdr = headersFile();
+write('_headers', hdr.text);
 
 // 홈 index.html의 <noscript>에 리포트 링크 전부 (화면은 JS로 그려서 검색엔진이 따라갈 링크가 HTML에 없다. JS가 켜진 화면에는 안 보인다)
 {
   const reps = constant('REPORTS');
   const links = [...reps].sort((a, b) => b.date.localeCompare(a.date)).map((r) => `<li><a href="/research/${r.id}/">${esc(`${r.name} (${r.ticker}) 기업분석 리포트`)}</a></li>`).join('') +
     [...indWeb].sort((a, b) => b.date.localeCompare(a.date)).map((x) => `<li><a href="/research/ind-${x.id}/">${esc(`${x.name} 산업분석 리포트`)}</a></li>`).join('');
-  const block = `<!--seo-links--><nav aria-label="리포트"><h2>리포트</h2><ul>${links}</ul></nav><!--/seo-links-->`;
+  const block = `<!--seo-links--><nav aria-label="리포트"><h2>리포트</h2><ul>${YEARS.map((y) => `<li><a href="/research/${y}/">${y}년 리포트</a></li>`).join('')}${links}</ul></nav><!--/seo-links-->`;
   let home = read('index.html');
   home = /<!--seo-links-->[\s\S]*?<!--\/seo-links-->/.test(home) ? home.replace(/<!--seo-links-->[\s\S]*?<!--\/seo-links-->/, () => block) : home.replace('\n</noscript>', () => '\n' + block + '\n</noscript>');
   write('index.html', home);
@@ -379,15 +469,28 @@ for (const x of indWeb) write(`research/ind-${x.id}/index.html`, indPage(x));
 // sitemap에 두 페이지를 넣는다 (build-site.js가 sitemap을 새로 쓰므로 그 다음에 실행)
 let sm = read('sitemap.xml');
 const today = new Date().toISOString().slice(0, 10);
+// lastmod는 페이지 내용이 마지막으로 바뀐 날: 이번에 바뀌었거나 커밋 전이면 오늘, 아니면 그 파일의 마지막 커밋 날짜
+// (예전처럼 매번 오늘 날짜를 쓰면 검색엔진이 lastmod를 믿지 않게 된다)
+function lastmod(file) {
+  if (changed.has(file)) return today;
+  try {
+    const { execFileSync } = require('child_process');
+    const git = (...a) => execFileSync('git', a, { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+    if (git('status', '--porcelain', '--', file)) return today;
+    return git('log', '-1', '--format=%cs', '--', file) || today;
+  } catch { return today; }
+}
 for (const p of ['about', 'recruiting', 'fund', 'privacy']) {
   const loc = `${C.SITE}/${p}/`;
-  if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${today}</lastmod></url>\n</urlset>`);
+  if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${lastmod(`${p}/index.html`)}</lastmod></url>\n</urlset>`);
 }
 // People: 사진을 구글 이미지 검색에 올리도록 image:image를 단다
-sm = sm.replace(/  <url><loc>[^<]*\/people\/<\/loc>[\s\S]*?<\/url>\n/, '').replace(/  <url><loc>[^<]*\/research\/ind-\d+\/<\/loc>[^\n]*\n/g, '');
+sm = sm.replace(/  <url><loc>[^<]*\/people\/<\/loc>[\s\S]*?<\/url>\n/, '').replace(/  <url><loc>[^<]*\/research\/(ind-\d+|\d{4})\/<\/loc>[^\n]*\n/g, '');
 if (!sm.includes('xmlns:image')) sm = sm.replace('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">');
 const imgs = [{ src: 'assets/people-group.webp' }, ...officers.map((o) => ({ src: o.photo }))];
-sm = sm.replace('</urlset>', `  <url><loc>${C.SITE}/people/</loc><lastmod>${today}</lastmod>${imgs.map((i) => `<image:image><image:loc>${C.SITE}/${i.src}</image:loc></image:image>`).join('')}</url>\n` +
+sm = sm.replace('</urlset>', YEARS.map((y) => `  <url><loc>${C.SITE}/research/${y}/</loc><lastmod>${yearLastmod(y)}</lastmod></url>\n`).join('') +
+  `  <url><loc>${C.SITE}/people/</loc><lastmod>${lastmod('people/index.html')}</lastmod>${imgs.map((i) => `<image:image><image:loc>${C.SITE}/${i.src}</image:loc></image:image>`).join('')}</url>\n` +
   indWeb.map((x) => `  <url><loc>${C.SITE}/research/ind-${x.id}/</loc><lastmod>${isoD(x.date)}</lastmod></url>\n`).join('') + '</urlset>');
 write('sitemap.xml', sm);
+console.log(`연도별 모음 ${YEARS.length}개 (${YEARS[YEARS.length - 1]}–${YEARS[0]}), PDF canonical 헤더 ${hdr.n}개`);
 console.log(`산업 리포트 ${indWeb.length}편, about/, recruiting/, fund/, people/, privacy/ 생성 (FAQ ${faqs.length}개, 일정 ${RECRUIT.schedule.length}단계)`);

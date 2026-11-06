@@ -59,6 +59,9 @@ p{margin:0 0 10px}
 .list li{border-bottom:1px solid var(--line)}
 .list a{display:flex;justify-content:space-between;gap:12px;padding:12px 0;text-decoration:none;color:var(--ink)}
 .list .meta{color:var(--muted);font-size:13px;white-space:nowrap}
+.years{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 32px}
+.years a{padding:8px 14px;border:1px solid var(--line);text-decoration:none;font-size:14px;color:var(--ink)}
+.years a[aria-current]{background:var(--navy);border-color:var(--navy);color:var(--bg)}
 footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;line-height:2.4;color:var(--muted);border-top:1px solid var(--line)}footer a{display:inline-block;padding:6px 2px}
 @media (max-width:560px){.nav nav a{margin-left:12px}.list a{flex-direction:column;gap:0}main>p+section{margin-top:28px}section{margin-bottom:40px}h2{margin-bottom:12px}}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
@@ -71,20 +74,22 @@ footer{max-width:960px;margin:0 auto;padding:24px 20px 48px;font-size:12px;line-
 @keyframes rfs-vt-fade{from{opacity:0}}
 @media (prefers-reduced-motion:reduce){::view-transition-new(root){animation-name:rfs-vt-fade}}
 </style>
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"수술로봇 산업 전망 | 산업분석 리포트","description":"수술로봇 산업 전망. 2024년 2학기 R.F.S. 산업분석 — 이멀젼씨, 로봇닥터 PLZ. 현재 의료산업은 ①COVID-19로 인한 의료인력 이탈, ②의사의 고령화 및 ③워라밸 추구로 ‘의료 공급 쇼티지’에 처해있는 상황이다. 이를 해소하기 위해서는 의료영역에 새로운 패러다임","datePublished":"2024-11-10","inLanguage":"ko","url":"https://caurfs.kr/research/ind-4897/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Thing","name":"수술로봇"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/industry/24-2_4897.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"수술로봇","item":"https://caurfs.kr/research/ind-4897/"}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Report","headline":"수술로봇 산업 전망 | 산업분석 리포트","description":"수술로봇 산업 전망. 2024년 2학기 R.F.S. 산업분석 — 이멀젼씨, 로봇닥터 PLZ. 현재 의료산업은 ①COVID-19로 인한 의료인력 이탈, ②의사의 고령화 및 ③워라밸 추구로 ‘의료 공급 쇼티지’에 처해있는 상황이다. 이를 해소하기 위해서는 의료영역에 새로운 패러다임","datePublished":"2024-11-10","inLanguage":"ko","url":"https://caurfs.kr/research/ind-4897/","author":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"publisher":{"@type":"Organization","name":"R.F.S. 중앙대학교 가치투자학회","url":"https://caurfs.kr/"},"about":{"@type":"Thing","name":"수술로봇"},"isPartOf":{"@type":"CollectionPage","@id":"https://caurfs.kr/research/2024/","url":"https://caurfs.kr/research/2024/","name":"2024년 R.F.S. 리포트"},"associatedMedia":{"@type":"MediaObject","contentUrl":"https://caurfs.kr/assets/reports/industry/24-2_4897.pdf","encodingFormat":"application/pdf"}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"R.F.S.","item":"https://caurfs.kr/"},{"@type":"ListItem","position":2,"name":"Research","item":"https://caurfs.kr/research/"},{"@type":"ListItem","position":3,"name":"2024","item":"https://caurfs.kr/research/2024/"},{"@type":"ListItem","position":4,"name":"수술로봇","item":"https://caurfs.kr/research/ind-4897/"}]}]</script>
 <script src="/research/spa.js"></script>
 </head>
 <body>
 <header class="nav"><a class="brand" href="/">R.F.S.<small>중앙대학교 가치투자학회</small></a>
 <nav><a href="/research/">Research</a><a href="/about/">About</a><a href="/recruiting/">Recruiting</a></nav></header>
 <main>
-<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › 수술로봇</div>
+<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › <a href="/research/2024/">2024</a> › 수술로봇</div>
 <h1>수술로봇 산업분석</h1>
 <p class="headline">이멀젼씨, 로봇닥터 PLZ</p>
 <dl class="stats"><div><dt>발간</dt><dd>2024.11.10</dd></div><div><dt>학기</dt><dd>2024년 2학기</dd></div><div><dt>섹터</dt><dd>건강관리</dd></div><div><dt>분량</dt><dd>25쪽</dd></div><div><dt>작성</dt><dd>Research Team 2</dd></div></dl>
 <section><h2>요약</h2><h3>수술로봇의 성장은 필연적이다</h3><p>현재 의료산업은 ①COVID-19로 인한 의료인력 이탈, ②의사의 고령화 및 ③워라밸 추구로 ‘의료 공급 쇼티지’에 처해있는 상황이다. 이를 해소하기 위해서는 의료영역에 새로운 패러다임, ‘수술로봇’의 도입이 필연적이다.</p><h3>우리 모두 로봇수술이 필요해</h3><p>병원: 수술로봇의 도입은 1)의료공급 쇼티지의 해결책이자, 2)소송 리스크를 완화하며 무엇보다도 3)현직 의사들의 강력한 수요가 존재한다. 또한 입원일수를 단축해 4)경제성을 창출하며, 5)마케팅 효과까지 더해져 환자를 유치하는 트리거가 된다.</p><p>환자: 수술로봇은 최소침습방식 &amp; 정교함을 바탕으로 1)흉터 최소화하고 환자의 입원 기간을 단축한다. 또한 2)환자의 생존가능성을 증가시켜, 환자에게 강력한 선택 유인을 제공한다.</p><h3>새로운 성장동력 준비 완료</h3><p>수술로봇의 필요성은 입증되었다. 이제는 새로운 성장동력이 수술로봇의 구조적 확장을 이끌 차례이다. 1)수술로봇의 선두주자인 미국 시장, 그리고 미국의 성장흐름을 따라갈 미국 外 시장 모두에서의 확산이 기대된다. 2)로봇수술 보험 보장범위의 확대는 이를 가속화하며 글로벌 수술로봇 시장의 가파른 성장을 견인할 전망이다. 더 나아가, 3)수술로봇과 AI와의 결합은 기존의 한계를 해결하며 산업의 성장 리스크를 제거할 것이다.</p><h3>어느 기업에 투자해야 하는가</h3><p>수술로봇 산업의 구조적 성장의 수혜를 그대로 받을 기업은 1)시장을 선점하고, 2)소모품 비즈니스 모델을 보유하며 3)AI 역량을 보유한 기업이다.</p><p>따라서, 압도적인 시장 점유율을 바탕으로 다각화된 비즈니스 모델을 보유한 Intuitive Surgical을 Top-pick으로 제시한다.</p></section>
 <section><h2>목차</h2><ul class="list"><li style="padding:8px 0">Ⅱ. Background Knowledge</li><li style="padding:8px 0">Ⅲ. Investment Point</li><li style="padding:8px 0">Ⅳ. Investment Strategy</li></ul></section>
 <div class="btns"><a class="btn solid" href="/assets/reports/industry/24-2_4897.pdf">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(25쪽)</span></a><a class="btn" href="/#research/ind-4897">R.F.S. 사이트에서 전문 읽기</a></div>
+<section><h2>같은 섹터 리포트</h2><ul class="list"><li><a href="/research/ind-4778/"><span>제약·바이오</span><span class="meta">건강관리 · 2024.05.08</span></a></li><li><a href="/research/ind-5081/"><span>글로벌 헬스케어</span><span class="meta">건강관리 · 2025.11.09</span></a></li><li><a href="/research/ind-4546/"><span>제약·바이오</span><span class="meta">건강관리 · 2023.05.09</span></a></li><li><a href="/research/ind-4275/"><span>미용의료 산업</span><span class="meta">건강관리 · 2022.05.10</span></a></li><li><a href="/research/ind-4193/"><span>바이오 산업</span><span class="meta">건강관리 · 2021.11.11</span></a></li></ul>
+<p style="margin-top:14px"><a href="/research/2024/">2024년 리포트 전체 보기 →</a> · <a href="/research/">전체 보고서 보기 →</a></p></section>
 <p class="note">본 자료는 중앙대학교 가치투자학회 R.F.S.의 학술 리서치 결과물이며, 특정 종목의 매매를 권유하지 않습니다.</p>
 </main>
 <footer>© R.F.S. (Rising Financial Stars) · 중앙대학교 가치투자학회 · <a href="/">caurfs.kr</a> · <a href="https://www.instagram.com/cau_rfs/">Instagram</a> · <a href="https://cafe.naver.com/caurfs">네이버 카페</a> · <a href="/privacy/">개인정보처리방침</a> · <span style="white-space:nowrap">Crafted by Minseok Kim (41st)</span></footer>
