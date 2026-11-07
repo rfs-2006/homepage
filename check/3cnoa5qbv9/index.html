@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>리포트 마감 체크리스트</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+html,body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* 레이아웃: 위에 진행률·남은 날, 아래는 장별 체크 카드 한 열. 폰에서도 같은 구조. */
+:root{
+  --bg:#F7F6F2;--card:#FFFFFF;--fg:#1B2230;--mute:#6B7280;--hair:#E3E1DA;
+  --ac:#1F3A6B;--ac-soft:#E8EEF8;--ok:#2E7D4F;--ok-soft:#E4F2EA;--warn:#B4541A;--warn-soft:#FBEBDD;
+  --ser:'Noto Serif KR',serif;--sans:'Noto Sans KR',-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1623;--card:#172035;--fg:#ECEDF1;--mute:#9AA3B5;--hair:#2A3650;
+  --ac:#8FAADC;--ac-soft:#1E2E4D;--ok:#7CC89A;--ok-soft:#1C3328;--warn:#F0A06A;--warn-soft:#3A2618;color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F1623;--card:#172035;--fg:#ECEDF1;--mute:#9AA3B5;--hair:#2A3650;
+  --ac:#8FAADC;--ac-soft:#1E2E4D;--ok:#7CC89A;--ok-soft:#1C3328;--warn:#F0A06A;--warn-soft:#3A2618;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 60px;word-break:keep-all}
+.wrap{max-width:860px;margin:0 auto}
+header{padding:36px 0 18px}
+.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+h1{font-family:var(--ser);font-size:clamp(26px,4vw,34px);margin:4px 0 6px;text-wrap:balance}
+.sub{color:var(--mute);margin:0}
+.top{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:end;margin-top:18px}
+.bar{height:8px;background:var(--hair);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.pct{font-family:var(--ser);font-size:30px;font-variant-numeric:tabular-nums;line-height:1}
+.pct small{font-family:var(--sans);font-size:13px;color:var(--mute);margin-left:4px}
+.days{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 6px}
+.day{background:var(--card);border:1px solid var(--hair);padding:10px 12px;min-width:0}
+.day b{display:block;font-size:13px;color:var(--ac)}
+.day span{font-size:13px;color:var(--mute)}
+.day.last b{color:var(--warn)}
+@media (max-width:520px){.days{grid-template-columns:repeat(2,1fr)}}
+section{background:var(--card);border:1px solid var(--hair);margin-top:14px}
+section h2{display:flex;align-items:center;gap:10px;margin:0;padding:14px 16px;font-size:17px;cursor:pointer;user-select:none}
+section h2 .n{font-family:var(--ser);color:var(--ac);min-width:1.4em}
+section h2 .cnt{margin-left:auto;font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums;white-space:nowrap}
+section h2 .cnt.done{color:var(--ok)}
+section h2 .day-tag{font-size:11px;background:var(--ac-soft);color:var(--ac);padding:2px 7px;border-radius:3px;white-space:nowrap}
+section h2 .day-tag.last{background:var(--warn-soft);color:var(--warn)}
+section.collapsed .body{display:none}
+.body{border-top:1px solid var(--hair);padding:6px 16px 12px}
+.tip{font-size:13px;color:var(--mute);padding:8px 0 4px}
+label.it{display:grid;grid-template-columns:22px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px dashed var(--hair);cursor:pointer}
+label.it:first-of-type{border-top:0}
+label.it input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ac)}
+label.it .t{min-width:0}
+label.it .t em{font-style:normal;font-size:12.5px;color:var(--mute);display:block}
+label.it input:checked ~ .t{color:var(--mute);text-decoration:line-through;text-decoration-color:var(--hair)}
+label.it input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.group{margin-top:6px;padding-left:4px}
+.group > .gt{font-size:12px;letter-spacing:.08em;color:var(--ac);margin:10px 0 2px;text-transform:uppercase}
+.foot{margin-top:24px;font-size:12.5px;color:var(--mute);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.foot button{font:inherit;background:none;border:1px solid var(--hair);color:var(--mute);padding:5px 10px;cursor:pointer}
+.foot button:hover{border-color:var(--ac);color:var(--ac)}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">R.F.S. · 기업분석 리포트</div>
+  <h1>리포트 마감 체크리스트</h1>
+  <p class="sub">톰(TORM) 리포트 구성 기준. 마감 화요일.</p>
+  <div class="top">
+    <div class="bar"><i id="bar"></i></div>
+    <div class="pct"><span id="pct">0</span>%<small id="cnt">0 / 0</small></div>
+  </div>
+  <div class="days">
+    <div class="day"><b>토</b><span>산업분석 · 기업분석</span></div>
+    <div class="day"><b>일</b><span>투자포인트 1·2</span></div>
+    <div class="day"><b>월</b><span>추정 · 3FS · 밸류에이션</span></div>
+    <div class="day last"><b>화</b><span>1페이지 · 편집 · 검수 · 제출</span></div>
+  </div>
+</header>
+
+<section data-k="s1">
+  <h2><span class="n">1</span>1페이지 <span class="day-tag last">화</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">투자의견 · 목표주가 · 요약 · 차트 · 표지 · 목차</span></label>
+  </div>
+</section>
+
+<section data-k="s2">
+  <h2><span class="n">2</span>산업분석 <span class="day-tag">토</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">글</span></label>
+    <label class="it"><input type="checkbox"><span class="t">자료</span></label>
+  </div>
+</section>
+
+<section data-k="s3">
+  <h2><span class="n">3</span>기업분석 <span class="day-tag">토</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">글</span></label>
+    <label class="it"><input type="checkbox"><span class="t">자료</span></label>
+  </div>
+</section>
+
+<section data-k="s4">
+  <h2><span class="n">4</span>투자포인트 1 <span class="day-tag">일</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">글</span></label>
+    <label class="it"><input type="checkbox"><span class="t">자료</span></label>
+  </div>
+</section>
+
+<section data-k="s5">
+  <h2><span class="n">5</span>투자포인트 2 <span class="day-tag">일</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">글</span></label>
+    <label class="it"><input type="checkbox"><span class="t">자료</span></label>
+  </div>
+</section>
+
+<section data-k="s6">
+  <h2><span class="n">6</span>추정 <span class="day-tag">월</span><span class="cnt"></span></h2>
+  <div class="body">
+    <div class="group"><div class="gt">매출 추정 로직 / 표</div>
+      <label class="it"><input type="checkbox"><span class="t">1) 건설</span></label>
+      <label class="it"><input type="checkbox"><span class="t">2) 에너지</span></label>
+      <label class="it"><input type="checkbox"><span class="t">3) 유리</span></label>
+      <label class="it"><input type="checkbox"><span class="t">4) 데센</span></label>
+    </div>
+    <div class="group"><div class="gt">비용 추정</div>
+      <label class="it"><input type="checkbox"><span class="t">로직 / 표</span></label>
+    </div>
+    <div class="group"><div class="gt">3FS</div>
+      <label class="it"><input type="checkbox"><span class="t">손익계산서 · 재무상태표 · 현금흐름표</span></label>
+    </div>
+  </div>
+</section>
+
+<section data-k="s7">
+  <h2><span class="n">7</span>밸류에이션 <span class="day-tag">월</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">기법 · 배수 근거 · 목표주가 표</span></label>
+  </div>
+</section>
+
+<section data-k="s8">
+  <h2><span class="n">8</span>편집 · 검수 · 제출 <span class="day-tag last">화</span><span class="cnt"></span></h2>
+  <div class="body">
+    <label class="it"><input type="checkbox"><span class="t">AI 검수 → PDF → 제출</span></label>
+  </div>
+</section>
+
+<div class="foot">
+  <span>체크는 이 브라우저에만 저장돼요.</span>
+  <button type="button" id="reset">전부 지우기</button>
+</div>
+</div>
+
+<script>
+(function(){
+  var KEY='rfs-report-check-v6', state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
+  var boxes=[].slice.call(document.querySelectorAll('label.it input'));
+  boxes.forEach(function(b,i){
+    b.id='c'+i;
+    if(state[i])b.checked=true;
+    b.addEventListener('change',function(){state[i]=b.checked?1:0;save();update();});
+  });
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function update(){
+    var done=boxes.filter(function(b){return b.checked;}).length,n=boxes.length;
+    document.getElementById('pct').textContent=n?Math.round(100*done/n):0;
+    document.getElementById('cnt').textContent=done+' / '+n;
+    document.getElementById('bar').style.width=(n?100*done/n:0)+'%';
+    document.querySelectorAll('section').forEach(function(s){
+      var bs=[].slice.call(s.querySelectorAll('input')),d=bs.filter(function(b){return b.checked;}).length;
+      var c=s.querySelector('.cnt');c.textContent=d+' / '+bs.length;c.classList.toggle('done',d===bs.length);
+    });
+  }
+  document.querySelectorAll('section h2').forEach(function(h){h.addEventListener('click',function(){h.parentNode.classList.toggle('collapsed');});});
+  document.getElementById('reset').addEventListener('click',function(){
+    var btn=this;
+    if(btn.dataset.arm){state={};save();boxes.forEach(function(b){b.checked=false;});update();btn.textContent='전부 지우기';delete btn.dataset.arm;return;}
+    btn.dataset.arm='1';btn.textContent='정말 지우려면 한 번 더';
+    setTimeout(function(){btn.textContent='전부 지우기';delete btn.dataset.arm;},3000);
+  });
+  update();
+})();
+</script>
+</body>
+</html>
