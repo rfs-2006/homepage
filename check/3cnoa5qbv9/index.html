@@ -156,22 +156,18 @@ label.it input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 </section>
 
 <div class="foot">
-  <span>체크는 이 브라우저에만 저장돼요.</span>
+  <span id="sync">불러오는 중</span>
   <button type="button" id="reset">전부 지우기</button>
 </div>
 </div>
 
 <script>
 (function(){
-  var KEY='rfs-report-check-v6', state={};
-  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
-  var boxes=[].slice.call(document.querySelectorAll('label.it input'));
-  boxes.forEach(function(b,i){
-    b.id='c'+i;
-    if(state[i])b.checked=true;
-    b.addEventListener('change',function(){state[i]=b.checked?1:0;save();update();});
-  });
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  var SB='https://xyewclvpshldjucryapr.supabase.co/rest/v1/shared_checks', KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c', ID='3cnoa5qbv9';
+  var H={apikey:KEY,Authorization:'Bearer '+KEY,'Content-Type':'application/json'};
+  var state={}, boxes=[].slice.call(document.querySelectorAll('label.it input')), st=document.getElementById('sync');
+  boxes.forEach(function(b,i){b.id='c'+i;b.addEventListener('change',function(){state[i]=b.checked?1:0;update();push(i,b.checked?1:0);});});
+  function apply(){boxes.forEach(function(b,i){b.checked=!!state[i];});update();}
   function update(){
     var done=boxes.filter(function(b){return b.checked;}).length,n=boxes.length;
     document.getElementById('pct').textContent=n?Math.round(100*done/n):0;
@@ -182,14 +178,31 @@ label.it input:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
       var c=s.querySelector('.cnt');c.textContent=d+' / '+bs.length;c.classList.toggle('done',d===bs.length);
     });
   }
+  function pull(){
+    return fetch(SB+'?id=eq.'+ID+'&select=state',{headers:H}).then(function(r){return r.json();}).then(function(rows){
+      if(rows&&rows[0]){state=rows[0].state||{};apply();st.textContent='모두에게 공유돼요';}
+      else st.textContent='저장소가 아직 없어요';
+    }).catch(function(){st.textContent='연결 안 됨';});
+  }
+  function push(i,v){
+    // 최신 상태를 받아 내 변경만 얹어서 저장 (동시에 누른 다른 사람 체크를 덮지 않게)
+    fetch(SB+'?id=eq.'+ID+'&select=state',{headers:H}).then(function(r){return r.json();}).then(function(rows){
+      var cur=(rows&&rows[0]&&rows[0].state)||{};cur[i]=v;
+      boxes.forEach(function(b,k){if(k!==i&&state[k]!==undefined&&cur[k]===undefined)cur[k]=state[k];});
+      return fetch(SB+'?id=eq.'+ID,{method:'PATCH',headers:H,body:JSON.stringify({state:cur,updated_at:new Date().toISOString()})});
+    }).then(function(r){if(!r.ok)throw 0;st.textContent='저장됨';}).catch(function(){st.textContent='저장 실패, 다시 눌러 보세요';});
+  }
   document.querySelectorAll('section h2').forEach(function(h){h.addEventListener('click',function(){h.parentNode.classList.toggle('collapsed');});});
   document.getElementById('reset').addEventListener('click',function(){
     var btn=this;
-    if(btn.dataset.arm){state={};save();boxes.forEach(function(b){b.checked=false;});update();btn.textContent='전부 지우기';delete btn.dataset.arm;return;}
+    if(btn.dataset.arm){
+      fetch(SB+'?id=eq.'+ID,{method:'PATCH',headers:H,body:JSON.stringify({state:{}})}).then(function(){state={};apply();});
+      btn.textContent='전부 지우기';delete btn.dataset.arm;return;}
     btn.dataset.arm='1';btn.textContent='정말 지우려면 한 번 더';
     setTimeout(function(){btn.textContent='전부 지우기';delete btn.dataset.arm;},3000);
   });
-  update();
+  pull();setInterval(pull,5000);
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)pull();});
 })();
 </script>
 </body>
