@@ -154,15 +154,24 @@ function reportSeo(r, { yearSuffix, groupKeywords }) {
   ].join('\n');
 }
 
-// 같은 섹터 최대 4편 + 최신순으로 채워 6편
+// 같은 섹터 최대 4편 + 최신순으로 채워 6편 (같은 기업 리포트는 '같은 기업의 다른 리포트' 칸에 따로 나오므로 뺀다)
 function related(r, sorted) {
-  const same = sorted.filter((x) => x.sector === r.sector && x.id !== r.id).slice(0, 4);
-  const rest = sorted.filter((x) => x.id !== r.id && !same.includes(x));
+  const others = sorted.filter((x) => x.id !== r.id && x.ticker !== r.ticker);
+  const same = others.filter((x) => x.sector === r.sector).slice(0, 4);
+  const rest = others.filter((x) => !same.includes(x));
   return [...same, ...rest].slice(0, 6);
 }
 
-function reportPage(r, sorted, seoOpts) {
+// 같은 티커의 리포트들이 같은 Corporation을 가리키게 (@id 공유, 사명이 바뀐 경우 alternateName)
+function corporation(group) {
+  const a = C.ALIASES[group[0].ticker] || {};
+  const alt = uniq([...group.map((x) => x.name), ...(a.expand || []), ...(a.aka || [])]).filter((n) => n !== group[0].name);
+  return { '@type': 'Corporation', '@id': `${C.SITE}/research/#corp-${group[0].ticker}`, name: group[0].name, ...(alt.length ? { alternateName: alt } : {}), tickerSymbol: group[0].ticker };
+}
+
+function reportPage(r, sorted, seoOpts, group) {
   const url = `${C.SITE}/research/${r.id}/`;
+  const year = r.date.slice(0, 4), yearUrl = `${C.SITE}/research/${year}/`;
   const cover = resolveAsset(r.cover);
   const ld = [
     {
@@ -171,7 +180,8 @@ function reportPage(r, sorted, seoOpts) {
       description: r.summary, datePublished: isoDate(r.date), inLanguage: 'ko', url,
       ...(r.cover ? { image: `${C.SITE}/${r.cover}` } : {}),
       author: ORG, publisher: ORG,
-      about: { '@type': 'Corporation', name: r.name, tickerSymbol: r.ticker },
+      about: corporation(group),
+      isPartOf: { '@type': 'CollectionPage', '@id': yearUrl, url: yearUrl, name: `${year}년 R.F.S. 리포트` },
       associatedMedia: { '@type': 'MediaObject', contentUrl: `${C.SITE}/${r.pdf}`, encodingFormat: 'application/pdf' },
     },
     {
@@ -179,13 +189,15 @@ function reportPage(r, sorted, seoOpts) {
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'R.F.S.', item: `${C.SITE}/` },
         { '@type': 'ListItem', position: 2, name: 'Research', item: `${C.SITE}/research/` },
-        { '@type': 'ListItem', position: 3, name: r.name, item: url },
+        { '@type': 'ListItem', position: 3, name: year, item: yearUrl },
+        { '@type': 'ListItem', position: 4, name: r.name, item: url },
       ],
     },
   ];
   const third = r.buy ? ['매수가', r.buy] : ['분석 당시 주가', r.cur || '-'];
   const stats = [['Rating', r.op], ['목표주가', r.tp || '-'], third, ['상승여력', r.upside || '-'], ['섹터', r.sector], ['발간일', r.date]];
   const points = (r.points || []).map((p) => `<h3>${esc(p.title)}</h3><p>${esc(p.body)}</p>`).join('');
+  const sib = group.filter((x) => x.id !== r.id).map((x) => `<li><a href="/research/${x.id}/"><span>${esc(`${x.name} ${x.date.slice(0, 4)} — ${x.headline}`)}</span><span class="meta">${esc(`${x.op} · ${x.tp || '-'} · ${x.date}`)}</span></a></li>`).join('');
   const rel = related(r, sorted).map((x) => `<li><a href="/research/${x.id}/"><span>${esc(`${x.name} (${x.ticker}) — ${x.headline}`)}</span><span class="meta">${esc(`${x.sector} · ${x.date}`)}</span></a></li>`).join('');
   return docStart(reportSeo(r, seoOpts)) +
 `<script type="application/ld+json">${json(ld)}</script>
@@ -194,7 +206,7 @@ function reportPage(r, sorted, seoOpts) {
 <body>
 ${NAV}
 <main>
-<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › ${esc(r.name)}</div>
+<div class="crumb"><a href="/">R.F.S.</a> › <a href="/research/">Research</a> › <a href="/research/${year}/">${year}</a> › ${esc(r.name)}</div>
 <h1>${esc(`${r.name} (${r.ticker})`)} 기업분석</h1>
 <p class="headline">${esc(r.headline)}</p>
 ${cover ? `<img class="cover" src="/${r.cover}" alt="${attr(r.name)} 기업분석 보고서 표지" width="1600" height="900">` : ''}
@@ -207,8 +219,8 @@ ${cover ? `<img class="cover" src="/${r.cover}" alt="${attr(r.name)} 기업분�
 <a class="btn solid" href="/${r.pdf}">보고서 PDF 보기 <span style="font-weight:400;opacity:.8">(${esc(r.pdfMeta)})</span></a>
 <a class="btn" href="/#research/${r.id}">R.F.S. 사이트에서 보기</a>
 </div>
-<section><h2>다른 보고서</h2><ul class="list">${rel}</ul>
-<p style="margin-top:14px"><a href="/research/">전체 보고서 보기 →</a></p></section>
+${sib ? `<section><h2>같은 기업의 다른 리포트</h2><ul class="list">${sib}</ul></section>\n` : ''}<section><h2>다른 보고서</h2><ul class="list">${rel}</ul>
+<p style="margin-top:14px"><a href="/research/${year}/">${year}년 리포트 전체 보기 →</a> · <a href="/research/">전체 보고서 보기 →</a></p></section>
 <p class="note">본 자료는 중앙대학교 가치투자학회 R.F.S.의 학술 리서치 결과물이며, 특정 종목의 매매를 권유하지 않습니다. 목표주가와 주가는 보고서 발간일(${r.date}) 기준입니다.</p>
 </main>
 ${FOOTER}`;
@@ -246,7 +258,7 @@ function indexPage(sorted, groups) {
     mainEntity: { '@type': 'ItemList', itemListElement: sorted.map((r, i) => ({ '@type': 'ListItem', position: i + 1, url: `${C.SITE}/research/${r.id}/`, name: `${r.name} (${r.ticker})` })) },
   };
   const years = [...new Set(sorted.map((r) => r.date.slice(0, 4)))];
-  const sections = years.map((y) => `<section><h2>${y}</h2><ul class="list">${sorted.filter((r) => r.date.startsWith(y)).map((r) =>
+  const sections = years.map((y) => `<section><h2><a href="/research/${y}/" style="color:inherit;text-decoration:none">${y}</a></h2><ul class="list">${sorted.filter((r) => r.date.startsWith(y)).map((r) =>
     `<li><a href="/research/${r.id}/"><span>${esc(`${r.name} (${r.ticker}) — ${r.headline}`)}</span><span class="meta">${esc(`${r.op} · ${r.tp} · ${r.date}`)}</span></a></li>`).join('')}</ul></section>`).join('\n');
   return docStart(seo) +
 `<script type="application/ld+json">${json(ld)}</script>
@@ -258,6 +270,7 @@ ${NAV}
 <div class="crumb"><a href="/">R.F.S.</a> › Research</div>
 <h1>R.F.S. Research</h1>
 <p class="headline">중앙대학교 가치투자학회 기업분석 보고서 ${n}편</p>
+<nav class="years" aria-label="연도별 리포트">${years.map((y) => `<a href="/research/${y}/">${y}</a>`).join('')}</nav>
 ${sections}
 </main>
 ${FOOTER}`;
@@ -337,7 +350,7 @@ function main() {
       const file = `research/${r.id}/index.html`;
       if (!fs.existsSync(path.join(ROOT, file))) created++;
       const yearSuffix = group.length > 1 && idx > 0 ? ` (${r.date.slice(0, 4)})` : '';
-      write(file, reportPage(r, sorted, { yearSuffix, groupKeywords: gkw }));
+      write(file, reportPage(r, sorted, { yearSuffix, groupKeywords: gkw }, group));
     });
   }
   write('research/index.html', indexPage(sorted, groups));
@@ -352,7 +365,7 @@ function main() {
   if (!/^Sitemap:/m.test(robots)) write('robots.txt', robots.replace(/\n?$/, '\n') + `Sitemap: ${C.SITE}/sitemap.xml\n`);
 
   // REPORTS에서 빠진 리포트 폴더는 지우지 않고 알려만 준다
-  const orphan = fs.readdirSync(path.join(ROOT, 'research')).filter((d) => fs.statSync(path.join(ROOT, 'research', d)).isDirectory() && !ids.has(d) && !/^ind-\d+$/.test(d));
+  const orphan = fs.readdirSync(path.join(ROOT, 'research')).filter((d) => fs.statSync(path.join(ROOT, 'research', d)).isDirectory() && !ids.has(d) && !/^(ind-\d+|\d{4})$/.test(d));   // 산업 리포트·연도별 모음은 build-pages.js가 만든다
   for (const d of orphan) console.warn(`경고: research/${d}/ 는 REPORTS에 없습니다`);
 
   console.log(`리포트 ${reports.length}건 (새 페이지 ${created}개), 고유 기업 ${groups.size}개, 루트 keywords ${rootKw.length}개, sitemap URL ${sorted.length + 2}개`);
