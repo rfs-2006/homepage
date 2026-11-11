@@ -191,12 +191,23 @@ async function openRanking(page) {
 
 let cut50 = null;     // 전체 50위 기준가
 let csvFailAt = 0;     // CSV가 실패하면 10분 동안은 바로 검색 방식으로 가고, 그 뒤 다시 CSV를 시도한다
+// 26-11부터 표 도구(검색창·CSV 버튼)가 '그리드 도구 펼치기' 버튼 뒤에 접혀 있다. 접혀 있으면 펼친다.
+async function unfoldTools(page) {
+  const fold = page.locator('button.grid-opt-fold[aria-expanded="false"], button[title*="펼치기"][aria-expanded="false"]').first();
+  if (await fold.count()) { await fold.click({ timeout: 5000 }).catch(() => {}); await page.waitForTimeout(400); }
+}
+// 겹친 요소가 클릭을 가로채면(intercepts pointer events) 기다리지 말고 DOM 클릭으로 바로 누른다
+async function clickHard(loc) {
+  try { await loc.click({ timeout: 5000 }); }
+  catch (e) { await loc.evaluate((el) => el.click()); }
+}
 async function grabCsv(page) {
   await page.evaluate(() => { window.__rfmCsv = []; window.__rfmSeen = []; });
+  await unfoldTools(page);
   const roleBtn = page.getByRole('button', { name: /CSV 다운로드/ }).first();
   const btn = (await roleBtn.count()) ? roleBtn : page.getByText('CSV 다운로드', { exact: false }).first();
   const dl = page.waitForEvent('download', { timeout: 20000 }).catch(() => null);
-  await btn.click();
+  await clickHard(btn);
   const t0 = Date.now();
   while (Date.now() - t0 < 20000) {
     const got = await page.evaluate(() => (window.__rfmCsv || [])[0] || null);
@@ -215,6 +226,7 @@ async function grabCsv(page) {
 
 // CSV가 안 될 때: 표 검색창에 별칭을 하나씩 넣어 보이는 행을 읽는다 (열 순서: 순위 현재·등락, 별칭, 기준가 현재·등락, 편입비, 종목수)
 async function grabBySearch(page) {
+  await unfoldTools(page);
   const box = page.getByPlaceholder(/search/i).first();
   const lines = ['순위현재,순위등락,별칭,기준가현재,기준가등락,편입비,종목수'];
   const q = (v) => '"' + String(v).replace(/"/g, '""') + '"';
