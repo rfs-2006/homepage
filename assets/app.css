@@ -1958,7 +1958,8 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 .covb-grp{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:28px;border-bottom:1px solid #1A1A1A}
 .covb-sem{padding:20px 0;font-family:'Noto Serif KR',serif;font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#0F1B2E}
 .covb-rows{min-width:0}
-.covb{padding:18px 0;color:inherit;text-decoration:none}   /* 한 학기 안의 리포트 사이에는 줄을 두지 않는다 */
+.covb{padding:18px 0;border-bottom:1px solid #D9D7D0;color:inherit;text-decoration:none}
+.covb:last-child{border-bottom:0}
 .covb sc-if{display:contents}
 .cb-nm{min-width:0;display:flex;flex-direction:column;gap:4px}
 .cb-nm b{font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
