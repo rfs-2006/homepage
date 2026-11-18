@@ -7,6 +7,7 @@
   PORT                   기본 8787
   HOST                   기본 127.0.0.1 (앞단 Caddy만 접속). 직접 받으려면 0.0.0.0
   ALLOW_ORIGIN           CORS 허용 주소, 기본 https://caurfs.kr (쉼표로 여러 개)
+  EXPLAIN_DAILY          PDF 읽기 설명(/explain)을 계정 하나가 하루에 부를 수 있는 수, 기본 30
   PER_IP_DAILY           학회 계정으로 로그인했을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 40
   ANON_DAILY             로그인하지 않았을 때 IP 하나가 하루에 보낼 수 있는 질문 수, 기본 5
   ANSWER_MODEL           답변 모델, 기본 claude-sonnet-5-5 (claude-opus-5-5면 비용 두 배)
@@ -21,6 +22,8 @@ API
   GET  /health                   준비됐는지
   GET  /usage                    운영 관리자(OPS_ADMINS)만. 날짜별 Voyage 토큰·질문 수 (usage.py, 운영 대시보드 assets/ops.js)
   POST /wk/polish  {html}  운용팀 계정만. 위클리 초안을 운용사 문체로 다듬은 HTML (wk_feedback.polish)
+  POST /explain  {title, selection, page, context, hits, first}  학회원만. /read/ 화면에 올린 PDF에서 드래그한 부분을 그 문서 글로 설명 (explain.py, RAG 없음)
+       → {answer, left}  하루 EXPLAIN_DAILY번 (계정마다)
   POST /wk/feedback  {text}  운용팀 계정만. 위클리 초안의 빠진 맥락·용어·문장 피드백 (wk_feedback.py)
   POST /chat  {conversation_id?, message}   헤더 Authorization: Bearer <Supabase access token> (없어도 된다)
        → {conversation_id, answer, sources:[{n, title, source, cited, context}], kind, axes, section, options, left}
@@ -49,6 +52,7 @@ from agent_search import MODELS  # noqa: E402
 from answer import Answerer, Chat  # noqa: E402
 import polaris_v2  # noqa: E402
 import usage  # noqa: E402
+import explain  # noqa: E402
 import wk_feedback  # noqa: E402
 
 SB_URL = 'https://xyewclvpshldjucryapr.supabase.co'
@@ -62,6 +66,7 @@ PREVIEW = re.compile(r'https://deploy-preview-\d+--remarkable-starlight-e4bf02\.
 PER_IP_DAILY = int(os.environ.get('PER_IP_DAILY', 40))
 ANON_DAILY = int(os.environ.get('ANON_DAILY', 5))
 DAILY_LIMIT = int(os.environ.get('DAILY_LIMIT', 100))
+EXPLAIN_DAILY = int(os.environ.get('EXPLAIN_DAILY', 30))
 LOG_PATH = os.environ.get('LOG_PATH')
 TG_TOKEN, TG_CHAT = os.environ.get('TELEGRAM_BOT_TOKEN', '').strip(), os.environ.get('TELEGRAM_CHAT_ID', '').strip()
 
@@ -213,6 +218,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         """/chat: 다 쓴 답을 한 번에. /chat/stream: 같은 처리인데 답 글자를 쓰는 대로 보낸다 (text/event-stream)
         보내는 것: {type: stage, stage} → {type: delta, text}... → {type: done, ...(/chat 응답과 같은 내용)} 또는 {type: error, error}"""
+        if self.path == '/explain':
+            return self._explain()
         if self.path in ('/wk/feedback', '/wk/polish'):
             return self._wk_feedback(polish=self.path == '/wk/polish')
         stream = self.path == '/chat/stream'
@@ -281,6 +288,33 @@ class Handler(BaseHTTPRequestHandler):
             send(dict(body, type='done'))
         else:
             self._json(200, body)
+
+    def _explain(self):
+        """PDF 읽기 설명: 학회원만, 계정마다 하루 EXPLAIN_DAILY번. 드래그한 글·문서 글은 로그에 남기지 않는다"""
+        token = self.headers.get('Authorization', '').removeprefix('Bearer ').strip()
+        email = token_email(token) if token else ''
+        if not email.endswith(ALLOWED_DOMAIN):
+            return self._json(403, {'error': '학회원으로 로그인해야 쓸 수 있습니다.'})
+        try:
+            req = json.loads(self.rfile.read(min(int(self.headers.get('Content-Length', 0)), 60000)) or b'{}')
+        except ValueError:
+            return self._json(400, {'error': '요청 형식이 잘못됐습니다.'})
+        day = time.strftime('%Y-%m-%d')
+        with lock:
+            if counts[(day, 'explain', email)] >= EXPLAIN_DAILY:
+                return self._json(429, {'error': f'오늘 설명은 {EXPLAIN_DAILY}번을 다 썼습니다. 내일 다시 써 주세요.', 'left': 0})
+            counts[(day, 'explain', email)] += 1
+            left = EXPLAIN_DAILY - counts[(day, 'explain', email)]
+        try:
+            out = explain.explain(req)
+        except Exception as e:  # noqa: BLE001
+            print('설명 오류', repr(e), flush=True)
+            out = {'error': '설명을 만들지 못했습니다. 잠시 뒤 다시 시도해 주세요.'}
+        if 'error' in out:   # 못 만든 설명은 하루 횟수에서 빼 준다
+            with lock:
+                counts[(day, 'explain', email)] -= 1
+            return self._json(400 if 'answer' not in out and '드래그' in out['error'] else 500, dict(out, left=left + 1))
+        self._json(200, dict(out, left=left))
 
     def _wk_feedback(self, polish=False):
         """위클리 글 피드백: 운용팀 계정(WK_WRITERS)만. {text} → {items: [{type, quote, issue, fix}]}. 글은 로그에 남기지 않는다"""

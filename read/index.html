@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF 읽기 · Polaris | 중앙대 가치투자학회 R.F.S.</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;600;700&amp;display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/assets/hero/polaris.webp?v=2" media="(min-width:761px)">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<!--
+  리포트 PDF 읽기 + Polaris 설명 (학회원 전용)
+  - 사용자가 자기 PDF(작성 중인 리포트, 증권사 리포트 등)를 올린다. 파일은 서버로 보내지 않고 이 화면에서만 읽는다
+  - PDF는 pdf.js로 그리고 글자 층을 깔아 드래그할 수 있게 한다
+  - 드래그하면 'Polaris 설명' 단추가 뜬다. 누르면 드래그한 부분 + 그 쪽 글 + 같은 리포트에서 그 말이 나온 다른 쪽 + 첫 쪽을
+    api.caurfs.kr/explain 으로 보낸다 (tools/rag/explain.py). 카페 자료 검색(RAG)은 하지 않는다
+-->
+<style>
+/* Polaris 화면(/chat/)과 같은 결: 첫 화면은 Polaris 사진 위 검정, 읽는 화면은 흰 머리줄 + 밝은 회색 바탕 */
+:root{--black:#0E0B0B;--ink:#F4F1EB;--bg:#FFFFFF;--card:#F5F6F8;--text:#14171C;--sub:#69707B;--hair:#E4E6EA;--navy:#203864;--hl:#DCE5F6;--err:#8A2E2E}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:'Pretendard Variable',-apple-system,'Apple SD Gothic Neo',sans-serif;font-size:15px;line-height:1.6;word-break:keep-all;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.lab{font-size:10.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase}
+#file{display:none}
+body.start .readv{display:none}
+body.read .startv{display:none}
+
+/* ---- 첫 화면 ---- */
+body.start{background:var(--black);color:var(--ink)}
+.startv{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column}
+.top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;align-items:center;gap:10px;height:84px;padding:0 48px}
+.brand{display:flex;align-items:center;gap:11px;color:inherit;text-decoration:none}
+.brand img{width:46px;height:46px;object-fit:contain}
+.brand span{display:flex;flex-direction:column;gap:5px;line-height:1}
+.brand b{font-family:'Noto Serif KR',serif;font-weight:700;font-size:22px;letter-spacing:-.02em}
+.brand small{font-size:12px;font-weight:500;letter-spacing:.06em}
+.menu{margin-left:auto;display:flex;gap:40px}
+.menu a{color:inherit;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:.1em;padding:4px 0;transition:color 120ms ease}
+.top .menu a:hover,.top .menu a.on{color:#8FAADC}
+.hero{position:absolute;left:0;right:0;top:0;height:82vh;height:82svh;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url(/assets/hero/polaris.webp?v=2) center 38%/cover;filter:brightness(.72) contrast(1.06)}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,11,.7) 0,rgba(14,11,11,.15) 15%,rgba(14,11,11,0) 22%,rgba(14,11,11,.35) 48%,rgba(14,11,11,.72) 68%,rgba(14,11,11,.9) 82%,var(--black) 97%)}
+.intro{max-width:760px;width:100%;margin:auto auto 0;position:relative;text-align:center;padding:0 16px clamp(28px,6vh,64px)}
+.intro .lab{color:rgba(244,241,235,.8)}
+.intro h1{font-family:'Noto Serif KR',serif;font-weight:300;letter-spacing:-.025em;font-size:clamp(32px,5.2vh,48px);line-height:1.25;margin:clamp(8px,1.4vh,14px) 0 clamp(10px,1.6vh,16px)}
+.intro>p{color:rgba(244,241,235,.9);font-size:14.5px;line-height:1.8;margin:0 auto clamp(20px,3.4vh,34px);max-width:560px}
+/* 올리는 칸: Polaris 질문창(.box)과 같은 밝은 카드 */
+.drop{display:flex;align-items:center;gap:16px;background:#F8F6F1;color:var(--text);border-radius:10px;padding:18px 18px 18px 20px;text-align:left;cursor:pointer;box-shadow:0 30px 60px -30px rgba(0,0,0,.8);outline:2px dashed transparent;outline-offset:-8px;transition:outline-color .15s,transform .15s}
+.drop:hover{transform:translateY(-1px)}
+.drop.over{outline-color:var(--navy)}
+.drop .ic{flex:none;width:44px;height:52px;border-radius:4px;background:#fff;border:1px solid var(--hair);position:relative;display:flex;align-items:flex-end;justify-content:center;padding-bottom:7px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--navy)}
+.drop .ic::before{content:'';position:absolute;top:-1px;right:-1px;width:13px;height:13px;background:linear-gradient(225deg,#F8F6F1 50%,var(--hair) 50%)}
+.drop .dt{flex:1;display:flex;flex-direction:column;gap:3px}
+.drop .dt b{font-size:16px;font-weight:600}
+.drop .dt small{font-size:13px;color:var(--sub);font-weight:300}
+.drop .go{flex:none;width:38px;height:38px;border-radius:50%;background:var(--text);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px}
+.how{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:clamp(14px,2vh,20px)}
+.how span{font-size:13px;font-weight:300;color:rgba(244,241,235,.75);border:1px solid rgba(244,241,235,.18);border-radius:999px;padding:6px 14px}
+.how b{font-weight:500;color:var(--ink);margin-right:6px}
+.intro .note{font-size:12px;line-height:1.6;color:rgba(244,241,235,.5);margin:clamp(14px,2.2vh,24px) auto 0}
+.intro .note .lk{font:inherit;font-size:12px;color:rgba(244,241,235,.8);background:none;border:0;border-bottom:1px solid rgba(244,241,235,.4);padding:0 0 1px;margin-left:6px;cursor:pointer}
+.intro .note .lk:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.intro .back{display:inline-block;margin-top:10px;font-size:12.5px;color:rgba(244,241,235,.6);text-decoration:none}
+.intro .back:hover{color:var(--ink)}
+
+/* ---- 읽는 화면 ---- */
+body.read{background:var(--card);color:var(--text)}
+.head{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:11px 24px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);font-size:13px}
+.head .brand{gap:9px}.head .brand img{width:34px;height:34px}.head .brand span{gap:3px}.head .brand b{font-size:16px}.head .brand small{font-size:11px;color:var(--sub);letter-spacing:.04em}
+.ttl{flex:1;min-width:0;margin-left:22px;padding-left:22px;border-left:1px solid var(--hair);display:flex;flex-direction:column;gap:2px;line-height:1.2}
+.ttl .lab{color:var(--sub);font-size:10px}
+.ttl b{font-family:'Noto Serif KR',serif;font-size:15.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttl b small{font-family:'Pretendard Variable',sans-serif;font-size:12px;font-weight:400;color:var(--sub);margin-left:8px}
+.hb{font:inherit;font-size:12.5px;color:var(--text);background:none;border:1px solid var(--hair);border-radius:999px;padding:5px 13px;cursor:pointer;white-space:nowrap;text-decoration:none}
+.hb:hover{border-color:var(--text)}
+.login.on::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#4F9D69;margin-right:6px;vertical-align:1px}
+.tip{max-width:900px;margin:22px auto 0;padding:0 16px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub)}
+.tip i{flex:none;width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center}
+.tip i svg{width:12px;height:12px}
+.tip b{color:var(--text);font-weight:600}
+#doc{max-width:960px;margin:16px auto 90px;padding:0 16px;display:flex;flex-direction:column;align-items:center;gap:30px}
+.pg{position:relative;scroll-margin-top:84px;background:#fff;border-radius:2px;box-shadow:0 1px 2px rgba(20,23,28,.08),0 12px 32px -12px rgba(20,23,28,.18)}
+.pg canvas{display:block;width:100%;height:100%;border-radius:2px}
+.pg .no{position:absolute;left:0;right:0;bottom:-22px;text-align:center;font-size:11px;color:var(--sub);letter-spacing:.04em}
+.pg.hit{outline:3px solid #8FAADC;outline-offset:3px}
+.msg{margin:80px auto;text-align:center;color:var(--sub)}
+/* pdf.js 글자 층 (pdf_viewer.css의 textLayer 부분만) */
+.textLayer{position:absolute;text-align:initial;inset:0;overflow:hidden;opacity:1;line-height:1;-webkit-text-size-adjust:none;text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;z-index:2}
+.textLayer span,.textLayer br{color:transparent;position:absolute;white-space:pre;cursor:text;transform-origin:0% 0%}
+.textLayer ::selection{background:rgba(32,56,100,.24)}
+.textLayer .endOfContent{display:block;position:absolute;inset:100% 0 0;z-index:-1;cursor:default;user-select:none}
+.textLayer.selecting .endOfContent{top:0}
+
+/* 드래그하면 뜨는 단추 */
+#ask{position:fixed;z-index:30;display:none;align-items:center;gap:7px;font:inherit;font-size:13px;font-weight:600;color:#fff;background:var(--text);border:0;border-radius:999px;padding:8px 16px 8px 12px;box-shadow:0 10px 24px -6px rgba(20,23,28,.45);cursor:pointer;white-space:nowrap}
+#ask svg{width:14px;height:14px;color:#8FAADC}
+#ask:hover{background:var(--navy)}
+#ask.on{display:inline-flex}
+/* 설명 카드 */
+#pop{position:fixed;z-index:31;width:440px;max-width:calc(100vw - 24px);max-height:min(70vh,580px);display:none;flex-direction:column;background:#fff;border:1px solid var(--hair);border-radius:12px;box-shadow:0 30px 60px -24px rgba(20,23,28,.38);overflow:hidden}
+#pop.on{display:flex}
+#pop .ph{display:flex;align-items:center;gap:9px;padding:14px 16px 10px}
+#pop .ph i{width:24px;height:24px;border-radius:50%;background:var(--text);color:#8FAADC;display:flex;align-items:center;justify-content:center}
+#pop .ph i svg{width:12px;height:12px}
+#pop .ph b{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;letter-spacing:.02em}
+#pop .ph .x{margin-left:auto;font:inherit;font-size:20px;line-height:1;background:none;border:0;color:var(--sub);cursor:pointer;padding:0 2px}
+#pop .q{margin:0 16px;padding:9px 12px;background:var(--card);border-left:2px solid var(--navy);border-radius:0 6px 6px 0;font-size:13px;color:var(--sub);max-height:84px;overflow:auto;white-space:pre-wrap}
+#pop .a{padding:14px 16px 8px;overflow:auto;font-size:14.5px;line-height:1.8;color:var(--text)}
+#pop .a p{margin:0 0 10px}
+#pop .a b{color:var(--navy)}
+#pop .a .pl{color:var(--navy);background:var(--hl);border-radius:4px;padding:0 4px;cursor:pointer;white-space:nowrap}
+#pop .a .btn{display:inline-block;font:inherit;font-size:13px;font-weight:600;background:var(--text);color:#fff;border:0;border-radius:999px;padding:9px 20px;cursor:pointer}
+#pop .ld{display:flex;align-items:center;gap:9px;color:var(--sub);font-size:13.5px}
+#pop .ld i{width:14px;height:14px;border:2px solid var(--hair);border-top-color:var(--navy);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#pop .pf{display:flex;align-items:center;gap:10px;padding:10px 16px 13px;border-top:1px solid var(--hair);font-size:12px;color:var(--sub)}
+#pop .pf:empty{display:none}
+#pop .pf a{margin-left:auto;color:var(--navy);font-weight:600;text-decoration:none}
+#pop .pf a:hover{text-decoration:underline;text-underline-offset:3px}
+#pop .err{color:var(--err)}
+@media (prefers-reduced-motion:reduce){#pop .ld i{animation:none}.drop{transition:none}}
+@media (max-width:760px){
+  .top{height:auto;padding:12px 16px}.brand img{width:34px;height:34px}.brand b{font-size:17px}.brand small{font-size:10.5px}.menu{display:none}
+  .top .login{margin-left:auto;font:inherit;font-size:12px;color:var(--ink);background:none;border:1px solid rgba(244,241,235,.45);border-radius:999px;padding:7px 13px}
+  .hero{height:62vh;height:62svh}.hero::before{background-image:url(/assets/hero/polaris-m.webp);background-position:center 35%}
+  .drop{padding:16px}.drop .go{display:none}
+  .head{padding:9px 12px;gap:8px}.head .brand span{display:none}.ttl{margin-left:4px;padding-left:12px}.ttl .lab{display:none}.hb.cht{display:none}
+  #ask{left:50% !important;top:auto !important;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:12px 22px 12px 16px;font-size:14px}
+  #pop{left:0 !important;right:0;top:auto !important;bottom:0;width:auto;max-width:none;max-height:72vh;border-radius:14px 14px 0 0;border-left:0;border-right:0;border-bottom:0}
+}
+@media (min-width:761px){.top .login{display:none}}
+</style>
+</head>
+<body class="start">
+<input type="file" id="file" accept="application/pdf,.pdf">
+<!-- 첫 화면 -->
+<div class="startv">
+  <nav class="top"><a class="brand" href="/"><img src="/assets/rfs-seal-light-256.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a><div class="menu"><a href="/#about">ABOUT</a><a href="/chat/" class="on" aria-current="page">POLARIS</a><a href="/#research">RESEARCH</a><a href="/#fund">FUND</a><a href="/#people">PEOPLE</a><a href="/#recruit">RECRUITING</a><a href="/#intranet">AGORA</a></div><button type="button" class="login">로그인</button></nav>
+  <div class="hero" aria-hidden="true"></div>
+  <div class="intro">
+    <div class="lab">Polaris · PDF Reader</div>
+    <h1>PDF를 올리고, 드래그로 물어보세요</h1>
+    <p>읽다가 막히는 문장·숫자·용어를 드래그하면 Polaris가 그 문서 안의 내용을 근거로 설명해요.</p>
+    <label class="drop" for="file" id="drop"><span class="ic">PDF</span><span class="dt"><b>PDF 올리기</b><small>눌러서 고르거나, 파일을 여기로 끌어다 놓으세요</small></span><span class="go" aria-hidden="true">↑</span></label>
+    <div class="how"><span><b>1</b>PDF 올리기</span><span><b>2</b>궁금한 곳 드래그</span><span><b>3</b>Polaris 설명</span></div>
+    <p class="note">올린 파일은 서버에 저장하지 않고 이 화면에서만 읽어요. 설명은 학회원 전용이에요. <button type="button" class="login lk">로그인</button></p>
+    <a class="back" href="/chat/">← Polaris 채팅으로</a>
+  </div>
+</div>
+<!-- 읽는 화면 -->
+<div class="readv">
+  <header class="head">
+    <a class="brand" href="/"><img src="/assets/rfs-seal-navy.png" alt=""><span><b>R.F.S.</b><small>중앙대학교 가치투자학회</small></span></a>
+    <div class="ttl"><span class="lab">Polaris · PDF Reader</span><b id="ttl">PDF</b></div>
+    <label class="hb" for="file">다른 PDF</label>
+    <a class="hb cht" href="/chat/">Polaris 채팅</a>
+    <button type="button" class="hb login">로그인</button>
+  </header>
+  <p class="tip"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></i><span>궁금한 부분을 <b>드래그</b>하면 Polaris가 이 문서 안의 내용으로 설명해 줘요.</span></p>
+  <main id="doc"></main>
+</div>
+<button type="button" id="ask"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>Polaris 설명</button>
+<section id="pop" role="dialog" aria-label="Polaris 설명">
+  <div class="ph"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></i><b>POLARIS</b><button type="button" class="x" aria-label="닫기">×</button></div>
+  <div class="q" id="pq"></div>
+  <div class="a" id="pa"></div>
+  <div class="pf" id="pf"></div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const PDFJS = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+const SB_URL = 'https://xyewclvpshldjucryapr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5ZXdjbHZwc2hsZGp1Y3J5YXByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk0NzI0MTAsImV4cCI6MjEwNTA0ODQxMH0.6JRZhZ6FPh-VUb1RHGf0wxfo_Y69ZQ-V6vk6TCoyM4c';
+const P = new URLSearchParams(location.search);
+const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+const API = LOCAL && P.get('api') ? P.get('api') : 'https://api.caurfs.kr';
+const $ = (id) => document.getElementById(id);
+const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// 로그인: 홈페이지와 같은 방식 (이 탭에서만 유지, 로그인 화면은 홈 AGORA 하나)
+let store; try { store = window.sessionStorage; store.setItem('rfs_booted', '1'); } catch (e) {}
+const sb = window.supabase.createClient(SB_URL, SB_KEY, store ? { auth: { storage: store, persistSession: true } } : { auth: { persistSession: false } });
+const goLogin = () => { try { sessionStorage.setItem('rfs_after_login', JSON.stringify({ to: location.pathname + location.search, at: Date.now() })); } catch (e) {} location.href = '/#intranet'; };
+const setLogin = (ses) => document.querySelectorAll('.login').forEach((b) => { b.textContent = ses ? '로그아웃' : '로그인'; b.classList.toggle('on', !!ses); });
+sb.auth.getSession().then(({ data }) => setLogin(data.session));
+sb.auth.onAuthStateChange((_e, ses) => setLogin(ses));
+document.querySelectorAll('.login').forEach((b) => b.addEventListener('click', async () => {
+  const { data } = await sb.auth.getSession();
+  if (data.session) { await sb.auth.signOut(); return; }
+  goLogin();
+}));
+
+// ---------- PDF 열기 ----------
+pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS + 'pdf.worker.min.js';
+let doc = null, title = '', texts = [];   // texts[n] = n쪽 글 (1부터)
+const pages = [];                         // {el, n, done}
+
+function empty() { document.body.className = 'start'; $('doc').innerHTML = ''; }
+
+async function openPdf(src, name) {
+  hideAsk(); closePop();
+  document.body.className = 'read'; window.scrollTo(0, 0);
+  $('ttl').textContent = name || 'PDF';
+  $('doc').innerHTML = '<p class="msg">PDF를 여는 중…</p>';
+  try {
+    doc = await pdfjsLib.getDocument({ ...src, cMapUrl: PDFJS + 'cmaps/', cMapPacked: true, standardFontDataUrl: PDFJS + 'standard_fonts/' }).promise;
+  } catch (e) {
+    $('doc').innerHTML = '<p class="msg">PDF를 열지 못했습니다. 파일을 확인해 주세요.</p>'; return;
+  }
+  const meta = await doc.getMetadata().catch(() => null);
+  title = name || (meta && meta.info && meta.info.Title) || '문서';
+  $('ttl').innerHTML = esc(title) + '<small>' + doc.numPages + '쪽</small>';
+  document.title = title + ' · PDF 읽기 | R.F.S.';
+  texts = []; pages.length = 0; $('doc').innerHTML = '';
+  const first = await doc.getPage(1), vp1 = first.getViewport({ scale: 1 });
+  const W = Math.min(900, $('doc').clientWidth - 32 || 900), scale = W / vp1.width;
+  for (let n = 1; n <= doc.numPages; n++) {
+    const el = document.createElement('div'); el.className = 'pg'; el.dataset.n = n;
+    el.style.width = W + 'px'; el.style.height = Math.round(vp1.height * scale) + 'px';
+    el.innerHTML = '<span class="no">' + n + ' / ' + doc.numPages + '</span>';
+    $('doc').appendChild(el); pages.push({ el, n, done: false, scale });
+  }
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) draw(pages[+e.target.dataset.n - 1]); }), { rootMargin: '900px 0px' });
+  pages.forEach((p) => io.observe(p.el));
+  // 설명할 때 같은 리포트의 다른 쪽을 찾으려고 글자는 미리 다 뽑아 둔다 (그리기와 따로, 가볍다)
+  for (let n = 1; n <= doc.numPages; n++) texts[n] = await pageText(n);
+}
+
+async function pageText(n) {
+  if (texts[n] != null) return texts[n];
+  const pg = await doc.getPage(n), tc = await pg.getTextContent();
+  return (texts[n] = tc.items.map((it) => it.str + (it.hasEOL ? '\n' : '')).join('').replace(/[ \t]+/g, ' '));
+}
+
+async function draw(p) {
+  if (p.done) return; p.done = true;
+  const pg = await doc.getPage(p.n), vp = pg.getViewport({ scale: p.scale }), dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+  p.el.style.height = vp.height + 'px';
+  const cv = document.createElement('canvas'); cv.width = Math.floor(vp.width * dpr); cv.height = Math.floor(vp.height * dpr);
+  p.el.prepend(cv);
+  await pg.render({ canvasContext: cv.getContext('2d'), viewport: vp, transform: dpr !== 1 ? [dpr, 0, 0, dpr, 0, 0] : null }).promise;
+  const tl = document.createElement('div'); tl.className = 'textLayer'; tl.style.setProperty('--scale-factor', vp.scale);
+  p.el.appendChild(tl);
+  await pdfjsLib.renderTextLayer({ textContentSource: await pg.getTextContent(), container: tl, viewport: vp }).promise;
+  const end = document.createElement('div'); end.className = 'endOfContent'; tl.appendChild(end);
+  tl.addEventListener('mousedown', () => tl.classList.add('selecting'));
+}
+document.addEventListener('mouseup', () => document.querySelectorAll('.textLayer.selecting').forEach((t) => t.classList.remove('selecting')));
+
+async function openFile(file) {
+  if (!file) return;
+  if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') { window.alert('PDF 파일만 열 수 있어요.'); return; }
+  openPdf({ data: new Uint8Array(await file.arrayBuffer()) }, file.name.replace(/\.pdf$/i, ''));
+}
+$('file').addEventListener('change', (e) => { openFile(e.target.files && e.target.files[0]); e.target.value = ''; });
+// 화면 어디에나 끌어다 놓아도 연다
+document.addEventListener('dragover', (e) => { if ([...(e.dataTransfer.types || [])].includes('Files')) { e.preventDefault(); $('drop').classList.add('over'); } });
+document.addEventListener('dragleave', (e) => { if (!e.relatedTarget) $('drop').classList.remove('over'); });
+document.addEventListener('drop', (e) => { $('drop').classList.remove('over'); const fl = e.dataTransfer.files && e.dataTransfer.files[0]; if (fl) { e.preventDefault(); openFile(fl); } });
+
+// ---------- 드래그 → 단추 ----------
+let selNow = null;   // {text, n, rect}
+const ask = $('ask');
+function hideAsk() { ask.classList.remove('on'); }
+function readSel() {
+  const s = window.getSelection();
+  if (!s || s.isCollapsed || !s.rangeCount) return null;
+  const text = s.toString().replace(/\s+/g, ' ').trim();
+  if (text.length < 1) return null;
+  const node = s.anchorNode && (s.anchorNode.nodeType === 1 ? s.anchorNode : s.anchorNode.parentElement);
+  const pg = node && node.closest('.pg'); if (!pg) return null;
+  return { text: text.slice(0, 800), n: +pg.dataset.n, rect: s.getRangeAt(0).getBoundingClientRect() };
+}
+let selT;
+document.addEventListener('selectionchange', () => {
+  clearTimeout(selT);
+  selT = setTimeout(() => {
+    const s = readSel();
+    if (!s) { hideAsk(); return; }
+    selNow = s;
+    const r = s.rect;
+    ask.style.left = Math.max(8, Math.min(window.innerWidth - 150, r.left + r.width / 2 - 62)) + 'px';
+    ask.style.top = askTop(r) + 'px';
+    ask.classList.add('on');
+  }, 160);
+});
+// 선택 바로 위(자리가 없으면 아래)에 두되 화면 밖으로 나가지 않게
+function askTop(r) { return Math.max(68, Math.min(window.innerHeight - 52, r.top > 112 ? r.top - 44 : r.bottom + 8)); }
+window.addEventListener('scroll', () => { if (ask.classList.contains('on')) { const s = readSel(); if (s) ask.style.top = askTop(s.rect) + 'px'; } }, { passive: true });
+// 단추를 누르는 순간 선택이 풀리지 않게
+ask.addEventListener('mousedown', (e) => e.preventDefault());
+ask.addEventListener('click', () => { if (selNow) explain(selNow); });
+
+// ---------- 설명 ----------
+const pop = $('pop');
+function closePop() { pop.classList.remove('on'); }
+pop.querySelector('.x').addEventListener('click', closePop);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
+
+function place(rect) {
+  if (window.innerWidth <= 720) return;
+  const w = Math.min(420, window.innerWidth - 24);
+  let left = rect.left + rect.width / 2 - w / 2; left = Math.max(12, Math.min(window.innerWidth - w - 12, left));
+  const below = window.innerHeight - rect.bottom, top = below > 320 ? rect.bottom + 12 : Math.max(72, rect.top - Math.min(560, window.innerHeight * .7) - 12);
+  pop.style.left = left + 'px'; pop.style.top = top + 'px';
+}
+
+// 같은 리포트 안에서 드래그한 말이 나온 다른 쪽 (띄어쓰기·줄바꿈은 무시하고 찾는다)
+function findHits(sel, n) {
+  const key = sel.replace(/\s+/g, '');
+  if (key.length < 2 || key.length > 40) return '';
+  const re = new RegExp([...key].map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s*'), 'g');
+  const out = [];
+  for (let k = 1; k < texts.length && out.length < 6; k++) {
+    if (k === n || !texts[k]) continue;
+    const t = texts[k]; re.lastIndex = 0; const m = re.exec(t); if (!m) continue;
+    out.push('(p.' + k + ') …' + t.slice(Math.max(0, m.index - 220), m.index + m[0].length + 220).replace(/\s+/g, ' ').trim() + '…');
+  }
+  return out.join('\n');
+}
+
+const cache = {};
+async function explain(s) {
+  hideAsk();
+  $('pq').textContent = s.text.length > 240 ? s.text.slice(0, 240) + '…' : s.text;
+  $('pf').innerHTML = '';
+  place(s.rect); pop.classList.add('on');
+  const { data } = await sb.auth.getSession();
+  if (!data.session) {
+    $('pa').innerHTML = '<p>Polaris 설명은 학회원만 쓸 수 있어요.</p><p><button type="button" class="btn" id="lg">학회원 로그인</button></p>';
+    $('lg').onclick = goLogin; return;
+  }
+  const key = s.n + '|' + s.text;
+  if (cache[key]) return show(s, cache[key]);
+  $('pa').innerHTML = '<div class="ld"><i></i>이 리포트에서 찾아 읽는 중…</div>';
+  const t = await pageText(s.n);
+  const ctx = [s.n > 1 && texts[s.n - 1] ? '(p.' + (s.n - 1) + ' 끝부분) …' + texts[s.n - 1].slice(-700) : '', '(p.' + s.n + ')\n' + t.slice(0, 5200), s.n < doc.numPages ? '(p.' + (s.n + 1) + ' 앞부분) ' + (await pageText(s.n + 1)).slice(0, 700) + '…' : ''].filter(Boolean).join('\n\n');
+  const body = { title, selection: s.text, page: s.n, context: ctx, hits: findHits(s.text, s.n), first: s.n === 1 ? '' : (await pageText(1)).slice(0, 2500) };
+  try {
+    const r = await fetch(API + '/explain', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.session.access_token }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || !j.answer) { $('pa').innerHTML = '<p class="err">' + esc(j.error || '설명을 받지 못했습니다. 잠시 뒤 다시 시도해 주세요.') + '</p>'; return; }
+    cache[key] = j; show(s, j);
+  } catch (e) {
+    $('pa').innerHTML = '<p class="err">Polaris 서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>';
+  }
+}
+
+function fmt(a) {
+  return a.split(/\n{2,}/).map((p) => '<p>' + esc(p).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')
+    .replace(/\(p\.\s?(\d+)\)/g, (m, n) => (+n >= 1 && +n <= (doc ? doc.numPages : 0)) ? '<span class="pl" data-p="' + n + '">' + m + '</span>' : m) + '</p>').join('');
+}
+function show(s, j) {
+  $('pa').innerHTML = fmt(j.answer);
+  $('pa').querySelectorAll('.pl').forEach((x) => x.onclick = () => {
+    const p = pages[+x.dataset.p - 1]; if (!p) return;
+    p.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); p.el.classList.add('hit'); setTimeout(() => p.el.classList.remove('hit'), 1600);
+  });
+  const q = '“' + (s.text.length > 80 ? s.text.slice(0, 80) + '…' : s.text) + '” 이게 무슨 뜻인지 더 자세히 알려줘';
+  $('pf').innerHTML = (j.left != null ? '<span>오늘 ' + j.left + '번 남음</span>' : '') + '<a href="/chat/?q=' + encodeURIComponent(q) + '" target="_blank" rel="noopener">Polaris에게 더 물어보기 →</a>';
+}
+
+empty();
+</script>
+</body>
+</html>
