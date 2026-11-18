@@ -4090,7 +4090,8 @@ class Component extends DCLogic {
       trackOn: !!(s.track && s.track.asOf), trackAsOf: s.track && s.track.asOf ? s.track.asOf.replace(/-/g, '.') : '',
       // 리서치 화면: 최신 학기 카드, 학기 목록, 섹터 칩
       latestTerm: byDate[0].term,
-      latestCards: byDate.filter((r) => r.term === byDate[0].term).slice(0, 4).map((r) => ({ ...vm(r), teamShort: String(r.team || '').replace('Research ', '') })),
+      latestCards: byDate.filter((r) => r.term === byDate[0].term).slice(0, 4).map((r) => ({ ...vm(r), teamShort: String(r.team || '').replace('Research ', ''),
+        page1: /-top169\.webp$/.test(r.cover || '') ? r.cover.replace(/-top169\.webp$/, '-p1.webp') : r.cover })),   // 최신 리포트 칸(PC)은 표지 1쪽 전체를 종이처럼 (assets/covers/*-p1.webp)
       termItems: ['All terms', ...new Set(byDate.map((r) => r.term))].slice(0, 13).map((t) => ({
         label: t === 'All terms' ? '전체' : t, count: t === 'All terms' ? REPORTS.length : REPORTS.filter((r) => r.term === t).length,
         color: s.fYear === t ? '#203864' : 'rgba(26,26,26,0.62)', weight: s.fYear === t ? '700' : '400',
