@@ -1951,22 +1951,21 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 .tkm-m .tk-ex{font-size:13.5px}
 .tkm-na{font-size:12.5px;color:rgba(26,26,26,.35)}
 
-/* 리포트 표 (시안 B): 학기는 왼쪽 여백에 크게, 한 행 = 기업(의견·섹터) · 목표주가(상승여력) · 주가선(남은 기간) · 현재 · 최고 */
+/* 리포트 표 (시안 B): 학기는 왼쪽 여백에 크게, 한 행 = 기업(의견) · 목표주가(상승여력) · 주가선(남은 기간) · 현재 · 최고 */
 .covb-head,.covb{display:grid;grid-template-columns:minmax(0,1.3fr) 120px minmax(0,1.25fr) 104px 104px;column-gap:28px;align-items:center}
 .covb-head{grid-template-columns:96px minmax(0,1.3fr) 120px minmax(0,1.25fr) 104px 104px;padding:12px 0;font-size:13px;font-weight:500;color:#1A1A1A;border-bottom:1px solid #1A1A1A}
 .covb-head .r{text-align:right}
 .covb-grp{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:28px;border-bottom:1px solid #1A1A1A}
 .covb-sem{padding:20px 0;font-family:'Noto Serif KR',serif;font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#0F1B2E}
 .covb-rows{min-width:0}
-.covb{padding:18px 0;border-bottom:1px solid #D9D7D0;color:inherit;text-decoration:none}
-.covb:last-child{border-bottom:0}
+.covb{padding:18px 0;color:inherit;text-decoration:none}   /* 한 학기 안의 리포트 사이에는 줄을 두지 않는다 */
 .covb sc-if{display:contents}
 .cb-nm{min-width:0;display:flex;flex-direction:column;gap:4px}
 .cb-nm b{font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .cb-nm small{font-size:13px;color:#5E636B}
 .cb-nm em{font-style:normal;font-weight:700;letter-spacing:.06em;color:#1A1A1A}
 .cb-tp{text-align:right;font-size:14px;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:3px}
-.cb-tp small{font-size:12.5px;color:#5E636B}
+.cb-tp small{font-size:14px;color:#1A1A1A}
 .cb-g{min-width:0;display:flex;flex-direction:column;gap:3px}
 .cb-g .tk-sp{height:36px}
 .cb-g .tk-chip{padding:0;background:none;font-size:12px;font-weight:400;color:#5E636B;letter-spacing:0}
