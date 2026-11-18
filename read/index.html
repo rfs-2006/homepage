@@ -102,29 +102,36 @@ body.read{background:var(--card);color:var(--text)}
 #ask svg{width:14px;height:14px;color:#8FAADC}
 #ask:hover{background:var(--navy)}
 #ask.on{display:inline-flex}
-/* 설명 카드 */
-#pop{position:fixed;z-index:31;width:440px;max-width:calc(100vw - 24px);max-height:min(70vh,580px);display:none;flex-direction:column;background:#fff;border:1px solid var(--hair);border-radius:12px;box-shadow:0 30px 60px -24px rgba(20,23,28,.38);overflow:hidden}
-#pop.on{display:flex}
-#pop .ph{display:flex;align-items:center;gap:9px;padding:14px 16px 10px}
-#pop .ph i{width:24px;height:24px;border-radius:50%;background:var(--text);color:#8FAADC;display:flex;align-items:center;justify-content:center}
-#pop .ph i svg{width:12px;height:12px}
-#pop .ph b{font-family:'Noto Serif KR',serif;font-size:14px;font-weight:700;letter-spacing:.02em}
-#pop .ph .x{margin-left:auto;font:inherit;font-size:20px;line-height:1;background:none;border:0;color:var(--sub);cursor:pointer;padding:0 2px}
-#pop .q{margin:0 16px;padding:9px 12px;background:var(--card);border-left:2px solid var(--navy);border-radius:0 6px 6px 0;font-size:13px;color:var(--sub);max-height:84px;overflow:auto;white-space:pre-wrap}
-#pop .a{padding:14px 16px 8px;overflow:auto;font-size:14.5px;line-height:1.8;color:var(--text)}
-#pop .a p{margin:0 0 10px}
-#pop .a b{color:var(--navy)}
-#pop .a .pl{color:var(--navy);background:var(--hl);border-radius:4px;padding:0 4px;cursor:pointer;white-space:nowrap}
-#pop .a .btn{display:inline-block;font:inherit;font-size:13px;font-weight:600;background:var(--text);color:#fff;border:0;border-radius:999px;padding:9px 20px;cursor:pointer}
-#pop .ld{display:flex;align-items:center;gap:9px;color:var(--sub);font-size:13.5px}
-#pop .ld i{width:14px;height:14px;border:2px solid var(--hair);border-top-color:var(--navy);border-radius:50%;animation:sp .8s linear infinite}
+/* 설명 카드: 리포트 화면의 용어 풀이 팝업(#gl-pop, assets/app.css)과 같은 모양 */
+#pop{position:fixed;z-index:31;width:380px;max-width:calc(100vw - 24px);max-height:min(72vh,600px);overflow:auto;display:none;background:#FFFFFF;border-radius:14px;box-shadow:0 0 0 1px rgba(15,27,46,0.06),0 12px 32px rgba(15,27,46,0.16),0 2px 6px rgba(15,27,46,0.06);padding:20px 20px 14px;color:#191F28;animation:glIn .16s ease}
+#pop.on{display:block}
+@keyframes glIn{from{opacity:0;transform:scale(.97)}}
+@keyframes glUp{from{transform:translateY(100%)}}
+#pop .gh{display:flex;align-items:center;gap:6px}
+#pop .gk{display:inline-block;padding:3px 8px;border-radius:6px;background:#EEF2F9;font-size:11.5px;font-weight:600;color:#203864}
+#pop .gp{font-size:11px;font-weight:600;letter-spacing:.08em;color:#8B95A1}
+#pop .x{margin-left:auto;margin-right:-8px;width:28px;height:28px;border:0;border-radius:50%;background:transparent;font-size:18px;color:#6B7684;cursor:pointer;line-height:1}
+#pop .x:hover{background:#F2F4F6}
+#pop .gt{display:block;margin:10px 0 6px;font-size:18px;font-weight:700;letter-spacing:-0.02em;color:#191F28;word-break:keep-all}
+#pop .gd{margin:0;font-size:14.5px;line-height:1.65;color:#4E5968}
+#pop .gc{margin-top:14px;padding:14px 16px;background:#F2F4F6;border-radius:12px}
+#pop .gc small{display:block;font-size:12px;font-weight:600;color:#203864;margin-bottom:4px}
+#pop .gc p{margin:0;font-size:13.5px;line-height:1.65;color:#333D4B}
+#pop .pl{color:#203864;font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+#pop .gs{margin-top:10px;font-size:12px;line-height:1.6;color:#8B95A1}
+#pop .gs a{color:#6B7684;text-decoration:none;margin-right:10px;display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
+#pop .gs a:hover{text-decoration:underline}
+#pop .ga{display:flex;align-items:center;justify-content:space-between;margin:12px -8px 0;padding:10px 8px;border-radius:10px;font-size:13.5px;font-weight:600;color:#203864;text-decoration:none}
+#pop .ga:hover{background:#F2F4F6}
+#pop .ga::after{content:'›';font-size:18px;color:#6B7684}
+#pop .ga small{margin-left:auto;margin-right:8px;font-size:12px;font-weight:400;color:#8B95A1}
+#pop .ld{display:flex;align-items:center;gap:9px;color:#6B7684;font-size:14px;padding:4px 0 6px}
+#pop .ld i{width:14px;height:14px;border:2px solid #E5E8EB;border-top-color:#203864;border-radius:50%;animation:sp .8s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-#pop .pf{display:flex;align-items:center;gap:10px;padding:10px 16px 13px;border-top:1px solid var(--hair);font-size:12px;color:var(--sub)}
-#pop .pf:empty{display:none}
-#pop .pf a{margin-left:auto;color:var(--navy);font-weight:600;text-decoration:none}
-#pop .pf a:hover{text-decoration:underline;text-underline-offset:3px}
-#pop .err{color:var(--err)}
-@media (prefers-reduced-motion:reduce){#pop .ld i{animation:none}.drop{transition:none}}
+#pop .btn{display:block;width:100%;margin-top:14px;padding:14px;border:0;border-radius:12px;background:#203864;color:#FFFFFF;font:600 15px 'Pretendard Variable',sans-serif;cursor:pointer}
+#pop .err{color:var(--err);font-size:14px;margin:4px 0}
+#pop .hd{display:none;width:40px;height:4px;border-radius:2px;background:#E5E8EB;margin:-4px auto 16px}
+@media (prefers-reduced-motion:reduce){#pop .ld i,#pop{animation:none}.drop{transition:none}}
 @media (max-width:760px){
   .top{height:auto;padding:12px 16px}.brand img{width:34px;height:34px}.brand b{font-size:17px}.brand small{font-size:10.5px}.menu{display:none}
   .top .login{margin-left:auto;font:inherit;font-size:12px;color:var(--ink);background:none;border:1px solid rgba(244,241,235,.45);border-radius:999px;padding:7px 13px}
@@ -132,7 +139,8 @@ body.read{background:var(--card);color:var(--text)}
   .drop{padding:16px}.drop .go{display:none}
   .head{padding:9px 12px;gap:8px}.head .brand span{display:none}.ttl{margin-left:4px;padding-left:12px}.ttl .lab{display:none}.hb.cht{display:none}
   #ask{left:50% !important;top:auto !important;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);padding:12px 22px 12px 16px;font-size:14px}
-  #pop{left:0 !important;right:0;top:auto !important;bottom:0;width:auto;max-width:none;max-height:72vh;border-radius:14px 14px 0 0;border-left:0;border-right:0;border-bottom:0}
+  #pop{left:0 !important;right:0;top:auto !important;bottom:0;width:auto;max-width:none;max-height:78vh;border-radius:24px 24px 0 0;padding:12px 24px calc(16px + env(safe-area-inset-bottom,0px));animation:glUp .26s cubic-bezier(.2,.8,.2,1)}
+  #pop .hd{display:block}#pop .x{display:none}#pop .gt{font-size:21px;margin-top:12px}#pop .gd{font-size:16px}#pop .gc p{font-size:15px}
 }
 @media (min-width:761px){.top .login{display:none}}
 </style>
@@ -167,10 +175,10 @@ body.read{background:var(--card);color:var(--text)}
 </div>
 <button type="button" id="ask"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>Polaris 설명</button>
 <section id="pop" role="dialog" aria-label="Polaris 설명">
-  <div class="ph"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></i><b>POLARIS</b><button type="button" class="x" aria-label="닫기">×</button></div>
-  <div class="q" id="pq"></div>
-  <div class="a" id="pa"></div>
-  <div class="pf" id="pf"></div>
+  <i class="hd" aria-hidden="true"></i>
+  <div class="gh"><span class="gk" id="pk">설명</span><span class="gp">POLARIS</span><button type="button" class="x" aria-label="닫기">×</button></div>
+  <b class="gt" id="pt"></b>
+  <div id="pa"></div>
 </section>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
@@ -284,7 +292,9 @@ document.addEventListener('selectionchange', () => {
   clearTimeout(selT);
   selT = setTimeout(() => {
     const s = readSel();
-    if (!s) { hideAsk(); return; }
+    // 드래그가 풀리면 단추와 설명도 같이 닫는다 (설명 카드 안을 누르는 동안은 그대로)
+    if (!s) { hideAsk(); if (!popHold) closePop(); return; }
+    if (popFor && popFor !== s.n + '|' + s.text) closePop();   // 다른 곳을 새로 드래그하면 예전 설명은 닫는다
     selNow = s;
     const r = s.rect;
     ask.style.left = Math.max(8, Math.min(window.innerWidth - 150, r.left + r.width / 2 - 62)) + 'px';
@@ -294,22 +304,33 @@ document.addEventListener('selectionchange', () => {
 });
 // 선택 바로 위(자리가 없으면 아래)에 두되 화면 밖으로 나가지 않게
 function askTop(r) { return Math.max(68, Math.min(window.innerHeight - 52, r.top > 112 ? r.top - 44 : r.bottom + 8)); }
-window.addEventListener('scroll', () => { if (ask.classList.contains('on')) { const s = readSel(); if (s) ask.style.top = askTop(s.rect) + 'px'; } }, { passive: true });
+window.addEventListener('scroll', () => {
+  const s = (ask.classList.contains('on') || pop.classList.contains('on')) && readSel(); if (!s) return;
+  if (ask.classList.contains('on')) ask.style.top = askTop(s.rect) + 'px';
+  if (pop.classList.contains('on')) place(s.rect);   // 설명 카드는 드래그한 글을 따라 움직인다
+}, { passive: true });
 // 단추를 누르는 순간 선택이 풀리지 않게
 ask.addEventListener('mousedown', (e) => e.preventDefault());
+ask.addEventListener('touchstart', () => { popHold = true; }, { passive: true });
 ask.addEventListener('click', () => { if (selNow) explain(selNow); });
 
 // ---------- 설명 ----------
 const pop = $('pop');
-function closePop() { pop.classList.remove('on'); }
+let popFor = '', popHold = false;   // popFor: 지금 설명이 붙은 드래그. popHold: 설명 카드·단추를 누르는 중이면 드래그가 풀려도 닫지 않는다
+function closePop() { pop.classList.remove('on'); popFor = ''; }
+// 카드 안을 눌러도 PDF의 드래그가 풀리지 않게 (컴퓨터). 폰은 누르는 동안만 잠깐 붙잡아 둔다
+pop.addEventListener('mousedown', (e) => e.preventDefault());
+pop.addEventListener('touchstart', () => { popHold = true; }, { passive: true });
+document.addEventListener('touchend', () => setTimeout(() => { popHold = false; }, 400), { passive: true });
 pop.querySelector('.x').addEventListener('click', closePop);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
 
 function place(rect) {
   if (window.innerWidth <= 720) return;
-  const w = Math.min(420, window.innerWidth - 24);
+  const w = Math.min(380, window.innerWidth - 24);
   let left = rect.left + rect.width / 2 - w / 2; left = Math.max(12, Math.min(window.innerWidth - w - 12, left));
-  const below = window.innerHeight - rect.bottom, top = below > 320 ? rect.bottom + 12 : Math.max(72, rect.top - Math.min(560, window.innerHeight * .7) - 12);
+  const h = pop.offsetHeight || 320, below = window.innerHeight - rect.bottom;
+  const top = below > h + 24 ? rect.bottom + 12 : Math.max(72, rect.top - h - 12);
   pop.style.left = left + 'px'; pop.style.top = top + 'px';
 }
 
@@ -330,42 +351,48 @@ function findHits(sel, n) {
 const cache = {};
 async function explain(s) {
   hideAsk();
-  $('pq').textContent = s.text.length > 240 ? s.text.slice(0, 240) + '…' : s.text;
-  $('pf').innerHTML = '';
-  place(s.rect); pop.classList.add('on');
+  const key = s.n + '|' + s.text; popFor = key;
+  $('pk').textContent = '설명'; $('pt').textContent = s.text.length > 40 ? s.text.slice(0, 40) + '…' : s.text;
+  pop.classList.add('on'); place(s.rect);
   const { data } = await sb.auth.getSession();
   if (!data.session) {
-    $('pa').innerHTML = '<p>Polaris 설명은 학회원만 쓸 수 있어요.</p><p><button type="button" class="btn" id="lg">학회원 로그인</button></p>';
-    $('lg').onclick = goLogin; return;
+    $('pa').innerHTML = '<p class="gd">Polaris 설명은 학회원만 쓸 수 있어요.</p><button type="button" class="btn" id="lg">학회원 로그인</button>';
+    $('lg').onclick = goLogin; place(s.rect); return;
   }
-  const key = s.n + '|' + s.text;
   if (cache[key]) return show(s, cache[key]);
-  $('pa').innerHTML = '<div class="ld"><i></i>이 리포트에서 찾아 읽는 중…</div>';
+  $('pa').innerHTML = '<div class="ld"><i></i>찾아보고 있어요…</div>';
   const t = await pageText(s.n);
   const ctx = [s.n > 1 && texts[s.n - 1] ? '(p.' + (s.n - 1) + ' 끝부분) …' + texts[s.n - 1].slice(-700) : '', '(p.' + s.n + ')\n' + t.slice(0, 5200), s.n < doc.numPages ? '(p.' + (s.n + 1) + ' 앞부분) ' + (await pageText(s.n + 1)).slice(0, 700) + '…' : ''].filter(Boolean).join('\n\n');
   const body = { title, selection: s.text, page: s.n, context: ctx, hits: findHits(s.text, s.n), first: s.n === 1 ? '' : (await pageText(1)).slice(0, 2500) };
   try {
     const r = await fetch(API + '/explain', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + data.session.access_token }, body: JSON.stringify(body) });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok || !j.answer) { $('pa').innerHTML = '<p class="err">' + esc(j.error || '설명을 받지 못했습니다. 잠시 뒤 다시 시도해 주세요.') + '</p>'; return; }
+    if (popFor !== key) { if (r.ok && j.d) cache[key] = j; return; }   // 기다리는 사이 드래그가 바뀌었으면 보여 주지 않는다
+    if (!r.ok || !j.d) { $('pa').innerHTML = '<p class="err">' + esc(j.error || '설명을 받지 못했어요. 잠시 뒤 다시 해 주세요.') + '</p>'; return; }
     cache[key] = j; show(s, j);
   } catch (e) {
-    $('pa').innerHTML = '<p class="err">Polaris 서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.</p>';
+    if (popFor === key) $('pa').innerHTML = '<p class="err">Polaris 서버에 연결하지 못했어요. 잠시 뒤 다시 해 주세요.</p>';
   }
 }
 
-function fmt(a) {
-  return a.split(/\n{2,}/).map((p) => '<p>' + esc(p).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')
-    .replace(/\(p\.\s?(\d+)\)/g, (m, n) => (+n >= 1 && +n <= (doc ? doc.numPages : 0)) ? '<span class="pl" data-p="' + n + '">' + m + '</span>' : m) + '</p>').join('');
+// (p.N)은 누르면 그 쪽으로 간다
+function pg(t) {
+  return esc(t).replace(/\(p\.\s?(\d+)\)/g, (m, n) => (+n >= 1 && +n <= (doc ? doc.numPages : 0)) ? '<span class="pl" data-p="' + n + '">' + m + '</span>' : m);
 }
 function show(s, j) {
-  $('pa').innerHTML = fmt(j.answer);
+  $('pk').textContent = j.k || '설명';
+  $('pt').textContent = j.t || s.text;
+  const src = (j.sources || []).filter((x) => /^https?:\/\//.test(x.url));
+  const q = '“' + (s.text.length > 80 ? s.text.slice(0, 80) + '…' : s.text) + '” 이게 무슨 뜻인지 더 자세히 알려줘';
+  $('pa').innerHTML = '<p class="gd">' + pg(j.d) + '</p>'
+    + (j.c ? '<div class="gc"><small>이 리포트에서는</small><p>' + pg(j.c) + '</p></div>' : '')
+    + (src.length ? '<div class="gs">참고 ' + src.map((x) => '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + '</a>').join('') + '</div>' : '')
+    + '<a class="ga" href="/chat/?q=' + encodeURIComponent(q) + '" target="_blank" rel="noopener">POLARIS에게 더 물어보기' + (j.left != null ? '<small>오늘 ' + j.left + '번 남음</small>' : '') + '</a>';
   $('pa').querySelectorAll('.pl').forEach((x) => x.onclick = () => {
     const p = pages[+x.dataset.p - 1]; if (!p) return;
     p.el.scrollIntoView({ behavior: 'smooth', block: 'start' }); p.el.classList.add('hit'); setTimeout(() => p.el.classList.remove('hit'), 1600);
   });
-  const q = '“' + (s.text.length > 80 ? s.text.slice(0, 80) + '…' : s.text) + '” 이게 무슨 뜻인지 더 자세히 알려줘';
-  $('pf').innerHTML = (j.left != null ? '<span>오늘 ' + j.left + '번 남음</span>' : '') + '<a href="/chat/?q=' + encodeURIComponent(q) + '" target="_blank" rel="noopener">Polaris에게 더 물어보기 →</a>';
+  place(s.rect);
 }
 
 empty();
