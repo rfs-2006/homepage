@@ -263,7 +263,6 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
             <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rlc">
               <div class="rlc-pg"><img src="{{ r.page1 }}" alt="{{ r.name }} 리포트 1쪽" loading="lazy"></div>
               <p class="rlc-name">{{ r.name }}</p>
-              <p class="rlc-hl">{{ r.headline }}</p>
               <p class="rlc-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
             </a>
           </sc-for>
@@ -345,7 +344,6 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
           <a href="{{ r.href }}" onClick="{{ r.open }}" class="rpaper rlc" style="flex:0 0 80%;scroll-snap-align:start">
               <div class="rlc-img"><img src="{{ r.cover }}" alt="{{ r.name }} 리포트 표지" loading="lazy"></div>
               <p class="rlc-name">{{ r.name }}</p>
-              <p class="rlc-hl">{{ r.headline }}</p>
               <p class="rlc-fig"><b>{{ r.op }}</b>목표 {{ r.tp }}<em>{{ r.upside }}</em></p>
             </a>
         </sc-for>
