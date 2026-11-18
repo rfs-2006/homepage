@@ -1286,6 +1286,11 @@ main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="
 .rlc-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}
 .rlc-img img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s cubic-bezier(.2,.7,.2,1)}
 .rlc:hover .rlc-img{border-color:#0F1B2E}.rlc:hover .rlc-img img{transform:scale(1.03)}
+/* 최신 리포트 칸(PC): 1쪽 전체를 종이 한 장처럼 세운다 */
+.rlc-pg{aspect-ratio:210/297;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,27,46,.10),0 14px 30px -14px rgba(15,27,46,.35);transition:transform .25s cubic-bezier(.2,.7,.2,1),box-shadow .25s ease}
+.rlc-pg img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.rlc:hover .rlc-pg{transform:translateY(-4px);box-shadow:0 1px 2px rgba(15,27,46,.10),0 22px 40px -16px rgba(15,27,46,.45)}
+.rlc-pg+.rlc-name{margin-top:20px}
 .rlc-name{margin:16px 0 0;font-size:21px;font-weight:700;letter-spacing:-.02em;color:#1A1A1A}.rlc-name small{font-size:13px;font-weight:300;color:rgba(26,26,26,0.68)}
 .rlc-hl{margin:4px 0 0;font-size:15px;font-weight:500;color:#203864;line-height:1.45}
 .rlc-fig{margin:12px 0 0;font-size:13.5px;color:#1A1A1A;font-variant-numeric:tabular-nums}.rlc-fig b{font-weight:700;color:#0F1B2E;letter-spacing:.06em;margin-right:10px}.rlc-fig em{font-style:normal;font-weight:700;color:#0F1B2E;margin-left:10px}
@@ -1904,9 +1909,9 @@ html.wk-solid .nav{background:rgba(11,21,36,0.94) !important;-webkit-backdrop-fi
 html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage) .nav{background:rgba(11,12,14,.96) !important}
 /* 기업 리포트 목록: 평가 기간 결과 (오른쪽 음영 칸, tools/build-prices.js → assets/data/track.json) */
 .covg{display:grid;grid-template-columns:minmax(0,1fr) 96px 64px 96px 84px auto;column-gap:18px;align-items:center}
-.covhead{padding:14px 6px 12px;font-size:12.5px;font-weight:600;color:rgba(26,26,26,.55);border-bottom:1px solid #E2E0DA}
+.covhead{padding:14px 6px 12px;font-size:12.5px;font-weight:600;color:#1A1A1A;border-bottom:1px solid #1A1A1A}
 .tkx{display:grid;grid-template-columns:150px 140px 88px 84px;column-gap:12px;align-items:center;align-self:stretch;margin:-18px 0 -18px 10px;padding:18px 16px 18px 20px;background:rgba(32,56,100,.055)}
-.covhead .tkx{margin:-14px 0 -12px 10px;padding:14px 16px 12px 20px;color:#203864}
+.covhead .tkx{margin:-14px 0 -12px 10px;padding:14px 16px 12px 20px;color:#1A1A1A}
 .tkx sc-if,.tkm sc-if{display:contents}
 .tk-st{padding-left:4px}
 .tk-n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1950,3 +1955,35 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 .tkm-m{margin-top:2px;font-size:12.5px;color:rgba(26,26,26,.6)}
 .tkm-m .tk-ex{font-size:13.5px}
 .tkm-na{font-size:12.5px;color:rgba(26,26,26,.35)}
+
+/* 리포트 표 (시안 B): 학기는 왼쪽 여백에 크게, 한 행 = 기업(의견) · 목표주가(상승여력) · 주가선(남은 기간) · 현재 · 최고 */
+.covb-head,.covb{display:grid;grid-template-columns:minmax(0,1.3fr) 120px minmax(0,1.25fr) 104px 104px;column-gap:28px;align-items:center}
+.covb-head{grid-template-columns:96px minmax(0,1.3fr) 120px minmax(0,1.25fr) 104px 104px;padding:12px 0;font-size:13px;font-weight:500;color:#1A1A1A;border-bottom:1px solid #1A1A1A}
+.covb-head .r{text-align:right}
+.covb-grp{display:grid;grid-template-columns:96px minmax(0,1fr);column-gap:28px;border-bottom:1px solid #1A1A1A}
+.covb-sem{padding:20px 0;font-family:'Noto Serif KR',serif;font-size:23px;font-weight:700;letter-spacing:-.02em;line-height:1;color:#0F1B2E}
+.covb-rows{min-width:0}
+.covb{padding:18px 0;border-bottom:1px solid #D9D7D0;color:inherit;text-decoration:none}
+.covb:last-child{border-bottom:0}
+.covb sc-if{display:contents}
+.cb-nm{min-width:0;display:flex;flex-direction:column;gap:4px}
+.cb-nm b{font-family:'Noto Serif KR',serif;font-size:18px;letter-spacing:-.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cb-nm small{font-size:13px;color:#5E636B}
+.cb-nm em{font-style:normal;font-weight:700;letter-spacing:.06em;color:#1A1A1A}
+.cb-tp{text-align:right;font-size:14px;font-variant-numeric:tabular-nums;display:flex;flex-direction:column;gap:3px}
+.cb-tp small{font-size:14px;color:#1A1A1A}
+.cb-g{min-width:0;display:flex;flex-direction:column;gap:3px}
+.cb-g .tk-sp{height:36px}
+.cb-g .tk-chip{padding:0;background:none;font-size:12px;font-weight:400;color:#5E636B;letter-spacing:0}
+.cb-g .tk-chip.tk-hit{color:#C03343;font-weight:600}
+.cb-g .tk-na{font-size:12.5px;color:rgba(26,26,26,.35)}
+.cb-v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cb-v .tk-ret{font-size:17px}
+.cb-v .tk-ex{font-size:15px;font-weight:700}
+@media (max-width:1120px){
+  .covb-head{display:none}
+  .covb-grp{grid-template-columns:1fr}
+  .covb-sem{padding:20px 0 4px}
+  .covb{grid-template-columns:minmax(0,1fr) 110px 96px 96px;row-gap:10px}
+  .covb .cb-g{grid-column:1/-1;grid-row:2}
+}
