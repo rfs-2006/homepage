@@ -2,6 +2,7 @@
  * 한 화면에 ① 계좌 잔액·이번 달 유지비·버틸 수 있는 기간·승인 대기 ② 회원가입 승인 ③ 계좌 잔액 기록(손으로 입력)
  * ③-2 방문자(Google Analytics, member-admin의 ga) ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
  * ⑧ 학회원증: 카드 목록·발급/수정·정지, QR 보기(https://caurfs.kr/v/#토큰, member-admin의 card_*, 확인 화면은 /v/ + member-verify)
+ * 화면: 왼쪽 메뉴(NAV)를 누르면 오른쪽이 그 페이지로 바뀐다(go → showPage, 칸은 다 그려 두고 지금 것만 보임). 첫 화면 '홈'은 할 일 + 잔액·방문자 카드
  * ⑪ 자동 작업: GitHub Actions 링크 (리포트 PDF 올리기 inbox/ → add-report.yml, 학기 넘기기 new-term.yml)
  * ⑩ 수료증: '수료증 만들기'를 누르면 assets/cert.js(RFSCert)를 불러와 연다. 서명·인감은 member-admin cert_get·cert_save
  * ⑨ 회계장부: 잠근 채로 열리고 '열기'를 눌러야 서버에서 받는다(member-admin ledger_*·receipt_*, LEDGER_ADMINS). 금액은 가려 두고 '금액 보기'는 60초 뒤 다시 가린다.
@@ -35,138 +36,145 @@
   var LG_ACT = { view: '열람', save: '저장', download: '내려받기', upload_receipt: '증빙 올림', view_receipt: '증빙 열람', log_view: '기록 조회' };
   var LG_ERR = { ledger_admin: '권한 없음 · LEDGER_ADMINS', admin: '관리자 계정 아님', stale: '다른 관리자가 먼저 저장함 · 다시 열고 올리기', row: '형식 오류가 있는 줄', too_many: '최대 2,000줄', save: '저장 실패 · ops_state 테이블 확인', size: '최대 5MB', type: 'PDF·JPG·PNG·WEBP만', upload: '업로드 실패 · Storage 버킷 ledger 확인', no_receipt: '증빙 없음', sign: '증빙 주소 생성 실패' };
   var CARD_ERR = { no: '카드 번호: 영문·숫자·하이픈 (RFS-41-001)', name: '이름 필요', photo: '사진: 사이트 경로 (/assets/officers/president.webp)', cohort: '기수: 숫자', dates: '유효기간 시작이 끝보다 늦음', card_save: '저장 실패 · member_cards 테이블 확인' };
-  // 디자인: 프라이빗 뱅크 내부 화면처럼 절제 — 미색 바탕, 가는 선의 흰 카드(모서리 2px), 남색 #0F1B2E·#203864 + 하늘색 #8FAADC, 샴페인 #C9B98A는 머리띠에만.
-  // 글꼴은 섹션 제목·큰 숫자만 세리프(Source Serif 4·Noto Serif KR), 나머지 Pretendard. 간격은 8px 단위. 버튼은 남색(주) · 선만 있는 것(보조) 두 가지
+  // 디자인: 토스처럼 — 연회색 바탕(#F2F4F6)에 모서리 둥근 흰 카드, 큰 굵은 숫자, "~해요" 말투. 왼쪽 메뉴를 누르면 오른쪽 화면이 그 페이지로 바뀐다 (아래로 길게 늘어놓지 않음)
+  // 주 버튼은 남색(#1B2E4F), 그래프·강조는 파랑(#3182F6), 늘어남 빨강·줄어듦 파랑(한국 증권 관례). 글꼴은 Pretendard 하나. 폰에서는 메뉴가 위쪽 가로 줄로 바뀐다
   var CSS = '\
-.op{--ink:#131B27;--ink2:#3E4857;--mut:#6B7480;--fnt:#9BA2AC;--line:#E7E4DD;--line2:#D8D4CB;--paper:#F4F2ED;--panel:#FAF9F6;--navy:#0F1B2E;--navy2:#203864;--sky:#8FAADC;--gold:#C9B98A;--up:#A6424A;--dn:#2E4F8C;--ok:#2F6A50;--warn:#94651F;--serif:"Source Serif 4","Noto Serif KR",Georgia,serif}\
-.op{position:fixed;inset:0;z-index:3500;background:var(--paper);color:var(--ink);overflow-y:auto;opacity:0;transition:opacity .2s ease;font:400 14px/1.6 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-.003em}\
+.op{--ink:#191F28;--ink2:#4E5968;--mut:#8B95A1;--fnt:#B0B8C1;--line:#F2F4F6;--line2:#E5E8EB;--paper:#F2F4F6;--panel:#F9FAFB;--navy:#1B2E4F;--navy2:#24406C;--sky:#3182F6;--gold:#C9B98A;--up:#F04452;--dn:#3182F6;--ok:#03A65F;--warn:#E07B00}\
+.op{position:fixed;inset:0;z-index:3500;background:var(--paper);color:var(--ink);overflow-y:auto;opacity:0;transition:opacity .2s ease;font:400 15px/1.6 "Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums;letter-spacing:-.01em}\
 .op.show{opacity:1}\
 .op *{box-sizing:border-box}\
 .op button{font:inherit;cursor:pointer}\
-.op-top{background:var(--navy);color:#F4F2ED;border-bottom:1px solid rgba(201,185,138,.28)}\
-.op-top-in{max-width:1208px;margin:0 auto;padding:40px max(24px,env(safe-area-inset-right,0px)) 40px max(24px,env(safe-area-inset-left,0px));position:relative}\
-.op-top .x{position:absolute;top:16px;right:max(16px,env(safe-area-inset-right,0px));width:40px;height:40px;border:1px solid transparent;border-radius:2px;background:none;color:rgba(244,242,237,.6);font-size:22px;line-height:1;transition:color .15s,border-color .15s}\
-.op-top .x:hover{color:#F4F2ED;border-color:rgba(244,242,237,.2)}\
-.op-top .ey{font-size:11px;letter-spacing:.24em;color:var(--gold);font-weight:500;text-transform:uppercase}\
-.op-top h2{margin:8px 0 0;font:400 40px/1.15 var(--serif);letter-spacing:-.01em}\
-.op-top .meta{margin-top:16px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;font-size:13px;color:rgba(244,242,237,.55)}\
-.op-top .meta button{height:32px;padding:0 12px;border:1px solid rgba(244,242,237,.22);border-radius:2px;background:none;color:#F4F2ED;font-size:13px;font-weight:500;transition:border-color .15s,background .15s}\
-.op-top .meta button:hover{border-color:rgba(244,242,237,.45);background:rgba(244,242,237,.04)}\
-.op-tabs{position:sticky;top:0;z-index:2;background:rgba(244,242,237,.96);backdrop-filter:saturate(1.2) blur(6px);border-bottom:1px solid var(--line2)}\
-.op-tabs-in{max-width:1208px;margin:0 auto;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:0 max(24px,env(safe-area-inset-left,0px))}\
-.op-tabs-in::-webkit-scrollbar{display:none}\
-.op-tabs a{flex:0 0 auto;padding:16px 8px 14px;margin-right:16px;font-size:14px;font-weight:500;color:var(--mut);text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s,border-color .15s}\
-.op-tabs a:hover,.op-tabs a:focus-visible{color:var(--ink);outline:none}\
-.op-tabs a.on{color:var(--ink);border-bottom-color:var(--navy2)}\
-.op-in{max-width:1208px;margin:0 auto;padding:32px max(24px,env(safe-area-inset-right,0px)) 96px max(24px,env(safe-area-inset-left,0px));display:grid;gap:24px}\
-.op-s{background:#fff;border:1px solid var(--line);border-radius:2px;padding:48px 56px;scroll-margin-top:72px;min-width:0}\
-.op-s.dk{background:var(--navy);border-color:var(--navy);color:#F4F2ED}\
+.op-app{display:grid;grid-template-columns:256px minmax(0,1fr);min-height:100%}\
+.op-nav{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:28px 16px 20px;overflow-y:auto;scrollbar-width:none}\
+.op-nav::-webkit-scrollbar{display:none}\
+.op-brand{display:flex;align-items:center;justify-content:space-between;padding:0 12px 20px}\
+.op-brand b{font-size:20px;font-weight:700;letter-spacing:-.02em}.op-brand b span{margin-left:6px;font-size:14px;font-weight:500;color:var(--mut)}\
+.op .x{width:36px;height:36px;border:0;border-radius:10px;background:none;color:var(--mut);font-size:22px;line-height:1;transition:background .15s,color .15s}\
+.op .x:hover{background:var(--line2);color:var(--ink)}\
+.op-grp{margin-top:14px}.op-grp h6{margin:0 0 4px;padding:0 14px;font-size:12px;font-weight:600;color:var(--mut)}\
+.op-nv{display:flex;align-items:center;gap:12px;width:100%;height:44px;padding:0 12px;border:0;border-radius:12px;background:none;color:var(--ink2);font-size:15px;font-weight:600;text-align:left;text-decoration:none;transition:background .15s,color .15s}\
+.op-nv:hover{background:var(--line2)}\
+.op-nv.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.04)}\
+.op-nv i{width:28px;height:28px;flex:none;border-radius:9px;display:grid;place-items:center;background:var(--line2);color:var(--ink2)}\
+.op-nv i svg{width:16px;height:16px}\
+.op-nv.on i{background:var(--navy);color:#fff}\
+.op-nv em{margin-left:auto;font-style:normal;font-size:12px;font-weight:700;color:#fff;background:var(--up);border-radius:10px;padding:0 7px;line-height:20px}\
+.op-foot{margin-top:auto;padding:20px 12px 0;font-size:13px;color:var(--mut);display:flex;align-items:center;justify-content:space-between;gap:8px}\
+.op-foot button{height:30px;padding:0 10px;border:0;border-radius:8px;background:var(--line2);color:var(--ink2);font-size:13px;font-weight:600}\
+.op-main{min-width:0;padding:36px 40px 96px;max-width:1080px}\
+.op-ph{margin:0 0 24px}.op-ph h1{margin:0;font-size:26px;font-weight:700;letter-spacing:-.025em}.op-ph p{margin:6px 0 0;color:var(--mut);font-size:14px}\
+.op-body{display:grid;gap:16px}\
+.op-s{background:#fff;border-radius:22px;padding:28px 30px;min-width:0}\
+.op-s[hidden]{display:none}\
+.op-s>.op-h{display:none}\
 .op-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px 16px;flex-wrap:wrap}\
-.op-h h3{margin:0;font:400 24px/1.3 var(--serif);letter-spacing:-.01em;color:var(--ink)}\
-.op-h h4{margin:0;font-size:15px;font-weight:600;color:var(--ink)}\
-.op-s.dk .op-h h3{color:#F4F2ED}\
+.op-h h3{margin:0;font-size:18px;font-weight:700}\
+.op-h h4{margin:0;font-size:17px;font-weight:700;color:var(--ink)}\
 .op-h .mt{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:8px}\
-.op-s.dk .op-h .mt{color:rgba(244,242,237,.5)}\
-.op .sub{margin-top:64px;padding-top:32px;border-top:1px solid var(--line)}\
-.op-hl{margin:24px 0 32px;font:400 36px/1.2 var(--serif);letter-spacing:-.015em;font-variant-numeric:lining-nums tabular-nums}\
-.op-hl small{font:400 14px/1 "Pretendard Variable",Pretendard,sans-serif;color:var(--mut);margin-left:4px;letter-spacing:0}\
-.op-hl .dot{display:inline-block;width:1px;height:.8em;background:var(--line2);margin:0 20px;vertical-align:-.05em;overflow:hidden;color:transparent}\
-.op .note{font-size:13px;line-height:1.7;color:var(--mut);margin:0}\
-.op .op-st{margin:24px 0 0;padding:24px 0;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}\
+.op .sub{margin-top:40px;padding-top:28px;border-top:1px solid var(--line)}\
+.op-hl{margin:0 0 24px;font-size:28px;font-weight:700;line-height:1.3;letter-spacing:-.02em}\
+.op-hl small{font-size:15px;font-weight:500;color:var(--mut);margin-left:2px;letter-spacing:0}\
+.op-hl .dot{display:inline-block;width:1px;height:.7em;background:var(--line2);margin:0 16px;vertical-align:-.02em;overflow:hidden;color:transparent}\
+.op .note{font-size:14px;line-height:1.7;color:var(--mut);margin:0}\
+.op .op-st{margin:0;padding:20px 0;font-size:14px;color:var(--mut)}\
 .op .op-st.err{color:var(--up)}\
 .op .op-st.load{color:var(--fnt)}\
-.op-sum{display:grid;grid-template-columns:1.15fr 1fr;gap:56px;align-items:end;margin-top:40px}\
-.op-sum .k{font-size:13px;color:rgba(244,242,237,.55);letter-spacing:.02em}\
-.op-sum .big{font:400 72px/1.05 var(--serif);letter-spacing:-.02em;margin-top:8px;white-space:nowrap;font-variant-numeric:lining-nums tabular-nums}\
-.op-sum .big small{font:400 20px/1 var(--serif);margin-left:8px;color:rgba(244,242,237,.6)}\
-.op-sum .chg{margin-top:16px;font-size:14px;color:rgba(244,242,237,.55)}\
-.op-sum .chg b{margin-left:8px;font-weight:500}\
-.op-sum .chg .up{color:#E3A3A8}.op-sum .chg .dn{color:var(--sky)}\
-.op-sum .pn{border-top:1px solid rgba(201,185,138,.4);padding:8px 0 0}\
-.op-sum .pn .row{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;border-bottom:1px solid rgba(244,242,237,.08);font-size:14px;color:rgba(244,242,237,.6)}\
-.op-sum .pn .row:last-child{border-bottom:0}\
-.op-sum .pn .row b{font-size:17px;font-weight:600;color:#F4F2ED;white-space:nowrap}\
-.op-sum .pn .row>span:last-child{display:flex;align-items:center;gap:12px;white-space:nowrap}\
-.op-sum .pn .row b.w{color:var(--gold)}.op-sum .pn .row b.bad{color:#E3A3A8}\
-.op-sum .pn .go{height:32px;padding:0 12px;border:1px solid rgba(244,242,237,.25);border-radius:2px;background:none;color:#F4F2ED;font-size:13px;font-weight:500;transition:border-color .15s,background .15s}\
-.op-sum .pn .go:hover{border-color:rgba(244,242,237,.5);background:rgba(244,242,237,.05)}\
-.op table{width:100%;border-collapse:collapse;font-size:14px}\
-.op .tw{overflow-x:auto;border-top:1px solid var(--ink);-webkit-overflow-scrolling:touch}\
-.op th{padding:12px 16px;font-weight:500;font-size:12px;letter-spacing:.02em;color:var(--mut);text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}\
-.op td{padding:16px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}\
+.op-home{display:grid;gap:16px}\
+.op-hi{margin:0 0 8px;font-size:26px;font-weight:700;letter-spacing:-.025em}\
+.op-hi+p{margin:0 0 12px;color:var(--mut);font-size:14px}\
+.op-g2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}.op-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}\
+.op-c{background:#fff;border-radius:22px;padding:24px 26px;min-width:0}\
+.op-c h3{margin:0;font-size:15px;font-weight:600;color:var(--ink2)}\
+.op-c .big{margin:6px 0 2px;font-size:32px;font-weight:700;letter-spacing:-.025em;line-height:1.25;white-space:nowrap}\
+.op-c .big small{font-size:18px;font-weight:600;margin-left:2px}\
+.op-c .cap{color:var(--mut);font-size:14px}\
+.op-c .cap .up{color:var(--up)}.op-c .cap .dn{color:var(--dn)}\
+.op-c.mini .big{font-size:24px}\
+.op-c.lnk{cursor:pointer;transition:transform .15s}.op-c.lnk:hover{transform:translateY(-1px)}\
+.op-pill{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.op-pill span{background:var(--paper);border-radius:10px;padding:8px 12px;font-size:14px;color:var(--ink2)}.op-pill b{color:var(--ink);margin-left:4px}\
+.op-pill b.w{color:var(--warn)}.op-pill b.bad{color:var(--up)}\
+.op-spark{display:flex;align-items:flex-end;gap:5px;height:84px;margin-top:18px}.op-spark i{flex:1;border-radius:5px;background:var(--line2)}.op-spark i.on{background:var(--sky)}\
+.op-todo{margin-top:8px}\
+.op-todo .it{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line)}.op-todo .it:first-child{border-top:0}\
+.op-todo .ic{width:40px;height:40px;flex:none;border-radius:14px;display:grid;place-items:center}.op-todo .ic svg{width:18px;height:18px}\
+.op-todo .t{flex:1;min-width:0}.op-todo .t b{display:block;font-weight:600;font-size:15.5px}.op-todo .t small{display:block;color:var(--mut);font-size:13.5px}\
+.op-todo .none{padding:18px 0 4px;color:var(--mut)}\
+.op table{width:100%;border-collapse:collapse;font-size:14.5px}\
+.op .tw{overflow-x:auto;-webkit-overflow-scrolling:touch}\
+.op th{padding:10px 14px;font-weight:500;font-size:13px;color:var(--mut);text-align:left;border-bottom:1px solid var(--line2);white-space:nowrap}\
+.op td{padding:14px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}\
 .op th:first-child,.op td:first-child{padding-left:0}\
 .op th:last-child,.op td:last-child{padding-right:0}\
-.op tbody tr{transition:background .15s}\
-.op tbody tr:hover{background:var(--panel)}\
+.op tbody tr:last-child td{border-bottom:0}\
 .op td b{font-weight:600}\
 .op td.n,.op th.n{text-align:right;font-variant-numeric:tabular-nums}\
-.op td.sb,.op td .sb,.op .sb{color:var(--mut);font-size:13px}\
+.op td.sb,.op td .sb,.op .sb{color:var(--mut);font-size:13.5px}\
 .op td.wrap{white-space:normal;min-width:120px}\
-.op tfoot td{border-top:1px solid var(--ink);border-bottom:0;font-weight:600}\
+.op tfoot td{border-top:1px solid var(--line2);border-bottom:0;font-weight:700}\
 .op .up{color:var(--up)}.op .dn{color:var(--dn)}.op .nil{color:var(--fnt)}\
-.op .bars{display:flex;align-items:flex-end;gap:3px;height:144px;border-bottom:1px solid var(--ink)}\
-.op .bars i{flex:1;min-width:2px;background:var(--navy2);transition:background .15s}\
-.op .bars i:hover{background:var(--sky)}\
-.op .bars i.z{background:var(--line)}\
-.op .ax{display:flex;justify-content:space-between;font-size:12px;color:var(--fnt);margin-top:8px}\
-.op .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:48px;margin-top:48px}\
-.op .two h4{margin:0 0 16px;font-size:15px;font-weight:600}\
-.op .kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--ink);border-bottom:1px solid var(--line);margin:24px 0 32px}\
-.op .kpi.q4{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:0}\
-.op .kpi>div{padding:24px 24px 24px 0;min-width:0}\
-.op .kpi>div+div{padding-left:24px;border-left:1px solid var(--line)}\
-.op .kpi span{display:block;font-size:12px;letter-spacing:.02em;color:var(--mut)}\
-.op .kpi b{display:block;margin-top:8px;font:400 30px/1.2 var(--serif);letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:lining-nums tabular-nums}\
-.op .kpi b small{font:400 13px/1 "Pretendard Variable",Pretendard,sans-serif;color:var(--mut);margin-left:4px}\
-.op .kpi em{display:block;margin-top:4px;font-style:normal;font-size:12px;color:var(--fnt)}\
-.op input,.op select{height:40px;padding:0 12px;border:1px solid var(--line2);border-radius:2px;background:#fff;color:var(--ink);font:inherit;font-size:14px;min-width:0;width:100%;transition:border-color .15s,box-shadow .15s}\
+.op .bars{display:flex;align-items:flex-end;gap:4px;height:140px}\
+.op .bars i{flex:1;min-width:2px;background:var(--sky);border-radius:4px 4px 0 0;transition:opacity .15s}\
+.op .bars i:hover{opacity:.7}\
+.op .bars i.z{background:var(--line2)}\
+.op .ax{display:flex;justify-content:space-between;font-size:12.5px;color:var(--fnt);margin-top:8px}\
+.op .two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:40px;margin-top:40px}\
+.op .two h4{margin:0 0 8px;font-size:16px;font-weight:700}\
+.op .kpi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 24px}\
+.op .kpi.q4{grid-template-columns:repeat(4,minmax(0,1fr))}\
+.op .kpi>div{padding:16px 18px;background:var(--panel);border-radius:14px;min-width:0}\
+.op .kpi span{display:block;font-size:13px;color:var(--mut)}\
+.op .kpi b{display:block;margin-top:4px;font-size:22px;font-weight:700;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\
+.op .kpi b small{font-size:13px;font-weight:500;color:var(--mut);margin-left:2px}\
+.op .kpi em{display:block;margin-top:2px;font-style:normal;font-size:12.5px;color:var(--fnt)}\
+.op input,.op select{height:44px;padding:0 14px;border:1px solid transparent;border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-size:15px;min-width:0;width:100%;transition:border-color .15s,background .15s,box-shadow .15s}\
 .op input::placeholder{color:var(--fnt)}\
-.op select{appearance:none;-webkit-appearance:none;padding-right:32px;background:#fff url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M1 1l4 4 4-4%27 fill=%27none%27 stroke=%27%236B7480%27 stroke-width=%271.3%27/%3E%3C/svg%3E") no-repeat right 12px center}\
-.op td input,.op td select{height:36px;font-size:14px;padding:0 10px}\
+.op select{appearance:none;-webkit-appearance:none;padding-right:34px;background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2710%27 height=%276%27%3E%3Cpath d=%27M1 1l4 4 4-4%27 fill=%27none%27 stroke=%27%238B95A1%27 stroke-width=%271.5%27/%3E%3C/svg%3E") no-repeat right 14px center}\
+.op td input,.op td select{height:38px;font-size:14px;padding:0 10px;border-radius:10px}\
 .op td select{padding-right:28px}\
-.op input:hover,.op select:hover{border-color:#C4BFB4}\
-.op input:focus,.op select:focus{outline:none;border-color:var(--navy2);box-shadow:0 0 0 3px rgba(32,56,100,.08)}\
-.op input[readonly]{background:var(--panel);color:var(--mut)}\
+.op input:hover,.op select:hover{background-color:#ECEEF1}\
+.op input:focus,.op select:focus{outline:none;border-color:var(--sky);background-color:#fff;box-shadow:0 0 0 3px rgba(49,130,246,.12)}\
+.op input[readonly]{color:var(--mut)}\
 .op button:focus-visible,.op a:focus-visible{outline:2px solid var(--sky);outline-offset:2px}\
-.op .bt{height:40px;padding:0 18px;border:1px solid var(--line2);border-radius:2px;background:transparent;color:var(--ink);font-size:14px;font-weight:500;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}\
-.op .bt:hover{border-color:var(--ink2);background:var(--panel)}\
-.op .bt.p{background:var(--navy);border-color:var(--navy);color:#F4F2ED}\
-.op .bt.p:hover{background:var(--navy2);border-color:var(--navy2)}\
-.op .au-r{display:flex;gap:24px;align-items:flex-start;justify-content:space-between;padding:20px 0;border-top:1px solid var(--line)}.op .au-r:first-of-type{margin-top:20px}.op .au-t b{font-size:15px}.op .au-t ol{margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:13.5px;line-height:1.75}.op .au-t ol b{font-size:inherit;color:var(--ink)}.op a.bt.au-b{display:inline-flex;align-items:center;text-decoration:none;flex:none}@media(max-width:640px){.op .au-r{flex-direction:column;gap:12px}}\
-.op .bt.s{height:30px;padding:0 10px;font-size:13px;color:var(--ink2)}\
-.op .bt:disabled{opacity:.4;cursor:default;background:transparent}\
-.op .bt.p:disabled{background:var(--navy)}\
-.op .frm{display:grid;grid-template-columns:1.2fr .9fr 1.6fr auto;gap:8px;margin:32px 0 24px}\
-.op .tag{display:inline-block;font-size:12px;font-weight:500;line-height:18px;padding:0 6px;border:1px solid var(--line2);border-radius:2px;color:var(--ink2);background:transparent;white-space:nowrap}\
-.op .tag.w{color:var(--warn);border-color:rgba(148,101,31,.3)}.op .tag.bad{color:var(--up);border-color:rgba(166,66,74,.3)}.op .tag.ok{color:var(--ok);border-color:rgba(47,106,80,.3)}.op .tag.mute{color:var(--fnt)}\
-.op .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px;align-items:center}\
-.op .acts label{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--mut)}\
+.op .bt{display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 16px;border:0;border-radius:11px;background:var(--paper);color:var(--ink2);font-size:14.5px;font-weight:600;white-space:nowrap;text-decoration:none;transition:background .15s,color .15s}\
+.op .bt:hover{background:var(--line2);color:var(--ink)}\
+.op .bt.p{background:var(--navy);color:#fff}\
+.op .bt.p:hover{background:var(--navy2)}\
+.op .bt.lt{background:#E8F3FF;color:#1B64DA}.op .bt.lt:hover{background:#D6E9FF}\
+.op .au-r{display:flex;gap:24px;align-items:flex-start;justify-content:space-between;padding:22px 0;border-top:1px solid var(--line)}.op .au-r:first-of-type{border-top:0;padding-top:4px}.op .au-t b{font-size:16px;font-weight:700}.op .au-t ol{margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:14px;line-height:1.75}.op .au-t ol b{font-size:inherit;color:var(--ink)}.op a.bt.au-b{flex:none}@media(max-width:640px){.op .au-r{flex-direction:column;gap:12px}}\
+.op .bt.s{height:32px;padding:0 11px;font-size:13px;border-radius:9px}\
+.op .bt:disabled{opacity:.4;cursor:default}\
+.op .frm{display:grid;grid-template-columns:1.2fr .9fr 1.6fr auto;gap:8px;margin:0 0 24px}\
+.op .tag{display:inline-block;font-size:12.5px;font-weight:600;line-height:22px;padding:0 8px;border-radius:7px;color:var(--ink2);background:var(--paper);white-space:nowrap}\
+.op .tag.w{color:var(--warn);background:#FFF4E5}.op .tag.bad{color:var(--up);background:#FFEEEF}.op .tag.ok{color:var(--ok);background:#E5F7EE}.op .tag.mute{color:var(--fnt)}\
+.op .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;align-items:center}\
+.op .acts label{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--mut)}\
+.op .acts label input{width:auto}\
 .op .acts .sp{flex:1}\
-.op .chk{display:flex;gap:12px;align-items:center;font-size:14px;min-height:52px;border-bottom:1px solid var(--line);cursor:pointer}\
-.op .chk input{width:16px;height:16px;accent-color:var(--navy2);box-shadow:none}\
-.op .msg{font-size:13px;color:var(--navy2);min-height:20px;margin-top:12px}\
+.op .chk{display:flex;gap:12px;align-items:center;font-size:15px;min-height:54px;border-bottom:1px solid var(--line);cursor:pointer}\
+.op .chk input{width:20px;height:20px;accent-color:var(--sky);box-shadow:none}\
+.op .msg{font-size:14px;color:var(--sky);min-height:20px;margin-top:12px}\
 .op .mailbox{max-width:560px}\
 .op .cfrm{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 8px;margin:32px 0 0}\
-.op .cfrm label{display:grid;gap:8px;font-size:12px;letter-spacing:.02em;color:var(--mut);min-width:0}\
-.op .panel{margin-top:32px;padding:32px;background:var(--panel);border:1px solid var(--line);border-radius:2px}\
-.op .qrbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:32px;align-items:center}\
-.op .qrbox canvas{width:200px;height:200px;background:#fff;border:1px solid var(--line);image-rendering:pixelated;display:block}\
+.op .cfrm label{display:grid;gap:6px;font-size:13px;color:var(--mut);min-width:0}\
+.op .panel{margin-top:24px;padding:24px;background:var(--panel);border-radius:16px}\
+.op .qrbox{display:grid;grid-template-columns:auto minmax(0,1fr);gap:28px;align-items:center}\
+.op .qrbox canvas{width:200px;height:200px;background:#fff;border-radius:12px;image-rendering:pixelated;display:block}\
 .op .qrbox .u{font-size:13px;color:var(--mut);word-break:break-all;margin:8px 0 0}\
-.op .qrbox h4{margin:8px 0 0;font:400 22px/1.3 var(--serif)}\
-.op .eyb{font-size:12px;letter-spacing:.06em;color:var(--mut)}\
-.op .lgf{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px;margin:48px 0 16px}\
-.op .lgpv h4{margin:0;font-size:15px;font-weight:600}\
-.op .lgpv .cnt{display:flex;gap:8px 24px;flex-wrap:wrap;font-size:13px;color:var(--mut);margin:16px 0 8px}\
-.op .lgpv .cnt b{color:var(--ink);font-weight:600;margin-left:6px}\
+.op .qrbox h4{margin:6px 0 0;font-size:22px;font-weight:700}\
+.op .eyb{font-size:13px;color:var(--mut);font-weight:600}\
+.op .lgf{display:grid;grid-template-columns:200px minmax(0,1fr);gap:8px;margin:32px 0 8px}\
+.op .lgpv h4{margin:0;font-size:16px;font-weight:700}\
+.op .lgpv .cnt{display:flex;gap:8px 24px;flex-wrap:wrap;font-size:14px;color:var(--mut);margin:14px 0 8px}\
+.op .lgpv .cnt b{color:var(--ink);font-weight:700;margin-left:6px}\
 .op .lgpv .cnt b.bad{color:var(--up)}\
-.op .lgpv .tw{margin-top:16px}\
-.op tr.bad td{background:rgba(166,66,74,.04)}\
-.op .lock{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}\
-.op .lock b{display:block;font:400 20px/1.3 var(--serif);margin-bottom:4px}\
-.op .mask{font-family:"Pretendard Variable",Pretendard,sans-serif;letter-spacing:.16em;color:var(--fnt)}\
-.op .kpi b .mask{font-size:22px;line-height:36px;letter-spacing:.2em}\
-.op .meta2{margin-top:12px;font-size:13px;color:var(--mut)}\
-@media (max-width:860px){.op-s{padding:32px 20px}.op-in{padding:16px 16px 64px;gap:16px}.op-top-in{padding:32px 16px 28px}.op-top h2{font-size:32px}.op-tabs-in{padding:0 16px}.op-tabs a{margin-right:8px}.op-h h3{font-size:22px}.op-sum{grid-template-columns:1fr;gap:32px;margin-top:24px}.op-sum .big{font-size:48px}.op-hl{font-size:22px;margin:16px 0 24px}.op-hl .dot{margin:0 10px}.op .acts .sp{display:none}.op .bars{height:104px}.op .two{grid-template-columns:1fr;gap:32px;margin-top:32px}.op .kpi,.op .kpi.q4{grid-template-columns:1fr 1fr}.op .kpi>div{padding:16px 12px 16px 0;border-left:0}.op .kpi>div+div{padding-left:0;border-left:0}.op .kpi>div:nth-child(2n){padding-left:16px;border-left:1px solid var(--line)}.op .kpi>div:nth-child(n+3){border-top:1px solid var(--line)}.op .kpi b{font-size:22px}.op .frm{grid-template-columns:1fr 1fr}.op .cfrm{grid-template-columns:1fr 1fr}.op .panel{padding:20px;margin-top:24px}.op .qrbox{grid-template-columns:1fr;gap:20px}.op .lgf{grid-template-columns:1fr;margin-top:32px}.op .sub{margin-top:48px;padding-top:24px}}\
+.op .lgpv .tw{margin-top:12px}\
+.op tr.bad td{background:#FFF7F7}\
+.op .lock{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;margin-top:0}\
+.op .lock b{display:block;font-size:18px;font-weight:700;margin-bottom:2px}\
+.op .mask{letter-spacing:.16em;color:var(--fnt)}\
+.op .kpi b .mask{font-size:18px;letter-spacing:.2em}\
+.op .meta2{margin-top:0;font-size:13.5px;color:var(--mut)}\
+@media (max-width:860px){.op-app{grid-template-columns:minmax(0,1fr)}.op-nav{min-width:0;position:sticky;top:0;z-index:3;height:auto;padding:12px 0 0;background:rgba(242,244,246,.96);backdrop-filter:blur(8px);flex-direction:row;flex-wrap:wrap;overflow:visible}.op-brand{width:100%;padding:0 12px 8px 16px}.op-grps{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:0 16px 12px;width:100%;min-width:0}.op-grps::-webkit-scrollbar{display:none}.op-grp{display:contents}.op-grp h6{display:none}.op-nv{width:auto;flex:none;height:38px;padding:0 14px;font-size:14px;border-radius:19px;background:#fff}.op-nv i{display:none}.op-nv.on{background:var(--navy);color:#fff}.op-nv em{margin-left:6px}.op-foot{display:none}.op-main{padding:20px 16px 64px}.op-ph h1,.op-hi{font-size:22px}.op-s,.op-c{padding:22px 20px;border-radius:18px}.op-g2,.op-g3{grid-template-columns:1fr}.op-c .big{font-size:28px}.op-hl{font-size:22px}.op-hl .dot{margin:0 10px}.op .acts .sp{display:none}.op .bars{height:104px}.op .two{grid-template-columns:1fr;gap:32px;margin-top:32px}.op .kpi,.op .kpi.q4{grid-template-columns:1fr 1fr}.op .kpi b{font-size:19px}.op .frm{grid-template-columns:1fr 1fr}.op .cfrm{grid-template-columns:1fr 1fr}.op .panel{padding:18px}.op .qrbox{grid-template-columns:1fr;gap:18px}.op .lgf{grid-template-columns:1fr;margin-top:24px}.op .sub{margin-top:32px;padding-top:24px}}\
 @media (prefers-reduced-motion:reduce){.op,.op *{transition:none!important}}\
 '
   var esc = function (s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
@@ -456,6 +464,7 @@
     var tmp = document.createElement('div'); tmp.innerHTML = ledgerSection(st);
     old.parentNode.replaceChild(tmp.firstChild, old);
     wireLedger(st.el);
+    showPage();
   }
   function lgMsg(t) { if (st && st.lg) st.lg.msg = t; var b = st && st.el.querySelector('[data-m="lg"]'); if (b) b.textContent = t; }
   function lgApply(r) {
@@ -592,6 +601,55 @@
     if (box) wireLedgerTable(box);
   }
 
+  // ---- 메뉴와 페이지
+  // 아이콘: 24칸 선 그림 (글꼴 기호는 기기마다 달라 보여서 SVG로)
+  var SVG = function (d) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
+  var ICON = {
+    home: SVG('<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>'),
+    won: SVG('<path d="M4 6l3 12 5-10 5 10 3-12"/><path d="M3 11h18M3 14h18"/>'),
+    book: SVG('<path d="M5 4h11a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M5 17a3 3 0 013-3h11"/>'),
+    card: SVG('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/>'),
+    user: SVG('<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>'),
+    id: SVG('<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 17c.8-1.8 2-2.5 3.5-2.5s2.7.7 3.5 2.5M15 10h4M15 14h3"/>'),
+    cert: SVG('<path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h5"/>'),
+    sms: SVG('<path d="M4 5h16v11H9l-5 4z"/>'),
+    chart: SVG('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+    bolt: SVG('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),
+    mail: SVG('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'),
+  };
+  var NAV = [
+    ['', [['home', '홈', 'home']]],
+    ['돈', [['acc', '계좌', 'won'], ['ledger', '회계장부', 'book'], ['cost', '유지비 · 계정', 'card']]],
+    ['회원', [['approve', '가입 승인', 'user'], ['card', '학회원증', 'id'], ['cert', '수료증', 'cert'], ['sms', '문자 기록', 'sms']]],
+    ['사이트', [['visit', '방문자', 'chart'], ['auto', '자동 작업', 'bolt'], ['mail', '알림 메일', 'mail']]],
+  ];
+  var TITLE = { home: '', acc: '계좌', ledger: '회계장부', cost: '유지비 · 계정', card: '학회원증', cert: '수료증', sms: '문자 기록', visit: '방문자', auto: '자동 작업', mail: '알림 메일' };
+  function markNav() {
+    st.el.querySelectorAll('[data-nv]').forEach(function (b) { var on = b.getAttribute('data-nv') === st.page; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    var bd = st.el.querySelector('[data-badge]'); if (bd) { bd.hidden = !st.pending; bd.textContent = st.pending || ''; }
+  }
+  // 지금 페이지의 칸만 보이고, 위 제목에는 그 칸의 설명(.mt)을 옮겨 쓴다
+  function showPage() {
+    if (!st) return;
+    var el = st.el, pg = st.page, sec0 = null;
+    el.querySelectorAll('.op-body>.op-s').forEach(function (x) { var on = x.id === 'op-' + pg; x.hidden = !on; if (on) sec0 = x; });
+    var ph = el.querySelector('.op-ph');
+    ph.hidden = pg === 'home' || !sec0;
+    if (!ph.hidden) { ph.querySelector('h1').textContent = TITLE[pg]; var mt = sec0.querySelector('.op-h .mt'); ph.querySelector('p').textContent = mt ? mt.textContent : ''; }
+    markNav();
+  }
+  function go(pg) {
+    if (!st || !TITLE.hasOwnProperty(pg)) return;
+    st.page = pg;
+    try { sessionStorage.setItem('rfs_ops_page', pg); } catch (e) {}
+    showPage();
+    st.el.scrollTo({ top: 0 });
+    if (pg === 'ledger') lgOpen();   // 회계장부를 누르면 연다 (서버에서 받고 SheetJS도 이때 불러온다)
+  }
+  function openApprove() {
+    if (window.RFSJoin) window.RFSJoin.admin({ sb: st.sb, onChange: function (n) { st.pending = n; if (st.onPending) st.onPending(n); render(); } });
+  }
+
   function render() {
     var s = st, el = s.el.querySelector('.op-body');
     var acc = (s.state.account && s.state.account.value && s.state.account.value.entries) || [];
@@ -602,19 +660,51 @@
     var month = costs.reduce(function (a, c) { return a + monthlyKRW(c, rate); }, 0);
     var runway = last && month > 0 ? last.balance / month : null;
     var ga = s.ga, gaOk = ga && ga.configured && !ga.error && ga.days;
-
-    // ① SUMMARY
     var diff = last && prev ? last.balance - prev.balance : null;
-    var summary = sec('sum', '요약', last ? esc(last.date.replace(/-/g, '.')) + ' 기준' : '',
-      '<div class="op-sum"><div><div class="k">법인계좌 잔액</div>' +
-        '<div class="big">' + (last ? num(last.balance) + '<small>원</small>' : '—') + '</div>' +
-        '<div class="chg">' + (diff == null ? (last ? '첫 기록' : '잔액 기록 없음') : '직전 기록 대비<b class="' + (diff >= 0 ? 'up' : 'dn') + '">' + (diff >= 0 ? '+' : '−') + num(Math.abs(diff)) + '원</b>') + '</div></div>' +
-      '<div class="pn">' +
-        '<div class="row"><span>이번 달 유지비 (예상)</span><b>' + won(month) + '</b></div>' +
-        '<div class="row"><span>잔액 기준 운영 가능 기간</span><b class="' + (runway != null && runway < 6 ? (runway < 3 ? 'bad' : 'w') : '') + '">' + (runway == null ? '—' : runway >= 120 ? '10년 이상' : runway.toFixed(1) + '개월') + '</b></div>' +
-        '<div class="row"><span>최근 30일 방문자</span><b>' + (gaOk ? num(ga.users30) + '명' : '—') + '</b></div>' +
-        '<div class="row"><span>가입 승인 대기</span><span><b class="' + (s.pending ? 'w' : '') + '">' + (s.pending == null ? '—' : s.pending + '건') + '</b><button class="go" type="button" data-a="approve">승인</button></span></div>' +
-      '</div></div>', true);
+
+    // ① 홈: 할 일 + 잔액·방문자 카드 + 작은 숫자들 (토스처럼 지금 처리할 것부터)
+    var dueOf = function (c) {   // 매월·매년은 날짜가 지났으면 같은 날짜로 다음 달·내년 (ops-reminder 함수와 같은 계산)
+      if (!c.next || !/^\d{4}-\d{2}-\d{2}$/.test(c.next)) return null;
+      var step = c.cycle === 'month' ? 1 : c.cycle === 'year' ? 12 : 0, nx = c.next, p = c.next.split('-').map(Number);
+      var dd = function (x) { return Math.round((Date.parse(x) - Date.parse(today())) / 864e5); };
+      for (var k = 1; step && dd(nx) < 0 && k < 600; k++) {
+        var t = new Date(Date.UTC(p[0], p[1] - 1 + step * k, 1)), lastD = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 0)).getUTCDate();
+        nx = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), Math.min(p[2], lastD))).toISOString().slice(0, 10);
+      }
+      return { date: nx, days: dd(nx) };
+    };
+    var md = function (d) { return +d.slice(5, 7) + '월 ' + +d.slice(8, 10) + '일'; };
+    var todos = [];
+    if (s.pending) todos.push({ ic: 'user', bg: '#FFEEEF', fg: '#F04452', t: '가입 신청 ' + s.pending + '건이 기다려요', sub: '승인하면 신청자에게 안내 문자가 가요', btn: '승인하기', a: 'approve', p: true });
+    costs.forEach(function (c) {
+      var d = dueOf(c); if (!d) return;
+      var win = c.cycle === 'month' ? 14 : 45;
+      if (d.days < 0) todos.push({ ic: 'card', bg: '#FFF4E5', fg: '#E07B00', t: c.name + ' 날짜가 ' + (-d.days) + '일 지났어요', sub: '끝났으면 유지비 표에서 지우거나 날짜를 고쳐 주세요', btn: '유지비', go: 'cost' });
+      else if (d.days <= win) todos.push({ ic: 'card', bg: '#FFF4E5', fg: '#E07B00', t: c.name.replace(/\s*\(.*\)$/, '') + (d.days === 0 ? ' 결제일이 오늘이에요' : ' 결제가 ' + d.days + '일 남았어요'), sub: md(d.date) + (c.auto ? '' : ' · ' + (c.cur === 'USD' ? '$' + (+c.amount || 0) : num(c.amount) + '원')), btn: '보기', go: 'cost' });
+    });
+    var accAge = last ? Math.round((Date.parse(today()) - Date.parse(last.date)) / 864e5) : null;
+    if (accAge == null || accAge > 35) todos.push({ ic: 'won', bg: '#E8F3FF', fg: '#3182F6', t: accAge == null ? '계좌 잔액을 아직 기록하지 않았어요' : '계좌 잔액을 기록한 지 ' + accAge + '일 됐어요', sub: '한 달에 한 번, 큰 입출금이 있을 때 적어 두면 돼요', btn: '기록하기', go: 'acc' });
+    if (!set.notify_email) todos.push({ ic: 'mail', bg: '#F2F4F6', fg: '#4E5968', t: '알림 받을 이메일이 없어요', sub: '가입 신청·결제 알림을 받으려면 넣어 주세요', btn: '넣기', go: 'mail' });
+    var gd0 = gaOk ? ga.days || [] : [], sp = gd0.slice(-14), spMax = Math.max.apply(null, sp.map(function (x) { return x.users; }).concat([1]));
+    var u7 = gd0.slice(-7).reduce(function (a, x) { return a + x.users; }, 0), u7p = gd0.slice(-14, -7).reduce(function (a, x) { return a + x.users; }, 0);
+    var cardsN = s.cards ? s.cards.filter(function (c) { return cardState(c)[0] === 'ok'; }).length : null, cardsOff = s.cards ? s.cards.filter(function (c) { return c.revoked; }).length : 0;
+    var sms30 = (s.sms || []).filter(function (x) { return Date.now() - Date.parse(x.created_at) < 30 * 864e5; }).length;
+    var homeHtml = '<section class="op-s op-home" id="op-home" style="background:none;padding:0">' +
+      '<h2 class="op-hi">' + (todos.length ? '확인할 게 ' + todos.length + '개 있어요' : '지금 처리할 일은 없어요') + '</h2><p>' + esc(md(today())) + ' · ' + esc(st.upAt || '') + '</p>' +
+      '<div class="op-g2"><div class="op-c lnk" data-go="acc"><h3>법인계좌</h3><div class="big">' + (last ? num(last.balance) + '<small>원</small>' : '—') + '</div>' +
+        '<div class="cap">' + (last ? md(last.date) + '에 기록했어요' + (diff == null ? '' : ' · 직전보다 <span class="' + (diff >= 0 ? 'up' : 'dn') + '">' + (diff >= 0 ? '+' : '−') + num(Math.abs(diff)) + '원</span>') : '잔액 기록이 없어요') + '</div>' +
+        '<div class="op-pill"><span>이번 달 유지비<b>' + won(month) + '</b></span><span>버틸 수 있는 기간<b class="' + (runway != null && runway < 6 ? (runway < 3 ? 'bad' : 'w') : '') + '">' + (runway == null ? '—' : runway >= 120 ? '10년 이상' : Math.floor(runway) + '개월') + '</b></span></div></div>' +
+      '<div class="op-c lnk" data-go="visit"><h3>최근 30일 방문자</h3><div class="big">' + (gaOk ? num(ga.users30) + '<small>명</small>' : '—') + '</div>' +
+        '<div class="cap">' + (gaOk ? (u7p ? '이번 주 ' + num(u7) + '명 · 지난주보다 ' + (u7 >= u7p ? '<span class="up">' + Math.round((u7 / u7p - 1) * 100) + '% 늘었어요</span>' : '<span class="dn">' + Math.round((1 - u7 / u7p) * 100) + '% 줄었어요</span>') : '이번 주 ' + num(u7) + '명') : !ga ? '불러오는 중' : 'GA 연결이 필요해요') + '</div>' +
+        (sp.length ? '<div class="op-spark">' + sp.map(function (x, k) { return '<i class="' + (k >= sp.length - 7 ? 'on' : '') + '" style="height:' + Math.max(6, x.users / spMax * 100) + '%" title="' + esc(x.date + ' · ' + x.users + '명') + '"></i>'; }).join('') + '</div>' : '') + '</div></div>' +
+      '<div class="op-c"><h3>할 일</h3><div class="op-todo">' + (todos.length ? todos.map(function (x) {
+        return '<div class="it"><span class="ic" style="background:' + x.bg + ';color:' + x.fg + '">' + ICON[x.ic] + '</span><div class="t"><b>' + esc(x.t) + '</b><small>' + esc(x.sub) + '</small></div>' +
+          '<button class="bt ' + (x.p ? 'p' : 'lt') + '" type="button"' + (x.a ? ' data-a="' + x.a + '"' : ' data-go="' + x.go + '"') + '>' + x.btn + '</button></div>';
+      }).join('') : '<div class="none">다 처리했어요. 새로 생기면 여기에 떠요.</div>') + '</div></div>' +
+      '<div class="op-g3"><div class="op-c mini lnk" data-go="card"><h3>학회원증</h3><div class="big">' + (cardsN == null ? '—' : cardsN + '<small>장</small>') + '</div><div class="cap">' + (cardsOff ? '정지 ' + cardsOff + '장' : '지금 쓸 수 있는 카드') + '</div></div>' +
+      '<div class="op-c mini lnk" data-go="sms"><h3>최근 30일 문자</h3><div class="big">' + num(sms30) + '<small>건</small></div><div class="cap">AGORA 선배님 연락처</div></div>' +
+      '<div class="op-c mini lnk" data-go="cost"><h3>이번 달 Polaris 질문</h3><div class="big">' + (s.voyage ? num(s.voyage.q) + '<small>개</small>' : '—') + '</div><div class="cap">' + (s.voyage ? 'Voyage ' + usd(s.voyage.usd) : '서버 사용량') + '</div></div></div>' +
+      '</section>';
 
     // ② 방문자
     var gaBody;
@@ -704,8 +794,9 @@
       autoRow('학기 넘기기', ['열린 화면 오른쪽 <b>Run workflow</b> 누르기', '새 학기(예: 27-1)·알럼나이 수·임원 이름 쓰고 초록 <b>Run workflow</b>', '1분쯤 뒤 생긴 PR에 임원 사진 올리고 <b>Merge</b>'], '/actions/workflows/new-term.yml', '학기 넘기기') +
       autoRow('열린 PR', ['자동으로 만든 변경이 여기 쌓여요', '눌러서 미리보기 주소로 확인하고 <b>Merge pull request</b>'], '/pulls', 'PR 보기') +
       autoRow('자동 작업 기록', ['주가 갱신·RFM·용어 풀이·함수 배포·알림 메일이 잘 돌았는지', '초록 체크면 성공, 빨간 X면 실패 (실패하면 눌러서 이유 보기)'], '/actions', '기록 보기'));
-    el.innerHTML = summary + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + auto + mail;
+    el.innerHTML = homeHtml + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + auto + mail;
     wire();
+    showPage();
   }
 
   function save(key, value, m, done) {
@@ -735,7 +826,8 @@
       sc.onload = function () { m.textContent = ''; if (window.RFSCert && st) go(); }; sc.onerror = function () { m.textContent = '불러오지 못했어요'; };
       document.head.appendChild(sc);
     };
-    el.querySelector('[data-a="approve"]').onclick = function () { if (window.RFSJoin) window.RFSJoin.admin({ sb: st.sb, onChange: function (n) { st.pending = n; if (st.onPending) st.onPending(n); render(); } }); };
+    el.querySelectorAll('.op-body [data-a="approve"]').forEach(function (b) { b.onclick = openApprove; });
+    el.querySelectorAll('.op-body [data-go]').forEach(function (b) { b.onclick = function () { go(b.getAttribute('data-go')); }; });
     el.querySelector('[data-f="acc"]').onsubmit = function (e) {
       e.preventDefault();
       var bal = +el.querySelector('#op-bal').value.replace(/[^\d-]/g, ''), date = el.querySelector('#op-date').value || today(), memo = el.querySelector('#op-memo').value.trim().slice(0, 60);
@@ -792,7 +884,7 @@
     var nw = el.querySelector('[data-a="cardnew"]');
     if (nw) nw.onclick = function () { st.editCard = null; st.editCardOld = null; render(); };
     el.querySelectorAll('[data-ce]').forEach(function (b) {
-      b.onclick = function () { var c = cards[+b.getAttribute('data-ce')]; st.editCard = Object.assign({}, c); st.editCardOld = c.no; render(); var f = el.querySelector('[data-f="card"]'); if (f) el.scrollTo({ top: f.offsetTop - 120, behavior: 'smooth' }); };
+      b.onclick = function () { var c = cards[+b.getAttribute('data-ce')]; st.editCard = Object.assign({}, c); st.editCardOld = c.no; render(); var f = el.querySelector('[data-f="card"]'); if (f) f.scrollIntoView({ behavior: 'smooth', block: 'center' }); };
     });
     el.querySelectorAll('[data-cr]').forEach(function (b) {
       b.onclick = function () {
@@ -804,7 +896,7 @@
         });
       };
     });
-    el.querySelectorAll('[data-cq]').forEach(function (b) { b.onclick = function () { st.qr = +b.getAttribute('data-cq'); render(); var x = el.querySelector('.qrbox'); if (x) el.scrollTo({ top: x.offsetTop - 120, behavior: 'smooth' }); }; });
+    el.querySelectorAll('[data-cq]').forEach(function (b) { b.onclick = function () { st.qr = +b.getAttribute('data-cq'); render(); var x = el.querySelector('.qrbox'); if (x) x.scrollIntoView({ behavior: 'smooth', block: 'center' }); }; });
     var cv = el.querySelector('[data-qr]'), qc = st.qr != null && cards[st.qr];
     if (!cv || !qc || !qc.token) return;
     var url = CARD_URL + qc.token;
@@ -831,7 +923,7 @@
       call(sb, { action: 'ga' }).then(function (x) { if (!st) return; st.ga = x && x.ok ? x.ga : { configured: true, error: (x && x.error) || 'fail' }; render(); });
       if (!st) return;
       var g = r[0];
-      if (!g || !g.ok) { st.el.querySelector('.op-body').innerHTML = '<section class="op-s">' + stn('err', '불러오기 실패 · ' + (g && g.error === 'admin' ? '관리자 계정 아님' : 'member-admin 배포 확인')) + '</section>'; return; }
+      if (!g || !g.ok) { st.el.querySelector('.op-ph').hidden = true; st.el.querySelector('.op-body').innerHTML = '<section class="op-s">' + stn('err', '불러오기 실패 · ' + (g && g.error === 'admin' ? '관리자 계정 아님' : 'member-admin 배포 확인')) + '</section>'; return; }
       st.state = g.state || {}; st.sms = g.sms; st.mail = g.mail;
       loadCards();
       st.pending = r[1] && r[1].ok ? (r[1].list || []).length : null;
@@ -839,8 +931,10 @@
       var u = r[2];
       st.voyage = u && u.ok ? voyageMonth(u.days) : null;
       st.usageErr = !u ? '로그인 정보 없음' : u.ok ? '' : u.error === 403 ? '권한 없음' : '연결 실패';
-      st.el.querySelector('.op-up').textContent = new Date().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) + ' 기준';
+      st.upAt = new Date().toLocaleTimeString('ko-KR', { hour: 'numeric', minute: '2-digit' }) + ' 기준';
+      st.el.querySelector('.op-up').textContent = st.upAt;
       render();
+      if (st.page === 'ledger') lgOpen();
     });
   }
 
@@ -849,27 +943,23 @@
     close();
     var el = document.createElement('div');
     el.className = 'op'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '운영 대시보드');
-    var tabs = [['sum', '요약'], ['visit', '방문자'], ['acc', '계좌'], ['ledger', '회계장부'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['card', '학회원증'], ['cert', '수료증'], ['auto', '자동 작업'], ['mail', '알림 메일']];
-    el.innerHTML = '<div class="op-top"><div class="op-top-in"><button class="x" type="button" aria-label="닫기">×</button><div class="ey">R.F.S. · Operations Console</div><h2>Operations</h2><div class="meta"><span class="op-up"></span><button type="button" data-a="reload">새로고침</button></div></div></div>' +
-      '<nav class="op-tabs" aria-label="운영 메뉴"><div class="op-tabs-in">' + tabs.map(function (t, i) { return '<a href="#op-' + t[0] + '" data-t="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</a>'; }).join('') + '</div></nav>' +
-      '<div class="op-in op-body"><section class="op-s">' + LOADING + '</section></div>';
+    var me = '';
+    el.innerHTML = '<div class="op-app"><aside class="op-nav" aria-label="운영 메뉴"><div class="op-brand"><b>R.F.S.<span>운영</span></b><button class="x" type="button" aria-label="닫기">×</button></div><div class="op-grps">' +
+      NAV.map(function (g) {
+        var items = g[1].map(function (n) { return '<button class="op-nv" type="button" data-nv="' + n[0] + '"><i>' + ICON[n[2]] + '</i>' + n[1] + (n[0] === 'approve' ? '<em hidden data-badge></em>' : '') + '</button>'; }).join('');
+        return g[0] ? '<div class="op-grp"><h6>' + g[0] + '</h6>' + items + '</div>' : '<div class="op-grp">' + items + '</div>';
+      }).join('') + '</div><div class="op-foot"><span class="op-up">' + me + '</span><button type="button" data-a="reload">새로고침</button></div></aside>' +
+      '<main class="op-main"><header class="op-ph" hidden><h1></h1><p></p></header><div class="op-body"><section class="op-s">' + LOADING + '</section></div></main></div>';
     document.body.appendChild(el);
-    st = { el: el, sb: o.sb, onPending: o.onPending, state: {} };
+    var page0 = 'home'; try { page0 = sessionStorage.getItem('rfs_ops_page') || 'home'; } catch (e) {}
+    st = { el: el, sb: o.sb, onPending: o.onPending, state: {}, page: TITLE[page0] ? page0 : 'home' };
     el.querySelector('.x').onclick = close;
     el.querySelector('[data-a="reload"]').onclick = load;
-    // 위쪽 탭: 누르면 그 칸으로, 스크롤하면 지금 칸에 밑줄 (화면 주소는 바꾸지 않는다)
-    el.querySelectorAll('.op-tabs a').forEach(function (a) {
-      a.onclick = function (e) {
-        e.preventDefault(); var id = a.getAttribute('data-t'), t = el.querySelector('#op-' + id);
-        if (t) el.scrollTo({ top: t.offsetTop - 64, behavior: 'smooth' });
-        if (id === 'ledger') lgOpen();   // 회계장부 탭을 누르면 연다 (SheetJS도 이때 불러온다)
-      };
+    // 왼쪽 메뉴: 누르면 오른쪽 화면이 그 페이지로 바뀐다. 가입 승인은 승인 창을 연다
+    el.querySelectorAll('[data-nv]').forEach(function (b) {
+      b.onclick = function () { var id = b.getAttribute('data-nv'); if (id === 'approve') openApprove(); else go(id); };
     });
-    el.addEventListener('scroll', function () {
-      var cur = 'sum';
-      el.querySelectorAll('.op-s').forEach(function (x) { if (x.offsetTop - 90 <= el.scrollTop) cur = x.id.slice(3); });
-      el.querySelectorAll('.op-tabs a').forEach(function (a) { a.classList.toggle('on', a.getAttribute('data-t') === cur); });
-    }, { passive: true });
+    markNav();
     // 회계장부: 10분 동안 손대지 않으면 잠근다
     st.lgAct = Date.now();
     st.act = function () { if (st) st.lgAct = Date.now(); };
