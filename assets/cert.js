@@ -10,6 +10,7 @@
   var LIB = {
     h2c: { src: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', sri: 'sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H' },
     pdf: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js', sri: 'sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk' },
+    zip: { src: 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', sri: 'sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG' },
   };
   var FONT = 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;800;900&display=swap';
   var UNITS = ['리서치 1팀', '리서치 2팀', '리서치 3팀', '리서치 4팀', '리서치 5팀', '리서치 6팀', '운용팀', '회장', '부회장'];
@@ -28,7 +29,7 @@
     }, function () { return { error: 'fail' }; });
   }
   function lib(k) {
-    var g = k === 'h2c' ? 'html2canvas' : 'jspdf';
+    var g = { h2c: 'html2canvas', pdf: 'jspdf', zip: 'JSZip' }[k];
     if (window[g]) return Promise.resolve(window[g]);
     return new Promise(function (ok, no) {
       var sc = document.createElement('script'); sc.src = LIB[k].src; sc.integrity = LIB[k].sri; sc.crossOrigin = 'anonymous';
@@ -50,6 +51,30 @@
     var period = f ? f.y + '년 ' + (f.h === 1 ? 1 : 7) + '월 ~ ' + l.y + '년 ' + (l.h === 1 ? 6 : 12) + '월' : '';
     var end = l ? semEnd(l.y, l.h) : '';
     return { parts: parts, period: period, end: end, autoDate: end && end > kst() ? end : kst() };
+  }
+  // 여러 명 한 번에: 한 줄에 한 사람. 엑셀에서 복사해 붙여도 된다(탭).  이름, 기수, 학기별 소속, 발급일(선택)
+  //   예) 심희범, 40, 25-1 리서치 5팀 팀원 / 25-2 리서치 5팀 팀장, 2026-11-19
+  //   학기는 25-1 · 2025-1 · 2025년 1학기 모두 된다. 소속 뒤 직책이 없으면 팀원
+  function parseList(text) {
+    var out = [], errs = [];
+    String(text || '').split(/\r?\n/).forEach(function (line, i) {
+      if (!line.trim()) return;
+      var f = line.indexOf('\t') >= 0 ? line.split('\t') : line.split(/\s*,\s*/);
+      f = f.map(function (x) { return x.trim(); });
+      var name = (f[0] || '').replace(/\s+/g, ''), gen = (f[1] || '').replace(/\D/g, ''), date = (f[3] || '').replace(/\./g, '-').trim();
+      var rows = String(f[2] || '').split(/\s*[\/;·]\s*|\n/).map(function (tok) {
+        var m = tok.match(/(?:(20)?(\d{2}))\s*(?:년)?\s*-?\s*([12])\s*(?:학기)?\s+(.+)/);
+        if (!m) return null;
+        var rest = m[4].replace(/\s+/g, ''), unit = UNITS.filter(function (u) { return rest.indexOf(u.replace(/\s+/g, '')) === 0; }).sort(function (a, b) { return b.length - a.length; })[0];
+        if (!unit) return null;
+        return { y: 2000 + +m[2], h: +m[3], unit: unit, role: /팀장$/.test(rest) && unit !== '회장' && unit !== '부회장' ? '팀장' : '팀원' };
+      });
+      if (!name || !gen || !rows.length || rows.some(function (r) { return !r; })) { errs.push((i + 1) + '번째 줄'); return; }
+      if (date && !/^\d{4}-\d{1,2}-\d{1,2}$/.test(date)) { errs.push((i + 1) + '번째 줄 발급일'); return; }
+      if (date) date = date.split('-').map(function (x, j) { return j ? ('0' + x).slice(-2) : x; }).join('-');
+      out.push({ name: name, gen: gen, rows: rows, date: date || '' });
+    });
+    return { list: out, errs: errs };
   }
   var korDate = function (s) { var p = (s || '').split('-'); return p.length === 3 ? +p[0] + '년 ' + +p[1] + '월 ' + +p[2] + '일' : ''; };
   var spaced = function (n) { return esc(n); };
@@ -131,7 +156,7 @@
 .rc-set{border-top:1px solid #E7E4DD;padding-top:20px}.rc-set summary{cursor:pointer;font-weight:600}\
 .rc-sg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.rc-sg .bx{border:1px solid #E7E4DD;padding:14px;display:grid;gap:10px}\
 .rc-sg .im{height:56px;display:flex;align-items:center;justify-content:center;background:#FAF9F6;border:1px dashed #D8D4CB}.rc-sg .im img{max-height:52px;max-width:100%}\
-.rc-off{position:fixed;left:-20000px;top:0}\
+.rc-off{position:fixed;left:-20000px;top:0}.rc textarea{width:100%;min-height:150px;border:1px solid #D8D4CB;border-radius:2px;padding:10px;font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;color:#131B27;resize:vertical}.rc-batch{border-top:1px solid #E7E4DD;padding-top:20px}.rc-batch summary{cursor:pointer;font-weight:600}\
 @media (max-width:1180px){.rc-in{grid-template-columns:minmax(0,1fr)}.rc-pv{position:static}.rc-pv .frame{width:100%;max-width:520px;height:auto;aspect-ratio:794/1123}}\
 @media (max-width:560px){.rc-row{grid-template-columns:1fr 1fr;}.rc-f .g,.rc-sg{grid-template-columns:1fr}}' + PAGE_CSS;
 
@@ -166,10 +191,11 @@
     st.el.querySelector('.rc-rows').innerHTML = st.d.rows.map(rowHtml).join('');
   }
   function fileName() { return (st.d.name || '수료증').replace(/\s+/g, '') + '_수료증'; }
-  function capture() {
+  function capture(d) {
+    d = d || st.d;
     // 미리보기는 줄여 보여 주므로, 화면 밖에 원래 크기로 한 장 더 그려서 찍는다
     // html2canvas는 SVG 그림(엠블럼·서명)을 빠뜨릴 때가 있어서, 찍기 전에 SVG를 큰 PNG로 바꿔 둔다
-    var off = document.createElement('div'); off.className = 'rc-off'; off.innerHTML = page(st.d, st.cfg); st.el.appendChild(off);
+    var off = document.createElement('div'); off.className = 'rc-off'; off.innerHTML = page(d, st.cfg); st.el.appendChild(off);
     var imgs = Array.prototype.map.call(off.querySelectorAll('img'), function (im) {
       return (im.complete ? Promise.resolve() : new Promise(function (ok) { im.onload = im.onerror = ok; })).then(function () { return /\.svg($|\?)|^data:image\/svg/.test(im.getAttribute('src')) ? toPng(im) : null; });
     });
@@ -206,6 +232,9 @@
       '<label style="max-width:220px">발급일<input id="rc-date" type="date"></label>' +
       '<p class="note">기본 발급일은 오늘이에요. 마지막 학기가 아직 안 끝났으면 그 학기 마지막 날(6/30, 12/31)로 들어가요.</p>' +
       '<div class="acts"><button class="bt p" type="button" data-a="png" disabled>PNG 저장</button><button class="bt p" type="button" data-a="pdf" disabled>PDF 저장</button><span class="msg" data-m="out"></span></div>' +
+      '<details class="rc-set rc-batch"><summary>여러 명 한 번에</summary><p class="note" style="margin-top:8px">한 줄에 한 사람: <b>이름, 기수, 학기별 소속, 발급일(선택)</b>. 학기별 소속은 <b>/</b>로 나눠요. 엑셀에서 네 칸을 그대로 복사해 붙여도 돼요. 발급일을 비우면 위 규칙(오늘 또는 학기 끝)대로 들어가요.</p>' +
+      '<textarea id="rc-list" rows="7" spellcheck="false" placeholder="심희범, 40, 25-1 리서치 5팀 팀원 / 25-2 리서치 5팀 팀장\n김동은, 41, 25-2 리서치 6팀 팀원 / 26-1 리서치 3팀 팀장, 2026-11-19"></textarea>' +
+      '<div class="acts" style="margin-top:12px"><button class="bt p" type="button" data-a="batch">모두 만들기 (zip)</button><span class="msg" data-m="batch"></span></div><p class="note" style="margin-top:8px">사람마다 폴더 하나에 PDF·PNG가 하나씩 들어가요. 같은 이름이 둘이면 폴더 이름 뒤에 _2를 붙여요.</p></details>' +
       '<details class="rc-set"><summary>서명·인감 설정</summary><p class="note" style="margin-top:8px">회장·부회장이 바뀌면 여기서 이름과 서명을 바꿔요. 서명·인감 이미지는 배경이 투명한 PNG나 SVG가 좋아요. 관리자만 볼 수 있는 곳에 저장돼요.</p>' +
       '<div class="rc-sg">' + ['chair', 'vice'].map(function (p) { var t = p === 'chair' ? '회장' : '부회장'; return '<div class="bx"><label>' + t + ' 이름<input data-p="' + p + '" data-k="name" maxlength="10"></label><div class="im" data-im="' + p + '">서명 없음</div><label>' + t + ' 서명 이미지<input type="file" accept="image/png,image/svg+xml,image/webp,image/jpeg" data-p="' + p + '" data-k="sig"></label></div>'; }).join('') +
       '<div class="bx"><div class="im" data-im="seal">인감 없음</div><label>인감 이미지<input type="file" accept="image/png,image/svg+xml,image/webp,image/jpeg" data-k="seal"></label></div></div>' +
@@ -240,6 +269,30 @@
         var m = el.querySelector('[data-m="cfg"]'); m.textContent = '저장 중';
         call(st.sb, { action: 'cert_save', value: st.cfg }).then(function (r) { if (st) m.textContent = r && r.ok ? '저장됨' : r && r.error === 'size' ? '이미지가 너무 커요' : '저장 실패 · member-admin 배포 확인'; });
       }
+      if (a === 'batch') {
+        var mb = el.querySelector('[data-m="batch"]'), pr = parseList(el.querySelector('#rc-list').value);
+        if (pr.errs.length) { mb.textContent = '형식을 확인해 주세요 · ' + pr.errs.slice(0, 3).join(', '); return; }
+        if (!pr.list.length) { mb.textContent = '명단을 붙여 넣어 주세요'; return; }
+        t.disabled = true;
+        Promise.all([lib('zip'), lib('pdf')]).then(function (L) {
+          var zip = new L[0](), used = {}, i = 0;
+          var next = function () {
+            if (!st) return null;
+            if (i >= pr.list.length) return zip.generateAsync({ type: 'blob' }).then(function (blob) { var u = URL.createObjectURL(blob); dl(u, '수료증_' + pr.list.length + '명.zip'); setTimeout(function () { URL.revokeObjectURL(u); }, 60e3); mb.textContent = pr.list.length + '명 저장됨'; t.disabled = false; });
+            var d = pr.list[i++]; mb.textContent = '만드는 중 ' + i + ' / ' + pr.list.length + ' · ' + d.name;
+            var dir = d.name; used[dir] = (used[dir] || 0) + 1; if (used[dir] > 1) dir += '_' + used[dir];
+            return capture(d).then(function (cv) {
+              zip.file(dir + '/' + dir + '_수료증.png', cv.toDataURL('image/png').split(',')[1], { base64: true });
+              var doc = new L[1].jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', compress: true });
+              doc.addImage(cv.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 210, 297);
+              zip.file(dir + '/' + dir + '_수료증.pdf', doc.output('arraybuffer'));
+              return next();
+            });
+          };
+          return next();
+        }).catch(function () { if (st) { mb.textContent = '만들지 못했어요 · 새로고침 뒤 다시'; t.disabled = false; } });
+        return;
+      }
       if (a === 'png' || a === 'pdf') {
         var mo = el.querySelector('[data-m="out"]'); mo.textContent = '만드는 중'; t.disabled = true;
         capture().then(function (cv) {
@@ -273,5 +326,5 @@
     document.removeEventListener('keydown', st.key);
     var el = st.el; st = null; if (el && el.parentNode) el.parentNode.removeChild(el);
   }
-  window.RFSCert = { open: open, close: close, compose: compose };
+  window.RFSCert = { open: open, close: close, compose: compose, parseList: parseList };
 })();

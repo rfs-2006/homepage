@@ -1,0 +1,79 @@
+name: Polaris에 새 리포트 넣기
+
+# main에 기업 리포트 PDF(assets/reports/<학기>_<id>.pdf)가 새로 올라오면 Polaris 검색 데이터(비공개 rfs-cafe-data)에 붙인다.
+# tools/rag/add_docs.py --site → 파싱·청크·Voyage 임베딩 → rfs-cafe-data에 push. 서버는 polaris-autoupdate 타이머가 5분 안에 받아 다시 시작한다.
+# 필요한 Secret
+#   CAFE_DATA_DEPLOY_KEY: rfs-cafe-data → Settings → Deploy keys에 등록한 키의 비밀 쪽 (Allow write access 체크)
+#   VOYAGE_API_KEY: Voyage API 키 (서버 /etc/polaris.env와 같은 것)
+# 손으로 돌리기: Actions → 이 워크플로 → Run workflow → 파일 이름 (예: 26-2_gigavis.pdf, 띄어쓰기로 여러 개)
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/reports/*.pdf'
+  workflow_dispatch:
+    inputs:
+      files:
+        description: 'assets/reports/ 안의 파일 이름 (띄어쓰기로 여러 개)'
+        required: true
+
+concurrency:
+  group: polaris-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash   # pipefail: tee 앞 명령이 실패하면 멈춘다
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    env:
+      CAFE_DATA_DEPLOY_KEY: ${{ secrets.CAFE_DATA_DEPLOY_KEY }}
+      VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Skip without secrets
+        if: env.CAFE_DATA_DEPLOY_KEY == '' || env.VOYAGE_API_KEY == ''
+        run: echo "CAFE_DATA_DEPLOY_KEY·VOYAGE_API_KEY Secret이 없어서 건너뜀"
+      - name: New report PDFs
+        id: find
+        if: env.CAFE_DATA_DEPLOY_KEY != '' && env.VOYAGE_API_KEY != ''
+        env:
+          BEFORE: ${{ github.event.before }}
+          FILES: ${{ github.event.inputs.files }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            list=$(for f in $FILES; do echo "assets/reports/$(basename "$f")"; done)
+          else
+            list=$(git diff --diff-filter=A --name-only "$BEFORE" "$GITHUB_SHA" -- 'assets/reports/*.pdf' | grep -E '^assets/reports/[0-9]{2}-[12]_[^/]+\.pdf$' || true)
+          fi
+          echo "$list"
+          echo "files=$(echo $list)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.find.outputs.files != ''
+        with:
+          python-version: '3.12'
+      - name: Add to Polaris data
+        if: steps.find.outputs.files != ''
+        env:
+          FILES: ${{ steps.find.outputs.files }}
+        run: |
+          pip install -q numpy pymupdf olefile xlrd openpyxl datasketch
+          mkdir -p ~/.ssh && printf '%s\n' "$CAFE_DATA_DEPLOY_KEY" > ~/.ssh/cafe && chmod 600 ~/.ssh/cafe
+          export GIT_SSH_COMMAND="ssh -i ~/.ssh/cafe -o StrictHostKeyChecking=accept-new"
+          git clone -q --filter=blob:none --sparse --depth 1 git@github.com:rfs-2006/rfs-cafe-data.git /tmp/cafe
+          git -C /tmp/cafe sparse-checkout set parsed vectors
+          python3 -I tools/rag/add_docs.py /tmp/cafe --site $FILES | tee /tmp/log.txt
+          names=$(for f in $FILES; do basename "$f"; done | tr '\n' ' ')
+          cd /tmp/cafe
+          if git diff --quiet; then echo "바뀐 것 없음"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add parsed vectors
+          git commit -q -m "사이트 리포트 추가: $names"
+          git push -q origin HEAD:main

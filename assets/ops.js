@@ -2,6 +2,7 @@
  * 한 화면에 ① 계좌 잔액·이번 달 유지비·버틸 수 있는 기간·승인 대기 ② 회원가입 승인 ③ 계좌 잔액 기록(손으로 입력)
  * ③-2 방문자(Google Analytics, member-admin의 ga) ④ Voyage 사용량·Polaris 질문 수(Polaris 서버 /usage, 이번 달·지난달) ⑤ 유지비 표 ⑥ 문자 기록 ⑦ 알림 메일 설정. (홈페이지 유지비만 본다: Claude API는 뺐다)
  * ⑧ 학회원증: 카드 목록·발급/수정·정지, QR 보기(https://caurfs.kr/v/#토큰, member-admin의 card_*, 확인 화면은 /v/ + member-verify)
+ * ⑪ 자동 작업: GitHub Actions 링크 (리포트 PDF 올리기 inbox/ → add-report.yml, 학기 넘기기 new-term.yml)
  * ⑩ 수료증: '수료증 만들기'를 누르면 assets/cert.js(RFSCert)를 불러와 연다. 서명·인감은 member-admin cert_get·cert_save
  * ⑨ 회계장부: 잠근 채로 열리고 '열기'를 눌러야 서버에서 받는다(member-admin ledger_*·receipt_*, LEDGER_ADMINS). 금액은 가려 두고 '금액 보기'는 60초 뒤 다시 가린다.
  *    10분 동안 손대지 않으면 다시 잠근다. 장부는 메모리에만 두고 localStorage·sessionStorage에 넣지 않는다. 엑셀은 브라우저에서 읽고 쓴다(SheetJS, 버전 고정 + SRI).
@@ -685,11 +686,21 @@
       '<form data-f="set" class="mailbox" style="margin-top:32px"><input id="op-mail" type="email" placeholder="알림 받을 이메일" aria-label="알림 받을 이메일" value="' + esc(set.notify_email || '') + '">' +
       '<div style="margin-top:16px"><label class="chk"><input type="checkbox" id="op-n1"' + (nt.agora_sms === false ? '' : ' checked') + '>AGORA 선배님 연락처 문자 발송</label>' +
       '<label class="chk"><input type="checkbox" id="op-n2"' + (nt.signup === false ? '' : ' checked') + '>회원가입 신청</label>' +
-      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입 승인 (안내 문자 결과 포함)</label></div>' +
+      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입 승인 (안내 문자 결과 포함)</label>' +
+      '<label class="chk"><input type="checkbox" id="op-n4"' + (nt.due === false ? '' : ' checked') + '>결제·만료 알림 (매주 월요일, 유지비 표의 다음 결제일 기준)</label></div>' +
       '<div class="acts"><button class="bt p" type="submit">저장</button></div></form><div class="msg" data-m="set"></div>');
 
     var cert = sec('cert', '수료증', 'A4 · PNG·PDF', '<p class="note">이름·기수·학기별 소속을 넣으면 학회 수료증 양식으로 바로 만들어요. 회장·부회장 서명과 인감은 그 화면의 \u2018서명·인감 설정\u2019에서 바꿔요.</p><div class="acts" style="margin-top:24px"><button class="bt p" type="button" data-a="cert">수료증 만들기</button><span class="msg" data-m="cert"></span></div>');
-    el.innerHTML = summary + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + mail;
+    // ⑪ 자동 작업 (GitHub Actions): 리포트 PDF 올리기·학기 넘기기는 GitHub 화면에서 한다 (학회 GitHub 계정 로그인 필요)
+    var GH = 'https://github.com/rfs-2006/homepage';
+    var auto = sec('auto', '자동 작업', 'GitHub Actions',
+      '<p class="note">학회 GitHub 계정으로 로그인한 뒤 눌러요. 끝나면 PR이 열리고, 미리보기에서 확인한 뒤 머지하면 사이트에 반영돼요.</p>' +
+      '<ul class="auto-l" style="margin:24px 0 0;padding:0;list-style:none;line-height:2">' +
+      '<li><a href="' + GH + '/upload/main/inbox" target="_blank" rel="noopener"><b>리포트 올리기</b></a> · 리포트 PDF를 끌어다 놓고 Commit. 파일 이름을 영문(예: gigavis.pdf)으로 하면 그게 주소가 돼요. 표지·요약·전문·용어 풀이·주가까지 자동</li>' +
+      '<li><a href="' + GH + '/actions/workflows/new-term.yml" target="_blank" rel="noopener"><b>학기 넘기기</b></a> · Run workflow → 새 기수·회장·부회장 입력</li>' +
+      '<li><a href="' + GH + '/actions" target="_blank" rel="noopener"><b>자동 작업 기록</b></a> · 주가 갱신·RFM·용어 풀이·배포·알림 메일이 잘 돌았는지</li>' +
+      '<li><a href="' + GH + '/pulls" target="_blank" rel="noopener"><b>열린 PR</b></a> · 자동으로 만든 변경 확인·머지</li></ul>');
+    el.innerHTML = summary + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + auto + mail;
     wire();
   }
 
@@ -716,7 +727,7 @@
       var m = el.querySelector('[data-m="cert"]'), go = function () { window.RFSCert.open({ sb: st.sb }); };
       if (window.RFSCert) return go();
       m.textContent = '불러오는 중';
-      var sc = document.createElement('script'); sc.src = '/assets/cert.js?v=2';
+      var sc = document.createElement('script'); sc.src = '/assets/cert.js?v=3';
       sc.onload = function () { m.textContent = ''; if (window.RFSCert && st) go(); }; sc.onerror = function () { m.textContent = '불러오지 못했어요'; };
       document.head.appendChild(sc);
     };
@@ -750,7 +761,7 @@
       e.preventDefault();
       var mail = el.querySelector('#op-mail').value.trim();
       if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { el.querySelector('[data-m="set"]').textContent = '이메일 형식 확인'; return; }
-      var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked } });
+      var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked, due: el.querySelector('#op-n4').checked } });
       save('settings', set, 'set');
     };
     wireCards(el);
@@ -834,7 +845,7 @@
     close();
     var el = document.createElement('div');
     el.className = 'op'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '운영 대시보드');
-    var tabs = [['sum', '요약'], ['visit', '방문자'], ['acc', '계좌'], ['ledger', '회계장부'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['card', '학회원증'], ['cert', '수료증'], ['mail', '알림 메일']];
+    var tabs = [['sum', '요약'], ['visit', '방문자'], ['acc', '계좌'], ['ledger', '회계장부'], ['cost', '유지비 · 계정'], ['sms', '문자 기록'], ['card', '학회원증'], ['cert', '수료증'], ['auto', '자동 작업'], ['mail', '알림 메일']];
     el.innerHTML = '<div class="op-top"><div class="op-top-in"><button class="x" type="button" aria-label="닫기">×</button><div class="ey">R.F.S. · Operations Console</div><h2>Operations</h2><div class="meta"><span class="op-up"></span><button type="button" data-a="reload">새로고침</button></div></div></div>' +
       '<nav class="op-tabs" aria-label="운영 메뉴"><div class="op-tabs-in">' + tabs.map(function (t, i) { return '<a href="#op-' + t[0] + '" data-t="' + t[0] + '"' + (i ? '' : ' class="on"') + '>' + t[1] + '</a>'; }).join('') + '</div></nav>' +
       '<div class="op-in op-body"><section class="op-s">' + LOADING + '</section></div>';

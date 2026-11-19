@@ -3,6 +3,11 @@
   python3 -I tools/rag/add_docs.py /home/user/rfs-cafe-data 파일.pdf "[24-1] 삼양식품_SOHKA_DCF_240516" [파일.pdf "제목" ...]
 제목은 카페 리포트 제목 형식으로 준다 (학기·회사·팀·밸류에이션 방법·날짜). 학기는 제목의 [24-1]에서 읽는다.
 
+  python3 -I tools/rag/add_docs.py /home/user/rfs-cafe-data --site assets/reports/26-2_gigavis.pdf [...]
+사이트 정규 리포트(assets/reports/<학기>_<id>.pdf)는 --site로. parse.py가 만드는 사이트 문서와 같은 꼴(source 'site')이라
+Polaris 출처가 사이트 리포트 화면(/research/<id>/)으로 이어진다. 같은 파일 이름이 이미 있으면 건너뛴다.
+.github/workflows/polaris-sync.yml이 main에 새 리포트 PDF가 올라오면 이걸 돌린다.
+
 - 파싱(parse.pdf)·청킹(chunk.rows_of)·임베딩(embed.embed)은 전체 파이프라인과 같은 함수를 쓴다.
 - docs / chunks / 벡터 / ids 뒤에 붙이기만 한다. 검색기는 청크 순서와 벡터 순서가 같다고 보기 때문.
 - 같은 제목이 이미 있으면 건너뛴다. 기존 문서와 내용이 같은지(중복)는 따로 보지 않으니, 넣기 전에 제목으로 확인한다.
@@ -38,17 +43,25 @@ def main(pairs):
     docs, chunks = gz_lines(P / 'docs.jsonl.gz'), gz_lines(P / 'chunks.jsonl.gz')
     vec, ids = np.load(V / f'{MODEL}.f16.npy'), json.loads((V / f'{MODEL}.ids.json').read_text())
     assert len(vec) == len(ids) == len(chunks)
-    have = {d['subject'] for d in docs}
+    have = {d['subject'] for d in docs} | {d['file'] for d in docs if d.get('source') == 'site'}
     nxt = max(int(d['doc_id'][1:]) for d in docs) + 1
     new_docs, new_chunks = [], []
     for path, subject in pairs:
-        if subject in have:
-            print('이미 있음, 건너뜀:', subject)
+        site = subject is None
+        if (Path(path).name if site else subject) in have:
+            print('이미 있음, 건너뜀:', subject or Path(path).name)
             continue
         r = pdf(Path(path))
-        d = {'source': 'upload', 'group': '추가 업로드', 'board': '리포트', 'article_id': None, 'subject': subject,
-             'date': None, 'file': subject + '.pdf', 'ext': '.pdf', 'doc_type': 'company', 'text': '\n\n'.join(r['pages']),
-             **r, 'doc_id': f'd{nxt:05d}'}
+        if site:   # parse.py의 사이트 리포트와 같은 꼴
+            sem, slug = Path(path).stem.split('_', 1)
+            d = {'source': 'site', 'group': '사이트 리포트', 'board': '리포트', 'article_id': None, 'subject': slug, 'semester': sem,
+                 'date': None, 'file': Path(path).name, 'ext': '.pdf', 'doc_type': 'company', 'text': '\n\n'.join(r['pages']),
+                 **r, 'doc_id': f'd{nxt:05d}'}
+            subject = slug
+        else:
+            d = {'source': 'upload', 'group': '추가 업로드', 'board': '리포트', 'article_id': None, 'subject': subject,
+                 'date': None, 'file': subject + '.pdf', 'ext': '.pdf', 'doc_type': 'company', 'text': '\n\n'.join(r['pages']),
+                 **r, 'doc_id': f'd{nxt:05d}'}
         d['grade'], d['chars'] = GRADE['company'], len(d['text'])
         nxt += 1
         rows = list(rows_of(d))
@@ -71,4 +84,7 @@ def main(pairs):
 
 
 if __name__ == '__main__':
-    main(list(zip(ARGS[0::2], ARGS[1::2])))
+    if ARGS[:1] == ['--site']:
+        main([(p, None) for p in ARGS[1:]])
+    else:
+        main(list(zip(ARGS[0::2], ARGS[1::2])))

@@ -3,7 +3,7 @@
 # assets/reports/page1.json 으로 저장한다. 리포트 화면이 요약 대신 이 원문을 보여 준다.
 # 굵은 글씨, 소제목([Investment Point 1] 등), 문단 구분을 PDF 그대로 따른다.
 #
-# 사용법: 사이트 루트에서  python3 tools/extract-page1.py   (pymupdf 필요: pip install pymupdf)
+# 사용법: 사이트 루트에서  python3 tools/extract-page1.py [id ...]   (id를 주면 그 리포트만 넣고 나머지는 그대로. pymupdf 필요)
 import json, os, re, sys
 import pymupdf
 
@@ -110,7 +110,7 @@ def fundamentals(path):
             lines[-1]['w'].append(w)
         else:
             lines.append({'y': w[1], 'w': [w]})
-    yr = re.compile(r"(19|20)\d\d\d?(\(?[AEFP]\)?)?|\dQ\d\d[AEF]?|\d\d[AEF]|[AEF]")
+    yr = re.compile(r"(19|20)\d\d\d?(\(?[AEFP]\)?)?|\dQ\d\d[AEF]?|\d\d[AEF]|FY\d\d[AEFP]?|[AEF]")   # 해외 종목은 FY24A처럼
     hi = next((i for i, l in enumerate(lines) if sum(bool(yr.fullmatch(w[4])) and len(w[4]) > 1 for w in l['w']) >= 2), None)
     if hi is None:
         return None
@@ -153,9 +153,14 @@ def fundamentals(path):
     m = re.search(r'\(.*\)', unit)
     return {'unit': m.group(0) if m else '', 'cols': cols, 'rows': rows}
 
-def main():
-    out, miss, names, fund = {}, [], {}, {}
+def main(only=None):
+    # only: 이 리포트들만 다시 뽑아 기존 page1.json에 넣는다 (나머지·_names·_fund의 다른 항목은 그대로). 없으면 전부 새로
+    path = os.path.join(ROOT, 'assets', 'reports', 'page1.json')
+    old = json.load(open(path, encoding='utf-8')) if only and os.path.exists(path) else {}
+    out, miss, names, fund = {k: v for k, v in old.items() if not k.startswith('_')}, [], dict(old.get('_names', {})), dict(old.get('_fund', {}))
     for rid, pdf in load_reports():
+        if only and rid not in only:
+            continue
         p = os.path.join(ROOT, pdf)
         extract.name = None
         sec = extract(p) if os.path.exists(p) else None
@@ -175,4 +180,4 @@ def main():
     print(f'표 {len(fund)}건, {len(out) - 2}건 추출, 실패 {len(miss)}건: {", ".join(miss)}')
 
 if __name__ == '__main__':
-    main()
+    main(set(sys.argv[1:]) or None)   # python3 tools/extract-page1.py [id ...]

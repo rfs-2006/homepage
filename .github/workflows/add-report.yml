@@ -1,0 +1,75 @@
+name: 리포트 올리기
+
+# GitHub 웹에서 inbox/ 폴더에 리포트 PDF를 올리면(Add file → Upload files, main에 바로 커밋)
+# tools/add-report.py가 PDF·표지·REPORTS 항목·1쪽·전문·용어 풀이·주가·빌드까지 하고 PR을 연다.
+# PR의 Netlify 미리보기에서 확인하고 머지하면 끝. 파일 이름을 영문으로(예: gigavis.pdf) 하면 그게 주소가 된다.
+# 필요한 설정: 저장소 Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests" 켜기.
+# Secret RAG_ANTHROPIC_API_KEY가 있으면 용어 풀이도 같이 만든다 (없으면 머지 뒤 glossary.yml이 만든다).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'inbox/*.pdf'
+  workflow_dispatch:
+
+concurrency:
+  group: add-report
+  cancel-in-progress: false
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash   # pipefail: tee 앞 명령이 실패하면 멈춘다
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      RAG_ANTHROPIC_API_KEY: ${{ secrets.RAG_ANTHROPIC_API_KEY }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find PDFs
+        id: find
+        run: |
+          shopt -s nullglob
+          files=(inbox/*.pdf)
+          echo "count=${#files[@]}" >> "$GITHUB_OUTPUT"
+          printf '%s\n' "${files[@]}"
+      - uses: actions/setup-python@v5
+        if: steps.find.outputs.count != '0'
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        if: steps.find.outputs.count != '0'
+        with:
+          node-version: 22
+      - name: Add reports
+        if: steps.find.outputs.count != '0'
+        run: |
+          pip install -q pymupdf pillow anthropic
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          br="report/$(date -u +%Y%m%d-%H%M%S)"
+          git checkout -b "$br"
+          python3 tools/add-report.py inbox/*.pdf | tee /tmp/log.txt
+          added=$(grep '^추가:' /tmp/log.txt | sed 's/^추가: //')
+          git add -A
+          git commit -m "리포트 올리기: $added"
+          git push -u origin "$br"
+          {
+            echo "inbox/에 올라온 PDF로 자동 생성: **$added**"
+            echo
+            echo "확인할 것"
+            echo "- 미리보기에서 리서치 목록·리포트 화면·홈 '리포트 발간' 슬라이드"
+            echo "- assets/app.js REPORTS 맨 앞 항목의 요약(summary)·heroSummary·투자포인트 문장 (1쪽에서 그대로 따옴)"
+            echo "- 해외 종목이면 tools/seo-config.js ALIASES에 한글 이름 추가"
+            echo "- 홈 히어로 사진(heroBg)은 따로 넣어야 함"
+            echo
+            echo '```'
+            grep -v '^  ' /tmp/log.txt | tail -30
+            echo '```'
+          } > /tmp/body.md
+          gh pr create --base main --head "$br" --title "리포트 올리기: $added" --body-file /tmp/body.md

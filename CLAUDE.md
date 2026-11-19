@@ -1,6 +1,7 @@
 # 메모
 - "토스버전" = `templates/toss/fund.html` (FUND 페이지 토스 스타일 디자인 보관본). 템플릿 목록은 `templates/README.md`.
 - 홈 앱 로직·데이터(REPORTS·INDUSTRY 등)는 `assets/app.js`, 큰 CSS는 `assets/app.css` (index.html에는 화면 틀만). 고친 뒤 `node tools/build-site.js && node tools/build-pages.js`로 ?v=·검색용 페이지·sitemap·rss를 다시 만든다.
+- 기업 리포트 올리기: 보통은 `python3 tools/add-report.py <pdf>` 한 번이면 아래 순서를 다 한다 (GitHub에서는 `inbox/`에 PDF 올리면 add-report.yml이 PR까지). 손으로 할 때 (빠짐없이 차례로): PDF → `assets/reports/<학기>_<id>.pdf`, 표지 `assets/covers/<학기>_<id>-top169.webp`(1190×669)·`-p1.webp`(1쪽 전체, 폭 1000) → `assets/app.js` REPORTS 맨 앞에 항목 → `python3 tools/extract-page1.py`(새 id만 page1.json에 반영, 기존 항목은 건드리지 않기) → `python3 tools/extract-full.py <id>` → FULL_REPORTS에 id → **용어 풀이** `python3 tools/build-glossary.py <id>`(키 없으면 같은 형식으로 직접 90~110개, glossary.json의 <id>) → (홈 '리포트 발간' 슬라이드·LATEST는 최근 발간일로 자동) → DATA_VER 올리기 → `node tools/build-prices.js` → 해외 종목은 `tools/seo-config.js` ALIASES → 빌드 두 개.
 - 운영에 쓰는 서비스·키 위치·학회 계정 이전 방법은 `docs/운영인수인계.md` (키 값은 넣지 않는다). 관리자 운영 대시보드는 `assets/ops.js`.
 
 # 작업 규칙

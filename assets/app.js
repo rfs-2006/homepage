@@ -33,7 +33,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261119a';
+const DATA_VER = '20261119b';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 // 정규 세미나 산업 리포트 (rfs-cafe-data 원본 PDF, 21-1~25-2). 리서치 '산업 리포트' 칸에서 PDF로 받는다. 상세 화면은 없다
 const INDUSTRY = [
@@ -4312,7 +4312,13 @@ class Component extends DCLogic {
       heroFadeCls: s.heroFade ? 'fading' : '',
       ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
         const B = [
-          { kind:'shots', img:'assets/covers/26-2_gigavis-p1.webp', shots:[['gigavis','기가비스'],['intekplus','인텍플러스'],['exicon','엑시콘'],['adobe','Adobe']].map(([id,name]) => ({ id, name, src:'assets/covers/26-2_' + id + '-p1.webp' })), title:'리포트 발간', desc:'26-2학기 2차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
+          (() => {   // 리포트 발간: 가장 최근에 발간한 날의 리포트(최대 4편)를 자동으로. 같은 학기 안에서 몇 번째 발간일인지로 'N차 세미나'
+            const pg1 = (r) => /-top169\.webp$/.test(r.cover || '') ? r.cover.replace(/-top169\.webp$/, '-p1.webp') : r.cover;
+            const last = REPORTS.reduce((m, r) => (r.date > m ? r.date : m), ''), t = termOf(last);
+            const rs = REPORTS.filter((r) => r.date === last && r.cover).sort((a, b) => (a.team > b.team ? 1 : -1)).slice(0, 4);
+            const nth = [...new Set(REPORTS.filter((r) => termOf(r.date) === t).map((r) => r.date))].sort().indexOf(last) + 1;
+            return { kind:'shots', img: pg1(rs[0] || {}), shots: rs.map((r) => ({ id: r.id, name: r.name, src: pg1(r) })), title:'리포트 발간', desc: t + '학기 ' + nth + '차 세미나 기업분석 리포트 ' + rs.length + '편이 발간되었습니다.', page:'research' };
+          })(),
           { kind:'card', img:'assets/hero/sky.webp', title:'Claude · ChatGPT 제휴', desc:'비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max와 ChatGPT 유료 플랜을 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
           { kind:'butler', img:'', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
           { kind:'chat', img:'assets/hero/polaris.webp?v=2', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
