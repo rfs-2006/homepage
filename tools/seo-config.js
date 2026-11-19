@@ -47,6 +47,7 @@ const ALIASES = {
   // 해외
   TRMD: { expand: ['토름'], aka: ['TORM'] },
   TTWO: { expand: ['테이크투 인터랙티브', '테이크투'], aka: ['Take-Two', 'Take Two Interactive'] },
+  ADBE: { expand: ['어도비'], aka: ['Adobe Inc.', 'Adobe Systems'] },
   DUOL: { expand: ['듀오링고'] },
   CRWD: { expand: ['크라우드스트라이크'] },
   ISRG: { expand: ['인튜이티브 서지컬'], aka: ['인튜이티브서지컬'] },

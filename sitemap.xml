@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
-  <url><loc>https://caurfs.kr/</loc><lastmod>2026-09-29</lastmod></url>
-  <url><loc>https://caurfs.kr/research/</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://caurfs.kr/</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/gigavis/</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/intekplus/</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/exicon/</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://caurfs.kr/research/adobe/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://caurfs.kr/research/sanil/</loc><lastmod>2026-09-29</lastmod></url>
   <url><loc>https://caurfs.kr/research/koreanair26/</loc><lastmod>2026-09-29</lastmod></url>
   <url><loc>https://caurfs.kr/research/inbody/</loc><lastmod>2026-09-29</lastmod></url>
@@ -162,7 +166,7 @@
   <url><loc>https://caurfs.kr/recruiting/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://caurfs.kr/fund/</loc><lastmod>2026-11-06</lastmod></url>
   <url><loc>https://caurfs.kr/privacy/</loc><lastmod>2026-11-06</lastmod></url>
-  <url><loc>https://caurfs.kr/research/2026/</loc><lastmod>2026-09-29</lastmod></url>
+  <url><loc>https://caurfs.kr/research/2026/</loc><lastmod>2026-11-10</lastmod></url>
   <url><loc>https://caurfs.kr/research/2025/</loc><lastmod>2025-11-30</lastmod></url>
   <url><loc>https://caurfs.kr/research/2024/</loc><lastmod>2024-11-26</lastmod></url>
   <url><loc>https://caurfs.kr/research/2023/</loc><lastmod>2023-11-28</lastmod></url>

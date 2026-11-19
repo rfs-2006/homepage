@@ -716,7 +716,7 @@
       var m = el.querySelector('[data-m="cert"]'), go = function () { window.RFSCert.open({ sb: st.sb }); };
       if (window.RFSCert) return go();
       m.textContent = '불러오는 중';
-      var sc = document.createElement('script'); sc.src = '/assets/cert.js?v=1';
+      var sc = document.createElement('script'); sc.src = '/assets/cert.js?v=2';
       sc.onload = function () { m.textContent = ''; if (window.RFSCert && st) go(); }; sc.onerror = function () { m.textContent = '불러오지 못했어요'; };
       document.head.appendChild(sc);
     };

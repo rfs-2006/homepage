@@ -14,6 +14,8 @@
   var FONT = 'https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;800;900&display=swap';
   var UNITS = ['리서치 1팀', '리서치 2팀', '리서치 3팀', '리서치 4팀', '리서치 5팀', '리서치 6팀', '운용팀', '회장', '부회장'];
   var ROLES = ['팀원', '팀장'];
+  // 설정을 아직 저장하지 않았을 때 쓰는 이름 (서명·인감 이미지는 공개 파일에 두지 않으므로 서버 설정에서만 온다)
+  var DEFAULT_NAMES = { chair: '김민석', vice: '이승혁' };
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var kst = function () { return new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10); };
   var st = null;
@@ -113,12 +115,12 @@
 .rc-top h2{margin:0;font:400 28px/1.2 "Noto Serif KR",serif}.rc-top .ey{font-size:11px;letter-spacing:.24em;color:#C9B98A}\
 .rc-top .x{margin-left:auto;width:40px;height:40px;border:1px solid rgba(244,242,237,.2);border-radius:2px;background:none;color:#F4F2ED;font-size:20px;cursor:pointer}\
 .rc-in{max-width:1240px;margin:0 auto;padding:28px max(24px,env(safe-area-inset-right,0px)) 80px max(24px,env(safe-area-inset-left,0px));display:grid;grid-template-columns:minmax(0,1fr) 520px;gap:28px;align-items:start}\
-.rc-f{background:#fff;border:1px solid #E7E4DD;border-radius:2px;padding:28px;display:grid;gap:20px;min-width:0}\
-.rc-f h3{margin:0;font:600 15px/1.4 inherit}.rc-f .g{display:grid;grid-template-columns:1fr 120px;gap:12px}\
-.rc label{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#6B7480}\
-.rc input,.rc select{height:40px;border:1px solid #D8D4CB;border-radius:2px;padding:0 10px;background:#fff;color:#131B27;font-size:14px;min-width:0}\
+.rc-f{background:#fff;border:1px solid #E7E4DD;border-radius:2px;padding:28px;display:grid;grid-template-columns:minmax(0,1fr);gap:20px;min-width:0}\
+.rc-f h3{margin:0;font:600 15px/1.4 inherit}.rc-f .g{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:12px}\
+.rc label{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#6B7480;min-width:0}\
+.rc input,.rc select{height:40px;border:1px solid #D8D4CB;border-radius:2px;padding:0 10px;background:#fff;color:#131B27;font-size:14px;min-width:0;width:100%}\
 .rc input:focus,.rc select:focus{outline:2px solid #8FAADC;outline-offset:-1px}\
-.rc-rows{display:grid;gap:8px}.rc-row{display:grid;grid-template-columns:96px 84px minmax(0,1fr) 88px 36px;gap:8px;align-items:center}\
+.rc-rows{display:grid;gap:8px;min-width:0}.rc-row{display:grid;grid-template-columns:minmax(72px,96px) minmax(72px,84px) minmax(0,1fr) minmax(64px,88px) 36px;gap:8px;align-items:center;min-width:0}\
 .rc-row .del{height:40px;border:1px solid #D8D4CB;border-radius:2px;background:#fff;color:#6B7480;cursor:pointer}\
 .rc .bt{height:40px;padding:0 16px;border:1px solid #D8D4CB;border-radius:2px;background:#fff;color:#131B27;font-weight:500;cursor:pointer}\
 .rc .bt.p{background:#0F1B2E;border-color:#0F1B2E;color:#F4F2ED}.rc .bt:disabled{opacity:.5;cursor:default}\
@@ -130,7 +132,7 @@
 .rc-sg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.rc-sg .bx{border:1px solid #E7E4DD;padding:14px;display:grid;gap:10px}\
 .rc-sg .im{height:56px;display:flex;align-items:center;justify-content:center;background:#FAF9F6;border:1px dashed #D8D4CB}.rc-sg .im img{max-height:52px;max-width:100%}\
 .rc-off{position:fixed;left:-20000px;top:0}\
-@media (max-width:1100px){.rc-in{grid-template-columns:1fr}.rc-pv{position:static}.rc-pv .frame{width:100%;max-width:520px;height:auto;aspect-ratio:794/1123}}\
+@media (max-width:1180px){.rc-in{grid-template-columns:minmax(0,1fr)}.rc-pv{position:static}.rc-pv .frame{width:100%;max-width:520px;height:auto;aspect-ratio:794/1123}}\
 @media (max-width:560px){.rc-row{grid-template-columns:1fr 1fr;}.rc-f .g,.rc-sg{grid-template-columns:1fr}}' + PAGE_CSS;
 
   function yearOpts(v) { var y0 = new Date().getFullYear(), o = ''; for (var y = y0 + 1; y >= 2018; y--) o += '<option' + (y === v ? ' selected' : '') + '>' + y + '</option>'; return o; }
@@ -194,7 +196,7 @@
     }
     close();
     var y = new Date().getFullYear(), h = new Date().getMonth() < 6 ? 1 : 2;
-    st = { sb: o.sb, cfg: { chair: {}, vice: {}, seal: '' }, d: { name: '', gen: '', rows: [{ y: h === 1 ? y - 1 : y, h: h === 1 ? 2 : 1, unit: '리서치 1팀', role: '팀원' }, { y: y, h: h, unit: '리서치 1팀', role: '팀원' }] } };
+    st = { sb: o.sb, cfg: { chair: { name: DEFAULT_NAMES.chair }, vice: { name: DEFAULT_NAMES.vice }, seal: '' }, d: { name: '', gen: '', rows: [{ y: h === 1 ? y - 1 : y, h: h === 1 ? 2 : 1, unit: '리서치 1팀', role: '팀원' }, { y: y, h: h, unit: '리서치 1팀', role: '팀원' }] } };
     var el = document.createElement('div'); el.className = 'rc'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', '수료증 만들기');
     el.innerHTML = '<div class="rc-top"><div class="rc-top-in"><div><div class="ey">R.F.S. · CERTIFICATE</div><h2>수료증 만들기</h2></div><button class="x" type="button" aria-label="닫기">×</button></div></div>' +
       '<div class="rc-in"><form class="rc-f" autocomplete="off">' +
@@ -253,7 +255,7 @@
     draw();
     call(st.sb, { action: 'cert_get' }).then(function (r) {
       if (!st) return;
-      if (r && r.ok && r.cert) st.cfg = { chair: r.cert.chair || {}, vice: r.cert.vice || {}, seal: r.cert.seal || '' };
+      if (r && r.ok && r.cert) st.cfg = { chair: r.cert.chair || { name: DEFAULT_NAMES.chair }, vice: r.cert.vice || { name: DEFAULT_NAMES.vice }, seal: r.cert.seal || '' };
       else if (!(r && r.ok)) el.querySelector('[data-m="cfg"]').textContent = '설정을 못 불러왔어요 · member-admin 배포 확인';
       if (!st.cfg.chair.sig || !st.cfg.seal) el.querySelector('.rc-set').open = true;
       drawCfg(); draw();

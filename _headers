@@ -2,6 +2,14 @@
 # 리포트 PDF가 검색 결과에서 HTML 리포트 페이지와 경쟁하지 않게 canonical을 HTML로 지정한다.
 # 보안·캐시 헤더는 netlify.toml에 있고 Netlify가 함께 적용한다.
 
+/assets/reports/26-2_gigavis.pdf
+  Link: <https://caurfs.kr/research/gigavis/>; rel="canonical"
+/assets/reports/26-2_intekplus.pdf
+  Link: <https://caurfs.kr/research/intekplus/>; rel="canonical"
+/assets/reports/26-2_exicon.pdf
+  Link: <https://caurfs.kr/research/exicon/>; rel="canonical"
+/assets/reports/26-2_adobe.pdf
+  Link: <https://caurfs.kr/research/adobe/>; rel="canonical"
 /assets/reports/26-2_sanil.pdf
   Link: <https://caurfs.kr/research/sanil/>; rel="canonical"
 /assets/reports/26-2_korean_air.pdf

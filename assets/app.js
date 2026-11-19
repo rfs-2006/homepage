@@ -33,7 +33,7 @@ function routeFromLocation() {
   return { page: 'home' };
 }
 // 리포트 데이터(page1·glossary·full) 판. /assets/는 하루 동안 브라우저에 남으므로, 파일을 바꾸면 이 값을 올려 새로 받게 한다
-const DATA_VER = '20261106b';
+const DATA_VER = '20261119a';
 // 전문을 웹으로 읽을 수 있는 리포트 (assets/reports/full/<id>.json)
 // 정규 세미나 산업 리포트 (rfs-cafe-data 원본 PDF, 21-1~25-2). 리서치 '산업 리포트' 칸에서 PDF로 받는다. 상세 화면은 없다
 const INDUSTRY = [
@@ -120,8 +120,52 @@ const INDUSTRY = [
 ];
 // 웹에서 전문으로 읽는 산업 리포트 (assets/reports/full/ind-<id>.json)
 const IND_FULL = ['ind-3613', 'ind-3619', 'ind-3622', 'ind-3720', 'ind-3771', 'ind-3772', 'ind-3815', 'ind-3818', 'ind-3890', 'ind-3891', 'ind-3893', 'ind-4024', 'ind-4026', 'ind-4027', 'ind-4029', 'ind-4030', 'ind-4031', 'ind-4192', 'ind-4193', 'ind-4194', 'ind-4195', 'ind-4196', 'ind-4197', 'ind-4275', 'ind-4276', 'ind-4277', 'ind-4278', 'ind-4279', 'ind-4280', 'ind-4423', 'ind-4424', 'ind-4425', 'ind-4427', 'ind-4428', 'ind-4544', 'ind-4545', 'ind-4546', 'ind-4547', 'ind-4548', 'ind-4550', 'ind-4664', 'ind-4665', 'ind-4666', 'ind-4667', 'ind-4668', 'ind-4775', 'ind-4776', 'ind-4777', 'ind-4778', 'ind-4780', 'ind-4781', 'ind-4891', 'ind-4894', 'ind-4895', 'ind-4896', 'ind-4897', 'ind-4898', 'ind-4990', 'ind-4991', 'ind-4992', 'ind-4993', 'ind-4994', 'ind-4995', 'ind-5080', 'ind-5081', 'ind-5082', 'ind-5084', 'ind-5085', 'ind-5086'];
-const FULL_REPORTS = ['afreeca', 'anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'cafe24', 'celltrion', 'cjcj', 'cjlogis', 'ckd', 'classys', 'coway', 'crowdstrike', 'cswind', 'daewoong', 'dbins', 'dongjin', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'emart', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanssem', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hitejinro', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyosungam', 'hyundai', 'hyundai20', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kai', 'kbfg', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair20', 'koreanair26', 'krafton', 'ktng', 'kyungdong', 'kyungdong18', 'lgchem', 'lges', 'lginnotek', 'lguplus', 'lguplus18', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'ls', 'lselectric', 'lutronic', 'mkif', 'naver', 'naver20', 'nepesark', 'nhis', 'oci', 'oci18', 'orion', 'orion20', 'osstem', 'osstem19', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samsungsdi18', 'samsungsds', 'samyang', 'sanil', 'saramin', 'sbl21', 'seers', 'semco', 'semco18', 'sena', 'shinsegae', 'sikorea', 'silicon2', 'skckpi', 'skgas', 'skhynix', 'sm', 'sm21', 'soil', 'stpharm', 'studiodragon', 'taekwang', 'techwing', 'tesla', 'tesla19', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'unison', 'vt'];
+const FULL_REPORTS = ['adobe', 'exicon', 'gigavis', 'intekplus', 'afreeca', 'anet', 'aniplus', 'apple', 'apr', 'bgf', 'bh', 'binex', 'cafe24', 'celltrion', 'cjcj', 'cjlogis', 'ckd', 'classys', 'coway', 'crowdstrike', 'cswind', 'daewoong', 'dbins', 'dongjin', 'douzone', 'duolingo', 'ecopro', 'ecopro21', 'emart', 'fadu', 'flitto', 'gev', 'greenplus', 'gtf', 'hankooktire', 'hanmi', 'hanssem', 'hanwhaaero', 'hanwhaocean', 'hdengine', 'hdmarine', 'hitejinro', 'hivision', 'hjncs', 'hmm', 'humedix', 'hybe', 'hyosungam', 'hyundai', 'hyundai20', 'inbody', 'intel', 'intellian', 'isrg', 'jeju', 'jinsung', 'kai', 'kbfg', 'kcc', 'kia', 'kolmar', 'komico', 'koreanair', 'koreanair20', 'koreanair26', 'krafton', 'ktng', 'kyungdong', 'kyungdong18', 'lgchem', 'lges', 'lginnotek', 'lguplus', 'lguplus18', 'livsmed', 'lnf', 'lottechem', 'lottetour', 'ls', 'lselectric', 'lutronic', 'mkif', 'naver', 'naver20', 'nepesark', 'nhis', 'oci', 'oci18', 'orion', 'orion20', 'osstem', 'osstem19', 'parksystems', 'pearlabyss', 'pharmaresearch', 'pisms', 'pnt', 'poscochem', 'rfhic', 'samsungbio', 'samsungsdi', 'samsungsdi18', 'samsungsds', 'samyang', 'sanil', 'saramin', 'sbl21', 'seers', 'semco', 'semco18', 'sena', 'shinsegae', 'sikorea', 'silicon2', 'skckpi', 'skgas', 'skhynix', 'sm', 'sm21', 'soil', 'stpharm', 'studiodragon', 'taekwang', 'techwing', 'tesla', 'tesla19', 'tesna', 'tnl', 'tovis', 'trmd', 'ttwo', 'unison', 'vt'];
 const REPORTS = [
+  { id:'gigavis', name:'기가비스', ticker:'420770', sector:'반도체 장비', type:'Company Analysis', op:'BUY', tp:'171,000원', buy:'', cur:'69,600원', upside:'+145.7%', upNum:145.7, tpNum:171000, date:'2026.11.10', team:'Research Team 2', region:'Korea',
+    headline:'증설은 기판사, 수확은 기가비스',
+    summary:'’27E 매출액 2,983억 원(YoY +187.8%), 영업이익 1,491억 원을 전망한다. ’27년은 글로벌 AI 반도체 수요 확대에 대응한 주요 FC-BGA 기판사의 증설 투자가 본격적인 생산라인 구축 및 장비 발주로 이어지는 시점이다. 이에 주요 고객사의 투자 확대가 동사의 신규 수주와 실적에 본격적으로 반영되며, 글로벌 FC-BGA 설비투자 사이클의 직접적인 수혜가 기대된다.',
+    heroSummary:'FC-BGA 기판사 증설의 직접 수혜. ’27E 매출액 2,983억 원(YoY +187.8%)을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 주요 기판사 증설 본격화, 수주 경쟁력 기반의 외형 성장', body:'’27년과 ’28년 동사의 AOI 매출액을 각각 1,058억 원(YoY +187.8%), 1,000억 원(YoY -5.5%)으로 전망한다. ’27년 삼성전기·AT&S 등 주요 기판사의 증설에 따른 매출 급증 이후, ’28년에는 이비덴向 장비 공급을 중심으로 높은 매출 수준을 유지할 전망이다. 동사는 초기 벤더 선점에 따른 높은 고객사 채택률과 초미세 검사 기술 경쟁력을 바탕으로 후속 수주를 확보할 전망이다.' },
+      { title:'투자포인트 2. 검사를 넘어 수리·자동화까지, 사업 영역 확장을 통한 성장', body:'동사의 AOR 매출은 ’27E 529억 원(YoY +219.8%), FA 매출은 1,084억 원을 전망한다. FC-BGA의 대면적·고다층화로 AOR 수리 수요가 확대되는 가운데, 검사·수리장비와 자동화 설비를 결합한 In-Line FA 세트 공급도 증가할 전망이다. 이에 검사에서 수리·자동화까지 사업 영역을 확장하며 생산라인당 공급금액 상승을 통한 추가 성장이 기대된다.' }
+    ],
+    valuation:'Peer P/E Valuation을 채택했다. 이에 따라 목표주가 171,000원, 상승여력 145.7%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 2',
+    pdf:'assets/reports/26-2_gigavis.pdf', pdfMeta:'PDF · 36 pages', cover:'assets/covers/26-2_gigavis-top169.webp', heroCover:'assets/covers/26-2_gigavis-top169.webp', credit:'', creditHref:'' },
+  { id:'intekplus', name:'인텍플러스', ticker:'064290', sector:'반도체 장비', type:'Company Analysis', op:'BUY', tp:'87,000원', buy:'', cur:'42,100원', upside:'+106.7%', upNum:106.7, tpNum:87000, date:'2026.11.10', team:'Research Team 4', region:'Korea',
+    headline:'면적+? 인텍플러스!',
+    summary:'’27E 매출액 3,294억 원(YoY +190.0%), 영업이익 1,081억 원(YoY +654.0%)을 전망한다. 이는 기판, 패키징 쇼티지에 따른 전방 기판사·OSAT의 증설과 기판 대면적화에 따른 고사양 장비 비중 확대에 기인한다.',
+    heroSummary:'기판 대면적화와 패키징 증설. ’27E 매출액 3,294억 원(YoY +190.0%)을 전망한다.',
+    points:[
+      { title:'투자포인트 1. 불량은 마이너스, 인텍은 플러스', body:'’27E 기판 검사장비 매출액 2,003억 원(YoY +222.7%)을 전망한다. 동사는 대면적 기판 검사 기술력을 기반으로 일본 시장에 빠르게 침투할 전망이다. 이비덴·신코전기 등 일본 기판사의 인증을 증설 이전에 확보했으며, 이비덴은 AIDC 서버 CPU 수요에 대응해 4조 6,000억 원 규모의 증설을 진행하고 있다. 이에 따라 ’27E 이비덴向 수주액 197억 원을 달성할 전망이다.' },
+      { title:'투자포인트 2. 패키징, 패를 바꿀 KEY는 인텍이징', body:'’27E 첨단 패키징 매출액 731억 원(YoY +167.6%)을 전망한다. 이는 Intel의 EMIB-T 대면적화에 따른 ASP 상승과 CoWoS 시장 신규 진입에 기인한다. 또한 ’27E 레거시 패키징 매출액 442억 원(YoY +327.8%)을 전망하며, 이는 삼성전자 베트남 SVS 신공장 구축과 CXMT 신규 공급망 진입에 기인한다.' }
+    ],
+    valuation:'Peer P/E Valuation을 채택했다. 이에 따라 목표주가 87,000원, 상승여력 106.7%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 4',
+    pdf:'assets/reports/26-2_intekplus.pdf', pdfMeta:'PDF · 35 pages', cover:'assets/covers/26-2_intekplus-top169.webp', heroCover:'assets/covers/26-2_intekplus-top169.webp', credit:'', creditHref:'' },
+  { id:'exicon', name:'엑시콘', ticker:'092870', sector:'반도체', type:'Company Analysis', op:'BUY', tp:'79,000원', buy:'', cur:'52,100원', upside:'+51.6%', upNum:51.6, tpNum:79000, date:'2026.11.10', team:'Research Team 3', region:'Korea',
+    headline:'테스터 마스터 엑시콘',
+    summary:'’27년 매출 2,361억 원(YoY +73%)을 전망한다. SSD 테스터의 세대 전환에 따른 교체 수요 확대에 기인한다. 삼성전자向 PCIe Gen6 SSD 테스터 공급 확대와 신규 고객사 확보에 따른 외형 성장이 기대되며, HBM용 CLT 공급 확대 및 CIB 반복 매출 증가가 추가적인 성장 동력으로 작용할 것으로 판단한다.',
+    heroSummary:'SSD 테스터 세대 전환. ’27년 매출 2,361억 원(YoY +73%)을 전망한다.',
+    points:[
+      { title:'투자포인트 1. ’27년 SSD 테스터.. 어 형이야~', body:'’27년 SSD 테스터 부문 매출 1,442억 원(YoY +354%)을 전망한다. 이는 Gen6 전환에 따른 평균판매단가(P) 상승과 삼성전자向 Gen6 선제 공급을 통한 공급대수(Q) 증가, 고객사 확장에 따른 멀티플 리레이팅에 기인한다.' },
+      { title:'투자포인트 2. ’28년은 Memory가 책임질게', body:'’28년 메모리 테스터 부문 매출액 2,415억 원(YoY +166%), 영업이익 675억 원(YoY +244%)을 전망한다. 삼성전자 후공정 팹 증설에 따른 CLT 공급 확대와 CIB 반복 매출 증가가 외형 성장 및 수익성 개선을 견인할 것으로 판단한다.' }
+    ],
+    valuation:'Target P/E 23.17배를 적용한 Peer P/E Valuation을 채택했다. 이에 따라 목표주가 79,000원, 상승여력 51.6%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 3',
+    pdf:'assets/reports/26-2_exicon.pdf', pdfMeta:'PDF · 29 pages', cover:'assets/covers/26-2_exicon-top169.webp', heroCover:'assets/covers/26-2_exicon-top169.webp', credit:'', creditHref:'' },
+  { id:'adobe', name:'Adobe', ticker:'ADBE', sector:'소프트웨어', type:'Company Analysis', op:'BUY', tp:'$361', buy:'', cur:'$237', upside:'+52%', upNum:52, tpNum:361, date:'2026.11.10', team:'Research Team 1', region:'Global',
+    headline:'어“도비 is Free”mium',
+    summary:'동사의 FY26E 매출액은 267.1억 달러(YoY +12.4%), 영업이익은 93.9억 달러(YoY +7.8%, OPM 35.1%)로 전망한다. 4분기 NNARR 9.5억 달러를 반영한 FY26E 연간 NNARR은 27.9억 달러(YoY +7.7%)다. FY27E에는 매출액 300.2억 달러(YoY +12.4%), 영업이익 103.9억 달러(YoY +10.7%)로 성장이 이어질 전망이다.',
+    heroSummary:'AI 위에 올라탄 Adobe. FY27E 매출액 300.2억 달러(YoY +12.4%)를 전망한다.',
+    points:[
+      { title:'투자포인트 1. 뛰는 AI, 그 위에 나는 Adobe', body:'동사의 FY27E DX 구독 매출액 74.7억 달러(YoY +16.4%)를 전망한다. 기업의 AI 도입 확대로 고객 데이터 관리와 콘텐츠 Workflow 수요가 증가하는 가운데, 동사는 AI 콘텐츠의 상업적 활용에 필요한 신뢰성과 데이터·콘텐츠 통합 Workflow를 기반으로 경쟁 우위를 확보했다. 향후 AI 도입 본격화에 따른 신규 고객 유입과 복수 제품 채택 확대가 DX 부문의 지속적인 외형 성장을 견인할 전망이다.' },
+      { title:'투자포인트 2. 나 왜 이 CC가 영원할 것만 같지?', body:'동사의 FY27 Creative Cloud 매출액 131.9억 달러(YoY +10.7%)를 전망한다. Firefly를 통한 AI 활용도 증가로 기존 고객의 지출을 늘리고, Freemium 전략으로 잠재 고객층을 확보한다. 또한 피어 대비 높은 현금 창출력으로 Freemium 경쟁에서 우위를 지닌다.' }
+    ],
+    valuation:'Historical P/E Valuation을 채택했다. FY27E EPS 20.7, 12MF GAAP 기준 Target P/E 17.4배를 적용해 목표주가 $361, 상승여력 52%, 투자의견 BUY를 제시한다.',
+    members:'Research Team 1',
+    pdf:'assets/reports/26-2_adobe.pdf', pdfMeta:'PDF · 23 pages', cover:'assets/covers/26-2_adobe-top169.webp', heroCover:'assets/covers/26-2_adobe-top169.webp', credit:'', creditHref:'' },
   { id:'sanil', name:'산일전기', ticker:'062040', sector:'전력기기', type:'Company Analysis', op:'BUY', tp:'367,000원', buy:'', cur:'205,500원', upside:'+78.6%', upNum:78.6, tpNum:367000, date:'2026.09.29', team:'Research Team 4', region:'Korea',
     headline:'지금이 가장 ‘싼’ 일전기',
     summary:'2Q26 매출액 1,642억 원(YoY +28.0%), 영업이익 620억 원(YoY +34.3%)을 기록했다. 이는 노동집약적 구조하 물량 확대에 따른 영업 레버리지와 특수변압기 비중 확대에 기인한다. 수주잔고 5,567억 원과 ’28E CAPA 140% 증설을 기반으로 외형 성장을 지속할 것으로 전망한다.',
@@ -3557,7 +3601,11 @@ class Component extends DCLogic {
     let page = r.page, reportId = r.reportId || this.state.reportId;
     if (r.intraTab !== undefined) this.setState({ intraTab: r.intraTab });
     // go()가 방금 해시를 바꾼 경우엔 전환 효과가 이미 진행 중이라 그냥 반영만 한다 (뒤로/앞으로 가기는 전환 효과)
-    const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) window.scrollTo(0, 0); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
+    // 리포트에서 뒤로 가기로 리서치에 돌아오면 맨 위(그림) 대신 리포트를 고르던 자리로 (그 자리를 모르면 리포트 목록으로)
+    // 화면이 다 그려지기 전에는 끝까지 못 내려갈 수 있어 한 프레임·350ms 뒤에 한 번 더 맞춘다
+    const backToList = page === 'research' && this.state.page === 'report';
+    const toY = () => { if (!backToList) return window.scrollTo(0, 0); if (this._researchY != null) { const y = this._researchY; window.scrollTo(0, y); requestAnimationFrame(() => window.scrollTo(0, y)); setTimeout(() => { if (Math.abs(window.scrollY - y) > 40) window.scrollTo(0, y); }, 350); return; } const el = document.getElementById('coverage'); window.scrollTo(0, el ? el.getBoundingClientRect().top + window.scrollY - 80 : 0); };
+    const update = (done) => this.setState({ page, reportId, menuOpen:false }, () => { if (changed) toY(); this.setTitle(page, reportId); this.setupReveal(); this.observeSentinel(); done && done(); });
     const changed = page !== this.state.page || reportId !== this.state.reportId;
     if (changed && Date.now() - (this._navAt || 0) > 600) this.withTransition(update, page); else update();
   }
@@ -3577,6 +3625,8 @@ class Component extends DCLogic {
 
   go(page, id) {
     this._navAt = Date.now();
+    if (page === 'report' && this.state.page === 'research') this._researchY = window.scrollY;   // 뒤로 가기로 돌아올 자리
+    else if (page !== 'report') this._researchY = null;
     const nh = page === 'report' ? 'research/' + (id || this.state.reportId) : page === 'strategy' ? 'fund/strategy' : page;
     // 리포트 개별 주소에서 다른 화면으로 갈 때는 주소를 메인(/#...)으로 바꾼다
     if (location.pathname !== '/') history.pushState(null, '', '/#' + nh); else location.hash = nh;
@@ -4262,8 +4312,8 @@ class Component extends DCLogic {
       heroFadeCls: s.heroFade ? 'fading' : '',
       ...(() => {   // 홈 히어로 아래 슬라이드 (블랙스톤형): 사진을 흐리게 깔고 가운데 카드, 아래 제목·설명
         const B = [
-          { kind:'shots', img:'assets/covers/26-2_sanil-p1.webp', shots:[['sanil','산일전기'],['koreanair26','대한항공'],['inbody','인바디'],['nepesark','네패스아크']].map(([id,name]) => ({ id, name, src:'assets/covers/26-2_' + ({ sanil:'sanil', koreanair26:'korean_air', inbody:'inbody', nepesark:'nepes_ark' })[id] + '-p1.webp' })), title:'리포트 발간', desc:'26-2학기 1차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
-          { kind:'card', img:'assets/hero/sky.webp', title:'Claude 제휴', desc:'Claude 비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max를 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
+          { kind:'shots', img:'assets/covers/26-2_gigavis-p1.webp', shots:[['gigavis','기가비스'],['intekplus','인텍플러스'],['exicon','엑시콘'],['adobe','Adobe']].map(([id,name]) => ({ id, name, src:'assets/covers/26-2_' + id + '-p1.webp' })), title:'리포트 발간', desc:'26-2학기 2차 세미나 기업분석 리포트 4편이 발간되었습니다.', page:'research' },
+          { kind:'card', img:'assets/hero/sky.webp', title:'Claude · ChatGPT 제휴', desc:'비영리 단체 제휴로 R.F.S. 학회원은 누구나 Claude Pro·Max와 ChatGPT 유료 플랜을 60% 할인된 가격으로 이용할 수 있습니다.', page:'recruit' },
           { kind:'butler', img:'', title:'Butler 제휴', desc:'기업분석 플랫폼 Butler의 유료 플랜을 학회원 전원에게 제공합니다. 증권사 리포트 요약, 실적·공시, 사업부문, 재무 그래프를 한곳에서 봅니다.', page:'recruit' },
           { kind:'chat', img:'assets/hero/polaris.webp?v=2', title:'POLARIS', desc:'학회 리포트를 찾아 출처와 함께 답해 주는 R.F.S.의 리서치 챗봇입니다. 궁금한 기업을 물어보세요.', href:'/chat/' }];
         const L = B.length, i = ((s.bxIdx % L) + L) % L, b = B[i];
