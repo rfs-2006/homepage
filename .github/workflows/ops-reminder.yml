@@ -1,0 +1,33 @@
+name: 결제·만료 알림
+
+# 매주 월요일 오전 9시 10분(한국)에 Supabase 함수 ops-reminder를 부른다.
+# 함수가 운영 대시보드 유지비 표에서 다가오는 결제·만료를 골라 알림 메일 주소로 보낸다 (없으면 안 보냄).
+# 필요한 Secret: OPS_CRON_SECRET (아무 긴 글자, 16자 이상). Supabase Edge Function Secrets에도 같은 이름·값으로 넣는다.
+on:
+  schedule:
+    - cron: '10 0 * * 1'
+  workflow_dispatch:
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    env:
+      OPS_CRON_SECRET: ${{ secrets.OPS_CRON_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: assets/app.js
+          sparse-checkout-cone-mode: false
+      - name: Call ops-reminder
+        if: env.OPS_CRON_SECRET != ''
+        run: |
+          # 사이트에 공개된 anon 키 (함수 앞단 JWT 확인용). 실제 확인은 x-cron-secret으로 한다
+          anon=$(grep -oE "SB_KEY = '[^']+'" assets/app.js | head -1 | cut -d"'" -f2)
+          curl -sS --fail-with-body -X POST https://xyewclvpshldjucryapr.supabase.co/functions/v1/ops-reminder \
+            -H "Authorization: Bearer $anon" -H "apikey: $anon" -H "x-cron-secret: $OPS_CRON_SECRET" -H 'Content-Type: application/json' -d '{}'
+      - name: Skip without secret
+        if: env.OPS_CRON_SECRET == ''
+        run: echo "OPS_CRON_SECRET Secret이 없어서 건너뜀"

@@ -686,7 +686,8 @@
       '<form data-f="set" class="mailbox" style="margin-top:32px"><input id="op-mail" type="email" placeholder="알림 받을 이메일" aria-label="알림 받을 이메일" value="' + esc(set.notify_email || '') + '">' +
       '<div style="margin-top:16px"><label class="chk"><input type="checkbox" id="op-n1"' + (nt.agora_sms === false ? '' : ' checked') + '>AGORA 선배님 연락처 문자 발송</label>' +
       '<label class="chk"><input type="checkbox" id="op-n2"' + (nt.signup === false ? '' : ' checked') + '>회원가입 신청</label>' +
-      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입 승인 (안내 문자 결과 포함)</label></div>' +
+      '<label class="chk"><input type="checkbox" id="op-n3"' + (nt.approval === false ? '' : ' checked') + '>가입 승인 (안내 문자 결과 포함)</label>' +
+      '<label class="chk"><input type="checkbox" id="op-n4"' + (nt.due === false ? '' : ' checked') + '>결제·만료 알림 (매주 월요일, 유지비 표의 다음 결제일 기준)</label></div>' +
       '<div class="acts"><button class="bt p" type="submit">저장</button></div></form><div class="msg" data-m="set"></div>');
 
     var cert = sec('cert', '수료증', 'A4 · PNG·PDF', '<p class="note">이름·기수·학기별 소속을 넣으면 학회 수료증 양식으로 바로 만들어요. 회장·부회장 서명과 인감은 그 화면의 \u2018서명·인감 설정\u2019에서 바꿔요.</p><div class="acts" style="margin-top:24px"><button class="bt p" type="button" data-a="cert">수료증 만들기</button><span class="msg" data-m="cert"></span></div>');
@@ -760,7 +761,7 @@
       e.preventDefault();
       var mail = el.querySelector('#op-mail').value.trim();
       if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) { el.querySelector('[data-m="set"]').textContent = '이메일 형식 확인'; return; }
-      var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked } });
+      var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked, due: el.querySelector('#op-n4').checked } });
       save('settings', set, 'set');
     };
     wireCards(el);
