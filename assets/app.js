@@ -4272,7 +4272,7 @@ class Component extends DCLogic {
         { val: RECRUIT.schedule[3].date, key:'면접', k:'면접', s:'' },
         { val:'1년 이상', key:'활동 기간', k:'활동 기간', s:'' },
         { val:'제한 없음', key:'전공 · 학번 · 나이', k:'지원 자격', s:'전공 · 학번 · 나이' }],
-      scheduleSteps: RECRUIT.schedule.map((d, i) => ({ ...d, num: String(i + 1).padStart(2, '0'), bar: i === 0 ? '#1A1A1A' : '#203864', ink: d.key ? '#203864' : '#1A1A1A' })),
+      scheduleSteps: RECRUIT.schedule.map((d, i) => ({ ...d, cls: d.key ? 'key' : '', num: String(i + 1).padStart(2, '0'), bar: i === 0 ? '#1A1A1A' : '#203864', ink: d.key ? '#203864' : '#1A1A1A' })),
       eligibilityText: '자격 요건은 ' + RECRUIT.eligibility + '. 전공, 학번, 나이 제한은 없습니다.',
       commitCards: [
         { kind:'Seminar', label:'정기 세미나', desc:'학기 중 3회 진행합니다. 선배님을 초청해 발표하고 피드백을 받습니다.', bg:'#FFFFFF', border:'#D0CECE', top:'#1A1A1A', eyebrow:'rgba(26,26,26,0.5)', ink:'#0F1B2E', body:'rgba(26,26,26,0.75)' },
@@ -4375,7 +4375,7 @@ class Component extends DCLogic {
         { q:'개인 투자경험이 필요한가요?', a:'개인 투자경험이 필수적으로 요구되지 않습니다. 개인 투자와 학회 활동이 높은 관련성을 가지는 것은 맞으나, 투자 경험의 유무보다는 학회에 대한 열정이 더욱 중요합니다.' },
         { q:'휴학생도 가입이 가능한가요?', a:'휴학생, 졸업유예생 분들도 가입이 가능합니다. 1년 이상 활동이 가능하다면 지원이 가능합니다. 다만 졸업생, 대학원생은 지원이 불가하다는 점 참고 부탁드립니다.' },
         { q:'인턴, 대외활동과 병행이 가능한가요?', a:'인턴, 대외활동과 병행이 충분히 가능합니다. 진행하시는 인턴과 대외활동의 업무량에 따라 다르겠지만, 많은 학회원들이 인턴과 병행하며 학회 활동을 하고 있습니다.' }
-      ].map((f, i) => ({ ...f, mark: s.faqOpen === i ? '·' : '+', cls: s.faqOpen === i ? 'open' : '', toggle: () => this.setState({ faqOpen: s.faqOpen === i ? -1 : i }) })),
+      ].map((f, i) => ({ ...f, mark: s.faqOpen === i ? '−' : '+', cls: s.faqOpen === i ? 'open' : '', toggle: () => this.setState({ faqOpen: s.faqOpen === i ? -1 : i }) })),
       closedNote: '43기 신입 모집은 마감되었습니다.',
       nextNote: '다음 모집은 ' + nextRecruit + '로 예정되어 있습니다. 모집이 열리면 문자로 알려드립니다.',
       nextShort: '다음 모집 ' + String(nextRecruit).replace(', ', ' · '),

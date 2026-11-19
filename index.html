@@ -78,7 +78,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<link rel="stylesheet" href="/assets/app.css?v=aa55bb0dea">
+<link rel="stylesheet" href="/assets/app.css?v=a382e36e80">
 </head>
 <body>
 <noscript>
@@ -125,7 +125,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=8" defer></script>
 <script src="./assets/ops.js?v=18" defer></script>
-<link rel="stylesheet" href="/assets/app.css?v=aa55bb0dea">
+<link rel="stylesheet" href="/assets/app.css?v=a382e36e80">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">
@@ -1236,7 +1236,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
   <sc-if value="{{ isRecruit }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ isDesktopHome }}" hint-placeholder-val="{{ true }}">
-  <main data-screen-label="리크루팅" class="pgx">
+  <main data-screen-label="리크루팅" class="pgx rcx">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="recruit-photo" shape="rect" fit="cover" src="assets/hero/recruit.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:50% 45%"></image-slot></div>
       <div class="scrim" style="opacity:0.6"></div>
@@ -1259,45 +1259,25 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
 
     <section data-tab="perks" class="ptn" data-nav="dark">
-      <div class="ptn-w"><h2 class="ptn-t rv rv-up">Partnership</h2><div class="ptn-g rv rv-up" style="--rv-delay:120ms"><div class="ptn-r ptn-r3"><div class="ptn-c"><img src="assets/partners/ritamin.webp" alt="리타민" width="1040" height="360" loading="lazy"><p>FnGuide 리포트 앱 · 학회원 32명</p></div><div class="ptn-c"><img src="assets/partners/claude.webp" alt="Claude" width="1040" height="360" loading="lazy"><p>Claude for Nonprofits · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/butler-logo.webp" alt="Butler" width="1040" height="360" loading="lazy"><p>기업분석 플랫폼 · 유료 플랜 전원</p></div></div><div class="ptn-r ptn-r2"><div class="ptn-c"><img src="assets/partners/openai.webp" alt="OpenAI" width="1040" height="360" loading="lazy"><p>ChatGPT 유료 플랜 · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/nodaji.webp" alt="노다지 IR" width="1040" height="360" loading="lazy"><p>IR노트 연간 구독 · 92% 할인</p></div></div></div></div>
+      <div class="ptn-w"><div class="rc-hd rv rv-up"><h2 class="ptn-t">Partnership</h2><span>01</span></div><div class="ptn-g rv rv-up" style="--rv-delay:120ms"><div class="ptn-r ptn-r3"><div class="ptn-c"><img src="assets/partners/ritamin.webp" alt="리타민" width="1040" height="360" loading="lazy"><p>FnGuide 리포트 앱 · 학회원 32명</p></div><div class="ptn-c"><img src="assets/partners/claude.webp" alt="Claude" width="1040" height="360" loading="lazy"><p>Claude for Nonprofits · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/butler-logo.webp" alt="Butler" width="1040" height="360" loading="lazy"><p>기업분석 플랫폼 · 유료 플랜 전원</p></div></div><div class="ptn-r ptn-r2"><div class="ptn-c"><img src="assets/partners/openai.webp" alt="OpenAI" width="1040" height="360" loading="lazy"><p>ChatGPT 유료 플랜 · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/nodaji.webp" alt="노다지 IR" width="1040" height="360" loading="lazy"><p>IR노트 연간 구독 · 92% 할인</p></div></div></div></div>
     </section>
-    <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;border-bottom:1px solid #D0CECE">
-      <div class="wrap secpad" style="padding:110px 35px">
-        <div class="rv rv-up">
-          <h2 class="sec-title">전형 일정</h2>
-        </div>
-        <div class="sched5" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:clamp(40px,6vh,64px)">
-          <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5">
-            <div class="rv rv-up tl-cell">
-              <div class="tl-txt inv-soft" style="font-family:'Noto Serif KR',serif;font-size:13px;letter-spacing:0.1em;color:rgba(26,26,26,0.68);font-variant-numeric:tabular-nums">{{ d.num }}</div>
-              <div class="tl-txt inv" style="font-family:'Noto Serif KR',serif;font-size:clamp(22px,2.2vw,32px);font-weight:700;letter-spacing:-0.02em;margin-top:10px;color:#0F1B2E;font-variant-numeric:tabular-nums;white-space:nowrap">{{ d.date }}</div>
-              <div class="inv-line" style="position:relative;border-top:1px solid #1A1A1A;margin:22px 0 0;height:1px">
-                <span class="inv-dot" style="position:absolute;left:0;top:-6px;width:11px;height:11px;background:{{ d.bar }};outline:3px solid #FFFFFF"></span>
-              </div>
-              <div class="tl-txt inv" style="font-size:16px;font-weight:700;margin-top:24px;color:{{ d.ink }}">{{ d.step }}</div>
-              <div class="tl-txt inv-soft" style="font-size:13px;color:rgba(26,26,26,0.65);margin-top:6px;line-height:1.6">{{ d.note }}</div>
-            </div>
-          </sc-for>
+    <section data-tab="schedule" class="rc-proc" data-nav="dark">
+      <div class="rc-w"><div class="rc-hd rv rv-up"><h2 class="rc-t">Process</h2><span>02</span></div>
+        <div class="rc-tl">
+          <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5"><div class="rc-st {{ d.cls }} rv rv-up"><div class="k">{{ d.num }}</div><div class="d">{{ d.date }}</div><i></i><b>{{ d.step }}</b><span>{{ d.note }}</span></div></sc-for>
         </div>
       </div>
     </section>
 
 
 
-    <section data-tab="faq" data-nav="light" style="background:#FFFFFF">
-      <div class="wrap secpad faq-grid" style="padding:110px 35px;display:grid;grid-template-columns:minmax(0,0.9fr) minmax(0,1.6fr);gap:clamp(40px,5vw,80px);align-items:start">
-        <div class="rv rv-left">
-          <h2 class="sec-title">FAQ</h2>
-        </div>
-        <div class="rv rv-right" style="border-top:1px solid #1A1A1A">
-        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5">
-          <div style="border-bottom:1px solid #D0CECE">
-            <button class="faqq" onClick="{{ q.toggle }}" style="width:100%;background:none;border:none;text-align:left;padding:16px 4px;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:16px;color:#1A1A1A;transition:color 120ms ease">
-              <span>{{ q.q }}</span><span style="font-weight:400;color:rgba(26,26,26,0.65)">{{ q.mark }}</span>
-            </button>
-            <div class="faqbody {{ q.cls }}"><div><p style="font-size:14px;line-height:1.8;color:rgba(26,26,26,0.75);margin:0;padding:0 4px 18px;max-width:60ch">{{ q.a }}</p></div></div>
-          </div>
-        </sc-for>
+    <section data-tab="faq" class="rc-faq" data-nav="dark">
+      <div class="rc-w"><div class="rc-hd rv rv-up"><h2 class="rc-t">FAQ</h2><span>03</span></div>
+        <div class="rc-fl">
+          <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5"><div class="rc-fi">
+            <button class="faqq rc-q" onClick="{{ q.toggle }}"><span>{{ q.q }}</span><em>{{ q.mark }}</em></button>
+            <div class="faqbody {{ q.cls }}"><div><p>{{ q.a }}</p></div></div>
+          </div></sc-for>
         </div>
       </div>
     </section>
@@ -1320,7 +1300,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
   </sc-if>
 
   <sc-if value="{{ isMobile }}" hint-placeholder-val="{{ false }}">
-  <main data-screen-label="리크루팅 (모바일)" class="pgx mhome" style="background:#F7F6F3;color:#1A1A1A">
+  <main data-screen-label="리크루팅 (모바일)" class="pgx rcx mhome" style="background:#F7F6F3;color:#1A1A1A">
     <section class="on-photo pg-hero pg-big pg-full" data-nav="dark">
       <div class="pg-bg"><image-slot id="m-recruit-hero" shape="rect" fit="cover" src="assets/hero/recruit-m.webp" credit="Photo: Library of Congress (public domain)" credit-href="https://commons.wikimedia.org/wiki/File:Grand_staircase_heading_from_the_Great_Hall_of_the_Library_of_Congress_Thomas_Jefferson_Building,_Washington,_D.C_LCCN2011633158.jpg" style="--slot-position:55% 50%"></image-slot></div>
       <div class="scrim" style="opacity:0.62"></div>
@@ -1342,36 +1322,26 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
 
     <section data-tab="perks" class="ptn" data-nav="dark">
-      <div class="ptn-w"><h2 class="ptn-t rv rv-up">Partnership</h2><div class="ptn-g rv rv-up" style="--rv-delay:120ms"><div class="ptn-r ptn-r3"><div class="ptn-c"><img src="assets/partners/ritamin.webp" alt="리타민" width="1040" height="360" loading="lazy"><p>FnGuide 리포트 앱 · 학회원 32명</p></div><div class="ptn-c"><img src="assets/partners/claude.webp" alt="Claude" width="1040" height="360" loading="lazy"><p>Claude for Nonprofits · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/butler-logo.webp" alt="Butler" width="1040" height="360" loading="lazy"><p>기업분석 플랫폼 · 유료 플랜 전원</p></div></div><div class="ptn-r ptn-r2"><div class="ptn-c"><img src="assets/partners/openai.webp" alt="OpenAI" width="1040" height="360" loading="lazy"><p>ChatGPT 유료 플랜 · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/nodaji.webp" alt="노다지 IR" width="1040" height="360" loading="lazy"><p>IR노트 연간 구독 · 92% 할인</p></div></div></div></div>
+      <div class="ptn-w"><div class="rc-hd rv rv-up"><h2 class="ptn-t">Partnership</h2><span>01</span></div><div class="ptn-g rv rv-up" style="--rv-delay:120ms"><div class="ptn-r ptn-r3"><div class="ptn-c"><img src="assets/partners/ritamin.webp" alt="리타민" width="1040" height="360" loading="lazy"><p>FnGuide 리포트 앱 · 학회원 32명</p></div><div class="ptn-c"><img src="assets/partners/claude.webp" alt="Claude" width="1040" height="360" loading="lazy"><p>Claude for Nonprofits · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/butler-logo.webp" alt="Butler" width="1040" height="360" loading="lazy"><p>기업분석 플랫폼 · 유료 플랜 전원</p></div></div><div class="ptn-r ptn-r2"><div class="ptn-c"><img src="assets/partners/openai.webp" alt="OpenAI" width="1040" height="360" loading="lazy"><p>ChatGPT 유료 플랜 · 60% 할인</p></div><div class="ptn-c"><img src="assets/partners/nodaji.webp" alt="노다지 IR" width="1040" height="360" loading="lazy"><p>IR노트 연간 구독 · 92% 할인</p></div></div></div></div>
     </section>
-    <section data-tab="schedule" data-nav="light" style="background:#FFFFFF;padding:56px 24px 52px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">전형 일정</h2>
-      <div style="margin-top:30px;border-top:1px solid #1A1A1A">
-        <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5">
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:16px;padding:18px 0;border-bottom:1px solid #D0CECE;align-items:start">
-            <div style="font-family:'Noto Serif KR',serif;font-size:19px;font-weight:700;letter-spacing:-0.02em;color:#0F1B2E;font-variant-numeric:tabular-nums;white-space:nowrap;min-width:82px">{{ d.date }}</div>
-            <div>
-              <div style="font-size:15px;font-weight:700;color:{{ d.ink }}">{{ d.step }}</div>
-              <div style="font-size:13px;color:rgba(26,26,26,0.65);margin-top:4px;line-height:1.6">{{ d.note }}</div>
-            </div>
-          </div>
-        </sc-for>
+    <section data-tab="schedule" class="rc-proc" data-nav="dark">
+      <div class="rc-w"><div class="rc-hd rv rv-up"><h2 class="rc-t">Process</h2><span>02</span></div>
+        <div class="rc-tl">
+          <sc-for list="{{ scheduleSteps }}" as="d" hint-placeholder-count="5"><div class="rc-st {{ d.cls }} rv rv-up"><div class="k">{{ d.num }}</div><div class="d">{{ d.date }}</div><i></i><b>{{ d.step }}</b><span>{{ d.note }}</span></div></sc-for>
+        </div>
       </div>
     </section>
 
 
 
-    <section data-tab="faq" data-nav="light" style="background:#F7F6F3;padding:52px 24px 52px">
-      <h2 style="margin:12px 0 0;font-family:'Noto Serif KR',serif;font-size:31px;font-weight:400;letter-spacing:-0.02em;color:#0F1B2E">FAQ</h2>
-      <div style="margin-top:26px;border-top:1px solid #1A1A1A">
-        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="6">
-          <div style="border-bottom:1px solid #D0CECE">
-            <button class="faqq" onClick="{{ q.toggle }}" style="width:100%;background:none;border:none;text-align:left;padding:17px 0;font:inherit;font-size:15px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;gap:14px;color:#1A1A1A">
-              <span>{{ q.q }}</span><span style="font-weight:400;color:rgba(26,26,26,0.6)">{{ q.mark }}</span>
-            </button>
-            <div class="faqbody {{ q.cls }}"><div><p style="font-size:14px;line-height:1.8;color:rgba(26,26,26,0.75);margin:0;padding:0 0 18px">{{ q.a }}</p></div></div>
-          </div>
-        </sc-for>
+    <section data-tab="faq" class="rc-faq" data-nav="dark">
+      <div class="rc-w"><div class="rc-hd rv rv-up"><h2 class="rc-t">FAQ</h2><span>03</span></div>
+        <div class="rc-fl">
+          <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="5"><div class="rc-fi">
+            <button class="faqq rc-q" onClick="{{ q.toggle }}"><span>{{ q.q }}</span><em>{{ q.mark }}</em></button>
+            <div class="faqbody {{ q.cls }}"><div><p>{{ q.a }}</p></div></div>
+          </div></sc-for>
+        </div>
       </div>
     </section>
 
@@ -1740,7 +1710,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;recruitStatus&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;모집 중&quot;,&quot;서류 심사 중&quot;,&quot;마감&quot;],&quot;default&quot;:&quot;마감&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitSemester&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;26-2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitCohort&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:43,&quot;min&quot;:1,&quot;max&quot;:99,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitDeadline&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;7월 31일 (금) 23:59&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;recruitFormUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://forms.gle/[교체]&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;nextRecruit&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;27-1학기, 2027년 1월&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;리크루팅&quot;},&quot;intranetPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;인트라넷&quot;},&quot;mobilePreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;미리보기&quot;}}"></script>
-<script src="/assets/app.js?v=55a5230249"></script>
+<script src="/assets/app.js?v=215ba651c4"></script>
 <script>
 // 메뉴 로고 옆 'with Claude'는 메뉴 글자와 겹치지 않을 만큼 자리가 있을 때만 보인다 (폰 세로·좁은 창에서는 숨김, 푸터에는 항상 있음)
 (function(){
