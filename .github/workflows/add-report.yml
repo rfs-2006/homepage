@@ -19,6 +19,9 @@ concurrency:
 jobs:
   add:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash   # pipefail: tee 앞 명령이 실패하면 멈춘다
     timeout-minutes: 40
     permissions:
       contents: write

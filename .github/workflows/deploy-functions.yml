@@ -1,0 +1,60 @@
+name: Supabase 함수 배포
+
+# main에 supabase/functions/<이름>/ 이 바뀌어 올라오면 바뀐 함수만 Supabase에 배포한다 (대시보드에 붙여넣기 안 해도 됨).
+# 필요한 Secret: SUPABASE_ACCESS_TOKEN (supabase.com → Account → Access Tokens에서 만든 개인 토큰).
+# 함수의 비밀값(SOLAPI·RESEND 등)은 Supabase 쪽 Edge Function Secrets에 그대로 있다. 여기서 건드리지 않는다.
+# 손으로 전부 다시 배포하려면 Actions → 이 워크플로 → Run workflow (함수 이름을 비우면 전부).
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/functions/**'
+  workflow_dispatch:
+    inputs:
+      names:
+        description: '배포할 함수 이름 (띄어쓰기로 여러 개, 비우면 전부)'
+        required: false
+        default: ''
+
+concurrency:
+  group: deploy-functions
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJECT_REF: xyewclvpshldjucryapr
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Skip without token
+        if: env.SUPABASE_ACCESS_TOKEN == ''
+        run: echo "SUPABASE_ACCESS_TOKEN Secret이 없어서 건너뜀 (대시보드에 붙여넣어 배포)"
+      - uses: supabase/setup-cli@v1
+        if: env.SUPABASE_ACCESS_TOKEN != ''
+        with:
+          version: latest
+      - name: Deploy changed functions
+        if: env.SUPABASE_ACCESS_TOKEN != ''
+        env:
+          BEFORE: ${{ github.event.before }}
+          NAMES: ${{ github.event.inputs.names }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            fns="${NAMES:-$(ls supabase/functions)}"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            fns=$(ls supabase/functions)
+          else
+            fns=$(git diff --name-only "$BEFORE" "$GITHUB_SHA" -- supabase/functions | cut -d/ -f3 | sort -u)
+          fi
+          for f in $fns; do
+            [ -f "supabase/functions/$f/index.ts" ] || { echo "건너뜀: $f (index.ts 없음)"; continue; }
+            echo "배포: $f"
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api
+          done

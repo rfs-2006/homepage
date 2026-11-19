@@ -1,0 +1,8 @@
+# polaris-autoupdate.sh를 한 번 돌린다. 타이머(polaris-autoupdate.timer)가 5분마다 부른다.
+[Unit]
+Description=Polaris auto update (git pull + restart if changed)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/polaris-autoupdate

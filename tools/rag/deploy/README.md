@@ -74,6 +74,22 @@ sudo -u polaris git -C /srv/polaris/rfs-cafe-data pull
 systemctl restart polaris
 ```
 
+## 4. 자동 갱신 (한 번만 설정)
+
+main에 Polaris 코드(tools/rag/)가 바뀌거나, 새 리포트가 데이터(rfs-cafe-data)에 들어오면 5분 안에 서버가 받아서 다시 시작한다.
+GitHub에서 서버로 들어오는 접속은 없고 서버가 가져가기만 한다.
+
+```bash
+cp /srv/polaris/homepage/tools/rag/deploy/polaris-autoupdate.sh /usr/local/bin/polaris-autoupdate
+cp /srv/polaris/homepage/tools/rag/deploy/polaris-autoupdate.service /srv/polaris/homepage/tools/rag/deploy/polaris-autoupdate.timer /etc/systemd/system/
+systemctl daemon-reload && systemctl enable --now polaris-autoupdate.timer
+systemctl start polaris-autoupdate && journalctl -u polaris-autoupdate -n 20     # 한 번 돌려 보기
+```
+
+- 끄기: `systemctl disable --now polaris-autoupdate.timer`
+- PR 브랜치를 시험할 때(`polaris-update 브랜치`)도 그 브랜치를 따라 받는다. 다 보면 `polaris-update main`.
+- 스크립트 자체를 고쳤으면 위 첫 줄(cp)을 다시 한다.
+
 ## 하루 사용량 바꾸기
 
 `/etc/polaris.env`의 `ANON_DAILY`(비로그인 IP당), `PER_IP_DAILY`(학회 계정 IP당), `DAILY_LIMIT`(전체)를 고치고 `systemctl restart polaris`.
