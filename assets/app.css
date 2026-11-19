@@ -2006,3 +2006,19 @@ html.nav-solid.nav-dark:has(.rfmpage) .nav,.nav-solid.nav-dark:has(main.rfmpage)
 .cw-m{height:88vh;min-height:600px}
 .cw-m .cw-t{top:168px;font-size:24px}
 .cw-m .cw-form input{height:54px;padding:0 14px}.cw-m .cw-form button{height:54px;padding:0 18px}
+
+/* 리크루팅 '혜택' 칸: Partnership (학회 소개 PPT 18쪽과 같은 배경·로고, assets/partners/) */
+.ptn{position:relative;background:#04070D url(partners/bg.webp) center bottom/cover no-repeat;color:#F2EFE8;overflow:hidden}
+.ptn-w{max-width:1320px;margin:0 auto;padding:clamp(96px,12vh,140px) 56px clamp(110px,14vh,160px)}
+.ptn-t{margin:0;font:300 clamp(48px,5.6vw,88px)/1 'Source Serif 4','Noto Serif KR',serif;letter-spacing:-.025em;color:#F7F6F3}
+.ptn-g{margin-top:clamp(64px,9vh,104px);border-top:1px solid rgba(242,239,232,.16)}
+.ptn-r{display:grid;border-bottom:1px solid rgba(242,239,232,.16)}
+.ptn-r3{grid-template-columns:repeat(3,minmax(0,1fr))}.ptn-r2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ptn-c{position:relative;padding:clamp(44px,6vh,64px) 24px clamp(40px,5.5vh,56px);text-align:center}
+.ptn-c+.ptn-c::before{content:'';position:absolute;left:0;top:28px;bottom:28px;width:1px;background:rgba(242,239,232,.14)}
+.ptn-c img{display:block;width:clamp(200px,19vw,280px);height:auto;margin:0 auto}
+.ptn-c p{margin:clamp(14px,2vh,22px) 0 0;font-size:15px;letter-spacing:.01em;color:rgba(242,239,232,.78)}
+@media (max-width:860px){.ptn-w{padding:72px 24px 88px}.ptn-t{font-size:44px}.ptn-g{margin-top:44px}.ptn-r3,.ptn-r2{grid-template-columns:1fr}.ptn-c{padding:28px 0 26px}.ptn-c+.ptn-c::before{left:0;right:0;top:0;bottom:auto;width:auto;height:1px}.ptn-c img{width:200px}.ptn-c p{font-size:14px;margin-top:10px}}
+main.pgx h2.ptn-t{font:300 clamp(48px,5.6vw,88px)/1 'Source Serif 4','Noto Serif KR',serif !important;letter-spacing:-.025em !important}
+main.pgx h2.cw-t{font:400 clamp(26px,2.6vw,40px)/1.2 'Source Serif 4','Noto Serif KR',serif !important;letter-spacing:.01em !important}
+@media (max-width:860px){main.pgx h2.ptn-t{font-size:44px !important}main.pgx h2.cw-t{font-size:26px !important}}
