@@ -11,6 +11,8 @@
 // - ledger_get · ledger_save · ledger_export · ledger_log_list: 회계장부 (ops_state의 key 'ledger', 접근 기록은 ledger_log, supabase/sql/ledger_log.sql)
 // - receipt_upload · receipt_url: 증빙 파일 (비공개 Storage 버킷 'ledger', 볼 때는 60초 서명 주소)
 //   회계장부·증빙은 LEDGER_ADMINS가 있으면 그 이메일만 (MEMBER_ADMINS 확인도 거친다). 모든 호출을 ledger_log에 남긴다
+// - cert_get · cert_save: 수료증 만들기 설정 (ops_state의 key 'cert'). 회장·부회장 이름과 서명 이미지, 인감 이미지, 다음 발급 번호.
+//   서명·인감은 위조에 쓰일 수 있어서 공개 저장소에 두지 않고 여기에만 둔다 (ops_get으로는 안 나간다)
 //
 // 필요한 Secrets: MEMBER_ADMINS (관리자 로그인 이메일, 쉼표로 여러 개. 예: amt@caurfs.kr), 솔라피 키 3개(커피챗·agora-sms와 같은 것)
 // 선택 Secrets: RESEND_API_KEY·MAIL_FROM (알림 메일), GA_PROPERTY_ID·GA_SA_KEY (방문자: GA 속성 ID 숫자, 서비스 계정 키 JSON 전체)
@@ -223,6 +225,25 @@ Deno.serve(async (req) => {
     const value = b.value ?? null;
     if (JSON.stringify(value).length > 60000) return json(413, { error: 'size' });
     const { error } = await admin.from('ops_state').upsert({ key, value, updated_at: new Date().toISOString(), updated_by: u.user.email });
+    return error ? json(500, { error: 'save' }) : json(200, { ok: true });
+  }
+
+  if (b.action === 'cert_get') {
+    const { data } = await admin.from('ops_state').select('value, updated_at, updated_by').eq('key', 'cert').maybeSingle();
+    return json(200, { ok: true, cert: data?.value || null, updated_at: data?.updated_at || null, updated_by: data?.updated_by || null });
+  }
+
+  if (b.action === 'cert_save') {
+    // { chair: {name, sig}, vice: {name, sig}, seal } — sig·seal은 data:image/(png|webp|svg+xml) 주소. 이미지 때문에 다른 설정보다 크게 받는다
+    const v = (b.value && typeof b.value === 'object') ? b.value as Record<string, unknown> : null;
+    if (!v) return json(400, { error: 'value' });
+    const img = (x: unknown) => typeof x === 'string' && (x === '' || /^data:image\/(png|webp|jpeg|svg\+xml);base64,[A-Za-z0-9+/=]+$/.test(x));
+    const person = (x: unknown) => { const o = (x && typeof x === 'object') ? x as Record<string, unknown> : {}; return img(o.sig ?? '') && String(o.name ?? '').length <= 20 ? { name: String(o.name ?? '').trim(), sig: String(o.sig ?? '') } : null; };
+    const chair = person(v.chair), vice = person(v.vice);
+    if (!chair || !vice || !img(v.seal ?? '')) return json(400, { error: 'image' });
+    const value = { chair, vice, seal: String(v.seal ?? ''), next_no: Math.max(1, Math.min(99999, Number(v.next_no) || 1)) };
+    if (JSON.stringify(value).length > 1_500_000) return json(413, { error: 'size' });
+    const { error } = await admin.from('ops_state').upsert({ key: 'cert', value, updated_at: new Date().toISOString(), updated_by: u.user.email });
     return error ? json(500, { error: 'save' }) : json(200, { ok: true });
   }
 
