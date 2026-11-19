@@ -1,0 +1,55 @@
+name: 리포트 용어 풀이
+
+# main에 리포트 전문(assets/reports/full/<id>.json)이 새로 올라오면, 용어 풀이가 없는 리포트만 골라
+# tools/build-glossary.py로 만들어 assets/reports/glossary.json에 넣고 DATA_VER를 올려 커밋한다.
+# 저장소 Secret RAG_ANTHROPIC_API_KEY(Claude API 키)가 있어야 돈다. 없으면 건너뛴다.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'assets/reports/full/*.json'
+  workflow_dispatch:
+
+concurrency:
+  group: glossary
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    env:
+      RAG_ANTHROPIC_API_KEY: ${{ secrets.RAG_ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Skip without key
+        if: env.RAG_ANTHROPIC_API_KEY == ''
+        run: echo "RAG_ANTHROPIC_API_KEY Secret이 없어서 건너뜀"
+      - uses: actions/setup-python@v5
+        if: env.RAG_ANTHROPIC_API_KEY != ''
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        if: env.RAG_ANTHROPIC_API_KEY != ''
+        with:
+          node-version: 22
+      - name: Build glossary
+        if: env.RAG_ANTHROPIC_API_KEY != ''
+        run: |
+          pip install -q anthropic
+          python3 tools/build-glossary.py --missing --bump
+          node tools/build-site.js
+      - name: Commit if changed
+        if: env.RAG_ANTHROPIC_API_KEY != ''
+        run: |
+          if git diff --quiet -- assets/reports/glossary.json; then
+            echo "바뀐 것 없음"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A assets/reports/glossary.json assets/app.js index.html
+          git commit -m "리포트 용어 풀이 추가 ($(date -u +%Y-%m-%d))"
+          git push
