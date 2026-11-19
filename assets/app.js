@@ -2564,7 +2564,14 @@ class Component extends DCLogic {
     const list = [...document.querySelectorAll('section[data-snap]')].map((n) => n.offsetTop);
     // 홈 첫 화면이 화면보다 길면, 별자리로 가기 전에 소식 띠 아래 끝까지 한 번 멈춘다
     const bx = [...document.querySelectorAll('.bx-hero')].find((n) => n.offsetHeight);
-    if (bx) { list.push(bx.offsetTop); const end = bx.offsetTop + bx.offsetHeight - window.innerHeight; if (end > bx.offsetTop + 40) list.push(end); }
+    if (bx) {
+      list.push(bx.offsetTop);
+      // 아래 끝을 화면 아래에 맞추되, 소식 띠 윗부분이 위쪽 메뉴에 가리지 않게 띠 위가 메뉴 바로 아래에 오는 것보다 더 내려가지 않는다
+      const band = bx.querySelector('.bx-bandx'), nav = document.querySelector('.nav');
+      let end = bx.offsetTop + bx.offsetHeight - window.innerHeight;
+      if (band) end = Math.min(end, bx.offsetTop + band.offsetTop - (nav ? nav.offsetHeight : 72) - 16);
+      if (end > bx.offsetTop + 40) list.push(end);
+    }
     const foot = document.querySelector('footer');
     if (foot) list.push(Math.min(foot.offsetTop, document.documentElement.scrollHeight - window.innerHeight));
     return list.sort((a, b) => a - b);
