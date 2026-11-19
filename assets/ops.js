@@ -132,6 +132,7 @@
 .op .bt:hover{border-color:var(--ink2);background:var(--panel)}\
 .op .bt.p{background:var(--navy);border-color:var(--navy);color:#F4F2ED}\
 .op .bt.p:hover{background:var(--navy2);border-color:var(--navy2)}\
+.op .au-r{display:flex;gap:24px;align-items:flex-start;justify-content:space-between;padding:20px 0;border-top:1px solid var(--line)}.op .au-r:first-of-type{margin-top:20px}.op .au-t b{font-size:15px}.op .au-t ol{margin:6px 0 0;padding-left:18px;color:var(--ink2);font-size:13.5px;line-height:1.75}.op .au-t ol b{font-size:inherit;color:var(--ink)}.op a.bt.au-b{display:inline-flex;align-items:center;text-decoration:none;flex:none}@media(max-width:640px){.op .au-r{flex-direction:column;gap:12px}}\
 .op .bt.s{height:30px;padding:0 10px;font-size:13px;color:var(--ink2)}\
 .op .bt:disabled{opacity:.4;cursor:default;background:transparent}\
 .op .bt.p:disabled{background:var(--navy)}\
@@ -693,13 +694,16 @@
     var cert = sec('cert', '수료증', 'A4 · PNG·PDF', '<p class="note">이름·기수·학기별 소속을 넣으면 학회 수료증 양식으로 바로 만들어요. 회장·부회장 서명과 인감은 그 화면의 \u2018서명·인감 설정\u2019에서 바꿔요.</p><div class="acts" style="margin-top:24px"><button class="bt p" type="button" data-a="cert">수료증 만들기</button><span class="msg" data-m="cert"></span></div>');
     // ⑪ 자동 작업 (GitHub Actions): 리포트 PDF 올리기·학기 넘기기는 GitHub 화면에서 한다 (학회 GitHub 계정 로그인 필요)
     var GH = 'https://github.com/rfs-2006/homepage';
-    var auto = sec('auto', '자동 작업', 'GitHub Actions',
-      '<p class="note">학회 GitHub 계정으로 로그인한 뒤 눌러요. 끝나면 PR이 열리고, 미리보기에서 확인한 뒤 머지하면 사이트에 반영돼요.</p>' +
-      '<ul class="auto-l" style="margin:24px 0 0;padding:0;list-style:none;line-height:2">' +
-      '<li><a href="' + GH + '/upload/main/inbox" target="_blank" rel="noopener"><b>리포트 올리기</b></a> · 리포트 PDF를 끌어다 놓고 Commit. 파일 이름을 영문(예: gigavis.pdf)으로 하면 그게 주소가 돼요. 표지·요약·전문·용어 풀이·주가까지 자동</li>' +
-      '<li><a href="' + GH + '/actions/workflows/new-term.yml" target="_blank" rel="noopener"><b>학기 넘기기</b></a> · Run workflow → 새 기수·회장·부회장 입력</li>' +
-      '<li><a href="' + GH + '/actions" target="_blank" rel="noopener"><b>자동 작업 기록</b></a> · 주가 갱신·RFM·용어 풀이·배포·알림 메일이 잘 돌았는지</li>' +
-      '<li><a href="' + GH + '/pulls" target="_blank" rel="noopener"><b>열린 PR</b></a> · 자동으로 만든 변경 확인·머지</li></ul>');
+    var autoRow = function (title, steps, href, btn) {
+      return '<div class="au-r"><div class="au-t"><b>' + title + '</b><ol>' + steps.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol></div>' +
+        '<a class="bt p au-b" href="' + GH + href + '" target="_blank" rel="noopener">' + btn + ' \u2197</a></div>';
+    };
+    var auto = sec('auto', '자동 작업', 'GitHub에서 해요',
+      '<p class="note">버튼을 누르면 GitHub가 새 탭으로 열려요. 학회 GitHub 계정으로 로그인돼 있어야 해요.</p>' +
+      autoRow('리포트 올리기', ['리포트 PDF를 화면에 끌어다 놓기 (파일 이름을 영문으로, 예: gigavis.pdf → 주소 /research/gigavis/)', '아래 초록 버튼 <b>Commit changes</b>', '5분쯤 뒤 \u2018열린 PR\u2019에 새 PR이 생겨요. 미리보기에서 확인하고 <b>Merge</b>'], '/upload/main/inbox', 'PDF 올리기') +
+      autoRow('학기 넘기기', ['열린 화면 오른쪽 <b>Run workflow</b> 누르기', '새 학기(예: 27-1)·알럼나이 수·임원 이름 쓰고 초록 <b>Run workflow</b>', '1분쯤 뒤 생긴 PR에 임원 사진 올리고 <b>Merge</b>'], '/actions/workflows/new-term.yml', '학기 넘기기') +
+      autoRow('열린 PR', ['자동으로 만든 변경이 여기 쌓여요', '눌러서 미리보기 주소로 확인하고 <b>Merge pull request</b>'], '/pulls', 'PR 보기') +
+      autoRow('자동 작업 기록', ['주가 갱신·RFM·용어 풀이·함수 배포·알림 메일이 잘 돌았는지', '초록 체크면 성공, 빨간 X면 실패 (실패하면 눌러서 이유 보기)'], '/actions', '기록 보기'));
     el.innerHTML = summary + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + auto + mail;
     wire();
   }
