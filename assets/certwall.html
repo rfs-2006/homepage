@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>R.F.S. 수료증</title>
+<!-- 리크루팅 맨 아래 배경: 은하수(hero/sky.webp) + 반짝이는 별 + 북두칠성, 그 앞에 학회원 수료증(cert/wall/01~20.webp)이 천천히 넘어간다.
+     index.html의 리크루팅 'apply' 칸이 iframe으로 띄운다 (홈 별자리 dipper.html과 같은 방식). 글·입력칸은 바깥(index.html)에 있다.
+     수료증을 더 넣으려면 cert/wall/에 같은 크기(560×792 webp)로 21.webp…를 넣고 아래 N을 바꾼다. 동작 줄이기 설정이면 멈춰 있다 -->
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0A1322}
+.sky{position:fixed;inset:0;background:url(hero/sky.webp) center 30%/cover;opacity:.85}
+.tint{position:fixed;inset:0;background:radial-gradient(ellipse 34% 52% at 50% 46%,rgba(255,248,230,.09),rgba(10,19,34,.2) 70%),linear-gradient(rgba(10,19,34,0) 55%,#0A1322 96%)}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+.stage{position:fixed;inset:0;perspective:1400px;display:grid;place-items:center}
+.row{position:relative;transform-style:preserve-3d;margin-top:var(--top,0px)}
+.row img{position:absolute;inset:0;width:100%;height:100%;display:block;background:#fff;box-shadow:0 40px 80px rgba(0,0,0,.6);transition:transform 1.2s cubic-bezier(.22,.8,.24,1),filter 1.2s ease,opacity .6s ease;backface-visibility:hidden;user-select:none;-webkit-user-drag:none}
+.row img.c{box-shadow:0 0 0 1px rgba(255,255,255,.1),0 50px 120px rgba(0,0,0,.7),0 0 160px rgba(201,185,138,.22)}
+</style>
+</head>
+<body>
+<div class="sky"></div><canvas id="tw"></canvas><div class="tint"></div>
+<div class="stage"><div class="row" id="row"></div></div>
+<script>
+(function () {
+  var N = 20, SHOW = 7, row = document.getElementById('row'), cards = [];
+  var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (var i = 0; i < N; i++) { var im = new Image(); im.src = 'cert/wall/' + (i < 9 ? '0' : '') + (i + 1) + '.webp'; im.alt = ''; im.decoding = 'async'; row.appendChild(im); cards.push(im); }
+  var cur = 2, W = 380;
+  function size() {
+    var vw = innerWidth, vh = innerHeight;
+    W = Math.round(Math.min(380, vw < 700 ? vw * 0.52 : vw * 0.24, (vh - 330) / 1.414));
+    row.style.width = W + 'px'; row.style.height = Math.round(W * 1.414) + 'px';
+    row.style.setProperty('--top', (vw < 700 ? 60 : 70) + 'px');
+    place();
+  }
+  function place() {
+    var k = W / 380;
+    cards.forEach(function (im, i) {
+      var d = ((i - cur) % N + N + N / 2) % N - N / 2, a = Math.abs(d), s = d < 0 ? -1 : 1;
+      im.className = d === 0 ? 'c' : '';
+      im.style.zIndex = 100 - a;
+      im.style.opacity = a > SHOW ? 0 : 1;
+      im.style.transform = d === 0 ? 'translateZ(0)' : 'translateX(' + s * (330 + (a - 1) * 150) * k + 'px) translateZ(' + (-200 - (a - 1) * 170) * k + 'px) rotateY(' + -s * 52 + 'deg)';
+      im.style.filter = 'brightness(' + Math.max(0.3, 1 - a * 0.11) + ')';
+    });
+  }
+  size(); addEventListener('resize', size);
+  if (!still) setInterval(function () { if (!document.hidden) { cur = (cur + 1) % N; place(); } }, 3400);
+
+  // 별: 반짝임 + 북두칠성 (홈 별자리와 같은 금색 선)
+  var c = document.getElementById('tw'), g = c.getContext('2d'), Wc, Hc, S = [], dpr = Math.min(2, devicePixelRatio || 1);
+  var D = [[.10, .17], [.17, .10], [.24, .12], [.31, .16], [.68, .19], [.81, .09], [.90, .21]];
+  function rs() { Wc = c.width = innerWidth * dpr; Hc = c.height = innerHeight * dpr; S = []; for (var i = 0; i < 120; i++) S.push([Math.random() * Wc, Math.random() * Hc * .7, Math.random() * 1.3 + .4, Math.random() * 6.28]); }
+  function line(pts) { g.beginPath(); pts.forEach(function (p, i) { var x = p[0] * Wc, y = p[1] * Hc; i ? g.lineTo(x, y) : g.moveTo(x, y); }); g.stroke(); }
+  function draw(t) {
+    g.clearRect(0, 0, Wc, Hc);
+    S.forEach(function (s) { g.fillStyle = 'rgba(255,255,255,' + (still ? .5 : .35 + .35 * Math.sin(t / 900 + s[3])) + ')'; g.beginPath(); g.arc(s[0], s[1], s[2] * dpr, 0, 7); g.fill(); });
+    g.strokeStyle = 'rgba(201,185,138,.32)'; g.lineWidth = dpr; line(D.slice(0, 4)); line(D.slice(4));
+    D.forEach(function (p) {
+      var x = p[0] * Wc, y = p[1] * Hc, r = 3 * dpr, gr = g.createRadialGradient(x, y, 0, x, y, r * 3.2);
+      gr.addColorStop(0, 'rgba(255,244,214,.9)'); gr.addColorStop(1, 'rgba(255,244,214,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(x, y, r * 3.2, 0, 7); g.fill(); g.fillStyle = '#fff'; g.beginPath(); g.arc(x, y, r * .6, 0, 7); g.fill();
+    });
+    if (!still) requestAnimationFrame(draw);
+  }
+  rs(); addEventListener('resize', rs); requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>

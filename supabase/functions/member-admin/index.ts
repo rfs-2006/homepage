@@ -25,7 +25,7 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
-const OPS_KEYS = ['account', 'costs', 'settings'];
+const OPS_KEYS = ['account', 'costs', 'settings', 'recruit_notify'];   // recruit_notify: 모집 알림 신청 번호 (recruit-notify 함수가 넣는다)
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 const digits = (s: unknown) => String(s ?? '').replace(/\D/g, '');
 const env = (...names: string[]) => names.map((n) => Deno.env.get(n)).find((v) => !!v) || '';
