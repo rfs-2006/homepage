@@ -56,5 +56,5 @@ jobs:
           for f in $fns; do
             [ -f "supabase/functions/$f/index.ts" ] || { echo "건너뜀: $f (index.ts 없음)"; continue; }
             echo "배포: $f"
-            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api
+            supabase functions deploy "$f" --project-ref "$PROJECT_REF" --use-api --yes
           done
