@@ -1,0 +1,95 @@
+name: 학기 넘기기
+
+# 새 기수가 활동을 시작할 때 Actions → 학기 넘기기 → Run workflow에 입력하면
+# tools/new-term.py가 기수·알럼나이 수·임원 이름·다음 모집 안내를 바꾸고 빌드한 뒤 PR을 연다. 비운 칸은 그대로.
+# 임원 사진은 PR 브랜치에 assets/officers/president.webp 등을 같은 이름으로 올려 바꾼다 (세로 3:4).
+# 필요한 설정: Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"
+on:
+  workflow_dispatch:
+    inputs:
+      term:
+        description: '새 학기 (예: 27-1)'
+        required: true
+      alumni:
+        description: '알럼나이 수 (지금 수 + 활동을 마친 기수 인원, 비우면 그대로)'
+        required: false
+      chair:
+        description: '회장'
+        required: false
+      vice:
+        description: '부회장'
+        required: false
+      t1:
+        description: '리서치 1팀장'
+        required: false
+      t2:
+        description: '리서치 2팀장'
+        required: false
+      t3:
+        description: '리서치 3팀장'
+        required: false
+      t4:
+        description: '리서치 4팀장'
+        required: false
+      am:
+        description: '운용팀장'
+        required: false
+      next:
+        description: "다음 모집 안내 (예: '27-2학기, 2027년 7월', 비우면 자동)"
+        required: false
+
+jobs:
+  roll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      I_TERM: ${{ inputs.term }}
+      I_ALUMNI: ${{ inputs.alumni }}
+      I_CHAIR: ${{ inputs.chair }}
+      I_VICE: ${{ inputs.vice }}
+      I_T1: ${{ inputs.t1 }}
+      I_T2: ${{ inputs.t2 }}
+      I_T3: ${{ inputs.t3 }}
+      I_T4: ${{ inputs.t4 }}
+      I_AM: ${{ inputs.am }}
+      I_NEXT: ${{ inputs.next }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Roll over
+        run: |
+          args=(--term "$I_TERM" --chair "$I_CHAIR" --vice "$I_VICE" --t1 "$I_T1" --t2 "$I_T2" --t3 "$I_T3" --t4 "$I_T4" --am "$I_AM" --next "$I_NEXT")
+          [ -n "$I_ALUMNI" ] && args+=(--alumni "$I_ALUMNI")
+          python3 tools/new-term.py "${args[@]}" | tee /tmp/log.txt
+          node tools/build-site.js
+          node tools/build-pages.js
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          br="term/$I_TERM-$(date -u +%H%M%S)"
+          git checkout -b "$br"
+          git add -A
+          git commit -m "학기 넘기기: $I_TERM"
+          git push -u origin "$br"
+          {
+            echo "Actions 입력으로 자동 생성 (tools/new-term.py)"
+            echo
+            echo '```'
+            cat /tmp/log.txt
+            echo '```'
+            echo
+            echo "남은 것 (손으로)"
+            echo "- 임원 사진: 이 브랜치에 assets/officers/*.webp 바꿔 올리기"
+            echo "- 운용팀 명단 FUND_TEAM, 학회원 명부, 홈 히어로·단체 사진(assets/people-group.webp)"
+            echo "- 수료증 서명: 운영 대시보드 → 수료증 → 서명·인감 설정"
+            echo "- 운영 대시보드 관리자(Supabase MEMBER_ADMINS)와 docs/운영인수인계.md 계정 넘기기"
+          } > /tmp/body.md
+          gh pr create --base main --head "$br" --title "학기 넘기기: $I_TERM" --body-file /tmp/body.md
