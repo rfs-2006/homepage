@@ -49,7 +49,7 @@ def report_text(rid):
             out.append(x)
         elif isinstance(x, dict):
             for k, v in x.items():
-                if k in ('t', 'h', 'sub', 'cap', 'title', 'text', 'p', 'ps', 'items', 'blocks', 'note', 'box', 'side'):
+                if k not in ('img', 'src', 'href', 'url', 'w', 'ht', 'k'):   # 그림 경로 같은 것만 빼고 글은 다 (표 칸·Stock Data·목차까지)
                     walk(v)
         elif isinstance(x, list):
             for v in x:
@@ -57,7 +57,7 @@ def report_text(rid):
     walk(p1)
     fp = os.path.join(ROOT, 'assets', 'reports', 'full', rid + '.json')
     if os.path.exists(fp):
-        walk(json.load(open(fp, encoding='utf-8')).get('blocks', []))
+        walk(json.load(open(fp, encoding='utf-8')))
     return '\n'.join(s for s in out if s.strip())
 
 
