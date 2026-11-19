@@ -82,7 +82,7 @@
 .op-home{display:grid;gap:16px}\
 .op-hi{margin:0 0 8px;font-size:26px;font-weight:700;letter-spacing:-.025em}\
 .op-hi+p{margin:0 0 12px;color:var(--mut);font-size:14px}\
-.op-g2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}.op-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}\
+.op-g2{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}.op-g3{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}\
 .op-c{background:#fff;border-radius:22px;padding:24px 26px;min-width:0}\
 .op-c h3{margin:0;font-size:15px;font-weight:600;color:var(--ink2)}\
 .op-c .big{margin:6px 0 2px;font-size:32px;font-weight:700;letter-spacing:-.025em;line-height:1.25;white-space:nowrap}\
@@ -616,14 +616,15 @@
     chart: SVG('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
     bolt: SVG('<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>'),
     mail: SVG('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'),
+    bell: SVG('<path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"/><path d="M10 21h4"/>'),
   };
   var NAV = [
     ['', [['home', '홈', 'home']]],
     ['돈', [['acc', '계좌', 'won'], ['ledger', '회계장부', 'book'], ['cost', '유지비 · 계정', 'card']]],
-    ['회원', [['approve', '가입 승인', 'user'], ['card', '학회원증', 'id'], ['cert', '수료증', 'cert'], ['sms', '문자 기록', 'sms']]],
+    ['회원', [['approve', '가입 승인', 'user'], ['notify', '모집 알림', 'bell'], ['card', '학회원증', 'id'], ['cert', '수료증', 'cert'], ['sms', '문자 기록', 'sms']]],
     ['사이트', [['visit', '방문자', 'chart'], ['auto', '자동 작업', 'bolt'], ['mail', '알림 메일', 'mail']]],
   ];
-  var TITLE = { home: '', acc: '계좌', ledger: '회계장부', cost: '유지비 · 계정', card: '학회원증', cert: '수료증', sms: '문자 기록', visit: '방문자', auto: '자동 작업', mail: '알림 메일' };
+  var TITLE = { home: '', notify: '모집 알림', acc: '계좌', ledger: '회계장부', cost: '유지비 · 계정', card: '학회원증', cert: '수료증', sms: '문자 기록', visit: '방문자', auto: '자동 작업', mail: '알림 메일' };
   function markNav() {
     st.el.querySelectorAll('[data-nv]').forEach(function (b) { var on = b.getAttribute('data-nv') === st.page; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
     var bd = st.el.querySelector('[data-badge]'); if (bd) { bd.hidden = !st.pending; bd.textContent = st.pending || ''; }
@@ -674,6 +675,8 @@
       return { date: nx, days: dd(nx) };
     };
     var md = function (d) { return +d.slice(5, 7) + '월 ' + +d.slice(8, 10) + '일'; };
+    var nrows = ((s.state.recruit_notify && s.state.recruit_notify.value && s.state.recruit_notify.value.rows) || []).slice().sort(function (a, b) { return a.at < b.at ? 1 : -1; });
+    var pp = function (p) { p = String(p || ''); return p.length === 11 ? p.slice(0, 3) + '-' + p.slice(3, 7) + '-' + p.slice(7) : p.slice(0, 3) + '-' + p.slice(3, 6) + '-' + p.slice(6); };
     var todos = [];
     if (s.pending) todos.push({ ic: 'user', bg: '#FFEEEF', fg: '#F04452', t: '가입 신청 ' + s.pending + '건이 기다려요', sub: '승인하면 신청자에게 안내 문자가 가요', btn: '승인하기', a: 'approve', p: true });
     costs.forEach(function (c) {
@@ -702,6 +705,7 @@
           '<button class="bt ' + (x.p ? 'p' : 'lt') + '" type="button"' + (x.a ? ' data-a="' + x.a + '"' : ' data-go="' + x.go + '"') + '>' + x.btn + '</button></div>';
       }).join('') : '<div class="none">다 처리했어요. 새로 생기면 여기에 떠요.</div>') + '</div></div>' +
       '<div class="op-g3"><div class="op-c mini lnk" data-go="card"><h3>학회원증</h3><div class="big">' + (cardsN == null ? '—' : cardsN + '<small>장</small>') + '</div><div class="cap">' + (cardsOff ? '정지 ' + cardsOff + '장' : '지금 쓸 수 있는 카드') + '</div></div>' +
+      '<div class="op-c mini lnk" data-go="notify"><h3>모집 알림 신청</h3><div class="big">' + num(nrows.length) + '<small>명</small></div><div class="cap">모집이 열리면 문자로 알려요</div></div>' +
       '<div class="op-c mini lnk" data-go="sms"><h3>최근 30일 문자</h3><div class="big">' + num(sms30) + '<small>건</small></div><div class="cap">AGORA 선배님 연락처</div></div>' +
       '<div class="op-c mini lnk" data-go="cost"><h3>이번 달 Polaris 질문</h3><div class="big">' + (s.voyage ? num(s.voyage.q) + '<small>개</small>' : '—') + '</div><div class="cap">' + (s.voyage ? 'Voyage ' + usd(s.voyage.usd) : '서버 사용량') + '</div></div></div>' +
       '</section>';
@@ -781,6 +785,12 @@
       '<label class="chk"><input type="checkbox" id="op-n4"' + (nt.due === false ? '' : ' checked') + '>결제·만료 알림 (매주 월요일, 유지비 표의 다음 결제일 기준)</label></div>' +
       '<div class="acts"><button class="bt p" type="submit">저장</button></div></form><div class="msg" data-m="set"></div>');
 
+    // 모집 알림: 리크루팅 페이지에서 넣은 번호 (recruit-notify 함수 → ops_state.recruit_notify). 안내 문자를 보낸 뒤, 늦어도 모집이 끝나면 지운다 (/privacy/)
+    var notifyPg = sec('notify', '모집 알림', nrows.length ? nrows.length + '명 · 모집이 열리면 문자 보내고 지워요' : '리크루팅 페이지 맨 아래에서 번호를 받아요',
+      (nrows.length ? '<div class="op-hl">' + num(nrows.length) + '<small>명</small></div><div class="tw" style="max-height:480px;overflow-y:auto"><table><thead><tr><th>번호</th><th>모집</th><th class="n">신청</th></tr></thead><tbody>' + nrows.map(function (r) {
+        return '<tr><td><b>' + esc(pp(r.phone)) + '</b></td><td class="sb">' + esc(r.sem || '') + '</td><td class="n sb">' + esc(new Date(r.at).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })) + '</td></tr>';
+      }).join('') + '</tbody></table></div><div class="acts"><button class="bt p" type="button" data-a="ncopy">번호 전부 복사</button><span class="sp"></span><button class="bt" type="button" data-a="nclear">모두 지우기</button></div>'
+      : stn('empty', '아직 신청한 사람이 없어요. 새로 들어오면 관리자 번호로 문자가 가요.')) + '<div class="msg" data-m="notify"></div>');
     var cert = sec('cert', '수료증', 'A4 · PNG·PDF', '<p class="note">이름·기수·학기별 소속을 넣으면 학회 수료증 양식으로 바로 만들어요. 회장·부회장 서명과 인감은 그 화면의 \u2018서명·인감 설정\u2019에서 바꿔요.</p><div class="acts" style="margin-top:24px"><button class="bt p" type="button" data-a="cert">수료증 만들기</button><span class="msg" data-m="cert"></span></div>');
     // ⑪ 자동 작업 (GitHub Actions): 리포트 PDF 올리기·학기 넘기기는 GitHub 화면에서 한다 (학회 GitHub 계정 로그인 필요)
     var GH = 'https://github.com/rfs-2006/homepage';
@@ -794,7 +804,7 @@
       autoRow('학기 넘기기', ['열린 화면 오른쪽 <b>Run workflow</b> 누르기', '새 학기(예: 27-1)·알럼나이 수·임원 이름 쓰고 초록 <b>Run workflow</b>', '1분쯤 뒤 생긴 PR에 임원 사진 올리고 <b>Merge</b>'], '/actions/workflows/new-term.yml', '학기 넘기기') +
       autoRow('열린 PR', ['자동으로 만든 변경이 여기 쌓여요', '눌러서 미리보기 주소로 확인하고 <b>Merge pull request</b>'], '/pulls', 'PR 보기') +
       autoRow('자동 작업 기록', ['주가 갱신·RFM·용어 풀이·함수 배포·알림 메일이 잘 돌았는지', '초록 체크면 성공, 빨간 X면 실패 (실패하면 눌러서 이유 보기)'], '/actions', '기록 보기'));
-    el.innerHTML = homeHtml + visit + account + ledgerSection(s) + cost + sms + cardSection(s) + cert + auto + mail;
+    el.innerHTML = homeHtml + visit + account + ledgerSection(s) + cost + notifyPg + sms + cardSection(s) + cert + auto + mail;
     wire();
     showPage();
   }
@@ -860,6 +870,12 @@
       var set = Object.assign({}, (st.state.settings && st.state.settings.value) || {}, { notify_email: mail, notify: { agora_sms: el.querySelector('#op-n1').checked, signup: el.querySelector('#op-n2').checked, approval: el.querySelector('#op-n3').checked, due: el.querySelector('#op-n4').checked } });
       save('settings', set, 'set');
     };
+    q('[data-a="ncopy"]', function () {
+      var list = ((st.state.recruit_notify && st.state.recruit_notify.value && st.state.recruit_notify.value.rows) || []).map(function (r) { return r.phone; }).join('\n');
+      var m = el.querySelector('[data-m="notify"]'), done = function () { m.textContent = '복사했어요. 문자 보낼 때 받는 사람 칸에 붙여 넣으면 돼요'; };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(list).then(done, function () { prompt('번호', list); }); else prompt('번호', list);
+    });
+    q('[data-a="nclear"]', function () { if (confirm('모집 알림 번호를 모두 지울까요? 안내 문자를 다 보낸 뒤에 지우세요.')) save('recruit_notify', { rows: [] }, 'notify'); });
     wireCards(el);
     wireLedger(el);
   }

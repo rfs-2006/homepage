@@ -4377,16 +4377,25 @@ class Component extends DCLogic {
         { q:'인턴, 대외활동과 병행이 가능한가요?', a:'인턴, 대외활동과 병행이 충분히 가능합니다. 진행하시는 인턴과 대외활동의 업무량에 따라 다르겠지만, 많은 학회원들이 인턴과 병행하며 학회 활동을 하고 있습니다.' }
       ].map((f, i) => ({ ...f, mark: s.faqOpen === i ? '·' : '+', cls: s.faqOpen === i ? 'open' : '', toggle: () => this.setState({ faqOpen: s.faqOpen === i ? -1 : i }) })),
       closedNote: '43기 신입 모집은 마감되었습니다.',
-      nextNote: '다음 모집은 ' + nextRecruit + '로 예정되어 있습니다. 모집이 열리면 이메일로 알려드립니다.',
-      email: s.email, onEmail: (e) => this.setState({ email: e.target.value }),
+      nextNote: '다음 모집은 ' + nextRecruit + '로 예정되어 있습니다. 모집이 열리면 문자로 알려드립니다.',
+      nextShort: '다음 모집 ' + String(nextRecruit).replace(', ', ' · '),
+      phone: s.phone || '', onPhone: (e) => this.setState({ phone: e.target.value }),
       notified: s.notified, notNotified: !s.notified,
-      // 모집 알림 신청: Supabase recruit_notify 표에 저장(누구나 넣기만 가능, 읽기는 운영진만)하고 GA 전환(generate_lead)으로 잡는다
-      submitNotify: () => {
-        const em = (s.email || '').trim();
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { window.alert('이메일 주소를 확인해 주세요'); return; }
-        const done = () => { this.setState({ notified: true }); try { window.gtag && window.gtag('event', 'generate_lead', { method: 'recruit_notify' }); } catch (e) {} };
+      // 모집 알림 신청: 휴대폰 번호를 recruit-notify 함수로 보낸다 (ops_state에 저장 + 관리자에게 문자). GA 전환(generate_lead)으로도 잡는다
+      submitNotify: (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        const ph = String(s.phone || '').replace(/\D/g, '');
+        if (!/^01[016789]\d{7,8}$/.test(ph)) { window.alert('휴대폰 번호를 확인해 주세요 (예: 010-1234-5678)'); return; }
+        const hpEl = e && e.target && e.target.querySelector ? e.target.querySelector('.hp') : null;
+        const done = () => { this.setState({ notified: true }); try { window.gtag && window.gtag('event', 'generate_lead', { method: 'recruit_notify' }); } catch (x) {} };
         if (!this.sb) return done();
-        this.sb.from('recruit_notify').insert({ email: em, semester: this.props.nextRecruit ?? '' }).then(({ error }) => { if (error && error.code !== '23505') window.alert('신청을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요'); else done(); });
+        fetch(this.sb.supabaseUrl + '/functions/v1/recruit-notify', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: this.sb.supabaseKey, Authorization: 'Bearer ' + this.sb.supabaseKey },
+          body: JSON.stringify({ phone: ph, agree: true, sem: nextRecruit, hp: hpEl ? hpEl.value : '' }) })
+          .then((r) => r.json().catch(() => ({})).then((j) => {
+            if (r.ok) return done();
+            window.alert(j.error === 'phone' ? '휴대폰 번호를 확인해 주세요' : j.error === 'limit' ? '오늘은 더 신청할 수 없어요. 내일 다시 시도해 주세요' : '신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요');
+          }))
+          .catch(() => window.alert('신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요'));
       },
     };
   }
