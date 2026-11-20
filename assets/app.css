@@ -2030,7 +2030,7 @@ main.pgx.rcx>section:last-of-type{margin-bottom:0 !important}
 main.pgx.rcx>section::after{display:none}
 main.pgx.rcx .pg-tabs{background:rgba(5,8,15,.86) !important;border-color:rgba(237,234,227,.1) !important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
 main.pgx.rcx .pg-tabs a{color:rgba(237,234,227,.6) !important}main.pgx.rcx .pg-tabs a.on,main.pgx.rcx .pg-tabs a:hover{color:#EDEAE3 !important}
-.rcx .rc-hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px;border-top:1px solid rgba(237,234,227,.14);padding-top:26px}
+.rcx .rc-hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
 .rcx .rc-hd>span{font-size:12px;letter-spacing:.2em;color:#C9B98A}
 .rcx .ptn{background-position:center 70%}
 .rcx .ptn::after{content:'';display:block !important;position:absolute;left:0;right:0;bottom:0;height:45%;background:linear-gradient(rgba(5,8,15,0),rgba(5,8,15,.75) 55%,#05080F);pointer-events:none}
@@ -2063,3 +2063,12 @@ main.pgx h2.rc-t{margin:0;font:300 clamp(48px,5vw,76px)/1 'Source Serif 4','Noto
 }
 .rcx .cw-sec::before{content:'';position:absolute;left:0;right:0;top:0;height:30%;background:linear-gradient(#070C17 0%,rgba(7,12,23,.92) 22%,rgba(7,12,23,.55) 55%,rgba(7,12,23,0) 100%);z-index:1;pointer-events:none}
 main.pgx h2.cw-t b{font-weight:600;font-size:1.25em;letter-spacing:-.02em}
+/* 리크루팅: 스크롤해도 위 메뉴를 아래 칸과 같은 어두운 톤으로 */
+html.nav-solid:has(main.rcx) .nav{background:rgba(5,8,15,.94) !important;border-bottom-color:rgba(237,234,227,.08) !important}
+html.nav-solid:has(main.rcx) .nav .wordmark-block,html.nav-solid:has(main.rcx) .nav .wordmark-block *,html.nav-solid:has(main.rcx) .nav .navlink{color:#EDEAE3 !important}html.nav-solid:has(main.rcx) .nav .burger{color:#EDEAE3 !important;border-color:rgba(237,234,227,.5) !important}
+html.nav-solid:has(main.rcx) .nav .cfn-w,html.nav-solid:has(main.rcx) .nav .cfn-w *{color:#EDEAE3 !important;border-color:rgba(237,234,227,.3) !important}
+html.nav-solid:has(main.rcx) .nav .seal-navy{display:none !important}html.nav-solid:has(main.rcx) .nav .seal-light{display:block !important}
+/* Partnership: 로고 칸 테두리 없이 */
+.ptn-g,.ptn-r{border:0 !important}
+.ptn-c+.ptn-c::before{display:none}
+.ptn-g{margin-top:clamp(40px,6vh,72px)}
