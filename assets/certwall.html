@@ -30,9 +30,10 @@ canvas{position:fixed;inset:0;width:100%;height:100%}
   var cur = 2, W = 380;
   function size() {
     var vw = innerWidth, vh = innerHeight;
-    W = Math.round(Math.min(380, vw < 700 ? vw * 0.52 : vw * 0.24, (vh - 330) / 1.414));
+    // 제목(위)과 번호 칸(아래) 사이에 들어가게: 쓸 수 있는 높이 ≈ 0.81·vh − 235
+    W = Math.round(Math.max(150, Math.min(380, vw < 700 ? vw * 0.52 : vw * 0.24, (vh * 0.81 - 263) / 1.414)));
     row.style.width = W + 'px'; row.style.height = Math.round(W * 1.414) + 'px';
-    row.style.setProperty('--top', (vw < 700 ? 60 : 70) + 'px');
+    row.style.setProperty('--top', Math.round(vh * 0.095 - 37 + (vw < 700 ? 20 : 14)) * 2 + 'px');   // margin-top은 절반만큼 내려가므로 2배
     place();
   }
   function place() {

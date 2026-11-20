@@ -4378,14 +4378,14 @@ class Component extends DCLogic {
       ].map((f, i) => ({ ...f, mark: s.faqOpen === i ? '−' : '+', cls: s.faqOpen === i ? 'open' : '', toggle: () => this.setState({ faqOpen: s.faqOpen === i ? -1 : i }) })),
       closedNote: '43기 신입 모집은 마감되었습니다.',
       nextNote: '다음 모집은 ' + nextRecruit + '로 예정되어 있습니다. 모집이 열리면 문자로 알려드립니다.',
-      nextShort: '다음 모집 ' + String(nextRecruit).replace(', ', ' · '),
+      nextShort: (String(nextRecruit).split(', ')[1] || nextRecruit) + ' 모집 시 안내드립니다',
       phone: s.phone || '', onPhone: (e) => this.setState({ phone: e.target.value }),
       notified: s.notified, notNotified: !s.notified,
       // 모집 알림 신청: 휴대폰 번호를 recruit-notify 함수로 보낸다 (ops_state에 저장 + 관리자에게 문자). GA 전환(generate_lead)으로도 잡는다
       submitNotify: (e) => {
         if (e && e.preventDefault) e.preventDefault();
         const ph = String(s.phone || '').replace(/\D/g, '');
-        if (!/^01[016789]\d{7,8}$/.test(ph)) { window.alert('휴대폰 번호를 확인해 주세요 (예: 010-1234-5678)'); return; }
+        if (!/^01[016789]\d{7,8}$/.test(ph)) { window.alert('휴대폰 번호를 확인해 주세요. (예: 010-1234-5678)'); return; }
         const hpEl = e && e.target && e.target.querySelector ? e.target.querySelector('.hp') : null;
         const done = () => { this.setState({ notified: true }); try { window.gtag && window.gtag('event', 'generate_lead', { method: 'recruit_notify' }); } catch (x) {} };
         if (!this.sb) return done();
@@ -4393,9 +4393,9 @@ class Component extends DCLogic {
           body: JSON.stringify({ phone: ph, agree: true, sem: nextRecruit, hp: hpEl ? hpEl.value : '' }) })
           .then((r) => r.json().catch(() => ({})).then((j) => {
             if (r.ok) return done();
-            window.alert(j.error === 'phone' ? '휴대폰 번호를 확인해 주세요' : j.error === 'limit' ? '오늘은 더 신청할 수 없어요. 내일 다시 시도해 주세요' : '신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요');
+            window.alert(j.error === 'phone' ? '휴대폰 번호를 확인해 주세요' : j.error === 'limit' ? '오늘은 더 이상 신청할 수 없습니다. 내일 다시 시도해 주세요.' : '신청을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.');
           }))
-          .catch(() => window.alert('신청을 저장하지 못했어요. 잠시 후 다시 시도해 주세요'));
+          .catch(() => window.alert('신청을 저장하지 못했습니다. 잠시 후 다시 시도해 주세요.'));
       },
     };
   }
