@@ -68,10 +68,10 @@
   window.CUR_VIS.m7Map = function (host, p) {
     var K = [
       { k: 'ebit', op: '', t: 'EBIT', q: '손익 추정에서 가져와요' },
-      { k: 'tax', op: '−', t: '세금', q: '세율을 뭘로 넣을까?' },
-      { k: 'da', op: '+', t: '감가상각비', q: '설비값을 어떻게 나눌까?' },
-      { k: 'capex', op: '−', t: 'CAPEX', q: '얼마를 다시 투자할까?' },
-      { k: 'nwc', op: '−', t: '운전자본 증가', q: '영업에 묶이는 돈은?' }
+      { k: 'tax', op: '−', t: '세금', q: '어떤 세율을 쓸까요?' },
+      { k: 'da', op: '+', t: '감가상각비', q: '설비값을 어떻게 나눌까요?' },
+      { k: 'capex', op: '−', t: 'CAPEX', q: '얼마나 다시 투자할까요?' },
+      { k: 'nwc', op: '−', t: '운전자본 증가', q: '돈이 얼마나 묶일까요?' }
     ];
     var ord = ['tax', 'da', 'capex', 'nwc', 'all'], on = p.on || '', at = ord.indexOf(on);
     function st(c) {
