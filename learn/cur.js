@@ -587,10 +587,19 @@
     '.cur.v2 button.md:hover{border-color:rgba(242,239,232,.3);background:rgba(255,255,255,.03)}',
     '.cur.v2 .md .ch{border:0;padding:0}',
     '.cur.v2 .md .ft .lb{border-radius:4px;color:var(--wm);border-color:rgba(226,196,143,.4)}',
+    '.cur.v2 .fmap{display:flex;align-items:stretch;flex-wrap:wrap;gap:8px 6px;margin-top:8px;max-width:980px}',
+    '.cur.v2 .fmap .c{flex:1 1 0;min-width:112px;padding:14px 14px 16px 0;border-top:2px solid rgba(242,239,232,.2);display:flex;flex-direction:column;gap:8px}',
+    '.cur.v2 .fmap .c b{font-family:var(--ser);font-weight:600;font-size:19px;letter-spacing:-.02em}',
+    '.cur.v2 .fmap .c small{font-size:14px;line-height:1.55;color:var(--t3)}',
+    '.cur.v2 .fmap .c.on{border-top-color:var(--wm)}',
+    '.cur.v2 .fmap .c.res{flex:0 0 auto;min-width:80px}.cur.v2 .fmap .c.res b{color:var(--wm)}',
+    '.cur.v2 .fmap .op{padding-top:14px;width:16px;text-align:center;font-size:18px;color:var(--t3)}',
+    '@media (max-width:640px){.cur.v2 .fmap{flex-direction:column;gap:0}.cur.v2 .fmap .op{display:none}.cur.v2 .fmap .c{border-top-width:1px;padding:12px 0;min-width:0}}',
     /* 다음 버튼: 알약 */
     '.cur.v2 .nx{border-radius:999px;font-weight:500}',
     '@media (min-width:900px){.cur.v2 .nx{right:var(--pad);bottom:40px;height:auto;padding:12px 22px;background:var(--tx)!important;color:#0B1526;font-family:inherit;font-size:15.5px;font-weight:500;box-shadow:none}.cur.v2 .nx.alt{background:var(--wm)!important;color:#0B1526;box-shadow:none}}'
   ].join('\n');
+
   function block(t, cls) { var ps = String(t == null ? '' : t).split(/\n\s*\n/); return ps.length < 2 ? '<p class="' + cls + '">' + esc(t) + '</p>' : '<div class="' + cls + '">' + paras(t) + '</div>'; }
   function plain(s) { return String(s || '').replace(/<br>/g, ' '); }
   function sym(k) { return '<svg class="sym" viewBox="0 0 64 64" aria-hidden="true">' + (SY[k] || STAR).replace(/<(path|circle)/g, '<$1 pathLength="1"') + '</svg>'; }
@@ -611,6 +620,14 @@
   // ctx: { mode: 'concept' | 'question', ready(bool) }
   // 플러그인: 모듈 JSON의 "vis": ["vis/m5.js"] 스크립트가 window.CUR_VIS에 부품을 더한다 (harness/PLUGIN.md)
   var VIS = window.CUR_VIS = window.CUR_VIS || {};
+  // flowMap: 모듈 계산식 소개 (모듈 JSON의 map.items[].q = 칸마다 정할 질문). params.on = 지금 항목(선택)
+  VIS.flowMap = function (host, p, ctx) {
+    var mp = (ctx && ctx.mod && ctx.mod.map) || {}, it = mp.items || [], on = p.on || '';
+    host.innerHTML = '<div class="fmap" role="img" aria-label="' + esc(mp.label || '') + '">' + it.map(function (x) {
+      return (x.op ? '<span class="op" aria-hidden="true">' + esc(x.op) + '</span>' : '') + '<div class="c' + (on && (x.k === on || x.with === on) ? ' on' : '') + '"><b>' + esc(x.t) + '</b>' + (x.q ? '<small>' + esc(x.q) + '</small>' : '') + '</div>';
+    }).join('') + (mp.res ? '<span class="op" aria-hidden="true">=</span><div class="c res"><b>' + esc(mp.res) + '</b></div>' : '') + '</div>';
+    return { draw: function () {} };
+  };
 
   // (a) 가격 vs 가치: 가격선이 가치선 주변을 출렁인다. 질문 모드에선 살 점을 고른다
   VIS.priceValue = function (host, p, ctx) {
@@ -2157,7 +2174,7 @@
   function mountVis(s, mode) {
     var host = st.bx.querySelector('.vis'), f = VIS[s.visual && s.visual.name];
     if (!f) { host.innerHTML = '<p class="vcap">그래프 부품 "' + esc(s.visual && s.visual.name) + '"이 없어요.</p>'; return; }
-    st.vis = f(host, s.visual.params || {}, { mode: mode, answer: s.answer, tolerance: s.tolerance, ready: ready });
+    st.vis = f(host, s.visual.params || {}, { mode: mode, answer: s.answer, tolerance: s.tolerance, ready: ready, mod: st.mod });
     st.vis.draw();
   }
 
