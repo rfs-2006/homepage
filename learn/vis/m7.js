@@ -4,6 +4,7 @@
 // m7Spot   (문제) 표에서 이상한 칸 고르기. answer { cells: [열 번호] }
 // m7Nwc    순운전자본: 회전일수 슬라이더 → 매출채권·재고·매입채무 → NWC → ΔNWC → FCFF 영향
 // m7Build  (문제) FCFF 빌더: 한 해 열의 빈칸(NOPAT → 소계 → 소계 → FCFF)을 직접 채움. answer { cells: {k: 값} }
+// m7Map    FCFF 한 줄 지도: 다섯 칸 + 칸마다 정할 질문. on = 지금 구역(tax·da·capex·nwc·all), 없으면 전체 지도
 // m7Fix    고치기 켜고 끄기: 감가상각비 연간값·ΔNWC 부호 → 해마다 FCFF와 EV(모델 할인식 그대로)
 (function () {
   var L = window.CUR_LIB, esc = L.esc, fmt = L.fmt;
@@ -34,6 +35,18 @@
     '.cur .m7in.ok{border-color:var(--ok);color:var(--ok)}',
     '.cur .m7in.no{border-color:var(--no);color:var(--no)}',
     '.cur .m7t small.m7a{display:block;font-size:11.5px;color:var(--ok);margin-top:2px}',
+    '.cur .m7map{display:flex;align-items:stretch;flex-wrap:wrap;gap:6px 4px;margin:6px 0 4px}',
+    '.cur .m7map .cell{flex:1 1 0;min-width:104px;padding:12px 12px 13px;border-top:2px solid var(--hair);display:flex;flex-direction:column;gap:6px;transition:opacity .3s,border-color .3s}',
+    '.cur .m7map .cell b{font-family:var(--ser);font-weight:600;font-size:17px;color:var(--tx)}',
+    '.cur .m7map .cell small{font-size:12.5px;line-height:1.45;color:var(--t2)}',
+    '.cur .m7map .op{align-self:flex-start;padding-top:12px;font-size:17px;color:var(--t3);width:14px;text-align:center}',
+    '.cur .m7map .cell.res{flex:0 0 auto;min-width:72px}',
+    '.cur .m7map .cell.res b{color:var(--wm)}',
+    '.cur .m7map.sel .cell.dim{opacity:.38}',
+    '.cur .m7map.sel .cell.done{opacity:.62}',
+    '.cur .m7map .cell.on{border-top-color:var(--wm)}',
+    '.cur .m7map .cell.on small{color:var(--tx)}',
+    '@media (max-width:640px){.cur .m7map{flex-direction:column;gap:0}.cur .m7map .op{display:none}.cur .m7map .cell{flex-direction:row;align-items:baseline;justify-content:space-between;border-top-width:1px;padding:10px 2px;min-width:0}.cur .m7map .cell.on{border-top-width:2px}}',
     '.cur .m7leg{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px;font-size:12.5px;color:var(--t3)}',
     '.cur .m7leg span{display:inline-flex;align-items:center;gap:6px}',
     '.cur .m7leg i{display:inline-block;width:14px;height:10px}'
@@ -51,6 +64,32 @@
   function head(p, cols, mark) { return '<thead><tr><th scope="col">' + esc(p.unit || '') + '</th>' + cols.map(function (c, j) { return '<th scope="col"' + (j === mark ? ' class="m7k"' : '') + '>' + esc(c) + '</th>'; }).join('') + '</tr></thead>'; }
 
   // ── 숫자 표 ──────────────────────────────────────────
+
+  window.CUR_VIS.m7Map = function (host, p) {
+    var K = [
+      { k: 'ebit', op: '', t: 'EBIT', q: '손익 추정에서 가져와요' },
+      { k: 'tax', op: '−', t: '세금', q: '세율을 뭘로 넣을까?' },
+      { k: 'da', op: '+', t: '감가상각비', q: '설비값을 어떻게 나눌까?' },
+      { k: 'capex', op: '−', t: 'CAPEX', q: '얼마를 다시 투자할까?' },
+      { k: 'nwc', op: '−', t: '운전자본 증가', q: '영업에 묶이는 돈은?' }
+    ];
+    var ord = ['tax', 'da', 'capex', 'nwc', 'all'], on = p.on || '', at = ord.indexOf(on);
+    function st(c) {
+      if (!on) return '';
+      if (on === 'all') return ' done';
+      if (c.k === on || (on === 'tax' && c.k === 'ebit')) return ' on';
+      var i = ord.indexOf(c.k);
+      return (c.k === 'ebit' || (i >= 0 && i < at)) ? ' done' : ' dim';
+    }
+    host.innerHTML = '<div class="m7map' + (on ? ' sel' : '') + '" role="img" aria-label="FCFF = EBIT − 세금 + 감가상각비 − CAPEX − 운전자본 증가">' +
+      K.map(function (c) {
+        return (c.op ? '<span class="op" aria-hidden="true">' + c.op + '</span>' : '') +
+          '<div class="cell' + st(c) + '"><b>' + esc(c.t) + '</b>' + (on && on !== 'all' && st(c) !== ' on' ? '' : '<small>' + esc(c.q) + '</small>') + '</div>';
+      }).join('') +
+      '<span class="op" aria-hidden="true">=</span><div class="cell res' + (on === 'all' ? ' on' : '') + '"><b>FCFF</b></div></div>';
+    return { draw: function () {} };
+  };
+
   window.CUR_VIS.m7Table = function (host, p, ctx) {
     var cols = p.cols || [], rows = p.rows || [], tg = p.toggle, alt = false, seen2 = !tg, n = p.start == null ? rows.length : p.start;
     function body() {
