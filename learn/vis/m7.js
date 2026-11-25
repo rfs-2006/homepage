@@ -159,7 +159,7 @@
         ? '<div class="eq"><small>상각률</small><b>' + r + '</b></div><i>·</i><div class="eq"><small>첫해 (반년치)</small><b>' + fmt(cost) + ' × ' + r + (half ? ' ÷ 2' : '') + ' = ' + fmt(s0.d) + '</b></div><i>·</i><div class="eq hl"><small>둘째 해</small><b>' + fmt(cost - s0.d) + ' × ' + r + ' = ' + fmt(s1.d) + '</b></div>'
         : '<div class="eq"><small>한 해치</small><b>' + fmt(cost) + ' × ' + (1 - salv) + ' ÷ ' + life + ' = ' + fmt(cost * (1 - salv) / life) + '</b></div><i>·</i><div class="eq hl"><small>첫해 (반년치)</small><b>' + fmt(s0.d) + '</b></div>';
       var tot = S.reduce(function (a, s) { return a + s.d; }, 0);
-      vr.innerHTML = '<b>' + (m === 'db' ? '정률법' : '정액법') + '</b> · ' + S.length + '년 동안 상각비 합계 ' + fmt(tot) + ', 남은 장부가 ' + fmt(S[S.length - 1].bv) + ' (백만 원, 예시)' + (m === 'db' ? '. 앞쪽 해에 많이 떨어내요.' : '. 해마다 같은 금액이에요.');
+      vr.innerHTML = '<b>' + (m === 'db' ? '정률법' : '정액법') + '</b> · ' + S.length + '년 동안 상각비 합계 ' + fmt(tot) + ', 남은 장부가 ' + fmt(S[S.length - 1].bv) + ' (백만 원, 예시)' + (m === 'db' ? '. 앞쪽 해에 비용이 커요.' : '. 해마다 같은 금액이에요.');
       host.querySelectorAll('.m7m button').forEach(function (b) { var o2 = b.getAttribute('data-m') === m; b.classList.toggle('on', o2); b.setAttribute('aria-pressed', o2); });
       host.querySelector('.vctl b').textContent = fmt(cost);
       L.gate(ctx, seen.db && seen.sl);
