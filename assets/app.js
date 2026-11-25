@@ -2736,7 +2736,7 @@ class Component extends DCLogic {
       const r = rep[h.code];
       return {
         cls: 'fd-row' + (hi === i ? ' hi' : ''), enter: () => this.setState({ fdHi: i }), leave: () => this.setState({ fdHi: null }),
-        rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : i === 2 ? '#F7F6F3' : 'rgba(247,246,243,0.7)',
+        rank: i + 1, badge: i === 0 ? '#8FAADC' : i === 1 ? '#C3D3EE' : i === 2 ? '#3E5F9E' : 'rgba(247,246,243,0.1)', badgeC: i < 2 ? '#0F1B2E' : '#F7F6F3',
         dot: shades[i % shades.length], name: h.name, wbar: Math.min(100, (h.weight || 0) / Math.max(...hs.map((x) => x.weight || 0), 1) * 100).toFixed(1) + '%',
         meta: [h.code, sectorOf(h)].filter(Boolean).join(' · '),
         w: (h.weight || 0).toFixed(1) + '%',
@@ -2830,10 +2830,10 @@ class Component extends DCLogic {
     const refs = [back(7), back(30), back(91), back(182), back(365), H[0]];
     const r = (j, ref) => (ref && ref !== last && last[j] && ref[j] ? (last[j] / ref[j] - 1) * 100 : null);
     const fmt = (v, p) => (v === null ? '-' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2) + (p || ''));
-    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? 'rgba(247,246,243,0.62)' : col(v); }); return o; };
+    const mk = (k, vals, cls, p) => { const o = { k, cls: 'rr' + (cls ? ' ' + cls : '') }; vals.forEach((v, i) => { o['v' + (i + 1)] = fmt(v, p); o['c' + (i + 1)] = v === null ? '#F7F6F3' : col(v); }); return o; };
     const f = refs.map((x) => r(1, x)), kp = refs.map((x) => r(2, x)), kq = refs.map((x) => r(3, x));
     const ex = f.map((v, i) => (v === null || kp[i] === null ? null : v - kp[i]));
-    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? 'rgba(247,246,243,0.62)' : col(v) });
+    const cell = (v, p) => ({ v: fmt(v, p), c: v === null ? '#F7F6F3' : col(v) });
     const fdPerCols = ['1주', '1개월', '3개월', '6개월', '1년', '설정 이후'].map((k, i) => ({ k, a: cell(f[i]), b: cell(kp[i]), q: cell(kq[i]), e: cell(ex[i], '%p'), cls: 'rr' + (i === 5 ? ' fund' : '') })).filter((x, i) => i === 5 || f[i] !== null);
     return {
       fdPerCols,
@@ -2924,8 +2924,8 @@ class Component extends DCLogic {
           { k: '기준가 (전일대비)', v: F.nav ? Number(F.nav).toLocaleString('ko-KR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-', c: '#F7F6F3', s: chg === null ? '' : (chg >= 0 ? '+' : '−') + Math.abs(chg).toFixed(2) + ' (' + pct(F.day) + ')', sc: col(F.day) },
           { k: '수익률 (설정 이후)', v: pct(F.ret), c: col(F.ret), s: '', sc: '' },
           { k: '수익률 (1개월)', v: r1 === null ? '-' : pct(r1), c: col(r1), s: '', sc: '' },
-          { k: 'KOSPI 대비 (설정 이후)', v: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', c: col(ex), s: 'KOSPI ' + pct(kospi), sc: 'rgba(247,246,243,0.55)' },
-          { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: 'rgba(247,246,243,0.55)' },
+          { k: 'KOSPI 대비 (설정 이후)', v: ex === null ? '-' : (ex > 0 ? '+' : ex < 0 ? '−' : '') + Math.abs(ex).toFixed(2) + '%p', c: col(ex), s: 'KOSPI ' + pct(kospi), sc: '#F7F6F3' },
+          { k: '보유 종목', v: String(hs.length), c: '#F7F6F3', s: '현금 ' + (F.cashWeight || 0).toFixed(1) + '%', sc: '#F7F6F3' },
         ];
       })(),
       fdNav: [['fd-weekly', 'Strategy'], ['fd-strat', 'Summary'], ['fd-perf', '수익률'], ['fd-alloc', '자산구성'], ['fd-hold', '보유종목'], ['fd-attr', '기여도']].map(([id, t]) => ({ t, on: (e) => { e.preventDefault(); const el = document.getElementById(id); if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 140, behavior: 'smooth' }); } })),
@@ -3106,7 +3106,7 @@ class Component extends DCLogic {
       const hs = newest ? ((FD.holdings || []).slice().sort((x, y) => y.weight - x.weight).slice(0, 5)) : [];
       const wm = Math.max(1, ...hs.map((h) => h.weight || 0));
       // 새 양식(주간 운용 리포트): 기간 수익률 표 4칸 + 초과, 넓은 누적 그래프(설정일 = 0%), 보유 종목 전체 + 현금
-      const UP = '#B23A3A', DN = '#2F5FA8', FL = 'rgba(26,26,26,.45)', cc = (v) => (v === null || isNaN(v) ? FL : v > 0 ? UP : v < 0 ? DN : FL);
+      const UP = '#B23A3A', DN = '#2F5FA8', FL = '#1A1A1A', cc = (v) => (v === null || isNaN(v) ? FL : v > 0 ? UP : v < 0 ? DN : FL);
       const per = [[r(w1, 1), r(w1, 2)], [r(m1, 1), r(m1, 2)], [r(m3, 1), r(m3, 2)], [sinceF, sinceK]];
       const prow = (n, k, cls, unit) => { const o = { n, cls }; per.forEach((pr, q) => { const v = k === 2 ? (pr[0] === null || pr[1] === null ? null : pr[0] - pr[1]) : pr[k]; o['v' + (q + 1)] = sg(v, 2) + (v === null ? '' : unit); o['c' + (q + 1)] = cc(v); }); return o; };
       const ff = H.map((h) => (h[1] / 1000 - 1) * 100), kk = H.map((h) => (h[2] / H[0][2] - 1) * 100);

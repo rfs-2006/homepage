@@ -482,7 +482,7 @@ function lastmod(file) {
     return git('log', '-1', '--format=%cs', '--', file) || today;
   } catch { return today; }
 }
-for (const p of ['about', 'recruiting', 'fund', 'privacy']) {
+for (const p of ['about', 'recruiting', 'fund', 'privacy', 'learn']) {
   const loc = `${C.SITE}/${p}/`;
   if (!sm.includes(`<loc>${loc}</loc>`)) sm = sm.replace('</urlset>', `  <url><loc>${loc}</loc><lastmod>${lastmod(`${p}/index.html`)}</lastmod></url>\n</urlset>`);
 }
