@@ -2200,7 +2200,7 @@
     var meta = [o.time || (info.minutes ? '약 ' + info.minutes + '분' : ''), nq + '문항', info.lab ? '실습 시트' : ''].filter(Boolean).join(' · ');
     st.bx.innerHTML = '<section class="ci-hero"><p class="ci-k">' + esc(st.mod.module + (grp ? ' · ' + grp : '')) + '</p><h1>' + esc(st.mod.title) + '</h1>' +
       '<p class="ci-ld">' + esc(info.lead || '') + '</p><p class="ci-mt">' + esc(meta) + (o.prep ? '<br>준비물 ' + esc(o.prep) : '') + '</p></section>' +
-      '<section class="ci-body"><div><h3>배우는 것</h3><ol class="ci-ob">' + (o.objectives || info.objectives || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>' +
+      '<section class="ci-body"><div><h3>학습 목표</h3><ol class="ci-ob">' + (info.goals || o.objectives || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>' +
       '<div><h3>순서</h3><ol class="ci-sq">' + secs.map(function (t, i) { return '<li><b>' + (i + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol></div></section>';
     st.bx.classList.add('pad', 'ci');
     btn('시작할게요', false, function () { to(s.branch.onRight); });
