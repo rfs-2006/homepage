@@ -267,3 +267,181 @@
     return { draw: draw, gated: function () { return !(seen.dep && seen.nwc); } };
   };
 })();
+
+// ── 개념 그림 (비례 막대 + 직접 주석, 강조색은 금색 한 곳) ─────────
+// m7Gap    장부 이익 막대 옆에 손에 쥔 돈 막대. 빠진 몫(점선)마다 선을 끌어 이유를 씀 (정적)
+// m7Time   같은 설비값이 손익엔 해마다 나눠, 현금은 1년 차에 한 번에. 슬라이더 = 쓰는 기간
+// m7Roll   설비 굴러가기: 올해 초 − 닳음(상각비) + 유지 + 확장 = 올해 말. 슬라이더 = 올해 CAPEX
+// m7Cycle  현금 전환 시간축: 재고 → 외상 → 받음, 재료값은 매입채무만큼 늦게. 슬라이더 = 외상 일수
+(function () {
+  var L = window.CUR_LIB, esc = L.esc, clamp = L.clamp;
+  var INK = '#F2EFE8', GOLD = '#E2C48F', NAVY = '#1C2C48', LN = 'rgba(242,239,232,.38)', FAINT = 'rgba(242,239,232,.18)';
+  if (!document.getElementById('cur-plex-font')) {
+    var lk = document.createElement('link'); lk.id = 'cur-plex-font'; lk.rel = 'stylesheet';
+    lk.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap'; document.head.appendChild(lk);
+  }
+  L.addCss('cur-m7v-css', [
+    '.cur .vis svg.m7v{max-width:560px}',
+    '.cur .vis svg.m7v text{fill:' + INK + ';font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-size:13px;font-variant-numeric:tabular-nums}',
+    '.cur .vis svg.m7v text.n{font-size:14.5px;font-weight:500}',
+    '.cur .vis svg.m7v text.s{font-size:12px;fill:rgba(242,239,232,.72)}',
+    '.cur .vis svg.m7v text.b{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:600}',
+    '.cur .vis svg.m7v text.g{fill:' + GOLD + '}',
+    '.cur .vis svg.m7v text.dk{fill:#0A1322;font-weight:500}',
+    '.cur .m7vc .vctl label b{color:' + GOLD + '}',
+    '.cur .m7vc .vctl input[type=range]::-webkit-slider-thumb{background:' + GOLD + ';box-shadow:0 0 0 1px ' + GOLD + '}',
+    '.cur .m7vc .vctl input[type=range]::-moz-range-thumb{background:' + GOLD + '}'
+  ].join('\n'));
+
+  function T(x, y, s, c, a) { return '<text x="' + (+x).toFixed(1) + '" y="' + (+y).toFixed(1) + '"' + (c ? ' class="' + c + '"' : '') + (a ? ' text-anchor="' + a + '"' : '') + '>' + s + '</text>'; }
+  function R(x, y, w, h, f, st, dash) { return '<rect x="' + (+x).toFixed(1) + '" y="' + (+y).toFixed(1) + '" width="' + Math.max(0, w).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" fill="' + f + '"' + (st ? ' stroke="' + st + '"' : '') + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
+  function Ln(x1, y1, x2, y2, st, dash) { return '<line x1="' + (+x1).toFixed(1) + '" y1="' + (+y1).toFixed(1) + '" x2="' + (+x2).toFixed(1) + '" y2="' + (+y2).toFixed(1) + '" stroke="' + st + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
+  function n1(x) { return L.f1(x); }
+  function put(svg, w, h, o, aria) { svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.innerHTML = o; svg.setAttribute('aria-label', aria); }
+  function width(host) { return Math.min(560, L.wOf(host)); }
+  function slider(host, id, label, min, max, step, val, fmtv, on) {
+    var d = document.createElement('div'); d.innerHTML = L.sliderHtml(id, label, min, max, step, val, label); var c = d.firstChild; host.appendChild(c);
+    var inp = c.querySelector('input'), b = c.querySelector('b');
+    function show() { b.textContent = fmtv(+inp.value); }
+    inp.addEventListener('input', function () { show(); on(+inp.value); });
+    inp.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    show(); return inp;
+  }
+
+  // ── 장부 이익 vs 손에 쥔 돈 ───────────────────────────
+  window.CUR_VIS.m7Gap = function (host, p, ctx) {
+    var P = p.profit, its = p.items || [], C = P - its.reduce(function (a, x) { return a + x.v; }, 0);
+    host.innerHTML = '<svg class="m7v" role="img"></svg>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg');
+    function draw() {
+      var w = width(host), h = 300, top = 34, base = h - 34, k = (base - top) / P, bw = clamp(w * 0.16, 52, 80), gap = clamp(w * 0.09, 26, 50), x1 = 2, x2 = x1 + bw + gap, ax = x2 + bw + 12, o = '';
+      o += Ln(0, base, x2 + bw + 6, base, LN);
+      o += R(x1, base - P * k, bw, P * k, NAVY, LN);
+      o += T(x1 + bw / 2, base - P * k - 10, P, 'n', 'middle');
+      o += T(x1 + bw / 2, base + 21, esc(p.pl || '장부 이익'), '', 'middle');
+      o += Ln(x1 + bw, base - P * k, x2, base - P * k, FAINT, '2 3');
+      var cur = P;
+      its.forEach(function (it) {
+        var y = base - cur * k, hh = it.v * k, my = y + hh / 2;
+        o += R(x2 + 0.5, y + 0.5, bw - 1, hh - 1, 'none', 'rgba(242,239,232,.5)', '4 4');
+        o += Ln(x2 + bw + 2, my, ax + 6, my, LN);
+        o += T(ax + 12, my + 5, '−' + it.v, 'n') + T(ax + 12 + (String(it.v).length + 1) * 9 + 8, my + 5, esc(it.l));
+        cur -= it.v;
+      });
+      var gy = base - C * k, gm = gy + C * k / 2;
+      o += R(x2, gy, bw, C * k, GOLD);
+      o += Ln(x2 + bw + 2, gm, ax + 6, gm, GOLD);
+      o += T(ax + 12, gm + 2, C, 'b g') + T(ax + 12, gm + 22, esc(p.cl || '손에 쥔 돈'));
+      o += T(x2 + bw / 2, base + 21, esc(p.cb || '손에 쥔 돈'), '', 'middle');
+      put(svg, w, h, o, (p.pl || '장부 이익') + ' ' + P + '. ' + its.map(function (it) { return it.l + ' ' + it.v; }).join(', ') + '을 빼면 ' + (p.cl || '손에 쥔 돈') + ' ' + C);
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── 손익은 나눠서, 현금은 한 번에 ─────────────────────
+  window.CUR_VIS.m7Time = function (host, p, ctx) {
+    var C = p.cost, N = p.life, S = p.span || 10;
+    host.innerHTML = '<svg class="m7v" role="img"></svg>';
+    host.classList.add('m7vc');
+    var svg = host.querySelector('svg');
+    slider(host, 'curM7Life', p.sl || '쓰는 기간', p.min || 2, p.max || S, 1, N, function (v) { return v + '년'; }, function (v) { N = v; draw(); });
+    var vr = document.createElement('p'); vr.className = 'vr'; vr.setAttribute('aria-live', 'polite'); host.appendChild(vr);
+    function draw() {
+      var w = width(host), D = C / N, k = 108 / C, cw = w / S, bw = Math.min(30, cw * 0.6), o = '';
+      var cA = 14, bA = cA + 18 + C / 2 * k, cB = bA + 34, bB = cB + 12 + C * k, h = bB + 26;
+      function bx(i) { return i * cw + (cw - bw) / 2; }
+      o += T(0, cA, esc(p.la || '손익에 잡힌 비용 · 감가상각비'));
+      o += T(w, cA, n1(D) + ' × ' + N + '년 = ' + C, 'n', 'end');
+      for (var i = 0; i < S; i++) if (i < N) o += R(bx(i), bA - D * k, bw, D * k, NAVY, LN);
+      o += Ln(0, bA, w, bA, LN);
+      o += T(0, cB, esc(p.lb || '통장에서 나간 돈 · CAPEX'));
+      o += T(w, cB, '1년 차에 ' + C, 'n', 'end');
+      o += R(bx(0), bB - C * k, bw, (C - D) * k, GOLD) + R(bx(0), bB - D * k, bw, D * k, NAVY, LN);
+      o += Ln(0, bB, w, bB, LN);
+      var gx = bx(0) + bw + 10, gm = bB - (C + D) / 2 * k;
+      o += Ln(bx(0) + bw + 2, gm, gx + 4, gm, GOLD);
+      o += T(gx + 10, gm - 4, n1(C - D), 'b g') + T(gx + 10, gm + 16, '아직 손익엔 안 잡힌 돈') + T(gx + 10, gm + 34, '그만큼 현금이 이익보다 덜 남아요');
+      o += Ln(bx(0) + bw + 2, bB - D * k / 2, gx + 4, bB - D * k / 2, LN) + T(gx + 10, bB - D * k / 2 + 4, '올해 비용 ' + n1(D), 's');
+      for (var j = 0; j < S; j++) o += T(j * cw + cw / 2, h - 6, (j + 1) + (j === 0 ? '년' : ''), 's', 'middle');
+      put(svg, w, h, o, '설비값 ' + C + '을 ' + N + '년 쓰면 손익엔 해마다 ' + n1(D) + ', 현금은 1년 차에 ' + C + ' 한 번에 나가요');
+      vr.innerHTML = '설비값 ' + C + '을 ' + N + '년에 나눠 해마다 <b>' + n1(D) + '</b>씩 비용으로 잡아요. 현금은 1년 차에 <b>' + C + '</b>이 한 번에 나가요. 그래서 EBIT에 상각비 ' + n1(D) + '을 더하고 CAPEX ' + C + '을 빼요 (+' + n1(D) + ' − ' + C + ' = −' + n1(C - D) + ').';
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── 설비 굴러가기: 유지와 확장 ────────────────────────
+  window.CUR_VIS.m7Roll = function (host, p, ctx) {
+    var S0 = p.start, Dp = p.dep, Cx = p.capex, MX = p.max || 30;
+    host.innerHTML = '<svg class="m7v" role="img"></svg>';
+    host.classList.add('m7vc');
+    var svg = host.querySelector('svg');
+    slider(host, 'curM7Capex', p.sl || '올해 CAPEX', 0, MX, 1, Cx, function (v) { return String(v); }, function (v) { Cx = v; draw(); });
+    var vr = document.createElement('p'); vr.className = 'vr'; vr.setAttribute('aria-live', 'polite'); host.appendChild(vr);
+    function draw() {
+      var w = width(host), m = Math.min(Cx, Dp), e = Math.max(0, Cx - Dp), E = S0 - Dp + Cx, lo = S0 - Dp, h = 318, top = 40, base = h - 84, k = (base - top) / (S0 - Dp + MX), cw = w / 5, bw = Math.min(58, cw * 0.62), o = '';
+      function cx(i) { return i * cw + cw / 2; }
+      function Y(v) { return base - v * k; }
+      function bar(i, a, b, f, st, dash) { o += R(cx(i) - bw / 2, Y(Math.max(a, b)), bw, Math.abs(b - a) * k, f, st, dash); }
+      o += Ln(0, base, w, base, LN);
+      o += Ln(cx(0) - bw / 2, Y(S0), cx(4) + bw / 2, Y(S0), FAINT, '2 3');
+      bar(0, 0, S0, NAVY, LN);
+      bar(1, lo, S0, 'none', 'rgba(242,239,232,.5)', '4 4');
+      o += Ln(cx(1) + bw / 2, Y(lo), cx(2) - bw / 2, Y(lo), LN, '2 3');
+      if (m > 0) bar(2, lo, lo + m, NAVY, LN);
+      if (m < Dp) bar(2, lo + m, S0, 'none', 'rgba(242,239,232,.35)', '3 3');
+      if (e > 0) { o += Ln(cx(2) + bw / 2, Y(S0), cx(3) - bw / 2, Y(S0), LN, '2 3'); bar(3, S0, S0 + e, GOLD); }
+      bar(4, 0, E, NAVY, LN);
+      o += T(cx(0), Y(S0) - 10, S0, 'n', 'middle');
+      o += T(cx(1), Y(S0) - 10, '−' + Dp, 'n', 'middle');
+      o += T(cx(2), Y(S0) - 10, '+' + m, 'n', 'middle');
+      o += T(cx(3), Y(S0 + e) - 10, e > 0 ? '+' + e : '0', e > 0 ? 'n g' : 'n', 'middle');
+      o += T(cx(4), Y(Math.max(E, S0)) - (E >= S0 ? 10 : 26), E, 'b' + (e > 0 ? ' g' : ''), 'middle');
+      if (E !== S0) o += T(cx(4), Y(Math.max(E, S0)) - (E >= S0 ? 34 : 8), (E > S0 ? '+' : '−') + Math.abs(E - S0), 's', 'middle');
+      var NM = [['올해 초', '설비'], ['닳은 몫', '상각비'], ['유지', 'CAPEX'], ['확장', 'CAPEX'], ['올해 말', '설비']];
+      NM.forEach(function (t, i) { o += T(cx(i), base + 20, t[0], '', 'middle') + T(cx(i), base + 37, t[1], 's', 'middle'); });
+      var by = base + 52, bl = cx(2) - bw / 2, br = cx(3) + bw / 2;
+      o += Ln(bl, by - 5, bl, by, LN) + Ln(bl, by, br, by, LN) + Ln(br, by - 5, br, by, LN) + T((bl + br) / 2, by + 20, 'CAPEX ' + Cx, 'n', 'middle');
+      put(svg, w, h, o, '올해 초 설비 ' + S0 + ', 닳은 몫 ' + Dp + ', 유지 ' + m + ', 확장 ' + e + ', 올해 말 설비 ' + E);
+      vr.innerHTML = Cx > Dp ? 'CAPEX ' + Cx + ' = 유지 ' + Dp + ' + 확장 <b>' + e + '</b>. 닳은 만큼 채우고 남은 돈으로 설비가 ' + S0 + ' → ' + E + '으로 커져요.'
+        : Cx === Dp ? 'CAPEX가 상각비 ' + Dp + '와 같아요. 닳은 만큼만 채워서 설비가 ' + S0 + ' 그대로예요.'
+          : 'CAPEX ' + Cx + '가 상각비 ' + Dp + '보다 적어요. 닳은 만큼도 못 채워 설비가 ' + S0 + ' → <b>' + E + '</b>으로 줄어요.';
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── 현금 전환 시간축 ──────────────────────────────────
+  window.CUR_VIS.m7Cycle = function (host, p, ctx) {
+    var I = p.inv, A = p.ar, P = p.ap, AM = p.arMax || 90, AN = p.arMin || 10, DM = I + AM;
+    host.innerHTML = '<svg class="m7v" role="img"></svg>';
+    host.classList.add('m7vc');
+    var svg = host.querySelector('svg');
+    slider(host, 'curM7Ar', p.sl || '외상값을 받기까지', AN, AM, 5, A, function (v) { return v + '일'; }, function (v) { A = v; draw(); });
+    var vr = document.createElement('p'); vr.className = 'vr'; vr.setAttribute('aria-live', 'polite'); host.appendChild(vr);
+    function draw() {
+      var w = width(host), X = function (d) { return 1 + (w - 2) * d / DM; }, bh = 28, o = '', end = I + A, tie = end - P;
+      var c1 = 14, r1 = 24, c2 = 84, r2 = 94, c3 = 154, r3 = 164, ax = r3 + bh + 40, h = ax + 22;
+      o += T(0, c1, '물건이 돈이 되기까지');
+      o += R(X(0), r1, X(I) - X(0), bh, NAVY, LN) + T(X(I / 2), r1 + 19, '재고 ' + I + '일', '', 'middle');
+      o += R(X(I), r1, X(end) - X(I), bh, 'rgba(242,239,232,.08)', LN);
+      o += X(end) - X(I) > 74 ? T(X(I + A / 2), r1 + 19, '외상 ' + A + '일', '', 'middle') : T(X(end) + 6, r1 + 19, '외상 ' + A + '일');
+      o += T(0, c2, '재료값을 내기까지 · 매입채무');
+      o += R(X(0) + 0.5, r2 + 0.5, X(P) - X(0) - 1, bh - 1, 'none', 'rgba(242,239,232,.5)', '4 4') + T(X(P / 2), r2 + 19, P + '일', '', 'middle');
+      o += T(0, c3, '내 돈이 묶인 기간');
+      o += Ln(X(P), r2 + bh, X(P), c3 - 14, LN, '2 3') + Ln(X(P), c3 + 5, X(P), r3 + bh + 6, LN, '2 3') + Ln(X(end), r1 + bh, X(end), r3 + bh + 6, LN, '2 3');
+      if (tie > 0) o += R(X(P), r3, X(end) - X(P), bh, GOLD);
+      o += X(end) - X(P) > 46 ? T(X(P + tie / 2), r3 + 19, tie + '일', 'dk', 'middle') : T(X(end) + 6, r3 + 19, tie + '일', 'g');
+      o += T(X(P), r3 + bh + 20, '재료값 냄', 's', 'middle');
+      var rx = X(end), ra = rx + 40 > w ? 'end' : rx - 40 < X(P) + 34 ? 'start' : 'middle';
+      o += T(ra === 'end' ? w : ra === 'start' ? rx + 4 : rx, r3 + bh + 20, '외상값 받음', 's', ra);
+      o += Ln(0, ax, w, ax, LN);
+      for (var d = 0; d <= DM; d += 30) o += Ln(X(d), ax, X(d), ax + 4, LN) + T(X(d), ax + 17, d + (d + 30 > DM ? '일' : ''), 's', d === 0 ? 'start' : d + 30 > DM ? 'end' : 'middle');
+      put(svg, w, h, o, '재고 ' + I + '일, 외상 ' + A + '일, 매입채무 ' + P + '일. 돈이 묶인 기간 ' + tie + '일');
+      vr.innerHTML = '돈이 묶인 기간 = 재고 ' + I + '일 + 외상 ' + A + '일 − 매입채무 ' + P + '일 = <b>' + tie + '일</b>. 길어질수록 운전자본에 돈이 더 묶여요.';
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+})();

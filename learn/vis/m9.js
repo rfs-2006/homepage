@@ -251,3 +251,199 @@
     };
   };
 })();
+
+/* ── 개념 그림 (흰 글씨 · 금색은 화면마다 핵심 한 곳 · 옅은 남색 막대 · 설명은 선을 끌어 그림 옆에) ──
+ *   m9vStack { M, cap }      map_what: 세 부문 EV를 한 기둥에 쌓아 EV 합 (정적)
+ *   m9vRuler { M, x0 }       map_why : 배수 하나로 환경·해운을 같이 매기면 따로 매긴 값과 얼마나 어긋나나 (슬라이더, 다음을 막지 않음)
+ *   m9vDisc  { M }           qdisc   : 5년 FCFF와 TV를 현재가치로 끌어오기 (버튼, 다음을 막지 않음)
+ *   m9vField { M }           qchk    : Bull/Base·민감도 범위 옆에 주가 (정적 풋볼필드)
+ * 숫자는 모두 위 모델(CUR_M9)에서 계산한다. 단위 억 원 · 원. 그림 폭은 실제 픽셀(최대 520)이라 글씨 크기가 폰에서도 그대로다.
+ */
+(function () {
+  var L = window.CUR_LIB, esc = L.esc, fmt = L.fmt, f1 = L.f1, Q = window.CUR_M9;
+  var GOLD = '#E2C48F', NAVY = '#1C2C48', LINE = 'rgba(242,239,232,.3)', AX = 'rgba(242,239,232,.4)', BG = '#0B1526';
+  if (!document.getElementById('cur-plex')) {
+    var lk = document.createElement('link'); lk.id = 'cur-plex'; lk.rel = 'stylesheet';
+    lk.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap'; document.head.appendChild(lk);
+  }
+  L.addCss('cur-m9v-css', [
+    '.cur .m9v svg{display:block;width:100%;max-width:520px;height:auto;overflow:visible}',
+    '.cur .m9v svg text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
+    '.cur .m9v svg text .big,.cur .m9v svg text.big{font-family:"Noto Serif KR",serif;font-weight:600;font-size:22px}',
+    '.cur .m9v svg .g{fill:#E2C48F}.cur .m9v svg .md{font-weight:500}',
+    '.cur .m9v .vctl{max-width:520px}.cur .m9v .vctl label{min-width:0}',
+    '.cur .m9v .vctl label b{color:#E2C48F;font-family:"IBM Plex Sans",sans-serif;font-weight:500;font-size:18px}',
+    '.cur .m9v .vctl input[type=range]::-webkit-slider-thumb{background:#E2C48F;box-shadow:0 0 0 1px #E2C48F}',
+    '.cur .m9v .vctl input[type=range]::-moz-range-thumb{background:#E2C48F}',
+    '.cur .m9v .m9vr{max-width:520px;margin:12px 0 0;font-size:14.5px;line-height:1.65;color:#F2EFE8}',
+    '.cur .m9v .m9vr b{color:#E2C48F;font-weight:500;font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums}',
+    '.cur .m9v .m9vb{margin-top:14px;min-height:42px;padding:0 16px;border:1px solid rgba(242,239,232,.35);background:none;color:#F2EFE8;font:inherit;font-size:14.5px;cursor:pointer;transition:border-color .25s}',
+    '.cur .m9v .m9vb:hover,.cur .m9v .m9vb:focus-visible{border-color:#E2C48F}'
+  ].join('\n'));
+
+  function r1(x) { return Math.round(x * 10) / 10; }
+  function T(x, y, s, a) { return '<text x="' + r1(x) + '" y="' + r1(y) + '"' + (a || '') + '>' + s + '</text>'; }
+  function ln(x1, y1, x2, y2, st, a) { return '<line x1="' + r1(x1) + '" y1="' + r1(y1) + '" x2="' + r1(x2) + '" y2="' + r1(y2) + '" stroke="' + (st || LINE) + '"' + (a || '') + '/>'; }
+  function rc(x, y, w, h, a) { return '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(w, 0)) + '" height="' + r1(Math.max(h, 0)) + '" ' + a + '/>'; }
+  function sgn(x) { return (x < 0 ? '−' : '+') + fmt(Math.abs(x)); }
+  function W(host) { return Math.min(520, L.wOf(host)); }
+  function size(svg, w, h) { svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('width', w); svg.setAttribute('height', h); }
+  function capHtml(p) { return p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : ''; }
+
+  // ── map_what: 세 부문 EV를 한 기둥에 ──
+  window.CUR_VIS.m9vStack = function (host, p, ctx) {
+    var M = p.M, S = M.sc.base, env = Q.env(M, 'base').ev, ship = M.shipEb * S.ship, etc = M.etcEb * M.etcMult, ev = env + ship + etc;
+    host.classList.add('m9v');
+    host.innerHTML = '<svg role="img"></svg>' + capHtml(p);
+    var svg = host.querySelector('svg');
+    function draw() {
+      var w = W(host), h = 300, top = 60, bot = 292, k = (bot - top) / ev, x = 40, cw = w < 420 ? 64 : 88, tx = x + cw + 34, o = '';
+      var seg = [ // 위에서부터, ty = 큰 숫자 줄
+        { v: etc, n: '기타', d: '레미콘·골프 · EBITDA ' + fmt(M.etcEb) + ' × ' + f1(M.etcMult) + '배', ty: 66 },
+        { v: ship, n: '해운', d: '탱커 · EBITDA ' + fmt(M.shipEb) + ' × ' + f1(S.ship) + '배', ty: 126 },
+        { v: env, n: '환경', d: '소각·매립 · 현금흐름 할인(DCF)', ty: 216 }];
+      var y = top;
+      seg.forEach(function (s, i) {
+        var hh = s.v * k, mid = y + hh / 2;
+        o += rc(x, y, cw, hh, 'fill="' + NAVY + '" stroke="' + LINE + '"');
+        if (i) o += ln(x + 1, y, x + cw - 1, y, BG, ' stroke-width="2"');
+        o += ln(x + cw + 4, mid, tx - 8, s.ty - 7);
+        o += '<text x="' + tx + '" y="' + s.ty + '"><tspan class="big">' + fmt(s.v) + '</tspan><tspan dx="8" class="md">' + s.n + '</tspan></text>';
+        o += T(tx, s.ty + 20, esc(s.d));
+        y += hh;
+      });
+      // 금색: 셋을 더한 EV
+      o += '<path d="M' + (x - 4) + ' ' + top + 'H' + (x - 10) + 'V' + bot + 'H' + (x - 4) + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>';
+      o += '<text x="' + (x - 10) + '" y="36"><tspan class="big g">' + fmt(ev) + '</tspan><tspan dx="8">억 원 · 셋을 더한 EV</tspan></text>';
+      size(svg, w, h); svg.innerHTML = o;
+      svg.setAttribute('aria-label', '환경 ' + fmt(env) + '억(DCF) + 해운 ' + fmt(ship) + '억(EBITDA × ' + f1(S.ship) + '배) + 기타 ' + fmt(etc) + '억(EBITDA × ' + f1(M.etcMult) + '배) = EV ' + fmt(ev) + '억 원');
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── map_why: 배수 하나로 둘 다 매기면 ──
+  window.CUR_VIS.m9vRuler = function (host, p, ctx) {
+    var M = p.M, S = M.sc.base, mn = 3, mx = 10, x = p.x0 || 6;
+    var rows = [
+      { n: '환경', eb: M.ltmEb - M.shipEb - M.etcEb, sep: Q.env(M, 'base').ev, how: 'DCF' },
+      { n: '해운', eb: M.shipEb, sep: M.shipEb * S.ship, how: f1(S.ship) + '배' }];
+    host.classList.add('m9v');
+    host.innerHTML = '<svg role="img"></svg>' + L.sliderHtml('curM9vX', '두 부문에 같은 배수', mn, mx, 0.5, x, '두 부문에 같이 쓰는 EV/EBITDA 배수') +
+      '<p class="m9vr" aria-live="polite"></p>';
+    var svg = host.querySelector('svg'), vr = host.querySelector('.m9vr'), inp = host.querySelector('input'), lab = host.querySelector('.vctl b');
+    function word(d, sep, end) {
+      if (Math.abs(d) < 0.5) return end ? '딱 맞아요' : '딱 맞고';
+      if (Math.abs(d) / sep < 0.03) return end ? '거의 맞아요' : '거의 맞고';
+      return '<b>' + fmt(Math.abs(d)) + '억</b> ' + (d < 0 ? (end ? '모자라요' : '모자라고') : (end ? '넘쳐요' : '넘치고'));
+    }
+    function draw() {
+      var w = W(host), h = 236, k = (w - 30) / (rows[0].eb * mx), o = '', D = [];
+      rows.forEach(function (r, i) {
+        var top = 10 + i * 118, by = top + 22, bh = 34, v = r.eb * x, fx = v * k, sx = r.sep * k, d = v - r.sep, a = Math.min(fx, sx), b = Math.max(fx, sx);
+        D.push(d);
+        o += '<text x="0" y="' + (top + 8) + '"><tspan class="md">' + r.n + '</tspan><tspan dx="10">EBITDA ' + fmt(r.eb) + ' × ' + f1(x) + '배 = </tspan><tspan class="md">' + fmt(v) + '</tspan></text>';
+        o += rc(0, by, fx, bh, 'fill="' + NAVY + '" stroke="' + LINE + '"');
+        if (b - a > 1) o += rc(a, by, b - a, bh, 'fill="rgba(226,196,143,.22)" stroke="' + GOLD + '"');
+        o += ln(sx, by - 6, sx, by + bh + 8, '#F2EFE8');
+        var right = sx > w * 0.55;
+        o += T(right ? sx : Math.max(sx - 6, 0), by + bh + 24, '따로 매긴 값 ' + fmt(r.sep) + ' · ' + r.how, right ? ' text-anchor="end"' : '');
+        if (Math.abs(d) >= 0.5) { // 금색: 어긋난 만큼
+          var gt = sgn(d), gw = gt.length * 8 + 6;
+          if (b - a > gw + 8) o += T((a + b) / 2, by + 22, gt, ' text-anchor="middle" class="g md"');
+          else if (b + 6 + gw <= w) o += T(b + 6, by + 22, gt, ' class="g md"');
+          else o += T(a - 6, by + 22, gt, ' text-anchor="end" class="g md"');
+        }
+      });
+      size(svg, w, h); svg.innerHTML = o;
+      svg.setAttribute('aria-label', f1(x) + '배로 매기면 환경 ' + fmt(rows[0].eb * x) + '억(따로 매긴 값 ' + fmt(rows[0].sep) + '억), 해운 ' + fmt(rows[1].eb * x) + '억(따로 매긴 값 ' + fmt(rows[1].sep) + '억)');
+      lab.textContent = f1(x) + '배';
+      vr.innerHTML = f1(x) + '배로 둘 다 매기면 환경은 ' + word(D[0], rows[0].sep, false) + ', 해운은 ' + word(D[1], rows[1].sep, true) + '.';
+    }
+    inp.addEventListener('input', function () { x = +inp.value; draw(); });
+    inp.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── qdisc: 현재가치로 끌어오기 ──
+  window.CUR_VIS.m9vDisc = function (host, p, ctx) {
+    var M = p.M, e = Q.env(M, 'base'), R = e.rows, pv = false, anim = null, t = 0, y0 = 232, k = 192 / e.tv, w = 0, bars = [];
+    host.classList.add('m9v');
+    host.innerHTML = '<svg role="img"></svg><button type="button" class="m9vb"></button><p class="m9vr" aria-live="polite"></p>';
+    var svg = host.querySelector('svg'), bt = host.querySelector('.m9vb'), vr = host.querySelector('.m9vr');
+    function build() {
+      w = W(host);
+      var sw = w * 0.66 / 5, bw = Math.min(30, sw * 0.52), tx = w * 0.74, tw = Math.min(72, w * 0.17), o = '';
+      bars = R.map(function (r, i) { return { x: sw * i + (sw - bw) / 2, w: bw, a: r.fcff, b: r.pv }; }).concat([{ x: tx, w: tw, a: e.tv, b: e.pvtv, tv: true }]);
+      bars.forEach(function (b, i) {
+        o += '<rect class="gh" fill="none" stroke="rgba(242,239,232,.45)" stroke-dasharray="3 3" opacity="0"/>';
+        o += '<rect class="fl" fill="' + (b.tv ? GOLD : NAVY) + '" stroke="' + (b.tv ? GOLD : LINE) + '"/>';
+      });
+      o += ln(0, y0, w, y0, AX);
+      R.forEach(function (r, i) { o += T(bars[i].x + bw / 2, 276, w < 420 ? "'" + String(r.y).slice(2) : r.y, ' text-anchor="middle"'); });
+      o += T(tx + tw / 2, 276, 'TV', ' text-anchor="middle" class="md"');
+      o += '<path d="M2 200V194H' + r1(sw * 5 - 2) + 'V200" fill="none" stroke="' + LINE + '"/>';
+      o += T(2, 162, '2025~2029년 FCFF', ' class="md"') + T(2, 182, '', ' class="s1"');
+      o += T(tx - 12, 40, 'TV · 2029년 뒤 현금 전부', ' text-anchor="end" class="md"') + T(tx - 12, 60, '', ' text-anchor="end" class="s2"') + '<text x="' + r1(tx - 12) + '" y="96" text-anchor="end" class="s3"></text>';
+      size(svg, w, 290); svg.innerHTML = o;
+    }
+    function put(el, b, v) { var h = Math.abs(v) * k; el.setAttribute('x', r1(b.x)); el.setAttribute('width', r1(b.w)); el.setAttribute('y', r1(v >= 0 ? y0 - h : y0)); el.setAttribute('height', r1(Math.max(h, 1))); }
+    function frame() {
+      var gh = svg.querySelectorAll('.gh'), fl = svg.querySelectorAll('.fl');
+      bars.forEach(function (b, i) { put(fl[i], b, b.a + (b.b - b.a) * t); put(gh[i], b, b.a); gh[i].setAttribute('opacity', t > 0.02 ? 1 : 0); });
+    }
+    function text() {
+      svg.querySelector('.s1').textContent = pv ? '해마다 할인해 더하면 ' + fmt(e.pvsum) + '억' : '그해에 들어올 돈 그대로';
+      svg.querySelector('.s2').textContent = pv ? '지금 가치로 끌어오면' : '2029년 시점으로 한 번에 모아요';
+      svg.querySelector('.s3').innerHTML = pv ? '<tspan class="big g">' + fmt(e.pvtv) + '</tspan><tspan dx="6">억</tspan>' : '';
+      bt.textContent = pv ? '할인 전으로 되돌리기' : '현재가치로 끌어오기';
+      bt.setAttribute('aria-pressed', pv);
+      vr.innerHTML = pv ? '5년 합 ' + fmt(e.pvsum) + '억 + TV ' + fmt(e.pvtv) + '억 = 환경 EV ' + fmt(e.ev) + '억 원. 이 중 <b>' + Math.round(e.share * 100) + '%</b>가 TV예요.'
+        : '할인 전 막대예요(억 원). 버튼을 누르면 해마다 할인해 지금 가치로 줄여요.';
+      svg.setAttribute('aria-label', pv ? '현재가치: 5년 FCFF 합 ' + fmt(e.pvsum) + '억, TV ' + fmt(e.pvtv) + '억, 환경 EV ' + fmt(e.ev) + '억 원' : '할인 전 2025~2029년 FCFF와 TV 막대');
+    }
+    function draw() { build(); frame(); text(); }
+    bt.onclick = function () {
+      pv = !pv; text(); if (anim) cancelAnimationFrame(anim);
+      var from = t, to = pv ? 1 : 0, t0 = null;
+      if (!window.requestAnimationFrame) { t = to; frame(); return; }
+      anim = requestAnimationFrame(function step(ts) { if (t0 == null) t0 = ts; var u = Math.min(1, (ts - t0) / 650); t = from + (to - from) * (1 - Math.pow(1 - u, 3)); frame(); if (u < 1) anim = requestAnimationFrame(step); });
+    };
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── qchk: 범위 옆에 주가 ──
+  window.CUR_VIS.m9vField = function (host, p, ctx) {
+    var M = p.M, base = Q.total(M, 'base').ps, bull = Q.total(M, 'bull').ps;
+    function rng(kind) { var S = Q.SENS[kind], a = []; S.rows.forEach(function (r) { S.cols.forEach(function (c) { a.push(S.f(M, r, c)); }); }); return [Math.min.apply(null, a), Math.max.apply(null, a)]; }
+    var wg = rng('wg'), pu = rng('pu'), lo = Math.min(wg[0], pu[0]);
+    var rows = [{ n: 'Bull / Base', r: [base, bull] }, { n: '민감도 · WACC × g', r: wg }, { n: '민감도 · 단가 × 가동률', r: pu }];
+    host.classList.add('m9v');
+    host.innerHTML = '<svg role="img"></svg>';
+    var svg = host.querySelector('svg');
+    function draw() {
+      var w = W(host), h = 286, X = function (v) { return (w - 52) * v / 22000; }, o = '', ax = 240, px = X(M.px), la = X(lo);
+      o += T(w, 14, '주당 가치(원)', ' text-anchor="end"');
+      rows.forEach(function (r, i) {
+        var top = 44 + i * 64, a = X(r.r[0]), b = X(r.r[1]);
+        o += T(a, top, r.n, ' class="md"');
+        o += rc(a, top + 9, b - a, 22, 'fill="' + NAVY + '" stroke="' + LINE + '"');
+        if (i) o += ln(X(base), top + 9, X(base), top + 31, 'rgba(242,239,232,.75)'); // Base 자리
+        o += T(a - 6, top + 25, fmt(r.r[0]), ' text-anchor="end"') + T(b + 6, top + 25, fmt(r.r[1]));
+      });
+      o += ln(0, ax, w, ax, AX);
+      [0, 10000, 20000].forEach(function (v) { o += ln(X(v), ax, X(v), ax + 5, AX) + T(X(v), ax + 20, fmt(v), v ? ' text-anchor="middle"' : ''); });
+      // 금색: 주가에서 가장 낮은 값까지
+      o += ln(px, 24, px, ax, GOLD, ' stroke-width="1.5" stroke-dasharray="4 3"');
+      o += ln(px, ax, la, ax, GOLD, ' stroke-width="3"') + ln(la, ax - 6, la, ax + 6, GOLD, ' stroke-width="1.5"');
+      o += '<text x="' + r1(px + 8) + '" y="' + (ax - 12) + '" class="g">가장 낮은 값도 주가의 <tspan class="md">' + f1(lo / M.px) + '배</tspan></text>';
+      o += T(px, ax + 40, '주가 ' + fmt(M.px), ' text-anchor="middle" class="g md"');
+      size(svg, w, h); svg.innerHTML = o;
+      svg.setAttribute('aria-label', rows.map(function (r) { return r.n + ' ' + fmt(r.r[0]) + '~' + fmt(r.r[1]) + '원'; }).join(', ') + '. 주가 ' + fmt(M.px) + '원, 가장 낮은 값도 주가의 ' + f1(lo / M.px) + '배');
+    }
+    ctx.ready(true);
+    return { draw: draw };
+  };
+})();

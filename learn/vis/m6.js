@@ -210,4 +210,139 @@
       }
     };
   };
+  // ════ 개념 그림 (VISUAL_BRIEF): 비례 막대 + 직접 주석. 글씨 흰색, 금색은 화면마다 핵심 한 곳 ════
+  // m6Pieces: 가게값 + 금고 현금 − 빚 = 내 몫 (가로 다리, 정적) / m6Claim: 가진 것 vs 누구 몫, 빚 슬라이더
+  // m6Whose: FCFF 안의 FCFE (막대 하나 + 괄호) / m6Sheet: T자 재무상태표에서 NOA·IBD 줄만 골라내기
+  (function () {
+    if (!document.getElementById('cur-plex')) { var lk = document.createElement('link'); lk.id = 'cur-plex'; lk.rel = 'stylesheet'; lk.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap'; document.head.appendChild(lk); }
+  })();
+  var GOLD = '#E2C48F', NAVY = '#1C2C48', HAIR = 'rgba(242,239,232,.28)', INK = '#F2EFE8', NUMF = "'IBM Plex Sans','RFS Dotum UI',sans-serif";
+  L.addCss('cur-m6v-css', [
+    '.cur .vis svg.m6v{max-width:560px}',
+    '.cur .vis svg.m6v text{fill:' + INK + ';font-size:13px}',
+    '.cur .vis svg.m6v text.s{fill:rgba(242,239,232,.72);font-size:12px}',
+    '.cur .vis svg.m6v text.n{font-family:' + NUMF + ';font-variant-numeric:tabular-nums;font-size:14px;font-weight:500}',
+    '.cur .vis svg.m6v text.big{font-family:var(--ser);font-size:22px;font-weight:600}',
+    '.cur .vis svg.m6v text.dk{fill:#0B1526;font-weight:500}',
+    '.cur .vis svg.m6v text.h{fill:rgba(242,239,232,.72);font-size:12.5px;letter-spacing:.02em}',
+    '.cur .vis svg.m6v .mv{transition:all .25s ease}',
+    '.cur .m6vc{margin-top:10px;font-size:12.5px;color:rgba(242,239,232,.72);max-width:560px}',
+    '.cur .vis.m6w .vctl{max-width:560px}.cur .m6vr{max-width:560px}.cur .m6vr .n{font-family:' + NUMF + ';font-variant-numeric:tabular-nums}',
+    '.cur .m6led{max-width:560px;color:' + INK + ';font-size:14.5px}',
+    '.cur .m6led .lh{display:grid;grid-template-columns:1fr 1fr;border-bottom:1.5px solid ' + INK + ';padding-bottom:6px;font-weight:500;font-size:14px}',
+    '.cur .m6led .lh span:last-child{padding-left:16px}',
+    '.cur .m6led .lb{display:grid;grid-template-columns:1fr 1fr;border-bottom:3px double ' + INK + '}',
+    '.cur .m6led .sd .rw:last-child{border-bottom:0}',
+    '.cur .m6led .sd{display:flex;flex-direction:column;padding:4px 16px 0 0;min-width:0}',
+    '.cur .m6led .sd+.sd{border-left:1.5px solid ' + INK + ';padding:4px 0 0 16px}',
+    '.cur .m6led .rw{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:8px 0;border-bottom:1px solid rgba(242,239,232,.12)}',
+    '.cur .m6led .rw.x span:first-child{opacity:.5}.cur .m6led .rw.x i{color:rgba(242,239,232,.5);font-family:inherit;font-weight:400;font-size:12.5px}',
+    '.cur .m6led .rw i{font-style:normal;color:' + GOLD + ';font-family:' + NUMF + ';font-weight:500;white-space:nowrap}',
+    '.cur .m6led .rw.own i{color:rgba(242,239,232,.72);font-family:inherit;font-weight:400;font-size:12.5px}',
+    '.cur .m6led .lnote{margin:12px 0 0;font-size:13px;line-height:1.6;color:' + INK + '}',
+    '.cur .m6led .lnote b{color:' + GOLD + ';font-weight:500}',
+    '@media (max-width:420px){.cur .m6led{font-size:13.5px}.cur .m6led .sd{padding-right:10px}.cur .m6led .sd+.sd{padding-left:10px}}'
+  ].join('\n'));
+  function vw(host) { return Math.min(wOf(host), 560); }
+  function t(x, y, cls, s, anchor) { return '<text x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '"' + (cls ? ' class="' + cls + '"' : '') + (anchor ? ' text-anchor="' + anchor + '"' : '') + '>' + s + '</text>'; }
+  function ln(x1, y1, x2, y2, st, dash) { return '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="' + st + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
+  function rc(x, y, w, h, fill, st, dash, cls) { return '<rect' + (cls ? ' class="' + cls + '"' : '') + ' x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(0, w).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" fill="' + fill + '"' + (st ? ' stroke="' + st + '"' : '') + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
+
+  // ── 가로 다리: 가게값 + 금고 현금 − 빚 = 내 몫. 길이가 곧 값 ──
+  window.CUR_VIS.m6Pieces = function (host, p, ctx) {
+    var ev = p.ev || 1000, noa = p.noa || 200, ibd = p.ibd || 600, eq = ev + noa - ibd, R = p.rows || [['가게값', '영업가치'], ['금고 현금', '비영업자산'], ['은행 빚', '이자부부채'], ['내 몫', '주주가치']];
+    host.innerHTML = '<svg class="m6v" role="img"></svg>' + (p.cap ? '<p class="m6vc">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg');
+    function draw() {
+      var w = vw(host), lw = clamp(Math.round(w * 0.24), 84, 116), x0 = lw + 10, nw = 62, bw = w - x0 - nw, top = Math.max(ev + noa, eq), sc = bw / top, X = function (v) { return x0 + v * sc; };
+      var bh = 30, py = 58, y = function (i) { return 6 + i * py; }, o = '';
+      o += ln(x0, 0, x0, y(3) + bh + 4, 'rgba(242,239,232,.35)');
+      // 0 가게값
+      o += rc(x0, y(0), ev * sc, bh, NAVY, HAIR) + t(X(ev) + 8, y(0) + 20, 'n', fmt(ev));
+      o += ln(X(ev), y(0) + bh, X(ev), y(1), 'rgba(242,239,232,.35)', '3 3');
+      // 1 + 금고 현금
+      o += rc(X(ev), y(1), noa * sc, bh, 'rgba(242,239,232,.10)', 'rgba(242,239,232,.45)') + t(X(ev + noa) + 8, y(1) + 20, 'n', '+' + fmt(noa));
+      o += ln(X(ev + noa), y(1) + bh, X(ev + noa), y(2), 'rgba(242,239,232,.35)', '3 3');
+      // 2 − 빚 (오른쪽 끝에서 왼쪽으로 덜어 냄)
+      o += rc(X(eq), y(2), ibd * sc, bh, 'rgba(242,239,232,.04)', 'rgba(242,239,232,.55)', '4 3') + t(X(ev + noa) + 8, y(2) + 20, 'n', '−' + fmt(ibd));
+      o += ln(X(eq), y(2) + bh, X(eq), y(3), 'rgba(242,239,232,.35)', '3 3');
+      // 3 = 내 몫
+      o += rc(x0, y(3), eq * sc, bh, GOLD) + t(X(eq) + 10, y(3) + 23, 'big', fmt(eq));
+      ['', '+ ', '− ', '= '].forEach(function (op, i) { o += t(lw, y(i) + 13, '', op + esc(R[i][0]), 'end') + t(lw, y(i) + 29, 's', esc(R[i][1]), 'end'); });
+      var h = y(3) + bh + 6;
+      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
+      svg.setAttribute('aria-label', R[0][0] + '(' + R[0][1] + ') ' + fmt(ev) + ' 더하기 ' + R[1][0] + ' ' + fmt(noa) + ' 빼기 ' + R[2][0] + ' ' + fmt(ibd) + ' 는 ' + R[3][0] + ' ' + fmt(eq) + ' (예시)');
+    }
+    return { draw: draw };
+  };
+
+  // ── 가진 것 vs 누구 몫: 빚을 움직이면 영업가치는 그대로, 주주 몫만 줄었다 늘었다 ──
+  window.CUR_VIS.m6Claim = function (host, p, ctx) {
+    var ev = p.ev || 1000, noa = p.noa == null ? 200 : p.noa, b = p.ibd == null ? 600 : p.ibd, tot = ev + noa;
+    host.innerHTML = '<svg class="m6v" role="img"></svg>' + L.sliderHtml('curM6cl', p.sl || '이자부부채', p.min || 0, p.max || 1000, p.step || 50, b, '이자부부채 크기') +
+      '<p class="vr m6vr" aria-live="polite"></p>' + (p.cap ? '<p class="m6vc">' + esc(p.cap) + '</p>' : '');
+    host.classList.add('m6w');
+    var svg = host.querySelector('svg'), sl = host.querySelector('#curM6cl'), lb = host.querySelector('.vctl label b'), vr = host.querySelector('.vr');
+    function draw() {
+      var w = vw(host), h = 286, base = h - 14, ph = 210, sc = ph / tot, bw = clamp(Math.round(w * 0.15), 48, 88), gap = clamp(Math.round(w * 0.07), 20, 36), xl = w / 2 - gap / 2 - bw, xr = w / 2 + gap / 2, eq = tot - b, o = '';
+      var Y = function (v) { return base - v * sc; }, ta = xl - 12, tb = xr + bw + 12;
+      o += ln(xl - 6, base, xr + bw + 6, base, 'rgba(242,239,232,.35)');
+      o += t(xl + bw / 2, Y(tot) - 12, 'h', '가진 것', 'middle') + t(xr + bw / 2, Y(tot) - 12, 'h', '누구 몫', 'middle');
+      // 왼쪽: 영업가치 + 비영업자산 (움직이지 않음)
+      o += rc(xl, Y(ev), bw, ev * sc, NAVY, HAIR) + rc(xl, Y(tot), bw, noa * sc, 'rgba(242,239,232,.10)', 'rgba(242,239,232,.45)');
+      o += ln(xl - 8, Y(ev / 2), xl, Y(ev / 2), HAIR) + t(ta, Y(ev / 2) - 3, '', '영업가치 <tspan class="n" style="font-size:13px">' + fmt(ev) + '</tspan>', 'end') + t(ta, Y(ev / 2) + 13, 's', esc(p.evNote || '이자 내기 전 현금'), 'end');
+      if (noa) o += ln(xl - 8, Y(ev + noa / 2), xl, Y(ev + noa / 2), HAIR) + t(ta, Y(ev + noa / 2) - 3, '', '비영업자산 <tspan class="n" style="font-size:13px">' + fmt(noa) + '</tspan>', 'end') + t(ta, Y(ev + noa / 2) + 13, 's', esc(p.noaNote || '영업 현금엔 없어요'), 'end');
+      // 오른쪽: 이자부부채 + 주주 몫
+      o += rc(xr, Y(b), bw, b * sc, 'rgba(242,239,232,.04)', 'rgba(242,239,232,.55)', '4 3', 'mv') + rc(xr, Y(tot), bw, eq * sc, GOLD, null, null, 'mv');
+      if (b > 0) o += ln(xr + bw, Y(b / 2), xr + bw + 8, Y(b / 2), HAIR) + t(tb, Y(b / 2) - 3, '', '이자부부채 <tspan class="n" style="font-size:13px">' + fmt(b) + '</tspan>', 'start') + t(tb, Y(b / 2) + 13, 's', esc(p.ibdNote || '채권자에게 먼저'), 'start');
+      o += ln(xr + bw, Y(b + eq / 2), xr + bw + 8, Y(b + eq / 2), GOLD) + t(tb, Y(b + eq / 2) + 2, 'big', fmt(eq), 'start') + t(tb, Y(b + eq / 2) + 19, 's', '주주 몫', 'start');
+      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
+      svg.setAttribute('aria-label', '가진 것: 영업가치 ' + fmt(ev) + ' + 비영업자산 ' + fmt(noa) + '. 누구 몫: 이자부부채 ' + fmt(b) + ', 주주 몫 ' + fmt(eq) + ' (예시)');
+      lb.textContent = fmt(b);
+      vr.innerHTML = '<span class="n">' + fmt(ev) + ' + ' + fmt(noa) + ' − ' + fmt(b) + ' = </span><b class="n">' + fmt(eq) + '</b>. ' +
+        (b > 0 ? '빚이 ' + fmt(b) + '이어도 영업가치는 ' + fmt(ev) + ' 그대로라, 빚만큼 주주 몫이 줄어요.' : '빚이 없으면 가진 것 ' + fmt(tot) + '이 모두 주주 몫이에요.') + ' (예시)';
+    }
+    sl.oninput = function () { b = +sl.value; draw(); };
+    sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
+    ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── FCFF 안의 FCFE: 같은 현금 막대, 누구에게 가느냐로 둘을 나눈다 ──
+  window.CUR_VIS.m6Whose = function (host, p, ctx) {
+    var share = p.share || 0.4, ff = esc(p.ff || '채권자와 주주가 함께 나눌 현금'), ffr = esc(p.ffr || '영업가치'), fe = esc(p.fe || '이자와 원금을 갚고 주주에게 남는 현금'), fer = esc(p.fer || '빚을 뺀 주주 몫'), cr = esc(p.cr || '채권자 몫 · 이자와 원금'), sh = esc(p.sh || '주주 몫');
+    host.innerHTML = '<svg class="m6v" role="img" aria-label="FCFF는 채권자와 주주가 나눌 현금 전체, FCFE는 그중 이자와 원금을 갚고 주주에게 남는 부분"></svg>' + (p.cap ? '<p class="m6vc">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg');
+    function draw() {
+      var w = vw(host), x0 = 1, x1 = w - 1, xs = x0 + (x1 - x0) * (1 - share), by = 66, bh = 40, o = '';
+      // 위 괄호: FCFF = 막대 전체
+      o += t(x0, 18, '', '<tspan class="n" style="font-size:15px">FCFF</tspan>  ' + ff) + t(x0, 37, 's', '할인하면 → ' + ffr);
+      o += ln(x0, 50, x1, 50, 'rgba(242,239,232,.6)') + ln(x0, 50, x0, 58, 'rgba(242,239,232,.6)') + ln(x1, 50, x1, 58, 'rgba(242,239,232,.6)');
+      // 막대: 채권자 몫 | 주주 몫
+      o += rc(x0, by, xs - x0, bh, NAVY, HAIR) + rc(xs, by, x1 - xs, bh, GOLD);
+      o += t((x0 + xs) / 2, by + 25, '', cr, 'middle') + t((xs + x1) / 2, by + 25, 'dk', sh, 'middle');
+      // 아래 괄호: FCFE = 금색 부분만
+      var yb = by + bh + 10;
+      o += ln(xs, yb + 8, x1, yb + 8, GOLD) + ln(xs, yb, xs, yb + 8, GOLD) + ln(x1, yb, x1, yb + 8, GOLD);
+      o += t(x1, yb + 32, '', '<tspan class="n" style="font-size:15px">FCFE</tspan>  ' + fe, 'end') + t(x1, yb + 51, 's', '할인하면 → ' + fer, 'end');
+      var h = yb + 58;
+      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
+    }
+    return { draw: draw };
+  };
+
+  // ── T자 재무상태표: 흐린 줄은 이미 영업가치 안, 금색 표시 줄만 더하고 뺀다 ──
+  window.CUR_VIS.m6Sheet = function (host, p, ctx) {
+    var MK = { NOA: 'NOA +', IBD: 'IBD −', X: '배제' };
+    function rows(A) {
+      return A.map(function (r) {
+        var c = r[1], cls = c === 'NOA' || c === 'IBD' ? '' : c === 'EQ' ? 'own' : 'x';
+        return '<div class="rw ' + cls + '"><span>' + esc(r[0]) + '</span><i>' + (c === 'EQ' ? esc(r[2] || '') : MK[c] || '') + '</i></div>';
+      }).join('');
+    }
+    var la = (p.L || []).map(function (r) { return r[0] + (r[1] === 'NOA' ? ' 더해요' : r[1] === 'IBD' ? ' 빼요' : ''); }), lr = (p.R || []).map(function (r) { return r[0] + (r[1] === 'NOA' ? ' 더해요' : r[1] === 'IBD' ? ' 빼요' : ''); });
+    host.innerHTML = '<div class="m6led" role="img" aria-label="재무상태표. 자산: ' + esc(la.join(', ')) + '. 부채와 자본: ' + esc(lr.join(', ')) + '"><div class="lh"><span>' + esc(p.lh || '자산') + '</span><span>' + esc(p.rh || '부채와 자본') + '</span></div>' +
+      '<div class="lb"><div class="sd">' + rows(p.L || []) + '</div><div class="sd">' + rows(p.R || []) + '</div></div>' + (p.note ? '<p class="lnote">' + p.note + '</p>' : '') + '</div>';
+    return { draw: function () {} };
+  };
 })();

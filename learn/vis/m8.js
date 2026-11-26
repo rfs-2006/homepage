@@ -3,6 +3,7 @@
 // m8Beta : mode 'calc' — 언레버(÷)·리레버(×) 계산기 (part 'u'면 언레버만). mode 'peers' — Peer 표에서 흔한 실수 식과 바른 식 비교 (둘 다 봐야 다음)
 // m8Tv   : FCFF 현재가치 + TV 현재가치 = 영업가치, TV 비중. sl: ['W','g'] 중, alt면 'TV 해 CAPEX = 감가상각비' 버튼(눌러 봐야 다음)
 // m8Grid : WACC × g 민감도 표. mode 'values'(주어진 표) | 'dcf'(FCFF로 주당가치 계산). concept: marks 버튼 / chart: 칸 고르기 → { r, c }
+// 개념 그림: m8Pv(할인 슬라이더) · m8Bridge(주당가치 다리) · m8Ledger(T자 장부, 돈을 댄 두 쪽) · m8Lever(빚 효과 벗기고 다시 얹기) · m8Tail(예측 기간 뒤 TV)
 (function () {
   var L = window.CUR_LIB, esc = L.esc, fmt = L.fmt, clamp = L.clamp, gate = L.gate, wOf = L.wOf;
   L.addCss('cur-m8-css', [
@@ -236,5 +237,200 @@
         if (showAns && !right) { var a = td(ans.r, ans.c); if (a) a.classList.add('ok'); vr.innerHTML = '정답 칸: ' + read(ans.r, ans.c); }
       }
     };
+  };
+  // ════ 개념 그림: m8Pv(할인, 슬라이더) · m8Bridge(주당가치 다리) · m8Ledger(돈을 댄 두 쪽) · m8Lever(빚 효과 벗기고 다시 얹기) · m8Tail(예측 기간 뒤 TV) ════
+  // 박스 나열 대신 비례 막대 + 그림 옆 직접 주석. 강조색은 금색 하나(화면 핵심 한 곳), 나머지는 옅은 남색과 흰 선. 폭은 실제 px(wOf)로 그려 글씨 크기가 폰에서도 그대로
+  if (!document.getElementById('cur-plex')) {
+    var lk = document.createElement('link'); lk.id = 'cur-plex'; lk.rel = 'stylesheet';
+    lk.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap'; document.head.appendChild(lk);
+  }
+  L.addCss('cur-m8v-css', [
+    '.cur .vis svg.m8v text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
+    '.cur .vis svg.m8v text.s{font-size:12px;fill:rgba(242,239,232,.74)}',
+    '.cur .vis svg.m8v text.md{font-family:"Noto Serif KR",serif;font-size:17px;font-weight:600}',
+    '.cur .vis svg.m8v text.big{font-family:"Noto Serif KR",serif;font-size:22px;font-weight:600}',
+    '.cur .vis svg.m8v text.dk{fill:#0D1829;font-weight:500}',
+    '.cur .vis svg.m8v .mv{transition:all .25s var(--e)}'
+  ].join('\n'));
+  var GOLD = '#E2C48F', NAVY = '#1C2C48', EDGE = 'rgba(242,239,232,.28)', FAINT = 'rgba(242,239,232,.35)';
+  function r1(x) { return Math.round(x * 10) / 10; }
+  function T(x, y, s, cls, anc) { return '<text x="' + r1(x) + '" y="' + r1(y) + '"' + (cls ? ' class="' + cls + '"' : '') + (anc ? ' text-anchor="' + anc + '"' : '') + '>' + s + '</text>'; }
+  function RC(x, y, w, h, fill, stroke, ex) { return '<rect x="' + r1(x) + '" y="' + r1(y) + '" width="' + r1(Math.max(0, w)) + '" height="' + r1(Math.max(0, h)) + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '"' : '') + (ex || '') + '/>'; }
+  function LN(x1, y1, x2, y2, c, ex) { return '<line x1="' + r1(x1) + '" y1="' + r1(y1) + '" x2="' + r1(x2) + '" y2="' + r1(y2) + '" stroke="' + c + '"' + (ex || '') + '/>'; }
+  // 글자 폭 어림: 한글은 글자 크기만큼, 숫자·영문은 0.58배
+  function tw(s, z) { var n = 0; String(s).replace(/<[^>]+>/g, '').split('').forEach(function (ch) { n += /[가-힣]/.test(ch) ? 1 : ch === ' ' ? 0.3 : 0.58; }); return n * (z || 13); }
+  function fit(x, s, z, w) { return Math.max(0, Math.min(x, w - tw(s, z) - 2)); }
+  // 넓은 화면에서 그림이 벌어지지 않게 폭 상한(WMAX)을 두고 왼쪽에 붙인다
+  function put(svg, w, h, o, label) { svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.style.maxWidth = w + 'px'; svg.innerHTML = o; svg.setAttribute('aria-label', label); }
+  function W(host, mx) { return Math.min(wOf(host), mx); }
+  function capHtml(p) { return p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : ''; }
+
+  // ── m8Pv: 1년 뒤 받을 돈 → 할인율로 나눠 지금 값. 할인율 슬라이더 (map_what) ──
+  window.CUR_VIS.m8Pv = function (host, p, ctx) {
+    var fv = p.fv || 110, U = p.unit || '만 원', D = ['할인율', 0, p.rmax || 20, 1, '%'], v = { r: p.r != null ? p.r : 10 };
+    host.innerHTML = '<div style="max-width:480px"><svg class="m8v" role="img"></svg>' + slider('curM8pv', D, v.r) + '<p class="vr" aria-live="polite"></p>' + capHtml(p) + '</div>';
+    var svg = host.querySelector('svg'), vr = host.querySelector('.vr');
+    function num(x) { return (Math.round(x * 10) / 10).toFixed(1).replace(/\.0$/, ''); }
+    function draw() {
+      host.querySelector('.vctl b').textContent = v.r + '%';
+      var r = v.r, pv = fv / (1 + r / 100), w = W(host, 480), h = 290, base = h - 34, fH = 168, k = fH / fv, bw = Math.min(88, Math.round(w * 0.2));
+      var xl = 2, xr = w - bw - 2, yF = base - fH, yP = base - pv * k, mx = (xl + bw + xr) / 2, o = '';
+      o += LN(0, base, w, base, 'rgba(242,239,232,.18)');
+      // 1년 뒤 받을 돈 (남색) · 지금 값 (금색)
+      o += RC(xr, yF, bw, fH, NAVY, EDGE) + T(xr + bw / 2, yF - 10, fv + U, '', 'middle');
+      o += RC(xl, yP, bw, base - yP, GOLD, null, ' class="mv"');
+      // 110 높이를 왼쪽까지 끌어 와 깎인 몫을 보이게
+      o += LN(xl, yF, xr, yF, FAINT, ' stroke-dasharray="3 4"');
+      // 화살표: 오른쪽 → 왼쪽, ÷ (1 + r)
+      var ax0 = xr + bw / 2 - 14, ay0 = yF - 26, ax1 = xl + bw / 2, ay1 = yF - 6, cy = yF - 62;
+      o += '<path d="M' + r1(ax0) + ' ' + r1(ay0) + ' Q' + r1(mx) + ' ' + r1(cy) + ' ' + r1(ax1) + ' ' + r1(ay1) + '" fill="none" stroke="rgba(242,239,232,.55)" marker-end="url(#curM8pvA)"/>';
+      o += '<defs><marker id="curM8pvA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5 0 10z" fill="rgba(242,239,232,.7)"/></marker></defs>';
+      o += T(mx, yF - 46, '÷ (1 + ' + r + '%)', '', 'middle');
+      // 깎인 몫 괄호
+      if (r > 0) {
+        var bx = xl + bw + 7;
+        o += LN(bx, yF, bx, yP, 'rgba(242,239,232,.6)') + LN(bx - 4, yF, bx, yF, 'rgba(242,239,232,.6)') + LN(bx - 4, yP, bx, yP, 'rgba(242,239,232,.6)');
+        o += T(bx + 7, Math.max(yF + 13, (yF + yP) / 2 + 4), '할인으로 줄어든 ' + num(fv - pv) + U, 's');
+      }
+      var ym = Math.max(yP + 52, (yP + base) / 2 + 6);
+      o += T(xl + bw + 16, ym, num(pv) + U, 'big') + T(xl + bw + 16, ym + 20, '지금 값', 's');
+      o += T(xl + bw / 2, base + 22, '지금', '', 'middle') + T(xr + bw / 2, base + 22, '1년 뒤', '', 'middle');
+      put(svg, w, h, o, '할인율 ' + r + '%면 1년 뒤 ' + fv + U + '은 지금 ' + num(pv) + U);
+      vr.innerHTML = '할인율 <b>' + r + '%</b>면 1년 뒤 ' + fv + U + '은 지금 <b>' + num(pv) + U + '</b>이에요.' +
+        (r === 0 ? ' 할인하지 않으면 그대로예요.' : r > (p.r != null ? p.r : 10) ? ' 할인율을 올리면 지금 값이 내려가요.' : '');
+    }
+    bind(host.querySelector('#curM8pv'), D, function () { return v.r; }, function (x) { v.r = x; }, draw);
+    if (ctx && ctx.ready) ctx.ready(true);
+    return { draw: draw };
+  };
+
+  // ── m8Bridge: FCFF 현재가치 + TV 현재가치 + 비영업자산 − 이자부부채 = 주주 몫 → ÷ 주식 수. 비례 가로 다리 (map_why) ──
+  window.CUR_VIS.m8Bridge = function (host, p, ctx) {
+    host.innerHTML = '<svg class="m8v" role="img"></svg>' + capHtml(p);
+    var svg = host.querySelector('svg'), rows = p.rows || [];
+    function draw() {
+      var w = W(host, 560), lc = Math.round(clamp(w * 0.38, 124, 176)), bx = lc + 8, bwid = w - bx - 2, run = 0, top = 0, segs = [], o = '';
+      rows.forEach(function (r) { var a = run, b = r.op === '−' ? run - r.v : run + r.v; segs.push({ a: Math.min(a, b), b: Math.max(a, b), end: b, r: r }); run = b; top = Math.max(top, a, b); });
+      var eq = run, sc = bwid / top, X = function (x) { return bx + x * sc; }, rh = 60, y = 22;
+      o += T(w, 11, esc(p.unit || ''), 's', 'end');
+      segs.forEach(function (sg, i) {
+        var r = sg.r, by = y + 6, bh = 20, x0 = X(sg.a), x1 = X(sg.b), val = fmt(r.v), vz = tw(val, 13);
+        o += T(0, y + 15, (r.op ? r.op + ' ' : '') + esc(r.t)) + String(r.d || '').split('\n').map(function (ln, j) { return T(0, y + 32 + j * 15, esc(ln), 's'); }).join('');
+        o += r.op === '−' ? RC(x0, by, x1 - x0, bh, 'none', 'rgba(242,239,232,.65)', ' stroke-dasharray="3 3"') : RC(x0, by, x1 - x0, bh, NAVY, EDGE);
+        // 값: 막대 오른쪽에 자리가 있으면 오른쪽, 막대가 넓으면 안, 아니면 왼쪽
+        if (w - x1 >= vz + 8) o += T(x1 + 6, by + 15, val);
+        else if (x1 - x0 >= vz + 12) o += T((x0 + x1) / 2, by + 15, val, '', 'middle');
+        else o += T(x0 - 6, by + 15, val, '', 'end');
+        o += LN(X(sg.end), by + bh, X(sg.end), by + rh, FAINT, ' stroke-dasharray="2 3"');
+        y += rh;
+      });
+      // 주주 몫 (금색 하나)
+      o += LN(0, y + 2, w, y + 2, 'rgba(242,239,232,.4)');
+      y += 8;
+      o += T(0, y + 15, '= ' + esc(p.total || '주주 몫')) + T(0, y + 33, fmt(eq), 'md');
+      o += RC(X(0), y + 6, eq * sc, 20, GOLD) + RC(X(eq), y + 6, (top - eq) * sc, 20, 'none', 'rgba(242,239,232,.25)', ' stroke-dasharray="2 3"');
+      if (p.td) o += T(X(0), y + 44, esc(p.td), 's');
+      y += 66;
+      // ÷ 주식 수 → 한 주의 값
+      var ps = eq * (p.mult || 1e6) / p.shares;
+      o += T(0, y + 15, '÷ 주식 수') + T(0, y + 32, fmt(p.shares) + '주', 's');
+      o += T(bx, y + 24, fmt(ps) + '원', 'big') + T(bx + tw(fmt(ps), 22) + 30, y + 23, '한 주의 값', 's');
+      put(svg, w, y + 44, o, rows.map(function (r) { return (r.op || '') + r.t + ' ' + fmt(r.v); }).join(' ') + ' = ' + (p.total || '주주 몫') + ' ' + fmt(eq) + ', 주당 ' + fmt(ps) + '원');
+    }
+    return { draw: draw };
+  };
+
+  // ── m8Ledger: 재무상태표 T자. 왼쪽 사업(FCFF), 오른쪽 돈을 댄 두 쪽(부채 D·자본 E)을 비중대로 (qwacc) ──
+  window.CUR_VIS.m8Ledger = function (host, p, ctx) {
+    host.innerHTML = '<svg class="m8v" role="img"></svg>' + capHtml(p);
+    var svg = host.querySelector('svg'), dw = p.dw, ew = 100 - p.dw, A = p.ann || {};
+    function draw() {
+      var w = W(host, 520), LW = Math.round(Math.min(w * 0.56, 300)), cw = LW / 2, y0 = 40, H = 196, y1 = y0 + H, hd = H * dw / 100, o = '';
+      o += T(cw / 2, 20, '자산', '', 'middle') + T(cw + cw / 2, 20, '돈을 댄 쪽', '', 'middle');
+      o += LN(0, 30, LW, 30, '#F2EFE8', ' stroke-width="1.5"') + LN(cw, 30, cw, y1 + 8, '#F2EFE8', ' stroke-width="1.5"');
+      o += RC(4, y0, cw - 12, H, NAVY, EDGE) + T(cw / 2 - 2, y0 + H / 2 - 4, esc(p.asset || '사업'), 'md', 'middle') + T(cw / 2 - 2, y0 + H / 2 + 16, esc(p.assetSub || ''), 's', 'middle');
+      var rx = cw + 8, rw = LW - cw - 12;
+      o += RC(rx, y0, rw, hd - 1, NAVY, EDGE) + RC(rx, y0 + hd + 1, rw, H - hd - 1, NAVY, EDGE);
+      o += T(rx + rw / 2, y0 + hd / 2 - 3, '부채 D', 's', 'middle') + T(rx + rw / 2, y0 + hd / 2 + 15, nf(dw) + '%', '', 'middle');
+      o += T(rx + rw / 2, y0 + hd + (H - hd) / 2 - 3, '자본 E', 's', 'middle') + T(rx + rw / 2, y0 + hd + (H - hd) / 2 + 15, nf(ew) + '%', '', 'middle');
+      // 직접 주석: 부채 → Kd, 자본 → Ke
+      var ax = LW + 16;
+      [[y0 + hd / 2, A.d || ['Kd']], [y0 + hd + (H - hd) / 2, A.e || ['Ke']]].forEach(function (a) {
+        var yy = a[0], L2 = a[1];
+        o += LN(LW - 4, yy, ax - 6, yy, FAINT);
+        o += T(ax, yy - 2, esc(L2[0]), 'md') + L2.slice(1).map(function (s, j) { return T(ax, yy + 16 + j * 15, esc(s), 's'); }).join('');
+      });
+      // 두 요구수익률을 비중대로 섞으면 WACC (금색 하나)
+      var yb = y1 + 22;
+      o += LN(rx, yb, rx + rw, yb, GOLD, ' stroke-width="1.5"') + LN(rx, yb - 6, rx, yb, GOLD, ' stroke-width="1.5"') + LN(rx + rw, yb - 6, rx + rw, yb, GOLD, ' stroke-width="1.5"');
+      var mix = esc(p.mix || '둘을 비중대로 섞으면 WACC');
+      o += T(fit(rx, mix, 13, w), yb + 20, mix);
+      put(svg, w, yb + 30, o, '자산(사업)은 부채 ' + nf(dw) + '%와 자본 ' + nf(ew) + '%로 돈을 댔어요. 부채엔 Kd, 자본엔 Ke, 둘을 섞으면 WACC');
+    }
+    return { draw: draw };
+  };
+
+  // ── m8Lever: Peer 관측 βL = 사업 위험 βU + 빚 효과. 빚 효과를 벗겨 평균 낸 βU에 목표 빚을 다시 얹는다 (qke) ──
+  window.CUR_VIS.m8Lever = function (host, p, ctx) {
+    host.innerHTML = '<svg class="m8v" role="img"></svg>' + capHtml(p);
+    var svg = host.querySelector('svg'), P = p.peers || [];
+    function draw() {
+      var w = W(host, 520), top = Math.max.apply(null, P.map(function (r) { return r.bl; }).concat([p.target])), sc = w * 0.66 / top, rh = 48, y = 4, o = '', bh = 20;
+      P.forEach(function (r, i) {
+        var xu = r.bu * sc, xl = r.bl * sc, by = y + 20;
+        o += T(0, y + 13, esc(r.n)) + T(tw(r.n, 13) + 8, y + 13, '관측 βL ' + b2(r.bl), 's');
+        o += RC(0, by, xu, bh, NAVY, EDGE) + RC(xu, by, xl - xu, bh, 'none', 'rgba(242,239,232,.6)', ' stroke-dasharray="3 3"');
+        if (xu >= 34) o += T(xu / 2, by + 14.5, b2(r.bu), 's', 'middle');
+        if (i === 0 && p.ann) o += T(xl + 8, by + 14.5, esc(p.ann), 's');
+        y += rh;
+      });
+      var mid = esc(p.mid || '');
+      o += T(0, y + 12, mid, 's');
+      y += 26;
+      var xa = p.avg * sc, xt = p.target * sc, by = y + 20;
+      o += T(0, y + 13, esc(p.name || '')) + T(tw(p.name || '', 13) + 8, y + 13, esc(p.tlab || '목표 β (리레버)'), 's');
+      o += RC(0, by, xa, bh, NAVY, EDGE) + T(xa / 2, by + 14.5, b2(p.avg), 's', 'middle');
+      o += RC(xa, by, xt - xa, bh, 'rgba(226,196,143,.28)', GOLD, ' stroke-width="1.5"');
+      o += T(xt + 10, by + 17, b2(p.target), 'big');
+      var dn = esc(p.down || '');
+      o += LN(xa + 1, by + bh + 3, xa + 1, by + bh + 12, GOLD) + T(fit(xa - 2, dn, 12, w), by + bh + 26, dn, 's');
+      put(svg, w, by + bh + 34, o, P.map(function (r) { return r.n + ' βL ' + b2(r.bl) + ' 중 βU ' + b2(r.bu); }).join(', ') + '. βU 평균 ' + b2(p.avg) + '에 목표 빚을 얹으면 ' + b2(p.target));
+    }
+    return { draw: draw };
+  };
+
+  // ── m8Tail: 예측 기간 FCFF 막대 뒤로 g씩 자라는 현금이 끝없이. 그걸 하나로 묶은 게 TV (qtv) ──
+  window.CUR_VIS.m8Tail = function (host, p, ctx) {
+    host.innerHTML = '<svg class="m8v" role="img"></svg>' + capHtml(p);
+    var svg = host.querySelector('svg'), fc = p.fc, n = fc.length, g = (p.g || 0) / 100, LB = p.labels || [];
+    function draw() {
+      var w = W(host, 580), m = w < 520 ? 4 : 6, slots = n + m + 1, pitch = w / slots, bw = pitch * 0.62, pad = (pitch - bw) / 2, base = 172, o = '';
+      var last = fc[n - 1], maxV = last * Math.pow(1 + g, m), hs = 100 / maxV, X = function (i) { return i * pitch + pad; }, wide = pitch >= 48;
+      o += LN(0, base, w, base, 'rgba(242,239,232,.3)');
+      fc.forEach(function (f, i) {
+        var hh = Math.max(2, f * hs);
+        o += RC(X(i), base - hh, bw, hh, NAVY, EDGE);
+        o += T(X(i) + bw / 2, base + 17, esc(wide ? LB[i] : String(LB[i]).replace(/E$/, '')), 's', 'middle');
+      });
+      var dx = n * pitch, ytop = base - maxV * hs - 14;
+      o += T(Math.min(X(n - 1) + bw / 2 + tw(fmt(last), 12) / 2, dx - 5), base - last * hs - 7, fmt(last), 's', 'end');
+      o += T((X(0) + X(n - 1) + bw) / 2, ytop - 10, '예측 기간', 's', 'middle');
+      o += LN(dx, ytop - 24, dx, base + 6, 'rgba(242,239,232,.45)', ' stroke-dasharray="3 4"');
+      for (var j = 0; j < m; j++) {
+        var v = last * Math.pow(1 + g, j + 1), hh2 = v * hs, a = Math.max(0.16, 0.6 - j * 0.08);
+        o += RC(X(n + j), base - hh2, bw, hh2, 'none', 'rgba(242,239,232,' + a.toFixed(2) + ')', ' stroke-dasharray="3 3"');
+      }
+      o += T(X(n + m) + bw / 2, base - 40, '…', 'md', 'middle');
+      o += T(X(n) + bw / 2, base + 17, esc(wide ? p.next : String(p.next).replace(/E$/, '')), 's', 'middle');
+      var gl = esc(p.grow || '');
+      o += T(fit(X(n), gl, 12, w), base + 36, gl, 's');
+      // TV 괄호 (금색 하나): 그 뒤 현금을 모두 하나로
+      var b0 = X(n), b1 = w - 2, yb = base - maxV * hs - 14, one = esc(p.tv || ''), two = (p.tv2 || []).map(esc);
+      o += LN(b0, yb, b1, yb, GOLD, ' stroke-width="1.5"') + LN(b0, yb, b0, yb + 7, GOLD, ' stroke-width="1.5"') + LN(b1, yb, b1, yb + 7, GOLD, ' stroke-width="1.5"');
+      if (tw(one, 13) <= b1 - b0 || !two.length) o += T(b0, yb - 10, one);
+      else o += T(b0, yb - 26, two[0]) + T(b0, yb - 10, two[1] || '', 's');
+      put(svg, w, base + 46, o, '예측 기간 ' + LB[0] + '~' + LB[n - 1] + ' FCFF 막대 뒤로 해마다 g씩 자라는 현금이 이어지고, 그 현금을 모두 하나로 묶은 값이 TV');
+    }
+    return { draw: draw };
   };
 })();
