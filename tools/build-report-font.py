@@ -7,8 +7,8 @@
 #   npm pack font-kopubworld && tar xzf font-kopubworld-*.tgz   (package/fonts/ 에 원본이 풀린다)
 #   pip install fonttools brotli ttfautohint-py
 # 원본 OTF(CFF)에는 힌팅이 없어 Windows에서 얇은 획이 픽셀 사이에 걸려 흐릿하게 보인다.
-# 그래서 TrueType 곡선으로 바꾸고 ttfautohint로 세로 힌팅을 넣는다. 16px 아래는 힌팅을 끈다
-# (그보다 작으면 '를'처럼 가로획이 셋인 글자의 획이 서로 붙어 버린다. 리포트 본문은 16px)
+# 그래서 TrueType 곡선으로 바꾸고 ttfautohint로 세로 힌팅을 넣는다. 모든 크기에서 켠다
+# (본문 14.5px에서 여섯 가지를 견줘 보고 고른 방식. 획 굵기는 그대로 두는 natural 모드)
 #   python3 tools/build-report-font.py package/fonts
 # 새 리포트를 추가하고 extract-page1.py를 돌린 뒤 이것도 다시 돌리면 새 글자가 포함된다.
 import io, os, re, sys
@@ -62,12 +62,10 @@ def to_truetype(f):
 def autohint(f):
     """세로 방향 힌팅. 한글은 ttfautohint가 따로 다루지 않아 라틴 기준(latn)으로 가로획 높이를 맞춘다. 획 굵기는 그대로(natural)"""
     b = io.BytesIO(); f.flavor = None; f.save(b)
-    out = ttfautohint.ttfautohint(in_buffer=b.getvalue(), fallback_script='latn', hinting_range_min=16, hinting_range_max=60,
+    out = ttfautohint.ttfautohint(in_buffer=b.getvalue(), fallback_script='latn', hinting_range_min=8, hinting_range_max=60,
                                   increase_x_height=0, windows_compatibility=True, gray_stem_width_mode=-1,
                                   gdi_cleartype_stem_width_mode=-1, dw_cleartype_stem_width_mode=-1, no_info=True)
-    t = TTFont(io.BytesIO(out))
-    t['gasp'].gaspRange = {15: 0x0A, 0xFFFF: 0x0F}   # 15px 이하는 격자 맞춤 없이 부드럽게만, 16px부터 힌팅
-    return t
+    return TTFont(io.BytesIO(out))
 
 
 os.makedirs(OUT, exist_ok=True)

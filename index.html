@@ -78,7 +78,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
-<link rel="stylesheet" href="/assets/app.css?v=750735b626">
+<link rel="stylesheet" href="/assets/app.css?v=c030de5207">
 </head>
 <body>
 <noscript>
@@ -106,12 +106,12 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
   var started = false, ok = function(){ document.documentElement.classList.add('rfont'); };
   window.__rfsFont = function(){
     if (started) return; started = true;
-    ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2'; document.head.appendChild(l); });
+    ['light','medium','bold'].forEach(function(w){ var l=document.createElement('link'); l.rel='preload'; l.as='font'; l.type='font/woff2'; l.crossOrigin='anonymous'; l.href='/assets/fonts/rfs-report-dotum-'+w+'.woff2?v=h1'; document.head.appendChild(l); });
     if (!window.FontFace || !document.fonts) return ok();
     setTimeout(ok, 6000);
     // 아래 <style>의 @font-face가 읽히기 전이라 fonts.load()로는 기다릴 수 없다. 같은 파일로 글꼴을 직접 등록해 받는다
     Promise.all([['light',300],['medium',500],['bold',700]].map(function(x){
-      var f = new FontFace('RFS Report Dotum', "url('/assets/fonts/rfs-report-dotum-"+x[0]+".woff2') format('woff2')", {weight: String(x[1]), display: 'block'});
+      var f = new FontFace('RFS Report Dotum', "url('/assets/fonts/rfs-report-dotum-"+x[0]+".woff2?v=h1') format('woff2')", {weight: String(x[1]), display: 'block'});
       document.fonts.add(f); return f.load();
     })).then(ok, ok);
   };
@@ -125,7 +125,7 @@ html:not(.rfs-ready) .rfs-bot{opacity:0;pointer-events:none}
 <script src="./assets/agora-gate.js?v=12" defer></script>
 <script src="./assets/join.js?v=8" defer></script>
 <script src="./assets/ops.js?v=18" defer></script>
-<link rel="stylesheet" href="/assets/app.css?v=750735b626">
+<link rel="stylesheet" href="/assets/app.css?v=c030de5207">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </helmet>
 <div style="min-height:100vh;background:#F7F6F3;color:#1A1A1A;font-size:15px;line-height:1.7">

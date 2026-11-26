@@ -35,9 +35,9 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="preload" as="image" href="/assets/hero/polaris.webp?v=2" media="(min-width:761px)">
 <link rel="preload" as="image" href="/assets/hero/polaris-m.webp" media="(max-width:760px)">
-<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-light.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-medium.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-bold.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-light.woff2?v=h1" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-medium.woff2?v=h1" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/fonts/rfs-report-dotum-bold.woff2?v=h1" crossorigin>
 <!-- 글꼴이 늦게 바뀌며 메뉴·제목이 한 번 밀리던 것: 글꼴이 준비될 때까지(최대 0.9초) 화면을 감췄다가 한 번에 보여 준다 -->
 <style>html.fwait body{opacity:0}body{transition:opacity .2s ease}</style>
 <script>
@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded',function(){try{Promise.all(['300','
 <style>
 /* 홈(index.html)과 같은 페이지 전환: 메뉴 POLARIS를 누르면 부드럽게 넘어온다 (지원 브라우저·PC만) */
 @media (min-width:1025px){@view-transition{navigation:auto}}
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2') format('woff2');font-weight:300;font-display:swap}
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2') format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2?v=h1') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2?v=h1') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2?v=h1') format('woff2');font-weight:700;font-display:swap}
 /* 두 화면: 첫 화면(검정·사진, Hebbia풍) → 질문하면 대화 화면(흰색+남색) */
 :root{--black:#0E0B0B;--ink:#F4F1EB;--bg:#FFFFFF;--card:#F5F6F8;--text:#14171C;--sub:#69707B;--hair:#E4E6EA;--navy:#203864;--hl:#DCE5F6;--dim:#A9AEB6;--err:#8A2E2E}
 *{box-sizing:border-box}
