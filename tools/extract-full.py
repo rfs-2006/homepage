@@ -194,7 +194,8 @@ def is_cap(l):
     if not t or SRC_RE.match(t):
         return False
     # YGO 글꼴은 캡션뿐 아니라 차트 축 숫자·범례('IOTG' 'MBLY')에도 쓰여서, 글자가 넉넉한(한글은 2자로 쳐서 6 이상) 8.5pt 이상 줄만 캡션으로 본다
-    return bool(CAP_RE.match(t)) or (l['font'].startswith('YGO') and 8.5 <= l['size'] < 10.5 and len(t) < 90
+    # 제목과 오른쪽 끝 '(단위: …)' 사이를 공백 수십 칸으로 채운 줄이 있어 길이는 공백을 한 칸으로 줄여서 잰다
+    return bool(CAP_RE.match(t)) or (l['font'].startswith('YGO') and 8.5 <= l['size'] < 10.5 and len(re.sub(r'\s+', ' ', t)) < 90
                                     and 2 * len(re.findall(r'[가-힣]', t)) + len(re.findall(r'[A-Za-z]', t)) >= 6)
 
 
@@ -235,6 +236,21 @@ def graphic_regions(page, lines, H):
             continue
         res.append((max(r.x0, 8), r.y0, min(r.x1, W - 8), r.y1))
     return res
+
+
+def rule_below(page, x0, x1, ys):
+    """출처 줄(ys) 바로 위·겹친 자리에 그은 가로 테두리선의 아래 끝. 없으면 None"""
+    ys_ = [d['rect'].y1 for d in page.get_drawings() if d['rect'].height < 2 and d['rect'].width > 0.5 * (x1 - x0)
+           and d['rect'].x0 < x1 and d['rect'].x1 > x0 and ys - 4 <= d['rect'].y0 <= ys + 2]
+    return max(ys_) if ys_ else None
+
+
+def tidy_cap(cap, unit):
+    """캡션 정리: 공백 여러 칸 뒤 끝의 '(단위: …)'·괄호는 단위로 떼고, 공백은 한 칸으로"""
+    mm = re.match(r'(.*?)\s{3,}(\((?:[^()]|\([^()]*\))*\))\s*$', cap) or re.match(r'(.*?)\s*(\(\s*단\s*위[^)]*\)?)\s*$', cap)
+    if mm and not unit and mm.group(1).strip():
+        cap, unit = mm.group(1), mm.group(2)
+    return re.sub(r'\s+', ' ', cap).strip(), re.sub(r'\s+', ' ', unit or '').strip()
 
 
 def has_words(t):
@@ -301,11 +317,12 @@ def exhibits(lines, H, page):
     ygo = [l for l in lines if l['font'].startswith('YGO')]
     graphics = graphic_regions(page, lines, H)
     def bogus(c):
+        cx, cy = (c['x0'] + c['x1']) / 2, (c['y0'] + c['y1']) / 2
         if CAP_RE.match(c['text'].strip()):
-            return False
+            # 번호로 시작해도 표 안의 작은 글씨('Figure 03' 같은 칸 내용)는 캡션이 아니다
+            return c['size'] < 8 and any(g[0] + 2 < cx < g[2] - 2 and g[1] + 4 < cy < g[3] - 4 for g in graphics)
         if any(o is not c and abs(o['y0'] - c['y0']) < 3 and abs(o['x0'] - c['x0']) > 20 and not is_cap_pair(o, c) for o in ygo):
             return True
-        cx, cy = (c['x0'] + c['x1']) / 2, (c['y0'] + c['y1']) / 2
         return any(g[0] + 2 < cx < g[2] - 2 and g[1] + 4 < cy < g[3] - 4 for g in graphics)
     caps = [c for c in caps if not bogus(c)]
     srcs = [l for l in lines if SRC_RE.match(l['text'])]
@@ -327,6 +344,9 @@ def exhibits(lines, H, page):
             s = min(below, key=lambda s: s['y0'])
             y1, src = s['y0'] - 1, s['text'].strip()
             x0 = max(lo, min(x0, s['x0'] - 3))
+            rb = rule_below(page, x0, x1, s['y0'])
+            if rb:
+                y1 = max(y1, rb + 0.3)
         else:
             # 출처가 없으면 쪽 끝까지 가지 않고, 아래 그림 영역 끝이나 첫 본문 줄에서 멈춘다
             g = [gg for gg in graphics if gg[1] < c['y1'] + 40 and gg[3] > c['y1'] and gg[0] < x1 and gg[2] > x0]
@@ -342,9 +362,14 @@ def exhibits(lines, H, page):
         m = re.match(r'\s*([\[<(]?\s*(?:자료|그림|표|도표|차트|Figure|Table)\s*\d[\d\-.]*\s*[\]>)]?)?\s*(.*?)\s*(\((?:단위|단 위)[^)]*\))?\s*$', c['text'])
         # 캡션 바로 밑에 붙은 축 눈금('3000')이 잘리지 않게, 그런 글자가 있으면 그 위에서 자른다
         rtop = min([c['y1'] + 3.5] + [o['y0'] - 1 for o in lines if o is not c and c['y1'] - 1 < o['y0'] < c['y1'] + 4 and o['x1'] > x0 and o['x0'] < x1 and abs(o['y0'] - c['y0']) > 3])
+        cap_t = (m.group(2) if m else c['text']).strip()
+        unit_t = ((m.group(3) or '').strip() if m else '') or c.get('unit_t', '')
+        mm = re.match(r'(.*?)\s{4,}(\([^()]*(?:\([^()]*\)[^()]*)*\))$', cap_t)   # '제목      (24년 1월 = 100)': 멀리 떨어진 끝 괄호는 단위
+        if mm and not unit_t:
+            cap_t, unit_t = mm.group(1), mm.group(2)
         res.append({'rect': (x0, rtop, x1, y1), 'box': (x0, c['y0'] - 2, x1, (s['y1'] + 2) if below else y1),
-                    'no': (m.group(1) or '').strip() if m else '', 'cap': (m.group(2) if m else c['text']).strip(),
-                    'unit': ((m.group(3) or '').strip() if m else '') or c.get('unit_t', ''), 'src': src, 'y': c['y0']})
+                    'no': (m.group(1) or '').strip() if m else '', 'cap': re.sub(r'\s+', ' ', cap_t).strip(),
+                    'unit': re.sub(r'\s+', ' ', unit_t), 'src': src, 'y': c['y0']})
     # 캡션 없이 '출처:' 줄만 있는 차트·표(예전 양식): 출처 줄에서 위로, 바로 위 본문 줄까지를 그림으로 본다
     used = [r['box'] for r in res]
     body = [l for l in lines if l['size'] >= 9.3 and not SRC_RE.match(l['text']) and not is_cap(l)]
@@ -391,7 +416,8 @@ def exhibits(lines, H, page):
         if sl['y0'] - top < 40:
             continue
         ctop = cap_l['y1'] + 2 if cap_l else top
-        res.append({'rect': (x0, ctop, x1, sl['y0'] - 1), 'box': (x0, top, x1, sl['y1'] + 2), 'no': '', 'cap': cap_l['text'].strip() if cap_l else '',
+        rb = rule_below(page, x0, x1, sl['y0'])
+        res.append({'rect': (x0, ctop, x1, max(sl['y0'] - 1, (rb or 0) + 0.3)), 'box': (x0, top, x1, sl['y1'] + 2), 'no': '', 'cap': cap_l['text'].strip() if cap_l else '',
                     'unit': '', 'src': sl['text'].strip(), 'y': top, 'row': row[0]['y0']})
         used.append(res[-1]['box'])
     # 출처 줄이 나란한 차트들은 한 묶음(좌우)으로 보이게 위치(y)를 맞춘다. 위쪽 경계가 칸마다 조금 달라도 순서가 뒤집히거나 따로 떨어지지 않게
@@ -677,7 +703,8 @@ def extract(rid, pdf):
                             moved.add(t)
                             items.append({'y': e['y'] - 0.5, 'b': {'p': [{'t': t, 'b': False}]}})
                         cap, no = '', ''
-                    figs.append(dict(f, no=no, cap=cap, unit=e['unit'], src_t=e['src']))
+                    cap, unit = tidy_cap(cap, e['unit'])
+                    figs.append(dict(f, no=no, cap=cap, unit=unit, src_t=e['src']))
             if figs:
                 items.append({'y': r[0]['y'], 'b': {'fig': figs}})
         for it in sorted(items, key=lambda it: it['y']):

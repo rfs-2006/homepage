@@ -1580,9 +1580,9 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-sd .tr.hd .td+.td,.rf-sd .tr.vals .td+.td{border-left:1px solid #D0CECE;padding-left:4px}
 .rf-sd-chart{display:block;width:100%;height:auto;max-height:150px;object-fit:contain;margin-top:6px;padding-bottom:6px;border-bottom:1px solid #595959}
 /* 리포트 전문: PDF 비율 그대로 왼쪽 220px에 요약 메모, 오른쪽에 본문(오른쪽 여백 35px). 차트는 전체 폭 */
-.rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:14.5px;line-height:1.75}
+.rf{border-top:1px solid #1F3864;margin:0 22px;padding:8px 0 56px;color:#000;font-size:16px;line-height:1.75}   /* 16px: 폰트 힌팅이 16px부터 들어간다(build-report-font.py) */
 .rf-h{margin:56px 35px 18px 220px;font:500 27px/1.3 'RFS Report Dotum',sans-serif;letter-spacing:-0.01em;color:#000}
-.rf-sub{margin:30px 35px 10px 220px;font:700 18px/1.45 'RFS Report Dotum',sans-serif;color:#000}
+.rf-sub{margin:30px 35px 10px 220px;font:700 19px/1.45 'RFS Report Dotum',sans-serif;color:#000}
 .rf-toc{width:min(590px,100%);margin:40px auto 24px;padding:0 0 40px;border-bottom:1px solid #D0CECE;font-family:'RFS Report Dotum',sans-serif}   /* PDF 2쪽 CONTENTS 모양: 가운데 제목, 점선 리더, 쪽 번호 */
 .rf-toc-h{text-align:center;font-size:22px;font-weight:700;color:#203864;letter-spacing:0;margin-bottom:6px}
 .rf-toc-note{text-align:center;margin:0 0 26px;font-size:12.5px;color:#6B7684}
@@ -1612,10 +1612,10 @@ textarea.intra-input{font-family:inherit;line-height:1.6}
 .rf-jump button:hover{background:rgba(32,56,100,.85)}
 .rf-jump button[disabled]{opacity:.35;cursor:default}
 @media (max-width:640px){.rf-jump{left:16px;bottom:calc(16px + env(safe-area-inset-bottom))}.rf-jump button{width:40px;height:40px}}
-.rf-subm{margin:26px 35px 8px 220px;font:700 16px/1.5 'RFS Report Dotum',sans-serif;color:#000}
-.rf-sub2{margin:24px 35px 8px 220px;font:700 15px/1.5 'RFS Report Dotum',sans-serif;color:#000}
+.rf-subm{margin:26px 35px 8px 220px;font:700 17px/1.5 'RFS Report Dotum',sans-serif;color:#000}
+.rf-sub2{margin:24px 35px 8px 220px;font:700 16px/1.5 'RFS Report Dotum',sans-serif;color:#000}
 .rf-p,.rf-lead,.rf-li{position:relative;margin:0 35px 0 220px}
-.rf-p p,.rf-lead p,.rf-li p{margin:0;text-align:justify;font-weight:300;word-break:normal;text-wrap:wrap;letter-spacing:-0.01em;-webkit-font-smoothing:antialiased}   /* PDF처럼 글자 단위로 줄을 바꾼다(keep-all이면 양쪽 맞춤 때 낱말 사이가 크게 벌어진다) */
+.rf-p p,.rf-lead p,.rf-li p{margin:0;text-align:justify;font-weight:300;word-break:normal;text-wrap:wrap}   /* PDF처럼 글자 단위로 줄을 바꾼다(keep-all이면 양쪽 맞춤 때 낱말 사이가 크게 벌어진다) */
 .rf-p+.rf-p,.rf-li+.rf-p,.rf-p+.rf-li{margin-top:12px}
 .rf-lead{background:#F2F2F2;padding:14px 18px;margin-bottom:6px}
 .rf-li{margin-top:8px}.rf-li p{text-align:center}
