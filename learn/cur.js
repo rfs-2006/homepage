@@ -583,20 +583,16 @@
     '.cur-wrap.home{padding-bottom:0}',
     '.cur.v2[data-view="home"] .cur-bg{display:block;animation:none;transform:none}',
     '.cur.v2[data-view="home"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.55),rgba(11,21,36,.35) 40%,rgba(11,21,36,.92) 90%,#0B1524)}',
-    '.cur .hx{padding:clamp(80px,16vh,180px) 0 56px}',
-    '.cur .hx .lb,.cur .rx .lb,.cur .cx .lb{margin:0 0 16px;font-size:13px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:rgba(247,246,243,.85)}',
+    '.cur .hx{padding:clamp(120px,24vh,240px) 0 72px}',
     '.cur .hx h1{margin:0;font-family:var(--ser);font-weight:700;font-size:clamp(52px,6vw,84px);line-height:1;letter-spacing:-.035em;color:#F7F6F3;text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45)}',
     '.cur .hx .ld{margin:22px 0 0;max-width:40em;font-size:17px;line-height:1.85;color:#F7F6F3}',
-    '.cur .sts{display:flex;flex-wrap:wrap;gap:28px clamp(36px,6vw,96px);margin-top:56px;padding-top:28px;border-top:1px solid rgba(247,246,243,.35)}',
-    '.cur .sts b{display:block;font-family:var(--ser);font-weight:700;font-size:clamp(34px,3.4vw,52px);line-height:1;letter-spacing:-.03em;color:#F7F6F3}',
-    '.cur .sts b small{font-size:.5em;font-weight:400}',
-    '.cur .sts span{display:block;margin-top:10px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#F7F6F3}',
+    '.cur .sts{margin:28px 0 0;font-size:15px;color:#F7F6F3}',
     '.cur .rx,.cur .cx{position:relative;margin:0 calc(-1 * var(--pad));padding:88px var(--pad) 72px;background:#0F1B2E}',
     '.cur .cx{background:#0B1524;padding-bottom:120px}',
-    '.cur .tl{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr))}',
+    '.cur .tl{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr))}',
     '.cur .tl button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding-right:10px;color:#F7F6F3}',
     '.cur .tl button:focus-visible{outline:2px solid #8FAADC;outline-offset:6px}',
-    '.cur .tl .eb{display:block;height:14px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}',
+    '.cur .tl .eb{display:block;height:16px;font-size:13px;font-weight:500;white-space:nowrap}',
     '.cur .tl .cd{display:block;margin-top:14px;font-family:var(--ser);font-weight:700;font-size:clamp(28px,2.6vw,40px);line-height:1;letter-spacing:-.03em;transition:color .2s}',
     '.cur .tl .ln{display:block;position:relative;height:1px;margin:22px -10px 0 0;border-top:1px solid rgba(247,246,243,.35)}',
     '.cur .tl .ln i{position:absolute;left:0;top:-6px;width:11px;height:11px;background:#0F1B2E;box-shadow:inset 0 0 0 1px #F7F6F3;outline:3px solid #0F1B2E}',
@@ -607,17 +603,14 @@
     '.cur .tl li.sel .tt{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}',
     '.cur .tl li.lock{opacity:.5}',
     '.cur .mc{margin-top:64px;background:#0B1524;box-shadow:0 0 0 1px rgba(247,246,243,.18)}',
-    '.cur .mc .hd{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding:30px 36px 28px;background:#203864}',
-    '.cur .mc .hd small{display:block;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#F7F6F3}',
+    '.cur .mc .hd{padding:30px 36px 28px;background:#203864}',
+    '.cur .mc .hd small{display:block;font-size:13px;color:#F7F6F3}',
     '.cur .mc .hd h2{margin:12px 0 8px;font-family:var(--ser);font-weight:700;font-size:30px;line-height:1.2;letter-spacing:-.02em;color:#F7F6F3}',
     '.cur .mc .hd p{margin:0;font-size:16px;color:#F7F6F3}',
-    '.cur .mc .hd img{width:58px;height:58px;flex:none}',
     '.cur .mc .bd{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:48px;padding:32px 36px 36px}',
-    '.cur .mc h4{margin:0 0 14px;font-size:11px;font-weight:600;letter-spacing:.14em;color:#F7F6F3}',
-    '.cur .mc .fx{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-height:48px}',
-    '.cur .mc .fx .c{padding:14px 16px;font-family:var(--ser);font-weight:700;font-size:18px;line-height:1;white-space:nowrap;color:#F7F6F3;box-shadow:inset 0 0 0 1px rgba(247,246,243,.35)}',
-    '.cur .mc .fx .op{font-size:18px;color:#F7F6F3}',
-    '.cur .mc .fx .c.res{background:#F7F6F3;color:#0B1524;box-shadow:none}',
+    '.cur .mc .fx{margin:0;min-height:1.6em;font-family:var(--ser);font-size:21px;line-height:1.6;color:#F7F6F3;word-break:keep-all}',
+    '.cur .mc .fx span{white-space:nowrap}',
+    '.cur .mc .fx b{font-weight:700;white-space:nowrap}',
     '.cur .mc .ob{list-style:none;margin:0;padding:0;border-top:1px solid rgba(247,246,243,.18)}',
     '.cur .mc .ob li{padding:12px 0;border-bottom:1px solid rgba(247,246,243,.18);font-size:15px;line-height:1.6;color:#F7F6F3}',
     '.cur .mc .ft{display:flex;align-items:center;flex-wrap:wrap;gap:24px;margin-top:28px}',
@@ -626,7 +619,7 @@
     '.cur .mc .go svg{width:16px;height:16px}',
     '.cur .mc .mt{font-size:13.5px;color:#F7F6F3}',
     '@media (max-width:980px){.cur .tl{grid-template-columns:repeat(5,minmax(0,1fr));row-gap:40px}.cur .mc .bd{grid-template-columns:minmax(0,1fr)}}',
-    '@media (max-width:560px){.cur .tl{grid-template-columns:repeat(2,minmax(0,1fr))}.cur .mc .hd,.cur .mc .bd{padding-left:20px;padding-right:20px}.cur .mc .hd img{display:none}}',
+    '@media (max-width:560px){.cur .tl{grid-template-columns:repeat(2,minmax(0,1fr))}.cur .mc .hd,.cur .mc .bd{padding-left:20px;padding-right:20px}.cur .mc .fx{font-size:18px}}',
     '.cur.v2 .hm .ey{color:var(--t3);letter-spacing:.08em;font-weight:400}',
     '.cur.v2 .hm h1{font-size:clamp(36px,8.6vw,60px);font-weight:600;letter-spacing:-.035em;line-height:1.15;text-shadow:none}',
     '.cur.v2 .hm .lead{max-width:36em;font-size:17.5px}',
@@ -2500,18 +2493,18 @@
     var certOpen = !!(st.mods[C.certificate.unlockAfter] && st.mods[C.certificate.unlockAfter].done);
     // 지금 할 모듈: 하다 만 모듈, 없으면 아직 안 끝낸 첫 모듈
     var now = ps.findIndex(function (p) { return p.f > 0 && p.f < 1; }); if (now < 0) now = ps.findIndex(function (p) { return p.f < 1; }); if (now < 0) now = 0;
-    var GE = {}; C.groups.forEach(function (g) { GE[g.id] = g.en || g.label; });
+    var GE = {}; C.groups.forEach(function (g) { GE[g.id] = g.label; });
     var seen = {};
     st.bx.classList.add('home');
-    st.bx.innerHTML = '<section class="hx"><p class="lb">Valuation Curriculum</p><h1>Curriculum</h1><p class="ld">' + esc(C.intro) + '</p>' +
-      '<div class="sts"><div><b>' + mods.length + '</b><span>Modules</span></div><div><b>' + Math.round(mins / 60) + 'h</b><span>Study time</span></div><div><b>' + qn + '</b><span>Questions</span></div>' + (labs ? '<div><b>' + labs + '</b><span>Lab sheets</span></div>' : '') + '<div><b>' + done + '<small> / ' + mods.length + '</small></b><span>Completed</span></div></div></section>' +
-      '<section class="rx"><p class="lb">Modules</p><ol class="tl">' + mods.map(function (m, i) {
+    st.bx.innerHTML = '<section class="hx"><h1>Curriculum</h1><p class="ld">' + esc(C.lead || C.intro) + '</p>' +
+      '<p class="sts">' + mods.length + '개 모듈 · 약 ' + Math.round(mins / 60) + '시간 · ' + qn + '문항' + (labs ? ' · 실습 시트 ' + labs + '개' : '') + (done ? ' · ' + done + '개 끝냄' : '') + '</p></section>' +
+      '<section class="rx"><ol class="tl">' + mods.map(function (m, i) {
         var p = ps[i], eb = seen[m.group] ? '' : GE[m.group]; seen[m.group] = 1;
         return '<li class="' + (p.f === 1 ? 'done' : (i === now ? 'now' : '')) + (m.ready ? '' : ' lock') + '" data-i="' + i + '"><button type="button" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '"><span class="eb">' + esc(eb) + '</span><span class="cd">' + esc(m.code) + '</span><span class="ln"><i></i></span><span class="tt">' + esc(m.title) + '</span></button></li>';
       }).join('') + '</ol>' +
-      '<article class="mc" aria-live="polite"><div class="hd"><div><small></small><h2></h2><p></p></div><img src="../assets/rfs-seal-light-256.png" alt=""></div>' +
-      '<div class="bd"><div><h4></h4><div class="fx"></div><div class="ft"><button type="button" class="go"></button><span class="mt"></span></div></div><div><h4>목표</h4><ul class="ob"></ul></div></div></article></section>' +
-      '<section class="cx"><p class="lb">Certificate</p><div class="cert' + (certOpen ? ' open' : '') + '"><div class="pp" aria-hidden="' + !certOpen + '"><img src="../assets/rfs-seal-light-256.png" alt=""><p class="t1">CERTIFICATE</p><p class="t2">' + esc(C.certificate.title) + '</p><p class="t3">이름 ______ 님은<br>R.F.S. ' + esc(C.certificate.line) + '.</p><div class="t4"><span>중앙대학교 가치투자학회 R.F.S.</span><span>' + new Date().getFullYear() + '</span></div></div>' +
+      '<article class="mc" aria-live="polite"><div class="hd"><small></small><h2></h2><p></p></div>' +
+      '<div class="bd"><div><p class="fx"></p><div class="ft"><button type="button" class="go"></button><span class="mt"></span></div></div><ul class="ob"></ul></div></article></section>' +
+      '<section class="cx"><div class="cert' + (certOpen ? ' open' : '') + '"><div class="pp" aria-hidden="' + !certOpen + '"><img src="../assets/rfs-seal-light-256.png" alt=""><p class="t1">CERTIFICATE</p><p class="t2">' + esc(C.certificate.title) + '</p><p class="t3">이름 ______ 님은<br>R.F.S. ' + esc(C.certificate.line) + '.</p><div class="t4"><span>중앙대학교 가치투자학회 R.F.S.</span><span>' + new Date().getFullYear() + '</span></div></div>' +
       (certOpen ? '' : '<div class="lk">' + LOCK + '<b>M9까지 마치면 열려요</b><span>지금 ' + done + ' / ' + mods.length + ' 모듈 완료 · 모듈마다 수료 도장을 받아요</span></div>') + '</div></section>';
     var card = st.bx.querySelector('.mc');
     function pick(i) {
@@ -2525,12 +2518,11 @@
       var go = card.querySelector('.go');
       go.innerHTML = (!m.ready ? '준비 중' : p.f === 1 ? '다시 보기' : (ms && ms.max > 0 ? '이어서 하기' : '시작하기')) + (m.ready ? ARR : '');
       go.disabled = !m.ready; go.onclick = function () { nav('?m=' + m.id); };
-      var fx = card.querySelector('.fx'), h4 = card.querySelector('.bd h4'); fx.innerHTML = ''; h4.textContent = '';
+      var fx = card.querySelector('.fx'); fx.innerHTML = '';
       if (m.ready) loadJSON(m.file).then(function (mod) {
         if (card.querySelector('h2').textContent !== m.title || !mod.map) return;
         var mp = mod.map, arrow = mp.items.some(function (x) { return x.op === '→'; });
-        h4.textContent = arrow ? '순서' : '계산식';
-        fx.innerHTML = mp.items.map(function (x) { return (x.op ? '<span class="op">' + esc(x.op) + '</span>' : '') + '<span class="c">' + esc(x.t) + '</span>'; }).join('') + '<span class="op">' + (arrow ? '→' : '=') + '</span><span class="c res">' + esc(mp.res) + '</span>';
+        fx.innerHTML = mp.items.map(function (x) { return (x.op ? ' ' + esc(x.op) + ' ' : '') + '<span>' + esc(x.t) + '</span>'; }).join('') + ' ' + (arrow ? '→' : '=') + ' <b>' + esc(mp.res) + '</b>';
       }).catch(function () {});
     }
     st.bx.querySelectorAll('.tl li').forEach(function (li) { li.querySelector('button').onclick = function () { pick(+li.getAttribute('data-i')); if (window.innerWidth < 980) card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }; });
