@@ -69,9 +69,9 @@
     function paint() { tb.innerHTML = body(); }
     function lab(i) {
       var r = rows[i];
-      if (r && r.d) vr.innerHTML = '<b>' + esc(r.l) + '</b> · ' + esc(r.d);
+      if (r && r.d) vr.innerHTML = '<b>' + esc(r.l) + '</b> ' + esc(r.d);
       else vr.innerHTML = esc(alt && p.ask2 ? p.ask2 : (p.ask || (tg ? '위 버튼으로 두 상태를 바꿔 보세요.' : rows.some(function (x) { return x.d; }) ? '줄을 누르면 뜻이 보여요.' : '')));
-      if (nb) { if (n >= rows.length) { nb.hidden = true; nb.classList.add('done'); } else nb.textContent = (n ? '다음 줄 · ' : '첫 줄 열기 · ') + rows[n].l; }
+      if (nb) { if (n >= rows.length) { nb.hidden = true; nb.classList.add('done'); } else nb.textContent = (n ? '다음 줄: ' : '첫 줄 열기: ') + rows[n].l; }
       L.gate(ctx, n >= rows.length && seen2);
     }
     if (nb) nb.onclick = function () { if (n >= rows.length) return; n++; paint(); lab(n - 1); };
@@ -118,10 +118,10 @@
       svg.setAttribute('aria-label', (m === 'db' ? '정률법' : '정액법') + ' 상각비: ' + S.map(function (s) { return s.y + '년 ' + fmt(s.d); }).join(', ') + ' (백만 원)');
       var s0 = S[0], s1 = S[1];
       eq.innerHTML = m === 'db'
-        ? '<div class="eq"><small>상각률</small><b>' + r + '</b></div><i>·</i><div class="eq"><small>첫해 (반년치)</small><b>' + fmt(cost) + ' × ' + r + (half ? ' ÷ 2' : '') + ' = ' + fmt(s0.d) + '</b></div><i>·</i><div class="eq hl"><small>둘째 해</small><b>' + fmt(cost - s0.d) + ' × ' + r + ' = ' + fmt(s1.d) + '</b></div>'
-        : '<div class="eq"><small>한 해치</small><b>' + fmt(cost) + ' × ' + (1 - salv) + ' ÷ ' + life + ' = ' + fmt(cost * (1 - salv) / life) + '</b></div><i>·</i><div class="eq hl"><small>첫해 (반년치)</small><b>' + fmt(s0.d) + '</b></div>';
+        ? '<div class="eq"><small>상각률</small><b>' + r + '</b></div><div class="eq"><small>첫해 (반년치)</small><b>' + fmt(cost) + ' × ' + r + (half ? ' ÷ 2' : '') + ' = ' + fmt(s0.d) + '</b></div><div class="eq hl"><small>둘째 해</small><b>' + fmt(cost - s0.d) + ' × ' + r + ' = ' + fmt(s1.d) + '</b></div>'
+        : '<div class="eq"><small>한 해치</small><b>' + fmt(cost) + ' × ' + (1 - salv) + ' ÷ ' + life + ' = ' + fmt(cost * (1 - salv) / life) + '</b></div><div class="eq hl"><small>첫해 (반년치)</small><b>' + fmt(s0.d) + '</b></div>';
       var tot = S.reduce(function (a, s) { return a + s.d; }, 0);
-      vr.innerHTML = '<b>' + (m === 'db' ? '정률법' : '정액법') + '</b> · ' + S.length + '년 동안 상각비 합계 ' + fmt(tot) + ', 남은 장부가 ' + fmt(S[S.length - 1].bv) + ' (백만 원, 예시)' + (m === 'db' ? '. 앞쪽 해에 비용이 커요.' : '. 해마다 같은 금액이에요.');
+      vr.innerHTML = '<b>' + (m === 'db' ? '정률법' : '정액법') + '</b>으로 ' + S.length + '년 동안 상각비 합계 ' + fmt(tot) + ', 남은 장부가 ' + fmt(S[S.length - 1].bv) + ' (백만 원, 예시)' + (m === 'db' ? '. 앞쪽 해에 비용이 커요.' : '. 해마다 같은 금액이에요.');
       host.querySelectorAll('.m7m button').forEach(function (b) { var o2 = b.getAttribute('data-m') === m; b.classList.toggle('on', o2); b.setAttribute('aria-pressed', o2); });
       host.querySelector('.vctl b').textContent = fmt(cost);
       L.gate(ctx, seen.db && seen.sl);
@@ -220,7 +220,7 @@
         var bad = [];
         ins.forEach(function (i) { var k = i.getAttribute('data-k'), v = val(i); if (v == null || Math.abs(v - A[k]) > tol) bad.push(k); });
         var lb = function (k) { return (Ln.filter(function (l) { return l.k === k; })[0] || {}).l || k; };
-        return { right: !bad.length, detail: bad.length ? '맞은 칸 ' + (ins.length - bad.length) + ' / ' + ins.length + ' · 다시 볼 칸: ' + bad.map(lb).join(', ') + '.' : '네 칸 모두 맞았어요.' };
+        return { right: !bad.length, detail: bad.length ? '맞은 칸 ' + (ins.length - bad.length) + ' / ' + ins.length + '. 다시 볼 칸: ' + bad.map(lb).join(', ') + '.' : '네 칸 모두 맞았어요.' };
       },
       reveal: function (right, show) {
         ins.forEach(function (i) {
@@ -238,7 +238,7 @@
     function fcff(on) { return Y.map(function (y, i) { return p.nopat[i] + (on.dep ? p.da1[i] : p.da0[i]) + (on.nwc ? -p.dnwc[i] : p.dnwc[i]) - p.capex[i]; }); }
     function ev(F) { var pv = F.reduce(function (a, x, i) { return a + x / Math.pow(1 + W, 0.5 + i); }, 0), t = F[F.length - 1] * (1 + g); return pv + (t + t / (W - g)) / Math.pow(1 + W, F.length + 0.5); }
     function ps(e) { return (e + p.noa - p.ibd) / p.shares * 1e6; }
-    host.innerHTML = '<div class="vbt m7f" role="group" aria-label="고치기">' + [['dep', '고치기 1 · 상각비 연간값'], ['nwc', '고치기 2 · ΔNWC는 빼기']].map(function (x) { return '<button type="button" class="vgo" data-f="' + x[0] + '" aria-pressed="false">' + x[1] + '</button>'; }).join('') + '</div>' +
+    host.innerHTML = '<div class="vbt m7f" role="group" aria-label="고치기">' + [['dep', '상각비 연간값으로'], ['nwc', 'ΔNWC는 빼기']].map(function (x) { return '<button type="button" class="vgo" data-f="' + x[0] + '" aria-pressed="false">' + x[1] + '</button>'; }).join('') + '</div>' +
       '<div class="eqs" aria-live="polite"></div><svg role="img"></svg><div class="m7leg"><span><i style="background:rgba(242,239,232,.3)"></i>실수한 모델</span><span><i style="background:rgba(143,170,220,.9)"></i>지금 고친 모델</span></div><p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
     var svg = host.querySelector('svg'), eq = host.querySelector('.eqs'), vr = host.querySelector('.vr');
     function draw() {
@@ -258,8 +258,8 @@
       });
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', 'FCFF ' + Y.map(function (y, i) { return y + ' 실수한 모델 ' + sg(F0[i]) + ', 지금 ' + sg(F[i]); }).join(' / ') + ' (백만 원)');
-      eq.innerHTML = '<div class="eq"><small>실수한 모델 EV</small><b>' + fmt(e0) + '</b></div><i>→</i><div class="eq hl"><small>지금 EV</small><b>' + fmt(e) + '</b></div><i>·</i><div class="eq ac"><small>주당 가치</small><b>' + fmt(ps(e)) + '원</b></div>';
-      vr.innerHTML = (f.dep || f.nwc ? '고친 것: <b>' + [f.dep ? '감가상각비' : '', f.nwc ? 'ΔNWC 부호' : ''].filter(Boolean).join(' + ') + '</b> · EV ' + (e >= e0 ? '+' : '−') + fmt(Math.abs(e - e0)) + ' (' + L.pc(e / e0 - 1) + '), 주당 ' + fmt(ps(e0)) + '원 → ' + fmt(ps(e)) + '원' : '버튼을 눌러 하나씩 고쳐 보세요.') + ' (백만 원, 할인율·TV 식은 모델 값 그대로)';
+      eq.innerHTML = '<div class="eq"><small>실수한 모델 EV</small><b>' + fmt(e0) + '</b></div><i>→</i><div class="eq hl"><small>지금 EV</small><b>' + fmt(e) + '</b></div><div class="eq ac"><small>주당 가치</small><b>' + fmt(ps(e)) + '원</b></div>';
+      vr.innerHTML = (f.dep || f.nwc ? '고친 것: <b>' + [f.dep ? '감가상각비' : '', f.nwc ? 'ΔNWC 부호' : ''].filter(Boolean).join(' + ') + '</b>. EV ' + (e >= e0 ? '+' : '−') + fmt(Math.abs(e - e0)) + ' (' + L.pc(e / e0 - 1) + '), 주당 ' + fmt(ps(e0)) + '원 → ' + fmt(ps(e)) + '원' : '버튼을 눌러 하나씩 고쳐 보세요.') + ' (백만 원, 할인율·TV 식은 모델 값 그대로)';
       host.querySelectorAll('.m7f button').forEach(function (b) { var k = b.getAttribute('data-f'); b.classList.toggle('on', f[k]); b.setAttribute('aria-pressed', f[k]); });
       L.gate(ctx, seen.dep && seen.nwc);
     }
@@ -284,7 +284,7 @@
     '.cur .vis svg.m7v{max-width:560px}',
     '.cur .vis svg.m7v text{fill:' + INK + ';font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-size:13px;font-variant-numeric:tabular-nums}',
     '.cur .vis svg.m7v text.n{font-size:14.5px;font-weight:500}',
-    '.cur .vis svg.m7v text.s{font-size:12px;fill:rgba(242,239,232,.72)}',
+    '.cur .vis svg.m7v text.s,.cur .vis svg.m7v tspan.s{font-size:12px;fill:rgba(242,239,232,.72)}',
     '.cur .vis svg.m7v text.b{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:600}',
     '.cur .vis svg.m7v text.g{fill:' + GOLD + '}',
     '.cur .vis svg.m7v text.dk{fill:#0A1322;font-weight:500}',
@@ -297,6 +297,8 @@
   function R(x, y, w, h, f, st, dash) { return '<rect x="' + (+x).toFixed(1) + '" y="' + (+y).toFixed(1) + '" width="' + Math.max(0, w).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" fill="' + f + '"' + (st ? ' stroke="' + st + '"' : '') + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
   function Ln(x1, y1, x2, y2, st, dash) { return '<line x1="' + (+x1).toFixed(1) + '" y1="' + (+y1).toFixed(1) + '" x2="' + (+x2).toFixed(1) + '" y2="' + (+y2).toFixed(1) + '" stroke="' + st + '"' + (dash ? ' stroke-dasharray="' + dash + '"' : '') + '/>'; }
   function n1(x) { return L.f1(x); }
+  // '이름 = 뜻': 이름은 흰 글씨, '= 뜻'은 옅은 글씨
+  function nm(s) { var i = String(s).indexOf(' = '); return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<tspan class="s">' + esc(s.slice(i)) + '</tspan>'; }
   function put(svg, w, h, o, aria) { svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.innerHTML = o; svg.setAttribute('aria-label', aria); }
   function width(host) { return Math.min(560, L.wOf(host)); }
   function slider(host, id, label, min, max, step, val, fmtv, on) {
@@ -351,11 +353,11 @@
       var w = width(host), D = C / N, k = 108 / C, cw = w / S, bw = Math.min(30, cw * 0.6), o = '';
       var cA = 14, bA = cA + 18 + C / 2 * k, cB = bA + 34, bB = cB + 12 + C * k, h = bB + 26;
       function bx(i) { return i * cw + (cw - bw) / 2; }
-      o += T(0, cA, esc(p.la || '손익에 잡힌 비용 · 감가상각비'));
+      o += T(0, cA, nm(p.la || '감가상각비 = 손익에 잡힌 비용'));
       o += T(w, cA, n1(D) + ' × ' + N + '년 = ' + C, 'n', 'end');
       for (var i = 0; i < S; i++) if (i < N) o += R(bx(i), bA - D * k, bw, D * k, NAVY, LN);
       o += Ln(0, bA, w, bA, LN);
-      o += T(0, cB, esc(p.lb || '통장에서 나간 돈 · CAPEX'));
+      o += T(0, cB, nm(p.lb || 'CAPEX = 통장에서 나간 돈'));
       o += T(w, cB, '1년 차에 ' + C, 'n', 'end');
       o += R(bx(0), bB - C * k, bw, (C - D) * k, GOLD) + R(bx(0), bB - D * k, bw, D * k, NAVY, LN);
       o += Ln(0, bB, w, bB, LN);
@@ -427,7 +429,7 @@
       o += R(X(0), r1, X(I) - X(0), bh, NAVY, LN) + T(X(I / 2), r1 + 19, '재고 ' + I + '일', '', 'middle');
       o += R(X(I), r1, X(end) - X(I), bh, 'rgba(242,239,232,.08)', LN);
       o += X(end) - X(I) > 74 ? T(X(I + A / 2), r1 + 19, '외상 ' + A + '일', '', 'middle') : T(X(end) + 6, r1 + 19, '외상 ' + A + '일');
-      o += T(0, c2, '재료값을 내기까지 · 매입채무');
+      o += T(0, c2, nm('매입채무 = 재료값을 내기까지'));
       o += R(X(0) + 0.5, r2 + 0.5, X(P) - X(0) - 1, bh - 1, 'none', 'rgba(242,239,232,.5)', '4 4') + T(X(P / 2), r2 + 19, P + '일', '', 'middle');
       o += T(0, c3, '내 돈이 묶인 기간');
       o += Ln(X(P), r2 + bh, X(P), c3 - 14, LN, '2 3') + Ln(X(P), c3 + 5, X(P), r3 + bh + 6, LN, '2 3') + Ln(X(end), r1 + bh, X(end), r3 + bh + 6, LN, '2 3');

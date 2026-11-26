@@ -74,7 +74,7 @@
         o += '<text x="' + (X(0) + 4) + '" y="' + (Y(v.rf + v.crp) + 16) + '" class="tt">Rf ' + nf(v.rf) + '%</text><text x="' + (w - m.r) + '" y="' + (Y(0) - 6) + '" text-anchor="end" class="tt">β →</text>';
         svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
         svg.setAttribute('aria-label', 'CAPM 선: 베타 ' + b2(v.beta) + '일 때 Ke ' + p2(c.ke));
-        vr.innerHTML = (p.name ? esc(p.name) + ' · ' : '') + '베타 <b>' + b2(v.beta) + '</b> → Ke <b>' + p2(c.ke) + '</b>' + (Math.abs(c.ke - c0.ke) > 0.004 ? ' (처음 ' + p2(c0.ke) + ')' : '') + '. 베타가 0.1 오르면 Ke가 ERP의 10분의 1(' + nf(v.erp / 10) + '%p)만큼 올라요.';
+        vr.innerHTML = '베타 <b>' + b2(v.beta) + '</b> → Ke <b>' + p2(c.ke) + '</b>' + (Math.abs(c.ke - c0.ke) > 0.004 ? ' (처음 ' + p2(c0.ke) + ')' : '') + '. 베타가 0.1 오르면 Ke가 ERP의 10분의 1(' + nf(v.erp / 10) + '%p)만큼 올라요.';
         return;
       }
       var hh = 148, lw = 64, rw = 62, bw = w - lw - rw, top = Math.max(16, c.ke, c.kda) * 1.02, S = function (x) { return bw * Math.max(0, x) / top; }, rows = [['Ke', c.ke, 'rgba(143,170,220,.55)'], ['세후 Kd', c.kda, 'rgba(242,239,232,.22)']];
@@ -84,7 +84,7 @@
       o += '<text x="' + (lw + S(c.w) + 6) + '" y="' + (y3 + 17) + '" class="twm">' + p2(c.w) + '</text><text x="' + lw + '" y="' + (hh - 4) + '" class="tt">자기자본 몫 ' + p2(ce) + ' + 빚 몫 ' + p2(cd) + '</text>';
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + hh); svg.setAttribute('height', hh); svg.innerHTML = o;
       svg.setAttribute('aria-label', 'Ke ' + p2(c.ke) + ', 세후 Kd ' + p2(c.kda) + ', WACC ' + p2(c.w));
-      vr.innerHTML = (p.name ? esc(p.name) + ' · ' : '') + 'Ke <b>' + p2(c.ke) + '</b> · 세후 Kd <b>' + p2(c.kda) + '</b> · WACC <b>' + p2(c.w) + '</b>' + (Math.abs(c.w - c0.w) > 0.004 ? ' (처음 ' + p2(c0.w) + ', ' + (c.w > c0.w ? '+' : '−') + nf(Math.abs(c.w - c0.w)) + '%p)' : '');
+      vr.innerHTML = 'Ke <b>' + p2(c.ke) + '</b>, 세후 Kd <b>' + p2(c.kda) + '</b>, WACC <b>' + p2(c.w) + '</b>' + (Math.abs(c.w - c0.w) > 0.004 ? ' (처음 ' + p2(c0.w) + ', ' + (c.w > c0.w ? '+' : '−') + nf(Math.abs(c.w - c0.w)) + '%p)' : '');
     }
     SL.forEach(function (k) { bind(host.querySelector('#curM8w' + k), DEF[k], function () { return v[k]; }, function (x) { v[k] = x; }, draw); });
     return { draw: draw };
@@ -109,7 +109,7 @@
       B.forEach(function (b, i) { var x = i * (bw + gap); o += '<rect x="' + x + '" y="' + (base - b[1] * sc) + '" width="' + bw + '" height="' + b[1] * sc + '" fill="' + b[2] + '" stroke="' + b[3] + '" style="transition:all .3s"/><text x="' + (x + bw / 2) + '" y="' + (base - b[1] * sc - 6) + '" text-anchor="middle" class="th">' + b2(b[1]) + '</text><text x="' + (x + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">' + b[0] + '</text>'; });
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', '관측 베타 ' + b2(v.bl) + ', 언레버 ' + b2(bu) + (U ? '' : ', 목표 ' + b2(br)));
-      vr.innerHTML = (p.name ? esc(p.name) + ' · ' : '') + (U ? 'D/E ' + nf(v.de) + '%의 빚 효과를 빼면 βL ' + b2(v.bl) + ' → βU <b>' + b2(bu) + '</b>' + (v.de > 0 ? '. 빚이 늘수록 βU는 βL보다 더 작아져요.' : '. 빚이 없으면 βU = βL이에요.')
+      vr.innerHTML = (U ? 'D/E ' + nf(v.de) + '%의 빚 효과를 빼면 βL ' + b2(v.bl) + ' → βU <b>' + b2(bu) + '</b>' + (v.de > 0 ? '. 빚이 늘수록 βU는 βL보다 더 작아져요.' : '. 빚이 없으면 βU = βL이에요.')
         : 'βU ' + b2(bu) + '에 목표 D/E ' + nf(v.tde) + '%만큼 빚 위험을 다시 얹으면 <b>' + b2(br) + '</b>. 목표 빚이 많을수록 목표 베타가 커져요.');
     }
     SL.forEach(function (k) { bind(host.querySelector('#curM8b' + k), DEF[k], function () { return v[k]; }, function (x) { v[k] = x; }, draw); });
@@ -180,7 +180,7 @@
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', '영업가치 ' + fmt(c.ev) + ' ' + U + ' 중 TV 현재가치 ' + fmt(c.pvtv) + ', 비중 ' + p1(sh));
       var moved = Math.abs(c.ev - c0.ev) > 0.5;
-      vr.innerHTML = (p.name ? esc(p.name) + ' · ' : '') + 'TV 비중 <b>' + p1(sh) + '</b> · 영업가치 <b>' + fmt(c.ev) + '</b> ' + esc(U) + (p.shares ? ' · 주당가치 <b>' + fmt(c.ps) + '원</b>' : '') +
+      vr.innerHTML = 'TV 비중 <b>' + p1(sh) + '</b>, 영업가치 <b>' + fmt(c.ev) + '</b> ' + esc(U) + (p.shares ? ', 주당가치 <b>' + fmt(c.ps) + '원</b>' : '') +
         (moved ? '<br>처음(WACC ' + p2(v0.W) + ', g ' + nf(v0.g) + '%) 대비 영업가치 ' + L.pc(c.ev / c0.ev - 1) + (alt ? ', TV 해 CAPEX = 감가상각비' : '') : '');
     }
     TS.forEach(function (k) { bind(host.querySelector('#curM8t' + k), DEF[k], function () { return v[k]; }, function (x) { v[k] = x; }, draw); });
@@ -220,7 +220,7 @@
       e.onkeydown = function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ev.stopPropagation(); pick(r, c); } };
     });
     host.querySelectorAll('.vbt .vgo').forEach(function (b) {
-      b.onclick = function () { var i = +b.getAttribute('data-k'), m = M[i]; seen[i] = 1; b.classList.add('done'); host.querySelectorAll('.vbt .vgo').forEach(function (x) { x.classList.toggle('on', x === b); }); mark(m.r, m.c); vr.innerHTML = '<b>' + esc(m.k) + '</b> · ' + esc(m.d || ''); gate(ctx, Object.keys(seen).length >= M.length); };
+      b.onclick = function () { var i = +b.getAttribute('data-k'), m = M[i]; seen[i] = 1; b.classList.add('done'); host.querySelectorAll('.vbt .vgo').forEach(function (x) { x.classList.toggle('on', x === b); }); mark(m.r, m.c); vr.innerHTML = '<b>' + esc(m.k) + '</b> ' + esc(m.d || ''); gate(ctx, Object.keys(seen).length >= M.length); };
     });
     if (!Q) gate(ctx, !M.length);
     if (Q) host.__solve = function (right) {
@@ -246,7 +246,7 @@
   }
   L.addCss('cur-m8v-css', [
     '.cur .vis svg.m8v text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
-    '.cur .vis svg.m8v text.s{font-size:12px;fill:rgba(242,239,232,.74)}',
+    '.cur .vis svg.m8v text.s,.cur .vis svg.m8v tspan.s{font-size:12px;fill:rgba(242,239,232,.74)}',
     '.cur .vis svg.m8v text.md{font-family:"Noto Serif KR",serif;font-size:17px;font-weight:600}',
     '.cur .vis svg.m8v text.big{font-family:"Noto Serif KR",serif;font-size:22px;font-weight:600}',
     '.cur .vis svg.m8v text.dk{fill:#0D1829;font-weight:500}',
@@ -263,6 +263,8 @@
   // 넓은 화면에서 그림이 벌어지지 않게 폭 상한(WMAX)을 두고 왼쪽에 붙인다
   function put(svg, w, h, o, label) { svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.style.maxWidth = w + 'px'; svg.innerHTML = o; svg.setAttribute('aria-label', label); }
   function W(host, mx) { return Math.min(wOf(host), mx); }
+  // '이름 = 뜻': 이름은 흰 글씨, '= 뜻'은 옅은 글씨
+  function nm(s) { var i = String(s).indexOf(' = '); return i < 0 ? esc(s) : esc(s.slice(0, i)) + '<tspan class="s">' + esc(s.slice(i)) + '</tspan>'; }
   function capHtml(p) { return p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : ''; }
 
   // ── m8Pv: 1년 뒤 받을 돈 → 할인율로 나눠 지금 값. 할인율 슬라이더 (map_what) ──
@@ -330,7 +332,7 @@
       o += T(0, y + 15, '= ' + esc(p.total || '주주 몫')) + T(0, y + 33, fmt(eq), 'md');
       o += RC(X(0), y + 6, eq * sc, 20, GOLD) + RC(X(eq), y + 6, (top - eq) * sc, 20, 'none', 'rgba(242,239,232,.25)', ' stroke-dasharray="2 3"');
       if (p.td) o += T(X(0), y + 44, esc(p.td), 's');
-      y += 66;
+      y += p.td ? 66 : 54;
       // ÷ 주식 수 → 한 주의 값
       var ps = eq * (p.mult || 1e6) / p.shares;
       o += T(0, y + 15, '÷ 주식 수') + T(0, y + 32, fmt(p.shares) + '주', 's');
@@ -425,9 +427,9 @@
       var gl = esc(p.grow || '');
       o += T(fit(X(n), gl, 12, w), base + 36, gl, 's');
       // TV 괄호 (금색 하나): 그 뒤 현금을 모두 하나로
-      var b0 = X(n), b1 = w - 2, yb = base - maxV * hs - 14, one = esc(p.tv || ''), two = (p.tv2 || []).map(esc);
+      var b0 = X(n), b1 = w - 2, yb = base - maxV * hs - 14, one = p.tv || '', two = (p.tv2 || []).map(esc);
       o += LN(b0, yb, b1, yb, GOLD, ' stroke-width="1.5"') + LN(b0, yb, b0, yb + 7, GOLD, ' stroke-width="1.5"') + LN(b1, yb, b1, yb + 7, GOLD, ' stroke-width="1.5"');
-      if (tw(one, 13) <= b1 - b0 || !two.length) o += T(b0, yb - 10, one);
+      if (tw(one, 13) <= b1 - b0 || !two.length) o += T(b0, yb - 10, nm(one));
       else o += T(b0, yb - 26, two[0]) + T(b0, yb - 10, two[1] || '', 's');
       put(svg, w, base + 46, o, '예측 기간 ' + LB[0] + '~' + LB[n - 1] + ' FCFF 막대 뒤로 해마다 g씩 자라는 현금이 이어지고, 그 현금을 모두 하나로 묶은 값이 TV');
     }

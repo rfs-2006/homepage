@@ -508,9 +508,9 @@ html .nav:has(.mmenu.open) .seal-navy{display:none !important}html .nav:has(.mme
    글꼴이 다 받아지기 전에는 리포트 본문을 감춰 두었다가 부드럽게 보인다 (머리말 스크립트의 __rfsFont) */
 .rpt-paper{transition:opacity .35s ease}
 html:not(.rfont) .rpt-paper,html:not(.rp1) .rpt-paper{opacity:0}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2?v=h1') format('woff2');font-weight:300;font-display:block}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2?v=h1') format('woff2');font-weight:500;font-display:block}
-@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2?v=h1') format('woff2');font-weight:700;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-light.woff2?v=2') format('woff2');font-weight:300;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-medium.woff2?v=2') format('woff2');font-weight:500;font-display:block}
+@font-face{font-family:'RFS Report Dotum';src:url('/assets/fonts/rfs-report-dotum-bold.woff2?v=2') format('woff2');font-weight:700;font-display:block}
 /* 페이지 전환: 이전 화면은 짧게 사라지고, 새 화면은 살짝 올라오며 나타난다 (View Transitions 지원 브라우저만) */
 @media (min-width:1025px){@view-transition{navigation:auto}}
 ::view-transition-old(root){animation:rfs-vt-out 180ms cubic-bezier(.4,0,1,1) both}
@@ -1278,9 +1278,9 @@ main.pgx .pres .pres-in{padding:64px 56px}
 .pg-hero.pg-raw::after{display:none}   /* FUND: 사진 그대로 (덮개 없음) */
 .pg-hero .pg-title{text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45),0 0 80px rgba(4,8,16,.35)}
 /* RESEARCH 최신 리포트: 카드 대신 실제 리포트 첫 장(표지)을 보여 주고, 글자는 리포트와 같은 KoPub 돋움 */
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2?v=h1') format('woff2');font-weight:300;font-display:swap}
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2?v=h1') format('woff2');font-weight:500;font-display:swap}
-@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2?v=h1') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-light.woff2?v=2') format('woff2');font-weight:300;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-medium.woff2?v=2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'RFS Dotum UI';src:url('/assets/fonts/rfs-report-dotum-bold.woff2?v=2') format('woff2');font-weight:700;font-display:swap}
 main.pgx [data-tab="latest"],main.pgx [data-tab="latest"] *,main.pgx [data-tab="reports"],main.pgx [data-tab="reports"] *:not(svg):not(path){font-family:'RFS Dotum UI','Pretendard Variable',Pretendard,sans-serif !important}
 .rlc{display:block;color:inherit;text-decoration:none;background:none !important;box-shadow:none !important}.rlc.rpaper:hover{transform:none;box-shadow:none !important}
 .rlc-img{aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid #DAD7D0;transition:border-color .2s ease}

@@ -49,14 +49,14 @@ jobs:
       - name: Add reports
         if: steps.find.outputs.count != '0'
         run: |
-          pip install -q pymupdf pillow anthropic fonttools brotli ttfautohint-py
+          pip install -q pymupdf pillow anthropic fonttools brotli
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           br="report/$(date -u +%Y%m%d-%H%M%S)"
           git checkout -b "$br"
           python3 tools/add-report.py inbox/*.pdf | tee /tmp/log.txt
           added=$(grep '^추가:' /tmp/log.txt | sed 's/^추가: //')
-          # 리포트 화면 폰트를 다시 만든다: 새 리포트에 나온 글자를 넣고 힌팅도 다시 (tools/build-report-font.py)
+          # 리포트 화면 폰트를 다시 만든다: 새 리포트에 나온 글자를 넣는다 (tools/build-report-font.py)
           (cd /tmp && npm pack font-kopubworld@1.0.3 --silent && tar xzf font-kopubworld-1.0.3.tgz)
           python3 tools/build-report-font.py /tmp/package/fonts
           git add -A

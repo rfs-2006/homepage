@@ -13,15 +13,16 @@
   L.addCss('cur-m1-css', [
     '.cur .m1v svg{display:block;width:100%;max-width:520px;height:auto;overflow:visible}',
     '.cur .m1v svg text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
-    '.cur .m1v svg text.s{font-size:12px;fill:rgba(242,239,232,.72)}',
+    '.cur .m1v svg text.s,.cur .m1v svg tspan.s{font-size:12px;fill:rgba(242,239,232,.72)}',
     '.cur .m1v svg text.m{font-size:15px;font-weight:500}',
     '.cur .m1v svg text.b{font-family:"Noto Serif KR",serif;font-weight:600;font-size:23px;letter-spacing:-.01em}',
     '.cur .m1v svg text.g{fill:#E2C48F}',
+    '.cur .m1v svg text.pc{font-size:14px;font-weight:500}.cur .m1v svg text.pc.dk{fill:#0B1526}',
     '.cur .m1v svg .gr{transform-box:fill-box;transform-origin:50% 100%;animation:m1Grow .9s cubic-bezier(.2,.8,.2,1) both}',
     '.cur .m1v svg .gx{transform-box:fill-box;transform-origin:0 50%;animation:m1GrowX .8s cubic-bezier(.2,.8,.2,1) both}',
     '.cur .m1v svg .fd{animation:m1Fade .6s ease .5s both}',
     '@keyframes m1Grow{from{transform:scaleY(0)}}@keyframes m1GrowX{from{transform:scaleX(0)}}@keyframes m1Fade{from{opacity:0}}',
-    '@media (max-width:600px){.cur .m1v svg text{font-size:15px}.cur .m1v svg text.s{font-size:14px}.cur .m1v svg text.m{font-size:17px}}',
+    '@media (max-width:600px){.cur .m1v svg text{font-size:15px}.cur .m1v svg text.s,.cur .m1v svg tspan.s{font-size:14px}.cur .m1v svg text.m{font-size:17px}}',
     '.cur .m1v .vctl label b{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-weight:500;font-size:18px}',
     '.cur .m1v .vr b{color:#E2C48F;font-weight:500}',
     '.cur .m1v .vcap{color:var(--t3)}',
@@ -35,7 +36,7 @@
   function rc(x, y, w, h, fill, extra) { return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + Math.max(0, w).toFixed(1) + '" height="' + Math.max(0, h).toFixed(1) + '" fill="' + fill + '"' + (extra || '') + '/>'; }
   function shares(x) { return x >= 1 - 1e-9 && Math.abs(x - Math.round(x)) < 1e-9 ? fmt(Math.round(x)) + '억 주' : fmt(Math.round(x * 10000)) + '만 주'; }
 
-  // ════ m1Split ════ params: { head, parts:[{v, t, d, hl, dash}] (위에서 아래로), cap }
+  // ════ m1Split ════ params: { head, parts:[{v, t, m(= 뜻), d, pct, hl, dash}] (위에서 아래로), cap }
   window.CUR_VIS.m1Split = function (host, p) {
     host.classList.add('m1v');
     var top = 44, bot = 286, x0 = 30, bw = 92, lx = x0 + bw + 46, parts = p.parts || [];
@@ -44,8 +45,10 @@
       var h = (bot - top) * q.v / tot, mid = y + h / 2;
       o += rc(x0, y, bw, h, q.hl ? GOLD : NAVY, ' class="gr" style="animation-delay:' + (i * 120) + 'ms"' + (q.hl ? '' : ' stroke="' + (q.dash ? 'rgba(242,239,232,.55)' : HAIR) + '"' + (q.dash ? ' stroke-dasharray="4 3"' : '')));
       if (i) o += ln(x0, y, x0 + bw, y, BG, ' stroke-width="2"');
+      // 전체 대비 비율: 조각 가운데에 (글자보다 낮은 조각엔 안 넣는다)
+      if (q.pct != null && h >= 24) o += '<g class="fd">' + t(x0 + bw / 2, (mid + 5).toFixed(1), f1(q.pct) + '%', 'pc' + (q.hl ? ' dk' : ''), 'middle') + '</g>';
       o += '<g class="fd">' + ln(x0 + bw, mid, lx - 8, mid, q.hl ? GOLD : 'rgba(242,239,232,.35)') +
-        t(lx, mid - 4, fmt(q.v), 'b' + (q.hl ? ' g' : '')) + t(lx, mid + 19, q.t || '') + (q.d ? t(lx, mid + 39, q.d, 's') : '') + '</g>';
+        t(lx, mid - 4, fmt(q.v), 'b' + (q.hl ? ' g' : '')) + '<text x="' + lx + '" y="' + (mid + 19) + '">' + esc(q.t || '') + (q.m ? '<tspan class="s"> = ' + esc(q.m) + '</tspan>' : '') + '</text>' + (q.d ? t(lx, mid + 39, q.d, 's') : '') + '</g>';
       y += h;
     });
     host.innerHTML = '<svg viewBox="0 0 420 312" role="img" aria-label="' + esc(p.aria || ((p.head || '') + ': ' + parts.map(function (q) { return q.t + ' ' + fmt(q.v); }).join(', '))) + '">' + o + '</svg>' +
@@ -151,8 +154,8 @@
       if (end) {
         o += '<g class="fd">' + t(xa, y - 8, s.r.l) + t(xb + 10, y + rh - 3, sg(s.b), 'b g') + (s.r.d ? t(xb + 92, y + rh - 4, s.r.d, 's') : '') + '</g>';
       } else {
-        var lab = s.r.l + ' ' + sg(s.r.v) + (s.r.d ? ' · ' + s.r.d : '');
-        o += '<g class="fd">' + t(k === 'step' ? xa : z, y - 8, lab, k === 'ref' ? 's' : '') + '</g>';
+        // 이름과 값은 그대로, 덧붙인 말(d)은 옅은 글씨로 띄워서
+        o += '<g class="fd"><text x="' + (k === 'step' ? xa : z) + '" y="' + (y - 8) + '"' + (k === 'ref' ? ' class="s"' : '') + '>' + esc(s.r.l + ' ' + sg(s.r.v)) + (s.r.d ? '<tspan class="s" dx="8">' + esc(s.r.d) + '</tspan>' : '') + '</text></g>';
       }
     });
     var H = y0 + gap * (rows.length - 1) + rh + 30;

@@ -94,11 +94,9 @@
         var gap = c.eq / p.target - 1;
         s = locked ? '' : moved ? '목표 시가총액 <b>' + fmt(c.eq) + '</b> vs 지금 시가총액 <b>' + fmt(p.target) + '</b> ' + esc(U) + ' (' + (Math.abs(gap) < 0.005 ? '거의 같아요' : pctS(gap)) + ')' : esc(p.ask || '슬라이더를 움직여 보세요.');
       } else {
-        s = '주주가치 <b>' + sg(c.eq) + '</b> ' + esc(U) + (p.name ? ' · ' + esc(p.name) : '') + ' → 주당 <b>' + (c.eq > 0 ? fmt(c.ps) : '0') + '원</b>' + (ex != null && c.eq > 0 ? ' · 현재가 ' + fmt(p.price) + '원 대비 ' + pctS(ex) : '');
-        var big = rows.slice().sort(function (a, b) { return val(b) - val(a); })[0];
-        if (big && c.tot > 0) s += '<br>가장 큰 줄: ' + esc(big.l) + ' (전체 가치의 ' + Math.round(100 * val(big) / c.tot) + '%)';
+        s = '주주가치 <b>' + sg(c.eq) + '</b> ' + esc(U) + ' → 주당 <b>' + (c.eq > 0 ? fmt(c.ps) : '0') + '원</b>' + (ex != null && c.eq > 0 ? ', 현재가 ' + fmt(p.price) + '원 대비 ' + pctS(ex) : '');
       }
-      if (sel && R[sel] && R[sel].d && !(Q && !locked && !moved)) s += (s ? '<br>' : '') + '<b>' + esc(R[sel].l) + '</b> · ' + esc(R[sel].d);
+      if (sel && R[sel] && R[sel].d && !(Q && !locked && !moved)) s += (s ? '<br>' : '') + '<b>' + esc(R[sel].l) + '</b> ' + esc(R[sel].d);
       vr.innerHTML = s;
     }
     function draw() {
@@ -178,7 +176,7 @@
     function read() {
       var ev = P.filter(function (b) { return b.g !== 'noa'; }).reduce(function (a, b) { return a + b.v; }, 0), noa = tot - ev, e = tot - nd;
       var s = '영업가치 <b>' + fmt(ev) + '</b> + 비영업가치 <b>' + fmt(noa) + '</b> − 순차입금 ' + fmt(nd) + ' = Equity value <b>' + sg(e) + '</b> ' + esc(U);
-      if (sel >= 0) s = '<b>' + esc(P[sel].l) + ' ' + fmt(P[sel].v) + '</b> · ' + esc(P[sel].d || P[sel].sub || '') + '<br>' + s;
+      if (sel >= 0) s = '<b>' + esc(P[sel].l) + ' ' + fmt(P[sel].v) + '</b> ' + esc(P[sel].d || P[sel].sub || '') + '<br>' + s;
       var n = Object.keys(seen).length; if (n < P.length) s += '<br>' + n + ' / ' + P.length + ' 블록을 눌러 봤어요.';
       vr.innerHTML = s;
     }
@@ -210,7 +208,7 @@
       svg.setAttribute('aria-label', (k === 'op' ? '영업이익' : '매출') + ': 모회사 ' + a + ', 연결 ' + n2(a + b) + ', 모회사 주주 몫 ' + n2(a + b * own / 100) + ' ' + U);
       host.querySelector('.vctl b').textContent = own + '%';
       var nm = k === 'op' ? '영업이익' : '매출', mine = a + b * own / 100, u = U.replace(' 원', '');
-      vr.innerHTML = '연결 ' + nm + ' <b>' + n2(a + b) + u + '</b> 중 ' + esc(B.l) + ' <b>' + Math.round(100 * b / (a + b)) + '%</b> · 지분 ' + own + '%만큼 따지면 모회사 주주 몫 <b>' + n2(mine) + u + '</b>, 그중 ' + esc(B.l) + ' ' + Math.round(100 * (b * own / 100) / mine) + '%';
+      vr.innerHTML = '연결 ' + nm + ' <b>' + n2(a + b) + u + '</b> 중 ' + esc(B.l) + ' <b>' + Math.round(100 * b / (a + b)) + '%</b>예요. 지분 ' + own + '%만큼 따지면 모회사 주주 몫 <b>' + n2(mine) + u + '</b>, 그중 ' + esc(B.l) + ' ' + Math.round(100 * (b * own / 100) / mine) + '%';
     }
     host.querySelectorAll('.m5tg button').forEach(function (bt) { bt.onclick = function () { k = bt.getAttribute('data-k'); host.querySelectorAll('.m5tg button').forEach(function (x) { x.classList.toggle('on', x === bt); }); draw(); }; });
     bindSlider(inp, sl, function () { return own; }, function (v) { own = v; }, draw);
@@ -244,7 +242,7 @@
       host.querySelectorAll('.vctl').forEach(function (cl, i) { var s = SL[i]; cl.querySelector('b').textContent = (s.key === 'price' ? n2(pr.price) : pr[s.key]) + s.u; });
       vr.innerHTML = fc.map(function (y) {
         var i = Y.indexOf(y), rs = yearRows(i), rev = rs.reduce(function (a, r) { return a + r.v; }, 0), gp = rs.reduce(function (a, r) { return a + r.v * r.m / 100; }, 0);
-        return y + '년 매출 <b>' + n2(rev) + u + '</b> · 이익(이익률 가정) <b>' + n2(gp) + u + '</b> · ' + esc(pr.l) + ' ' + n2(projAt(y));
+        return y + '년 매출 <b>' + n2(rev) + u + '</b>, 이익 <b>' + n2(gp) + u + '</b> (' + esc(pr.l) + ' ' + n2(projAt(y)) + ')';
       }).join('<br>') + '<br>' + esc(pr.l) + ' 총 ' + n2(pr.units * pr.price) + u + '을 ' + pr.start + '~' + (pr.start + pr.period - 1) + '년에 나눠 인식 (예시)';
     }
     ins.forEach(function (inp, i) { var s = SL[i]; bindSlider(inp, s, function () { return pr[s.key]; }, function (v) { pr[s.key] = v; }, draw); });
@@ -258,7 +256,7 @@
   L.addCss('cur-m5v-css', [
     '.cur .vis .m5v svg{display:block;width:100%;height:auto;overflow:visible}',
     '.cur .vis .m5v text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
-    '.cur .vis .m5v text.mu{fill:rgba(242,239,232,.66);font-size:12px}',
+    '.cur .vis .m5v text.mu,.cur .vis .m5v tspan.mu{fill:rgba(242,239,232,.66);font-size:12px}',
     '.cur .vis .m5v text.bg{font-family:var(--ser);font-weight:600;font-size:24px}',
     '.cur .vis .m5v .in{animation:m5vIn .7s var(--e) both}',
     '@keyframes m5vIn{from{opacity:0;transform:translateY(6px)}}',
@@ -292,10 +290,10 @@
         if (i) evs += Ln(b, yV + 1, b, yV + hV - 1, GND, ' stroke-width="2"');
         a += we; b += wv;
       });
-      bars += T(x0 + te * s + 12, yE + hE / 2 + 5, 'EBITDA ' + fmt(te) + u + ' · 한 해 버는 돈', 'mu');
+      bars += '<text x="' + q1(x0 + te * s + 12) + '" y="' + q1(yE + hE / 2 + 5) + '">EBITDA ' + fmt(te) + esc(u) + '<tspan class="mu"> = 한 해 버는 돈</tspan></text>';
       var yb = yV + hV + 12, mid = x0 + bw / 2;
       var tot = '<path d="M' + q1(x0) + ' ' + (yb - 6) + 'V' + yb + 'H' + q1(x0 + bw) + 'V' + (yb - 6) + 'M' + q1(mid) + ' ' + yb + 'V' + (yb + 7) + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>' +
-        T(mid, yb + 38, fmt(tv) + u, 'bg', 'middle') + T(mid, yb + 60, (p.total || '전체 값') + ' = ' + P.map(function (q) { return q.l + ' ' + fmt(q.e * q.k); }).join(' + '), 'mu', 'middle');
+        T(mid, yb + 38, fmt(tv) + u, 'bg', 'middle') + T(mid, yb + 60, p.total || '전체 값', 'mu', 'middle');
       var H = yb + 68;
       svg.innerHTML = G(bars, 0, first) + G(fans, 250, first) + G(evs, 500, first) + G(tot, 800, first);
       size(svg, W, H, P.map(function (q) { return q.l + ' EBITDA ' + fmt(q.e) + ' × ' + n1(q.k) + '배 = ' + fmt(q.e * q.k); }).join(', ') + ', 합 ' + fmt(tv) + u + ' (예시)');
@@ -368,7 +366,7 @@
       svg.innerHTML = G(o, 0, first);
       size(svg, W, H, '자회사 가치 ' + fmt(V) + ' × 지분율 ' + own + '% × (1 − 할인율 ' + d + '%) = ' + n1(val) + u + ' (예시)');
       host.querySelector('.vctl b').textContent = d + '%';
-      vr.innerHTML = fmt(V) + ' × ' + own + '% × (1 − ' + d + '%) = <b>' + n1(val) + u + '</b> · 할인이 0%면 ' + n1(V * own / 100) + u + ' (예시)';
+      vr.innerHTML = fmt(V) + ' × ' + own + '% × (1 − ' + d + '%) = <b>' + n1(val) + u + '</b>. 할인이 0%면 ' + n1(V * own / 100) + u + ' (예시)';
       first = false;
     }
     bindSlider(inp, sl, function () { return d; }, function (v) { d = v; }, draw);

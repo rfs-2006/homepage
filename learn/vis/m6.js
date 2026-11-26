@@ -47,8 +47,8 @@
       svg.setAttribute('aria-label', r.t + ': EV ' + nu(r.ev) + ', NOA ' + nu(r.noa) + ', IBD ' + nu(r.ibd) + ', Equity Value ' + nu(eqv(r)) + ' (' + u + ', 예시)');
       eq.innerHTML = box('EV(영업가치)', nu(r.ev)) + '<i>+</i>' + box('NOA', nu(r.noa)) + '<i>−</i>' + box('IBD', nu(r.ibd)) + '<i>=</i>' + box('Equity Value', nu(eqv(r)), 'ac');
       trs.forEach(function (tr, i) { tr.classList.toggle('hid', i >= n); tr.classList.toggle('cur6', i === n - 1); });
-      vr.innerHTML = '<b>' + esc(r.t) + '</b>' + (r.d ? ' · ' + esc(r.d) : '') + ' (단위 ' + esc(u) + ', 예시)';
-      if (n >= R.length) { bt.hidden = true; bt.classList.add('done'); L.gate(ctx, true); } else { bt.textContent = '다음 행동 · ' + R[n].t; L.gate(ctx, false); }
+      vr.innerHTML = '<b>' + esc(r.t) + '</b>' + (r.d ? '. ' + esc(r.d) : '') + ' (단위 ' + esc(u) + ', 예시)';
+      if (n >= R.length) { bt.hidden = true; bt.classList.add('done'); L.gate(ctx, true); } else { bt.textContent = '다음 행동: ' + R[n].t; L.gate(ctx, false); }
     }
     bt.onclick = function () { if (n < R.length) { n++; draw(); } };
     return { draw: draw, gated: function () { return n < R.length; } };
@@ -123,7 +123,7 @@
       rows = rows.concat([['유통주식수', fmt(sh) + '주'], ['목표주가', fmt(tp), 'sub'], ['현재주가', fmt(px)], ['상승여력', eqt > 0 ? L.pc(up) : '−']]);
       tb.innerHTML = rows.map(function (x) { return '<tr class="' + (x[2] || '') + '"><th scope="row">' + x[0] + '</th><td>' + x[1] + '</td></tr>'; }).join('');
       lb[0].textContent = fmt(v.op); lb[1].textContent = fmt(v.noa); lb[2].textContent = fmt(v.ibd);
-      vr.innerHTML = (route === 'ff' ? '<b>FCFF 길</b> · 영업가치에 NOA를 더하고 IBD를 빼요.' : '<b>FCFE 길</b> · FCFE는 빚을 갚은 뒤의 현금이라 할인값이 이미 ' + fmt(v.op) + ' − ' + fmt(v.ibd) + ' = ' + sgn(fe) + '이에요. IBD를 또 빼지 않아요.') +
+      vr.innerHTML = (route === 'ff' ? '영업가치에 NOA를 더하고 IBD를 빼요.' : 'FCFE는 빚을 갚은 뒤의 현금이라 할인값이 이미 ' + fmt(v.op) + ' − ' + fmt(v.ibd) + ' = ' + sgn(fe) + '이에요. IBD를 또 빼지 않아요.') +
         (eqt <= 0 ? ' 빚이 가진 것보다 많아 주주 몫이 남지 않아요.' : ' 자본가치 ' + sgn(eqt) + ' ÷ ' + fmt(sh) + '주 = 목표주가 <b>' + fmt(tp) + '</b>') + ' (예시)';
     }
     ins.forEach(function (s) { s.oninput = function () { v[{ curM6op: 'op', curM6na: 'noa', curM6ib: 'ibd' }[s.id]] = +s.value; draw(); }; s.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
@@ -146,13 +146,13 @@
       var ul = host.querySelector('.m6al'), vr = host.querySelector('.vr'), hd = host.querySelector('.m6h');
       var paint = function () {
         var g = G[gi];
-        hd.textContent = (g.p || g.k) + ' · ' + (p.head || '계정명');
+        hd.textContent = g.p || g.k;
         ul.innerHTML = g.rows.map(function (r, i) { return '<li><button type="button" data-i="' + i + '"><span class="m6n">' + esc(r.n) + (r.s ? '<small>' + esc(r.s) + '</small>' : '') + '</span>' + chip(r.c) + '</button></li>'; }).join('');
         ul.querySelectorAll('button').forEach(function (b) {
           b.onclick = function () {
             var r = g.rows[+b.getAttribute('data-i')];
             ul.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
-            vr.innerHTML = '<b>' + esc(r.n) + (r.s ? ' · ' + esc(r.s) : '') + '</b> → ' + esc(r.c) + '<br>' + esc(r.d || WHY[r.c] || '');
+            vr.innerHTML = '<b>' + esc(r.n) + (r.s ? '(' + esc(r.s) + ')' : '') + '</b> → ' + esc(r.c) + '<br>' + esc(r.d || WHY[r.c] || '');
           };
         });
         vr.textContent = '계정을 누르면 그렇게 나눈 이유가 나와요.' + (G.length > 1 ? ' (' + Object.keys(vis).length + ' / ' + G.length + ' 묶음 봤어요)' : '');
@@ -171,7 +171,7 @@
     function f1c(x) { return (x < 0 ? '−' : '') + Math.abs(x).toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
     var side = null;
     host.innerHTML = '<div class="eqs" aria-live="polite"></div><div class="m6pk">' + RW.map(function (r) {
-      var hd2 = r.side !== side ? '<p class="m6sd">' + (r.side === 'L' ? '부채' : '자산') + ' · ' + esc(p.asof || '') + ' · ' + esc(p.unit || '') + '</p>' : ''; side = r.side;
+      var hd2 = r.side !== side ? '<p class="m6sd">' + (r.side === 'L' ? '부채' : '자산') + ' (' + esc(p.asof || '') + ', ' + esc(p.unit || '') + ')</p>' : ''; side = r.side;
       return hd2 + '<div class="m6p" data-r="' + esc(r.id) + '"><span class="m6n">' + esc(r.n) + '<small>' + f1c(r.v) + ' ' + esc(p.unit || '') + '</small></span><div class="vbt" role="radiogroup" aria-label="' + esc(r.n) + '">' +
         OPT.map(function (o) { return '<button type="button" role="radio" data-c="' + o + '">' + o + '</button>'; }).join('') + '</div></div>';
     }).join('') + '</div><p class="vr" aria-live="polite"></p>';
@@ -310,7 +310,7 @@
 
   // ── FCFF 안의 FCFE: 같은 현금 막대, 누구에게 가느냐로 둘을 나눈다 ──
   window.CUR_VIS.m6Whose = function (host, p, ctx) {
-    var share = p.share || 0.4, ff = esc(p.ff || '채권자와 주주가 함께 나눌 현금'), ffr = esc(p.ffr || '영업가치'), fe = esc(p.fe || '이자와 원금을 갚고 주주에게 남는 현금'), fer = esc(p.fer || '빚을 뺀 주주 몫'), cr = esc(p.cr || '채권자 몫 · 이자와 원금'), sh = esc(p.sh || '주주 몫');
+    var share = p.share || 0.4, ff = esc(p.ff || '채권자와 주주가 함께 나눌 현금'), ffr = esc(p.ffr || '영업가치'), fe = esc(p.fe || '이자와 원금을 갚고 주주에게 남는 현금'), fer = esc(p.fer || '빚을 뺀 주주 몫'), cr = esc(p.cr || '채권자 몫'), sh = esc(p.sh || '주주 몫');
     host.innerHTML = '<svg class="m6v" role="img" aria-label="FCFF는 채권자와 주주가 나눌 현금 전체, FCFE는 그중 이자와 원금을 갚고 주주에게 남는 부분"></svg>' + (p.cap ? '<p class="m6vc">' + esc(p.cap) + '</p>' : '');
     var svg = host.querySelector('svg');
     function draw() {

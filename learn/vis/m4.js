@@ -19,12 +19,12 @@
     '.cur .vis .m4v svg{max-width:540px}',
     '.cur .vis .m4v text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;fill:#F2EFE8;font-size:13px;font-variant-numeric:tabular-nums}',
     '.cur .vis .m4v text.n{font-size:15px;font-weight:500}',
-    '.cur .vis .m4v text.s{font-size:12px;fill-opacity:.72}',
+    '.cur .vis .m4v text.s,.cur .vis .m4v tspan.s{font-size:12px;fill-opacity:.72}',
     '.cur .vis .m4v text.b{font-family:"Noto Serif KR",serif;font-size:24px;font-weight:600}',
     '.cur .vis .m4v text.g{fill:#E2C48F}',
     '.cur .vis .m4v rect,.cur .vis .m4v line,.cur .vis .m4v path{transition:all .25s ease}',
     '.cur .vis .m4v .vctl label{min-width:0}',
-    '@media (max-width:520px){.cur .vis .m4v text{font-size:14px}.cur .vis .m4v text.n{font-size:16px}.cur .vis .m4v text.s{font-size:13px}.cur .vis .m4v text.b{font-size:26px}}'
+    '@media (max-width:520px){.cur .vis .m4v text{font-size:14px}.cur .vis .m4v text.n{font-size:16px}.cur .vis .m4v text.s,.cur .vis .m4v tspan.s{font-size:13px}.cur .vis .m4v text.b{font-size:26px}}'
   ].join('\n'));
 
   function T(x, y, s, cls, anc) { return '<text x="' + r1(x) + '" y="' + r1(y) + '"' + (cls ? ' class="' + cls + '"' : '') + (anc ? ' text-anchor="' + anc + '"' : '') + '>' + s + '</text>'; }
@@ -56,8 +56,8 @@
       o += T(bx - 10, my - 18, fmt(ev), 'b g', 'end') + T(bx - 10, my + 6, 'EV', 'n g', 'end') + T(bx - 10, my + 26, '통째로', 's', 'end') + T(bx - 10, my + 43, '사는 값', 's', 'end');
       // 오른쪽: 선을 끌어 바로 쓴 주석
       var ax = x + w, tx = ax + 44, yd = top + nd * k / 2, ym = yM + mc * k / 2;
-      o += Ln(ax, yd, ax + 34, yd, hair(.45)) + T(tx, yd - 6, fmt(nd), 'n') + T(tx, yd + 13, '같이 떠안는 빚', '') + T(tx, yd + 31, '은행에 갚을 몫', 's');
-      o += Ln(ax, ym, ax + 34, ym, hair(.45)) + T(tx, ym - 6, fmt(mc), 'n') + T(tx, ym + 13, '주식 전부 (시가총액)', '') + T(tx, ym + 31, '주주에게 내는 값', 's');
+      o += Ln(ax, yd, ax + 34, yd, hair(.45)) + T(tx, yd - 6, fmt(nd), 'n') + T(tx, yd + 14, '같이 떠안는 빚', '');
+      o += Ln(ax, ym, ax + 34, ym, hair(.45)) + T(tx, ym - 6, fmt(mc), 'n') + T(tx, ym + 14, '시가총액 <tspan class="s">= 주식 전부 값</tspan>', '');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '시가총액 ' + fmt(mc) + '에 같이 떠안는 빚 ' + fmt(nd) + '을 더하면 EV ' + fmt(ev));
     }
@@ -146,8 +146,8 @@
       o += T(xC + w / 2, base + 20, '시가총액', '', 'middle') + T(xD + w2 / 2, base + 20, '순이익', '', 'middle') + T(xD + w2 / 2, base + 38, f1(c.ni), 'n', 'middle');
       o += T(xA + w / 2, base + 38, '= 시가총액 + 빚', 's', 'middle');
       // 위: 배수 (금색은 그대로인 EV/EBITDA 하나)
-      o += T(xA, 30, f1(c.evm) + '배', 'b g') + T(xA, 52, 'EV/EBITDA · 그대로', 's');
-      o += T(xC, 30, f1(c.per) + '배', 'b') + T(xC, 52, 'PER · 빚 따라 바뀜', 's');
+      o += T(xA, 30, f1(c.evm) + '배', 'b g') + T(xA, 52, 'EV/EBITDA&#160; <tspan class="s">그대로</tspan>', '');
+      o += T(xC, 30, f1(c.per) + '배', 'b') + T(xC, 52, 'PER&#160; <tspan class="s">빚 따라 바뀜</tspan>', '');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '빚 ' + fmt(v.nd) + '일 때 EV/EBITDA ' + f1(c.evm) + '배, PER ' + f1(c.per) + '배');
       lb.textContent = fmt(v.nd);
@@ -190,7 +190,7 @@
       o += T((xa + xb) / 2, yt - 8, '해마다 ' + fmt(d) + ' × ' + n + '년 = ' + fmt(C), 's', 'middle');
       // 금색: 올해 상각비 — 비용이지만 현금은 0
       var hx = Math.min(x0 + hl * step, 440 - 92);
-      o += Ln(x0 + hl * step, axY + 48, x0 + hl * step, axY + 62, GOLD) + T(hx, axY + 80, '올해 상각비 ' + fmt(d) + ' · 현금은 0', 'g', 'middle');
+      o += Ln(x0 + hl * step, axY + 48, x0 + hl * step, axY + 62, GOLD) + T(hx, axY + 80, '올해 상각비 ' + fmt(d), 'g', 'middle');
       o += T(hx, axY + 99, 'EBITDA는 이 ' + fmt(d) + '을 빼기 전 이익', 's', 'middle');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '0년 차에 설비값 ' + fmt(C) + '이 현금으로 나가고, 1~' + n + '년 차에는 상각비 ' + fmt(d) + '씩 비용만 잡히고 현금은 나가지 않아요');

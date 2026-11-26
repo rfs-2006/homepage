@@ -10,7 +10,7 @@
   L.addCss('cur-m2-font', "@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap');");
   L.addCss('cur-m2-css', [
     '.cur .vis svg.m2 text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13.5px}',
-    '.cur .vis svg.m2 text.sm{font-size:12.5px;fill:rgba(242,239,232,.74)}',
+    '.cur .vis svg.m2 text.sm,.cur .vis svg.m2 tspan.sm{font-size:12.5px;fill:rgba(242,239,232,.74)}',
     '.cur .vis svg.m2 text.xs{font-size:11.5px;fill:rgba(242,239,232,.7)}',
     '.cur .vis svg.m2 text.dk{fill:#0D1829}',
     '.cur .vis svg.m2 text.big{font-family:"Noto Serif KR",serif;font-size:26px;font-weight:600}',
@@ -46,7 +46,7 @@
     function draw() {
       var w = wOf(host), u = w / n, by = 64, bh = Math.round(clamp(w * 0.07, 44, 60)), o = '';
       // 위: 가게값 전체를 묶는 괄호
-      o += txt(w / 2, 22, '가게값 <tspan class="sm">· 주식에선 주가</tspan>', '', 'middle');
+      o += txt(w / 2, 22, '가게값 <tspan class="sm">= 주식에선 주가</tspan>', '', 'middle');
       o += '<path d="M0.5 44V34H' + (w - 0.5) + 'V44" fill="none" stroke="' + LINE + '"/>';
       // 막대: 한 해 이익 n칸, 하나씩 채워진다
       for (var i = 0; i < n; i++) {
@@ -80,7 +80,7 @@
       // 2) 한 칸 = EPS
       o += line(u / 2, 54, u / 2, 76, LINE, ' stroke-dasharray="3 3"');
       o += rect(0.5, 78, u - 0.5, 26, GOLD);
-      o += line(u + 4, 91, u + 22, 91, LINE) + txt(u + 28, 96, 'EPS <tspan class="sm">· 한 주 몫 이익</tspan>');
+      o += line(u + 4, 91, u + 22, 91, LINE) + txt(u + 28, 96, 'EPS <tspan class="sm">= 한 주 몫 이익</tspan>');
       // 3) EPS 칸을 PER개 쌓으면 주가
       o += txt(0, 136, '주가 = EPS × ' + per);
       o += rect(0.75, 146, len - 1.5, 40, 'rgba(226,196,143,.16)', GOLD, ' stroke-width="1.5" class="mv"');
@@ -109,9 +109,9 @@
       var w = wOf(host), c = calc(v), c0 = calc(v0), K = w / (price * hi), o = '', bh = w > 600 ? 30 : 24, gap = bh + 32, y0 = 22;
       var xs = [[0, c.R], [0, c.V], [c.V, c.V + F], [c.V + F, c.R]];
       var lab = [
-        '매출 ' + fmt(c.R) + '억 <tspan class="sm">· ' + x1(v) + '억 개 × ' + fmt(price) + '원</tspan>',
-        '변동비 ' + fmt(c.V) + '억 <tspan class="sm">· 원재료비처럼 판매량 따라</tspan>',
-        '고정비 ' + fmt(F) + '억 <tspan class="sm">· 본사 월급처럼 그대로</tspan>',
+        '매출 ' + fmt(c.R) + '억 <tspan class="sm">= ' + x1(v) + '억 개 × ' + fmt(price) + '원</tspan>',
+        '변동비 ' + fmt(c.V) + '억&#160; <tspan class="sm">원재료비처럼 판매량 따라</tspan>',
+        '고정비 ' + fmt(F) + '억&#160; <tspan class="sm">본사 월급처럼 그대로</tspan>',
         '영업이익 <tspan class="gd">' + fmt(c.P) + '억</tspan>'
       ];
       xs.forEach(function (s, i) {
@@ -149,14 +149,14 @@
       o += txt(0, bot + 24, '과거', 'xs') + txt((nx + px) / 2, bot + 24, '지금', 'xs', 'middle');
       // 뒤: 같은 회사의 과거 배수
       o += '<path d="' + HIST.map(function (f, i) { return (i ? 'L' : 'M') + hx(i).toFixed(1) + ' ' + Y(f).toFixed(1); }).join('') + '" fill="none" stroke="' + INK + '" stroke-opacity=".8" stroke-width="1.8" stroke-linejoin="round"/>';
-      o += txt(0, 16, '뒤를 봐요 · Historical PER', '', '', true) + txt(0, 35, '같은 회사가 예전에 받던 배수', 'sm', '', true);
+      o += txt(0, 16, '뒤를 봐요&#160; <tspan class="sm">Historical PER</tspan>', '', '', true) + txt(0, 35, '같은 회사가 예전에 받던 배수', 'sm', '', true);
       o += line(hx(3), 42, hx(3), Y(HIST[3]) - 6, LINE);
       o += line(hx(HIST.length - 1) + 6, Y(HIST[HIST.length - 1]), nx - 14, my, LINE, ' stroke-dasharray="2 4"');
       // 옆: 비슷한 회사들의 지금 배수
       PEER.forEach(function (f) { o += '<circle cx="' + px.toFixed(1) + '" cy="' + Y(f).toFixed(1) + '" r="5" fill="none" stroke="' + INK + '" stroke-opacity=".75"/>'; });
       o += line(px - 10, my, nx + 14, my, LINE, ' stroke-dasharray="2 4"');
       o += line(px, Y(PEER[PEER.length - 1]) + 8, px, bot + 36, LINE);
-      o += txt(w, bot + 52, '옆을 봐요 · Peer PER', '', 'end') + txt(w, bot + 71, '비슷한 회사가 지금 받는 배수', 'sm', 'end');
+      o += txt(w, bot + 52, '옆을 봐요&#160; <tspan class="sm">Peer PER</tspan>', '', 'end') + txt(w, bot + 71, '비슷한 회사가 지금 받는 배수', 'sm', 'end');
       // 지금 우리 회사: 몇 배?
       o += '<circle cx="' + nx.toFixed(1) + '" cy="' + my.toFixed(1) + '" r="8" fill="' + GOLD + '"/>' + txt(nx, my - 16, '?', 'big gd', 'middle');
       put(svg, w, bot + 80, o, '시간축. 왼쪽은 같은 회사가 과거에 받던 PER(Historical), 오른쪽은 비슷한 회사들이 지금 받는 PER(Peer). 둘을 보고 지금 우리 회사에 줄 배수를 골라요.');

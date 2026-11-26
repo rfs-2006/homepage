@@ -162,8 +162,7 @@
       if (gap > 0) o += '<rect x="' + gx + '" y="' + gy + '" width="' + gw + '" height="' + gh + '" fill="' + GOLD + '"/>';
       o += '<rect x="' + X0 + '" y="' + (B - mh) + '" width="' + mw + '" height="' + mh + '" fill="none" stroke="' + INK + '" stroke-opacity=".75" stroke-dasharray="4 3"/>';
       o += '<text x="' + X0 + '" y="' + (B - mh - 22) + '" class="lb">내 가치 ' + n1(my.e * my.m) + ' = 이익 ' + n1(my.e) + ' × ' + n1(my.m) + '배</text>';
-      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2) + '" text-anchor="middle" class="lb">시장 ' + n1(c.e * c.m) + '</text>';
-      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 + 19) + '" text-anchor="middle" class="sm">이익 ' + n1(c.e) + ' × ' + n1(c.m) + '배</text>';
+      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 + 5) + '" text-anchor="middle" class="lb">시장 ' + n1(c.e * c.m) + '</text>';
       // 직접 주석
       if (gap > 0) {
         var ay = gy + gh / 2, ax = gx + gw, tx = X0 + mw + 22;
