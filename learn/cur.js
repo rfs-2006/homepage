@@ -596,6 +596,7 @@
     '.cur.v2 .fmap .op{padding-top:14px;width:16px;text-align:center;font-size:18px;color:var(--t3)}',
     '@media (max-width:640px){.cur.v2 .fmap{flex-direction:column;gap:0}.cur.v2 .fmap .op{display:none}.cur.v2 .fmap .c{border-top-width:1px;padding:12px 0;min-width:0}}',
     '.cur.v2 .note,.cur.v2 .note p,.cur.v2 .pts li,.cur.v2 .ex,.cur.v2 .ex p,.cur.v2 .defs span,.cur.v2 .o .lb,.cur.v2 .o .s,.cur.v2 .hm .lead{text-wrap:pretty}',
+    '.cur.v2 p.src{margin-top:auto;padding-top:28px;font-size:12.5px;line-height:1.6;color:rgba(242,239,232,.45);max-width:60em}',
     /* 다음 버튼: 알약 */
     '.cur.v2 .nx{border-radius:999px;font-weight:500}',
     '@media (min-width:900px){.cur.v2 .nx{right:var(--pad);bottom:40px;height:auto;padding:12px 22px;background:var(--tx)!important;color:#0B1526;font-family:inherit;font-size:15.5px;font-weight:500;box-shadow:none}.cur.v2 .nx.alt{background:var(--wm)!important;color:#0B1526;box-shadow:none}}'
@@ -2100,6 +2101,7 @@
     rv.hidden = !st.review; rv.innerHTML = esc(s.id) + ' · ' + esc(s.type) + ' · <b>' + esc(s.status || 'draft') + '</b>';
     prog(s);
     (R[s.type] || R.info)(s);
+    if (s.src) { var sp = document.createElement('p'); sp.className = 'src'; sp.textContent = s.src; st.bx.appendChild(sp); }
     // 검수 메모(review): ?review=1 일 때만. 학습 화면에는 절대 안 보인다
     if (st.review && s.review) {
       var rn = document.createElement('aside'), rl = [].concat(s.review);
