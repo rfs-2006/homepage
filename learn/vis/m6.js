@@ -87,8 +87,8 @@
       eq.innerHTML = box('Σ FCFFₜ ÷ (1+WACC)ᵗ', fmt(c.sum)) + '<i>+</i>' + box('TV ÷ (1+WACC)ⁿ', fmt(c.ptv), 'wm') + '<i>=</i>' + box('EV(영업가치)', fmt(c.ev), 'ac');
       lb[0].textContent = L.f1(r) + '%'; lb[1].textContent = L.f1(g) + '%';
       var b = calc(true);
-      vr.innerHTML = 'TV가 EV의 <b>' + Math.round(c.ptv / c.ev * 100) + '%</b>예요. WACC가 오르면 먼 해의 현금일수록 더 크게 줄어요.' +
-        (tried ? '<br><span class="m6bad">흔한 실수처럼 WACCⁿ(' + L.f1(r / 100) + 'ⁿ)으로 나누면 EV ≈ ' + fmt(b.ev) + ', 맞는 식의 약 ' + fmt(b.ev / c.ev) + '배예요. 미래 돈이 오늘 오히려 부풀어요. 분모는 (1 + WACC)ⁿ이어야 해요.</span>' : '') + ' (예시)';
+      vr.innerHTML = 'TV가 EV의 <b>' + Math.round(c.ptv / c.ev * 100) + '%</b>예요. WACC가 오르면 먼 해의 현금일수록 더 줄어요. (1 + WACC)로 나누는 횟수가 많거든요.' +
+        (tried ? '<br><span class="m6bad">흔한 실수처럼 WACCⁿ(' + L.f1(r / 100) + 'ⁿ)으로 나누면 EV ≈ ' + fmt(b.ev) + ', 맞는 식의 약 ' + fmt(b.ev / c.ev) + '배예요. 미래 돈이 오늘 값보다 부풀어요. 분모는 (1 + WACC)ⁿ이어야 해요.</span>' : '') + ' (예시)';
     }
     sr.oninput = function () { r = +sr.value; draw(); }; sg.oninput = function () { g = +sg.value; draw(); };
     [sr, sg].forEach(function (s) { s.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
