@@ -53,11 +53,11 @@
       var bx = x - 16;
       o += Ln(bx + 8, top, bx, top, GOLD) + Ln(bx, top, bx, base, GOLD, ' stroke-width="1.5"') + Ln(bx, base, bx + 8, base, GOLD);
       var my = (top + base) / 2;
-      o += T(bx - 10, my - 18, fmt(ev), 'b g', 'end') + T(bx - 10, my + 6, 'EV', 'n g', 'end') + T(bx - 10, my + 26, '통째로', 's', 'end') + T(bx - 10, my + 43, '사는 값', 's', 'end');
+      o += T(bx - 10, my - 18, fmt(ev), 'b g', 'end') + T(bx - 10, my + 6, 'EV', 'n g', 'end') + T(bx - 10, my + 26, '통째로 사는 값', 's', 'end');
       // 오른쪽: 선을 끌어 바로 쓴 주석
       var ax = x + w, tx = ax + 44, yd = top + nd * k / 2, ym = yM + mc * k / 2;
       o += Ln(ax, yd, ax + 34, yd, hair(.45)) + T(tx, yd - 6, fmt(nd), 'n') + T(tx, yd + 14, '같이 떠안는 빚', '');
-      o += Ln(ax, ym, ax + 34, ym, hair(.45)) + T(tx, ym - 6, fmt(mc), 'n') + T(tx, ym + 14, '시가총액 <tspan class="s">= 주식 전부 값</tspan>', '');
+      o += Ln(ax, ym, ax + 34, ym, hair(.45)) + T(tx, ym - 6, fmt(mc), 'n') + T(tx, ym + 14, '시가총액', '') + T(tx, ym + 32, '주식 전부 값', 's');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '시가총액 ' + fmt(mc) + '에 같이 떠안는 빚 ' + fmt(nd) + '을 더하면 EV ' + fmt(ev));
     }
@@ -109,7 +109,7 @@
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '시가총액 ' + fmt(mc) + ' + 차입금 ' + fmt(p.debt) + ' − 현금 ' + fmt(p.cash) + ' − 비영업자산 ' + fmt(noa) + ' = EV ' + fmt(ev) + ', EBITDA ' + fmt(p.ebitda) + '로 나누면 ' + f1(m) + '배');
       lb.textContent = fmt(noa);
-      vr.innerHTML = '비영업자산 ' + fmt(noa) + '이면 시가총액 ' + fmt(mc) + ', EV <b>' + fmt(ev) + '</b>, EV/EBITDA <b>' + f1(m) + '배</b>' + (noa > 0 ? '. 빼지 않으면 ' + f1(mr) + '배로 부풀어요.' : '. 뺄 자산이 없으면 두 값이 같아요.');
+      vr.innerHTML = noa > 0 ? '비영업자산을 빼지 않으면 EV/EBITDA가 <b>' + f1(mr) + '배</b>로 부풀어요.' : '뺄 자산이 없으면 두 값이 같아요.';
     }
     inp.addEventListener('input', function () { v.noa = +inp.value; draw(); });
     keys(inp);
@@ -125,7 +125,7 @@
     var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), inp = host.querySelector('input'), lb = host.querySelector('.vctl b');
     function calc(nd) { var it = nd * p.rate / 100, ni = (p.ebitda - p.da - it + p.nonop) * (1 - p.tax / 100), mc = p.ev - nd; return { it: it, ni: ni, mc: mc, per: mc / ni, evm: p.ev / p.ebitda }; }
     function draw() {
-      var c = calc(v.nd), base = 250, top = 76, k = (base - top) / p.ev, o = '', Y = function (x) { return base - x * k; };
+      var c = calc(v.nd), base = 256, top = 92, k = (base - top) / p.ev, o = '', Y = function (x) { return base - x * k; };
       var w = 70, w2 = 40, xA = 18, xB = xA + w + 22, xC = 248, xD = xC + w + 22;
       o += Ln(0, base, 440, base, hair(.25));
       // 왼쪽: EV = 시가총액 + 순차입금, 옆에 EBITDA
@@ -139,19 +139,19 @@
       // 같은 시가총액을 잇는 선
       o += Ln(xA + w, Y(c.mc), xC, Y(c.mc), hair(.3), ' stroke-dasharray="2 4"');
       // 막대 안 숫자
-      if (v.nd >= 300) o += T(xA + w / 2, Y(p.ev) + v.nd * k / 2 + 5, '빚 ' + fmt(v.nd), 's', 'middle');
+      if (v.nd >= 300) o += T(xA + w / 2, Y(p.ev) + v.nd * k / 2 + 5, fmt(v.nd), 's', 'middle');
       if (c.mc * k > 26) { o += T(xA + w / 2, Y(c.mc) + 20, fmt(c.mc), 'n', 'middle'); o += T(xC + w / 2, Y(c.mc) + 20, fmt(c.mc), 'n', 'middle'); }
       // 아래 이름
-      o += T(xA + w / 2, base + 20, 'EV ' + fmt(p.ev), '', 'middle') + T(xB + w2 / 2, base + 20, 'EBITDA', '', 'middle') + T(xB + w2 / 2, base + 38, fmt(p.ebitda), 'n', 'middle');
-      o += T(xC + w / 2, base + 20, '시가총액', '', 'middle') + T(xD + w2 / 2, base + 20, '순이익', '', 'middle') + T(xD + w2 / 2, base + 38, f1(c.ni), 'n', 'middle');
-      o += T(xA + w / 2, base + 38, '= 시가총액 + 빚', 's', 'middle');
+      o += T(xB + w2 / 2, Y(p.ebitda) - 8, fmt(p.ebitda), 'n', 'middle') + T(xD + w2 / 2, Y(Math.max(c.ni, 0)) - 8, f1(c.ni), 'n', 'middle');
+      o += T(xA + w / 2, base + 20, 'EV', '', 'middle') + T(xA + w / 2, base + 38, '시가총액 + 빚', 's', 'middle') + T(xB + w2 / 2, base + 20, 'EBITDA', '', 'middle');
+      o += T(xC + w / 2, base + 20, '시가총액', '', 'middle') + T(xD + w2 / 2, base + 20, '순이익', '', 'middle');
       // 위: 배수 (금색은 그대로인 EV/EBITDA 하나)
-      o += T(xA, 30, f1(c.evm) + '배', 'b g') + T(xA, 52, 'EV/EBITDA&#160; <tspan class="s">그대로</tspan>', '');
-      o += T(xC, 30, f1(c.per) + '배', 'b') + T(xC, 52, 'PER&#160; <tspan class="s">빚 따라 바뀜</tspan>', '');
+      o += T(xA, 28, f1(c.evm) + '배', 'b g') + T(xA, 48, 'EV/EBITDA', '') + T(xA, 65, '= ' + fmt(p.ev) + ' ÷ ' + fmt(p.ebitda), 's');
+      o += T(xC, 28, f1(c.per) + '배', 'b') + T(xC, 48, 'PER', '') + T(xC, 65, '= ' + fmt(c.mc) + ' ÷ ' + f1(c.ni), 's');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '빚 ' + fmt(v.nd) + '일 때 EV/EBITDA ' + f1(c.evm) + '배, PER ' + f1(c.per) + '배');
       lb.textContent = fmt(v.nd);
-      vr.innerHTML = '빚 ' + fmt(v.nd) + ' → 이자 ' + f1(c.it) + ', 순이익 ' + f1(c.ni) + ', 시가총액 ' + fmt(c.mc) + '. EV/EBITDA <b>' + f1(c.evm) + '배</b>, PER <b>' + f1(c.per) + '배</b>.';
+      vr.innerHTML = v.nd > 0 ? '빚이 ' + fmt(v.nd) + '이면 이자 ' + f1(c.it) + '만큼 순이익이 줄어 PER만 <b>' + f1(c.per) + '배</b>로 바뀌어요.' : '빚이 없으면 EV와 시가총액이 같아요.';
     }
     inp.addEventListener('input', function () { v.nd = +inp.value; draw(); });
     keys(inp);
@@ -187,11 +187,11 @@
       // 다섯 해 꺾쇠 = 합치면 처음 낸 돈
       var xa = x0 + step - bw / 2, xb = x0 + n * step + bw / 2, yt = axY - d * k - 12;
       o += Ln(xa, yt + 6, xa, yt, hair(.5)) + Ln(xa, yt, xb, yt, hair(.5)) + Ln(xb, yt, xb, yt + 6, hair(.5));
-      o += T((xa + xb) / 2, yt - 8, '해마다 ' + fmt(d) + ' × ' + n + '년 = ' + fmt(C), 's', 'middle');
+      o += T((xa + xb) / 2, yt - 8, '해마다 ' + fmt(d), 's', 'middle');
       // 금색: 올해 상각비 — 비용이지만 현금은 0
       var hx = Math.min(x0 + hl * step, 440 - 92);
-      o += Ln(x0 + hl * step, axY + 48, x0 + hl * step, axY + 62, GOLD) + T(hx, axY + 80, '올해 상각비 ' + fmt(d), 'g', 'middle');
-      o += T(hx, axY + 99, 'EBITDA는 이 ' + fmt(d) + '을 빼기 전 이익', 's', 'middle');
+      o += Ln(x0 + hl * step, axY + 48, x0 + hl * step, axY + 62, GOLD) + T(hx, axY + 80, '상각비', 'g', 'middle');
+      o += T(hx, axY + 98, 'EBITDA는 빼기 전 이익', 's', 'middle');
       svg.innerHTML = o;
       svg.setAttribute('aria-label', '0년 차에 설비값 ' + fmt(C) + '이 현금으로 나가고, 1~' + n + '년 차에는 상각비 ' + fmt(d) + '씩 비용만 잡히고 현금은 나가지 않아요');
     }

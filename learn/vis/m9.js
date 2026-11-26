@@ -99,8 +99,7 @@
       svg.setAttribute('aria-label', '소각 ' + s1(c.inc) + '억, 매립 ' + s1(c.lf) + '억, 스팀 ' + s1(c.st) + '억, 합계 ' + s1(c.rev) + '억 원');
       host.querySelectorAll('.vctl').forEach(function (cl) { var k = cl.querySelector('input').getAttribute('data-k'); cl.querySelector('b').textContent = k === 'uOld' ? pct(v[k]) : v[k].toFixed(1); });
       var d = c.rev - (M.capOld * M.days * M.uOld / 1e4) * (M.pInc + M.steam) - M.qLf * M.pLf;
-      vr.innerHTML = '환경 매출 <b>' + s1(c.rev) + '억 원</b>' + (Math.abs(d) > 0.05 ? ' (처음보다 ' + (d > 0 ? '+' : '−') + s1(Math.abs(d)) + '억)' : '') +
-        (ref ? '<br>' + esc(ref.lab) + ': 소각 ' + ref.inc + ', 매립 ' + ref.lf + ', 스팀 ' + ref.st + '억' : '');
+      vr.innerHTML = Math.abs(d) > 0.05 ? '환경 매출이 처음보다 <b>' + (d > 0 ? '+' : '−') + s1(Math.abs(d)) + '억</b> 바뀌었어요.' : (ref ? esc(ref.lab) + ': 소각 ' + ref.inc + ', 매립 ' + ref.lf + ', 스팀 ' + ref.st + '억이에요.' : '');
     }
     ins.forEach(function (el) { el.addEventListener('input', function () { v[el.getAttribute('data-k')] = +el.value; draw(); }); el.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
     return { draw: draw };
@@ -130,7 +129,7 @@
         });
         var pvd = c.w.pvsum - c.none.pvsum, tvd = c.w.pvtv - c.none.pvtv;
         eq.innerHTML = box('5년 현재가치 차이', sg(pvd) + '억') + '<i>+</i>' + box('TV 현재가치 차이', sg(tvd) + '억') + '<i>=</i>' + box('증설 가치', sg(c.value) + '억', 'hl');
-        vr.innerHTML = '확장 CAPEX ' + fmt(M.capex) + '억 원은 ' + (cur - 1) + '년에 나가요. 마지막 해 신설 가동률 ' + pct(c.util[n - 1]) + (c.util[n - 1] < 0.9 ? ' (아직 정상 가동 전이라 TV가 낮게 잡혀요)' : '') + '.';
+        vr.innerHTML = '확장 CAPEX ' + fmt(M.capex) + '억 원은 ' + (cur - 1) + '년에 나가고, 마지막 해 신설 가동률은 ' + pct(c.util[n - 1]) + (c.util[n - 1] < 0.9 ? '라 TV가 낮게 잡혀요.' : '예요.');
       }
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', cur ? cur + '년 가동일 때 해마다 증설로 달라지는 FCFF (억 원)' : '가동 연도를 고르면 해마다 증설로 달라지는 FCFF가 보여요');
@@ -154,7 +153,7 @@
       '<div class="m9w"></div><div class="eqs" aria-live="polite"></div><div class="eqs m9e2"></div><p class="vr"></p>' + capHtml(p);
     var wrap = host.querySelector('.m9w'), eq = host.querySelector('.eqs'), eq2 = host.querySelector('.m9e2'), vr = host.querySelector('.vr');
     function draw() {
-      if (!cur) { wrap.innerHTML = ''; eq.innerHTML = ''; eq2.innerHTML = ''; vr.innerHTML = '버튼을 눌러 표를 여세요. (억 원)'; return; }
+      if (!cur) { wrap.innerHTML = ''; eq.innerHTML = ''; eq2.innerHTML = ''; vr.innerHTML = '버튼을 눌러 표를 여세요.'; return; }
       var t = total(M, cur), e = t.env, R = e.rows;
       function row(l, f, cls, tv) { return '<tr class="' + (cls || '') + '"><th scope="row">' + l + '</th>' + R.map(function (r) { var x = f(r); return '<td class="' + (x < -0.5 ? 'neg' : '') + '">' + sg(x) + '</td>'; }).join('') + '<td class="tv">' + (tv == null ? '' : sg(tv)) + '</td></tr>'; }
       wrap.innerHTML = '<table class="m9t"><colgroup><col class="l">' + R.map(function () { return '<col>'; }).join('') + '<col></colgroup><thead><tr><th scope="col"><span style="font-size:10.5px;font-family:inherit;font-weight:300;color:var(--t3)">억 원</span></th>' + R.map(function (r) { return '<th scope="col">' + String(r.y).slice(2) + 'E</th>'; }).join('') + '<th scope="col">TV</th></tr></thead><tbody>' +
@@ -162,7 +161,7 @@
         row('− CAPEX', function (r) { return -r.capex; }) + row('− ΔNWC', function (r) { return -r.dnwc; }) + row('FCFF', function (r) { return r.fcff; }, 'hl', e.tv) + row('현재가치', function (r) { return r.pv; }, '', e.pvtv) + '</tbody></table>';
       eq.innerHTML = box('5년 현재가치 합', fmt(e.pvsum) + '억') + '<i>+</i>' + box('TV 현재가치', fmt(e.pvtv) + '억') + '<i>=</i>' + box('환경 EV', fmt(e.ev) + '억', 'hl') + box('TV 비중', pct(e.share), 'wm');
       eq2.innerHTML = p.full ? box('+ 해운·기타', fmt(t.ship + t.etc) + '억') + '<i>+</i>' + box('비영업자산', s1(t.noa) + '억') + '<i>−</i>' + box('차입금', s1(M.ibd) + '억') + '<i>=</i>' + box('주주가치', fmt(t.eq) + '억', 'hl') + '<i>÷</i>' + box('주식 수', fmt(M.shares) + '만 주') + '<i>=</i>' + box('주당 가치', fmt(t.ps) + '원', 'ac') : '';
-      vr.innerHTML = '<b>' + M.sc[cur].label + '</b> ' + esc(NOTE[cur] || '') + '<br>WACC ' + f1(M.wacc * 100) + '%, g ' + f1(M.g * 100) + '%, 세율 ' + Math.round(M.tax * 100) + '%. TV = ' + s1(R[R.length - 1].fcff) + ' × (1 + g) ÷ (WACC − g)' + (p.full ? '. 지금 주가 ' + fmt(M.px) + '원' : '');
+      vr.innerHTML = '<b>' + M.sc[cur].label + '</b> ' + esc(NOTE[cur] || '');
     }
     host.querySelectorAll('.vgo').forEach(function (b) {
       b.onclick = function () {
@@ -185,7 +184,7 @@
     var base0 = total(M, sc);
     function draw() {
       var t = total(M, sc, { ship: v.ship, fin: v.fin / 100 }), w = L.wOf(host), lw = Math.min(118, w * 0.33), vw = 52, rh = 27, top = Math.max(t.ev + t.noa, base0.ev + M.cash + M.fin) * 1.02;
-      var items = [['환경 EV (DCF)', t.env.ev, 'a'], ['해운 ' + f1(v.ship) + '배', t.ship, 'a'], ['기타 ' + f1(M.etcMult) + '배', t.etc, 'a'], ['= EV', t.ev, 'sum'], ['현금', M.cash, 'g'], ['금융자산 ' + v.fin + '%', t.finv, 'g'], ['− 차입금', -M.ibd, 'n'], ['= 주주가치', t.eq, 'sum']];
+      var items = [['환경 EV (DCF)', t.env.ev, 'a'], ['해운', t.ship, 'a'], ['기타 ' + f1(M.etcMult) + '배', t.etc, 'a'], ['= EV', t.ev, 'sum'], ['현금', M.cash, 'g'], ['금융자산 ' + v.fin + '%', t.finv, 'g'], ['− 차입금', -M.ibd, 'n'], ['= 주주가치', t.eq, 'sum']];
       var X = function (x) { return lw + (w - lw - vw) * x / top; }, run = 0, o = '', h = items.length * rh + 54;
       items.forEach(function (it, i) {
         var y = 6 + i * rh, a, b;
@@ -202,7 +201,7 @@
       svg.setAttribute('aria-label', '환경 ' + fmt(t.env.ev) + ' + 해운 ' + fmt(t.ship) + ' + 기타 ' + fmt(t.etc) + ' = EV ' + fmt(t.ev) + '억, 주주가치 ' + fmt(t.eq) + '억, 주당 ' + fmt(t.ps) + '원');
       host.querySelectorAll('.vctl').forEach(function (cl) { var k = cl.querySelector('input').getAttribute('data-k'); cl.querySelector('b').textContent = k === 'ship' ? f1(v.ship) + '배' : v.fin + '%'; });
       var dp = t.ps - base0.ps;
-      vr.innerHTML = 'EV <b>' + fmt(t.ev) + '억</b> → 주주가치 <b>' + fmt(t.eq) + '억</b> → 주당 <b>' + fmt(t.ps) + '원</b>, 주가의 ' + (t.ps / M.px).toFixed(1) + '배' + (Math.abs(dp) >= 1 ? ' (처음보다 ' + (dp > 0 ? '+' : '−') + fmt(Math.abs(dp)) + '원)' : '');
+      vr.innerHTML = '주당 가치가 주가의 <b>' + (t.ps / M.px).toFixed(1) + '배</b>예요' + (Math.abs(dp) >= 1 ? ' (처음보다 ' + (dp > 0 ? '+' : '−') + fmt(Math.abs(dp)) + '원)' : '') + '.';
     }
     ins.forEach(function (el) { el.addEventListener('input', function () { v[el.getAttribute('data-k')] = +el.value; draw(); }); el.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
     return { draw: draw };
@@ -224,11 +223,11 @@
             return '<td class="' + cls + '" style="background:rgba(143,170,220,' + (0.08 + 0.42 * a).toFixed(2) + ')"><button type="button" data-i="' + idx + '"' + (Q ? '' : ' tabindex="-1"') + ' aria-label="' + esc(S.rl(S.rows[i]) + ', ' + S.cl(S.cols[j]) + ': ' + fmt(x) + '원') + '">' + fmt(x) + '</button></td>';
           }).join('') + '</tr>';
         }).join('') + '</tbody></table>';
-      cp.textContent = S.rh + '. 주당 가치(원), 가운데는 Base ' + fmt(center) + '원';
+      cp.textContent = '주당 가치(원), 테두리 칸이 Base예요.';
       if (Q) {
         g.querySelectorAll('button').forEach(function (b) { b.onclick = function () { if (locked) return; pick = +b.getAttribute('data-i'); ctx.ready(true); draw(); }; });
         if (!locked) vr.innerHTML = pick == null ? esc(p.ask || '칸을 하나 고르세요.') : '고른 칸: <b>' + esc(S.rl(S.rows[Math.floor(pick / 5)]) + ', ' + S.cl(S.cols[pick % 5])) + '</b> → ' + fmt(G[Math.floor(pick / 5)][pick % 5]) + '원';
-      } else vr.innerHTML = esc(S.t) + ' 표는 <b>' + fmt(lo) + '~' + fmt(hi) + '원</b>. 지금 주가 ' + fmt(M.px) + '원' + (lo > M.px ? '보다 모두 높아요.' : '보다 낮은 칸이 있어요.');
+      } else vr.innerHTML = '지금 주가 ' + fmt(M.px) + '원' + (lo > M.px ? '보다 모든 칸이 높아요.' : '보다 낮은 칸이 있어요.');
     }
     host.querySelectorAll('.vgo').forEach(function (b) {
       b.onclick = function () {
@@ -297,26 +296,26 @@
     host.innerHTML = '<svg role="img"></svg>' + capHtml(p);
     var svg = host.querySelector('svg');
     function draw() {
-      var w = W(host), h = 300, top = 60, bot = 292, k = (bot - top) / ev, x = 40, cw = w < 420 ? 64 : 88, tx = x + cw + 34, o = '';
+      var w = W(host), h = 318, top = 60, bot = 292, k = (bot - top) / ev, x = 40, cw = w < 420 ? 64 : 88, tx = x + cw + 34, o = '';
       var seg = [ // 위에서부터, ty = 큰 숫자 줄
-        { v: etc, n: '기타', m: '레미콘·골프', d: 'EBITDA ' + fmt(M.etcEb) + ' × ' + f1(M.etcMult) + '배', ty: 66 },
-        { v: ship, n: '해운', m: '탱커', d: 'EBITDA ' + fmt(M.shipEb) + ' × ' + f1(S.ship) + '배', ty: 126 },
-        { v: env, n: '환경', m: '소각·매립', d: '현금흐름 할인(DCF)', ty: 216 }];
+        { v: etc, n: '기타', d: 'EBITDA ' + fmt(M.etcEb) + ' × ' + f1(M.etcMult) + '배', ty: 60 },
+        { v: ship, n: '해운', d: 'EBITDA ' + fmt(M.shipEb) + ' × ' + f1(S.ship) + '배', ty: 128 },
+        { v: env, n: '환경', d: '현금흐름 할인(DCF)', ty: 216 }];
       var y = top;
       seg.forEach(function (s, i) {
         var hh = s.v * k, mid = y + hh / 2;
         o += rc(x, y, cw, hh, 'fill="' + NAVY + '" stroke="' + LINE + '"');
         if (i) o += ln(x + 1, y, x + cw - 1, y, BG, ' stroke-width="2"');
         o += ln(x + cw + 4, mid, tx - 8, s.ty - 7);
-        o += '<text x="' + tx + '" y="' + s.ty + '"><tspan class="big">' + fmt(s.v) + '</tspan><tspan dx="8" class="md">' + s.n + '</tspan><tspan class="lt"> = ' + esc(s.m) + '</tspan></text>';
+        o += '<text x="' + tx + '" y="' + s.ty + '" class="big">' + fmt(s.v) + '</text>' + T(tx, s.ty + 21, s.n, ' class="md"');
         // EV 합 대비 비율: 조각 가운데에 (글자보다 낮은 조각엔 안 넣는다)
         if (hh >= 24) o += T(x + cw / 2, mid + 5, f1(s.v / ev * 100) + '%', ' text-anchor="middle" class="pc"');
-        o += T(tx, s.ty + 20, esc(s.d));
+        o += T(tx, s.ty + 39, esc(s.d), ' class="lt"');
         y += hh;
       });
       // 금색: 셋을 더한 EV
       o += '<path d="M' + (x - 4) + ' ' + top + 'H' + (x - 10) + 'V' + bot + 'H' + (x - 4) + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>';
-      o += '<text x="' + (x - 10) + '" y="36"><tspan class="md">EV</tspan><tspan dx="8" class="big g">' + fmt(ev) + '</tspan><tspan dx="4">억 원</tspan></text>';
+      o += '<text x="' + (x - 10) + '" y="36"><tspan class="big g">' + fmt(ev) + '</tspan><tspan dx="4">억 원</tspan></text>' + T(x + cw / 2, bot + 20, 'EV', ' text-anchor="middle" class="md"');
       size(svg, w, h); svg.innerHTML = o;
       svg.setAttribute('aria-label', '환경 ' + fmt(env) + '억(DCF) + 해운 ' + fmt(ship) + '억(EBITDA × ' + f1(S.ship) + '배) + 기타 ' + fmt(etc) + '억(EBITDA × ' + f1(M.etcMult) + '배) = EV ' + fmt(ev) + '억 원');
     }
@@ -344,12 +343,12 @@
       rows.forEach(function (r, i) {
         var top = 10 + i * 118, by = top + 22, bh = 34, v = r.eb * x, fx = v * k, sx = r.sep * k, d = v - r.sep, a = Math.min(fx, sx), b = Math.max(fx, sx);
         D.push(d);
-        o += '<text x="0" y="' + (top + 8) + '"><tspan class="md">' + r.n + '</tspan><tspan dx="10">EBITDA ' + fmt(r.eb) + ' × ' + f1(x) + '배 = </tspan><tspan class="md">' + fmt(v) + '</tspan></text>';
+        o += '<text x="0" y="' + (top + 8) + '"><tspan class="md">' + r.n + '</tspan><tspan dx="10" class="lt">EBITDA ' + fmt(r.eb) + ' × ' + f1(x) + '배</tspan></text>';
         o += rc(0, by, fx, bh, 'fill="' + NAVY + '" stroke="' + LINE + '"');
         if (b - a > 1) o += rc(a, by, b - a, bh, 'fill="rgba(226,196,143,.22)" stroke="' + GOLD + '"');
         o += ln(sx, by - 6, sx, by + bh + 8, '#F2EFE8');
         var right = sx > w * 0.55;
-        o += T(right ? sx : Math.max(sx - 6, 0), by + bh + 24, '따로 매긴 값 ' + fmt(r.sep) + ' (' + r.how + ')', right ? ' text-anchor="end"' : '');
+        o += T(right ? sx : Math.max(sx - 6, 0), by + bh + 22, fmt(r.sep), right ? ' text-anchor="end"' : '') + T(right ? sx : Math.max(sx - 6, 0), by + bh + 39, '따로 매긴 값 (' + r.how + ')', right ? ' text-anchor="end" class="lt"' : ' class="lt"');
         if (Math.abs(d) >= 0.5) { // 금색: 어긋난 만큼
           var gt = sgn(d), gw = gt.length * 8 + 6;
           if (b - a > gw + 8) o += T((a + b) / 2, by + 22, gt, ' text-anchor="middle" class="g md"');
@@ -387,7 +386,7 @@
       o += T(tx + tw / 2, 276, 'TV', ' text-anchor="middle" class="md"');
       o += '<path d="M2 200V194H' + r1(sw * 5 - 2) + 'V200" fill="none" stroke="' + LINE + '"/>';
       o += T(2, 162, '2025~2029년 FCFF', ' class="md"') + T(2, 182, '', ' class="s1"');
-      o += T(tx - 12, 40, 'TV<tspan class="lt"> = 2029년 뒤 현금 전부</tspan>', ' text-anchor="end" class="md"') + T(tx - 12, 60, '', ' text-anchor="end" class="s2"') + '<text x="' + r1(tx - 12) + '" y="96" text-anchor="end" class="s3"></text>';
+      o += T(tx - 12, 40, 'TV', ' text-anchor="end" class="md"') + T(tx - 12, 60, '', ' text-anchor="end" class="s2 lt"') + '<text x="' + r1(tx - 12) + '" y="96" text-anchor="end" class="s3"></text>';
       size(svg, w, 290); svg.innerHTML = o;
     }
     function put(el, b, v) { var h = Math.abs(v) * k; el.setAttribute('x', r1(b.x)); el.setAttribute('width', r1(b.w)); el.setAttribute('y', r1(v >= 0 ? y0 - h : y0)); el.setAttribute('height', r1(Math.max(h, 1))); }
@@ -397,12 +396,12 @@
     }
     function text() {
       svg.querySelector('.s1').textContent = pv ? '해마다 할인해 더하면 ' + fmt(e.pvsum) + '억' : '그해에 들어올 돈 그대로';
-      svg.querySelector('.s2').textContent = pv ? '지금 가치로 끌어오면' : '2029년 시점으로 한 번에 모아요';
+      svg.querySelector('.s2').textContent = pv ? '지금 가치로 끌어오면' : '2029년 뒤 현금 전부';
       svg.querySelector('.s3').innerHTML = pv ? '<tspan class="big g">' + fmt(e.pvtv) + '</tspan><tspan dx="6">억</tspan>' : '';
       bt.textContent = pv ? '할인 전으로 되돌리기' : '현재가치로 끌어오기';
       bt.setAttribute('aria-pressed', pv);
-      vr.innerHTML = pv ? '5년 합 ' + fmt(e.pvsum) + '억 + TV ' + fmt(e.pvtv) + '억 = 환경 EV ' + fmt(e.ev) + '억 원. 이 중 <b>' + Math.round(e.share * 100) + '%</b>가 TV예요.'
-        : '할인 전 막대예요(억 원). 버튼을 누르면 해마다 할인해 지금 가치로 줄여요.';
+      vr.innerHTML = pv ? '환경 EV ' + fmt(e.ev) + '억 원 중 <b>' + Math.round(e.share * 100) + '%</b>가 TV예요.'
+        : '버튼을 누르면 해마다 할인해 지금 가치로 줄여요.';
       svg.setAttribute('aria-label', pv ? '현재가치: 5년 FCFF 합 ' + fmt(e.pvsum) + '억, TV ' + fmt(e.pvtv) + '억, 환경 EV ' + fmt(e.ev) + '억 원' : '할인 전 2025~2029년 FCFF와 TV 막대');
     }
     function draw() { build(); frame(); text(); }

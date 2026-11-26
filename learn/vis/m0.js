@@ -59,11 +59,11 @@
       o += '<line x1="4" y1="' + B + '" x2="396" y2="' + B + '" stroke="rgba(242,239,232,.18)"/>';
       // 가치(금색) · 기준선
       o += '<rect x="' + VX + '" y="' + vy + '" width="' + W + '" height="' + H + '" fill="' + GOLD + '"/>';
-      o += '<text x="' + (VX + W / 2) + '" y="' + (vy - 10) + '" text-anchor="middle" class="lb">가치</text>';
+      o += '<text x="' + (VX + W / 2) + '" y="' + (B + 20) + '" text-anchor="middle" class="lb">가치</text>';
       o += '<line x1="' + (VX + W) + '" y1="' + vy + '" x2="344" y2="' + vy + '" stroke="rgba(242,239,232,.3)" stroke-dasharray="3 3"/>';
       // 가격(테두리)
       o += '<rect x="' + PX + '" y="' + py + '" width="' + W + '" height="' + ph + '" fill="rgba(242,239,232,.06)" stroke="rgba(242,239,232,.8)" stroke-width="1.5"/>';
-      o += '<text x="' + (PX + W / 2) + '" y="' + (py + 22) + '" text-anchor="middle" class="lb">가격</text>';
+      o += '<text x="' + (PX + W / 2) + '" y="' + (B + 20) + '" text-anchor="middle" class="lb">가격</text>';
       // 틈 꺾쇠 + 몇 %
       if (pct > 0) {
         var a = Math.min(py, vy), b2 = Math.max(py, vy), mid = clamp((a + b2) / 2, 40, B - 40);
@@ -75,9 +75,9 @@
       }
       svg.innerHTML = o;
       lb.textContent = '가치의 ' + Math.round(r * 100) + '%';
-      vr.innerHTML = pct === 0 ? '가격과 가치가 같아요. 제값에 사는 셈이에요.' :
-        r < 1 ? '가격이 가치보다 <b>' + pct + '%</b> 낮아요. 앞으로 벌 돈에 비해 싸게 사는 셈이에요.' :
-        '가격이 가치보다 <b>' + pct + '%</b> 높아요. 앞으로 벌 돈보다 비싸게 사는 셈이에요.';
+      vr.innerHTML = pct === 0 ? '가격과 가치가 같아 제값에 사는 셈이에요.' :
+        r < 1 ? '가격이 가치보다 <b>' + pct + '%</b> 낮아 싸게 사는 셈이에요.' :
+        '가격이 가치보다 <b>' + pct + '%</b> 높아 비싸게 사는 셈이에요.';
     }
     sl.addEventListener('input', function () { r = Math.round(+sl.value / stp) * stp; r = Math.round(r * 100) / 100; draw(); });
     sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
@@ -119,14 +119,10 @@
         var ly = Y(off), lines = wrap(drop[off] || '', 16), lx = 36 + it[off].length * 14 + 6;
         o += '<line x1="' + lx + '" y1="' + ly + '" x2="152" y2="' + ly + '" stroke="' + GOLD + '"/>';
         o += tlines(160, ly + 5, lines, 'gd an', 19);
-      } else if (p.goal) {
-        var gl = wrap(p.goal, 16);
-        o += '<line x1="132" y1="' + RY + '" x2="152" y2="' + RY + '" stroke="rgba(242,239,232,.35)"/>';
-        o += tlines(160, RY + 5 - (gl.length - 1) * 9.5, gl, 'an', 19);
       }
       svg.innerHTML = o;
       bs.forEach(function (b, j) { b.setAttribute('aria-pressed', j === off ? 'true' : 'false'); });
-      vr.innerHTML = off < 0 ? '단계 하나를 빼 보세요. 그 아래로 무엇이 흔들리는지 보여요.' : '<b>' + esc(josa(it[off], '을', '를')) + '</b> 뺐어요. 한 번 더 누르면 되돌려요.';
+      vr.innerHTML = off < 0 ? '단계 하나를 빼 보면 그 아래가 흔들려요.' : '<b>' + esc(josa(it[off], '을', '를')) + '</b> 뺐어요.';
     }
     bs.forEach(function (b) { b.onclick = function () { var i = +b.getAttribute('data-i'); off = off === i ? -1 : i; draw(); }; });
     if (ctx && ctx.ready) ctx.ready(true);
@@ -161,8 +157,10 @@
       if (c.e !== my.e) { gx = X0 + cw; gy = B - mh; gw = mw - cw; gh = mh; } else { gx = X0; gy = B - mh; gw = mw; gh = mh - ch; }
       if (gap > 0) o += '<rect x="' + gx + '" y="' + gy + '" width="' + gw + '" height="' + gh + '" fill="' + GOLD + '"/>';
       o += '<rect x="' + X0 + '" y="' + (B - mh) + '" width="' + mw + '" height="' + mh + '" fill="none" stroke="' + INK + '" stroke-opacity=".75" stroke-dasharray="4 3"/>';
-      o += '<text x="' + X0 + '" y="' + (B - mh - 22) + '" class="lb">내 가치 ' + n1(my.e * my.m) + ' = 이익 ' + n1(my.e) + ' × ' + n1(my.m) + '배</text>';
-      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 + 5) + '" text-anchor="middle" class="lb">시장 ' + n1(c.e * c.m) + '</text>';
+      o += '<text x="' + (X0 + mw / 2) + '" y="' + (B - mh - 26) + '" text-anchor="middle" class="lb">' + n1(my.e * my.m) + '</text>';
+      o += '<text x="' + (X0 + mw / 2) + '" y="' + (B - mh - 9) + '" text-anchor="middle" class="sm">내 가치</text>';
+      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 - 2) + '" text-anchor="middle" class="lb">' + n1(c.e * c.m) + '</text>';
+      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 + 16) + '" text-anchor="middle" class="sm">시장이 본 값</text>';
       // 직접 주석
       if (gap > 0) {
         var ay = gy + gh / 2, ax = gx + gw, tx = X0 + mw + 22;
