@@ -525,7 +525,7 @@
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
   function rich(s) { return esc(s).replace(/&lt;br&gt;/g, '<br>'); }
   // 글 문단: 빈 줄(\n\n)로 나눈 문단마다 <p>. 한 문단이면 그대로 <p class>
-  function paras(t) { return String(t == null ? '' : t).split(/\n\s*\n/).map(function (x) { return '<p>' + esc(x.trim()) + '</p>'; }).join(''); }
+  function paras(t) { return String(t == null ? '' : t).split(/\n\s*\n/).map(function (x) { return '<p>' + sl(esc(x.trim())) + '</p>'; }).join(''); }
 
   // ── v2: 장식 덜기 (시안). .cur.v2 로 묶어 기존 규칙보다 우선 ──
   var CSS2 = [
@@ -590,17 +590,19 @@
     '.cur.v2 .fmap{display:flex;align-items:stretch;flex-wrap:wrap;gap:8px 6px;margin-top:8px;max-width:980px}',
     '.cur.v2 .fmap .c{flex:1 1 0;min-width:112px;padding:14px 14px 16px 0;border-top:2px solid rgba(242,239,232,.2);display:flex;flex-direction:column;gap:8px}',
     '.cur.v2 .fmap .c b{font-family:var(--ser);font-weight:600;font-size:19px;letter-spacing:-.02em}',
-    '.cur.v2 .fmap .c small{font-size:14px;line-height:1.55;color:var(--t3)}',
+    '.cur.v2 .fmap .c small{font-size:14px;line-height:1.55;color:var(--t3);text-wrap:balance}',
     '.cur.v2 .fmap .c.on{border-top-color:var(--wm)}',
     '.cur.v2 .fmap .c.res{flex:0 0 auto;min-width:80px}.cur.v2 .fmap .c.res b{color:var(--wm)}',
     '.cur.v2 .fmap .op{padding-top:14px;width:16px;text-align:center;font-size:18px;color:var(--t3)}',
     '@media (max-width:640px){.cur.v2 .fmap{flex-direction:column;gap:0}.cur.v2 .fmap .op{display:none}.cur.v2 .fmap .c{border-top-width:1px;padding:12px 0;min-width:0}}',
+    '.cur.v2 .note,.cur.v2 .note p,.cur.v2 .pts li,.cur.v2 .ex,.cur.v2 .ex p,.cur.v2 .defs span,.cur.v2 .o .lb,.cur.v2 .o .s,.cur.v2 .hm .lead{text-wrap:pretty}',
     /* 다음 버튼: 알약 */
     '.cur.v2 .nx{border-radius:999px;font-weight:500}',
     '@media (min-width:900px){.cur.v2 .nx{right:var(--pad);bottom:40px;height:auto;padding:12px 22px;background:var(--tx)!important;color:#0B1526;font-family:inherit;font-size:15.5px;font-weight:500;box-shadow:none}.cur.v2 .nx.alt{background:var(--wm)!important;color:#0B1526;box-shadow:none}}'
   ].join('\n');
 
-  function block(t, cls) { var ps = String(t == null ? '' : t).split(/\n\s*\n/); return ps.length < 2 ? '<p class="' + cls + '">' + esc(t) + '</p>' : '<div class="' + cls + '">' + paras(t) + '</div>'; }
+  function sl(h) { return String(h).replace(/([.?!])\s+(?=[^\s)])/g, '$1<br>'); }
+  function block(t, cls) { var ps = String(t == null ? '' : t).split(/\n\s*\n/); return ps.length < 2 ? '<p class="' + cls + '">' + sl(esc(t)) + '</p>' : '<div class="' + cls + '">' + paras(t) + '</div>'; }
   function plain(s) { return String(s || '').replace(/<br>/g, ' '); }
   function sym(k) { return '<svg class="sym" viewBox="0 0 64 64" aria-hidden="true">' + (SY[k] || STAR).replace(/<(path|circle)/g, '<$1 pathLength="1"') + '</svg>'; }
   function pad(i) { return (i < 9 ? '0' : '') + (i + 1); }
@@ -2156,14 +2158,14 @@
   R.concept = function (s) {
     var rc = s.kind === '정리' || !s.visual;
     if (rc) {
-      st.bx.innerHTML = head(s) + defs(s) + '<ul class="pts big">' + (s.points || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>';
+      st.bx.innerHTML = head(s) + defs(s) + '<ul class="pts big">' + (s.points || []).map(function (t) { return '<li>' + sl(esc(t)) + '</li>'; }).join('') + '</ul>';
     } else if (s.visual.wide) {
       st.bx.innerHTML = crumbs(s) + '<div class="cx wide"><div class="cl">' + kicker(s) + '<h2 class="q sm">' + rich(s.prompt) + '</h2>' + (s.note ? block(s.note, 'note') : '') + '</div><div class="cv"><div class="vis"></div></div>' +
-        ((s.points || []).length ? '<ul class="pts">' + s.points.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+        ((s.points || []).length ? '<ul class="pts">' + s.points.map(function (t) { return '<li>' + sl(esc(t)) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
       mountVis(s, 'concept');
     } else {
       st.bx.innerHTML = crumbs(s) + '<div class="cx"><div class="cl">' + kicker(s) + '<h2 class="q sm">' + rich(s.prompt) + '</h2>' + (s.note ? block(s.note, 'note') : '') +
-        '<ul class="pts">' + (s.points || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div><div class="cv"><div class="vis"></div></div></div>';
+        '<ul class="pts">' + (s.points || []).map(function (t) { return '<li>' + sl(esc(t)) + '</li>'; }).join('') + '</ul></div><div class="cv"><div class="vis"></div></div></div>';
       mountVis(s, 'concept');
     }
     st.bx.classList.add('pad');
@@ -2411,7 +2413,7 @@
         var q = step(id), r = res(id);
         return '<li><small>' + esc(q.section) + (r.tries ? '' : ' · 건너뜀') + '</small>' + esc(plain(q.prompt)) + '<a data-re="' + esc(id) + '" tabindex="0">다시 풀기</a></li>';
       }).join('') : '<li class="zero">틀린 문항이 없어요. 한 번에 다 맞혔어요.</li>') + '</ul></div>' +
-      '<div><h3>' + esc(st.mod.module) + '에서 가져갈 것</h3><ul>' + (s.options.takeaways || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul></div></div>' +
+      '<div><h3>' + esc(st.mod.module) + '에서 가져갈 것</h3><ul>' + (s.options.takeaways || []).map(function (t) { return '<li>' + sl(esc(t)) + '</li>'; }).join('') + '</ul></div></div>' +
       labCard() +
       '<div style="display:flex;gap:26px;flex-wrap:wrap"><button class="more hm2" type="button">코스 홈으로</button><button class="more rs2" type="button">처음부터 다시</button></div><p class="soon" aria-live="polite"></p>';
     st.bx.querySelectorAll('[data-re]').forEach(function (a) { a.onclick = function () { st.hist = st.ms.hist = []; to(a.getAttribute('data-re')); }; a.onkeydown = function (e) { if (e.key === 'Enter') a.click(); }; });
