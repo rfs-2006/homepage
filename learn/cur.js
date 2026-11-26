@@ -18,6 +18,7 @@
  *  section  string   소주제 (브레드크럼, 인트로 목차). 같은 section이 이어지면 한 섹션
  *  prompt   string   큰 글씨 제목. 문제는 질문으로 시작한다 (<br>만 허용)
  *  note     string?  작은 상황 설명. 예시 숫자는 '(예시)'로 표시
+ *  kind     string?  concept: '정리' | '질문'. 문제(choice·multi·match·sort·numeric·chart)에 'think'를 주면 머리표가 '생각해 보기'(상식만으로 답하는 질문), 없으면 '확인 문제'(배운 것을 묻는 질문, chart는 '그래프 문제')
  *  options  타입별
  *           intro        : { objectives: [string], time, prep }
  *           choice/multi : [{ label, sub?, icon? }]     icon: up down scale equal coin book bars people target search
@@ -2047,6 +2048,7 @@
   function kicker(s) {
     if (s.type === 'concept') return s.kind === '정리' ? '<span class="kd rc">정리</span>' : '';
     if (isSup(s)) return '';
+    if (s.kind === 'think') return '<span class="kd qz">생각해 보기</span>';
     if (s.tag) return '<span class="kd qz">' + esc(s.tag) + '</span>';
     if (s.type === 'chart') return '<span class="kd qz">그래프 문제</span>';
     if (GRADED[s.type]) return '<span class="kd qz">확인 문제</span>';

@@ -62,7 +62,7 @@
    "group": "base",
    "title": "밸류에이션이란",
    "minutes": 50,
-   "questions": 23,
+   "questions": 20,
    "file": "m0.json",
    "ready": true,
    "objectives": [
@@ -266,7 +266,7 @@
    "group": "abs",
    "title": "DCF 3 할인율·TV·검증",
    "minutes": 60,
-   "questions": 23,
+   "questions": 24,
    "ready": true,
    "objectives": [
     "WACC를 구성 요소별로 잡아요",
@@ -293,7 +293,7 @@
    "group": "lab",
    "title": "종합 실습: 와이엔텍",
    "minutes": 90,
-   "questions": 23,
+   "questions": 24,
    "ready": true,
    "objectives": [
     "소각·매립·스팀을 Q×P로 쪼개고 증설 CAPEX를 FCFF에 넣어요",

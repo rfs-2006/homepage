@@ -1,5 +1,6 @@
 // ── M0 밸류에이션이란: 개념 그림 부품 (harness/PLUGIN.md) ─────────────
 // m0ValuePrice  가치(앞으로 벌 돈에서 나온 값, 금색 막대) 옆에 가격(테두리 막대). 슬라이더로 가격을 움직이면 틈과 '싸요/비싸요'가 따라 변한다
+// m0Terms       용어 묶음표: 묶음(성장·수익성…)마다 용어와 뜻을 한 줄씩. 문제 앞 개념 화면에서 쓰는 말을 먼저 알려 준다
 // m0Think       정적인 생각 갈래: 상황 → 질문 → 갈래마다 '이렇게 보면 ⇒ 이렇게 한다' (슬라이더·토글 없음)
 // m0GapEq       가치 = 이익 × 배수를 줄마다 쓰고, 내 가치와 다른 칸(이익이냐 배수냐)만 짚어 실적 괴리·밸류에이션 괴리를 가른다
 (function () {
@@ -21,6 +22,13 @@
     '.cur .vis .m0v .vctl label{min-width:0}',
     '.cur .vis .m0v .vr b{font-weight:500}',
     '.cur .vis .m0v .vbt button[aria-pressed=true]{background:#1C2C48;border-color:#E2C48F}',
+    '.cur .vis .trm{max-width:640px;display:flex;flex-direction:column;gap:18px;color:#F2EFE8}',
+    '.cur .vis .trm-g h3{font-size:13px;font-weight:500;letter-spacing:.08em;color:rgba(242,239,232,.62);margin:0 0 4px}',
+    '.cur .vis .trm-g dl{margin:0;border-top:1px solid rgba(242,239,232,.18)}',
+    '.cur .vis .trm-r{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:14px;padding:11px 0;border-bottom:1px solid rgba(242,239,232,.18)}',
+    ".cur .vis .trm-r dt{font-family:'Noto Serif KR',serif;font-weight:600;font-size:17px;line-height:1.45}",
+    '.cur .vis .trm-r dd{margin:0;font-size:16px;line-height:1.6;color:rgba(242,239,232,.86)}',
+    '@media (max-width:560px){.cur .vis .trm-r{grid-template-columns:1fr;gap:3px}}',
     '.cur .vis .thk{max-width:620px;color:#F2EFE8}',
     '.cur .vis .thk-top{display:flex;gap:28px;padding-bottom:14px;border-bottom:1px solid rgba(242,239,232,.18)}',
     ".cur .vis .thk-top span{display:flex;flex-direction:column;gap:2px}.cur .vis .thk-top small{font-size:13px;color:rgba(242,239,232,.62)}.cur .vis .thk-top b{font-family:'Noto Serif KR',serif;font-weight:600;font-size:24px}.cur .vis .thk-top .gd b{color:#E2C48F}",
@@ -94,6 +102,17 @@
     sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
     if (ctx && ctx.ready) ctx.ready(true);
     return { draw: draw };
+  };
+
+  // ════ m0Terms ════
+  // params: groups [{h, rows:[{t, d}]}]  용어 묶음표. 묶음 이름 아래 용어와 뜻을 한 줄씩 (누르는 장치 없음)
+  window.CUR_VIS.m0Terms = function (host, p, ctx) {
+    var G = p.groups || [];
+    host.innerHTML = '<div class="m0v trm">' + G.map(function (g) {
+      return '<section class="trm-g"><h3>' + esc(g.h) + '</h3><dl>' + (g.rows || []).map(function (r) { return '<div class="trm-r"><dt>' + esc(r.t) + '</dt><dd>' + esc(r.d) + '</dd></div>'; }).join('') + '</dl></section>';
+    }).join('') + '</div>';
+    if (ctx && ctx.ready) ctx.ready(true);
+    return { draw: function () {} };
   };
 
   // ════ m0Think ════
