@@ -6,7 +6,7 @@
   // 리포트 글꼴은 메인 HTML을 받는 동안 같이 받기 시작한다 (메인 HTML이 다 와서야 받기 시작하면 늦다)
   if (/^\/research\/[^/]+\/$/.test(location.pathname)) ['light', 'medium', 'bold'].forEach(function (w) {
     var l = document.createElement('link'); l.rel = 'preload'; l.as = 'font'; l.type = 'font/woff2'; l.crossOrigin = 'anonymous';
-    l.href = '/assets/fonts/rfs-report-dotum-' + w + '.woff2'; document.head.appendChild(l);
+    l.href = '/assets/fonts/rfs-report-dotum-' + w + '.woff2?v=2'; document.head.appendChild(l);
   });
   var root = document.documentElement;
   root.style.visibility = 'hidden';

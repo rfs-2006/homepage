@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # 리포트 화면 전용 폰트 만들기: KoPubWorld 돋움(실제 리포트 PDF 폰트)에서 필요한 글자만 잘라 woff2로 저장한다.
-# 글자 범위: 자주 쓰는 한글 2,350자(KS X 1001) + 영문·숫자·기호 + 리포트 데이터(page1.json, REPORTS)에 나오는 모든 글자.
+# 글자 범위: 자주 쓰는 한글 2,350자(KS X 1001) + 영문·숫자·기호 + 리포트 데이터(page1.json, REPORTS, 전문 full/*.json, 용어 풀이)에 나오는 모든 글자.
 # 라이선스(KoPub 약관 제4조 ②)상 수정본에는 'KoPub' 이름을 쓸 수 없어 'RFS Report Dotum'으로 이름을 바꾼다.
 #
 # 사용법: 사이트 루트에서
 #   npm pack font-kopubworld && tar xzf font-kopubworld-*.tgz   (package/fonts/ 에 원본이 풀린다)
 #   pip install fonttools brotli
+# 원본 OTF(CFF)에는 힌팅이 없다. 힌팅을 넣어 견줘 봤지만(14.5px에서 '를' 같은 글자 획이 붙는 등) 원래 모양을 쓰기로 했다.
 #   python3 tools/build-report-font.py package/fonts
 # 새 리포트를 추가하고 extract-page1.py를 돌린 뒤 이것도 다시 돌리면 새 글자가 포함된다.
 import os, re, sys
@@ -26,7 +27,12 @@ for hi in range(0xB0, 0xC9):           # KS X 1001 완성형 한글 2,350자
 chars |= set(open(os.path.join(ROOT, 'assets', 'reports', 'page1.json'), encoding='utf-8').read())
 html = open(os.path.join(ROOT, 'index.html'), encoding='utf-8').read() + '\n' + open(os.path.join(ROOT, 'assets', 'app.js'), encoding='utf-8').read()   # REPORTS는 assets/app.js에
 i = html.index('const REPORTS = ['); chars |= set(html[i:html.index('\n];', i)])
+import glob                            # 리포트 전문·용어 풀이에 나오는 글자(Ⅰ·℃·㎡·한자 등)도 넣는다
+for path in glob.glob(os.path.join(ROOT, 'assets', 'reports', 'full', '*.json')) + glob.glob(os.path.join(ROOT, 'assets', 'reports', 'glossary.json')):
+    chars |= set(open(path, encoding='utf-8').read())
 chars = {c for c in chars if c.isprintable()}
+
+
 
 os.makedirs(OUT, exist_ok=True)
 for w in ['Light', 'Medium', 'Bold']:

@@ -39,9 +39,9 @@
   function css(doc) {
     var F = abs('/assets/fonts/rfs-report-dotum-');
     var hd = 'font:500 7.5pt D;color:' + NAVY + ';vertical-align:bottom;padding-bottom:2mm;border-bottom:.6pt solid ' + NAVY;
-    return '@font-face{font-family:D;src:url(' + F + 'light.woff2) format("woff2");font-weight:300}' +
-      '@font-face{font-family:D;src:url(' + F + 'medium.woff2) format("woff2");font-weight:500}' +
-      '@font-face{font-family:D;src:url(' + F + 'bold.woff2) format("woff2");font-weight:700}' +
+    return '@font-face{font-family:D;src:url(' + F + 'light.woff2?v=2) format("woff2");font-weight:300}' +
+      '@font-face{font-family:D;src:url(' + F + 'medium.woff2?v=2) format("woff2");font-weight:500}' +
+      '@font-face{font-family:D;src:url(' + F + 'bold.woff2?v=2) format("woff2");font-weight:700}' +
       '@page{size:A4;margin:16mm 13mm 13mm;@top-left{content:"' + String(doc || '').replace(/["\\]/g, '') + '";' + hd + '}@top-right{content:"R.F.S. Asset Management";' + hd + '}@bottom-left{content:counter(page, decimal-leading-zero);font:700 9pt D;color:' + NAVY + '}}' +
       '@page cover{margin:0;@top-left{content:none;border:0}@top-right{content:none;border:0}@bottom-left{content:none}}' +
       '*{box-sizing:border-box}html,body{margin:0;background:#fff;color:' + INK + ';font-family:D,"Pretendard Variable",sans-serif;font-weight:300;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +

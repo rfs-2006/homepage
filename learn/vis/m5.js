@@ -3,6 +3,9 @@
 // m5Struct : SOTP 뼈대. 왼쪽(사업부 EV + 비영업자산) = 오른쪽(Equity value + 순차입금). 블록을 다 눌러 봐야 넘어간다
 // m5Consol : 연결(자회사 100%) vs 모회사 주주 몫(지분율만큼). 지분율 슬라이더, 매출/영업이익 전환
 // m5Rev    : 수주 프로젝트 매출 짜기. 호기 수 × 호기당 단가를 건설 기간에 나눠 연도별 매출·이익
+// m5Parts  : (개념 그림) 부분의 합. 사업마다 EBITDA 막대가 제 배수만큼 늘어나 EV가 되고, 둘을 더한 값에 금색 괄호. 정적
+// m5Bridge : (개념 그림) 본업 EV + 자회사 × 지분율 + 비영업자산 − 순차입금 = 주주가치. 가로 폭포 막대, 지분율 슬라이더
+// m5Own    : (개념 그림) 자회사 가치 = 사각형 넓이. 세로로 지분율, 가로로 (1 − 할인율)을 잘라 남는 금색 넓이가 우리 몫. 할인율 슬라이더
 (function () {
   var L = window.CUR_LIB, esc = L.esc, fmt = L.fmt, clamp = L.clamp;
   L.addCss('cur-m5-css', [
@@ -91,11 +94,9 @@
         var gap = c.eq / p.target - 1;
         s = locked ? '' : moved ? '목표 시가총액 <b>' + fmt(c.eq) + '</b> vs 지금 시가총액 <b>' + fmt(p.target) + '</b> ' + esc(U) + ' (' + (Math.abs(gap) < 0.005 ? '거의 같아요' : pctS(gap)) + ')' : esc(p.ask || '슬라이더를 움직여 보세요.');
       } else {
-        s = '주주가치 <b>' + sg(c.eq) + '</b> ' + esc(U) + (p.name ? ' · ' + esc(p.name) : '') + ' → 주당 <b>' + (c.eq > 0 ? fmt(c.ps) : '0') + '원</b>' + (ex != null && c.eq > 0 ? ' · 현재가 ' + fmt(p.price) + '원 대비 ' + pctS(ex) : '');
-        var big = rows.slice().sort(function (a, b) { return val(b) - val(a); })[0];
-        if (big && c.tot > 0) s += '<br>가장 큰 줄: ' + esc(big.l) + ' (전체 가치의 ' + Math.round(100 * val(big) / c.tot) + '%)';
+        s = '주주가치 <b>' + sg(c.eq) + '</b> ' + esc(U) + ' → 주당 <b>' + (c.eq > 0 ? fmt(c.ps) : '0') + '원</b>' + (ex != null && c.eq > 0 ? ', 현재가 ' + fmt(p.price) + '원 대비 ' + pctS(ex) : '');
       }
-      if (sel && R[sel] && R[sel].d && !(Q && !locked && !moved)) s += (s ? '<br>' : '') + '<b>' + esc(R[sel].l) + '</b> · ' + esc(R[sel].d);
+      if (sel && R[sel] && R[sel].d && !(Q && !locked && !moved)) s += (s ? '<br>' : '') + '<b>' + esc(R[sel].l) + '</b> ' + esc(R[sel].d);
       vr.innerHTML = s;
     }
     function draw() {
@@ -175,7 +176,7 @@
     function read() {
       var ev = P.filter(function (b) { return b.g !== 'noa'; }).reduce(function (a, b) { return a + b.v; }, 0), noa = tot - ev, e = tot - nd;
       var s = '영업가치 <b>' + fmt(ev) + '</b> + 비영업가치 <b>' + fmt(noa) + '</b> − 순차입금 ' + fmt(nd) + ' = Equity value <b>' + sg(e) + '</b> ' + esc(U);
-      if (sel >= 0) s = '<b>' + esc(P[sel].l) + ' ' + fmt(P[sel].v) + '</b> · ' + esc(P[sel].d || P[sel].sub || '') + '<br>' + s;
+      if (sel >= 0) s = '<b>' + esc(P[sel].l) + ' ' + fmt(P[sel].v) + '</b> ' + esc(P[sel].d || P[sel].sub || '') + '<br>' + s;
       var n = Object.keys(seen).length; if (n < P.length) s += '<br>' + n + ' / ' + P.length + ' 블록을 눌러 봤어요.';
       vr.innerHTML = s;
     }
@@ -207,7 +208,7 @@
       svg.setAttribute('aria-label', (k === 'op' ? '영업이익' : '매출') + ': 모회사 ' + a + ', 연결 ' + n2(a + b) + ', 모회사 주주 몫 ' + n2(a + b * own / 100) + ' ' + U);
       host.querySelector('.vctl b').textContent = own + '%';
       var nm = k === 'op' ? '영업이익' : '매출', mine = a + b * own / 100, u = U.replace(' 원', '');
-      vr.innerHTML = '연결 ' + nm + ' <b>' + n2(a + b) + u + '</b> 중 ' + esc(B.l) + ' <b>' + Math.round(100 * b / (a + b)) + '%</b> · 지분 ' + own + '%만큼 따지면 모회사 주주 몫 <b>' + n2(mine) + u + '</b>, 그중 ' + esc(B.l) + ' ' + Math.round(100 * (b * own / 100) / mine) + '%';
+      vr.innerHTML = '연결 ' + nm + ' <b>' + n2(a + b) + u + '</b> 중 ' + esc(B.l) + ' <b>' + Math.round(100 * b / (a + b)) + '%</b>예요. 지분 ' + own + '%만큼 따지면 모회사 주주 몫 <b>' + n2(mine) + u + '</b>, 그중 ' + esc(B.l) + ' ' + Math.round(100 * (b * own / 100) / mine) + '%';
     }
     host.querySelectorAll('.m5tg button').forEach(function (bt) { bt.onclick = function () { k = bt.getAttribute('data-k'); host.querySelectorAll('.m5tg button').forEach(function (x) { x.classList.toggle('on', x === bt); }); draw(); }; });
     bindSlider(inp, sl, function () { return own; }, function (v) { own = v; }, draw);
@@ -241,10 +242,134 @@
       host.querySelectorAll('.vctl').forEach(function (cl, i) { var s = SL[i]; cl.querySelector('b').textContent = (s.key === 'price' ? n2(pr.price) : pr[s.key]) + s.u; });
       vr.innerHTML = fc.map(function (y) {
         var i = Y.indexOf(y), rs = yearRows(i), rev = rs.reduce(function (a, r) { return a + r.v; }, 0), gp = rs.reduce(function (a, r) { return a + r.v * r.m / 100; }, 0);
-        return y + '년 매출 <b>' + n2(rev) + u + '</b> · 이익(이익률 가정) <b>' + n2(gp) + u + '</b> · ' + esc(pr.l) + ' ' + n2(projAt(y));
+        return y + '년 매출 <b>' + n2(rev) + u + '</b>, 이익 <b>' + n2(gp) + u + '</b> (' + esc(pr.l) + ' ' + n2(projAt(y)) + ')';
       }).join('<br>') + '<br>' + esc(pr.l) + ' 총 ' + n2(pr.units * pr.price) + u + '을 ' + pr.start + '~' + (pr.start + pr.period - 1) + '년에 나눠 인식 (예시)';
     }
     ins.forEach(function (inp, i) { var s = SL[i]; bindSlider(inp, s, function () { return pr[s.key]; }, function (v) { pr[s.key] = v; }, draw); });
+    L.gate(ctx, true);
+    return { draw: draw, gated: function () { return false; } };
+  };
+
+  // ════ 개념 그림 공통 ════
+  // 숫자는 IBM Plex Sans(tabular), 큰 숫자 하나만 명조. 색: 글씨 흰색, 막대 옅은 남색, 선 흰색 투명도, 금색은 화면마다 한 곳
+  if (!document.getElementById('cur-font-plex')) { var lk = document.createElement('link'); lk.id = 'cur-font-plex'; lk.rel = 'stylesheet'; lk.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap'; document.head.appendChild(lk); }
+  L.addCss('cur-m5v-css', [
+    '.cur .vis .m5v svg{display:block;width:100%;height:auto;overflow:visible}',
+    '.cur .vis .m5v text{font-family:"IBM Plex Sans","RFS Dotum UI",sans-serif;font-variant-numeric:tabular-nums;fill:#F2EFE8;font-size:13px}',
+    '.cur .vis .m5v text.mu,.cur .vis .m5v tspan.mu{fill:rgba(242,239,232,.66);font-size:12px}',
+    '.cur .vis .m5v text.bg{font-family:var(--ser);font-weight:600;font-size:24px}',
+    '.cur .vis .m5v .in{animation:m5vIn .7s var(--e) both}',
+    '@keyframes m5vIn{from{opacity:0;transform:translateY(6px)}}',
+    '@media (prefers-reduced-motion:reduce){.cur .vis .m5v .in{animation:none}}'
+  ].join('\n'));
+  var NAVY = '#1C2C48', GOLD = '#E2C48F', LN = 'rgba(242,239,232,.34)', HL = 'rgba(242,239,232,.2)', GND = '#0B1526';
+  function q1(x) { return (+x).toFixed(1); }
+  function T(x, y, s, cls, anc) { return '<text x="' + q1(x) + '" y="' + q1(y) + '"' + (cls ? ' class="' + cls + '"' : '') + (anc ? ' text-anchor="' + anc + '"' : '') + '>' + esc(s) + '</text>'; }
+  function Rc(x, y, w, h, fill, stroke, ex) { return '<rect x="' + q1(x) + '" y="' + q1(y) + '" width="' + q1(Math.max(0, w)) + '" height="' + q1(Math.max(0, h)) + '" fill="' + fill + '"' + (stroke ? ' stroke="' + stroke + '"' : '') + (ex || '') + '/>'; }
+  function Ln(x1, y1, x2, y2, c, ex) { return '<line x1="' + q1(x1) + '" y1="' + q1(y1) + '" x2="' + q1(x2) + '" y2="' + q1(y2) + '" stroke="' + c + '"' + (ex || '') + '/>'; }
+  function G(s, d, on) { return on ? '<g class="in" style="animation-delay:' + d + 'ms">' + s + '</g>' : '<g>' + s + '</g>'; }
+  function n1(x) { var r = Math.round(x * 10) / 10; return r % 1 ? r.toLocaleString('ko-KR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) : fmt(r); }
+  function size(svg, W, H, label) { svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.style.maxWidth = W + 'px'; svg.setAttribute('aria-label', label); }
+
+  // ════ m5Parts: 부분의 합 ════
+  window.CUR_VIS.m5Parts = function (host, p, ctx) {
+    var P = p.parts || [], u = (p.unit || '억 원').replace(' 원', ''), first = true;
+    host.innerHTML = '<div class="m5v"><svg role="img"></svg></div>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg');
+    function draw() {
+      var W = Math.min(L.wOf(host), 560), x0 = 1, bw = W - 2, te = 0, tv = 0;
+      P.forEach(function (q) { te += q.e; tv += q.e * q.k; });
+      var s = bw / tv, yE = 30, hE = 18, yV = 132, hV = 42, a = x0, b = x0, bars = '', fans = '', evs = '';
+      P.forEach(function (q, i) {
+        var we = q.e * s, wv = q.e * q.k * s, v = q.e * q.k, t = 0.62;
+        bars += Rc(a, yE, we, hE, NAVY, LN) + T(a + we / 2, yE - 8, fmt(q.e), '', 'middle');
+        fans += '<polygon points="' + [a, yE + hE, a + we, yE + hE, b + wv, yV, b, yV].map(q1).join(' ') + '" fill="rgba(242,239,232,.045)" stroke="' + HL + '"/>';
+        var lx = a + (b - a) * t, rx = a + we + (b + wv - a - we) * t;
+        fans += T((lx + rx) / 2, yE + hE + (yV - yE - hE) * t + 4, '× ' + n1(q.k) + '배', '', 'middle');
+        evs += Rc(b, yV, wv, hV, NAVY, LN) + T(b + 10, yV + hV / 2 + 5, wv > 92 ? q.l + ' ' + fmt(v) + u : fmt(v));
+        if (i) evs += Ln(b, yV + 1, b, yV + hV - 1, GND, ' stroke-width="2"');
+        a += we; b += wv;
+      });
+      bars += '<text x="' + q1(x0 + te * s + 12) + '" y="' + q1(yE + hE / 2 + 5) + '">EBITDA ' + fmt(te) + esc(u) + '<tspan class="mu"> = 한 해 버는 돈</tspan></text>';
+      var yb = yV + hV + 12, mid = x0 + bw / 2;
+      var tot = '<path d="M' + q1(x0) + ' ' + (yb - 6) + 'V' + yb + 'H' + q1(x0 + bw) + 'V' + (yb - 6) + 'M' + q1(mid) + ' ' + yb + 'V' + (yb + 7) + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>' +
+        T(mid, yb + 38, fmt(tv) + u, 'bg', 'middle') + T(mid, yb + 60, p.total || '전체 값', 'mu', 'middle');
+      var H = yb + 68;
+      svg.innerHTML = G(bars, 0, first) + G(fans, 250, first) + G(evs, 500, first) + G(tot, 800, first);
+      size(svg, W, H, P.map(function (q) { return q.l + ' EBITDA ' + fmt(q.e) + ' × ' + n1(q.k) + '배 = ' + fmt(q.e * q.k); }).join(', ') + ', 합 ' + fmt(tv) + u + ' (예시)');
+      first = false;
+    }
+    L.gate(ctx, true);
+    return { draw: draw, gated: function () { return false; } };
+  };
+
+  // ════ m5Bridge: EV 합에서 주주가치까지 ════
+  window.CUR_VIS.m5Bridge = function (host, p, ctx) {
+    var U = p.unit || '억 원', u = U.replace(' 원', ''), core = p.core || { l: '본업 EV', v: 60 }, sub = p.sub || { l: '자회사', v: 50 }, noa = p.noa || 0, nd = p.nd || 0;
+    var own = p.own == null ? 50 : p.own, sl = p.sl || { min: 0, max: 100, step: 1 }, first = true;
+    host.innerHTML = '<div class="m5v"><svg role="img"></svg></div>' + slider('curM5bo', sub.l + ' 지분율', sl, own) + '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), inp = host.querySelector('input');
+    function draw() {
+      var W = Math.min(L.wOf(host), 600), lw = W < 420 ? 100 : 116, rw = 48, bw = W - lw - rw, mx = core.v + sub.v + noa, s = bw / mx;
+      var X = function (v) { return lw + v * s; }, mine = sub.v * own / 100, c1 = core.v + mine, c2 = c1 + noa, eq = c2 - nd;
+      var y0 = 30, rh = 48, bh = 24, o = '', Y = function (i) { return y0 + i * rh; }, lab = function (i, t) { return T(0, Y(i) + bh / 2 + 5, t); };
+      var con = function (i, v) { return Ln(X(v), Y(i) + bh, X(v), Y(i + 1), HL, ' stroke-dasharray="2 3"'); };
+      // 0 본업 EV
+      o += lab(0, core.l) + Rc(X(0), Y(0), core.v * s, bh, NAVY, LN) + con(0, core.v);
+      // 1 자회사 × 지분율: 점선 테두리 = 자회사 전체, 채운 부분 = 우리 몫
+      var gx = X(core.v + sub.v), fx = X(c1), inside = gx - fx > 34;
+      o += lab(1, '+ ' + sub.l + ' × ' + own + '%') + Rc(X(core.v), Y(1), sub.v * s, bh, 'none', LN, ' stroke-dasharray="3 3"') + Rc(X(core.v), Y(1), mine * s, bh, NAVY, LN) +
+        T(gx, Y(1) - 7, sub.l + ' 주주가치 ' + fmt(sub.v), 'mu', 'end') + T(inside ? fx + 6 : gx + 6, Y(1) + bh / 2 + 5, n1(mine)) + con(1, c1);
+      // 2 비영업자산
+      o += lab(2, '+ 비영업자산') + Rc(X(c1), Y(2), noa * s, bh, NAVY, LN) + T(X(c2) + 6, Y(2) + bh / 2 + 5, '+' + fmt(noa)) + con(2, c2);
+      // 3 순차입금: 위 끝에서 왼쪽으로 빼요
+      o += lab(3, '− 순차입금') + Rc(X(eq), Y(3), nd * s, bh, 'rgba(242,239,232,.05)', LN) + T(X(c2) + 6, Y(3) + bh / 2 + 5, '−' + fmt(nd)) + con(3, eq);
+      // 4 주주가치 (금색, 이 화면의 답)
+      o += lab(4, '= 주주가치') + Rc(X(0), Y(4), eq * s, bh, GOLD) + T(X(eq) + 8, Y(4) + bh / 2 + 8, n1(eq), 'bg');
+      // 5 주식 수
+      o += lab(5, '÷ 주식 수') + T(X(0), Y(5) + bh / 2 + 5, '자사주는 빼고 나눠요 → 주당 가치', 'mu');
+      var H = Y(5) + bh + 4;
+      svg.innerHTML = G(o, 0, first);
+      size(svg, W, H, core.l + ' ' + fmt(core.v) + ' + ' + sub.l + ' ' + fmt(sub.v) + ' × ' + own + '% + 비영업자산 ' + fmt(noa) + ' − 순차입금 ' + fmt(nd) + ' = 주주가치 ' + n1(eq) + u + ' (예시)');
+      host.querySelector('.vctl b').textContent = own + '%';
+      vr.innerHTML = sub.l + ' 주주가치 ' + fmt(sub.v) + ' 중 ' + own + '%인 <b>' + n1(mine) + '</b>만 우리 몫 → 주주가치 <b>' + n1(eq) + u + '</b> (예시)';
+      first = false;
+    }
+    bindSlider(inp, sl, function () { return own; }, function (v) { own = v; }, draw);
+    L.gate(ctx, true);
+    return { draw: draw, gated: function () { return false; } };
+  };
+
+  // ════ m5Own: 지분율 × (1 − 할인율) = 넓이 ════
+  window.CUR_VIS.m5Own = function (host, p, ctx) {
+    var U = p.unit || '억 원', u = U.replace(' 원', ''), V = p.v || 100, own = p.own || 50, d = p.disc == null ? 50 : p.disc, sl = p.sl || { min: 0, max: 70, step: 5 }, first = true;
+    host.innerHTML = '<div class="m5v"><svg role="img"></svg></div>' + slider('curM5od', '지주회사 할인율', sl, d) + '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), inp = host.querySelector('input');
+    function draw() {
+      var W = Math.min(L.wOf(host), 560), rw = Math.round(Math.min(300, W * 0.56)), rh = Math.round(clamp(rw * 0.7, 150, 210)), x0 = 1, y0 = 42;
+      var ow = rw * own / 100, gh = rh * (1 - d / 100), val = V * own / 100 * (1 - d / 100), ax = x0 + rw + 16, o = '';
+      o += '<defs><pattern id="m5hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" stroke="rgba(242,239,232,.28)" stroke-width="1.2"/></pattern></defs>';
+      // 위 괄호: 자회사 가치 전체
+      o += '<path d="M' + q1(x0) + ' ' + (y0 - 6) + 'V' + (y0 - 12) + 'H' + q1(x0 + rw) + 'V' + (y0 - 6) + '" fill="none" stroke="' + HL + '"/>' + T(x0 + rw / 2, y0 - 19, '자회사 가치 ' + fmt(V), '', 'middle');
+      // 사각형: 오른쪽 = 다른 주주, 왼쪽 위 = 할인, 왼쪽 아래 = 우리 몫(금색)
+      o += Rc(x0, y0, rw, rh, 'rgba(28,44,72,.35)', LN) + Rc(x0, y0, ow, rh - gh, 'url(#m5hatch)', LN) + Rc(x0, y0 + rh - gh, ow, gh, GOLD) + Ln(x0 + ow, y0, x0 + ow, y0 + rh, LN);
+      // 아래 괄호: 지분율 / 다른 주주
+      var yb = y0 + rh + 8;
+      o += '<path d="M' + q1(x0) + ' ' + yb + 'V' + (yb + 6) + 'H' + q1(x0 + ow - 3) + 'V' + yb + 'M' + q1(x0 + ow + 3) + ' ' + yb + 'V' + (yb + 6) + 'H' + q1(x0 + rw) + 'V' + yb + '" fill="none" stroke="' + HL + '"/>' +
+        T(x0 + ow / 2, yb + 24, '지분율 ' + own + '%', '', 'middle') + T(x0 + ow + (rw - ow) / 2, yb + 24, '다른 주주 ' + (100 - own) + '%', 'mu', 'middle');
+      // 오른쪽 주석: 선을 끌어 바로 적기
+      var yg = y0 + rh - gh / 2, yd = y0 + (rh - gh) / 2;
+      o += Ln(x0 + ow / 2, yg, ax - 6, yg, GOLD) + '<circle cx="' + q1(x0 + ow / 2) + '" cy="' + q1(yg) + '" r="2.5" fill="' + GND + '"/>' +
+        T(ax, yg + 4, n1(val), 'bg') + T(ax, yg + 24, '우리 몫으로 치는 값', 'mu');
+      if (d > 0) o += Ln(x0 + ow / 2, yd, ax - 6, yd, HL) + '<circle cx="' + q1(x0 + ow / 2) + '" cy="' + q1(yd) + '" r="2.5" fill="#F2EFE8"/>' + T(ax, yd + 1, '할인 ' + d + '%') + T(ax, yd + 19, '시장이 깎아 보는 몫', 'mu');
+      var H = yb + 32;
+      svg.innerHTML = G(o, 0, first);
+      size(svg, W, H, '자회사 가치 ' + fmt(V) + ' × 지분율 ' + own + '% × (1 − 할인율 ' + d + '%) = ' + n1(val) + u + ' (예시)');
+      host.querySelector('.vctl b').textContent = d + '%';
+      vr.innerHTML = fmt(V) + ' × ' + own + '% × (1 − ' + d + '%) = <b>' + n1(val) + u + '</b>. 할인이 0%면 ' + n1(V * own / 100) + u + ' (예시)';
+      first = false;
+    }
+    bindSlider(inp, sl, function () { return d; }, function (v) { d = v; }, draw);
     L.gate(ctx, true);
     return { draw: draw, gated: function () { return false; } };
   };
