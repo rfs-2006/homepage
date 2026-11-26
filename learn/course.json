@@ -7,25 +7,25 @@
    "id": "base",
    "label": "기초",
    "range": "M0–M1",
-   "en": "Foundation"
+   "en": "BASIC"
   },
   {
    "id": "rel",
    "label": "상대가치",
    "range": "M2–M5",
-   "en": "Relative Valuation"
+   "en": "RELATIVE"
   },
   {
    "id": "abs",
-   "label": "절대가치",
+   "label": "내재가치",
    "range": "M6–M8",
-   "en": "Absolute Valuation"
+   "en": "DCF"
   },
   {
    "id": "lab",
    "label": "종합",
    "range": "M9",
-   "en": "Capstone"
+   "en": "CASE"
   }
  ],
  "modules": [

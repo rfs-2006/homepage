@@ -579,31 +579,56 @@
     '.cur.v2 .o .s{font-size:14.5px;color:var(--t3)}',
     '.cur.v2 .o .mk{right:8px;border-radius:4px}',
     '.cur.v2 .L.picked .o:not(.on):not(.ans){opacity:.35}',
-    /* 코스 홈: R.F.S. 페이지 문법(사진 히어로 + 큰 세리프, About 숫자 띠, History 타임라인, Fund 카드) */
-    '.cur.v2 .cur-wrap.home{padding-bottom:0}',
-    '.cur.v2[data-view="home"] .cur-bg{display:block;position:absolute;inset:0 0 auto;height:100vh;animation:none;transform:none}',
-    '.cur.v2[data-view="home"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.55),rgba(11,21,36,.35) 40%,rgba(11,21,36,.92) 90%,#0B1524)}',
-    '.cur .ch-hero{padding:clamp(120px,24vh,240px) 0 72px}',
-    '.cur .ch-hero h1{margin:0;font-family:var(--ser);font-weight:700;font-size:clamp(52px,6vw,84px);line-height:1;letter-spacing:-.035em;color:#F7F6F3;text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45)}',
-    '.cur .ch-hero .ch-ld{margin:22px 0 0;max-width:40em;font-size:17px;line-height:1.85;color:#F7F6F3}',
-    '.cur .ch-sts{margin:28px 0 0;font-size:15px;color:#F7F6F3}',
-    '.cur .ch-route{position:relative;margin:0 calc(-1 * var(--pad));padding:88px var(--pad) 88px;background:#0F1B2E}',
-    '.cur .ch-cert{position:relative;flex:1;margin:0 calc(-1 * var(--pad));padding:72px var(--pad) 120px;background:#0B1524}',
-    '.cur .ch-tl{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr))}',
-    '.cur .ch-tl button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding-right:10px;color:#F7F6F3}',
-    '.cur .ch-tl button:focus-visible{outline:2px solid #8FAADC;outline-offset:6px}',
-    '.cur .ch-tl .ch-eb{display:block;height:16px;font-size:13px;font-weight:500;white-space:nowrap}',
-    '.cur .ch-tl .ch-cd{display:block;margin-top:14px;font-family:var(--ser);font-weight:700;font-size:clamp(28px,2.6vw,40px);line-height:1;letter-spacing:-.03em;transition:color .2s}',
-    '.cur .ch-tl .ch-ln{display:block;position:relative;height:1px;margin:22px -10px 0 0;border-top:1px solid rgba(247,246,243,.35)}',
-    '.cur .ch-tl .ch-ln i{position:absolute;left:0;top:-6px;width:11px;height:11px;background:#0F1B2E;box-shadow:inset 0 0 0 1px #F7F6F3;outline:3px solid #0F1B2E}',
-    '.cur .ch-tl li.done .ch-ln i{background:#F7F6F3;box-shadow:none}',
-    '.cur .ch-tl li.now .ch-ln i{background:#8FAADC;box-shadow:none}',
-    '.cur .ch-tl li.now .ch-cd,.cur .ch-tl li:hover .ch-cd{color:#8FAADC}',
-    '.cur .ch-tl .ch-tt{display:block;margin-top:22px;font-size:15px;font-weight:700;line-height:1.45;word-break:keep-all}',
-    '.cur .ch-tl li:hover .ch-tt{text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:1px}',
-    '.cur .ch-tl li.lock{opacity:.5}',
-    '@media (max-width:980px){.cur .ch-tl{grid-template-columns:repeat(5,minmax(0,1fr));row-gap:40px}}',
-    '@media (max-width:560px){.cur .ch-tl{grid-template-columns:repeat(2,minmax(0,1fr))}}',
+    /* 코스 홈: 첫 화면은 밤하늘 사진 + 가운데 큰 제목, 한 번 내리면 같은 하늘에 모듈 별자리(홈 북두칠성 메뉴와 같은 별) */
+    '.cur.v2 .cur-wrap.home{padding:0}',
+    '.cur.v2[data-view="home"] .cur-bg{display:block;animation:none;transform:none;background-position:center 70%;filter:brightness(.8) saturate(.75)}',
+    '.cur.v2[data-view="home"] .cur-bg::after{background:linear-gradient(180deg,rgba(15,27,46,.55),rgba(20,38,72,.35) 55%,rgba(11,21,36,.75));mix-blend-mode:multiply}',
+    '.cur .ch-hero{position:relative;height:100vh;height:100svh;min-height:560px;display:grid;place-items:center}',
+    '.cur .ch-hero h1{margin:0;font-family:var(--ser);font-weight:700;font-size:clamp(52px,7vw,104px);line-height:1;letter-spacing:-.035em;color:#F7F6F3;text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.5)}',
+    '.cur .ch-dn{position:absolute;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));width:44px;height:44px;margin-left:-22px;padding:10px;border:0;background:none;color:#F7F6F3;cursor:pointer;animation:chBob 2.4s ease-in-out infinite}',
+    '@keyframes chBob{50%{transform:translateY(6px)}}',
+    '.cur .ch-cr{position:absolute;left:var(--pad);bottom:14px;font-size:10.5px;color:#F7F6F3;opacity:.8}',
+    '.cur .ch-sky{position:relative;height:100vh;height:100svh;min-height:620px;background:rgba(6,11,20,.38)}',
+    '.cur .ch-sky{--t0:96px;--b0:72px;--x0:4%}',
+    '.cur .ch-sky svg{position:absolute;left:var(--x0);right:var(--x0);top:var(--t0);bottom:var(--b0);width:calc(100% - 2 * var(--x0));height:calc(100% - var(--t0) - var(--b0))}',
+    '.cur .ch-sky .sk-m{display:none}',
+    '.cur .ch-sky .seg{stroke:#dfe7ff;stroke-width:1;stroke-opacity:.42;vector-effect:non-scaling-stroke}',
+    '.cur .ch-sky .pth{stroke:#dfe7ff;stroke-width:1;stroke-opacity:.22;stroke-dasharray:3 6;vector-effect:non-scaling-stroke}',
+    '.cur .ch-gn,.cur .ch-st{position:absolute;left:calc(var(--x0) + (100% - 2 * var(--x0)) * var(--dx) / 100);top:calc(var(--t0) + (100% - var(--t0) - var(--b0)) * var(--dy) / 100)}',
+    '.cur .ch-gn{transform:translateX(-50%);text-align:center;pointer-events:none;color:#F7F6F3;text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 12px rgba(0,0,0,.7)}',
+    '.cur .ch-gn h3{margin:0;padding-left:.3em;font-size:clamp(15px,1.5vw,20px);font-weight:700;letter-spacing:.3em}',
+    '.cur .ch-gn small{display:block;margin-top:6px;font-size:12px;font-weight:700}',
+    '.cur .ch-st{--s:1;--t:236,242,255;width:56px;height:56px;margin:-28px 0 0 -28px;padding:0;border:0;border-radius:50%;background:none;color:#F7F6F3;font:inherit;cursor:pointer;z-index:3}',
+    '.cur .ch-st.fl{width:20px;height:20px;margin:-10px 0 0 -10px;cursor:default;pointer-events:none;z-index:2}',
+    '.cur .ch-st.big{--s:1.7}',
+    '.cur .ch-st>span:not(.lb){position:absolute;left:50%;top:50%;pointer-events:none}',
+    '.cur .ch-st .gw{width:calc(46px*var(--s));height:calc(46px*var(--s));transform:translate(-50%,-50%) scale(.9);border-radius:50%;background:radial-gradient(circle,rgba(var(--t),.55) 0%,rgba(var(--t),.17) 22%,rgba(var(--t),0) 62%);transition:transform .7s var(--e)}',
+    '.cur .ch-st .co{width:calc(9px*var(--s));height:calc(9px*var(--s));transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff 0%,#fff 30%,rgba(var(--t),.85) 48%,rgba(var(--t),0) 72%);transition:transform .6s var(--e)}',
+    '.cur .ch-st .sp{height:1px;width:calc(64px*var(--s));transform:translate(-50%,-50%) scaleX(.85);background:linear-gradient(90deg,rgba(var(--t),0),rgba(var(--t),.18) 22%,rgba(255,255,255,.95) 50%,rgba(var(--t),.18) 78%,rgba(var(--t),0));transition:transform .9s var(--e)}',
+    '.cur .ch-st .sp.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(.85)}',
+    '.cur .ch-st .rg{width:38px;height:38px;transform:translate(-50%,-50%) scale(.55);border-radius:50%;border:1px solid rgba(255,255,255,.55);opacity:0;transition:transform .7s var(--e),opacity .5s}',
+    '.cur .ch-st.fl .gw{opacity:.6}',
+    '.cur button.ch-st:not(.done):not(.now) .gw,.cur button.ch-st:not(.done):not(.now) .co,.cur button.ch-st:not(.done):not(.now) .sp{opacity:.5}',
+    '.cur .ch-st.now .rg{transform:translate(-50%,-50%) scale(1);opacity:.6}',
+    '.cur .ch-st.now .gw{animation:chTw 2.4s ease-in-out infinite}',
+    '@keyframes chTw{0%,100%{opacity:1}18%{opacity:.7}31%{opacity:1}52%{opacity:.82}}',
+    '.cur button.ch-st:hover,.cur button.ch-st:focus-visible{z-index:4;outline:none}',
+    '.cur button.ch-st:hover .gw,.cur button.ch-st:focus-visible .gw{opacity:1;transform:translate(-50%,-50%) scale(1.8)}',
+    '.cur button.ch-st:hover .co,.cur button.ch-st:focus-visible .co{opacity:1;transform:translate(-50%,-50%) scale(1.4)}',
+    '.cur button.ch-st:hover .sp,.cur button.ch-st:focus-visible .sp{opacity:1;transform:translate(-50%,-50%) scaleX(2.4)}',
+    '.cur button.ch-st:hover .sp.v,.cur button.ch-st:focus-visible .sp.v{transform:translate(-50%,-50%) rotate(90deg) scaleX(2.4)}',
+    '.cur button.ch-st:focus-visible .rg{opacity:.9;transform:translate(-50%,-50%) scale(1)}',
+    '.cur .ch-st .lb{position:absolute;left:50%;top:44px;transform:translateX(-50%);white-space:nowrap;text-align:center;pointer-events:none;text-shadow:0 0 2px rgba(0,0,0,.9),0 1px 10px rgba(0,0,0,.75),0 0 22px rgba(0,0,0,.5)}',
+    '.cur .ch-st.big .lb{top:54px}',
+    '.cur .ch-st .lb b{display:block;font-size:12px;font-weight:700;letter-spacing:.22em;padding-left:.22em}',
+    '.cur .ch-st .lb i{display:block;margin-top:5px;font-style:normal;font-size:14px;font-weight:700}',
+    '.cur .ch-st.now .lb b{color:#8FAADC}',
+    '.cur .ch-st.lock{opacity:.5}',
+    '.cur .ch-lg{position:absolute;right:var(--pad);bottom:22px;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:12px;color:#F7F6F3}',
+    '.cur .ch-lg span{display:flex;align-items:center;gap:7px}',
+    '.cur .ch-lg i{display:block;flex:none;width:7px;height:7px;border-radius:50%;background:#fff}.cur .ch-lg i.ch-n{background:#8FAADC}.cur .ch-lg i.ch-o{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}',
+    '.cur .ch-cert{position:relative;padding:88px var(--pad) 120px;background:#0B1524}',
+    '@media (max-aspect-ratio:1/1),(max-width:720px){.cur .ch-sky{height:auto;min-height:1120px;--t0:84px;--b0:96px;--x0:2%}.cur .ch-sky .sk-d{display:none}.cur .ch-sky .sk-m{display:block}.cur .ch-gn,.cur .ch-st{left:calc(var(--x0) + (100% - 2 * var(--x0)) * var(--mx) / 100);top:calc(var(--t0) + (100% - var(--t0) - var(--b0)) * var(--my) / 100)}.cur .ch-st .lb i{font-size:13px}.cur .ch-lg{left:var(--pad);right:auto}}',
     /* 모듈 첫 화면 */
     '.cur.v2[data-step="intro"] .cur-bg{display:block;position:absolute;inset:0 0 auto;height:100vh;animation:none;transform:none}',
     '.cur.v2[data-step="intro"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.6),rgba(11,21,36,.45) 40%,rgba(11,21,36,.95) 90%,#0B1524)}',
@@ -2490,30 +2515,48 @@
     var c = 2 * Math.PI * 22;
     return '<span class="ring' + (ok ? ' ok' : '') + '"><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="22" class="rt"/><circle cx="28" cy="28" r="22" class="rf" stroke-dasharray="' + c.toFixed(1) + '" stroke-dashoffset="' + (c * (1 - f)).toFixed(1) + '" transform="rotate(-90 28 28)" stroke-linecap="round"/><text x="28" y="33">' + esc(txt) + '</text></svg></span>';
   }
+  // 코스 홈 별자리 배치(%). 넓은 화면(d)과 세로 화면(m) 두 벌. 모듈 별 사이에 이름 없는 작은 별(f*)을 섞어 진짜 별자리처럼
+  var SKY = {
+    d: { M0: [10, 49], M1: [18, 36], M2: [28, 44], M3: [34, 27], M4: [41, 38], M5: [48, 23], M6: [58, 43], M7: [64, 32], M8: [72, 36], M9: [89, 16],
+         fa: [5, 58, .5], fb: [14, 42, .45], fc: [54, 32, .5], fd: [77, 45, .55], fe: [81, 29, .6], ff: [85, 22, .55], fg: [92, 24, .4], fh: [61, 53, .45],
+         base: [14, 15], rel: [38, 7], abs: [65, 14], lab: [89, 3] },
+    m: { M0: [24, 17], M1: [62, 21], M2: [18, 41], M3: [40, 34], M4: [60, 44], M5: [82, 36], M6: [22, 66], M7: [50, 60], M8: [76, 67], M9: [46, 91],
+         fa: [10, 13, .5], fb: [44, 18, .45], fc: [62, 52, .45], fd: [84, 75, .5], fe: [70, 81, .55], ff: [58, 86, .5], fg: [30, 94, .4], fh: [14, 73, .45],
+         base: [50, 6], rel: [50, 27], abs: [50, 52], lab: [80, 90] },
+    edges: [['fa', 'M0'], ['M0', 'fb'], ['fb', 'M1'], ['M2', 'M3'], ['M3', 'M4'], ['M4', 'M5'], ['M6', 'M7'], ['M7', 'M8'], ['M8', 'fd'], ['M6', 'fh'], ['fe', 'ff'], ['ff', 'M9'], ['M9', 'fg']],
+    path: [['M1', 'M2'], ['M5', 'fc'], ['fc', 'M6'], ['fd', 'fe']]
+  };
   function renderHome() {
     var C = st.course, mods = C.modules;
     st.view = 'home'; st.cur = null; st.el.setAttribute('data-view', 'home'); st.el.setAttribute('data-step', 'home');
     st.el.querySelector('.bk').disabled = true; st.el.querySelector('.hb').hidden = true; st.el.querySelector('.rvw').hidden = true;
     var ps = mods.map(modProg), tot = ps.reduce(function (a, p) { return a + p.f; }, 0) / mods.length, done = ps.filter(function (p) { return p.f === 1; }).length;
     st.el.querySelector('.cur-bar').style.width = Math.round(tot * 100) + '%';
-    var mins = mods.reduce(function (a, m) { return a + m.minutes; }, 0), qn = mods.reduce(function (a, m) { return a + m.questions; }, 0), labs = mods.filter(function (m) { return m.lab; }).length;
     var certOpen = !!(st.mods[C.certificate.unlockAfter] && st.mods[C.certificate.unlockAfter].done);
     // 지금 할 모듈: 하다 만 모듈, 없으면 아직 안 끝낸 첫 모듈
     var now = ps.findIndex(function (p) { return p.f > 0 && p.f < 1; }); if (now < 0) now = ps.findIndex(function (p) { return p.f < 1; }); if (now < 0) now = 0;
-    var GE = {}; C.groups.forEach(function (g) { GE[g.id] = g.label; });
-    var seen = {};
+    function lines(k) {
+      var P = SKY[k], ln = function (e, c) { var a = P[e[0]], z = P[e[1]]; return a && z ? '<line class="' + c + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + z[0] + '" y2="' + z[1] + '"/>' : ''; };
+      return '<svg class="sk-' + k + '" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' + SKY.edges.map(function (e) { return ln(e, 'seg'); }).join('') + SKY.path.map(function (e) { return ln(e, 'pth'); }).join('') + '</svg>';
+    }
+    function pos(key) { var d = SKY.d[key], m = SKY.m[key]; return '--dx:' + d[0] + ';--dy:' + d[1] + ';--mx:' + m[0] + ';--my:' + m[1]; }
+    var fill = Object.keys(SKY.d).filter(function (k) { return k.charAt(0) === 'f'; }).map(function (k) { return '<span class="ch-st fl" style="' + pos(k) + ';--s:' + SKY.d[k][2] + '" aria-hidden="true"><span class="gw"></span><span class="co"></span></span>'; }).join('');
+    var stars = mods.map(function (m, i) {
+      var p = ps[i], cls = p.f === 1 ? ' done' : (i === now ? ' now' : '');
+      return '<button type="button" class="ch-st' + cls + (m.code === 'M9' ? ' big' : '') + (m.ready ? '' : ' lock') + '" data-i="' + i + '" style="' + pos(m.code) + '" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '">' +
+        '<span class="gw"></span><span class="sp"></span><span class="sp v"></span><span class="rg"></span><span class="co"></span><span class="lb"><b>' + esc(m.code) + '</b><i>' + esc(m.title) + '</i></span></button>';
+    }).join('');
+    var groups = C.groups.map(function (g) { return '<div class="ch-gn" style="' + pos(g.id) + '"><h3>' + esc(g.en || g.label) + '</h3><small>' + esc(g.label + ' · ' + g.range) + '</small></div>'; }).join('');
     st.bx.classList.add('home');
-    st.bx.innerHTML = '<section class="ch-hero"><h1>Curriculum</h1><p class="ch-ld">' + esc(C.lead || C.intro) + '</p>' +
-      '<p class="ch-sts">' + mods.length + '개 모듈 · 약 ' + Math.round(mins / 60) + '시간 · ' + qn + '문항' + (labs ? ' · 실습 시트 ' + labs + '개' : '') + (done ? ' · ' + done + '개 끝냄' : '') + '</p></section>' +
-      '<section class="ch-route"><ol class="ch-tl">' + mods.map(function (m, i) {
-        var p = ps[i], eb = seen[m.group] ? '' : GE[m.group]; seen[m.group] = 1;
-        return '<li class="' + (p.f === 1 ? 'done' : (i === now ? 'now' : '')) + (m.ready ? '' : ' lock') + '" data-i="' + i + '"><button type="button" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '"><span class="ch-eb">' + esc(eb) + '</span><span class="ch-cd">' + esc(m.code) + '</span><span class="ch-ln"><i></i></span><span class="ch-tt">' + esc(m.title) + '</span></button></li>';
-      }).join('') + '</ol></section>' +
+    st.bx.innerHTML = '<section class="ch-hero"><h1>Curriculum</h1><button type="button" class="ch-dn" aria-label="모듈 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M6 14l6 6 6-6"/></svg></button><span class="ch-cr">Photo by Danka &amp; Peter on Unsplash</span></section>' +
+      '<section class="ch-sky" aria-label="모듈 별자리">' + lines('d') + lines('m') + groups + fill + stars +
+      '<div class="ch-lg"><span><i></i>끝낸 모듈</span><span><i class="ch-n"></i>지금 할 모듈</span><span><i class="ch-o"></i>남은 모듈</span>' + (done ? '<span>' + done + ' / ' + mods.length + ' 완료</span>' : '') + '</div></section>' +
       '<section class="ch-cert"><div class="cert' + (certOpen ? ' open' : '') + '"><div class="pp" aria-hidden="' + !certOpen + '"><img src="../assets/rfs-seal-light-256.png" alt=""><p class="t1">CERTIFICATE</p><p class="t2">' + esc(C.certificate.title) + '</p><p class="t3">이름 ______ 님은<br>R.F.S. ' + esc(C.certificate.line) + '.</p><div class="t4"><span>중앙대학교 가치투자학회 R.F.S.</span><span>' + new Date().getFullYear() + '</span></div></div>' +
       (certOpen ? '' : '<div class="lk">' + LOCK + '<b>M9까지 마치면 열려요</b><span>지금 ' + done + ' / ' + mods.length + ' 모듈 완료 · 모듈마다 수료 도장을 받아요</span></div>') + '</div></section>';
-    st.bx.querySelectorAll('.ch-tl li').forEach(function (li) {
-      var m = mods[+li.getAttribute('data-i')];
-      li.querySelector('button').onclick = function () { if (m.ready) nav('?m=' + m.id); else toast(m.title + ' 모듈은 준비 중이에요.'); };
+    st.bx.querySelector('.ch-dn').onclick = function () { st.bx.querySelector('.ch-sky').scrollIntoView({ behavior: 'smooth' }); };
+    st.bx.querySelectorAll('button.ch-st').forEach(function (b) {
+      var m = mods[+b.getAttribute('data-i')];
+      b.onclick = function () { if (m.ready) nav('?m=' + m.id); else toast(m.title + ' 모듈은 준비 중이에요.'); };
     });
     btn();
   }
