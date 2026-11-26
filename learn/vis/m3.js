@@ -71,18 +71,18 @@
     host.classList.add('m3v');
     var B = p.book, v = p.cap0, U = p.unit || '억', id = 'curM3mc';
     var W = 420, base = 250, k = 204 / p.max, xb = 16, xm = 194, bw = 66;
-    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 282" role="img" aria-label="순자산 막대와 시가총액 막대 비교"></svg>' +
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 300" role="img" aria-label="순자산 막대와 시가총액 막대 비교"></svg>' +
       L.sliderHtml(id, '시가총액', p.min, p.max, p.step, v, '시가총액(' + U + ' 원)') +
-      '<p class="vr" aria-live="polite"></p><div class="m3ps" aria-live="polite"></div>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
-    var svg = host.querySelector('svg'), inp = host.querySelector('#' + id), lb = host.querySelector('.vctl label b'), vr = host.querySelector('.vr'), ps = host.querySelector('.m3ps');
+      '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg'), inp = host.querySelector('#' + id), lb = host.querySelector('.vctl label b'), vr = host.querySelector('.vr');
     var bps = B * 1e4 / p.shares; // 억 원 ÷ 만 주 → 원
     function draw() {
       var hb = B * k, yb = base - hb, hm = v * k, ym = base - hm, r = v / B, o = '';
       o += ln(8, base, W - 8, base, FAINT);
       // 순자산: 지금까지 쌓인 값
       o += '<rect x="' + xb + '" y="' + yb + '" width="' + bw + '" height="' + hb + '" fill="' + NAVY + '" stroke="' + HAIR + '"/>';
-      o += t(xb + bw / 2, yb - 10, '순자산 ' + fmt(B) + U, '', 'middle');
-      o += t(xb + bw / 2, base + 20, '장부에 쌓인 값', 's', 'middle');
+      o += t(xb + bw / 2, yb - 10, fmt(B) + U, '', 'middle');
+      o += t(xb + bw / 2, base + 22, '순자산', '', 'middle') + t(xb + bw / 2, base + 40, '장부에 쌓인 값', 's', 'middle');
       // 1배 선: 순자산 높이를 시가총액 쪽까지 끌어 온다
       o += ln(xb + bw, yb, xm + bw + 12, yb, 'rgba(242,239,232,.45)', ' stroke-dasharray="3 4"');
       // 시가총액: 장부만큼(옅게) + 기대를 얹은 몫 / 모자란 몫
@@ -90,8 +90,8 @@
       if (v > B) o += '<rect x="' + xm + '" y="' + ym + '" width="' + bw + '" height="' + (yb - ym) + '" fill="rgba(226,196,143,.26)"/>';
       o += '<rect x="' + xm + '" y="' + ym + '" width="' + bw + '" height="' + hm + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>';
       if (v < B) o += '<rect x="' + xm + '" y="' + yb + '" width="' + bw + '" height="' + (ym - yb) + '" fill="none" stroke="rgba(242,239,232,.4)" stroke-dasharray="3 3"/>';
-      o += t(xm + bw / 2, Math.min(ym, yb) - 10, '시가총액 ' + fmt(v) + U, '', 'middle');
-      o += t(xm + bw / 2, base + 20, '시장이 매긴 값', 's', 'middle');
+      o += t(xm + bw / 2, Math.min(ym, yb) - 10, fmt(v) + U, '', 'middle');
+      o += t(xm + bw / 2, base + 22, '시가총액', '', 'middle') + t(xm + bw / 2, base + 40, '시장이 매긴 값', 's', 'middle');
       // 장부와의 차이: 막대 사이에 직접 쓴다
       var d = v - B, gap = Math.abs(yb - ym);
       if (gap >= 14) {
@@ -109,7 +109,6 @@
       vr.textContent = Math.abs(r - 1) < 1e-9 ? '시가총액이 순자산과 같아요. 장부값 그대로 1배예요.' :
         r < 1 ? '1배보다 낮아요. 시장이 이 순자산으로 버는 힘을 장부보다 낮게 보는 거예요.' :
         '1배보다 높아요. 시장이 이 순자산으로 앞으로 더 벌 거라고 보고 값을 얹은 거예요.';
-      ps.innerHTML = '<small>한 주로 나누면</small>순자산 ' + fmt(B) + U + ' ÷ ' + fmt(p.shares) + '만 주 = BPS ' + fmt(bps) + '원 → BPS × PBR ' + esc(mult(r)) + ' = 주가 <b>' + fmt(bps * r) + '원</b>';
     }
     inp.addEventListener('input', function () { v = clamp(Math.round(+inp.value / p.step) * p.step, p.min, p.max); draw(); });
     inp.addEventListener('keydown', function (e) { e.stopPropagation(); });
