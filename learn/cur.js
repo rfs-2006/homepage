@@ -580,15 +580,14 @@
     '.cur.v2 .o .mk{right:8px;border-radius:4px}',
     '.cur.v2 .L.picked .o:not(.on):not(.ans){opacity:.35}',
     /* 코스 홈: R.F.S. 페이지 문법(사진 히어로 + 큰 세리프, About 숫자 띠, History 타임라인, Fund 카드) */
-    '.cur-wrap.home{padding-bottom:0}',
-    '.cur.v2[data-view="home"] .cur-bg{display:block;animation:none;transform:none}',
+    '.cur.v2 .cur-wrap.home{padding-bottom:0}',
+    '.cur.v2[data-view="home"] .cur-bg{display:block;position:absolute;inset:0 0 auto;height:100vh;animation:none;transform:none}',
     '.cur.v2[data-view="home"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.55),rgba(11,21,36,.35) 40%,rgba(11,21,36,.92) 90%,#0B1524)}',
     '.cur .hx{padding:clamp(120px,24vh,240px) 0 72px}',
     '.cur .hx h1{margin:0;font-family:var(--ser);font-weight:700;font-size:clamp(52px,6vw,84px);line-height:1;letter-spacing:-.035em;color:#F7F6F3;text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45)}',
     '.cur .hx .ld{margin:22px 0 0;max-width:40em;font-size:17px;line-height:1.85;color:#F7F6F3}',
     '.cur .sts{margin:28px 0 0;font-size:15px;color:#F7F6F3}',
-    '.cur .rx,.cur .cx{position:relative;margin:0 calc(-1 * var(--pad));padding:88px var(--pad) 72px;background:#0F1B2E}',
-    '.cur .cx{background:#0B1524;padding-bottom:120px}',
+    '.cur .rx{position:relative;flex:1;margin:0 calc(-1 * var(--pad));padding:88px var(--pad) 120px;background:#0F1B2E}',
     '.cur .tl{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(10,minmax(0,1fr))}',
     '.cur .tl button{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;padding-right:10px;color:#F7F6F3}',
     '.cur .tl button:focus-visible{outline:2px solid #8FAADC;outline-offset:6px}',
@@ -2503,9 +2502,7 @@
         return '<li class="' + (p.f === 1 ? 'done' : (i === now ? 'now' : '')) + (m.ready ? '' : ' lock') + '" data-i="' + i + '"><button type="button" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '"><span class="eb">' + esc(eb) + '</span><span class="cd">' + esc(m.code) + '</span><span class="ln"><i></i></span><span class="tt">' + esc(m.title) + '</span></button></li>';
       }).join('') + '</ol>' +
       '<article class="mc" aria-live="polite"><div class="hd"><small></small><h2></h2><p></p></div>' +
-      '<div class="bd"><div><p class="fx"></p><div class="ft"><button type="button" class="go"></button><span class="mt"></span></div></div><ul class="ob"></ul></div></article></section>' +
-      '<section class="cx"><div class="cert' + (certOpen ? ' open' : '') + '"><div class="pp" aria-hidden="' + !certOpen + '"><img src="../assets/rfs-seal-light-256.png" alt=""><p class="t1">CERTIFICATE</p><p class="t2">' + esc(C.certificate.title) + '</p><p class="t3">이름 ______ 님은<br>R.F.S. ' + esc(C.certificate.line) + '.</p><div class="t4"><span>중앙대학교 가치투자학회 R.F.S.</span><span>' + new Date().getFullYear() + '</span></div></div>' +
-      (certOpen ? '' : '<div class="lk">' + LOCK + '<b>M9까지 마치면 열려요</b><span>지금 ' + done + ' / ' + mods.length + ' 모듈 완료 · 모듈마다 수료 도장을 받아요</span></div>') + '</div></section>';
+      '<div class="bd"><div><p class="fx"></p><div class="ft"><button type="button" class="go"></button><span class="mt"></span></div></div><ul class="ob"></ul></div></article></section>' ;
     var card = st.bx.querySelector('.mc');
     function pick(i) {
       var m = mods[i], p = ps[i], ms = st.mods[m.id];
