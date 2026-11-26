@@ -61,8 +61,8 @@
    "code": "M0",
    "group": "base",
    "title": "밸류에이션이란",
-   "minutes": 55,
-   "questions": 26,
+   "minutes": 50,
+   "questions": 23,
    "file": "m0.json",
    "ready": true,
    "objectives": [
@@ -164,7 +164,7 @@
    "group": "rel",
    "title": "EV와 EV/EBITDA",
    "minutes": 50,
-   "questions": 20,
+   "questions": 21,
    "ready": true,
    "objectives": [
     "시가총액에서 EV로 가는 다리를 놓고 분자·분모 짝을 맞춰요",
@@ -218,7 +218,7 @@
    "group": "abs",
    "title": "DCF 1 구조",
    "minutes": 60,
-   "questions": 22,
+   "questions": 23,
    "ready": true,
    "objectives": [
     "영업가치 + NOA − IBD = 주주가치로 넘어가요",

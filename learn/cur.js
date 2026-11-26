@@ -31,7 +31,7 @@
  *           perBand    { bands:[8,12,16], start, min, max }  PER 밴드 + 배수 슬라이더 (chart: 밴드 고르기)
  *           absRel     { cf:[..], rate, peers:[[이름,배수]], eps }  절대 vs 상대 애니메이션 (concept)
  *           methodMap  { cards?: [{ id, label }] }      기법 지도 2D (chart: 카드 끌어 놓기 / 거품 누르기)
- *           goodPrice  { eps0, growth, years, exitPer, scenarios:[..], start, min, max }  같은 회사, 다른 진입 PER
+ *           cards      { cards:[{k,t,q,a,mark?}], done?, tap?, cols?, size?:'lg' }  뒤집는 카드 (size 'lg'면 본문 크기 글자)
  *           storyNumber{ story:[..], number:[..], value }  이야기 → 숫자 → 가치
  *           twoForces  { nodes:[a,b], left:{title,items}, right:{title,items}, mid }  두 힘 다이어그램 (가치 vs 가격 동인 등)
  *           methodTree {}                               자산·수익·시장 접근 기법 나무
@@ -401,10 +401,10 @@
 .cur .toast{position:fixed;left:50%;bottom:28px;z-index:8;transform:translate(-50%,20px);opacity:0;background:var(--tx);color:#0B1526;font-size:14px;padding:12px 18px;transition:opacity .3s,transform .4s var(--e);pointer-events:none;max-width:calc(100% - 44px);text-align:center}\
 .cur .toast.show{opacity:1;transform:translate(-50%,0)}\
 .cur .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}\
-.cur .ctb{width:100%;margin-top:14px;border-collapse:collapse;table-layout:fixed;font-size:14px;line-height:1.55}\
+.cur .ctb{width:100%;margin-top:14px;border-collapse:collapse;table-layout:fixed;font-size:16.5px;line-height:1.6}\
 .cur .ctb th,.cur .ctb td{text-align:left;vertical-align:top;padding:11px 12px 11px 0;border-bottom:1px solid var(--hair)}\
 .cur .ctb thead th{font-family:var(--ser);font-size:18px;font-weight:600;color:var(--ac2);border-bottom-color:rgba(143,170,220,.5)}\
-.cur .ctb tbody th{width:30%;font-weight:500;color:var(--tx);font-size:13px}\
+.cur .ctb tbody th{width:30%;font-weight:500;color:var(--tx);font-size:15px}\
 .cur .ctb td{color:var(--tx)}\
 .cur .ctb tbody tr.hid{display:none}.cur .ctb tbody{cursor:pointer}.cur .rvc{margin-top:8px}\
 @media (min-width:700px){.cur .ctab{display:none}.cur .ctb tbody th{width:12%}}\
@@ -417,7 +417,7 @@
 .cur .sr .ot{display:flex;flex-direction:column;gap:3px;min-width:0}\
 .cur .sr small{font-size:11.5px;letter-spacing:.08em;color:var(--ac);font-weight:500}\
 .cur .sr .lb{font-family:var(--ser);font-size:17px;font-weight:600;letter-spacing:-.025em;line-height:1.45}\
-.cur .sr .vbt{margin-top:0}.cur .sr .fx{font-size:13px;color:var(--ok)}\
+.cur:not(.kbd) .sr .vbt button i{display:none}.cur .sr .vbt{margin-top:0}.cur .sr .fx{font-size:13px;color:var(--ok)}\
 @media (min-width:900px){.cur .sr{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:24px}.cur .sr .lb{font-size:19px}.cur .sr .vbt button{min-width:110px}}\
 /* 새 부품: 카드·한 줄씩 공개·괴리·리포트 지도·표 */\
 .cur .vgo{min-height:44px}\
@@ -428,7 +428,7 @@
 .cur .fc:hover{border-color:var(--ac)}.cur .fc small{font-size:11.5px;letter-spacing:.08em;color:var(--ac);font-weight:500}\
 .cur .fc b{font-family:var(--ser);font-size:21px;font-weight:600;letter-spacing:-.03em;line-height:1.3}\
 .cur .fc .fq{font-size:14px;color:var(--t2);line-height:1.55}\
-.cur .fc .fa{display:none;font-size:14.5px;line-height:1.65;color:var(--tx);border-top:1px solid var(--hair);padding-top:10px;margin-top:4px}\
+.cur .fc .fa{display:none;font-size:14.5px;line-height:1.65;color:var(--tx);border-top:1px solid var(--hair);padding-top:10px;margin-top:4px}.cur .fcg.lg .fc .fq{font-size:16px}.cur .fcg.lg .fc .fa{font-size:16.5px}.cur .fcg.lg .fc small{font-size:12.5px}\
 .cur .fc .fa em{display:block;font-style:normal;font-family:var(--ser);font-weight:600;font-size:15px;margin-bottom:2px;color:var(--ac2)}.cur .fc .fa em.ok{color:var(--ok)}.cur .fc .fa em.no{color:var(--no)}\
 .cur .fc i{position:absolute;left:16px;bottom:10px;font-style:normal;font-size:12px;color:var(--t3)}\
 .cur .fc.open{background:rgba(38,69,122,.32);border-color:rgba(143,170,220,.6);cursor:default}.cur .fc.open .fa{display:block;animation:curRise .45s var(--e) both}.cur .fc.open i{display:none}.cur .fc.open{padding-bottom:16px}\
@@ -843,7 +843,7 @@
       var ox = 0, oy = 0, base = oy + H - 34, sc = (H - 110) / (SUM * 1.05), cw = (pw - 20) / 6, bw = Math.min(30, cw * 0.55);
       var cx = function (i) { return ox + 10 + cw * i + cw / 2; };
       s += '<rect x="' + ox + '" y="' + oy + '" width="' + pw + '" height="' + H + '" fill="rgba(242,239,232,.03)" stroke="rgba(242,239,232,.12)"/>';
-      s += '<text x="' + (ox + 14) + '" y="' + (oy + 26) + '" class="th">절대가치 · DCF</text><text x="' + (ox + 14) + '" y="' + (oy + 44) + '">미래 현금을 할인율 ' + Math.round(r * 100) + '%로 오늘 가치로 (예시)</text>';
+      s += '<text x="' + (ox + 14) + '" y="' + (oy + 26) + '" class="th">가치를 재는 길 · DCF</text><text x="' + (ox + 14) + '" y="' + (oy + 44) + '">미래 현금을 할인율 ' + Math.round(r * 100) + '%로 오늘 가치로 (예시)</text>';
       s += '<line class="ax" x1="' + (ox + 10) + '" x2="' + (ox + pw - 10) + '" y1="' + base + '" y2="' + base + '"/>';
       for (var i = 0; i <= 5; i++) s += '<text x="' + cx(i) + '" y="' + (base + 18) + '" text-anchor="middle"' + (i ? '' : ' class="ta"') + '>' + (i ? i + '년' : '오늘') + '</text>';
       var a = ease(ph / 0.22), stack = 0;
@@ -861,7 +861,7 @@
       var rx = side ? pw + 24 : 0, ry = side ? 0 : H + 24, lx0 = rx + 26, lx1 = rx + pw - 26, ly = ry + H * 0.56;
       var LX = function (mu) { return lx0 + (lx1 - lx0) * (mu - 6) / 10; };
       s += '<rect x="' + rx + '" y="' + ry + '" width="' + pw + '" height="' + H + '" fill="rgba(242,239,232,.03)" stroke="rgba(242,239,232,.12)"/>';
-      s += '<text x="' + (rx + 14) + '" y="' + (ry + 26) + '" class="th">상대가치 · 멀티플</text><text x="' + (rx + 14) + '" y="' + (ry + 44) + '">비슷한 회사들의 PER을 빌려 와요 (예시)</text>';
+      s += '<text x="' + (rx + 14) + '" y="' + (ry + 26) + '" class="th">가격을 매기는 길 · 배수</text><text x="' + (rx + 14) + '" y="' + (ry + 44) + '">비슷한 회사들의 PER을 빌려 와요 (예시)</text>';
       s += '<line class="ax" x1="' + lx0 + '" x2="' + lx1 + '" y1="' + ly + '" y2="' + ly + '"/>';
       for (var mu = 6; mu <= 16; mu += 2) s += '<line class="ax" x1="' + LX(mu) + '" x2="' + LX(mu) + '" y1="' + (ly - 4) + '" y2="' + (ly + 4) + '"/><text x="' + LX(mu) + '" y="' + (ly + 20) + '" text-anchor="middle">' + mu + '배</text>';
       PEERS.forEach(function (pr, j) {
@@ -957,35 +957,6 @@
       check: function () { var ok = cards.filter(function (c) { return placed[c.id] === ctx.answer[c.id]; }).length; res = ok; return { right: ok === cards.length, detail: cards.length + '장 중 ' + ok + '장을 맞게 놓았어요.' }; },
       reveal: function (right, ans) { locked = true; showAns = !right && ans; if (dc) dc.parentNode.style.display = 'none'; if (vr) vr.textContent = ''; draw(); }
     };
-  };
-
-  // (e) 좋은 기업 vs 좋은 가격: 같은 EPS 성장, 다른 진입 PER → 5년 수익 차이
-  VIS.goodPrice = function (host, p) {
-    var e0 = p.eps0 || 1000, g = p.growth || 0.1, n = p.years || 5, ex = p.exitPer || 15, sc = p.scenarios || [30, 12], k = p.start || 20, first = true;
-    var e5 = e0 * Math.pow(1 + g, n), ret = function (per) { return ex * e5 / (e0 * per) - 1; }, be = ex * e5 / e0;
-    host.innerHTML = '<p class="vcap" style="margin:0 0 10px">같은 A사 · EPS ' + fmt(e0) + '원 → ' + fmt(e5) + '원 (연 ' + Math.round(g * 100) + '% 성장) · 5년 뒤 PER ' + ex + '배 가정 (예시)</p><svg role="img"></svg>' +
-      '<div class="vctl"><label for="curGp">내가 산 PER <b>' + k + '</b>배</label><input id="curGp" type="range" min="' + (p.min || 8) + '" max="' + (p.max || 40) + '" step="1" value="' + k + '" aria-label="진입 PER"></div><p class="vr" aria-live="polite"></p>';
-    var svg = host.querySelector('svg'), sl = host.querySelector('input'), lb = host.querySelector('label b'), vr = host.querySelector('.vr');
-    function draw() {
-      var w = wOf(host), rows = sc.map(function (x) { return { lb: 'PER ' + x + '배에 샀다면', per: x }; }).concat([{ lb: '내가 고른 PER ' + k + '배', per: k, me: 1 }]);
-      var rh = 62, h = 14 + rows.length * rh + 26, m = { l: 4, r: 64 }, lo = -0.5, hi = 2.1, iw = w - m.l - m.r;
-      var X = function (x) { return m.l + iw * (clamp(x, lo, hi) - lo) / (hi - lo); };
-      var s = '<line class="ax" x1="' + X(0) + '" x2="' + X(0) + '" y1="6" y2="' + (h - 22) + '"/><text x="' + X(0) + '" y="' + (h - 6) + '" text-anchor="middle">0%</text><line class="gl" x1="' + X(1) + '" x2="' + X(1) + '" y1="6" y2="' + (h - 22) + '" stroke-dasharray="3 4"/><text x="' + X(1) + '" y="' + (h - 6) + '" text-anchor="middle">+100%</text><line class="gl" x1="' + X(2) + '" x2="' + X(2) + '" y1="6" y2="' + (h - 22) + '" stroke-dasharray="3 4"/><text x="' + X(2) + '" y="' + (h - 6) + '" text-anchor="middle">+200%</text>';
-      rows.forEach(function (r, i) {
-        var y = 14 + i * rh, v = ret(r.per), x0 = X(0), x1 = X(v), pos = v >= 0;
-        var fill = r.me ? 'var(--wm)' : (pos ? 'var(--ok)' : 'var(--no)');
-        s += '<text x="' + (pos ? x0 + 4 : X(lo) + 2) + '" y="' + (y + 12) + '" class="tt">' + r.lb + '</text>';
-        s += '<rect' + (first && !still() ? ' class="grow" style="transform-origin:' + (pos ? 'left' : 'right') + ';animation-delay:' + (300 + i * 160) + 'ms"' : '') + ' x="' + Math.min(x0, x1) + '" y="' + (y + 20) + '" width="' + Math.max(2, Math.abs(x1 - x0)) + '" height="22" fill="' + fill + '" opacity="' + (r.me ? 0.9 : 0.8) + '"/>';
-        s += '<text x="' + (w - 2) + '" y="' + (y + 36) + '" text-anchor="end" class="th ' + (r.me ? 'twm' : pos ? 'tok' : 'tno') + '" style="fill:' + fill + '">' + pc(v) + '</text>';
-      });
-      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h);
-      svg.setAttribute('aria-label', '5년 수익률 비교 (예시). ' + rows.map(function (r) { return r.lb + ' ' + pc(ret(r.per)); }).join(', '));
-      svg.innerHTML = s; first = false;
-      vr.innerHTML = '본전이 되는 진입 PER은 <b>약 ' + f1(be) + '배</b>예요. 지금 고른 ' + k + '배면 5년 수익 <b>' + pc(ret(k)) + '</b> (예시)';
-    }
-    sl.oninput = function () { k = +sl.value; lb.textContent = k; draw(); };
-    sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
-    return { draw: draw };
   };
 
   // 이야기 → 숫자 → 가치
@@ -1134,7 +1105,7 @@
   // 뒤집는 카드: 앞면은 질문, 누르면 답. 다 열어야 다음으로
   VIS.cards = function (host, p, ctx) {
     var C = p.cards || [], n = 0;
-    host.innerHTML = '<div class="fcg" style="--n:' + Math.min(C.length, p.cols || 3) + '">' + C.map(function (c, i) {
+    host.innerHTML = '<div class="fcg' + (p.size === 'lg' ? ' lg' : '') + '" style="--n:' + Math.min(C.length, p.cols || 3) + '">' + C.map(function (c, i) {
       var mk = c.mark === 'O' ? 'ok' : c.mark === 'X' ? 'no' : '';
       return '<button type="button" class="fc vgo" data-i="' + i + '" aria-expanded="false"><small>' + esc(c.k || '') + '</small><b>' + esc(c.t) + '</b>' + (c.q ? '<span class="fq">' + esc(c.q) + '</span>' : '') +
         '<span class="fa">' + (c.mark ? '<em class="' + mk + '">' + (c.mark === 'O' ? '맞아요' : c.mark === 'X' ? '아니에요' : esc(c.mark)) + '</em>' : '') + esc(c.a) + '</span><i>' + esc(p.tap || '눌러서 열기') + '</i></button>';
@@ -1171,61 +1142,6 @@
     for (var k = 0; k < (p.start || 0); k++) open();
     lab();
     return { draw: function () {}, gated: function () { return n < items.length; } };
-  };
-
-  // 내 가치 vs 시장 가격 괴리: 괴리 크기 슬라이더 + 원인 쪼개기 갈림길
-  VIS.gapCheck = function (host, p, ctx) {
-    var my = p.my || 100, pr = p.start || 80, B = p.branches || [], opened = {};
-    host.innerHTML = '<div class="gk"><div class="gb"><span>내가 본 가치</span><i class="me" style="width:100%"></i><b>' + my + '</b></div><div class="gb"><span>시장 가격</span><i class="mk2"></i><b class="pv"></b></div>' +
-      '<div class="vctl"><label for="curGap">괴리 <b></b></label><input id="curGap" type="range" min="' + (p.min || 50) + '" max="' + (p.max || 100) + '" step="1" value="' + pr + '" aria-label="시장 가격"></div>' +
-      '<div class="gm" aria-live="polite"><div class="gml"><span>내가 틀렸을 가능성</span><span class="lv"></span></div><div class="gml"><span>필요한 검증</span><span class="lv2"></span></div></div>' +
-      '<p class="gr">' + esc(p.root || '괴리가 보이면 먼저 원인을 둘로 쪼개요') + '</p><div class="gt">' + B.map(function (b, i) {
-        return '<div class="gn"><button type="button" class="vgo" data-i="' + i + '"><small>' + esc(b.k) + '</small><b>' + esc(b.t) + '</b></button><div class="go" hidden><span>→</span><p>' + esc(b.go) + '</p></div></div>';
-      }).join('') + '</div><div class="gf" hidden><b>' + esc(p.finalT || '그래도 내가 맞다면') + '</b><p>' + esc(p.final || '') + '</p></div></div><p class="vcap">' + esc(p.cap || '') + '</p>';
-    var sl = host.querySelector('input'), lb = host.querySelector('label b'), bar = host.querySelector('.mk2'), pv = host.querySelector('.pv'), lv = host.querySelector('.lv'), lv2 = host.querySelector('.lv2');
-    function upd() {
-      pr = +sl.value; var g = (my - pr) / my;
-      bar.style.width = (pr / my * 100) + '%'; pv.textContent = pr; lb.textContent = Math.round(g * 100) + '%';
-      var lvl = g < 0.1 ? 0 : g < 0.3 ? 1 : 2;
-      lv.innerHTML = ['낮아요', '꽤 있어요', '커요'].map(function (t, i) { return '<em class="' + (i === lvl ? 'on' : '') + '">' + t + '</em>'; }).join('');
-      lv2.innerHTML = ['평소대로', '꼼꼼히', '아주 철저히, 두 번'].map(function (t, i) { return '<em class="' + (i === lvl ? 'on' : '') + '">' + t + '</em>'; }).join('');
-    }
-    sl.oninput = upd; sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
-    host.querySelectorAll('.gt .vgo').forEach(function (b) {
-      b.onclick = function () {
-        var i = +b.getAttribute('data-i'); if (opened[i]) return; opened[i] = 1; b.classList.add('done', 'on');
-        b.parentNode.querySelector('.go').hidden = false;
-        var all = Object.keys(opened).length >= B.length;
-        if (all) host.querySelector('.gf').hidden = false;
-        gate(ctx, all);
-      };
-    });
-    upd();
-    return { draw: function () {}, gated: function () { return Object.keys(opened).length < B.length; } };
-  };
-
-  // 보는 기간에 따라 달라지는 가치: 시장 가격·내 가치·그 참여자가 보는 가치 막대
-  VIS.horizon = function (host, p) {
-    var S = p.stops || [], k = p.start || 0, my = p.my || 10, price = p.price || 9, u = p.unit || '조';
-    host.innerHTML = '<svg role="img"></svg><div class="vctl"><label for="curHz">보는 기간 <b></b></label><input id="curHz" type="range" min="0" max="' + (S.length - 1) + '" step="1" value="' + k + '" aria-label="보는 기간"></div><p class="vr" aria-live="polite"></p><p class="vcap">' + esc(p.cap || '(예시)') + '</p>';
-    var svg = host.querySelector('svg'), sl = host.querySelector('input'), lb = host.querySelector('label b'), vr = host.querySelector('.vr');
-    function draw() {
-      var s = S[k], w = wOf(host), h = 230, m = { l: 8, r: 8, t: 26, b: 40 }, top = Math.max.apply(null, S.map(function (x) { return x.v; }).concat([my, price])) * 1.15;
-      var bars = [['시장 가격', price, 'rgba(242,239,232,.55)'], ['내가 본 가치', my, 'var(--ac)'], [s.who2 || '그 사람이 보는 가치', s.v, 'var(--wm)']];
-      var bw = Math.min(110, (w - m.l - m.r) / 3 - 24), gap = (w - m.l - m.r - bw * 3) / 3, Y = function (v) { return m.t + (h - m.t - m.b) * (1 - v / top); }, o = '';
-      o += '<line class="ax" x1="0" x2="' + w + '" y1="' + (h - m.b) + '" y2="' + (h - m.b) + '"/>';
-      o += '<line x1="0" x2="' + w + '" y1="' + Y(price) + '" y2="' + Y(price) + '" stroke="rgba(242,239,232,.35)" stroke-dasharray="4 4"/>';
-      bars.forEach(function (b, i) {
-        var x = m.l + gap / 2 + i * (bw + gap), y = Y(b[1]);
-        o += '<rect x="' + x + '" y="' + y + '" width="' + bw + '" height="' + (h - m.b - y) + '" fill="' + b[2] + '" opacity=".85" style="transition:all .4s"/><text x="' + (x + bw / 2) + '" y="' + (y - 8) + '" text-anchor="middle" class="th">' + f1(b[1]) + u + '</text><text x="' + (x + bw / 2) + '" y="' + (h - m.b + 18) + '" text-anchor="middle" class="tt">' + esc(b[0]) + '</text>';
-      });
-      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
-      svg.setAttribute('aria-label', '시장 가격 ' + price + u + ', 내가 본 가치 ' + my + u + ', ' + s.t + '을 보는 사람이 보는 가치 ' + s.v + u + ' (예시)');
-      lb.textContent = s.t; vr.innerHTML = '<b>' + esc(s.who) + '</b><br>' + esc(s.me);
-    }
-    sl.oninput = function () { k = +sl.value; draw(); };
-    sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
-    return { draw: draw };
   };
 
   // 리포트 지도: 고민 칩을 누르면 리포트의 어느 부분인지 켜진다
@@ -2587,7 +2503,7 @@
   // ── 키보드 ──────────────────────────────────────────
   function onKey(e) {
     if (!st) return;
-    if (e.key === 'Tab') st.kbd = true;
+    if (e.key === 'Tab') { st.kbd = true; st.el.classList.add('kbd'); }
     if (e.key === 'Escape') { e.preventDefault(); return back(); }
     var t = e.target.tagName;
     if (t === 'TEXTAREA' || t === 'INPUT') { if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); st.el.querySelector('.nx').click(); } return; }
