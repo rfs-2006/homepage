@@ -601,6 +601,7 @@
     '.cur .ch-st{--s:1;--t:236,242,255;width:56px;height:56px;margin:-28px 0 0 -28px;padding:0;border:0;border-radius:50%;background:none;color:#F7F6F3;font:inherit;cursor:pointer;z-index:3}',
     '.cur .ch-st.fl{width:20px;height:20px;margin:-10px 0 0 -10px;cursor:default;pointer-events:none;z-index:2}',
     '.cur .ch-st.big{--s:1.7}',
+    '.cur .ch-st.pre{--s:.8}',
     '.cur .ch-st>span:not(.lb){position:absolute;left:50%;top:50%;pointer-events:none}',
     '.cur .ch-st .gw{width:calc(46px*var(--s));height:calc(46px*var(--s));transform:translate(-50%,-50%) scale(.9);border-radius:50%;background:radial-gradient(circle,rgba(var(--t),.55) 0%,rgba(var(--t),.17) 22%,rgba(var(--t),0) 62%);transition:transform .7s var(--e)}',
     '.cur .ch-st .co{width:calc(9px*var(--s));height:calc(9px*var(--s));transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,#fff 0%,#fff 30%,rgba(var(--t),.85) 48%,rgba(var(--t),0) 72%);transition:transform .6s var(--e)}',
@@ -628,7 +629,7 @@
     '.cur .ch-lg span{display:flex;align-items:center;gap:7px}',
     '.cur .ch-lg i{display:block;flex:none;width:7px;height:7px;border-radius:50%;background:#fff}.cur .ch-lg i.ch-n{background:#8FAADC}.cur .ch-lg i.ch-o{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,.7)}',
     '.cur .ch-cert{position:relative;padding:88px var(--pad) 120px;background:#0B1524}',
-    '@media (max-aspect-ratio:1/1),(max-width:720px){.cur .ch-sky{height:auto;min-height:1120px;--t0:84px;--b0:96px;--x0:2%}.cur .ch-sky .sk-d{display:none}.cur .ch-sky .sk-m{display:block}.cur .ch-gn,.cur .ch-st{left:calc(var(--x0) + (100% - 2 * var(--x0)) * var(--mx) / 100);top:calc(var(--t0) + (100% - var(--t0) - var(--b0)) * var(--my) / 100)}.cur .ch-st .lb i{font-size:13px}.cur .ch-lg{left:var(--pad);right:auto}}',
+    '@media (max-aspect-ratio:1/1),(max-width:720px){.cur .ch-sky{height:auto;min-height:1320px;--t0:84px;--b0:96px;--x0:2%}.cur .ch-sky .sk-d{display:none}.cur .ch-sky .sk-m{display:block}.cur .ch-gn,.cur .ch-st{left:calc(var(--x0) + (100% - 2 * var(--x0)) * var(--mx) / 100);top:calc(var(--t0) + (100% - var(--t0) - var(--b0)) * var(--my) / 100)}.cur .ch-st .lb i{font-size:13px}.cur .ch-lg{left:var(--pad);right:auto}}',
     /* 모듈 첫 화면 */
     '.cur.v2[data-step="intro"] .cur-bg{display:block;position:absolute;inset:0 0 auto;height:100vh;animation:none;transform:none}',
     '.cur.v2[data-step="intro"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.6),rgba(11,21,36,.45) 40%,rgba(11,21,36,.95) 90%,#0B1524)}',
@@ -2517,14 +2518,14 @@
   }
   // 코스 홈 별자리 배치(%). 넓은 화면(d)과 세로 화면(m) 두 벌. 모듈 별 사이에 이름 없는 작은 별(f*)을 섞어 진짜 별자리처럼
   var SKY = {
-    d: { M0: [10, 49], M1: [18, 36], M2: [28, 44], M3: [34, 27], M4: [41, 38], M5: [48, 23], M6: [58, 43], M7: [64, 32], M8: [72, 36], M9: [89, 16],
+    d: { PRE: [4, 27], M0: [10, 49], M1: [18, 36], M2: [28, 44], M3: [34, 27], M4: [41, 38], M5: [48, 23], M6: [58, 43], M7: [64, 32], M8: [72, 36], M9: [89, 16],
          fa: [5, 58, .5], fb: [14, 42, .45], fc: [54, 32, .5], fd: [77, 45, .55], fe: [81, 29, .6], ff: [85, 22, .55], fg: [92, 24, .4], fh: [61, 53, .45],
-         base: [14, 15], rel: [38, 7], abs: [65, 14], lab: [89, 3] },
-    m: { M0: [24, 17], M1: [62, 21], M2: [18, 41], M3: [40, 34], M4: [60, 44], M5: [82, 36], M6: [22, 66], M7: [50, 60], M8: [76, 67], M9: [46, 91],
-         fa: [10, 13, .5], fb: [44, 18, .45], fc: [62, 52, .45], fd: [84, 75, .5], fe: [70, 81, .55], ff: [58, 86, .5], fg: [30, 94, .4], fh: [14, 73, .45],
-         base: [50, 6], rel: [50, 27], abs: [50, 52], lab: [80, 90] },
+         base: [17, 15], rel: [38, 7], abs: [65, 14], lab: [89, 3] },
+    m: { PRE: [50, 4], M0: [24, 27], M1: [62, 30.5], M2: [18, 48.1], M3: [40, 41.9], M4: [60, 50.7], M5: [82, 43.7], M6: [22, 70.1], M7: [50, 64.8], M8: [76, 71], M9: [46, 92.1],
+         fa: [10, 23.4, .5], fb: [44, 27.8, .45], fc: [62, 57.8, .45], fd: [84, 78, .5], fe: [70, 83.3, .55], ff: [58, 87.7, .5], fg: [30, 94.7, .4], fh: [14, 76.2, .45],
+         base: [50, 17.3], rel: [50, 37], abs: [50, 57.8], lab: [80, 91.2] },
     edges: [['fa', 'M0'], ['M0', 'fb'], ['fb', 'M1'], ['M2', 'M3'], ['M3', 'M4'], ['M4', 'M5'], ['M6', 'M7'], ['M7', 'M8'], ['M8', 'fd'], ['M6', 'fh'], ['fe', 'ff'], ['ff', 'M9'], ['M9', 'fg']],
-    path: [['M1', 'M2'], ['M5', 'fc'], ['fc', 'M6'], ['fd', 'fe']]
+    path: [['PRE', 'fa'], ['M1', 'M2'], ['M5', 'fc'], ['fc', 'M6'], ['fd', 'fe']]
   };
   function renderHome() {
     var C = st.course, mods = C.modules;
@@ -2534,7 +2535,7 @@
     st.el.querySelector('.cur-bar').style.width = Math.round(tot * 100) + '%';
     var certOpen = !!(st.mods[C.certificate.unlockAfter] && st.mods[C.certificate.unlockAfter].done);
     // 지금 할 모듈: 하다 만 모듈, 없으면 아직 안 끝낸 첫 모듈
-    var now = ps.findIndex(function (p) { return p.f > 0 && p.f < 1; }); if (now < 0) now = ps.findIndex(function (p) { return p.f < 1; }); if (now < 0) now = 0;
+    var opt = function (i) { return mods[i].group === 'pre'; }; var now = ps.findIndex(function (p) { return p.f > 0 && p.f < 1; }); if (now < 0) now = ps.findIndex(function (p, i) { return p.f < 1 && !opt(i); }); if (now < 0) now = 0;
     function lines(k) {
       var P = SKY[k], ln = function (e, c) { var a = P[e[0]], z = P[e[1]]; return a && z ? '<line class="' + c + '" x1="' + a[0] + '" y1="' + a[1] + '" x2="' + z[0] + '" y2="' + z[1] + '"/>' : ''; };
       return '<svg class="sk-' + k + '" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' + SKY.edges.map(function (e) { return ln(e, 'seg'); }).join('') + SKY.path.map(function (e) { return ln(e, 'pth'); }).join('') + '</svg>';
@@ -2542,11 +2543,12 @@
     function pos(key) { var d = SKY.d[key], m = SKY.m[key]; return '--dx:' + d[0] + ';--dy:' + d[1] + ';--mx:' + m[0] + ';--my:' + m[1]; }
     var fill = Object.keys(SKY.d).filter(function (k) { return k.charAt(0) === 'f'; }).map(function (k) { return '<span class="ch-st fl" style="' + pos(k) + ';--s:' + SKY.d[k][2] + '" aria-hidden="true"><span class="gw"></span><span class="co"></span></span>'; }).join('');
     var stars = mods.map(function (m, i) {
+      if (!SKY.d[m.code] || !SKY.m[m.code]) return '';
       var p = ps[i], cls = p.f === 1 ? ' done' : (i === now ? ' now' : '');
-      return '<button type="button" class="ch-st' + cls + (m.code === 'M9' ? ' big' : '') + (m.ready ? '' : ' lock') + '" data-i="' + i + '" style="' + pos(m.code) + '" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '">' +
+      return '<button type="button" class="ch-st' + cls + (m.code === 'M9' ? ' big' : '') + (m.group === 'pre' ? ' pre' : '') + (m.ready ? '' : ' lock') + '" data-i="' + i + '" style="' + pos(m.code) + '" aria-label="' + esc(m.code + ' ' + m.title + (p.f === 1 ? ', 완료' : p.f > 0 ? ', ' + Math.round(p.f * 100) + '%' : '')) + '">' +
         '<span class="gw"></span><span class="sp"></span><span class="sp v"></span><span class="rg"></span><span class="co"></span><span class="lb"><b>' + esc(m.code) + '</b><i>' + esc(m.title) + '</i></span></button>';
     }).join('');
-    var groups = C.groups.map(function (g) { return '<div class="ch-gn" style="' + pos(g.id) + '"><h3>' + esc(g.en || g.label) + '</h3><small>' + esc(g.label + ' · ' + g.range) + '</small></div>'; }).join('');
+    var groups = C.groups.filter(function (g) { return SKY.d[g.id]; }).map(function (g) { return '<div class="ch-gn" style="' + pos(g.id) + '"><h3>' + esc(g.en || g.label) + '</h3><small>' + esc(g.label + ' · ' + g.range) + '</small></div>'; }).join('');
     st.bx.classList.add('home');
     st.bx.innerHTML = '<section class="ch-hero"><h1>Curriculum</h1><button type="button" class="ch-dn" aria-label="모듈 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M6 14l6 6 6-6"/></svg></button><span class="ch-cr">Photo by Danka &amp; Peter on Unsplash</span></section>' +
       '<section class="ch-sky" aria-label="모듈 별자리">' + lines('d') + lines('m') + groups + fill + stars +
