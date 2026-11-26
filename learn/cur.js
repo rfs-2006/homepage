@@ -604,6 +604,23 @@
     '.cur .ch-tl li.lock{opacity:.5}',
     '@media (max-width:980px){.cur .ch-tl{grid-template-columns:repeat(5,minmax(0,1fr));row-gap:40px}}',
     '@media (max-width:560px){.cur .ch-tl{grid-template-columns:repeat(2,minmax(0,1fr))}}',
+    /* 모듈 첫 화면 */
+    '.cur.v2[data-step="intro"] .cur-bg{display:block;position:absolute;inset:0 0 auto;height:100vh;animation:none;transform:none}',
+    '.cur.v2[data-step="intro"] .cur-bg::after{background:linear-gradient(180deg,rgba(11,21,36,.6),rgba(11,21,36,.45) 40%,rgba(11,21,36,.95) 90%,#0B1524)}',
+    '.cur.v2 .cur-wrap.ci{padding-bottom:0}',
+    '.cur .cur-wrap.ci > p.src{display:none}',
+    '.cur .ci-hero{padding:clamp(72px,16vh,180px) 0 64px}',
+    '.cur .ci-k{margin:0 0 16px;font-size:15px;color:#F7F6F3}',
+    '.cur .ci-hero h1{margin:0;font-family:var(--ser);font-weight:700;font-size:clamp(48px,5.6vw,80px);line-height:1.05;letter-spacing:-.035em;color:#F7F6F3;text-shadow:0 1px 2px rgba(4,8,16,.35),0 6px 28px rgba(4,8,16,.45)}',
+    '.cur .ci-ld{margin:22px 0 0;max-width:36em;font-size:18px;line-height:1.8;color:#F7F6F3}',
+    '.cur .ci-mt{margin:24px 0 0;font-size:15px;line-height:1.8;color:#F7F6F3}',
+    '.cur .ci-body{position:relative;flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,6vw,96px);margin:0 calc(-1 * var(--pad));padding:72px var(--pad) 140px;background:#0F1B2E}',
+    '.cur .ci-body h3{margin:0 0 18px;font-family:var(--ser);font-weight:700;font-size:22px;letter-spacing:-.02em;color:#F7F6F3}',
+    '.cur .ci-ob,.cur .ci-sq{list-style:none;margin:0;padding:0;border-top:1px solid rgba(247,246,243,.35)}',
+    '.cur .ci-ob li,.cur .ci-sq li{padding:14px 0;border-bottom:1px solid rgba(247,246,243,.18);font-size:16.5px;line-height:1.6;color:#F7F6F3}',
+    '.cur .ci-sq li{display:grid;grid-template-columns:36px minmax(0,1fr)}',
+    '.cur .ci-sq li b{font-family:var(--ser);font-weight:700;font-size:17px}',
+    '@media (max-width:900px){.cur .ci-body{grid-template-columns:minmax(0,1fr)}}',
     '.cur.v2 .hm .ey{color:var(--t3);letter-spacing:.08em;font-weight:400}',
     '.cur.v2 .hm h1{font-size:clamp(36px,8.6vw,60px);font-weight:600;letter-spacing:-.035em;line-height:1.15;text-shadow:none}',
     '.cur.v2 .hm .lead{max-width:36em;font-size:17.5px}',
@@ -2112,7 +2129,7 @@
   function go(fn) {
     var bx = st.bx; bx.classList.remove('in'); bx.classList.add('out'); btn();
     setTimeout(function () {
-      bx.classList.remove('out', 'done', 'pad', 'home'); st.vis = null; fn(); bx.classList.add('in'); stagger(); st.el.scrollTop = 0;
+      bx.classList.remove('out', 'done', 'pad', 'home', 'ci'); st.vis = null; fn(); bx.classList.add('in'); stagger(); st.el.scrollTop = 0;
       var f = bx.querySelector('.o,.mc button,.dc,.vis[tabindex],textarea,input,.md:not(.lock)'); if (f && st.kbd) f.focus({ preventScroll: true });
     }, 300);
   }
@@ -2175,11 +2192,17 @@
   function mark(b, cls, label) { b.classList.add(cls); var m = document.createElement('span'); m.className = 'mk'; m.textContent = label; b.appendChild(m); }
 
   R.intro = function (s) {
-    var o = s.options || {}, secs = sections();
-    st.bx.innerHTML = crumbs(s) + '<span class="kd">수업 안내</span><h2 class="q">' + rich(s.prompt) + '</h2>' + (s.note ? block(s.note, 'note') : '') +
-      '<div class="ig"><div><h3>학습 목표</h3><ul>' + (o.objectives || []).map(function (t, i) { return '<li><b>' + (i + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ul></div>' +
-      '<div><dl class="kv"><dt>소요 시간</dt><dd>' + esc(o.time) + '</dd><dt>준비물</dt><dd>' + esc(o.prep) + '</dd><dt>문항</dt><dd>확인 문제 ' + st.order.filter(function (id) { return GRADED[step(id).type]; }).length + '개 + 실습 1개</dd></dl><h3>순서</h3><ol>' + secs.map(function (t, i) { return '<li><b>' + (i + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol></div></div>';
-    st.bx.classList.add('pad');
+    // 모듈 첫 화면: 코스 홈과 같은 문법(사진 위 큰 세리프 제목 + 남색 띠). 목표와 순서만, 꾸밈 없이
+    var o = s.options || {}, secs = sections(), C = st.course || { modules: [], groups: [] };
+    var info = C.modules.filter(function (m) { return m.code === st.mod.module; })[0] || {};
+    var grp = (C.groups.filter(function (g) { return g.id === info.group; })[0] || {}).label;
+    var nq = st.order.filter(function (id) { return GRADED[step(id).type]; }).length;
+    var meta = [o.time || (info.minutes ? '약 ' + info.minutes + '분' : ''), nq + '문항', info.lab ? '실습 시트' : ''].filter(Boolean).join(' · ');
+    st.bx.innerHTML = '<section class="ci-hero"><p class="ci-k">' + esc(st.mod.module + (grp ? ' · ' + grp : '')) + '</p><h1>' + esc(st.mod.title) + '</h1>' +
+      '<p class="ci-ld">' + esc(info.lead || '') + '</p><p class="ci-mt">' + esc(meta) + (o.prep ? '<br>준비물 ' + esc(o.prep) : '') + '</p></section>' +
+      '<section class="ci-body"><div><h3>배우는 것</h3><ol class="ci-ob">' + (o.objectives || info.objectives || []).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol></div>' +
+      '<div><h3>순서</h3><ol class="ci-sq">' + secs.map(function (t, i) { return '<li><b>' + (i + 1) + '</b><span>' + esc(t) + '</span></li>'; }).join('') + '</ol></div></section>';
+    st.bx.classList.add('pad', 'ci');
     btn('시작할게요', false, function () { to(s.branch.onRight); });
   };
 
