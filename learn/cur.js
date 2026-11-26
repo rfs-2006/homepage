@@ -550,6 +550,7 @@
     '.cur.v2 .q.sm{font-size:clamp(26px,6.8vw,30px)}',
     '@media (min-width:900px){.cur.v2 .q{font-size:clamp(34px,2.7vw,42px);line-height:1.28}.cur.v2 .q.sm{font-size:clamp(30px,2.3vw,36px);line-height:1.3}}',
     '.cur.v2 .note{margin-top:20px;max-width:34em;font-size:16.5px;line-height:1.8}',
+    '.cur b.kw{font-weight:700;color:#FFFFFF}',
     '@media (min-width:900px){.cur.v2 .note{font-size:17px}}',
     '.cur.v2 .pts:empty{display:none}',
     '.cur.v2 .pts.big li{font-size:clamp(18px,4.6vw,21px);padding:16px 0 16px 36px}',
@@ -602,7 +603,8 @@
     '@media (min-width:900px){.cur.v2 .nx{right:var(--pad);bottom:40px;height:auto;padding:12px 22px;background:var(--tx)!important;color:#0B1526;font-family:inherit;font-size:15.5px;font-weight:500;box-shadow:none}.cur.v2 .nx.alt{background:var(--wm)!important;color:#0B1526;box-shadow:none}}'
   ].join('\n');
 
-  function sl(h) { return String(h).replace(/([.?!])\s+(?=[^\s)])/g, '$1<br>'); }
+  // 문장마다 줄을 바꾸고, **핵심 구절**은 굵게(화면마다 그 화면의 요점 한 곳)
+  function sl(h) { return String(h).replace(/\*\*(.+?)\*\*/g, '<b class="kw">$1</b>').replace(/([.?!])\s+(?=[^\s)])/g, '$1<br>'); }
   function block(t, cls) { var ps = String(t == null ? '' : t).split(/\n\s*\n/); return ps.length < 2 ? '<p class="' + cls + '">' + sl(esc(t)) + '</p>' : '<div class="' + cls + '">' + paras(t) + '</div>'; }
   function plain(s) { return String(s || '').replace(/<br>/g, ' '); }
   function sym(k) { return '<svg class="sym" viewBox="0 0 64 64" aria-hidden="true">' + (SY[k] || STAR).replace(/<(path|circle)/g, '<$1 pathLength="1"') + '</svg>'; }
