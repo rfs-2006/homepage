@@ -14,10 +14,11 @@
  *
  * ── Step ─────────────────────────────────────────────────
  *  id       string   고유 id
- *  type     'intro' | 'concept' | 'chart' | 'choice' | 'multi' | 'match' | 'sort' | 'numeric' | 'text' | 'info' | 'summary'
+ *  type     'intro' | 'chapter' | 'concept' | 'chart' | 'choice' | 'multi' | 'match' | 'sort' | 'numeric' | 'text' | 'info' | 'summary'
  *  section  string   소주제 (브레드크럼, 인트로 목차). 같은 section이 이어지면 한 섹션
  *  prompt   string   큰 글씨 제목. 문제는 질문으로 시작한다 (<br>만 허용)
  *  note     string?  작은 상황 설명. 예시 숫자는 '(예시)'로 표시
+ *  chapter  장 목차 화면(type 'chapter'): section = 모듈 chapters[].t 중 하나. 모듈 JSON에 chapters: [{ t: 장 이름, q: 이 장에서 답할 질문 }]가 있으면 위 순서 줄 대신 장 줄을 보여 준다
  *  kind     string?  concept: '정리' | '질문'. 문제(choice·multi·match·sort·numeric·chart)에 'think'를 주면 머리표가 '생각해 보기'(상식만으로 답하는 질문), 없으면 '확인 문제'(배운 것을 묻는 질문, chart는 '그래프 문제')
  *  options  타입별
  *           intro        : { objectives: [string], time, prep }
@@ -547,6 +548,12 @@
     '.cur.v2 .mapx .t.on{color:var(--tx);border-bottom-color:var(--wm)}',
     '.cur.v2 .mapx .res{color:var(--wm)}',
     '.cur.v2 .mapx .res.on{border-bottom:2px solid var(--wm);padding:3px 0}',
+    '.cur.v2 .mapx.chx{flex-wrap:nowrap;gap:6px 22px}.cur.v2 .mapx.chx .t{white-space:nowrap}.cur.v2 .mapx.chx .cn{display:none}',
+    '@media (max-width:1099px){.cur.v2 .mapx.chx .t:not(.on){display:none}.cur.v2 .mapx.chx .t.on{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:17px}.cur.v2 .mapx.chx .cn{display:inline;flex:none;margin-left:auto;color:var(--t3)}}',
+    '.cur .chp{max-width:760px;padding-top:clamp(8px,4vh,40px)}',
+    '.cur .chp-k{margin:0 0 14px;font-size:15px;color:var(--t3);font-variant-numeric:tabular-nums}',
+    '.cur .chp-q{margin:18px 0 34px;max-width:34em;font-size:18.5px;line-height:1.8;color:var(--tx)}',
+    '.cur .ci-sq.chp-l li{color:rgba(242,239,232,.55)}.cur .ci-sq.chp-l li.done{color:rgba(242,239,232,.32)}.cur .ci-sq.chp-l li.on{color:#F7F6F3;font-weight:600}.cur .ci-sq.chp-l li.on b{color:var(--ac)}',
     '.cur.v2 .kd{border:0;padding:0;margin-bottom:12px;font-size:12.5px;letter-spacing:.06em;font-weight:500;color:var(--wm)}',
     '.cur.v2 .kd.rc{color:var(--ok)}',
     '.cur.v2 .q{text-shadow:none;font-weight:600;font-size:clamp(28px,7.4vw,34px);line-height:1.3;letter-spacing:-.025em;max-width:20em;text-wrap:balance}',
@@ -2030,15 +2037,21 @@
   function sections() { var out = []; st.order.forEach(function (id) { var s = step(id); if (s.type === 'intro' || s.type === 'summary') return; if (out[out.length - 1] !== s.section) out.push(s.section); }); return out; }
 
   function crumbs(s) {
-    var i = st.order.indexOf(home(s)), n = st.order.length - 2, mp = st.mod.map, mid = s.type !== 'summary' && s.type !== 'intro';
+    var i = st.order.indexOf(home(s)), n = st.order.length - 2, mp = st.mod.map, chs = st.mod.chapters, mid = s.type !== 'summary' && s.type !== 'intro';
     var h = '<div class="meta"><a tabindex="0" data-go="' + esc(st.mod.start) + '">' + esc(st.mod.module + ' ' + st.mod.title) + '</a>';
     if (mid) {
       if (isSup(s)) h += '<i>·</i><a tabindex="0" data-go="' + esc(home(s)) + '">' + esc(s.section) + '</a><i>·</i><span class="sup">보충</span>';
-      else if (!mp) h += '<i>·</i><span class="sec">' + esc(s.section) + '</span>';
+      else if (!mp && !chs) h += '<i>·</i><span class="sec">' + esc(s.section) + '</span>';
       if (i > 0) h += '<span class="n">' + (i - 1) + ' / ' + (n - 1) + '</span>';
     }
     h += '</div>';
-    if (mp && mid) {
+    if (chs && mid) {
+      // 장 줄: 모듈에 chapters가 있으면 순서 줄 대신 장 목록. 좁은 화면에선 지금 장만 크게 + 'n / N'
+      var at = chs.map(function (c) { return c.t; }).indexOf(s.section);
+      if (s.type !== 'chapter') h += '<div class="mapx chx" aria-label="' + (at + 1) + '장 / ' + chs.length + '장 · ' + esc(s.section) + '">' + chs.map(function (c, j) {
+        return '<span class="t' + (j === at ? ' on' : j < at ? ' done' : '') + '">' + CIRC[j] + ' ' + esc(c.t) + '</span>';
+      }).join('') + '<span class="cn">' + (at + 1) + ' / ' + chs.length + '</span></div>';
+    } else if (mp && mid) {
       var on = (mp.sections || {})[s.section] || '', ks = mp.items.map(function (x) { return x.k; }), at = ks.indexOf(on);
       h += '<div class="mapx" aria-label="' + esc(mp.label || '') + '">' + mp.items.map(function (x, j) {
         var c = x.k === on || (x.with && x.with === on) ? ' on' : (on === 'all' || (at >= 0 && j < at) ? ' done' : '');
@@ -2047,6 +2060,7 @@
     }
     return h;
   }
+  var CIRC = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨'];
   function kicker(s) {
     if (s.type === 'concept') return s.kind === '정리' ? '<span class="kd rc">정리</span>' : '';
     if (isSup(s)) return '';
@@ -2380,6 +2394,16 @@
       });
     });
     paint();
+  };
+
+  // 장 목차: PPT의 Contents 슬라이드. 장 목록에 지금 장을 켜고, 지난 장은 흐리게, 이 장에서 답할 질문 한 줄
+  R.chapter = function (s) {
+    var chs = st.mod.chapters || [], at = chs.map(function (c) { return c.t; }).indexOf(s.section), c = chs[at] || {};
+    st.bx.innerHTML = crumbs(s) + '<section class="chp"><p class="chp-k">' + (at + 1) + ' / ' + chs.length + '</p><h2 class="q">' + esc(c.t || s.section) + '</h2>' +
+      (c.q ? '<p class="chp-q">' + esc(c.q) + '</p>' : '') +
+      '<ol class="ci-sq chp-l">' + chs.map(function (x, j) { return '<li class="' + (j === at ? 'on' : j < at ? 'done' : '') + '"' + (j === at ? ' aria-current="step"' : '') + '><b>' + (j + 1) + '</b><span>' + esc(x.t) + '</span></li>'; }).join('') + '</ol></section>';
+    st.bx.classList.add('pad');
+    btn(at === 0 ? '시작할게요' : '이어서 볼게요', false, function () { to(s.branch.onRight); });
   };
 
   R.info = function (s) {
