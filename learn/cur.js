@@ -26,7 +26,7 @@
  *           sort         : { rows: [{ id, label, tag? }], bins: [string] }   줄마다 바구니 하나 (체크리스트·분류, 바구니 재사용)
  *           numeric      : { unit?, tolerance?, placeholder? }
  *           text         : { fields: [{ id, label, placeholder }] }
- *           summary      : { takeaways: [string] }
+ *           summary      : { takeaways: [string], check?: [string] }   check가 있으면 끝 화면에 '이제 할 수 있나요?' 스스로 점검 목록
  *  visual   concept·chart 전용 { name, params, wide? }  name = 그래프 부품 이름 (아래 VIS). wide면 그래프를 전체 폭으로
  *           priceValue { months }                       가격 vs 가치 선 그래프 (chart: 살 점 고르기)
  *           perBand    { bands:[8,12,16], start, min, max }  PER 밴드 + 배수 슬라이더 (chart: 밴드 고르기)
@@ -271,6 +271,8 @@
 .cur .sg li small{display:block;font-size:12.5px;color:var(--t3);letter-spacing:.04em;margin-bottom:2px}\
 .cur .sg li a{color:var(--ac2);text-decoration:none;box-shadow:inset 0 -1px 0 var(--hair);cursor:pointer;font-size:13.5px;margin-left:6px;white-space:nowrap}\
 .cur .sg li.zero{color:var(--t2)}\
+.cur .sk{margin-top:34px;max-width:760px}.cur .sk h3{font-size:13px;font-weight:500;letter-spacing:.08em;color:var(--ac);margin-bottom:10px}.cur .sk ul{list-style:none;border-top:1px solid var(--hair)}\
+.cur .sk li{padding:13px 0;border-bottom:1px solid var(--hair);font-size:15.5px;line-height:1.6;color:var(--tx)}.cur .sk label{display:flex;gap:12px;align-items:flex-start;cursor:pointer}.cur .sk input{flex:none;width:17px;height:17px;margin-top:4px;accent-color:var(--ac)}\
 .cur .more{align-self:flex-start;margin-top:22px;background:none;border:0;color:var(--t2);font:inherit;font-size:14px;cursor:pointer;box-shadow:inset 0 -1px 0 var(--hair);padding:6px 0;transition:color .2s,box-shadow .2s}\
 .cur .more:hover{color:var(--tx);box-shadow:inset 0 -1px 0 var(--ac)}\
 .cur .soon{margin-top:14px;font-size:14px;color:var(--wm);min-height:1.4em}\
@@ -901,7 +903,7 @@
       if (!Q) return;
       if (idx < cards.length) { dc.className = 'dc'; dc.innerHTML = '<small>회사 카드 ' + (idx + 1) + ' / ' + cards.length + '</small><b>' + esc(cards[idx].label) + '</b>'; dc.setAttribute('aria-label', cards[idx].label + ' 카드. 맞는 잣대를 누르거나 숫자키로 고르세요'); }
       else { dc.className = 'dc done'; dc.innerHTML = '<small>다 놓았어요</small><b>확인을 눌러요</b>'; }
-      vr.textContent = idx < cards.length ? '‘' + cards[idx].label + '’에 맞는 잣대는?' : '';
+      vr.textContent = idx < cards.length ? '‘' + cards[idx].label + '’에 맞는 기법은?' : '';
     }
     function draw() {
       var w = wOf(host), h = Math.round(clamp(w * 0.66, 320, 460)), m = { l: 30, r: 12, t: 14, b: 34 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
@@ -1080,7 +1082,7 @@
       '<div class="vbt"><button type="button" class="rv vgo"></button></div><p class="vcap rvc"></p>';
     var tb = host.querySelector('table'), trs = host.querySelectorAll('tbody tr'), rv = host.querySelector('.rv'), cap = host.querySelector('.rvc');
     function lab() {
-      if (n >= rows.length) { rv.hidden = true; rv.classList.add('done'); cap.textContent = '세 기법이 ' + rows.length + '가지에서 어떻게 갈리는지 봤어요. 다음으로 넘어가요.'; if (ctx && ctx.ready) ctx.ready(true); return; }
+      if (n >= rows.length) { rv.hidden = true; rv.classList.add('done'); cap.textContent = (['', '한', '두', '세', '네', '다섯'][cols.length] || cols.length) + ' 기법이 ' + rows.length + '가지에서 어떻게 갈리는지 봤어요. 다음으로 넘어가요.'; if (ctx && ctx.ready) ctx.ready(true); return; }
       rv.textContent = (n === 0 ? '첫 줄 열기 · ' : '다음 줄 · ') + rows[n][0]; cap.textContent = n + ' / ' + rows.length + ' 줄';
     }
     function open() { if (n >= rows.length) return; var tr = trs[n]; tr.classList.remove('hid'); tr.style.animation = 'curRise .5s var(--e) both'; n++; lab(); }
@@ -2410,6 +2412,7 @@
         return '<li><small>' + esc(q.section) + (r.tries ? '' : ' · 건너뜀') + '</small>' + esc(plain(q.prompt)) + '<a data-re="' + esc(id) + '" tabindex="0">다시 풀기</a></li>';
       }).join('') : '<li class="zero">틀린 문항이 없어요. 한 번에 다 맞혔어요.</li>') + '</ul></div>' +
       '<div><h3>' + esc(st.mod.module) + '에서 가져갈 것</h3><ul>' + (s.options.takeaways || []).map(function (t) { return '<li>' + sl(esc(t)) + '</li>'; }).join('') + '</ul></div></div>' +
+      (s.options.check && s.options.check.length ? '<div class="sk"><h3>이제 할 수 있나요?</h3><ul>' + s.options.check.map(function (t, i) { return '<li><label><input type="checkbox" id="curSk' + i + '">' + '<span>' + sl(esc(t)) + '</span></label></li>'; }).join('') + '</ul></div>' : '') +
       labCard() +
       '<div style="display:flex;gap:26px;flex-wrap:wrap"><button class="more hm2" type="button">코스 홈으로</button><button class="more rs2" type="button">처음부터 다시</button></div><p class="soon" aria-live="polite"></p>';
     st.bx.querySelectorAll('[data-re]').forEach(function (a) { a.onclick = function () { st.hist = st.ms.hist = []; to(a.getAttribute('data-re')); }; a.onkeydown = function (e) { if (e.key === 'Enter') a.click(); }; });
