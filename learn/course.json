@@ -41,7 +41,7 @@
    "group": "pre",
    "title": "기초 지식",
    "minutes": 25,
-   "questions": 15,
+   "questions": 16,
    "ready": true,
    "file": "pre.json",
    "objectives": [
