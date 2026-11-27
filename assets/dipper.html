@@ -278,7 +278,7 @@ svg.lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;poin
 (() => {
   /* ---- photo choice (?photo=1|2|3) ---- */
   // 사진을 바꾸면 ?v= 를 올린다 (assets는 브라우저가 하루 동안 저장해 두어서, 이름이 같으면 예전 사진이 계속 보인다)
-  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp?v=1014':'hero/sky.webp?v=1014'), flip:false, pos:'50% 40%', credit:'Photo: Unsplash'}};
+  const PHOTOS = {1:{src:(innerWidth<760?'hero/sky-m.webp?v=1014':'hero/sky.webp?v=1014'), flip:false, pos:'50% 40%', credit:''}};
   const q = new URLSearchParams(location.search);
   const P = PHOTOS[q.get('photo')] || PHOTOS[1];
   const img = document.getElementById('photoImg');
