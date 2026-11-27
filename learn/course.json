@@ -61,8 +61,8 @@
    "code": "M0",
    "group": "base",
    "title": "밸류에이션이란",
-   "minutes": 50,
-   "questions": 19,
+   "minutes": 45,
+   "questions": 13,
    "file": "m0.json",
    "ready": true,
    "objectives": [
