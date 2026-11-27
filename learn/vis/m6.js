@@ -30,24 +30,23 @@
     var R = p.rows || [], n = clamp(p.start || 1, 1, R.length), u = p.unit || '', cols = p.cols || ['상황', 'EV', 'NOA', 'IBD', 'Equity Value'];
     function eqv(r) { return r.ev + r.noa - r.ibd; }
     function nu(x) { return x ? fmt(x) + (u === '만 원' ? '만' : '') : '0'; }
-    host.innerHTML = '<div class="eqs" aria-live="polite"></div><svg role="img"></svg><table class="m6t"><thead><tr>' + cols.map(function (c) { return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+    host.innerHTML = '<svg role="img"></svg><table class="m6t"><thead><tr>' + cols.map(function (c) { return '<th scope="col">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       R.map(function (r, i) { return '<tr data-i="' + i + '"><th scope="row">' + esc(r.t) + '</th><td>' + nu(r.ev) + '</td><td>' + nu(r.noa) + '</td><td>' + nu(r.ibd) + '</td><td class="eqv">' + nu(eqv(r)) + '</td></tr>'; }).join('') +
       '</tbody></table><div class="vbt"><button type="button" class="vgo on"></button></div><p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
-    var svg = host.querySelector('svg'), eq = host.querySelector('.eqs'), vr = host.querySelector('.vr'), bt = host.querySelector('.vgo'), trs = host.querySelectorAll('tbody tr');
+    var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), bt = host.querySelector('.vgo'), trs = host.querySelectorAll('tbody tr');
     var top = Math.max.apply(null, R.map(function (r) { return Math.max(r.ev + r.noa, r.ibd + Math.max(eqv(r), 0)); }).concat([1]));
     function draw() {
       var r = R[n - 1], w = wOf(host), h = 170, base = h - 28, sc = (h - 56) / top, bw = Math.min(120, w / 2 - 40), xa = (w / 2 - bw) / 2, xb = w / 2 + (w / 2 - bw) / 2, o = '';
       function seg(x, y, v, fill, stroke, lab) { var hh = v * sc; if (hh <= 0) return [y, '']; return [y - hh, '<rect x="' + x + '" y="' + (y - hh) + '" width="' + bw + '" height="' + hh + '" fill="' + fill + '" stroke="' + stroke + '" style="transition:all .35s"/>' + (hh > 16 ? '<text x="' + (x + bw / 2) + '" y="' + (y - hh / 2 + 4) + '" text-anchor="middle" class="tt">' + lab + '</text>' : '')]; }
       o += '<line class="ax" x1="0" x2="' + w + '" y1="' + base + '" y2="' + base + '"/>';
-      var s1 = seg(xa, base, r.ev, 'rgba(143,170,220,.4)', 'var(--ac)', 'EV ' + nu(r.ev)); o += s1[1]; o += seg(xa, s1[0], r.noa, 'rgba(169,216,188,.22)', 'var(--ok)', 'NOA ' + nu(r.noa))[1];
-      var s3 = seg(xb, base, r.ibd, 'rgba(242,239,232,.16)', 'rgba(242,239,232,.5)', 'IBD ' + nu(r.ibd)); o += s3[1]; o += seg(xb, s3[0], Math.max(eqv(r), 0), 'rgba(232,201,160,.5)', 'var(--wm)', 'Equity ' + nu(eqv(r)))[1];
+      var s1 = seg(xa, base, r.ev, 'rgba(143,170,220,.4)', 'var(--ac)', 'EV'); o += s1[1]; o += seg(xa, s1[0], r.noa, 'rgba(169,216,188,.22)', 'var(--ok)', 'NOA')[1];
+      var s3 = seg(xb, base, r.ibd, 'rgba(242,239,232,.16)', 'rgba(242,239,232,.5)', 'IBD'); o += s3[1]; o += seg(xb, s3[0], Math.max(eqv(r), 0), 'rgba(232,201,160,.5)', 'var(--wm)', 'Equity')[1];
       if (!r.ev && !r.noa) o += '<text x="' + (w / 2) + '" y="' + (base - 30) + '" text-anchor="middle" class="tt">아직 아무것도 없어요</text>';
-      o += '<text x="' + (xa + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">가진 것: EV + NOA</text><text x="' + (xb + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">몫: IBD + Equity</text>';
+      o += '<text x="' + (xa + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">가진 것</text><text x="' + (xb + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">누구 몫</text>';
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', r.t + ': EV ' + nu(r.ev) + ', NOA ' + nu(r.noa) + ', IBD ' + nu(r.ibd) + ', Equity Value ' + nu(eqv(r)) + ' (' + u + ', 예시)');
-      eq.innerHTML = box('EV(영업가치)', nu(r.ev)) + '<i>+</i>' + box('NOA', nu(r.noa)) + '<i>−</i>' + box('IBD', nu(r.ibd)) + '<i>=</i>' + box('Equity Value', nu(eqv(r)), 'ac');
       trs.forEach(function (tr, i) { tr.classList.toggle('hid', i >= n); tr.classList.toggle('cur6', i === n - 1); });
-      vr.innerHTML = '<b>' + esc(r.t) + '</b>' + (r.d ? '. ' + esc(r.d) : '') + ' (단위 ' + esc(u) + ', 예시)';
+      vr.innerHTML = r.d ? esc(r.d) : '';
       if (n >= R.length) { bt.hidden = true; bt.classList.add('done'); L.gate(ctx, true); } else { bt.textContent = '다음 행동: ' + R[n].t; L.gate(ctx, false); }
     }
     bt.onclick = function () { if (n < R.length) { n++; draw(); } };
@@ -66,9 +65,9 @@
       return { pv: pv, sum: s, tv: tv, ptv: ptv, ev: s + ptv };
     }
     function draw() {
-      var c = calc(false), n = CF.length, w = wOf(host), h = 300, top = Math.max.apply(null, CF) * 1.15, th = 128, base = 30 + th, cw = (w - 10) / (n + 1), bw = Math.min(34, cw * 0.5), o = '';
+      var c = calc(false), n = CF.length, w = wOf(host), h = 250, top = Math.max.apply(null, CF) * 1.15, th = 128, base = 30 + th, cw = (w - 10) / (n + 1), bw = Math.min(34, cw * 0.5), o = '';
       var sc = th / top, cx = function (i) { return 5 + cw * i + cw / 2; };
-      o += '<text x="4" y="14" class="tt">해마다 받는 FCFF와 오늘 가치 (예시)</text><line class="ax" x1="0" x2="' + w + '" y1="' + base + '" y2="' + base + '"/>';
+      o += '<text x="4" y="14" class="tt">해마다 받는 FCFF와 오늘 가치</text><line class="ax" x1="0" x2="' + w + '" y1="' + base + '" y2="' + base + '"/>';
       o += '<text x="' + cx(0) + '" y="' + (base + 16) + '" text-anchor="middle" class="ta">오늘</text>';
       CF.forEach(function (v, i) {
         var x = cx(i + 1), hr = v * sc, hp = c.pv[i] * sc;
@@ -78,17 +77,15 @@
         o += '<text x="' + x + '" y="' + (base + 16) + '" text-anchor="middle">' + (i + 1) + '년</text><text x="' + x + '" y="' + (base + 30) + '" text-anchor="middle" style="font-size:10px">÷' + Math.pow(1 + r / 100, i + 1).toFixed(2) + '</text>';
       });
       var y2 = base + 58, bh = 26, tot = Math.max(c.ev, 1), x0 = 4, ww = w - 8, a1 = ww * c.sum / tot;
-      o += '<text x="4" y="' + (y2 - 8) + '" class="tt">EV = FCFF 현재가치 합 + TV 현재가치</text>';
       o += '<rect x="' + x0 + '" y="' + y2 + '" width="' + a1 + '" height="' + bh + '" fill="rgba(143,170,220,.75)" style="transition:all .3s"/><rect x="' + (x0 + a1) + '" y="' + y2 + '" width="' + (ww - a1) + '" height="' + bh + '" fill="rgba(232,201,160,.6)" style="transition:all .3s"/>';
-      o += (a1 > 60 ? '<text x="' + (x0 + 6) + '" y="' + (y2 + 17) + '" style="fill:#0B1526">' + fmt(c.sum) + '</text>' : '') + '<text x="' + (x0 + ww - 6) + '" y="' + (y2 + 17) + '" text-anchor="end" style="fill:#0B1526">TV ' + fmt(c.ptv) + '</text>';
-      o += '<text x="4" y="' + (y2 + bh + 22) + '">TV = ' + CF[n - 1] + ' × (1 + ' + L.f1(g) + '%) ÷ (' + L.f1(r) + '% − ' + L.f1(g) + '%) = ' + fmt(c.tv) + ', ÷ ' + Math.pow(1 + r / 100, n).toFixed(2) + ' (5년 할인)</text>';
+      o += (a1 > 60 ? '<text x="' + (x0 + 6) + '" y="' + (y2 + 17) + '" style="fill:#0B1526">FCFF</text>' : '') + '<text x="' + (x0 + ww - 6) + '" y="' + (y2 + 17) + '" text-anchor="end" style="fill:#0B1526">TV</text>';
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', 'WACC ' + r + '%, g ' + g + '%: FCFF ' + CF.join(', ') + '의 현재가치 합 ' + fmt(c.sum) + ', 잔존가치 현재가치 ' + fmt(c.ptv) + ', EV ' + fmt(c.ev) + ' (예시)');
       eq.innerHTML = box('Σ FCFFₜ ÷ (1+WACC)ᵗ', fmt(c.sum)) + '<i>+</i>' + box('TV ÷ (1+WACC)ⁿ', fmt(c.ptv), 'wm') + '<i>=</i>' + box('EV(영업가치)', fmt(c.ev), 'ac');
       lb[0].textContent = L.f1(r) + '%'; lb[1].textContent = L.f1(g) + '%';
       var b = calc(true);
-      vr.innerHTML = 'TV가 EV의 <b>' + Math.round(c.ptv / c.ev * 100) + '%</b>예요. WACC가 오르면 먼 해의 현금일수록 더 줄어요. (1 + WACC)로 나누는 횟수가 많거든요.' +
-        (tried ? '<br><span class="m6bad">흔한 실수처럼 WACCⁿ(' + L.f1(r / 100) + 'ⁿ)으로 나누면 EV ≈ ' + fmt(b.ev) + ', 맞는 식의 약 ' + fmt(b.ev / c.ev) + '배예요. 미래 돈이 오늘 값보다 부풀어요. 분모는 (1 + WACC)ⁿ이어야 해요.</span>' : '') + ' (예시)';
+      vr.innerHTML = 'TV가 EV의 <b>' + Math.round(c.ptv / c.ev * 100) + '%</b>예요.' +
+        (tried ? '<br><span class="m6bad">WACCⁿ(' + L.f1(r / 100) + 'ⁿ)으로 나누면 EV가 약 ' + fmt(b.ev) + '로, 맞는 값의 ' + fmt(b.ev / c.ev) + '배까지 부풀어요.</span>' : '');
     }
     sr.oninput = function () { r = +sr.value; draw(); }; sg.oninput = function () { g = +sg.value; draw(); };
     [sr, sg].forEach(function (s) { s.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
@@ -102,29 +99,24 @@
     var v = { op: p.op || 1000, noa: p.noa == null ? 200 : p.noa, ibd: p.ibd == null ? 600 : p.ibd }, sh = p.shares || 10, px = p.price || 30, route = 'ff', seen = { ff: 1 };
     host.innerHTML = '<div class="vbt m6tab" role="group" aria-label="길"><button type="button" class="vgo on done" data-r="ff">FCFF 길</button><button type="button" class="vgo" data-r="fe">FCFE 길</button></div><div class="eqs" aria-live="polite"></div><svg role="img"></svg>' +
       L.sliderHtml('curM6op', 'FCFF 영업가치', 400, 2000, 50, v.op) + L.sliderHtml('curM6na', 'NOA', 0, 600, 50, v.noa) + L.sliderHtml('curM6ib', 'IBD', 0, 1000, 50, v.ibd) +
-      '<table class="m6t"><tbody></tbody></table><p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
-    var svg = host.querySelector('svg'), eq = host.querySelector('.eqs'), vr = host.querySelector('.vr'), tb = host.querySelector('tbody'), ins = host.querySelectorAll('.vctl input'), lb = host.querySelectorAll('.vctl label b');
+      '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg'), eq = host.querySelector('.eqs'), vr = host.querySelector('.vr'), ins = host.querySelectorAll('.vctl input'), lb = host.querySelectorAll('.vctl label b');
     function sgn(x) { return (x < 0 ? '−' : '') + fmt(Math.abs(x)); }
     function draw() {
       var fe = v.op - v.ibd, eqt = v.op + v.noa - v.ibd, tp = Math.max(eqt, 0) / sh, up = tp / px - 1, w = wOf(host), h = 210, base = h - 28, top = Math.max(2600, v.op + v.noa, v.ibd + Math.max(eqt, 0)), sc = (h - 50) / top, bw = Math.min(120, w / 2 - 40), xa = (w / 2 - bw) / 2, xb = w / 2 + (w / 2 - bw) / 2, o = '';
       function seg(x, y, val, fill, stroke, lab, dash) { var hh = Math.max(val, 0) * sc; if (hh <= 0) return [y, '']; return [y - hh, '<rect x="' + x + '" y="' + (y - hh) + '" width="' + bw + '" height="' + hh + '" fill="' + fill + '" stroke="' + stroke + '"' + (dash ? ' stroke-dasharray="4 3"' : '') + ' style="transition:all .3s"/>' + (hh > 16 ? '<text x="' + (x + bw / 2) + '" y="' + (y - hh / 2 + 4) + '" text-anchor="middle" class="tt">' + lab + '</text>' : '')]; }
       o += '<line class="ax" x1="0" x2="' + w + '" y1="' + base + '" y2="' + base + '"/>';
       var s;
-      if (route === 'ff') { s = seg(xa, base, v.op, 'rgba(143,170,220,.4)', 'var(--ac)', '(A) 영업 ' + fmt(v.op)); o += s[1]; o += seg(xa, s[0], v.noa, 'rgba(169,216,188,.22)', 'var(--ok)', '(B) NOA ' + fmt(v.noa))[1]; }
-      else { var ib = Math.min(v.ibd, v.op); s = seg(xa, base, ib, 'none', 'rgba(242,239,232,.35)', '이미 빠진 빚', 1); o += s[1]; var s2 = seg(xa, s[0], fe, 'rgba(143,170,220,.4)', 'var(--ac)', 'FCFE ' + sgn(fe)); o += s2[1]; o += seg(xa, s2[0], v.noa, 'rgba(169,216,188,.22)', 'var(--ok)', 'NOA ' + fmt(v.noa))[1]; }
-      s = seg(xb, base, v.ibd, 'rgba(242,239,232,.16)', 'rgba(242,239,232,.5)', '(C) IBD ' + fmt(v.ibd), route === 'fe'); o += s[1]; o += seg(xb, s[0], eqt, 'rgba(232,201,160,.5)', 'var(--wm)', '자본가치 ' + sgn(eqt))[1];
+      if (route === 'ff') { s = seg(xa, base, v.op, 'rgba(143,170,220,.4)', 'var(--ac)', '(A) 영업'); o += s[1]; o += seg(xa, s[0], v.noa, 'rgba(169,216,188,.22)', 'var(--ok)', '(B) NOA')[1]; }
+      else { var ib = Math.min(v.ibd, v.op); s = seg(xa, base, ib, 'none', 'rgba(242,239,232,.35)', '이미 빠진 빚', 1); o += s[1]; var s2 = seg(xa, s[0], fe, 'rgba(143,170,220,.4)', 'var(--ac)', 'FCFE'); o += s2[1]; o += seg(xa, s2[0], v.noa, 'rgba(169,216,188,.22)', 'var(--ok)', 'NOA')[1]; }
+      s = seg(xb, base, v.ibd, 'rgba(242,239,232,.16)', 'rgba(242,239,232,.5)', '(C) IBD', route === 'fe'); o += s[1]; o += seg(xb, s[0], eqt, 'rgba(232,201,160,.5)', 'var(--wm)', '자본가치')[1];
       o += '<text x="' + (xa + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">' + (route === 'ff' ? '영업 + 비영업' : 'FCFE 할인값 + NOA') + '</text><text x="' + (xb + bw / 2) + '" y="' + (h - 8) + '" text-anchor="middle">빚 + 주주 몫</text>';
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', (route === 'ff' ? 'FCFF 길: ' + fmt(v.op) + ' + ' + fmt(v.noa) + ' − ' + fmt(v.ibd) : 'FCFE 길: ' + sgn(fe) + ' + ' + fmt(v.noa)) + ' = 자본가치 ' + sgn(eqt) + ' (예시)');
       eq.innerHTML = route === 'ff' ? box('(A) 영업자산가치', fmt(v.op)) + '<i>+</i>' + box('(B) 비영업자산', fmt(v.noa)) + '<i>−</i>' + box('(C) 타인자본가치', fmt(v.ibd)) + '<i>=</i>' + box('자본가치', sgn(eqt), 'ac')
         : box('FCFE 할인값', sgn(fe)) + '<i>+</i>' + box('비영업자산', fmt(v.noa)) + '<i>=</i>' + box('자본가치', sgn(eqt), 'ac');
-      var rows = route === 'ff' ? [['(A) 영업자산가치', fmt(v.op)], ['(B) 비영업자산', fmt(v.noa)], ['(A+B) 기업가치', fmt(v.op + v.noa), 'sub'], ['(C) 타인자본가치', fmt(v.ibd)], ['(A+B−C) 자본가치', sgn(eqt), 'sub']]
-        : [['(A) FCFE를 할인한 값', sgn(fe)], ['(B) 비영업자산', fmt(v.noa)], ['(A+B) 자본가치', sgn(eqt), 'sub'], ['타인자본가치', '빼지 않아요', 'dim']];
-      rows = rows.concat([['유통주식수', fmt(sh) + '주'], ['목표주가', fmt(tp), 'sub'], ['현재주가', fmt(px)], ['상승여력', eqt > 0 ? L.pc(up) : '−']]);
-      tb.innerHTML = rows.map(function (x) { return '<tr class="' + (x[2] || '') + '"><th scope="row">' + x[0] + '</th><td>' + x[1] + '</td></tr>'; }).join('');
       lb[0].textContent = fmt(v.op); lb[1].textContent = fmt(v.noa); lb[2].textContent = fmt(v.ibd);
-      vr.innerHTML = (route === 'ff' ? '영업가치에 NOA를 더하고 IBD를 빼요.' : 'FCFE는 빚을 갚은 뒤의 현금이라 할인값이 이미 ' + fmt(v.op) + ' − ' + fmt(v.ibd) + ' = ' + sgn(fe) + '이에요. IBD를 또 빼지 않아요.') +
-        (eqt <= 0 ? ' 빚이 가진 것보다 많아 주주 몫이 남지 않아요.' : ' 자본가치 ' + sgn(eqt) + ' ÷ ' + fmt(sh) + '주 = 목표주가 <b>' + fmt(tp) + '</b>') + ' (예시)';
+      vr.innerHTML = eqt <= 0 ? '빚이 가진 것보다 많아 주주 몫이 남지 않아요.' : route === 'ff' ? '영업가치에 NOA를 더하고 IBD를 빼요.' : 'FCFE는 빚을 갚은 뒤의 현금이라 IBD를 또 빼지 않아요.';
     }
     ins.forEach(function (s) { s.oninput = function () { v[{ curM6op: 'op', curM6na: 'noa', curM6ib: 'ibd' }[s.id]] = +s.value; draw(); }; s.addEventListener('keydown', function (e) { e.stopPropagation(); }); });
     host.querySelectorAll('.m6tab button').forEach(function (b) {
@@ -152,7 +144,7 @@
           b.onclick = function () {
             var r = g.rows[+b.getAttribute('data-i')];
             ul.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
-            vr.innerHTML = '<b>' + esc(r.n) + (r.s ? '(' + esc(r.s) + ')' : '') + '</b> → ' + esc(r.c) + '<br>' + esc(r.d || WHY[r.c] || '');
+            vr.innerHTML = '<b>' + esc(r.n) + (r.s ? '(' + esc(r.s) + ')' : '') + '</b>: ' + esc(r.d || WHY[r.c] || '');
           };
         });
         vr.textContent = '계정을 누르면 그렇게 나눈 이유가 나와요.' + (G.length > 1 ? ' (' + Object.keys(vis).length + ' / ' + G.length + ' 묶음 봤어요)' : '');
@@ -184,7 +176,7 @@
         el.querySelectorAll('button').forEach(function (b) { var on = b.getAttribute('data-c') === st[id]; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
       });
       eq.innerHTML = box('NOA', f1c(t.noa)) + '<i>−</i>' + box('IBD', f1c(t.ibd)) + '<i>=</i>' + box('NOA − IBD', f1c(t.noa - t.ibd), 'ac');
-      vr.innerHTML = (locked || moved ? '' : esc(p.ask || '') + '<br>') + esc(p.name || '') + ' 모델 값(NOA ' + f1c(md.noa || 0) + ', IBD ' + f1c(md.ibd || 0) + ')보다 주주 몫 <b>' + (d >= 0 ? '+' : '') + f1c(d) + '</b> ' + esc(p.unit || '') + ', 주당 <b>' + (ps >= 0 ? '+' : '−') + fmt(Math.abs(ps)) + '원</b>. 영업가치(EV)는 같다고 둘 때예요. (' + esc(p.asof || '') + ')';
+      vr.innerHTML = (locked || moved ? '' : esc(p.ask || '') + '<br>') + esc(p.name || '') + ' 모델 값보다 주주 몫이 <b>' + (d >= 0 ? '+' : '') + f1c(d) + '</b> ' + esc(p.unit || '') + ', 주당 <b>' + (ps >= 0 ? '+' : '−') + fmt(Math.abs(ps)) + '원</b> 달라져요.';
     }
     host.querySelectorAll('.m6p').forEach(function (el) {
       var id = el.getAttribute('data-r');
@@ -290,17 +282,16 @@
       o += t(xl + bw / 2, Y(tot) - 12, 'h', '가진 것', 'middle') + t(xr + bw / 2, Y(tot) - 12, 'h', '누구 몫', 'middle');
       // 왼쪽: 영업가치 + 비영업자산 (움직이지 않음)
       o += rc(xl, Y(ev), bw, ev * sc, NAVY, HAIR) + rc(xl, Y(tot), bw, noa * sc, 'rgba(242,239,232,.10)', 'rgba(242,239,232,.45)');
-      o += ln(xl - 8, Y(ev / 2), xl, Y(ev / 2), HAIR) + t(ta, Y(ev / 2) - 3, '', '영업가치 <tspan class="n" style="font-size:13px">' + fmt(ev) + '</tspan>', 'end') + t(ta, Y(ev / 2) + 13, 's', esc(p.evNote || '이자 내기 전 현금'), 'end');
-      if (noa) o += ln(xl - 8, Y(ev + noa / 2), xl, Y(ev + noa / 2), HAIR) + t(ta, Y(ev + noa / 2) - 3, '', '비영업자산 <tspan class="n" style="font-size:13px">' + fmt(noa) + '</tspan>', 'end') + t(ta, Y(ev + noa / 2) + 13, 's', esc(p.noaNote || '영업 현금엔 없어요'), 'end');
+      o += ln(xl - 8, Y(ev / 2), xl, Y(ev / 2), HAIR) + t(ta, Y(ev / 2) - 12, 'n', fmt(ev), 'end') + t(ta, Y(ev / 2) + 6, '', '영업가치', 'end') + t(ta, Y(ev / 2) + 22, 's', esc(p.evNote || '이자 내기 전 현금'), 'end');
+      if (noa) o += ln(xl - 8, Y(ev + noa / 2), xl, Y(ev + noa / 2), HAIR) + t(ta, Y(ev + noa / 2) - 12, 'n', fmt(noa), 'end') + t(ta, Y(ev + noa / 2) + 6, '', '비영업자산', 'end') + t(ta, Y(ev + noa / 2) + 22, 's', esc(p.noaNote || '영업 현금엔 없어요'), 'end');
       // 오른쪽: 이자부부채 + 주주 몫
       o += rc(xr, Y(b), bw, b * sc, 'rgba(242,239,232,.04)', 'rgba(242,239,232,.55)', '4 3', 'mv') + rc(xr, Y(tot), bw, eq * sc, GOLD, null, null, 'mv');
-      if (b > 0) o += ln(xr + bw, Y(b / 2), xr + bw + 8, Y(b / 2), HAIR) + t(tb, Y(b / 2) - 3, '', '이자부부채 <tspan class="n" style="font-size:13px">' + fmt(b) + '</tspan>', 'start') + t(tb, Y(b / 2) + 13, 's', esc(p.ibdNote || '채권자에게 먼저'), 'start');
-      o += ln(xr + bw, Y(b + eq / 2), xr + bw + 8, Y(b + eq / 2), GOLD) + t(tb, Y(b + eq / 2) + 2, 'big', fmt(eq), 'start') + t(tb, Y(b + eq / 2) + 19, 's', '주주 몫', 'start');
+      if (b > 0) o += ln(xr + bw, Y(b / 2), xr + bw + 8, Y(b / 2), HAIR) + t(tb, Y(b / 2) - 12, 'n', fmt(b), 'start') + t(tb, Y(b / 2) + 6, '', '이자부부채', 'start') + t(tb, Y(b / 2) + 22, 's', esc(p.ibdNote || '채권자에게 먼저'), 'start');
+      o += ln(xr + bw, Y(b + eq / 2), xr + bw + 8, Y(b + eq / 2), GOLD) + t(tb, Y(b + eq / 2) + 2, 'big', fmt(eq), 'start') + t(tb, Y(b + eq / 2) + 20, '', '주주 몫', 'start');
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
       svg.setAttribute('aria-label', '가진 것: 영업가치 ' + fmt(ev) + ' + 비영업자산 ' + fmt(noa) + '. 누구 몫: 이자부부채 ' + fmt(b) + ', 주주 몫 ' + fmt(eq) + ' (예시)');
       lb.textContent = fmt(b);
-      vr.innerHTML = '<span class="n">' + fmt(ev) + ' + ' + fmt(noa) + ' − ' + fmt(b) + ' = </span><b class="n">' + fmt(eq) + '</b>. ' +
-        (b > 0 ? '빚이 ' + fmt(b) + '이어도 영업가치는 ' + fmt(ev) + ' 그대로라, 빚만큼 주주 몫이 줄어요.' : '빚이 없으면 가진 것 ' + fmt(tot) + '이 모두 주주 몫이에요.') + ' (예시)';
+      vr.innerHTML = b > 0 ? '영업가치는 ' + fmt(ev) + ' 그대로라, 빚만큼 주주 몫이 줄어요.' : '빚이 없으면 가진 것 ' + fmt(tot) + '이 모두 주주 몫이에요.';
     }
     sl.oninput = function () { b = +sl.value; draw(); };
     sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
@@ -316,7 +307,7 @@
     function draw() {
       var w = vw(host), x0 = 1, x1 = w - 1, xs = x0 + (x1 - x0) * (1 - share), by = 66, bh = 40, o = '';
       // 위 괄호: FCFF = 막대 전체
-      o += t(x0, 18, '', '<tspan class="n" style="font-size:15px">FCFF</tspan>  ' + ff) + t(x0, 37, 's', '할인하면 → ' + ffr);
+      o += t(x0, 18, 'n', 'FCFF') + t(x0, 37, 's', ff);
       o += ln(x0, 50, x1, 50, 'rgba(242,239,232,.6)') + ln(x0, 50, x0, 58, 'rgba(242,239,232,.6)') + ln(x1, 50, x1, 58, 'rgba(242,239,232,.6)');
       // 막대: 채권자 몫 | 주주 몫
       o += rc(x0, by, xs - x0, bh, NAVY, HAIR) + rc(xs, by, x1 - xs, bh, GOLD);
@@ -324,7 +315,7 @@
       // 아래 괄호: FCFE = 금색 부분만
       var yb = by + bh + 10;
       o += ln(xs, yb + 8, x1, yb + 8, GOLD) + ln(xs, yb, xs, yb + 8, GOLD) + ln(x1, yb, x1, yb + 8, GOLD);
-      o += t(x1, yb + 32, '', '<tspan class="n" style="font-size:15px">FCFE</tspan>  ' + fe, 'end') + t(x1, yb + 51, 's', '할인하면 → ' + fer, 'end');
+      o += t(x1, yb + 32, 'n', 'FCFE', 'end') + t(x1, yb + 51, 's', fe, 'end');
       var h = yb + 58;
       svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h); svg.setAttribute('height', h); svg.innerHTML = o;
     }

@@ -2019,7 +2019,7 @@ const NETWORK = [
   { n:'GS SHOP', f:'gsshop', r:4, a:5.4 }];
 // FUND 첫 화면 사진: 겨울 산 (눈 덮인 긴 언덕 = 버핏의 '스노볼')
 const FUND_BG = [
-  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.12', credit: 'Photo: Nathan Anderson (Unsplash, CC0)', href: 'https://commons.wikimedia.org/w/index.php?curid=61895601' }];
+  { src: 'assets/hero/fund-snow_dark.webp', pos: 'center 40%', scrim: '0.12', credit: '', href: '' }];
 // AGORA 로그인 전 화면의 별 이름: WHERE WE WORK 줄마다 앞 9곳(첫 화면 6곳 + 다음 3곳), 첫 화면 기관부터
 const GATE_TOP = ['J.P. Morgan', 'PwC', '타임폴리오자산운용', 'NH-Amundi자산운용'];   // 로그인 칸 바로 옆 가장 눈에 띄는 자리에 먼저
 const GATE_NAMES = [...GATE_TOP, ...[[0, 6], [6, 9]].flatMap(([a, b]) => [0, 1, 2, 3, 4].flatMap((r) => NETWORK.filter((x) => x.r === r).slice(a, b).map((x) => x.n))).filter((n) => !GATE_TOP.includes(n))];
@@ -2076,7 +2076,7 @@ const ring = (segs, r) => {
 };
 const opStyle = (op) => op === 'BUY' ? { c:'#203864', a:'1' } : op === 'SELL' ? { c:'#1A1A1A', a:'0.65' } : { c:'#1A1A1A', a:'1' };
 
-const RES_HERO = Math.random() < 0.5 ? '' : '-b';
+const RES_HERO = '-b';   // 리서치 첫 화면은 회색 판화(동굴) 하나로
 // 운용보고서 부록 숫자: 일별 기준가 [날짜, 기준가, KOSPI] 로 기간 수익률·기준가 변화·위험 지표를 계산한다 (모두 % 비율)
 const wkStats = (hist, week) => {
   const end = new Date(new Date(week + 'T00:00:00').getTime() + 4 * 864e5).toISOString().slice(0, 10);
@@ -2213,11 +2213,11 @@ class Component extends DCLogic {
     const idle = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
     // 메뉴 페이지 맨 위 사진은 그 페이지를 열 때 처음 받기 시작해서 늦게 떴다. 첫 화면이 뜬 뒤 미리 받아 둔다 (기기에 맞는 크기로)
     this._menuHeroes = () => {
-      const m = window.innerWidth <= 768, u = 'https://images.unsplash.com/photo-';
+      const m = window.innerWidth <= 768;
       return {
         fund: ['assets/hero/sky.webp?v=1014'], rfm: [m ? 'assets/hero/nyse-m.webp' : 'assets/hero/nyse.webp'], people: ['assets/people-group.webp'],
         research: [m ? 'assets/hero/research' + RES_HERO + '-m.webp?v=1020' : 'assets/hero/research' + RES_HERO + '.webp?v=1020'],
-        about: [u + '1682332402542-652cb5dcf31f?auto=format&fit=crop&w=1920&q=80'],
+        about: ['assets/photos/about-hero.webp'],
         recruit: [m ? 'assets/hero/recruit-m.webp' : 'assets/hero/recruit.webp'],
         intranet: [m ? 'assets/hero/cau-m.webp' : 'assets/hero/cau.webp'],
       };
@@ -4303,11 +4303,11 @@ class Component extends DCLogic {
       latestCover: byDate[0].cover || '', latestHref: '#research/' + byDate[0].id,
       latestOpen: (e) => { e.preventDefault(); this.go('report', byDate[0].id); },
       heroBgSafe: hero.heroBg || 'assets/torm-fleet.webp',
-      heroBg: hero.heroBg || 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1600&q=72',
+      heroBg: hero.heroBg || 'assets/photos/market.webp',
       heroScrim: hero.heroScrim || 0.58,
       heroPosM: hero.heroPosM || '50% 50%',
-      heroBgCredit: hero.heroBg ? '' : 'Photo by Maxim Hopman on Unsplash',
-      heroBgCreditHref: hero.heroBg ? '' : 'https://unsplash.com/@nampoh',
+      heroBgCredit: '',
+      heroBgCreditHref: '',
       heroCover: hero.heroCover || hero.cover || '',
       heroPage: /-top169\.webp$/.test(hero.heroCover || '') ? hero.heroCover.replace(/-top169\.webp$/, '-p1.webp') : (hero.heroCover || ''),   // 표지 1쪽 전체 (assets/covers/*-p1.webp), 휠로 내려 읽는다
       heroCaption: hero.name + ' (' + hero.ticker + ') · ' + hero.date,

@@ -1,7 +1,8 @@
 // ── M0 밸류에이션이란: 개념 그림 부품 (harness/PLUGIN.md) ─────────────
 // m0ValuePrice  가치(앞으로 벌 돈에서 나온 값, 금색 막대) 옆에 가격(테두리 막대). 슬라이더로 가격을 움직이면 틈과 '싸요/비싸요'가 따라 변한다
-// m0Order       다섯 단계를 한 줄로 잇고, 단계 하나를 빼면 그 아래가 끊기며 무엇이 흔들리는지 바로 옆에 쓴다
-// m0GapSplit    가치 = 이익 × 배수 면적. 같은 괴리 20이 이익 폭(실적 괴리)에서 오는지, 배수 높이(밸류에이션 괴리)에서 오는지 견준다
+// m0Terms       용어 묶음표: 묶음(성장·수익성…)마다 용어와 뜻을 한 줄씩. 문제 앞 개념 화면에서 쓰는 말을 먼저 알려 준다
+// m0Think       정적인 생각 갈래: 상황 → 질문 → 갈래마다 '이렇게 보면 ⇒ 이렇게 한다' (슬라이더·토글 없음)
+// m0GapEq       가치 = 이익 × 배수를 줄마다 쓰고, 내 가치와 다른 칸(이익이냐 배수냐)만 짚어 실적 괴리·밸류에이션 괴리를 가른다
 (function () {
   var L = window.CUR_LIB, esc = L.esc, clamp = L.clamp;
   if (!document.getElementById('cur-plex')) {
@@ -20,23 +21,41 @@
     '.cur .vis .m0v .m0ob button{padding:0 11px}',
     '.cur .vis .m0v .vctl label{min-width:0}',
     '.cur .vis .m0v .vr b{font-weight:500}',
-    '.cur .vis .m0v .vbt button[aria-pressed=true]{background:#1C2C48;border-color:#E2C48F}'
+    '.cur .vis .m0v .vbt button[aria-pressed=true]{background:#1C2C48;border-color:#E2C48F}',
+    '.cur .vis .trm{max-width:640px;display:flex;flex-direction:column;gap:18px;color:#F2EFE8}',
+    '.cur .vis .trm-g h3{font-size:13px;font-weight:500;letter-spacing:.08em;color:rgba(242,239,232,.62);margin:0 0 4px}',
+    '.cur .vis .trm-g dl{margin:0;border-top:1px solid rgba(242,239,232,.18)}',
+    '.cur .vis .trm-r{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:14px;padding:11px 0;border-bottom:1px solid rgba(242,239,232,.18)}',
+    ".cur .vis .trm-r dt{font-family:'Noto Serif KR',serif;font-weight:600;font-size:17px;line-height:1.45}",
+    '.cur .vis .trm-r dd{margin:0;font-size:16px;line-height:1.6;color:rgba(242,239,232,.86)}',
+    '@media (max-width:560px){.cur .vis .trm-r{grid-template-columns:1fr;gap:3px}}',
+    '.cur .vis .thk{max-width:620px;color:#F2EFE8}',
+    '.cur .vis .thk-top{display:flex;gap:28px;padding-bottom:14px;border-bottom:1px solid rgba(242,239,232,.18)}',
+    ".cur .vis .thk-top span{display:flex;flex-direction:column;gap:2px}.cur .vis .thk-top small{font-size:13px;color:rgba(242,239,232,.62)}.cur .vis .thk-top b{font-family:'Noto Serif KR',serif;font-weight:600;font-size:24px}.cur .vis .thk-top .gd b{color:#E2C48F}",
+    ".cur .vis .thk-ask{margin:16px 0 12px;font-family:'Noto Serif KR',serif;font-weight:600;font-size:18px;line-height:1.5}",
+    '.cur .vis .thk-w{display:grid;grid-template-columns:1fr 1fr;gap:12px}',
+    '.cur .vis .thk-c{border:1px solid rgba(242,239,232,.28);padding:14px 16px;display:flex;flex-direction:column;gap:10px}',
+    '.cur .vis .thk-see{font-size:16px;line-height:1.55;color:rgba(242,239,232,.8)}',
+    '.cur .vis .thk-then{font-size:16.5px;line-height:1.55;font-weight:500}.cur .vis .thk-then i{font-style:normal;margin-right:8px;color:rgba(242,239,232,.62)}',
+    '.cur .vis .thk-foot{margin-top:14px;font-size:15.5px;line-height:1.6;color:rgba(242,239,232,.8)}',
+    '@media (max-width:560px){.cur .vis .thk-w{grid-template-columns:1fr}}',
+    '.cur .vis .geq{max-width:560px;display:flex;flex-direction:column;border-top:1px solid rgba(242,239,232,.18)}',
+    ".cur .vis .geq-r{display:grid;grid-template-columns:5.5em 3em 1.2em 3em 1.2em 3.6em minmax(0,1fr);align-items:center;column-gap:6px;padding:14px 0;border-bottom:1px solid rgba(242,239,232,.18);font-family:'IBM Plex Sans','RFS Dotum UI',sans-serif;font-variant-numeric:tabular-nums;color:#F2EFE8}",
+    '.cur .vis .geq-r.hd{padding:8px 0;font-size:13px;color:rgba(242,239,232,.62)}',
+    '.cur .vis .geq-k{font-size:15px}',
+    ".cur .vis .geq-v{font-family:'Noto Serif KR',serif;font-weight:600;font-size:22px;text-align:right}",
+    '.cur .vis .geq-r.hd .geq-v{font-family:inherit;font-weight:400;font-size:13px}',
+    '.cur .vis .geq-o{text-align:center;color:rgba(242,239,232,.62)}',
+    '.cur .vis .geq-n{font-size:18px;text-align:center;padding:2px 0;border:1px solid transparent}',
+    '.cur .vis .geq-r.hd .geq-n{font-size:13px}',
+    '.cur .vis .geq-n.df{border-color:#F2EFE8;font-weight:500}',
+    '.cur .vis .geq-r.me .geq-v{color:#E2C48F}',
+    '.cur .vis .geq-w{display:flex;flex-direction:column;gap:2px;padding-left:10px;font-size:15px}.cur .vis .geq-w b{font-weight:500}.cur .vis .geq-w small{font-size:12.5px;color:rgba(242,239,232,.62)}',
+    '@media (max-width:560px){.cur .vis .geq-r{grid-template-columns:5em 2.6em 1em 2.6em 1em 3.4em;row-gap:6px}.cur .vis .geq-w{grid-column:1/-1;padding-left:0}.cur .vis .geq-r.hd .geq-w,.cur .vis .geq-r.me .geq-w{display:none}}'
   ].join('\n'));
 
   var GOLD = '#E2C48F', NAVY = '#1C2C48', INK = '#F2EFE8';
-  function josa(t, a, b) { var c = String(t).charCodeAt(String(t).length - 1) - 0xAC00; return t + (c >= 0 && c < 11172 && c % 28 ? a : b); }
   function n1(x) { return String(Math.round(x * 10) / 10); }
-  // 한글 줄 바꿈: 낱말 단위로 max 글자 넘으면 다음 줄
-  function wrap(t, max) {
-    if (String(t).indexOf('\n') >= 0) return String(t).split('\n');
-    var out = [], cur = '';
-    String(t).split(' ').forEach(function (w) { if (cur && (cur + ' ' + w).length > max) { out.push(cur); cur = w; } else cur = cur ? cur + ' ' + w : w; });
-    if (cur) out.push(cur);
-    return out;
-  }
-  function tlines(x, y, lines, cls, lh) {
-    return lines.map(function (s, i) { return '<text x="' + x + '" y="' + (y + i * lh) + '" class="' + cls + '">' + esc(s) + '</text>'; }).join('');
-  }
 
   // ════ m0ValuePrice ════
   // params: start(가격 ÷ 가치, 기본 0.9), min, max, step, cap
@@ -59,11 +78,11 @@
       o += '<line x1="4" y1="' + B + '" x2="396" y2="' + B + '" stroke="rgba(242,239,232,.18)"/>';
       // 가치(금색) · 기준선
       o += '<rect x="' + VX + '" y="' + vy + '" width="' + W + '" height="' + H + '" fill="' + GOLD + '"/>';
-      o += '<text x="' + (VX + W / 2) + '" y="' + (vy - 10) + '" text-anchor="middle" class="lb">가치</text>';
+      o += '<text x="' + (VX + W / 2) + '" y="' + (B + 20) + '" text-anchor="middle" class="lb">가치</text>';
       o += '<line x1="' + (VX + W) + '" y1="' + vy + '" x2="344" y2="' + vy + '" stroke="rgba(242,239,232,.3)" stroke-dasharray="3 3"/>';
       // 가격(테두리)
       o += '<rect x="' + PX + '" y="' + py + '" width="' + W + '" height="' + ph + '" fill="rgba(242,239,232,.06)" stroke="rgba(242,239,232,.8)" stroke-width="1.5"/>';
-      o += '<text x="' + (PX + W / 2) + '" y="' + (py + 22) + '" text-anchor="middle" class="lb">가격</text>';
+      o += '<text x="' + (PX + W / 2) + '" y="' + (B + 20) + '" text-anchor="middle" class="lb">가격</text>';
       // 틈 꺾쇠 + 몇 %
       if (pct > 0) {
         var a = Math.min(py, vy), b2 = Math.max(py, vy), mid = clamp((a + b2) / 2, 40, B - 40);
@@ -75,9 +94,9 @@
       }
       svg.innerHTML = o;
       lb.textContent = '가치의 ' + Math.round(r * 100) + '%';
-      vr.innerHTML = pct === 0 ? '가격과 가치가 같아요. 제값에 사는 셈이에요.' :
-        r < 1 ? '가격이 가치보다 <b>' + pct + '%</b> 낮아요. 앞으로 벌 돈에 비해 싸게 사는 셈이에요.' :
-        '가격이 가치보다 <b>' + pct + '%</b> 높아요. 앞으로 벌 돈보다 비싸게 사는 셈이에요.';
+      vr.innerHTML = pct === 0 ? '가격과 가치가 같아 제값에 사는 셈이에요.' :
+        r < 1 ? '가격이 가치보다 <b>' + pct + '%</b> 낮아 싸게 사는 셈이에요.' :
+        '가격이 가치보다 <b>' + pct + '%</b> 높아 비싸게 사는 셈이에요.';
     }
     sl.addEventListener('input', function () { r = Math.round(+sl.value / stp) * stp; r = Math.round(r * 100) / 100; draw(); });
     sl.addEventListener('keydown', function (e) { e.stopPropagation(); });
@@ -85,97 +104,49 @@
     return { draw: draw };
   };
 
-  // ════ m0Order ════
-  // params: hand[5] (다음 단계로 넘기는 것), drop[5] (그 단계를 빼면 생기는 일), goal (다 이어졌을 때 결과 옆 문장)
-  window.CUR_VIS.m0Order = function (host, p, ctx) {
-    var mp = (ctx && ctx.mod && ctx.mod.map) || {}, it = (mp.items || []).map(function (x) { return x.t; }), res = mp.res || '결과';
-    var hand = p.hand || [], drop = p.drop || [], off = -1;
-    host.innerHTML = '<div class="m0v"><svg viewBox="0 0 400 322" role="img" aria-label="' + esc(it.join(' → ') + ' → ' + res) + '. 단계 하나를 빼면 그 아래 판단이 흔들려요"></svg>' +
-      '<div class="vbt m0ob" role="group" aria-label="빼 볼 단계">' + it.map(function (t, i) { return '<button type="button" aria-pressed="false" data-i="' + i + '">' + esc(t) + '</button>'; }).join('') + '</div>' +
-      '<p class="vr" aria-live="polite"></p></div>';
-    var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), bs = host.querySelectorAll('.vbt button');
-    var X = 18, Y = function (i) { return 24 + i * 52; }, RY = Y(it.length) + 6;
-    function draw() {
-      var o = '', i;
-      // 줄기: 끊긴 곳 아래는 점선·흐리게
-      for (i = 0; i < it.length; i++) {
-        var y1 = Y(i), y2 = i === it.length - 1 ? RY : Y(i + 1), broken = off >= 0 && i >= off;
-        o += '<line x1="' + X + '" y1="' + (y1 + 8) + '" x2="' + X + '" y2="' + (y2 - 9) + '" stroke="' + INK + '" stroke-opacity="' + (broken ? 0.3 : 0.55) + '"' + (broken ? ' stroke-dasharray="3 5"' : '') + '/>';
-      }
-      for (i = 0; i < it.length; i++) {
-        var y = Y(i), gone = i === off, dim = off >= 0 && i > off;
-        o += '<g' + (dim ? ' class="dim"' : '') + '>';
-        o += gone ? '<circle cx="' + X + '" cy="' + y + '" r="6" fill="none" stroke="' + INK + '" stroke-dasharray="2 2"/>' : '<circle cx="' + X + '" cy="' + y + '" r="5.5" fill="' + INK + '"/>';
-        o += '<text x="36" y="' + (y + 5) + '" class="lb"' + (gone ? ' text-decoration="line-through" opacity=".5"' : '') + '>' + esc(it[i]) + '</text>';
-        if (hand[i] && !gone) o += '<text x="36" y="' + (y + 24) + '" class="sm">→ ' + esc(hand[i]) + '</text>';
-        o += '</g>';
-      }
-      // 결과
-      var ok = off < 0;
-      o += '<path d="M' + X + ' ' + (RY - 8) + 'L' + (X + 8) + ' ' + RY + 'L' + X + ' ' + (RY + 8) + 'L' + (X - 8) + ' ' + RY + 'Z" fill="' + (ok ? GOLD : 'none') + '" stroke="' + (ok ? GOLD : 'rgba(242,239,232,.5)') + '"/>';
-      o += '<text x="36" y="' + (RY + 6) + '" class="big' + (ok ? ' gd' : '') + '" style="font-size:18px"' + (ok ? '' : ' opacity=".45"') + '>' + esc(res) + (ok ? '' : ' ?') + '</text>';
-      // 직접 주석: 뺀 단계 옆 (금색) / 다 이어졌으면 결과 옆
-      if (off >= 0) {
-        var ly = Y(off), lines = wrap(drop[off] || '', 16), lx = 36 + it[off].length * 14 + 6;
-        o += '<line x1="' + lx + '" y1="' + ly + '" x2="152" y2="' + ly + '" stroke="' + GOLD + '"/>';
-        o += tlines(160, ly + 5, lines, 'gd an', 19);
-      } else if (p.goal) {
-        var gl = wrap(p.goal, 16);
-        o += '<line x1="132" y1="' + RY + '" x2="152" y2="' + RY + '" stroke="rgba(242,239,232,.35)"/>';
-        o += tlines(160, RY + 5 - (gl.length - 1) * 9.5, gl, 'an', 19);
-      }
-      svg.innerHTML = o;
-      bs.forEach(function (b, j) { b.setAttribute('aria-pressed', j === off ? 'true' : 'false'); });
-      vr.innerHTML = off < 0 ? '단계 하나를 빼 보세요. 그 아래로 무엇이 흔들리는지 보여요.' : '<b>' + esc(josa(it[off], '을', '를')) + '</b> 뺐어요. 한 번 더 누르면 되돌려요.';
-    }
-    bs.forEach(function (b) { b.onclick = function () { var i = +b.getAttribute('data-i'); off = off === i ? -1 : i; draw(); }; });
+  // ════ m0Terms ════
+  // params: groups [{h, rows:[{t, d}]}]  용어 묶음표. 묶음 이름 아래 용어와 뜻을 한 줄씩 (누르는 장치 없음)
+  window.CUR_VIS.m0Terms = function (host, p, ctx) {
+    var G = p.groups || [];
+    host.innerHTML = '<div class="m0v trm">' + G.map(function (g) {
+      return '<section class="trm-g"><h3>' + esc(g.h) + '</h3><dl>' + (g.rows || []).map(function (r) { return '<div class="trm-r"><dt>' + esc(r.t) + '</dt><dd>' + esc(r.d) + '</dd></div>'; }).join('') + '</dl></section>';
+    }).join('') + '</div>';
     if (ctx && ctx.ready) ctx.ready(true);
-    return { draw: draw };
+    return { draw: function () {} };
   };
 
-  // ════ m0GapSplit ════
-  // params: my {e, m} 내 이익·배수, cases [{k, t, e, m, why, go}], start(case 번호), cap
-  window.CUR_VIS.m0GapSplit = function (host, p, ctx) {
-    var my = p.my || { e: 10, m: 10 }, C = p.cases || [], at = p.start || 0;
-    host.innerHTML = '<div class="m0v"><svg viewBox="0 0 400 296" role="img" aria-label="가치는 이익 곱하기 배수, 곧 사각형 넓이예요. 같은 괴리라도 폭이 줄었는지 높이가 줄었는지 달라요"></svg>' +
-      '<div class="vbt" role="group" aria-label="괴리의 종류">' + C.map(function (c, i) { return '<button type="button" aria-pressed="false" data-i="' + i + '">' + esc(c.k) + '</button>'; }).join('') + '</div>' +
-      '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '') + '</div>';
-    var svg = host.querySelector('svg'), vr = host.querySelector('.vr'), bs = host.querySelectorAll('.vbt button');
-    var X0 = 52, B = 250, SX = 20, SY = 20;
-    function draw() {
-      var c = C[at] || { e: my.e, m: my.m }, o = '';
-      var mw = my.e * SX, mh = my.m * SY, cw = c.e * SX, ch = c.m * SY, gap = my.e * my.m - c.e * c.m;
-      // 축
-      o += '<line x1="' + X0 + '" y1="' + B + '" x2="' + (X0 + mw + 12) + '" y2="' + B + '" stroke="rgba(242,239,232,.35)"/>';
-      o += '<line x1="' + X0 + '" y1="' + B + '" x2="' + X0 + '" y2="' + (B - mh - 12) + '" stroke="rgba(242,239,232,.35)"/>';
-      o += '<text x="' + (X0 + mw / 2) + '" y="' + (B + 38) + '" text-anchor="middle" class="sm">이익 (폭)</text>';
-      o += '<text x="' + (X0 - 8) + '" y="' + (B - mh / 2 + 4) + '" text-anchor="end" class="sm">배수</text><text x="' + (X0 - 8) + '" y="' + (B - mh / 2 + 19) + '" text-anchor="end" class="sm">(높이)</text>';
-      var xt = [my.e], yt = [my.m];
-      if (c.e !== my.e) xt.push(c.e);
-      if (c.m !== my.m) yt.push(c.m);
-      xt.forEach(function (v) { var x = X0 + v * SX; o += '<line x1="' + x + '" y1="' + B + '" x2="' + x + '" y2="' + (B + 5) + '" stroke="rgba(242,239,232,.5)"/><text x="' + x + '" y="' + (B + 19) + '" text-anchor="middle">' + n1(v) + '</text>'; });
-      yt.forEach(function (v) { var y = B - v * SY; o += '<line x1="' + (X0 - 5) + '" y1="' + y + '" x2="' + X0 + '" y2="' + y + '" stroke="rgba(242,239,232,.5)"/><text x="' + (X0 - 9) + '" y="' + (y + 4) + '" text-anchor="end">' + n1(v) + '배</text>'; });
-      // 시장 가격(남색 면) · 괴리(금색 띠) · 내 가치(점선 테두리)
-      o += '<rect x="' + X0 + '" y="' + (B - ch) + '" width="' + cw + '" height="' + ch + '" fill="' + NAVY + '"/>';
-      var gx, gy, gw, gh;
-      if (c.e !== my.e) { gx = X0 + cw; gy = B - mh; gw = mw - cw; gh = mh; } else { gx = X0; gy = B - mh; gw = mw; gh = mh - ch; }
-      if (gap > 0) o += '<rect x="' + gx + '" y="' + gy + '" width="' + gw + '" height="' + gh + '" fill="' + GOLD + '"/>';
-      o += '<rect x="' + X0 + '" y="' + (B - mh) + '" width="' + mw + '" height="' + mh + '" fill="none" stroke="' + INK + '" stroke-opacity=".75" stroke-dasharray="4 3"/>';
-      o += '<text x="' + X0 + '" y="' + (B - mh - 22) + '" class="lb">내 가치 ' + n1(my.e * my.m) + ' = 이익 ' + n1(my.e) + ' × ' + n1(my.m) + '배</text>';
-      o += '<text x="' + (X0 + cw / 2) + '" y="' + (B - ch / 2 + 5) + '" text-anchor="middle" class="lb">시장 ' + n1(c.e * c.m) + '</text>';
-      // 직접 주석
-      if (gap > 0) {
-        var ay = gy + gh / 2, ax = gx + gw, tx = X0 + mw + 22;
-        o += '<line x1="' + ax + '" y1="' + ay + '" x2="' + (tx - 6) + '" y2="' + ay + '" stroke="' + GOLD + '"/>';
-        o += '<text x="' + tx + '" y="' + (ay - 6) + '" class="big gd">' + n1(gap) + '</text>';
-        o += tlines(tx, ay + 16, wrap(c.why || '', 6), 'lb', 18);
-      }
-      svg.innerHTML = o;
-      bs.forEach(function (b, j) { b.setAttribute('aria-pressed', j === at ? 'true' : 'false'); });
-      vr.textContent = c.go || '';
-    }
-    bs.forEach(function (b) { b.onclick = function () { at = +b.getAttribute('data-i'); draw(); }; });
+  // ════ m0Think ════
+  // params: top [{k, v, gold?}], ask, ways [{see, then}], foot
+  // 정적인 생각 갈래: 위에 상황, 가운데 질문, 아래로 갈래마다 '이렇게 보면 ⇒ 이렇게 한다'. 누르는 장치 없음
+  window.CUR_VIS.m0Think = function (host, p, ctx) {
+    var T = p.top || [], W = p.ways || [];
+    host.innerHTML = '<div class="m0v thk">' +
+      (T.length ? '<div class="thk-top">' + T.map(function (t) { return '<span' + (t.gold ? ' class="gd"' : '') + '><small>' + esc(t.k) + '</small><b>' + esc(t.v) + '</b></span>'; }).join('') + '</div>' : '') +
+      (p.ask ? '<p class="thk-ask">' + esc(p.ask) + '</p>' : '') +
+      '<div class="thk-w">' + W.map(function (w) { return '<div class="thk-c"><p class="thk-see">' + esc(w.see) + '</p><p class="thk-then"><i aria-hidden="true">⇒</i>' + esc(w.then) + '</p></div>'; }).join('') + '</div>' +
+      (p.foot ? '<p class="thk-foot">' + esc(p.foot) + '</p>' : '') + '</div>';
     if (ctx && ctx.ready) ctx.ready(true);
-    return { draw: draw };
+    return { draw: function () {} };
+  };
+
+  // ════ m0GapEq ════
+  // params: head[3] (가치·이익·배수 이름), my {k, e, m}, cases [{k, e, m, why, tag}]
+  // 가치 = 이익 × 배수를 줄마다 쓰고, 내 가치와 다른 칸만 테두리로 짚는다. 그 줄 옆(폰은 아래)에 무엇이 달랐는지 쓴다
+  window.CUR_VIS.m0GapEq = function (host, p, ctx) {
+    var H = p.head || ['가치', '이익', '배수'], my = p.my || { k: '내 가치', e: 10, m: 10 }, C = p.cases || [];
+    function row(r, base) {
+      var de = base && r.e !== base.e, dm = base && r.m !== base.m;
+      return '<div class="geq-r' + (base ? '' : ' me') + '"><span class="geq-k">' + esc(r.k) + '</span>' +
+        '<span class="geq-v">' + n1(r.e * r.m) + '</span><span class="geq-o">=</span>' +
+        '<span class="geq-n' + (de ? ' df' : '') + '">' + n1(r.e) + '</span><span class="geq-o">×</span>' +
+        '<span class="geq-n' + (dm ? ' df' : '') + '">' + n1(r.m) + '배</span>' +
+        (base ? '<span class="geq-w"><b>' + esc(r.why || '') + '</b>' + (r.tag ? '<small>' + esc(r.tag) + '</small>' : '') + '</span>' : '<span class="geq-w"></span>') + '</div>';
+    }
+    host.innerHTML = '<div class="m0v geq" role="img" aria-label="' + esc(H[0] + ' = ' + H[1] + ' × ' + H[2] + '. ' + my.k + ' ' + n1(my.e * my.m) + ' = ' + my.e + ' × ' + my.m + '배. ' +
+      C.map(function (c) { return c.k + ' ' + n1(c.e * c.m) + ' = ' + c.e + ' × ' + c.m + '배, ' + (c.why || '') + ' (' + (c.tag || '') + ')'; }).join('. ')) + '">' +
+      '<div class="geq-r hd" aria-hidden="true"><span class="geq-k"></span><span class="geq-v">' + esc(H[0]) + '</span><span class="geq-o">=</span><span class="geq-n">' + esc(H[1]) + '</span><span class="geq-o">×</span><span class="geq-n">' + esc(H[2]) + '</span><span class="geq-w"></span></div>' +
+      row(my, null) + C.map(function (c) { return row(c, my); }).join('') + '</div>';
+    if (ctx && ctx.ready) ctx.ready(true);
+    return { draw: function () {} };
   };
 })();

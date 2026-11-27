@@ -34,12 +34,12 @@
   function t(x, y, s, cls, anchor) { return '<text x="' + x + '" y="' + y + '"' + (cls ? ' class="' + cls + '"' : '') + (anchor ? ' text-anchor="' + anchor + '"' : '') + '>' + esc(s) + '</text>'; }
   function ln(x1, y1, x2, y2, c, extra) { return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + c + '"' + (extra || '') + '/>'; }
 
-  // ════ m3Book ════ params: { head, total, parts:[{v, big, t, d, pct, hl}], eq, foot }
+  // ════ m3Book ════ params: { head(막대 이름), headNum(막대 위 숫자), total, parts:[{v, big, t, d, pct, hl}], foot }
   window.CUR_VIS.m3Book = function (host, p, ctx) {
     host.classList.add('m3v');
-    var W = 420, top = 40, bot = 286, H = bot - top, x0 = 30, bw = 92, lx = x0 + bw + 46;
+    var W = 420, top = 34, bot = 280, H = bot - top, x0 = 30, bw = 92, lx = x0 + bw + 46;
     var parts = p.parts || [], tot = p.total || parts.reduce(function (a, b) { return a + b.v; }, 0);
-    var o = t(x0, 22, p.head || '', '');
+    var o = t(x0 + bw / 2, 22, p.headNum || '', '', 'middle') + t(x0 + bw / 2, bot + 22, p.head || '', '', 'middle');
     var y = top, mids = [];
     parts.forEach(function (q, i) {
       var h = H * q.v / tot;
@@ -53,15 +53,14 @@
     // 주석: 좁은 조각은 글이 겹치지 않게 아래로 밀고, 선을 꺾어 이어 준다
     var last = -1e9;
     mids.forEach(function (m) {
-      var ty = Math.max(m.y, last + 52); ty = Math.min(ty, bot - (p.eq ? 34 : 14)); last = ty;
+      var ty = Math.max(m.y, last + 60); ty = Math.min(ty, bot - 30); last = ty;
       var c = m.q.hl ? GOLD : 'rgba(242,239,232,.4)';
       o += '<g class="fd">' + ln(x0 + bw, m.y.toFixed(1), x0 + bw + 22, m.y.toFixed(1), c) + ln(x0 + bw + 22, m.y.toFixed(1), x0 + bw + 22, ty.toFixed(1), c) + ln(x0 + bw + 22, ty.toFixed(1), lx - 8, ty.toFixed(1), c) +
         t(lx, ty - 4, m.q.big || String(m.q.v), 'b') +
-        // 이름은 흰 글씨, '= 뜻'은 옅은 글씨로 한 줄에
-        '<text x="' + lx + '" y="' + (ty + 18) + '">' + esc(m.q.t) + (m.q.d ? '<tspan class="s"> = ' + esc(m.q.d) + '</tspan>' : '') + '</text>' +
-        (m.q.hl && p.eq ? t(lx, ty + 38, p.eq, 's') : '') + '</g>';
+        // 이름은 흰 글씨, 뜻은 아래 줄에 옅은 글씨로
+        t(lx, ty + 18, m.q.t) + (m.q.d ? t(lx, ty + 36, m.q.d, 's') : '') + '</g>';
     });
-    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 300" role="img" aria-label="' + esc(p.aria || p.head || '') + '">' + o + '</svg>' + (p.foot ? '<p class="vcap">' + esc(p.foot) + '</p>' : '');
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 312" role="img" aria-label="' + esc(p.aria || p.head || '') + '">' + o + '</svg>' + (p.foot ? '<p class="vcap">' + esc(p.foot) + '</p>' : '');
     ctx.ready(true);
     return { draw: function () {} };
   };
@@ -71,18 +70,18 @@
     host.classList.add('m3v');
     var B = p.book, v = p.cap0, U = p.unit || '억', id = 'curM3mc';
     var W = 420, base = 250, k = 204 / p.max, xb = 16, xm = 194, bw = 66;
-    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 282" role="img" aria-label="순자산 막대와 시가총액 막대 비교"></svg>' +
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' 300" role="img" aria-label="순자산 막대와 시가총액 막대 비교"></svg>' +
       L.sliderHtml(id, '시가총액', p.min, p.max, p.step, v, '시가총액(' + U + ' 원)') +
-      '<p class="vr" aria-live="polite"></p><div class="m3ps" aria-live="polite"></div>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
-    var svg = host.querySelector('svg'), inp = host.querySelector('#' + id), lb = host.querySelector('.vctl label b'), vr = host.querySelector('.vr'), ps = host.querySelector('.m3ps');
+      '<p class="vr" aria-live="polite"></p>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
+    var svg = host.querySelector('svg'), inp = host.querySelector('#' + id), lb = host.querySelector('.vctl label b'), vr = host.querySelector('.vr');
     var bps = B * 1e4 / p.shares; // 억 원 ÷ 만 주 → 원
     function draw() {
       var hb = B * k, yb = base - hb, hm = v * k, ym = base - hm, r = v / B, o = '';
       o += ln(8, base, W - 8, base, FAINT);
       // 순자산: 지금까지 쌓인 값
       o += '<rect x="' + xb + '" y="' + yb + '" width="' + bw + '" height="' + hb + '" fill="' + NAVY + '" stroke="' + HAIR + '"/>';
-      o += t(xb + bw / 2, yb - 10, '순자산 ' + fmt(B) + U, '', 'middle');
-      o += t(xb + bw / 2, base + 20, '장부에 쌓인 값', 's', 'middle');
+      o += t(xb + bw / 2, yb - 10, fmt(B) + U, '', 'middle');
+      o += t(xb + bw / 2, base + 22, '순자산', '', 'middle') + t(xb + bw / 2, base + 40, '장부에 쌓인 값', 's', 'middle');
       // 1배 선: 순자산 높이를 시가총액 쪽까지 끌어 온다
       o += ln(xb + bw, yb, xm + bw + 12, yb, 'rgba(242,239,232,.45)', ' stroke-dasharray="3 4"');
       // 시가총액: 장부만큼(옅게) + 기대를 얹은 몫 / 모자란 몫
@@ -90,8 +89,8 @@
       if (v > B) o += '<rect x="' + xm + '" y="' + ym + '" width="' + bw + '" height="' + (yb - ym) + '" fill="rgba(226,196,143,.26)"/>';
       o += '<rect x="' + xm + '" y="' + ym + '" width="' + bw + '" height="' + hm + '" fill="none" stroke="' + GOLD + '" stroke-width="1.5"/>';
       if (v < B) o += '<rect x="' + xm + '" y="' + yb + '" width="' + bw + '" height="' + (ym - yb) + '" fill="none" stroke="rgba(242,239,232,.4)" stroke-dasharray="3 3"/>';
-      o += t(xm + bw / 2, Math.min(ym, yb) - 10, '시가총액 ' + fmt(v) + U, '', 'middle');
-      o += t(xm + bw / 2, base + 20, '시장이 매긴 값', 's', 'middle');
+      o += t(xm + bw / 2, Math.min(ym, yb) - 10, fmt(v) + U, '', 'middle');
+      o += t(xm + bw / 2, base + 22, '시가총액', '', 'middle') + t(xm + bw / 2, base + 40, '시장이 매긴 값', 's', 'middle');
       // 장부와의 차이: 막대 사이에 직접 쓴다
       var d = v - B, gap = Math.abs(yb - ym);
       if (gap >= 14) {
@@ -109,7 +108,6 @@
       vr.textContent = Math.abs(r - 1) < 1e-9 ? '시가총액이 순자산과 같아요. 장부값 그대로 1배예요.' :
         r < 1 ? '1배보다 낮아요. 시장이 이 순자산으로 버는 힘을 장부보다 낮게 보는 거예요.' :
         '1배보다 높아요. 시장이 이 순자산으로 앞으로 더 벌 거라고 보고 값을 얹은 거예요.';
-      ps.innerHTML = '<small>한 주로 나누면</small>순자산 ' + fmt(B) + U + ' ÷ ' + fmt(p.shares) + '만 주 = BPS ' + fmt(bps) + '원 → BPS × PBR ' + esc(mult(r)) + ' = 주가 <b>' + fmt(bps * r) + '원</b>';
     }
     inp.addEventListener('input', function () { v = clamp(Math.round(+inp.value / p.step) * p.step, p.min, p.max); draw(); });
     inp.addEventListener('keydown', function (e) { e.stopPropagation(); });
@@ -123,17 +121,17 @@
     var B = p.book, PER = p.per, cos = p.cos || [], W = 420, base = 240, bw = 46;
     var caps = cos.map(function (c) { return B * c.roe / 100 * PER; }), mx = Math.max.apply(null, caps.concat([B])), k = 170 / mx;
     var o = ln(8, base, W - 8, base, FAINT), yb = base - B * k;
-    o += ln(8, yb, W - 8, yb, 'rgba(242,239,232,.4)', ' stroke-dasharray="3 4"') + t(W - 8, yb - 6, '순자산 ' + fmt(B) + ' = 1배', 's', 'end');
+    o += ln(8, yb, W - 8, yb, 'rgba(242,239,232,.4)', ' stroke-dasharray="3 4"') + t(W - 8, yb - 6, '1배', 's', 'end');
     cos.forEach(function (c, i) {
       var gx = 18 + i * 206, ni = B * c.roe / 100, mc = caps[i], ym = base - mc * k, r = mc / B, col = c.hl ? GOLD : 'rgba(242,239,232,.7)';
       o += '<rect class="gr" x="' + gx + '" y="' + yb + '" width="' + bw + '" height="' + (base - yb) + '" fill="' + NAVY + '" stroke="' + HAIR + '"/>';
       o += '<rect class="gr" style="animation-delay:.15s" x="' + (gx + bw + 10) + '" y="' + ym + '" width="' + bw + '" height="' + (base - ym) + '" fill="' + (c.hl ? 'rgba(226,196,143,.1)' : 'rgba(242,239,232,.05)') + '" stroke="' + col + '" stroke-width="1.5"/>';
       o += t(gx + bw / 2, base + 18, '순자산', 's', 'middle') + t(gx + bw * 1.5 + 10, base + 18, '시가총액', 's', 'middle');
-      o += '<g class="fd">' + t(gx + bw * 1.5 + 10, ym - 8, fmt(mc), '', 'middle');
-      var py = Math.min(ym + 30, base - 24);
-      o += t(gx + 2 * bw + 22, py, mult(r), 'b' + (c.hl ? ' g' : '')) + t(gx + 2 * bw + 22, py + 18, 'PBR', 's') + '</g>';
+      o += '<g class="fd">' + t(gx + bw / 2, yb - 8, fmt(B), '', 'middle') + t(gx + bw * 1.5 + 10, ym - 8, fmt(mc), '', 'middle');
+      var py = Math.min(ym + 30, base - 40);
+      o += t(gx + 2 * bw + 22, py, mult(r), 'b' + (c.hl ? ' g' : '')) + t(gx + 2 * bw + 22, py + 18, 'PBR', 's') + t(gx + 2 * bw + 22, py + 34, '= ' + fmt(mc) + ' ÷ ' + fmt(B), 's') + '</g>';
       o += t(gx, base + 46, (c.t ? c.t + ' ' : '') + 'ROE ' + c.roe + '%', c.hl ? 'g' : '');
-      o += t(gx, base + 64, '순이익 ' + fmt(ni) + ' × PER ' + PER + '배 = ' + fmt(mc), 's');
+      o += t(gx, base + 64, '순이익 ' + fmt(ni), 's');
     });
     host.innerHTML = '<svg viewBox="0 0 ' + W + ' 310" role="img" aria-label="' + esc(p.aria || '같은 PER, 다른 ROE의 PBR 비교') + '">' + o + '</svg>' + (p.cap ? '<p class="vcap">' + esc(p.cap) + '</p>' : '');
     ctx.ready(true);

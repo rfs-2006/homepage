@@ -4,40 +4,77 @@
  "intro": "가격과 가치를 나눠 보는 데서 시작해 PER, PBR, EV/EBITDA, SOTP를 거쳐 DCF까지 배워요. 모듈마다 질문에 답하고 그래프로 개념을 잡은 뒤, 실습 시트에 직접 수식을 넣어 봐요. 마지막 모듈에서는 와이엔텍 한 회사를 처음부터 끝까지 평가해요.",
  "groups": [
   {
+   "id": "pre",
+   "label": "준비",
+   "range": "PRE",
+   "en": "PRE"
+  },
+  {
    "id": "base",
    "label": "기초",
-   "range": "M0–M1"
+   "range": "M0–M1",
+   "en": "BASIC"
   },
   {
    "id": "rel",
    "label": "상대가치",
-   "range": "M2–M5"
+   "range": "M2–M5",
+   "en": "RELATIVE"
   },
   {
    "id": "abs",
-   "label": "절대가치",
-   "range": "M6–M8"
+   "label": "내재가치",
+   "range": "M6–M8",
+   "en": "DCF"
   },
   {
    "id": "lab",
    "label": "종합",
-   "range": "M9"
+   "range": "M9",
+   "en": "CASE"
   }
  ],
  "modules": [
+  {
+   "id": "pre",
+   "code": "PRE",
+   "group": "pre",
+   "title": "기초 지식",
+   "minutes": 25,
+   "questions": 16,
+   "ready": true,
+   "file": "pre.json",
+   "objectives": [
+    "주가와 주식 수로 시가총액·EPS·BPS를 계산해요",
+    "재무제표 세 장이 어떻게 이어지는지, 감가상각비와 세금이 이익에서 어떻게 빠지는지 알아요",
+    "성장률·CAGR과 현재가치를 계산해요"
+   ],
+   "lead": "M0 전에, 수업에 먼저 나오는 말과 계산을 익혀요.",
+   "goals": [
+    "시가총액·EPS·BPS 계산하기",
+    "감가상각비와 세금 알기",
+    "성장률과 현재가치 계산하기"
+   ]
+  },
   {
    "id": "m0",
    "code": "M0",
    "group": "base",
    "title": "밸류에이션이란",
-   "minutes": 55,
-   "questions": 26,
+   "minutes": 45,
+   "questions": 13,
    "file": "m0.json",
    "ready": true,
    "objectives": [
     "가치라는 기준이 왜 필요한지 알아요",
-    "가치와 가격, 품질과 가격을 나눠 보고 괴리를 검증해요",
-    "기법 지도를 보고 회사에 맞는 잣대를 골라요"
+    "회사에 맞는 기법을 고르고, 좋은 기업인지 숫자로 다시 확인해요",
+    "시장과 생각이 다르면 괴리를 나눠 검증해요"
+   ],
+   "lead": "가격과 가치를 나눠 보고, 회사에 맞는 기법를 고르는 법을 배워요.",
+   "goals": [
+    "회사에 맞는 기법 고르기",
+    "좋은 기업인지 숫자로 다시 확인하기",
+    "괴리가 맞는지 검증하기"
    ]
   },
   {
@@ -46,7 +83,7 @@
    "group": "base",
    "title": "기업 읽기",
    "minutes": 50,
-   "questions": 16,
+   "questions": 14,
    "ready": true,
    "objectives": [
     "사업 구조와 돈 버는 방식을 한 장으로 정리해요",
@@ -59,7 +96,13 @@
     "title": "밀리의서재·화승 재무제표 읽기",
     "steps": 8,
     "minutes": 15
-   }
+   },
+   "lead": "재무제표 세 장에서 주주 몫으로 남는 이익을 골라내요.",
+   "goals": [
+    "돈 버는 구조 정리하기",
+    "재무제표에서 쓸 숫자 찾기",
+    "일회성 이익 걸러내기"
+   ]
   },
   {
    "id": "m2",
@@ -67,7 +110,7 @@
    "group": "rel",
    "title": "PER",
    "minutes": 70,
-   "questions": 22,
+   "questions": 20,
    "ready": true,
    "objectives": [
     "PER을 성장·위험과 이어서 읽어요",
@@ -80,7 +123,13 @@
     "title": "R사 PER 목표주가",
     "steps": 13,
     "minutes": 20
-   }
+   },
+   "lead": "회사가 버는 이익에 몇 배를 쳐 줄지로 값을 매겨요.",
+   "goals": [
+    "PER을 성장·위험과 이어 읽기",
+    "비교 기업 고르기",
+    "적정 PER로 목표주가 내기"
+   ]
   },
   {
    "id": "m3",
@@ -88,7 +137,7 @@
    "group": "rel",
    "title": "PBR",
    "minutes": 55,
-   "questions": 22,
+   "questions": 21,
    "ready": true,
    "objectives": [
     "BPS × PBR로 주가를 매기고, 순자산이 바뀌는 길을 알아요",
@@ -101,7 +150,13 @@
     "title": "한국전력 BPS와 PBR 목표주가",
     "steps": 14,
     "minutes": 20
-   }
+   },
+   "lead": "장부에 적힌 순자산에 몇 배를 주는지로 값을 매겨요.",
+   "goals": [
+    "BPS × PBR로 주가 매기기",
+    "PBR = ROE × PER로 배수 읽기",
+    "자본변동표로 기말 BPS 만들기"
+   ]
   },
   {
    "id": "m4",
@@ -109,7 +164,7 @@
    "group": "rel",
    "title": "EV와 EV/EBITDA",
    "minutes": 50,
-   "questions": 20,
+   "questions": 19,
    "ready": true,
    "objectives": [
     "시가총액에서 EV로 가는 다리를 놓고 분자·분모 짝을 맞춰요",
@@ -122,7 +177,13 @@
     "title": "와이엔텍 EV와 EV/EBITDA",
     "steps": 13,
     "minutes": 20
-   }
+   },
+   "lead": "빚까지 더한 회사 전체 값을 영업 이익과 견줘요.",
+   "goals": [
+    "시가총액에서 EV 구하기",
+    "EBITDA가 빼고 보는 것 알기",
+    "빚 구조가 다른 회사 견주기"
+   ]
   },
   {
    "id": "m5",
@@ -130,7 +191,7 @@
    "group": "rel",
    "title": "SOTP",
    "minutes": 45,
-   "questions": 19,
+   "questions": 18,
    "ready": true,
    "objectives": [
     "사업부·자회사를 나눠 EV/EBITDA로 매기고 더해요",
@@ -143,7 +204,13 @@
     "title": "DI동일 SOTP 평가표",
     "steps": 12,
     "minutes": 20
-   }
+   },
+   "lead": "사업부마다 맞는 배수로 따로 매겨 더해요.",
+   "goals": [
+    "사업부별로 매겨 더하기",
+    "주당 가치로 바꾸기",
+    "실제 평가표 검산하기"
+   ]
   },
   {
    "id": "m6",
@@ -158,7 +225,13 @@
     "FCFF·FCFE와 할인식 (1 + WACC)ⁿ으로 DCF 뼈대를 세워요",
     "DCF를 쓸 이유를 판단하고 계정을 NOA·IBD·배제로 나눠요"
    ],
-   "file": "m6.json"
+   "file": "m6.json",
+   "lead": "앞으로 벌 현금을 오늘 가치로 바꿔 더하는 뼈대를 세워요.",
+   "goals": [
+    "영업가치에서 주주가치로 넘어가기",
+    "FCFF와 할인식 세우기",
+    "계정을 NOA·IBD로 나누기"
+   ]
   },
   {
    "id": "m7",
@@ -179,7 +252,13 @@
     "title": "코엔텍 FCFF 모델 쌓기",
     "steps": 14,
     "minutes": 25
-   }
+   },
+   "lead": "매출에서 FCFF까지 한 줄씩 추정해요.",
+   "goals": [
+    "매출에서 FCFF까지 추정하기",
+    "설비투자·운전자본 반영하기",
+    "Story를 추정치로 옮기기"
+   ]
   },
   {
    "id": "m8",
@@ -187,7 +266,7 @@
    "group": "abs",
    "title": "DCF 3 할인율·TV·검증",
    "minutes": 60,
-   "questions": 23,
+   "questions": 24,
    "ready": true,
    "objectives": [
     "WACC를 구성 요소별로 잡아요",
@@ -200,7 +279,13 @@
     "title": "코엔텍 WACC·TV·주당가치",
     "steps": 15,
     "minutes": 30
-   }
+   },
+   "lead": "할인율과 잔존가치를 정하고 결과를 검산해요.",
+   "goals": [
+    "WACC 정하기",
+    "잔존가치 비중 점검하기",
+    "민감도로 결과 검산하기"
+   ]
   },
   {
    "id": "m9",
@@ -208,7 +293,7 @@
    "group": "lab",
    "title": "종합 실습: 와이엔텍",
    "minutes": 90,
-   "questions": 23,
+   "questions": 24,
    "ready": true,
    "objectives": [
     "소각·매립·스팀을 Q×P로 쪼개고 증설 CAPEX를 FCFF에 넣어요",
@@ -221,12 +306,19 @@
     "title": "와이엔텍 Q×P부터 주당가치까지",
     "steps": 15,
     "minutes": 40
-   }
+   },
+   "lead": "와이엔텍 한 회사를 처음부터 끝까지 평가해요.",
+   "goals": [
+    "사업을 Q × P로 쪼개기",
+    "부문별로 매겨 더하기",
+    "상대가치로 검산하기"
+   ]
   }
  ],
  "certificate": {
   "title": "수료증",
   "line": "밸류에이션 커리큘럼 M0–M9 과정을 마쳤어요",
   "unlockAfter": "m9"
- }
+ },
+ "lead": "가격과 가치를 나눠 보는 데서 시작해 PER, PBR, EV/EBITDA, SOTP를 거쳐 DCF까지 배워요."
 }

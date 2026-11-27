@@ -44,10 +44,10 @@
     var svg = host.querySelector('svg');
     ctx.ready(true);
     function draw() {
-      var w = wOf(host), u = w / n, by = 64, bh = Math.round(clamp(w * 0.07, 44, 60)), o = '';
+      var w = wOf(host), u = w / n, by = 80, bh = Math.round(clamp(w * 0.07, 44, 60)), o = '';
       // 위: 가게값 전체를 묶는 괄호
-      o += txt(w / 2, 22, '가게값 <tspan class="sm">= 주식에선 주가</tspan>', '', 'middle');
-      o += '<path d="M0.5 44V34H' + (w - 0.5) + 'V44" fill="none" stroke="' + LINE + '"/>';
+      o += txt(w / 2, 16, '가게값', '', 'middle') + txt(w / 2, 34, '주식에선 주가', 'sm', 'middle');
+      o += '<path d="M0.5 60V50H' + (w - 0.5) + 'V60" fill="none" stroke="' + LINE + '"/>';
       // 막대: 한 해 이익 n칸, 하나씩 채워진다
       for (var i = 0; i < n; i++) {
         var first = i === 0;
@@ -56,7 +56,7 @@
       }
       // 아래 왼쪽: 한 칸 = 한 해 이익
       o += line(u / 2, by + bh + 2, u / 2, by + bh + 30, GOLD);
-      o += txt(0, by + bh + 50, '한 해 이익', '', '', true) + txt(0, by + bh + 70, '주식에선 한 주가 번 이익, EPS', 'sm', '', true);
+      o += txt(0, by + bh + 50, '한 해 이익', '', '', true) + txt(0, by + bh + 70, '주식에선 EPS', 'sm', '', true);
       // 아래 오른쪽: 칸 수 = PER
       o += txt(w, by + bh + 52, n + '배', 'big gd', 'end') + txt(w, by + bh + 72, '이 칸 수가 PER', 'sm', 'end');
       put(svg, w, by + bh + 82, o, '가게값 막대가 한 해 이익 ' + n + '칸으로 채워져요. 칸 수 ' + n + '이 PER이에요. 주식에선 가게값이 주가, 한 해 이익이 EPS예요.');
@@ -80,9 +80,9 @@
       // 2) 한 칸 = EPS
       o += line(u / 2, 54, u / 2, 76, LINE, ' stroke-dasharray="3 3"');
       o += rect(0.5, 78, u - 0.5, 26, GOLD);
-      o += line(u + 4, 91, u + 22, 91, LINE) + txt(u + 28, 96, 'EPS <tspan class="sm">= 한 주 몫 이익</tspan>');
+      o += line(u + 4, 91, u + 22, 91, LINE) + txt(u + 28, 89, 'EPS') + txt(u + 28, 106, '한 주 몫 이익', 'sm');
       // 3) EPS 칸을 PER개 쌓으면 주가
-      o += txt(0, 136, '주가 = EPS × ' + per);
+      o += txt(0, 136, '주가');
       o += rect(0.75, 146, len - 1.5, 40, 'rgba(226,196,143,.16)', GOLD, ' stroke-width="1.5" class="mv"');
       for (var k = 1; k < per; k++) o += line(k * u, 147, k * u, 185, 'rgba(226,196,143,.45)');
       o += '<path class="mv" d="M0.5 194V200H' + (len - 0.5).toFixed(1) + 'V194" fill="none" stroke="' + LINE + '"/>';
@@ -108,26 +108,23 @@
     function draw() {
       var w = wOf(host), c = calc(v), c0 = calc(v0), K = w / (price * hi), o = '', bh = w > 600 ? 30 : 24, gap = bh + 32, y0 = 22;
       var xs = [[0, c.R], [0, c.V], [c.V, c.V + F], [c.V + F, c.R]];
-      var lab = [
-        '매출 ' + fmt(c.R) + '억 <tspan class="sm">= ' + x1(v) + '억 개 × ' + fmt(price) + '원</tspan>',
-        '변동비 ' + fmt(c.V) + '억&#160; <tspan class="sm">원재료비처럼 판매량 따라</tspan>',
-        '고정비 ' + fmt(F) + '억&#160; <tspan class="sm">본사 월급처럼 그대로</tspan>',
-        '영업이익 <tspan class="gd">' + fmt(c.P) + '억</tspan>'
-      ];
+      var lab = ['매출', '변동비&#160; <tspan class="sm">판매량 따라</tspan>', '고정비&#160; <tspan class="sm">그대로</tspan>', '영업이익'], num = [c.R, c.V, F, c.P];
       xs.forEach(function (s, i) {
         var y = y0 + i * gap, a = s[0] * K, z = s[1] * K;
         o += txt(a, y, lab[i], '', '', true);
         var fill = i === 0 ? 'none' : i === 1 ? NAVY : i === 2 ? 'rgba(242,239,232,.10)' : GOLD;
         var stroke = i === 0 ? 'rgba(242,239,232,.6)' : i === 3 ? null : 'rgba(242,239,232,.35)';
         o += rect(a + 0.5, y + 8, z - a - 1, bh, fill, stroke, ' class="mv"');
+        var ns = fmt(num[i]) + '억', inside = z - a > ns.length * 8 + 16;
+        o += txt(inside ? z - 8 : z + 6, y + 8 + bh / 2 + 5, ns, i === 3 ? (inside ? 'dk' : 'gd') : '', inside ? 'end' : '', !inside);
         if (i < 3) { var xe = i === 0 ? 0 : z; o += line(Math.max(0.5, xe), y + 8 + bh, Math.max(0.5, xe), y + gap - 10, HAIR, ' stroke-dasharray="2 3"'); }
       });
       put(svg, w, y0 + 3 * gap + bh + 14, o, '매출 ' + fmt(c.R) + '억에서 변동비 ' + fmt(c.V) + '억, 고정비 ' + fmt(F) + '억을 빼면 영업이익 ' + fmt(c.P) + '억');
       b.textContent = x1(v) + '억 개';
-      if (Math.abs(v - v0) < 1e-9) vr.innerHTML = '판매량을 움직여 보세요. 고정비 막대는 길이가 그대로예요.';
+      if (Math.abs(v - v0) < 1e-9) vr.innerHTML = '판매량을 움직여도 고정비 막대는 그대로예요.';
       else {
         var dq = (v / v0 - 1) * 100, dp = (c.P / c0.P - 1) * 100, sg = function (x) { return (x > 0 ? '+' : '−') + Math.round(Math.abs(x)) + '%'; };
-        vr.innerHTML = '판매량 <b>' + sg(dq) + '</b>인데 영업이익은 <b>' + sg(dp) + '</b>예요. 고정비가 그대로라서요.';
+        vr.innerHTML = '고정비가 그대로라 판매량 <b>' + sg(dq) + '</b>에 영업이익은 <b>' + sg(dp) + '</b>예요.';
       }
     }
     slide(inp, function () { v = +inp.value; draw(); });
@@ -173,7 +170,7 @@
     function draw() {
       var w = wOf(host), ni = vals[i], per = cap / ni, x0 = 28, W = w - x0, u = Math.abs(ni) / cap * W, o = '';
       o += '<defs><pattern id="curM2h" width="3" height="6" patternUnits="userSpaceOnUse"><rect width="1" height="6" fill="rgba(226,196,143,.5)"/></pattern></defs>';
-      o += txt(x0, 16, '시가총액 ' + fmt(cap) + '억', '', '', true);
+      o += txt(x0, 16, '시가총액') + txt(w, 16, fmt(cap) + '억', '', 'end');
       o += rect(x0 + 0.5, 26, W - 1, 40, 'none', 'rgba(242,239,232,.6)');
       if (ni > 0) {
         if (u >= 3) for (var k = 1; k * u < W - 0.5; k++) o += line(x0 + k * u, 27, x0 + k * u, 65, 'rgba(226,196,143,.45)');
@@ -185,15 +182,15 @@
       if (ni > 0) o += rect(x0 + 0.5, 96, Math.max(1, u), 24, GOLD, null, ' class="mv"');
       else o += rect(x0 - u, 96, u, 24, 'none', GOLD, ' stroke-dasharray="3 2"');
       var lx = ni > 0 ? x0 + Math.max(1, u) + 8 : x0 + 8;
-      o += txt(lx, 113, '순이익 ' + (ni < 0 ? '−' : '') + fm(Math.abs(ni)) + '억', '', '', true);
+      o += txt(lx, 107, (ni < 0 ? '−' : '') + fm(Math.abs(ni)) + '억', '', '', true) + txt(lx, 125, '순이익', 'sm', '', true);
       // 읽기: 몇 번 들어가나
       var big = ni < 0 ? '−' + fmt(Math.abs(per)) + '배' : fmt(per) + '배';
-      o += txt(x0, 186, big, ni < 0 ? 'big off' : 'big', '')  + txt(x0, 206, ni < 0 ? '적자면 몇 번 들어가는지 셀 수 없어요' : '시가총액 안에 순이익이 ' + fmt(per) + '번 들어가요', 'sm', '', true);
+      o += txt(x0, 186, big, ni < 0 ? 'big off' : 'big', '')  + txt(x0, 206, 'PER = ' + fmt(cap) + ' ÷ ' + (ni < 0 ? '−' : '') + fm(Math.abs(ni)), 'sm', '', true);
       put(svg, w, 214, o, '시가총액 ' + fmt(cap) + '억, 순이익 ' + ni + '억, PER ' + x1(per) + '배');
       b.textContent = (ni < 0 ? '−' : '') + fm(Math.abs(ni)) + '억';
-      vr.innerHTML = ni < 0 ? '음수 배수는 뜻을 읽기 어려워요. 흑자로 돌아선 뒤의 이익에 배수를 줘요.'
-        : per >= 300 ? '순이익이 0에 가까우면 PER이 <b>' + fmt(per) + '배</b>까지 튀어요. 이런 해의 배수는 조심해서 가져와요.'
-          : per >= 50 ? '이익이 작아질수록 PER이 빠르게 커져요. 더 줄여 보세요.'
+      vr.innerHTML = ni < 0 ? '적자면 음수 배수라 뜻을 읽기 어려워요.'
+        : per >= 300 ? '순이익이 0에 가까우면 PER이 <b>' + fmt(per) + '배</b>까지 튀어요.'
+          : per >= 50 ? '이익이 작아질수록 PER이 빠르게 커져요.'
             : '이익이 안정적이면 PER이 회사 값을 잘 보여 줘요.';
     }
     slide(inp, function () { i = +inp.value; draw(); });
